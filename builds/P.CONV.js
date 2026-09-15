@@ -95,8 +95,6 @@ var AutoBuildTemplate = {
 					Config.PublicMode = 3;									// 1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
 				}
 				
-				//Config.PickitFiles.push("P.HAMM.nip");
-				
 				Config.TierGoal.Head = 15;
 				Config.TierGoal.Neck = 17;
 				Config.TierGoal.Body = 21;
@@ -115,7 +113,7 @@ var AutoBuildTemplate = {
 
 	2:	{
 			Update: function () {
-				Config.AttackSkill = [-1, 0, 99, 0, 99, -1, 99];
+				Config.AttackSkill = [-1, 0, 99, 0, 99, -1, -1];
 				Config.LowManaSkill = [0, 99];
 			}
 		},
@@ -137,7 +135,7 @@ var AutoBuildTemplate = {
 				Config.LowManaSkill = [-1, -1];
 				Config.PacketCasting = 1;								// 0 = disable, 1 = packet teleport, 2 = full packet casting.
 				
-				Config.AttackSkill = [-1, 112, 114, 112, 114, -1, 114];
+				Config.AttackSkill = [-1, 112, 114, 112, 114, -1, -1];
 				Config.Vigor = true;
 			}
 		},
@@ -159,7 +157,7 @@ var AutoBuildTemplate = {
 
 	30:	{
 			Update: function () {
-				Config.AttackSkill = [-1, 112, 123, 112, 123, -1, 123];	// Blessed Hammer + Conviction
+				Config.AttackSkill = [-1, 112, 123, 112, 123, 101, 123];	// Blessed Hammer + Conviction
 			}
 		},
 

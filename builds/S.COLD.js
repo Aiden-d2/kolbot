@@ -27,6 +27,7 @@ var AutoBuildTemplate = {
 		],
 		
 		Skills: [
+			{id: 45, target: 1},			// Ice Blast
 			{id: 43, target: 1},			// Telekinesis
 			{id: 50, target: 1},			// Shiver Armor
 			{id: 54, target: 1},			// Teleport
@@ -35,7 +36,6 @@ var AutoBuildTemplate = {
 			{id: 39, target: 1},			// Ice Bolt
 			{id: 40, target: 1},			// Frozen Armor
 			{id: 37, target: 1},			// Warmth
-			{id: 45, target: 1},			// Ice Blast
 			{id: 39, target: 20, to: 16},	// Ice Bolt
 			{id: 65, target: 1},   			// Cold Mastery
 			{id: 59, target: 20},			// Blizzard
@@ -98,8 +98,6 @@ var AutoBuildTemplate = {
 					Config.PublicMode = 3;								// 1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
 				}
 				
-				//Config.PickitFiles.push("S.COLD.nip");
-				
 				Config.TierGoal.Head = 15;
 				Config.TierGoal.Neck = 17;
 				Config.TierGoal.Body = 21;
@@ -119,6 +117,12 @@ var AutoBuildTemplate = {
 	2:	{
 			Update: function () {
 				Config.AttackSkill = [-1, 39, -1, 39, -1, -1, -1];		// Ice Bolt
+			}
+		},
+
+	6:	{
+			Update: function () {
+				Config.AttackSkill = [-1, 45, -1, 45, -1, -1, -1];		// Ice Blast
 			}
 		},
 

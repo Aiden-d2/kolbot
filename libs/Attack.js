@@ -492,7 +492,7 @@ var Attack = {
 			slotRev = null,
 			revGate = false,
 			moveNeeded = getDistance(me, unit) > distance || checkCollision(me, unit, coll),
-			scoring = Config.Dodge.Enabled && !moveNeeded && distance >= Config.Dodge.Range && me.hp * 100 / me.hpmax <= Config.Dodge.HP,
+			scoring = Config.Dodge.Enabled && !moveNeeded && distance >= Config.Dodge.Range && me.hp * 100 / me.hpmax <= Config.Dodge.HP && unit.classid !== 243,	//260915
 			angle = Math.atan2(me.y - unit.y, me.x - unit.x);
 
 		if (!moveNeeded && !scoring) {

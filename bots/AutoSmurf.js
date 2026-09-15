@@ -233,10 +233,10 @@ function AutoSmurf() {
 		Pickit.pickItems();	//eom
 		
 		//moving to last act before party check
-		if (!me.getQuest(7, 0) && this.partyLevel(teleLvl) && (me.getQuest(6, 0) || me.getQuest(6, 1))) {
-			Pickit.pickItems();
-			this.changeAct(2);
-		}
+		//if (!me.getQuest(7, 0) && this.partyLevel(teleLvl) && (me.getQuest(6, 0) || me.getQuest(6, 1))) {
+			//Pickit.pickItems();
+			//this.changeAct(2);
+		//}
 		if (!me.getQuest(15, 0) && me.getQuest(7, 0)) { // if andy done, but not duriel		say(" Here ****** 2 ");
 			Pickit.pickItems();
 			Town.goToTown(2);
@@ -1385,6 +1385,8 @@ function AutoSmurf() {
 				}
 
 				Misc.useMenu(0x0D36);
+				
+				delay(me.ping * 2 + 200);	//260914
 
 				break;
 			case 3:
@@ -1476,6 +1478,8 @@ function AutoSmurf() {
 				} else {
 					Misc.useMenu(0x58D2);
 				}
+				
+				delay(me.ping * 2 + 200);
 
 				break;
 			}
@@ -5644,11 +5648,24 @@ function AutoSmurf() {
 				break;
 			case 3: // Paladin
 				if (Config.AttackSkill[3] === 112) { // 112	Blessed Hammer
-					if (Config.AttackSkill[4] > 0) {
+					//if (Config.AttackSkill[4] > 0) {
+						//Skill.setSkill(Config.AttackSkill[4], 0);
+					//}
+					if (me.getState(2) && me.getSkill(109, 1)) {
+						Skill.setSkill(109, 0);
+					} else if (Config.Meditation && me.getSkill(120, 1)) {
+						Skill.setSkill(120, 0);
+					} else if (Config.Cleansing && me.getSkill(109, 1)) {
+						Skill.setSkill(109, 0);
+					} else {
 						Skill.setSkill(Config.AttackSkill[4], 0);
 					}
-
+					
 					return Skill.cast(Config.AttackSkill[3], 1);
+				}
+				
+				if (Config.Conviction && me.getSkill(123, 1)) {	//260915
+					Skill.setSkill(123, 0);
 				}
 
 				break;
@@ -5845,13 +5862,14 @@ function AutoSmurf() {
 					Pather.moveTo(15092 + rand(-5, 5), 5030);	//260909
 				} else if (me.classid === 4) {	//bar
 					Pather.moveTo(15092, 5028);
+					Precast.doPrecast(true);
 				} else if (me.classid === 5) {	//dru
 					Pather.moveTo(15092, 5018);	//260830
 				} else {
 					Pather.moveTo(15092, 5040);
 				}
 				
-				Precast.doPrecast(true);
+				Precast.doPrecast();
 				
 				if (me.classid === 6 && !wave5) {
 					resetTrap = true;
@@ -7557,8 +7575,10 @@ function AutoSmurf() {
 				this.cain(); 			// Only rescues cain
             }
 		}
-
-		this.andy();
+		
+		if (!me.getQuest(7, 0)) {	//260915
+			this.andy();
+		}
 	};
 
 	//act2

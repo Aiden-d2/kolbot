@@ -142,7 +142,7 @@ function spendStatPoint (id) {
 		AutoBuild.print("Fake useStatPoint("+id+"): "+STAT_ID_TO_NAME[id]);
 	}
 	
-	delay(Math.max(me.ping * 3, 300));	//260625
+	delay(Math.max(me.ping * 5, 500));	//260915
 	
 	return (unusedStatPoints - me.getStat(4) === 1);	// Check if we spent one point
 };
@@ -230,7 +230,7 @@ function spendSkillPoint (id) {
 		AutoBuild.print("Fake useSkillPoint(): "+skillName);
 	}
 	
-	delay(Math.max(me.ping * 3, 300));	//260625
+	delay(Math.max(me.ping * 5, 500));	//260915
 	
 	return (unusedSkillPoints - me.getStat(5) === 1);	// Check if we spent one point
 };

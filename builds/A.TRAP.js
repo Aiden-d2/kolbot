@@ -27,18 +27,18 @@ var AutoBuildTemplate = {
 		],
 		
 		Skills: [
-			{id: 258, target: 1},			// Burst of Speed
 			{id: 267, target: 1},			// Fade
+			{id: 258, target: 1},			// Burst of Speed
 			{id: 251, target: 1},			// Fire Blast
 			{id: 252, target: 1},			// Claw Mastery
 			{id: 271, target: 20},			// Lightning Sentry
-			//{id: 273, target: 1},			// Mind Blast
 			{id: 261, target: 20},			// Charged Bolt Sentry
-			{id: 256, target: 20},			// Shock Web
+			{id: 256, target: 9},			// Shock Web
 			{id: 268, target: 1},			// Shadow Warrior
+			{id: 256, target: 20},			// Shock Web
+			{id: 267, target: 8},			// Fade
 			{id: 276, target: 20},			// Death Sentry
-			{id: 267, target: 12},			// Fade
-			{id: 251, target: 12, from: 9},	// Fire Blast
+			{id: 251, target: 16, from: 9},	// Fire Blast
 		]
 	},
 
@@ -94,8 +94,6 @@ var AutoBuildTemplate = {
 					Config.PublicMode = 3;									// 1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
 				}
 				
-				//Config.PickitFiles.push("A.TRAP.nip");
-				
 				Config.TierGoal.Head = 15;
 				Config.TierGoal.Neck = 17;
 				Config.TierGoal.Body = 21;
@@ -144,7 +142,6 @@ var AutoBuildTemplate = {
 				Config.LowManaSkill = [-1, -1];
 				Config.PacketCasting = 1;									// 0 = disable, 1 = packet teleport, 2 = full packet casting.
 				
-				Config.SummonShadow = "Warrior";
 				Config.UseBoS = false;
 				Config.UseFade = true;	
 			}
@@ -166,6 +163,12 @@ var AutoBuildTemplate = {
 				
 				Config.Traps = [271, 271, 271, 271, 271];
 				Config.BossTraps = [271, 271, 271, 271, 271];
+			}
+		},
+
+	50:	{
+			Update: function () {
+				Config.SummonShadow = "Warrior";
 			}
 		}
 };

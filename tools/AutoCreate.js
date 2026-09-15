@@ -56,14 +56,9 @@ var AutoCreate = {
 			return false;
 		}
 		
-		//var profile = profiles.slice().reverse();
+		var profile = profiles.slice().reverse();
 		
-		//delay(profile.indexOf(me.profile) * 5000 + 5000);	//260910
-		
-		var randDelay = rand(0, 10);
-		
-		print("delay " + randDelay);
-		delay(randDelay * 1000);
+		delay(profile.indexOf(me.profile) * 5000 + 1000);	//260915
 		
 		D2Bot.printToConsole("AutoCreate: creating account " + info.account, 7);
 

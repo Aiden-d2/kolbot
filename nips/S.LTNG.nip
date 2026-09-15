@@ -1,0 +1,230 @@
+
+//============================================================================================================================================================================================
+// [Sorceress Cold]
+//============================================================================================================================================================================================
+
+//============================================================================================================================================================================================
+// [Helm & Circlet] 40Fresi 30resi // 40life 10/15ener
+//============================================================================================================================================================================================
+
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 110 # [tier] == 21
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [tier] == 22
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 130 # [tier] == 23
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [tier] == 24
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 150 # [tier] == 25
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 160 # [tier] == 26
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 170 # [tier] == 27
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 180 # [tier] == 28
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 190 # [tier] == 29
+[name] >= 418 && [name] <= 421 && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 200 # [tier] == 30
+
+[name] == warhat && [quality] == unique && [flag] != ethereal # # [tier] == 20
+
+[name] == sallet && [quality] == unique && [flag] != ethereal # # [tier] == 20
+[name] == sallet && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist])*0.8 >= 60 # [tier] == 21
+[name] == sallet && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist])*0.8 >= 70 # [tier] == 22
+[name] == sallet && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist])*0.8 >= 80 # [tier] == 23
+[name] == sallet && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist])*0.8 >= 90 # [tier] == 24
+[name] == sallet && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist])*0.8 >= 100 # [tier] == 25
+
+[name] == tiara && [quality] == unique && [flag] != ethereal # # [tier] == 31
+[name] == tiara && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 170 # [tier] == 32
+[name] == tiara && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 180 # [tier] == 33
+[name] == tiara && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 190 # [tier] == 34
+[name] == tiara && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 200 # [tier] == 35
+[name] == tiara && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 210 # [tier] == 36
+[name] == tiara && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 220 # [tier] == 37
+
+[name] == shako && [quality] == unique && [flag] != ethereal # # [tier] == 41
+
+[name] == diadem && [quality] == unique # # [tier] == 42
+
+
+//============================================================================================================================================================================================
+// [Armor] 40mana 30resi // 60/100life
+//============================================================================================================================================================================================
+
+[type] == armor && [flag] == runeword # [fireresist] == 50 # [tier] == 21
+
+
+//============================================================================================================================================================================================
+// [Gloves] 40mana 30resi
+//============================================================================================================================================================================================
+
+[name] == lightgauntlets && [quality] == unique && [flag] != ethereal # # [tier] == 21
+
+
+//============================================================================================================================================================================================
+// [Boots] 40mana 40resi
+//============================================================================================================================================================================================
+
+
+//============================================================================================================================================================================================
+// [Belt] 30mana 30resi // 60/100life
+//============================================================================================================================================================================================
+
+
+//============================================================================================================================================================================================
+// [Shield] 20mana 30resi 20/30A-resi // 40/60life
+//============================================================================================================================================================================================
+
+[name] == gothicshield && [quality] == unique && [flag] != ethereal # # [tier] == 21
+[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 110 # [tier] == 22
+[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [tier] == 23
+[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 130 # [tier] == 24
+[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [tier] == 25
+[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 150 # [tier] == 26
+
+[type] == shield && [flag] == runeword # [itemdamagetomana] == 10 # [tier] == 26
+
+[name] == roundshield && [quality] == unique && [flag] != ethereal # [fireresist] >= 45 # [tier] == 41
+
+
+//============================================================================================================================================================================================
+// [Weapon] 20mana 90/120mana(wiz) 30resi 40resi(wiz) // 10/15ener(scepter) 20/30ener(wand/orb)
+//============================================================================================================================================================================================
+// [handaxe]=0 // [axe]=1 // [doubleaxe]=2 //[warhammer]=22 // [shortsword]=25 // [falchion]=28 // [crystalsword]=29 // [broadsword]=30 // [javelin]=47
+//============================================================================================================================================================================================
+// [strength]=0 // [mindamage]=21 // [maxdamage]=22
+// [tohit]=19 // [itemtohitpercent]=119
+// [itemignoretargetac]=115(1) // [itemfractionaltargetac]=116(+) // [itemallskills]=127
+// [fireresist]=39 // [lightresist]=41 // [coldresist]=43 // [poisonresist]=45
+// [firemaxdam]=49 // [lightmaxdam]=51 // [coldmaxdam]=55
+//============================================================================================================================================================================================
+
+([type] == club || [type] == mace || [type] == knife || [name] == 0 || [name] == 1 || [name] == 2 || [name] == 22 || [name] == 25 || [name] == 28 || [name] == 29 || [name] == 30 || [name] == 47) && [quality] >= normal && [flag] != ethereal # [0]+[21]+[22]+[19]/10+([116]+[119])/2.5+([115]+[127])*20+([39]+[41]+[43]+[45])/2+([48]+[49]+[50]+[51]+[54]+[55])/3 >= 12 # [tier] == 1
+([type] == club || [type] == mace || [type] == knife || [name] == 0 || [name] == 1 || [name] == 2 || [name] == 22 || [name] == 25 || [name] == 28 || [name] == 29 || [name] == 30 || [name] == 47) && [quality] >= normal && [flag] != ethereal # [0]+[21]+[22]+[19]/10+([116]+[119])/2.5+([115]+[127])*20+([39]+[41]+[43]+[45])/2+([48]+[49]+[50]+[51]+[54]+[55])/3 >= 18 # [tier] == 2
+([type] == club || [type] == mace || [type] == knife || [name] == 0 || [name] == 1 || [name] == 2 || [name] == 22 || [name] == 25 || [name] == 28 || [name] == 29 || [name] == 30 || [name] == 47) && [quality] >= normal && [flag] != ethereal # [0]+[21]+[22]+[19]/10+([116]+[119])/2.5+([115]+[127])*20+([39]+[41]+[43]+[45])/2+([48]+[49]+[50]+[51]+[54]+[55])/3 >= 24 # [tier] == 3
+([type] == club || [type] == mace || [type] == knife || [name] == 0 || [name] == 1 || [name] == 2 || [name] == 22 || [name] == 25 || [name] == 28 || [name] == 29 || [name] == 30 || [name] == 47) && [quality] >= normal && [flag] != ethereal # [0]+[21]+[22]+[19]/10+([116]+[119])/2.5+([115]+[127])*20+([39]+[41]+[43]+[45])/2+([48]+[49]+[50]+[51]+[54]+[55])/3 >= 30 # [tier] == 4
+([type] == club || [type] == mace || [type] == knife || [name] == 0 || [name] == 1 || [name] == 2 || [name] == 22 || [name] == 25 || [name] == 28 || [name] == 29 || [name] == 30 || [name] == 47) && [quality] >= normal && [flag] != ethereal # [0]+[21]+[22]+[19]/10+([116]+[119])/2.5+([115]+[127])*20+([39]+[41]+[43]+[45])/2+([48]+[49]+[50]+[51]+[54]+[55])/3 >= 36 # [tier] == 5
+
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 18
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 110 # [tier] == 21
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [tier] == 22
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 130 # [tier] == 23
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [tier] == 24
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 150 # [tier] == 25
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 160 # [tier] == 26
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 170 # [tier] == 27
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 180 # [tier] == 28
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 190 # [tier] == 29
+([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*60+[sorceressskills]*60-[itemaddskilltab]*30+[lightningskilltab]*90+[skilllightningmastery]*20+[skilllightning]*20+[skillchainlightning]*20+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 200 # [tier] == 30
+
+[name] == swirlingcrystal && [quality] == set # # [tier] == 23
+
+[type] == sword && [flag] == runeword # [fhr] == 55 # [tier] == 31
+[type] == sword && [flag] == runeword # [fhr] == 55 && [maxmana] >= 100 # [tier] == 32
+
+[name] == swirlingcrystal && [quality] == unique # # [tier] == 33
+
+[name] == eldritchorb && [quality] == unique # [sorceressskills] >= 3 && [passiveltngmastery] >= 1 # [tier] == 34
+[name] == eldritchorb && [quality] == unique # [sorceressskills] >= 3 && [passiveltngmastery] >= 15 # [tier] == 35
+
+[name] == flail && [flag] == runeword # [FCR] >= 40 # [tier] == 41
+
+
+
+//============================================================================================================================================================================================
+// [Amulet] 90/120mana 40resi 20A-resi // 60/100life 20/30ener
+//============================================================================================================================================================================================
+
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 110 # [tier] == 21
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [tier] == 22
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 130 # [tier] == 23
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [tier] == 24
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 150 # [tier] == 25
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 160 # [tier] == 26
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 170 # [tier] == 27
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 180 # [tier] == 28
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 190 # [tier] == 29
+[type] == amulet && [name] != 521 && [quality] >= magic # [manarecoverybonus]*0.5+[itemallskills]*60-[itemaddclassskills]*60+[sorceressskills]*120-[itemaddskilltab]*30+[lightningskilltab]*90+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 200 # [tier] == 30
+
+
+//============================================================================================================================================================================================
+// [Ring] 90/120mana 30resi 15A-resi // 40life 15/20ener
+//============================================================================================================================================================================================
+
+
+//============================================================================================================================================================================================
+// [Runewording]
+//============================================================================================================================================================================================
+
+// [Smoke]
+([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 # [qty] == 1 @ [type] == armor && [flag] == runeword # [fireresist] == 50 # [qty] == 0
+
+// [AncientsPledge]
+([name] == largeshield || [name] == kiteshield || [name] == gothicshield) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 # [qty] == 1 @ ((([name] == roundshield || [name] == gothicshield) && [quality] == unique) || ([type] == shield && [flag] == runeword)) # [fireresist] >= 45 # [qty] == 0
+
+// [Moser]
+[name] == roundshield && [quality] == unique && [flag] != ethereal # [sockets] == 2 # [qty] == 1
+
+// [Spirit Sword]
+([name] == crystalsword || [name] == broadsword) && [quality] == normal && [level] >= 26 # [sockets] == 0 # [qty] == 1 @ (([name] == flail && [flag] == runeword) || ([type] == orb && [quality] == unique) || ([type] == sword && ([quality] == normal || [quality] == superior || [flag] == runeword))) # ([fcr] >= 40 || [sorceressskills] == 3 || [fhr] >= 55 || [sockets] == 4) # [qty] == 0
+([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 # [qty] == 1 @ (([name] == flail && [flag] == runeword) || ([type] == orb && [quality] == unique) || ([type] == sword && [flag] == runeword)) # ([fcr] >= 40 || [sorceressskills] == 3 || [fhr] >= 55) # [qty] == 0
+
+
+//============================================================================================================================================================================================
+// [Rune]
+//============================================================================================================================================================================================
+
+//[name] == elrune # # [qty] == 1
+//[name] == eldrune # # [qty] == 1
+//[name] == tirrune # # [qty] == 1
+[name] == nefrune # # [qty] == 1 && [tiered] != 0
+//[name] == ethrune # # [qty] == 1
+//[name] == ithrune # # [qty] == 1
+[name] == talrune # # [qty] == 1 && [tiered] != 0
+[name] == ralrune # # [qty] == 1 && [tiered] != 0
+[name] == ortrune # # [qty] == 1 && [tiered] != 0
+[name] == thulrune # # [qty] == 1 && [tiered] != 0
+[name] == amnrune # # [qty] == 1 && [tiered] != 0
+//[name] == solrune # # [qty] == 1
+//[name] == shaelrune # # [qty] == 1
+//[name] == dolrune # # [qty] == 1
+//[name] == helrune # # [qty] == 1
+//[name] == iorune # # [qty] == 1
+[name] == lumrune # # [qty] == 1 && [tiered] != 0
+//[name] == korune # # [qty] == 1
+//[name] == falrune # # [qty] == 1
+//[name] == lemrune # # [qty] == 1
+//[name] == pulrune # # [qty] == 1
+//[name] == umrune # # [qty] == 1
+
+[name] >= malrune && [name] <= zodrune
+
+
+//============================================================================================================================================================================================
+// [Sell]
+//============================================================================================================================================================================================
+
+//[type] == orb && [quality] >= magic # [enhanceddamage] >= 2500 //never, so sold
+//[type] == shield && [quality] >= magic # [enhanceddamage] >= 2500 //never, so sold

@@ -553,6 +553,7 @@ var Config = {
 
 	//Paladin
 	Redemption: [0, 0],
+	Conviction: false,
 	Vigor: false,
 	Cleansing: false,
 	Meditation: false,

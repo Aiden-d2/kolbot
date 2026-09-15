@@ -13,14 +13,19 @@
 	# case profiles[n] = profiles defined as above, the first one is [0] and the last one is [7]
 	# return "C.BBBB" = Available build types as below
 	# C is a class, [M=Amazon, S=Sorceress, N=Necromancer, P=Paladin, B=Barbarian, D=Druid, A=Assassin]
-		S.FIRE - Soceress / Fire Ball + Meteor
-		S.COLD - Soceress / Blizzard + Glacial Spike
+		A.TRAP - Assassin / Lightning Sentry
+		B.WCRY - Barbarian / War Cry
+		D.FGOM - Druid / Werebear + Armageddon + Shock Wave
+		D.WIND - Druid / Hurricane + Tornado + Oak Sage
+		N.SUMM - Necromancer / Summoning + Lower Resist + Corpse Explosion
 		P.CONC - Paladin / Blessed Hammer + Concentration
 		P.CONV - Paladin / Blessed Hammer + Conviction
-		A.TRAP - Assassin / Lightning Sentry
-		D.FGOM - Druid / Werebear + Armageddon + Shock Wave
-		N.SUMM - Necromancer / Summoning + Lower Resist + Corpse Explosion
-		B.WCRY - Barbarian / War Cry
+		P.FIST - Paladin / Fist Of The Heavens + Conviction
+		S.COLD - Soceress / Blizzard + Glacial Spike
+		S.FIRE - Soceress / Fire Ball + Meteor
+		S.LTNG - Soceress / Lightning + Chain Lightning
+		S.STFO - Soceress / Frozen Orb + Static Field
+		S.STFW - Soceress / Fire Wall + Static Field
 */
 
 var prefix = "a";
@@ -48,19 +53,19 @@ var Build = {
 			return "S.COLD";
 		
 		case profiles[2]:
-			return "A.TRAP";
+			return "S.LTNG";
 			
 		case profiles[3]:
-			return "P.CONC";
+			return "S.LTNG";
 			
 		case profiles[4]:
-			return "P.CONV";
+			return "S.STFO";
 			
 		case profiles[5]:
-			return "D.FGOM";
+			return "S.STFW";
 			
 		case profiles[6]:
-			return "N.SUMM";
+			return "P.FIST";
 			
 		case profiles[7]:
 			return "B.WCRY";

@@ -61,8 +61,6 @@ var Skill = {
 		case 243: // Shock Wave
 		case 249: // Armageddon
 			return 7;
-			//return 8;
-		case 64: // Frozen Orb
 		case 92: // Poison Nova
 			return 9;
 		case 15: // Poison Javelin
@@ -72,6 +70,8 @@ var Skill = {
 			return 10;
 		case 8: // Inner Sight
 		case 17: // Slow Missiles
+		case 51: // Fire Wall	//260914
+		case 64: // Frozen Orb	//260914
 			return 13;
 		case 35: // Lightning Fury
 		case 67: // Teeth
@@ -99,7 +99,7 @@ var Skill = {
 			return 25;	//260723
 		// Variable range
 		case 42: // Static Field
-			return Math.floor((me.getSkill(42, 1) + 4) * 2 / 3);	//260628
+			return 13;	//Math.floor((me.getSkill(42, 1) + 4));	//260914
 		case 132: // Leap
 			var leap = [4, 7, 8, 10, 11, 12, 12, 13, 14, 14, 14, 14, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 17];
 
@@ -119,7 +119,6 @@ var Skill = {
 			return 15;
 		case 47: // Fire Ball
 		case 49: // Lightning
-		case 51: // Fire Wall
 		case 53: // Chain Lightning
 		case 55: // Glacial Spike	//260505
 		case 56: // Meteor
