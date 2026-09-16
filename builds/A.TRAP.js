@@ -27,18 +27,18 @@ var AutoBuildTemplate = {
 		],
 		
 		Skills: [
-			{id: 267, target: 1},			// Fade
-			{id: 258, target: 1},			// Burst of Speed
-			{id: 251, target: 1},			// Fire Blast
-			{id: 252, target: 1},			// Claw Mastery
 			{id: 271, target: 20},			// Lightning Sentry
 			{id: 261, target: 20},			// Charged Bolt Sentry
-			{id: 256, target: 9},			// Shock Web
+			{id: 256, target: 1},			// Shock Web
+			{id: 251, target: 1},			// Fire Blast
+			{id: 267, target: 1},			// Fade
 			{id: 268, target: 1},			// Shadow Warrior
-			{id: 256, target: 20},			// Shock Web
-			{id: 267, target: 8},			// Fade
-			{id: 276, target: 20},			// Death Sentry
-			{id: 251, target: 16, from: 9},	// Fire Blast
+			{id: 258, target: 1},			// Burst of Speed
+			{id: 252, target: 1},			// Claw Mastery
+			{id: 256, target: 20, from: 46},// Shock Web
+			{id: 267, target: 8, from: 46},	// Fade
+			{id: 276, target: 20, from: 46},// Death Sentry
+			{id: 251, target: 16, from: 46},// Fire Blast
 		]
 	},
 
@@ -166,7 +166,7 @@ var AutoBuildTemplate = {
 			}
 		},
 
-	50:	{
+	46:	{
 			Update: function () {
 				Config.SummonShadow = "Warrior";
 			}

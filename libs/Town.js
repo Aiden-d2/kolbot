@@ -93,7 +93,7 @@ var Town = {
 		}
 		
 		this.clearBelt();
-		this.removeUnwearableItems();
+		//this.removeUnwearableItems();
 		this.heal();
 		this.identify();
 		this.clearInventory();
@@ -125,16 +125,17 @@ var Town = {
 		return true;
 	},
 
-	removeUnwearableItems: function () {	//260913 
+	/*removeUnwearableItems: function () {	//260913 
 		var i, item,
 			list = [];
 
-		item = me.findItem(null, 1, 1);
+		item = me.getItem(-1, 1);	//260916
 
 		if (item) {
 			do {
 				if (!Equip.canEquip(item) || (!(NTIP.GetScore(item, "Tier") > 0) && me.charlvl > 17)) {	//260815
 					list.push(copyUnit(item));	//collect
+					print("[RUI] collect lvl:" + me.charlvl + " gid:" + item.gid + " name:" + item.name + " mode:" + item.mode + " loc:" + item.location + " bodyloc:" + item.bodylocation);	//260916
 				}
 			} while (item.getNext());
 		}
@@ -148,15 +149,18 @@ var Town = {
 
 			//print("Removing an item I can no longer wear: " + item.name + ".");
 			me.overhead("Removing an item I can no longer wear: " + item.name + ".");
+			print("[RUI] drop " + (i + 1) + "/" + list.length + " gid:" + item.gid + " type:" + item.type + " name:" + item.name + " mode:" + item.mode + " bodyloc:" + item.bodylocation + " cursor:" + me.itemoncursor);	//260916
 
-			item.drop();
+			//item.drop();
+			print("[RUI] drop result: " + item.drop());	//260916
 			delay(me.ping * 2 + 100);
+			
 		}
 
 		Pickit.pickItems();
 	},
 
-	/*removeUnwearableItems: function () {	//eom
+	removeUnwearableItems: function () {	//eom
 		var item = me.findItem(null, 1, 1);
 
 		if (item) {
@@ -1713,6 +1717,10 @@ MainLoop:
 			delay(100);
 		}
 
+		if (me.charlvl > 16 && me.charlvl < 20) {
+			print("[DBG] clearBelt");
+		}
+
 		var item = me.getItem(-1, 2),
 			clearList = [],
 			bufferList = [];	// 260822
@@ -1907,6 +1915,9 @@ MainLoop:
 		item = me.getItem(-1, 0);
 
 		if (item) {
+			if (me.charlvl > 16 && me.charlvl < 20) {
+				print("[DBG] clean Potions");
+			}
 			items = [
 				[], // array for hp
 				[], // array for mp

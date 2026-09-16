@@ -3321,6 +3321,12 @@ function AutoSmurf() {
 			//Attack.clear(10);
 			//throw new Error("Failed to kill Summoner")
 		}
+		
+		print("Q12/0 " + me.getQuest(12, 0));
+		print("Q12/1 " + me.getQuest(12, 1));
+		print("Q13/0 " + me.getQuest(13, 0));
+		print("Q13/1 " + me.getQuest(13, 1));
+		print("Q13/14 " + me.getQuest(13, 14));
 
 		journal = getPresetUnit(74, 2, 357);
 		
@@ -3342,7 +3348,8 @@ function AutoSmurf() {
 
 				delay(me.ping * 2 + 1000);
 
-				me.cancel();
+				Misc.click(0, 0);
+				//me.cancel();
 			}
 		}
 
@@ -3350,12 +3357,54 @@ function AutoSmurf() {
 		
 		me.cancel();
 		
-		while (me.area === 74) {
-			me.cancel();
-			Pather.usePortal(46);
+		print("Q12/0 " + me.getQuest(12, 0));
+		print("Q12/1 " + me.getQuest(12, 1));
+		print("Q13/0 " + me.getQuest(13, 0));
+		print("Q13/1 " + me.getQuest(13, 1));
+		print("Q13/14 " + me.getQuest(13, 14));
+
+		var tick = getTickCount();
+		
+		while (!Pather.usePortal(null, null)) {
+			delay(me.ping * 2 + 200);
+			
+			if (getTickCount() - tick > 3 * 1000) {
+				Town.goToTown();
+				delay(me.ping * 2 + 100);
+				break;
+			}
 		}
 		
+		Town.move("atma");
+		atma = getUnit(1, "atma");
+		atma.openMenu();
 		me.cancel();
+		
+		print("atma done");
+		
+		print("Q12/0 " + me.getQuest(12, 0));
+		print("Q12/1 " + me.getQuest(12, 1));
+		print("Q13/0 " + me.getQuest(13, 0));
+		print("Q13/1 " + me.getQuest(13, 1));
+		print("Q13/14 " + me.getQuest(13, 14));
+
+		Town.move("portalspot");
+		
+		while (!Pather.usePortal(74, null)) {
+			delay(me.ping * 2 + 200);
+		}
+		
+		if (Leader) {
+			Pather.makePortal();
+		}
+		
+		while (me.area === 74) {
+			//me.cancel();
+			Pather.usePortal(46);
+			delay(me.ping * 2 + 200);
+		}
+		
+		//me.cancel();
 		Pather.goWP(me.area);	//260611
 		Pather.moveTo(me.x + myX, me.y + myY);	//260822
 
@@ -3799,7 +3848,7 @@ function AutoSmurf() {
 				Town.move("portalspot");
 				this.okCount();
 				
-				print("Waiting for Orifice TP.");
+				//print("Waiting for Orifice TP.");
 				me.overhead("Waiting for Orifice TP.");
 				
 				while (me.inTown) {
@@ -3830,7 +3879,7 @@ function AutoSmurf() {
 			
 			Config.Dodge.Enabled = true;	//260812
 			
-			print("orifice cleared");	//260910
+			//print("orifice cleared");	//260910
 			
 			if (Leader) {
 				if (!me.getQuest(10, 0)) { //horadric staff
@@ -3841,7 +3890,7 @@ function AutoSmurf() {
 				Pather.makePortal();
 			}
 			
-			print("before hole");	//260910
+			//print("before hole");	//260910
 			while (!hole) {
 				hole = getUnit(2, 100);
 				
@@ -3853,27 +3902,27 @@ function AutoSmurf() {
 				
 				delay(500);
 			}
-			print("after hole");	//260910
+			//print("after hole");	//260910
 			Precast.doPrecast(true);
 			
 			if (!Pather.usePortal(40, null)) {
-				print("goToTown");	//260910
+				//print("goToTown");	//260910
 				Town.goToTown();
 			}
 			
-			print("okCount");	//260910
+			//print("okCount");	//260910
 			this.okCount();
 				
 			if (Leader) {
 				delay(me.ping * 2 + 3000);
-				print("use hole");	//260910
+				//print("use hole");	//260910
 				Pather.usePortal(getRoom().correcttomb, null);
 				
 				Pather.useUnit(2, 100, 73);
 				
 				Pather.makePortal();
 			} else {
-				print("Waiting for Duriel TP.");
+				//print("Waiting for Duriel TP.");
 				me.overhead("Waiting for Duriel TP.");
 				
 				while (!Pather.usePortal(73, null)) {
@@ -3995,7 +4044,7 @@ function AutoSmurf() {
 				delay(1000);
 			}
 			
-			delay(myPos * 10000 + 1);
+			delay(myPos * 15000 + 1);	//260916
 			
 			Town.move("alkor");
 			alkor = getUnit(1, "alkor");
@@ -5293,7 +5342,7 @@ function AutoSmurf() {
 		me.cancel();
 
 		if (!me.getQuest(37, 1)) {
-			print("anya start");	//260910
+			//print("anya start");	//260910
 			if (Leader) {
 				Pather.useWaypoint(113); 
 				Precast.doPrecast(true);
@@ -5481,20 +5530,20 @@ function AutoSmurf() {
 				anya = getUnit(1, "anya");
 				
 				if (anya) {
-					print("found anya");	//260910
+					//print("found anya");	//260910
 					break;
 				}
 			}
 		}
 		
 		if (anya) {
-			print("meet anya");	//260910
+			//print("meet anya");	//260910
 			Town.move("anya");
 			anya.openMenu();
 			me.cancel();
 		}
 		
-		print("anya cleared");	//260910
+		//print("anya cleared");	//260910
 		
 		Town.move("waypoint");
 		Pather.moveTo(me.x + myX, me.y + myY);	//260822
@@ -5602,6 +5651,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Misc.click(0, 0);
+			me.cancel();	//260916
 			Pather.makePortal();
 			Pather.moveToExit([128, 129], true);
 			this.clickWP();
@@ -6841,7 +6891,8 @@ function AutoSmurf() {
 
 				delay(me.ping * 2 + 1000);
 
-				me.cancel();
+				Misc.click(0, 0);
+				//me.cancel();
 			}
 		}
 		
@@ -6850,11 +6901,11 @@ function AutoSmurf() {
 		me.cancel();
 		
 		while (me.area === 74) {
-			me.cancel();
+			//me.cancel();
 			Pather.usePortal(46);
 		}
 		
-		me.cancel();
+		//me.cancel();
 		
 		this.clickWP();
 		Pather.useWaypoint(1);

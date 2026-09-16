@@ -116,7 +116,7 @@ var Attack = {
 			} while (target.getNext());
 		}
 
-		while (monsterList.length > 0 && attackCount < 300) {	// 260521
+		while (monsterList.length > 0 && attackCount < 999) {	// 260521
 			if (boss) {
 				orgx = boss.x;
 				orgy = boss.y;
@@ -250,7 +250,7 @@ var Attack = {
 			}
 		}
 		
-		if (boss && attackCount >= 300) {
+		if (boss && attackCount >= 999) {
 			throw new Error("Failed to clear boss " + bossId);
 		}
 
@@ -367,7 +367,7 @@ var Attack = {
 			return false;
 		}
 
-		while (monsterList.length > 0 && attackCount < 300) {
+		while (monsterList.length > 0 && attackCount < 999) {
 			if (me.dead) {
 				return false;
 			}
@@ -442,7 +442,7 @@ var Attack = {
 			}
 		}
 		
-		if (attackCount >= 300) {
+		if (attackCount >= 999) {
 			throw new Error("attackCount exceeded");
 		}
 

@@ -453,6 +453,7 @@ var Merc = {
 			
 			if (!Grant.removeItems()) {
 				print("[hire] removeItems failed");
+				Grant.updateTiers();  //260916
 				Pickit.pickItems();
 				Grant.autoEquip();
 				failed = true;
@@ -503,7 +504,9 @@ var Merc = {
 			retry += 1;
 			print("[hire] hiring retry (" + (retry) + "/5)");
 		}
-
+		
+		Grant.updateTiers();  //260916
+		
 		Pickit.pickItems();
 		
 		if (foundMerc) {

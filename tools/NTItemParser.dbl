@@ -154,6 +154,11 @@ NTIP.CheckQuantityOwned = function (item_type, item_stats, selfGid) {	//260816
 	return { count: num };
 };
 
+NTIP.IsBroken = function (item) {	//260916
+	// durability 0, has max durability, not indestructible
+	return item.getStat(72) === 0 && item.getStat(73) > 0 && !item.getStat(152);
+};
+
 NTIP.GetScore = function (item, key) {	//2608010
 	// key: "Tier" or "Merc"
 	
@@ -227,6 +232,20 @@ NTIP.GetScore = function (item, key) {	//2608010
 			continue;
 		}
 	}
+	
+	if (score > 0) {	//260916
+		if (NTIP.IsBroken(item)) {
+			return 0;
+		}
+
+		if (key === "Tier" && (item.strreq > me.getStat(0) || item.dexreq > me.getStat(2))) {
+			return 0;
+		}
+
+		if (key === "Merc" && (item.strreq > Config.MercStat.str || item.dexreq > Config.MercStat.dex)) {
+			return 0;
+		}
+	}
 
 	return score;
 };
@@ -297,7 +316,6 @@ NTIP.EvaluateItem = function (item, list) {	//260804
 			}
 
 			//gate6 - tier
-			// str/dex requirement check is handled in autoEquip path (GetScore), not here (260803)
 			if (rule && rule.Tier) {
 				bodyLoc = Equip.getBodyLoc(item);
 				
@@ -306,6 +324,10 @@ NTIP.EvaluateItem = function (item, list) {	//260804
 				}
 				
 				if (!item.getFlag(0x10)) {
+					continue;
+				}
+				
+				if (NTIP.IsBroken(item)) {	//260916
 					continue;
 				}
 				
@@ -334,6 +356,10 @@ NTIP.EvaluateItem = function (item, list) {	//260804
 				bodyLoc = Grant.getBodyLoc(item);
 				
 				if (!bodyLoc) {
+					continue;
+				}
+				
+				if (NTIP.IsBroken(item)) {	//260916
 					continue;
 				}
 				

@@ -70,9 +70,10 @@ var Skill = {
 			return 10;
 		case 8: // Inner Sight
 		case 17: // Slow Missiles
-		case 51: // Fire Wall	//260914
 		case 64: // Frozen Orb	//260914
 			return 13;
+		case 51: // Fire Wall	//260914
+			return 14;
 		case 35: // Lightning Fury
 		case 67: // Teeth
 		case 101: // Holy Bolt
@@ -99,7 +100,7 @@ var Skill = {
 			return 25;	//260723
 		// Variable range
 		case 42: // Static Field
-			return 13;	//Math.floor((me.getSkill(42, 1) + 4));	//260914
+			return Math.floor((me.getSkill(42, 1) + 4));	//260915
 		case 132: // Leap
 			var leap = [4, 7, 8, 10, 11, 12, 12, 13, 14, 14, 14, 14, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 17];
 

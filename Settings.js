@@ -65,7 +65,7 @@ var Build = {
 			return "S.STFW";
 			
 		case profiles[6]:
-			return "P.FIST";
+			return "N.SUMM";
 			
 		case profiles[7]:
 			return "B.WCRY";

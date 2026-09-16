@@ -877,6 +877,7 @@ MainLoop:
 				break;
 			case 33: // please read
 				this.click(6, 525, 513, 128, 35);
+				delay(2000);	//260916
 
 				break;
 			case 34: // e-mail

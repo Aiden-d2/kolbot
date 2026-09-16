@@ -28,20 +28,21 @@ var AutoBuildTemplate = {
 		Skills: [
 			{id: 58, target: 1, from: 43},		// Energy Shield
 			{id: 59, target: 1},				// Blizzard
-			{id: 45, target: 1},				// Ice Blast
-			{id: 43, target: 1},				// Telekinesis
-			{id: 50, target: 1},				// Shiver Armor
 			{id: 55, target: 1},				// Glacial Spike
-			{id: 54, target: 1},				// Teleport
+			{id: 50, target: 1},				// Shiver Armor
+			{id: 45, target: 1},				// Ice Blast
 			{id: 39, target: 1},				// Ice Bolt
 			{id: 40, target: 1},				// Frozen Armor
-			{id: 37, target: 10},				// Warmth
+			{id: 54, target: 1},				// Teleport
+			{id: 43, target: 1},				// Telekinesis
+			{id: 37, target: 1},				// Warmth
 			{id: 64, target: 20},				// Frozen Orb
-			{id: 65, target: 20},   			// Cold Mastery
-			{id: 42, target: 10, from: 50},		// Static Field
+			{id: 65, target: 14},   			// Cold Mastery
+			{id: 42, target: 9, from: 30},		// Static Field
+			{id: 65, target: 20, from: 30},		// Cold Mastery
 			{id: 58, target: 7, from: 50},		// Energy Shield
-			{id: 39, target: 20, from: 50},		// Ice Bolt
 			{id: 43, target: 16, from: 50},		// Telekinesis
+			{id: 39, target: 20, from: 50},		// Ice Bolt
 			{id: 58, target: 14, from: 50},		// Energy Shield
 		]
 	},

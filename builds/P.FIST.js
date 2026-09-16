@@ -21,7 +21,8 @@ var AutoBuildTemplate = {
 		Stats: [
 			{stat: 3, target: 45},			// Vitality
 			{stat: 0, target: 60},			// Strength
-			{stat: 3, target: 215},			// Vitality
+			{stat: 2, target: 35},			// Dexterity
+			{stat: 3, target: 200},			// Vitality
 			{stat: 2, target: 75},			// Dexterity
 			{stat: 3, target: "max"},		// Vitality
 		],

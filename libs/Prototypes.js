@@ -325,6 +325,7 @@ Unit.prototype.toCursor = function () {
 
 Unit.prototype.drop = function () {
 	if (this.type !== 4) {
+		print("[DBG] drop");	//260916
 		throw new Error("Unit.drop: Must be used with items.");
 	}
 

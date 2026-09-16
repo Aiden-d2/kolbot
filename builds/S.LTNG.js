@@ -33,6 +33,7 @@ var AutoBuildTemplate = {
 			{id: 38, target: 1},				// Charged Bolt
 			{id: 40, target: 1},				// Frozen Armor
 			{id: 37, target: 1},				// Warmth
+			{id: 63, target: 1},				// Lightning Mastery
 			{id: 53, target: 20},				// Chain Lightning
 			{id: 63, target: 20},				// Lightning Mastery
 			{id: 49, target: 20},				// Lightning
