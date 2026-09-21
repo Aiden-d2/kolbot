@@ -1385,6 +1385,11 @@ CursorLoop:
 	},
 
 	reviveMerc: function () {
+		if (me.gold < Config.MercMinGold) {	//260919
+			//print("low gold for merc");	//260921
+			return false;
+		}
+		
 		if (!this.needMerc()) {
 			return false;	//260727
 		}
@@ -1479,7 +1484,7 @@ MainLoop:
 	},
 
 	canStash: function (item) {
-		var ignoredClassids = [47, 140, 91, 174, 549]; // Some quest items that have to be in inventory or equipped
+		var ignoredClassids = [47, 140, 91, 174, 546, 549]; // Some quest items that have to be in inventory or equipped
 
 		if (this.ignoredItemTypes.indexOf(item.itemType) > -1 || ignoredClassids.indexOf(item.classid) > -1 || !Storage.Stash.CanFit(item)) {
 			return false;
@@ -1717,10 +1722,6 @@ MainLoop:
 			delay(100);
 		}
 
-		if (me.charlvl > 16 && me.charlvl < 20) {
-			print("[DBG] clearBelt");
-		}
-
 		var item = me.getItem(-1, 2),
 			clearList = [],
 			bufferList = [];	// 260822
@@ -1792,16 +1793,25 @@ MainLoop:
 
 				if (item.itemType === 76 ? Config.HPBuffer > this.myPotion("hp") : item.itemType === 77 ? Config.MPBuffer > this.myPotion("mp") : Config.RejuvBuffer > this.myPotion("rv")) {
 					Storage.Inventory.MoveTo(item);
-					print("move buffer: " + item.name);
+					//print("move buffer: " + item.name);
 					delay(me.ping * 2 + 1000);
 				} else {
 					clearList.push(item);
 				}
 			}
 			
+			var i = 0,
+				clength = clearList.length;
+				
 			while (clearList.length > 0) {
+				if (me.charlvl >= 17 && me.charlvl <= 19) {	//260917
+					//print("[clearBelt] drop " + (i + 1) + "/" + clength + " gid:" + clearList[0].gid + " type:" + clearList[0].type + " name:" + clearList[0].name + " mode:" + clearList[0].mode + " loc:" + item.location + " bodyloc:" + clearList[0].bodylocation);
+				}
 				clearList.shift().drop();	//260901
-				delay(200);
+				delay(me.ping * 2 + 1000);
+				//clearList.shift().interact();
+				//delay(200);
+				i += 1;
 			}
 		}
 
@@ -1915,9 +1925,6 @@ MainLoop:
 		item = me.getItem(-1, 0);
 
 		if (item) {
-			if (me.charlvl > 16 && me.charlvl < 20) {
-				print("[DBG] clean Potions");
-			}
 			items = [
 				[], // array for hp
 				[], // array for mp
@@ -1963,6 +1970,42 @@ MainLoop:
 			}
 		}
 
+		// eom cube clear	//260919
+		items = Storage.Cube.Compare(Config.Cube);
+		
+		for (i = 0; !!items && i < items.length; i += 1) {
+			if (this.ignoredCheck(items[i])) {
+				result = Pickit.checkItem(items[i]).result;
+				
+				switch (result) {
+				case 0: // Drop item
+					if ((getUIFlag(0x0C) || getUIFlag(0x08)) && (items[i].getItemCost(1) <= 1 || items[i].itemType === 39)) { // Quest items and such
+						me.cancel();
+						delay(me.ping * 2 + 200);
+					}
+					
+					print("moved from cube to drop " + items[i].name);
+					me.overhead("moved from cube to drop " + items[i].name);
+					
+					Storage.Inventory.MoveTo(items[i]);
+
+					break;
+				case 4: // Sell item
+					try {
+						print("moved from cube to sell " + items[i].name);
+						me.overhead("moved from cube to sell " + items[i].name);
+						
+						Storage.Inventory.MoveTo(items[i]);
+						delay(me.ping * 2 + 200);
+					} catch (e) {
+						print(e);
+					}
+
+					break;
+				}
+			}
+		}
+		
 		// eom stash clear
 		items = Storage.Stash.Compare(Config.Stash);
 		
@@ -1978,7 +2021,7 @@ MainLoop:
 					}
 					
 					//print("moved to inventory to drop " + items[i].name);	//eom
-					me.overhead("moved to inventory to drop " + items[i].name);	//eom
+					me.overhead("moved from stash to drop " + items[i].name);	//eom
 					
 					Storage.Inventory.MoveTo(items[i]);
 
@@ -1986,7 +2029,7 @@ MainLoop:
 				case 4: // Sell item
 					try {
 						//print("moved to inventory to sell " + items[i].name);	//eom
-						me.overhead("moved to inventory to sell " + items[i].name);	//eom
+						me.overhead("moved from stash to sell " + items[i].name);	//eom
 						
 						Storage.Inventory.MoveTo(items[i]);
 						delay(me.ping * 2 + 200);

@@ -15,7 +15,6 @@ Config.init(); // includes AutoBuild.js
 var	debug				= 	!!Config.AutoBuild.DebugMode;
 var	prevLevel			= 	me.charlvl;
 const SPEND_POINTS		= 	true;						// For testing, it actually allows skill and stat point spending.
-const STATS_PER_LOOP	=	5;	// 260915
 const STAT_ID_TO_NAME	=	[getLocaleString(4060),		// Strength
 							getLocaleString(4069),		// Energy
 						 	getLocaleString(4062),		// Dexterity
@@ -68,28 +67,31 @@ function spendStats () {	//260516
 	}
 	//if (me.getStat(4) <= 0) { return; }
 	var stats = goal.Stats;
-	var totalSpents = 0;	// 260915
-	for (var i = 0; i < stats.length; i++) {
-		var entry = stats[i];
-		var id = entry.stat, target = entry.target, per = entry.per || 0;
-		var spent = 0;
-		if (target !== "max" && getItemStat(id) >= target) { continue; }	//260530
-		while (me.getStat(4) > 0) {
-			if (totalSpents >= STATS_PER_LOOP) { return; }	// 260915
-			if (target !== "max" && getItemStat(id) >= target) { break; }	//260530
-			if (per > 0 && spent >= per) { break; }
-			var pointSpent = spendStatPoint(id);
-			if (!pointSpent) {
-				AutoBuild.print("spendStats: failed on " + STAT_ID_TO_NAME[id]);
-				return;
+	
+	do {	//260917
+		var totalSpents = 0;	// 260915
+		for (var i = 0; i < stats.length; i++) {
+			var entry = stats[i];
+			var id = entry.stat, target = entry.target, per = entry.per || 0;
+			var spent = 0;
+			if (target !== "max" && getItemStat(id) >= target) { continue; }	//260530
+			while (me.getStat(4) > 0) {
+				if (totalSpents >= 5) { totalSpents = 0; i = -1; break; }	// 260917
+				if (target !== "max" && getItemStat(id) >= target) { break; }	//260530
+				if (per > 0 && spent >= per) { break; }
+				var pointSpent = spendStatPoint(id);
+				if (!pointSpent) {
+					AutoBuild.print("spendStats: failed on " + STAT_ID_TO_NAME[id]);
+					return;
+				}
+				
+				if (debug) { AutoBuild.print("spendStats: Increased " + STAT_ID_TO_NAME[id] + " from " + (me.getStat(id) - 1) + " to " + me.getStat(id)); }  // 260625
+				
+				spent += 1;
+				totalSpents += 1;	//260915
 			}
-			
-			if (debug) { AutoBuild.print("spendStats: Increased " + STAT_ID_TO_NAME[id] + " from " + (me.getStat(id) - 1) + " to " + me.getStat(id)); }  // 260625
-			
-			spent += 1;
-			totalSpents += 1;	//260915
 		}
-	}
+	} while (totalSpents > 0 && me.getStat(4) > 0);
 };
 
 
@@ -146,7 +148,7 @@ function spendStatPoint (id) {
 		AutoBuild.print("Fake useStatPoint("+id+"): "+STAT_ID_TO_NAME[id]);
 	}
 	
-	delay(Math.max(me.ping * 5, 500));	//260916
+	delay(Math.max(me.ping * 3, 300));	//260921
 	
 	return (unusedStatPoints - me.getStat(4) === 1);	// Check if we spent one point
 };
@@ -234,7 +236,7 @@ function spendSkillPoint (id) {
 		AutoBuild.print("Fake useSkillPoint(): "+skillName);
 	}
 	
-	delay(Math.max(me.ping * 5, 500));	//260916
+	delay(Math.max(me.ping * 3, 300));	//260921
 	
 	return (unusedSkillPoints - me.getStat(5) === 1);	// Check if we spent one point
 };

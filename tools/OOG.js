@@ -877,7 +877,6 @@ MainLoop:
 				break;
 			case 33: // please read
 				this.click(6, 525, 513, 128, 35);
-				delay(2000);	//260916
 
 				break;
 			case 34: // e-mail
@@ -901,7 +900,7 @@ MainLoop:
 				return false;
 			}
 			
-			delay(1000);
+			delay(2000);	//260921
 		}
 		
 		me.blockMouse = false;
@@ -1173,7 +1172,7 @@ MainLoop:
 				// druid: 700, 280
 
 				getControl().click(clickCoords[0], clickCoords[1]);
-				delay(500);
+				delay(1000);	//260921
 
 				break;
 			case 15: // new character
@@ -1209,7 +1208,7 @@ MainLoop:
 				break;
 			}
 
-			delay(1000);
+			delay(2000);	//260921
 		}
 
 		me.blockMouse = false;

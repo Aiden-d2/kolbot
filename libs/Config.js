@@ -71,7 +71,7 @@ var Config = {
 	ScanShrines: [1, 2, 3],
 	UseWells: true,	//260806
 	
-	NoSkipArea: [17, 131],	//8, 38,	//260910
+	NoSkipArea: [17],	//8, 38, 131	//260916
 	DetourPath: 4,
 	
 	SafeTele: {	//eom 260525
@@ -138,11 +138,12 @@ var Config = {
 
 	//Merc
 	UseMerc: false,
-	MercWatch: false,
-	
 	UseMercHP: 0,
 	UseMercRejuv: 0,
+	
+	MercWatch: false,
 	MercChicken: 0,
+	MercMinGold: 200000,
 	
 	MercStat: {id: null, str: 0, dex: 0, lvl: 0},  //260804
 	
@@ -193,6 +194,13 @@ var Config = {
 	//Inventory
 	LowGold: 0,
 	StashGold: 0,
+	
+	Cube: [
+		[1, 1, 1],
+		[1, 1, 1],
+		[1, 1, 1],
+		[1, 1, 1]
+	],
 	
 	Stash: [
 		[1, 1, 1, 1, 1, 1],
@@ -250,7 +258,7 @@ var Config = {
 	AutoBuild: {
 		Enabled: true,
 		Verbose: false,
-		DebugMode: false
+		DebugMode: true
 	},
 
 	//Logs

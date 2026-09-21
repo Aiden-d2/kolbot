@@ -159,14 +159,20 @@ var ClassAttack = {
 			if (Skill.getRange(untimedSkill) < 4 && !Attack.validSpot(unit.x, unit.y)) {
 				return 0;
 			}
-
+			
 			//if (Math.round(getDistance(me, unit)) > Skill.getRange(untimedSkill) || checkCollision(me, unit, 0x4)) {
 				// Allow short-distance walking for melee skills
 				//walk = Skill.getRange(untimedSkill) < 4 && getDistance(me, unit) < 10 && !checkCollision(me, unit, 0x1);
 
 				//if (!Attack.getIntoPosition(unit, Skill.getRange(untimedSkill), 0x4)) {
-				if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4)) {	//260826
-					return 0;
+				if (untimedSkill === 42) {	//260917 static exception
+					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {
+						return 0;
+					}
+				} else {
+					if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4)) {	//260826
+						return 0;
+					}
 				}
 			//}
 

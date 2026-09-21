@@ -23,9 +23,9 @@
 		P.FIST - Paladin / Fist Of The Heavens + Conviction
 		S.COLD - Soceress / Blizzard + Glacial Spike
 		S.FIRE - Soceress / Fire Ball + Meteor
-		S.LTNG - Soceress / Lightning + Chain Lightning
-		S.STFO - Soceress / Frozen Orb + Static Field
-		S.STFW - Soceress / Fire Wall + Static Field
+		S.FONV - Soceress / Frozen Orb + Nova
+		S.LTNG - Soceress / Chain Lightning + Lightning
+		S.SFFW - Soceress / Static Field + Fire Wall
 */
 
 var prefix = "a";
@@ -47,22 +47,22 @@ var Build = {
 		
 		switch (build) {
 		case profiles[0]:	//profile name
-			return "S.FIRE";	//build type
+			return "S.SFFW";	//build type
 			
 		case profiles[1]:
 			return "S.COLD";
 		
 		case profiles[2]:
-			return "S.LTNG";
+			return "A.TRAP";
 			
 		case profiles[3]:
-			return "S.LTNG";
+			return "P.CONC";
 			
 		case profiles[4]:
-			return "S.STFO";
+			return "P.CONV";
 			
 		case profiles[5]:
-			return "S.STFW";
+			return "D.FGOM";
 			
 		case profiles[6]:
 			return "N.SUMM";

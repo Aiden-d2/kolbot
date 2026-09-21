@@ -371,7 +371,7 @@ MainLoop:
 				if (this.ignoreLog.indexOf(stats.type) === -1) {
 					Misc.itemLogger("Kept", item, status.line);	//260805
 					
-					if (!status.tier && !status.merc && item.classid !== 549) {	//260805
+					if (!status.tier && !status.merc && item.classid !== 549 && item.classid !== 546) {	//260920
 						Misc.logItem("Kept", item, status.line);
 					}
 				}

@@ -400,16 +400,20 @@ function AutoSmurf() {
 		}
 	};
 
-	this.okCount = function () {
+	this.okCount = function (range) {
 		var tick = getTickCount(),
 			orgx = me.x,
 			orgy = me.y;
+		
+		if (range === undefined) {	//260921
+			range = 20;
+		}
 		
 		Messaging.sendToList(Team.Profiles, "okCount");
 
 		while (!teamOk) {
 			if (!me.inTown) {
-				Attack.clear(20, undefined, undefined, undefined, false);	//260727
+				Attack.clear(range, undefined, undefined, undefined, false);	//260727
 			}
 
 			Pather.moveTo(orgx, orgy);
@@ -427,10 +431,10 @@ function AutoSmurf() {
 			}
 		}
 
-		this.teamCount();
+		this.teamCount(range);
 	};
 
-	this.teamCount = function () {
+	this.teamCount = function (range) {
 		var tick = getTickCount(),
 			orgx = me.x,
 			orgy = me.y;
@@ -439,7 +443,7 @@ function AutoSmurf() {
 		
 		while (teamCount !== Team.Size - 1) {
 			if (!me.inTown) {
-				Attack.clear(20, undefined, undefined, undefined, false);	//260727
+				Attack.clear(range, undefined, undefined, undefined, false);	//260727
 			}
 			
 			Pather.moveTo(orgx, orgy);
@@ -1377,8 +1381,11 @@ function AutoSmurf() {
 				}
 
 				Town.move("warriv");
-
 				npc = getUnit(1, "warriv");
+
+				if (npc.openMenu()) {	//260921
+					me.cancel();
+				}
 
 				if (!npc || !npc.openMenu()) {
 					return false;
@@ -1399,7 +1406,6 @@ function AutoSmurf() {
 				
 				if (!npc || !npc.openMenu()) {
 					Pather.moveTo(5166, 5206);
-
 					return false;
 				}
 
@@ -1456,6 +1462,7 @@ function AutoSmurf() {
 				if (me.act >= 4) {
 					break;
 				}
+				
 				this.mephisto();
 				
 				break;
@@ -1463,6 +1470,7 @@ function AutoSmurf() {
 				if (me.act >= 5) {
 					break;
 				}
+				
 				Town.move("tyrael");
 				npc = getUnit(1, "tyrael");
 				
@@ -1493,7 +1501,7 @@ function AutoSmurf() {
 			if (me.area === preArea) {
 				me.cancel();
 				Town.move("portalspot");
-				print("Act change failed.");
+				print("changeAct failed");
 				D2Bot.printToConsole("changeAct failed");
 				return false;
 			}
@@ -2227,12 +2235,16 @@ function AutoSmurf() {
 					
 					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
 					
-					Attack.clear(25); // treehead
+					//Attack.clear(25); // treehead
+					Attack.clear(25, 0, getLocaleString(2873));	// Treehead WoodFist	//260921
 					
 					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
 					
 					if (Leader) {
-						Pather.makePortal();
+						if (!Pather.getPortal(null, null)) {
+							Pather.makePortal();
+						}
+						
 						this.getQuestItem(524, 30);
 					}
 					
@@ -2291,12 +2303,7 @@ function AutoSmurf() {
 
 			Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
 			
-			try {
-				Attack.clear(25, 0, getLocaleString(2872));// Rakanishu
-			} catch (e) {
-				print(e);
-				Attack.clear(25);
-			}
+			Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
 			
 			Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
 			
@@ -2425,12 +2432,7 @@ function AutoSmurf() {
 
 		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
 
-		try {
-			Attack.clear(25, 0, getLocaleString(2872));// Rakanishu
-		} catch (e) {
-			print(e);
-			Attack.clear(25);
-		}
+		Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
 		
 		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true); //260719	//260822
 
@@ -2576,12 +2578,7 @@ function AutoSmurf() {
 			}
 			
 			if (getUnit(1, 402)) {
-				try {
-					Attack.clear(15, 0, getLocaleString(2889)); // The Smith
-				} catch (e) {
-					print(e);
-					Attack.clear(15);
-				}
+				Attack.clear(15, 0, getLocaleString(2889)); // The Smith
 			} else {
 				print("Failed to getUnit Smith");
 				return false;
@@ -2895,12 +2892,7 @@ function AutoSmurf() {
 
 		Pather.moveTo(20047, 4898, 10, true);
 
-		try {
-			Attack.clear(25, 0, getLocaleString(2878)); // Bone Ash
-		} catch (e) {
-			print(e);
-			Attack.clear(25);
-		}
+		Attack.clear(20, 0, getLocaleString(2878)); // Bone Ash
 		
 		Pather.moveTo(20047, 4898, 10, true);
 		
@@ -2923,6 +2915,8 @@ function AutoSmurf() {
 		
 		if (!this.partyLevel(teleLvl)) {
 			runAndy = 1;
+		} else {
+			Pather.teleport = true;
 		}
 		
 		if (Leader) {
@@ -2947,7 +2941,7 @@ function AutoSmurf() {
 			this.syncBO();
 		}
 		
-		if (!me.getQuest(6, 1) || !this.partyLevel(teleLvl)) {	//260531
+		if ((!me.getQuest(6, 1) && !me.getQuest(6, 0)) || !this.partyLevel(teleLvl)) {
 			if (me.diff === 0) {
 				if (runAndy === 1) {
 					this.clearToExit(35, 36, 0);
@@ -3015,12 +3009,13 @@ function AutoSmurf() {
 				}
 				
 				Pather.teleport = false;
-				
-				Attack.clear(20);
 			}
 			
+			Attack.clear(20);	//260921
+			
 			try {
-				Attack.clear(25, 0, 156); // Andariel
+				//Attack.clear(25, 0, 156);	// Andariel
+				Attack.clearList(Attack.scanList(156), null, 1);	// Andariel
 			} catch (e) {
 				print(e);
 				//Attack.clear(25);
@@ -3051,21 +3046,23 @@ function AutoSmurf() {
 		}
 		
 		if (!this.partyLevel(teleLvl)) {	//260914
-			me.overhead("Not ready to start Act2.");
+			me.overhead("Not ready to start Act2");
+			D2Bot.printToConsole("Not ready to start Act2");	//260920
 			scriptBroadcast("quit");	//260909
+		} else {	//260921
+			if (Leader) {
+				D2Bot.printToConsole("=== ANDY ===", 7);
+			}
+			
+			if (me.getQuest(6, 1) || me.getQuest(6, 0)) {
+				this.changeAct(2);
+			}
 		}
-		
-		if (Leader) {
-			D2Bot.printToConsole("=== ANDY ===", 7);
-		}
-
-		this.changeAct(2);
 		
 		doneChores = false;
 		
 		return true;
 	};
-
 
 	this.cube = function () { // Only called in Normal Difficulty.
 		var i, chest;
@@ -3254,7 +3251,7 @@ function AutoSmurf() {
 	};
 
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
-		var time, journal, drognan, i;
+		var journal, atma, i;
 
 		print("ÿc4=== [SUMMONER] ===");
 		
@@ -3314,27 +3311,24 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 		
+		Attack.clear(10);	//260921
+		
 		try {
-			Attack.clear(10, 0, 250);	//Summoner
+			//Attack.clear(10, 0, 250);	//Summoner
+			Attack.clearList(Attack.scanList(250), null, 1);	//Summoner
 		} catch (e) {
 			print(e);
 			//Attack.clear(10);
 			//throw new Error("Failed to kill Summoner")
 		}
 		
-		print("Q12/0 " + me.getQuest(12, 0));
-		print("Q12/1 " + me.getQuest(12, 1));
-		print("Q13/0 " + me.getQuest(13, 0));
-		print("Q13/1 " + me.getQuest(13, 1));
-		print("Q13/14 " + me.getQuest(13, 14));
-
 		journal = getPresetUnit(74, 2, 357);
 		
-		Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 10, x2: journal.roomx * 5 + journal.x + 15, y1: journal.roomy * 5 + journal.y - 10, y2: journal.roomy * 5 + journal.y + 15}), null, 1);
+		Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}), null, 1);
 		
 		Pather.moveToPreset(74, 2, 357, 3, 3);
 
-		this.okCount();
+		this.okCount(10);	//260921
 	
 		journal = getUnit(2, 357);
 		
@@ -3357,12 +3351,12 @@ function AutoSmurf() {
 		
 		me.cancel();
 		
-		print("Q12/0 " + me.getQuest(12, 0));
-		print("Q12/1 " + me.getQuest(12, 1));
-		print("Q13/0 " + me.getQuest(13, 0));
-		print("Q13/1 " + me.getQuest(13, 1));
-		print("Q13/14 " + me.getQuest(13, 14));
-
+		if (Leader) {
+			if (!Pather.getPortal(null, null)) {
+				Pather.makePortal();
+			}
+		}
+		
 		var tick = getTickCount();
 		
 		while (!Pather.usePortal(null, null)) {
@@ -3380,14 +3374,6 @@ function AutoSmurf() {
 		atma.openMenu();
 		me.cancel();
 		
-		print("atma done");
-		
-		print("Q12/0 " + me.getQuest(12, 0));
-		print("Q12/1 " + me.getQuest(12, 1));
-		print("Q13/0 " + me.getQuest(13, 0));
-		print("Q13/1 " + me.getQuest(13, 1));
-		print("Q13/14 " + me.getQuest(13, 14));
-
 		Town.move("portalspot");
 		
 		while (!Pather.usePortal(74, null)) {
@@ -3395,7 +3381,9 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			Pather.makePortal();
+			if (!Pather.getPortal(null, null)) {
+				Pather.makePortal();
+			}
 		}
 		
 		while (me.area === 74) {
@@ -3418,7 +3406,10 @@ function AutoSmurf() {
 			delay(me.ping *2 + 1000);
 		} else {
 			if (Leader) {
-				Pather.makePortal();
+				if (!Pather.getPortal(null, null)) {
+					Pather.makePortal();
+				}
+				
 				Pather.useWaypoint(40);
 			} else {
 				var tick = getTickCount();
@@ -3571,8 +3562,8 @@ function AutoSmurf() {
 		}
 		
 		while (!this.partyLevel(tombsLvl) && me.diff === 0) {
-			//print("Not ready to start Duriel.");
-			me.overhead("Not ready to start Duriel.");
+			//print("Not ready to start Duriel");
+			me.overhead("Not ready to start Duriel");
 			
 			if (Leader) {
 				//D2Bot.restart();
@@ -3963,9 +3954,11 @@ function AutoSmurf() {
 					break;
 				}
 			}
-			
-			if (!Pather.getPortal(null, null)) {
-				Pather.makePortal();
+				
+			if (Leader) {
+				if (!Pather.getPortal(null, null)) {
+					Pather.makePortal();
+				}
 			}
 			
 			var tick = getTickCount();
@@ -4371,11 +4364,11 @@ function AutoSmurf() {
 		
 		//Attack.clearList(Attack.scanList([345, 346, 347], {x1: presetUnit.roomx * 5 + presetUnit.x + 63, x2: presetUnit.roomx * 5 + presetUnit.x + 140, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 65}), null, 1); // Kill the High Council
 		
-		var unit = getUnit(4, 546);
+		//var unit = getUnit(4, 546);
 		
-		if (unit) {
-			this.getQuestItem(546);
-		}
+		//if (unit) {
+			//this.getQuestItem(546);
+		//}
 		
 		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109 + myX, presetUnit.roomy * 5 + presetUnit.y - 95 + myY);	//260822
 		
@@ -4409,6 +4402,12 @@ function AutoSmurf() {
 				Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109, presetUnit.roomy * 5 + presetUnit.y - 95);
 				
 				delay(1000);
+			}
+		}
+		
+		if (Leader) {
+			if (!Pather.getPortal(null, null)) {
+				Pather.makePortal();
 			}
 		}
 		
@@ -4511,6 +4510,11 @@ function AutoSmurf() {
 				delay(me.ping * 2 + 250);
 			}
 
+			if (!takeRedPortal) {	//260919
+				Pather.moveTo(17566 + myX, 8069 + myY);	// reportal bridge
+				this.okCount();
+			}
+			
 			while (getDistance(me.x, me.y, redPortal.roomx * 5 + redPortal.x, redPortal.roomy * 5 + redPortal.y) > 10) {
 				try {
 					Pather.moveToPreset(102, 2, 342, 0, 0, false, false);
@@ -4520,7 +4524,7 @@ function AutoSmurf() {
 					print(e);
 				}
 			}
-
+			
 			while (me.area === 102) {
 				redPortal = getUnit(2, 342);
 				Pather.usePortal(null, null, redPortal); // Go to Act 4.
@@ -5162,10 +5166,11 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		Attack.clear(15);
+		Attack.clear(25);	//260921
 		
 		try {
-			Attack.clear(20, 0, getLocaleString(22435)); // Shenk the Overseer
+			//Attack.clear(30, 0, getLocaleString(22435));	// Shenk the Overseer
+			Attack.clearList(Attack.scanList(getLocaleString(22435)), null, 1);	// Shenk the Overseer
 		} catch (e) {
 			print(e);
 			//throw new Error("Failed to kill Shenk")
@@ -5189,7 +5194,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		if (Leader) {
+		if (Leader && (me.getQuest(35, 1) || me.getQuest(35, 0))) {
 			D2Bot.printToConsole("=== SHENK ===", 7);
 		}
 		
@@ -5211,7 +5216,7 @@ function AutoSmurf() {
 		
 		this.syncBO();
 		
-		if (!me.getQuest(36,1) && Leader) {
+		if (!me.getQuest(36, 1) && Leader) {
 			Pather.useWaypoint(111);
 			Precast.doPrecast(true);
 			barbSpots = getPresetUnits (me.area, 2, 473);
@@ -5241,25 +5246,17 @@ function AutoSmurf() {
 						if (me.getSkill(47, 1)) {	//fire ball
 							Skill.cast(47, 0, door.x, door.y);
 							delay(10);
-						}
-						
-						if (!me.getSkill(47, 1) && me.getSkill(53, 1)) {	//chain lightning
-							Skill.cast(53, 0, door.x, door.y);
+						} else if (me.getSkill(64, 1)) {	//frozen orb
+							Skill.cast(64, 0, door.x, door.y);
 							delay(10);
-						}
-						
-						if (me.getSkill(51, 1) && me.getSkill(52, 1)) {	//fire wall
-							Skill.cast(51, 0, door.x, door.y);
-							delay(10);
-						}
-						
-						if (me.getSkill(55, 1)) {	//glacial spike
+						} else if (me.getSkill(55, 1)) {	//glacial spike
 							Skill.cast(55, 0, door.x, door.y);
 							delay(10);
-						}
-						
-						if (me.getSkill(64, 1)) {	//frozen orb
-							Skill.cast(64, 0, door.x, door.y);
+						} else if (me.getSkill(51, 1)) {	//fire wall
+							Skill.cast(51, 0, door.x, door.y);
+							delay(10);
+						} else if (me.getSkill(53, 1)) {	//chain lightning
+							Skill.cast(53, 0, door.x, door.y);
 							delay(10);
 						}
 						
@@ -5274,7 +5271,7 @@ function AutoSmurf() {
 		//260531
 		tick = getTickCount();
 		
-		while (!me.getQuest(36,1)) {
+		while (!me.getQuest(36, 1)) {
 			if (Leader && getTickCount() - tick > 10 * 1000) {
 				break;
 			}
@@ -5305,7 +5302,7 @@ function AutoSmurf() {
 			
 			sendPacket(1, 0x40); //fresh Quest state.
 			
-			if (me.getQuest(36,0)) {
+			if (me.getQuest(36, 0)) {
 				break;
 			}
 			
@@ -5353,6 +5350,7 @@ function AutoSmurf() {
 				
 				if (me.diff === 2 && getUnit(1, 639)) {	//260627
 					print("Souls found");
+					D2Bot.printToConsole("Anya: souls found");
 					scriptBroadcast("quit");	//260909
 				}
 				
@@ -5368,6 +5366,7 @@ function AutoSmurf() {
 				
 				if (me.diff === 2 && getUnit(1, 639)) {	//260910
 					print("Souls found");
+					D2Bot.printToConsole("Anya: souls found");
 					scriptBroadcast("quit");	//260909
 				}
 				
@@ -5389,7 +5388,11 @@ function AutoSmurf() {
 				tpReady = false;
 			}
 			
+			Pather.teleport = false;	//260920
+			
 			Attack.clear(25);
+			
+			Pather.teleport = true;	//260920
 			
 			unit = getPresetUnit(me.area, 2, 460); // don't delete this // eom
 			Pather.moveToUnit(unit, 0, 0, false);
@@ -5873,7 +5876,8 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		Attack.clear(25);	//260903
+		//Attack.clear(25);	//260903
+		Attack.clearList(Attack.scanList(null, {x1:15072, x2:15118, y1:5002, y2:5074}), null, 1);	//260916
 		
 	BaalLoop:	//260629
 		while (true) {
@@ -5963,10 +5967,10 @@ function AutoSmurf() {
 			}
 			
 			if (hireMerc) {
-				print("Merc not ready");
+				print("need to hire merc");
 			} else {			
 				//print("Not ready to kill Baal.");
-				me.overhead("Not ready to kill Baal.");
+				me.overhead("Not ready to kill Baal");
 			}
 			
 			doneChores = false;
@@ -6080,12 +6084,7 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 
-		try {
-			Attack.clear(20, 0, getLocaleString(2875)); // Countess
-		} catch (e) {
-			print(e);
-			Attack.clear(20);
-		}
+		Attack.clear(20, 0, getLocaleString(2875)); // Countess
 		
 		Pather.moveToPreset(me.area, 2, 580, myX, myY, true, true);	//260822
 		
@@ -6209,13 +6208,14 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		Attack.clear(25);
+		Attack.clear(20);	//260921
 	
 		try {
-			Attack.clear(25, 0, 156); // Andariel
+			//Attack.clear(25, 0, 156); // Andariel
+			Attack.clearList(Attack.scanList(156), null, 1);	// Andariel
 		} catch (e) {
 			print(e);
-			Attack.clear(25);
+			//Attack.clear(25);
 		}
 		
 		delay(me.ping * 2 + 2000); // Wait for minions to die.
@@ -6377,7 +6377,7 @@ function AutoSmurf() {
 							}
 						}
 					} else {
-						if (!Attack.clear(25)) {
+						if (!Attack.clear(20)) {
 							print("clear failed");
 							return false;
 						}
@@ -6783,7 +6783,9 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 		
 		if (Leader) {
-			Pather.makePortal();
+			if (!Pather.getPortal(null, null)) {
+				Pather.makePortal();
+			}
 		}
 		
 		var tick = getTickCount();
@@ -6864,16 +6866,20 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
+		Attack.clear(10);	//260921
+		
 		try {
-			Attack.clear(10, 0, 250);	//Summoner
+			//Attack.clear(10, 0, 250);	//Summoner
+			Attack.clearList(Attack.scanList(250), null, 1);	//Summoner
 		} catch (e) {
 			print(e);
-			Attack.clear(10);
+			//Attack.clear(10);
 		}
 		
 		journal = getPresetUnit(74, 2, 357);
 		
-		Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 10, x2: journal.roomx * 5 + journal.x + 18, y1: journal.roomy * 5 + journal.y - 10, y2: journal.roomy * 5 + journal.y + 17}), null, 1);
+		//Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 10, x2: journal.roomx * 5 + journal.x + 18, y1: journal.roomy * 5 + journal.y - 10, y2: journal.roomy * 5 + journal.y + 17}), null, 1);
+		Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}), null, 1);
 		
 		Pather.moveToPreset(74, 2, 357, 3, 3);
 
@@ -7296,14 +7302,14 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		Attack.clear(20);
+		Attack.clear(25);
 		
 		try {
 			//Attack.clear(20, 0, 526); // Nihlathak
 			Attack.clearList(Attack.scanList(526), null, 1); // Nihlathak
 		} catch (e) {
 			print(e);
-			Attack.clear(20);
+			//Attack.clear(20);
 		}
 		
 		
@@ -7580,7 +7586,7 @@ function AutoSmurf() {
     //act1
 	var runAndy = 0; //eom
 	
-    if (!me.getQuest(7, 0)) { // Andariel is not done.	 || !this.partyLevel(teleLvl)
+    if (!me.getQuest(7, 0)) { // Andariel is not done.
         Town.goToTown(1);
 		
 		this.syncBO();
@@ -7606,7 +7612,7 @@ function AutoSmurf() {
 				this.outer();
 			}
 			
-			if (!this.partyLevel(tristLvl) || !me.getQuest(3, 1)) {
+			if (!me.getQuest(3, 1) || !this.partyLevel(tristLvl)) {
 				this.smith(); // area lv9
 			}
 			
@@ -7627,9 +7633,7 @@ function AutoSmurf() {
             }
 		}
 		
-		if (!me.getQuest(7, 0)) {	//260915
-			this.andy();
-		}
+		this.andy();
 	};
 
 	//act2
@@ -7795,8 +7799,9 @@ function AutoSmurf() {
 			}
 			
 			if (!me.getQuest(20, 0) && me.getQuest(18, 0) && me.getQuest(21, 0)) {
-				//print("figurine incomplited");
-				me.overhead("figurine incomplited");
+				//print("figurine incompleted");
+				me.overhead("figurine incompleted");
+				D2Bot.printToConsole("figurine incompleted");	//260920
 				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
@@ -7899,7 +7904,7 @@ function AutoSmurf() {
 			this.shenk();
 		}
 
-		if ((!me.getQuest(36,0) || me.getQuest(36,1)) && me.diff === 0) {
+		if ((!me.getQuest(36, 1) || me.getQuest(36, 0)) && me.diff === 0) {
 			this.barbs();
 		}
 

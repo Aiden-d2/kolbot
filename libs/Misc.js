@@ -54,13 +54,14 @@ var Skill = {
 			return 5;
 		case 38: // Charged Bolt
 		case 44: // Frost Nova
-		case 48: // Nova
 			return 6;
 		case 151: // Whirlwind
 		case 229: // Molten Boulder
 		case 243: // Shock Wave
 		case 249: // Armageddon
 			return 7;
+		case 48: // Nova	//260917
+		case 64: // Frozen Orb	//260917
 		case 92: // Poison Nova
 			return 9;
 		case 15: // Poison Javelin
@@ -70,10 +71,7 @@ var Skill = {
 			return 10;
 		case 8: // Inner Sight
 		case 17: // Slow Missiles
-		case 64: // Frozen Orb	//260914
 			return 13;
-		case 51: // Fire Wall	//260914
-			return 14;
 		case 35: // Lightning Fury
 		case 67: // Teeth
 		case 101: // Holy Bolt
@@ -90,6 +88,7 @@ var Skill = {
 		case 22: // Guided Arrow
 		case 27: // Immolation Arrow
 		case 31: // Freezing Arrow
+		case 51: // Fire Wall	//260917
 		case 121: // Fist of the Heavens
 		case 130: // Howl	//260901
 		case 140: // Double Throw
@@ -1168,7 +1167,8 @@ var Grant = {
 						if (grant) {	//260805
 							var result = NTIP.Evaluate(grant);
 							
-							me.overhead("[Granted " + tier + "] " + items[0].name);
+							//me.overhead("[Granted " + tier + "] " + items[0].name);
+							me.overhead("[Granted " + tier + "] " + grant.name);	//260920
 							Misc.logItem("Granted [" + tier + "]", grant, result.line);
 							Misc.itemLogger("Granted", grant, result.line);	//260815
 							

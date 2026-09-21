@@ -363,6 +363,7 @@ NTIP.EvaluateItem = function (item, list) {	//260804
 					continue;
 				}
 				
+				//unid flag included
 				if (!(rule.Merc > Config.TierMerc[Config.Gear[bodyLoc[0]]].merc && Grant.canEquip(item, bodyLoc[0], true))) {
 					continue;
 				}

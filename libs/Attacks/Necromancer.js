@@ -39,6 +39,7 @@ var ClassAttack = {
 	cursesSet: false,
 	curseState: [],
 	curseRange: 25,	//260902
+	armyRange: 25,	//260919
 
 	initCurses: function () {
 		var i;
@@ -142,7 +143,7 @@ var ClassAttack = {
 
 			Skill.cast(Config.Curse[0], 0, unit);
 
-			return 1;
+			//return 1;	//260919
 		}
 
 		if (Config.Curse.length > 1 && Config.Curse[1] > 0 && this.isCursable(unit) && !(unit.spectype & 0x7) && !unit.getState(this.curseState[1])) {	//260510
@@ -155,7 +156,7 @@ var ClassAttack = {
 
 			Skill.cast(Config.Curse[1], 0, unit);
 
-			return 1;
+			//return 1;	//260919
 		}
 
 		// Get timed skill
@@ -209,7 +210,7 @@ var ClassAttack = {
 	afterAttack: function () {
 		Misc.unShift();
 		Precast.doPrecast(false);
-		this.raiseArmy();
+		this.raiseArmy(true);	//260919
 		this.novaTick = 0;
 	},
 
@@ -339,12 +340,8 @@ var ClassAttack = {
 		return true;
 	},
 
-	raiseArmy: function (range) {
+	raiseArmy: function (loop) {	//260919
 		var i, tick, count, corpse, corpseList, skill, maxSkeletons, maxMages, maxRevives;
-
-		if (!range) {
-			range = 25;	//260530
-		}
 
 		if (Config.Skeletons === "max") {
 			skill = me.getSkill(70, 1);
@@ -371,8 +368,8 @@ var ClassAttack = {
 		corpseList = [];
 
 		if (corpse) {
-			do {
-				if (getDistance(me, corpse) <= range && this.checkCorpse(corpse)) { // within casting distance
+			do {	//260919
+				if (getDistance(me, corpse) <= this.armyRange && this.checkCorpse(corpse)) { // within casting distance
 					corpseList.push(copyUnit(corpse));
 				}
 			} while (corpse.getNext());
@@ -403,7 +400,11 @@ var ClassAttack = {
 						
 						me.overhead("[ARMY] REVIVE " + corpse.name + " " + me.getMinionCount(6) + " / " + maxRevives);
 						
-						continue;
+						if (loop) {	//260919
+							continue;
+						}
+						
+						break;	//260919
 					}
 				}
 			}
@@ -423,7 +424,11 @@ var ClassAttack = {
 					
 					me.overhead("[ARMY] SKELETON " + me.getMinionCount(4) + " / " + maxSkeletons);
 					
-					continue;
+					if (loop) {	//260919
+						continue;
+					}
+					
+					break;	//260919
 				}
 			}
 			
@@ -442,7 +447,11 @@ var ClassAttack = {
 					
 					me.overhead("[ARMY] MAGE " + me.getMinionCount(5) + " / " + maxMages);
 					
-					continue;
+					if (loop) {	//260919
+						continue;
+					}
+					
+					break;	//260919
 				}
 			}
 		}

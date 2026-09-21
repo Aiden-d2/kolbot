@@ -894,8 +894,8 @@ ModeLoop:
 			}
 
 			return this.useUnit(2, 386, targetArea);
-		case 128:
-			if (me.area === 129) {
+		case 120:	//260921
+			if (me.area === 128) {	//260921
 				break;
 			}
 
@@ -1008,6 +1008,15 @@ ModeLoop:
 				sendPacket(1, 0x13, 4, unit.type, 4, unit.gid);
 			}
 
+			if (me.area === 120) {	//260921
+				if (id === 547) {
+					print("ArreatSummit Gate");
+					delay(3000);
+				} else {
+					print("ArreatSummit Exit");
+				}
+			}
+			
 			tick = getTickCount();
 
 			while (getTickCount() - tick < me.ping * 2 + 300) {	//260903
@@ -1076,6 +1085,10 @@ ModeLoop:
 					}
 				}
 				
+				if (me.area === targetArea) {	//260920
+					return true;
+				}
+				
 				Town.move("waypoint");
 			}
 			
@@ -1092,10 +1105,10 @@ ModeLoop:
 				
 				Misc.click(0, 0, wp);
 				
-				if (me.area === targetArea) {	//260911
-					me.cancel();
-					return true;
-				}
+				//if (me.area === targetArea) {	//260911
+					//me.cancel();
+					//return true;
+				//}
 				
 				tick = getTickCount();
 
