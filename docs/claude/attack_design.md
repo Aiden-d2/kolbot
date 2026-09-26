@@ -48,7 +48,7 @@ clearLevel  →  AutoSmurf로 이전 (den 전용)
 [진입]
   gameReady 대기, AttackSkill 검증
   gidSkip 리셋 판정 (현행: 지역 변경 or 마지막 스킵 위치에서 40 초과)
-  state = {}        // gid별: retry, casts, hpMark, lastProgress, deferUntil, lastPos
+  state = {}        // gid별: retry, casts, hpMark, lastPos
   dropped = {}      // 이번 호출에서 버린 gid (SWEEP)
   must 대상 최초 확보 (bossId: 5회 재시도, 실패 시 throw — 현행 유지)
 
@@ -88,7 +88,7 @@ clearLevel  →  AutoSmurf로 이전 (den 전용)
                                         근접 스킬 10캐스트마다 flash (현행)
                                         HP 판정 (시전한 캐스트만 셈)
                                           SWEEP: 10캐스트마다 20% 미만 감소 → HP skip(gidSkip)
-                                          MUST: HP skip 없음 (시간 한도로만 종료)
+                                          MUST: HP skip 없음 (사망까지 계속)
        result 1 && !tick.cast          카운트 없음 (이동만 했거나 딜레이 대기)
 
      MUST 종료 조건은 사망뿐. 다른 캐릭도 공격 중이므로 계속 공격
