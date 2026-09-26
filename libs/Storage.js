@@ -370,9 +370,9 @@ Loop:
 		var rv = (!!target && target.mode === 0 && target.location === this.location && target.x === col && target.y === row);	//260827
 
 		if (rv) {	//260827
-			print("[MoveToSlot] classid " + item.name + " MOVED SUCCESS");
+			print("[MoveToSlot] " + item.fname);	//260922
 		} else {
-			print("[MoveToSlot] classid " + item.name + " MOVED FAIL");
+			print("[MoveToSlot] " + item.fname + " ÿc1FAILED");	//260922
 		}
 
 		return rv	//260827

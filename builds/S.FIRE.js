@@ -128,7 +128,7 @@ var AutoBuildTemplate = {
 					Config.CastStatic = 50;	//50%
 				}
 				
-				Config.StaticList = ["Griswold", "Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "baal"];
+				Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];
 			}
 		},
 

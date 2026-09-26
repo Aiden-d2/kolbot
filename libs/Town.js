@@ -81,24 +81,36 @@ var Town = {
 		//Merc.updateTiers();
 		
 		if (shopItems) {
+			Misc.trace("gamble");
 			this.gamble();
 			//this.buyKeys();
+			Misc.trace("reviveMerc");
 			this.reviveMerc();
 		
+			Misc.trace("Equip1");
 			Equip.autoEquip();
+			Misc.trace("Grant1");
 			Grant.autoEquip();
 			
+			Misc.trace("Cubing");
 			Cubing.doCubing();
+			Misc.trace("Runewords");
 			Runewords.makeRunewords();
 		}
 		
+		Misc.trace("clearBelt");
 		this.clearBelt();
-		//this.removeUnwearableItems();
+		Misc.trace("heal");
 		this.heal();
+		Misc.trace("identify");
 		this.identify();
+		Misc.trace("clearInventory");
 		this.clearInventory();
+		Misc.trace("fillTome");
 		this.fillTome(518);
+		Misc.trace("buyPotions");
 		this.buyPotions(shopItems);
+		Misc.trace("repair");
 		this.repair(shopItems);
 		
 		var i,
@@ -115,99 +127,20 @@ var Town = {
 
 		me.cancel();
 
+		Misc.trace("pickItems");
 		Pickit.pickItems();
 		
+		Misc.trace("Equip2");
 		Equip.autoEquip();
+		Misc.trace("Grant2");
 		Grant.autoEquip();
 		
+		Misc.trace("stash");
 		this.stash();
 		
+		Misc.trace("doChores end");
 		return true;
 	},
-
-	/*removeUnwearableItems: function () {	//260913 
-		var i, item,
-			list = [];
-
-		item = me.getItem(-1, 1);	//260916
-
-		if (item) {
-			do {
-				if (!Equip.canEquip(item) || (!(NTIP.GetScore(item, "Tier") > 0) && me.charlvl > 17)) {	//260815
-					list.push(copyUnit(item));	//collect
-					print("[RUI] collect lvl:" + me.charlvl + " gid:" + item.gid + " name:" + item.name + " mode:" + item.mode + " loc:" + item.location + " bodyloc:" + item.bodylocation);	//260916
-				}
-			} while (item.getNext());
-		}
-
-		if (!list.length) {
-			return;
-		}
-
-		for (i = 0; i < list.length; i += 1) {	//drop
-			item = list[i];
-
-			//print("Removing an item I can no longer wear: " + item.name + ".");
-			me.overhead("Removing an item I can no longer wear: " + item.name + ".");
-			print("[RUI] drop " + (i + 1) + "/" + list.length + " gid:" + item.gid + " type:" + item.type + " name:" + item.name + " mode:" + item.mode + " bodyloc:" + item.bodylocation + " cursor:" + me.itemoncursor);	//260916
-
-			//item.drop();
-			print("[RUI] drop result: " + item.drop());	//260916
-			delay(me.ping * 2 + 100);
-			
-		}
-
-		Pickit.pickItems();
-	},
-
-	removeUnwearableItems: function () {	//eom
-		var item = me.findItem(null, 1, 1);
-
-		if (item) {
-			do {
-				//if (!Item.canEquip(item) || (!Item.hasTier(item) && me.charlvl > 17)) {
-				if (!Equip.canEquip(item) || (!(NTIP.GetScore(item, "Tier") > 0) && me.charlvl > 17)) {	//260815
-					//print("Removing an item I can no longer wear: " + item.name + ".");
-					me.overhead("Removing an item I can no longer wear: " + item.name + ".");
-
-					if (Storage.Inventory.CanFit(item)) {
-						if (!Storage.Inventory.MoveTo(item)) {	//260817
-							delay(me.ping * 2 + 100);
-							Storage.Inventory.MoveTo(item);
-							delay(1000);
-							//Storage.Stash.MoveTo(item);
-							me.cancel();
-							while (me.itemoncursor) {
-								delay(1000);
-								while (getUIFlag(0x19) || getUIFlag(0x01)) {
-									delay(1000);
-									me.cancel();
-								}
-								Packet.dropItem(item);
-								item.drop();
-								delay(me.ping * 2 + 100);
-							}
-						}
-						
-						Pickit.pickItems();
-					} else {
-						item.toCursor();	//eom
-						while (me.itemoncursor) {
-							delay(1000);
-							while(getUIFlag(0x19) || getUIFlag(0x01)) {
-								delay(1000);
-								me.cancel();
-							}
-							Packet.dropItem(item);
-							item.drop();
-							delay(me.ping * 2 + 100);
-						}
-						Pickit.pickItems();
-					}
-				}
-			} while (item.getNext());
-		}
-	},*/
 
 	checkQuestItems: function () {
 		var i, npc, item;
@@ -312,7 +245,8 @@ var Town = {
 	// Go to a town healer
 	heal: function () {
 		if (!this.needHealing()) {
-			return true;
+			//print("no need heal");	//260922
+			return false;
 		}
 
 		if (!this.initNPC("Heal", "heal")) {
@@ -2201,7 +2135,7 @@ MainLoop:
 			path = [5073, 5040, 5083, 5093];
 
 			for (i = 0; i < path.length; i += 2) {
-				Pather.walkTo(path[i], path[i + 1]);
+				Pather.moveTo(path[i], path[i + 1], 10);	//260922
 			}
 
 			return true;

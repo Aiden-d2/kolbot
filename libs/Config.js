@@ -258,7 +258,7 @@ var Config = {
 	AutoBuild: {
 		Enabled: true,
 		Verbose: false,
-		DebugMode: true
+		DebugMode: false
 	},
 
 	//Logs

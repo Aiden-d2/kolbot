@@ -250,6 +250,7 @@ var Pather = {
 		}
 
 		if (x === undefined || y === undefined) {
+			Misc.errorReport(new Error("moveTo undefined coords (" + x + ", " + y + ")"), "Pather.moveTo");	//260922 temp
 			throw new Error("moveTo: Function must be called with at least 2 arguments.");
 		}
 
@@ -275,11 +276,14 @@ var Pather = {
 
 		useTeleport = this.useTeleport();
 
-		path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? ([62, 63, 64, 74].indexOf(me.area) > -1 ? 30 : this.teleDistance) : this.walkDistance);	//260716	//260823
+		Misc.trace("moveTo getPath -> " + x + "," + y + " tele:" + useTeleport);
+		path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? ([62, 63, 64, 88, 89, 91, 74].indexOf(me.area) > -1 ? 30 : this.teleDistance) : this.walkDistance);	//260716	//260823	//260921
 
 		if (!path) {
 			throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y);	//260509
 		}
+		
+		Misc.trace("path total nodes: " + path.length);
 
 		path.reverse();
 
@@ -353,8 +357,8 @@ var Pather = {
 				This will be removed if getPath changes
 			*/
 			if (getDistance(me, node) > 2) {
-				// Make life in Maggot Lair easier
-				if ([62, 63, 64, 74].indexOf(me.area) > -1) {	//260716	//260823
+				// Make life in Maggot Lair easier + flayer
+				if ([62, 63, 64, 88, 89, 91, 74].indexOf(me.area) > -1) {	//260716	//260823	//260921
 					adjustedNode = this.getNearestWalkable(node.x, node.y, 10, 2, 0x1 | 0x4 | 0x800 | 0x1000);	//260823
 					
 					if (adjustedNode) {
@@ -442,6 +446,8 @@ var Pather = {
 		PathDebug.removeHooks();
 
 		//print("[DBG] - moveTo");
+		
+		Misc.trace("moveTo end");
 		
 		return getDistance(me, node.x, node.y) <= 5;
 	},
@@ -894,14 +900,14 @@ ModeLoop:
 			}
 
 			return this.useUnit(2, 386, targetArea);
-		case 120:	//260921
-			if (me.area === 128) {	//260921
+		case 128:
+			if (me.area === 129) {
 				break;
 			}
 
 			return this.useUnit(2, 547, targetArea);
 		}
-
+		
 		return false;
 	},
 
@@ -1000,6 +1006,11 @@ ModeLoop:
 				}
 				
 				delay(Math.max(me.ping * 2, 300));	//260903
+				
+				if (id === 547) {	//260921
+					print("ArreatSummit Gate");
+					delay(3000);
+				}
 			}
 
 			if (type === 5) {
@@ -1008,15 +1019,6 @@ ModeLoop:
 				sendPacket(1, 0x13, 4, unit.type, 4, unit.gid);
 			}
 
-			if (me.area === 120) {	//260921
-				if (id === 547) {
-					print("ArreatSummit Gate");
-					delay(3000);
-				} else {
-					print("ArreatSummit Exit");
-				}
-			}
-			
 			tick = getTickCount();
 
 			while (getTickCount() - tick < me.ping * 2 + 300) {	//260903
@@ -1290,7 +1292,7 @@ MainLoop:
 
 		me.cancel();
 
-		var i, tick, portal,
+		var i, tick, portal, redPortal,
 			preArea = me.area;
 
 		//print("[DBG] - usePortal");
@@ -1305,6 +1307,7 @@ MainLoop:
 			}
 
 			portal = unit ? copyUnit(unit) : this.getPortal(targetArea, owner);
+			redPortal = !!portal && portal.classid === 342;	//260926
 
 			if (portal) {
 				if (portal.area === me.area) {
@@ -1312,7 +1315,11 @@ MainLoop:
 						this.moveToUnit(portal);
 					}
 
-					if (i < 10) {	//260809
+					if (i < 10 || redPortal) {	//260926
+						if (redPortal) {	//260926 temp
+							Misc.trace("usePortal 342 send i:" + i + " area:" + me.area);
+						}
+						
 						sendPacket(1, 0x13, 4, 0x2, 4, portal.gid);
 						delay(Math.max(me.ping * 2, 200));	//260816
 					} else {
@@ -1339,8 +1346,12 @@ MainLoop:
 
 				tick = getTickCount();
 
-				while (getTickCount() - tick < me.ping * 2 + 300) {	//260808
+				while (getTickCount() - tick < (redPortal ? 3000 : me.ping * 2 + 300)) {	//260926
 					if (me.area !== preArea) {
+						if (redPortal) {	//260926 temp
+							Misc.trace("usePortal 342 changed area:" + me.area + " ms:" + (getTickCount() - tick));
+						}
+						
 						delay(me.ping * 2 + 300);	//260830
 						
 						return true;
@@ -1348,9 +1359,13 @@ MainLoop:
 					
 					delay(10);
 				}
+				
+				if (redPortal) {	//260926 temp
+					Misc.trace("usePortal 342 timeout");
+				}
 			}
 			
-			if (i % 3 === 2) {	//260809
+			if (i % 3 === 2 && !redPortal) {	//260926
 				Packet.flash(me.gid);
 			}
 			

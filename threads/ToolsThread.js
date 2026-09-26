@@ -331,7 +331,8 @@ function main() {
 		case 35: // End
 			break;
 			
-		case 97: // Numpad 1
+		case 97: // Numpad 1 (temp)
+			print(me.gameReady + " / " + me.dead + " / " + me.mode);
 			break;
 		case 98: // Numpad 2
 			break;
@@ -424,6 +425,10 @@ function main() {
 
 				if (obj.hasOwnProperty("useMercRejuv")) { //260808
 					Config.UseMercRejuv = obj.useMercRejuv;
+				}
+				
+				if (obj.hasOwnProperty("lifeChicken")) { //260922
+					Config.LifeChicken = obj.lifeChicken;
 				}
 				
 				if (obj.hasOwnProperty("currScript")) {

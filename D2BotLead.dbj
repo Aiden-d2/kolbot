@@ -1,4 +1,7 @@
 var StarterConfig = {
+	RestGameCount: 10, // 260922 Games per rest block (0 = disable)
+	RestTime: 3600, // Seconds. If RestGameCount games end within this time, the rest is waited in the lobby
+	
 	MinGameTime: 60, // Minimum game length in seconds. If a game is ended too soon, the rest of the time is waited in the lobby
 	PingQuitDelay: 30, // Time in seconds to wait in lobby after quitting due to high ping
 	
@@ -213,6 +216,86 @@ function timer(tick) {
 	return " (" + min + ":" + sec + ")";
 }
 
+function getRestInfo() {	// 260922
+	var info = DataFile.getStats().restInfo;
+
+	if (!info || typeof info.count !== "number" || typeof info.start !== "number") {
+		info = {count: 0, start: 0};
+	}
+
+	return info;
+}
+
+function restCount() {	// 260922 called at game start -> crashed games are counted too
+	var info;
+
+	if (!StarterConfig.RestGameCount) {
+		return;
+	}
+
+	info = getRestInfo();
+	info.count += 1;
+
+	if (info.count === 1) {
+		info.start = getTickCount();
+	}
+
+	DataFile.updateStats("restInfo", info);
+}
+
+function restCheck() {	// 260922 called in lobby
+	var info, remain;
+
+	if (!StarterConfig.RestGameCount) {
+		return;
+	}
+
+	info = getRestInfo();
+
+	if (info.count < StarterConfig.RestGameCount) {
+		return;
+	}
+
+	remain = info.start + StarterConfig.RestTime * 1e3 - getTickCount();
+
+	// remain > RestTime is impossible unless tick base changed -> skip
+	if (remain > 0 && remain <= StarterConfig.RestTime * 1e3) {
+		D2Bot.printToConsole("Rest wait " + Math.ceil(remain / 60000) + " min (" + info.count + " games)");
+		ControlAction.timeoutDelay("Rest wait", remain);
+	}
+
+	// reset AFTER wait -> crash during wait resumes remaining time
+	DataFile.updateStats("restInfo", {count: 0, start: 0});
+}
+
+function addPlayTime() {	// 260926 accumulate in-game time (normal end only), print on leader console
+	var total, d, h, m, text;
+
+	total = DataFile.getStats().playTime;
+
+	if (typeof total !== "number" || total < 0) {
+		total = 0;
+	}
+
+	total += getTickCount() - gameStart;
+	DataFile.updateStats("playTime", total);
+
+	m = Math.floor(total / 6e4);
+	d = Math.floor(m / 1440);
+	h = Math.floor(m / 60) % 24;
+	m = m % 60;
+
+	if (d > 0) {
+		text = d + "d " + h + "h " + m + "m";
+	} else if (h > 0) {
+		text = h + "h " + m + "m";
+	} else {
+		text = m + "m";
+	}
+
+	D2Bot.printToConsole(text + " / " + me.gamename.split('-')[1] + "r (Avg. " + Math.floor(total / 60000 / me.gamename.split('-')[1]) + "m)");
+}
+
 function randomString(len, useNumbers = false) {
 	var i, rval = "",
 		letters = useNumbers ? "abcdefghijklmnopqrstuvwxyz0123456789" : "abcdefghijklmnopqrstuvwxyz";
@@ -284,7 +367,10 @@ function main() {
 
 					DataFile.updateStats("runs", gameCount);
 					DataFile.updateStats("ingameTick");
+					
+					restCount();	// 260922
 				}
+				
 				//eom
 				D2Bot.updateStatus("[" + me.getStat(12) + "] " + me.gamename + (me.gamepassword ? "/" + me.gamepassword : "") + timer(gameStart) + " $" + Math.floor((me.getStat(14) + me.getStat(15))/1000) + "k @" + Pather.getAreaName(me.area));
 			}
@@ -334,6 +420,10 @@ MainSwitch:
 			break;
 		}
 
+		if (ingame) {	// 260926 before Min time wait -> pure in-game time
+			addPlayTime();
+		}
+
 		if (ingame || gameInfo.error) {
 			if (!gameStart) {
 				gameStart = DataFile.getStats().ingameTick;
@@ -360,6 +450,8 @@ MainSwitch:
 				DataFile.updateStats("runs", gameCount);
 			}
 		}
+		
+		restCheck();	// 260922
 
 		if (!ingame) {	//eom lobby wait
 			ControlAction.timeoutDelay("LobbyWaitDelay", StarterConfig.LobbyWaitDelay * 1e3);
@@ -391,6 +483,10 @@ MainSwitch:
 
 		if (lastGameStatus === "pending") {
 			gameCount += 1;
+		}
+
+		if (ingame) {	// 260926 before Min time wait -> pure in-game time
+			addPlayTime();
 		}
 
 		if (ingame || gameInfo.error) {
@@ -435,6 +531,8 @@ MainSwitch:
 				}
 			}
 		}
+		
+		restCheck();	// 260922
 
 		if (!chatActionsDone) {
 			chatActionsDone = true;
