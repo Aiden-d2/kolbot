@@ -137,10 +137,10 @@ Claude 세션 간 인수인계용. **본 노트가 최신**이며, 아래 문서
 ### 3-6. 보스 유닛 무효화 시 range 필터 소멸 [사실]
 120-123 `orgx = boss.x`가 undefined → `getDistance`가 NaN → `NaN > range`는 false → 맵 전체를 추격한다.
 
-### 3-7. Static 사거리 불일치 [사실, 의도 미결]
+### 3-7. Static 사거리 불일치 [사실, 추후 해결 (사용자)]
 - `Misc.js:102`는 `lvl+4`, `Sorceress.js:64`의 staticRange는 `(lvl+4)*2/3`
 - S.FIRE는 Static 1포인트라 staticRange가 3이고, StaticList 보스의 3칸 안까지 접근한다 (`S_FIRE.js:31, 131`)
-- `Sorceress.js:168-176` (//260917): untimed가 42이면 **timedSkill 사거리**로 setPosition을 호출한다. timedSkill이 -1(면역)이면 `getRange(-1)` = 20이 되어, 20칸 밖에서 Static을 시전한다
+- `Sorceress.js:168-176` (//260917): untimed가 42이면 timedSkill 사거리로 setPosition을 호출한다. timedSkill이 -1이면 사거리 20. **사용자 확인: 의도된 동작 (결함 아님)**
 - Static은 나이트메어 33%, 헬 50% 아래로 체력을 깎지 못한다. 63/66의 `Math.round(hp%) > CastStatic` 루프는 CastStatic 설정에 따라 마나가 다 떨어질 때까지 반복할 수 있다 (엔진 hp 스케일 실측 필요)
 
 ### 3-8. D.FGOM 46레벨 Wereform 전환이 게임 중 적용되지 않음 [사실]
@@ -155,7 +155,7 @@ Claude 세션 간 인수인계용. **본 노트가 최신**이며, 아래 문서
 - 181 `getPath`는 **스냅샷** 좌표, 151 `checkCollision`은 **현재** 좌표로 판정한다 (6차 E-2)
 - `!collPath` 실효 의문: d2bs 소스상 getPath가 null을 반환하는 경로가 없다. 빈 배열이면 비율 0이 되어 도달 불가 몹이 Detour Skip을 통과한다. `Pather.moveTo:280, 337, 417`의 `if (!path)`도 같은 문제 (6차 G-6, DLL 확인 필요)
 - `while (!me.gameReady)` 타임아웃 없음. `bossId > 999`로 gid/classid 구분. clear 999 무보스 시 조용히 true
-- `openChests`의 `Config.OpenChests` 검사는 주석 처리돼 있다. 이전 문서상 "의도적 유지"
+- `openChests`의 `Config.OpenChests` 검사는 주석 처리돼 있다. **사용자 확인: 의도 있음, 추후 수정**
 - `pickItems`는 me 기준, `openChests`는 orgx/orgy 기준
 - 5차 C-2: 걷기 회피 링의 원점이 타깃이라 오히려 전진한다. D-4: 텔레 접근 후보 0이면 폴백 없음 (6차 B-5 재확인)
 
@@ -199,6 +199,10 @@ Claude 세션 간 인수인계용. **본 노트가 최신**이며, 아래 문서
 | 8 | Telekinesis(43) 속성 → S.FIRE 50+ / S.COLD 24+의 [6]=43 폴백 시 결과 2 빈도 | 채팅 요약 |
 | 9 | openChests 설정 무시 유지 여부 | 3-9 |
 | 10 | 5차 G절 1~7 (회피 링 기준각, 접근 링 순회 상한, 664 해제, D-4 폴백 등) | 5차 |
+
+## 5-1. 설계 확정 상태
+최종 설계와 재검토 결정(R1~R10)은 `attack_design.md`가 기준이다. 아래 토론 경과와 충돌하면 설계 문서를 따른다.
+주요 번복: MUST는 대응 단계·뒤로 보내기·시간 한도 없이 죽을 때까지 공격한다 (7-1의 "모드별 처리" 중 clearList 부분 대체).
 
 ## 5-2. setPosition 토론 경과 (260926)
 - 사용자 문제 제기: 통합(dodge + GIP → setPosition)은 진동 제거가 목적이었으나, 배타 구조라 회피가 우선되지 못한다. Angle+Detour가 0x4만 보므로 접근 모드에서 0x1 우회가 발생한다
