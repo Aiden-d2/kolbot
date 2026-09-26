@@ -31,14 +31,17 @@ var NodeAction = {
 	killMonsters: function (arg) {
 		if (arg.clearPath !== false) {
 			if (me.area === 39) {
-				if (!Attack.clear(25, typeof arg.clearPath === "number" ? arg.clearPath : 0)) {	//260901
+				//if (!Attack.clear(25, typeof arg.clearPath === "number" ? arg.clearPath : 0)) {	//260901
+				if (!Attack.clear(25)) {	//260926 spectype was always 0
 					print("killMonsters failed");
 					return "killMonsters";
 				}
 			} else if (me.area === 108) {
-				Attack.clear(20, typeof arg.clearPath === "number" ? arg.clearPath : 0);
+				//Attack.clear(20, typeof arg.clearPath === "number" ? arg.clearPath : 0);
+				Attack.clear(20);	//260926
 			} else {
-				Attack.clear(25, typeof arg.clearPath === "number" ? arg.clearPath : 0);
+				//Attack.clear(25, typeof arg.clearPath === "number" ? arg.clearPath : 0);
+				Attack.clear(25);	//260926
 			}
 		}
 		

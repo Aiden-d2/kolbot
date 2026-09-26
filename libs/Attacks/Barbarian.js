@@ -22,8 +22,10 @@ var ClassAttack = {
 				//}
 			//}
 			
-			if (getDistance(me, unit) > Skill.getRange(attackSkill)) {	//260906
-				Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4);
+			//if (getDistance(me, unit) > Skill.getRange(attackSkill)) {	//260906
+				//Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4);
+			if (getDistance(me, unit) > Skill.getRange(Config.AttackSkill[0])) {	//260926 attackSkill was read before assignment
+				Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4);
 			} else {
 				Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]));
 				//return 1;
@@ -207,7 +209,8 @@ MainLoop:
 						Attack.weaponSwitch(Attack.getPrimarySlot());
 					}
 
-					Attack.clear(10, false, false, false, false);
+					//Attack.clear(10, false, false, false, false);
+					Attack.clear(10);	//260926
 
 					retry = true;
 

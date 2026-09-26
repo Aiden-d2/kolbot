@@ -203,3 +203,48 @@ setPosition(unit, distance, coll, minDist)
 | `bots/AutoSmurf.js` | `clearLevel` 이전 | 함수를 AutoSmurf 내부로 옮기고 호출 2곳(1788, 1839) 교체 |
 
 변경 없음: 직업 파일(Barbarian 제외), `Pather.js`, `Config.js`, 호출부 약 100곳
+
+---
+
+## 9. 구현 반영 (260926, 1차 구현 완료, 인게임 미검증)
+
+### 9-1. 최종 시그니처
+```js
+Attack.clear(range, must)
+// range: 소탕 반경 (호출 시점 위치 고정). 0 = 지역 소탕 없음
+// must : classid | 이름 | [classid...] | {box: {x1, x2, y1, y2}} | "all"   (생략 가능)
+```
+- **[확정]** 보스를 지정하는 호출은 전부 `range = 0` (카오스 봉인 포함). 보스 처치가 목적이고, 잡몹 처리는 위험 반경(10)만으로 충분하다
+- 제거: `clearList`, `scanList`, spectype·sortFunc·openChest 인자 (호출부에서 모두 미사용이거나 고정값 확인)
+- `clearLevel` → `AutoSmurf.clearLevel` (den 2곳)
+
+### 9-2. 호출부 변환 (AutoSmurf 42곳, Pather 3곳, Barbarian 1곳)
+| 현행 | 신규 |
+|---|---|
+| `clear(N, 0, 이름)` | `clear(0, 이름)` |
+| `clear(range, undefined, undefined, undefined, false)`, `clear(10, false, false, false, false)` | `clear(range)`, `clear(10)` |
+| `clear(N, spectype)` (Pather NodeAction) | `clear(N)` (spectype 항상 0이었음. clearPath 숫자 0은 여전히 "소탕 켜기") |
+| `clearList(scanList(id), null, 1)` | `clear(0, id)` |
+| `clearList(scanList(null, 박스), null, 1)` | `clear(0, {box: 박스})` |
+| `clearList(scanList(null), null, 1)` | `clear(0, "all")` |
+
+### 9-3. 구현하면서 정한 세부 (검토 필요)
+| 항목 | 동작 |
+|---|---|
+| 시작 시 must 미발견 | 5회 대기 후 없으면 **throw하지 않는다**. 소탕만 하거나 바로 true 반환. 봉인 catch 경로(`clear(35)` 폴백)는 더 이상 타지 않는다 |
+| must를 시야에서 놓침 | 마지막 위치로 moveTo, 최대 3회. 도착했는데도 안 보이면 죽었거나 멀리 간 것으로 보고 목록에서 제거 |
+| 박스 must | 박스 안에 있을 때만 must. 박스를 벗어나면 목록에서 제거(버림 아님, 재진입 시 재합류). refresh 결함(3-1b) 해소 |
+| 결과 1인데 시전 없음 (idle) | SWEEP: 10회 누적 시 버림. MUST: 5회마다 flash (CollMap과 엔진의 LOS 판정 불일치 대비) |
+| NoSkipArea | "도달 불가"도 즉시 버리지 않고 재시도 경로로 (현행 NoSkipArea 의미 유지) |
+| 1단 확정 제외 | checkSkipped / skipCheck / hasUsableSkill 불합격은 이번 호출 동안 재평가하지 않는다 |
+| 위험 반경 합류 | must가 살아 있을 때만. 내 주변 10을 벗어나면 목록에서 제거 |
+| 종료 후 | 시전이 1회라도 있으면 pickItems(range, 0이면 기본값 25) → afterAttack. 상자는 range > 0일 때만 min(range, 15) |
+| 반환 | false는 사망, 카우킹 감지, AttackSkill 설정 오류뿐. 나머지는 true |
+| Skill.cast 기록 | `setSkill` 성공 직후 `Attack.tick.cast = true`. Attack이 없는 스레드 대비 `typeof` 가드 |
+| 로그 | `Misc.trace`로 `[AC]` (join, drop 사유, lost, search, leash, end), `[SP] detour`. 전부 `//260926 temp` |
+
+### 9-4. 검증 상태
+- `node --check` 통과: Attack.js, Misc.js, Pather.js, Barbarian.js, AutoSmurf.js
+- 활성 코드에 `clearList` / `scanList` / `Attack.clearLevel` / `gidAttack` 참조 없음
+- `AutoSmurf.js`는 CRLF 파일이다. 편집 도구가 LF로 바꾸지 않도록 주의 (이번 작업에서 한 번 발생, 복구함)
+- 인게임 확인 필요: 보스 추적(카운테스, 드 세이스), 바알 웨이브 박스, 회피 동작, `[AC] drop` 사유 분포
