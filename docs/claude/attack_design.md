@@ -77,14 +77,14 @@ clearLevel  →  AutoSmurf로 이전 (den 전용)
 
   4. 공격
      Attack.tick 초기화 {cast:false, moved:false, fail:null}
-     result = ClassAttack.doAttack(target, attackCount % 10 === 0)
+     result = ClassAttack.doAttack(target, castTotal % 10 === 0)
 
   5. 평가 (result + Attack.tick)
      ┌ result 2 (유효 스킬 없음)        SWEEP: drop     MUST: 유지 (다음 틱 재시도)
      ├ fail == "unreachable"           SWEEP: drop     MUST: flash 후 유지
      ├ result 0 / fail == "moveFailed" state.retry++, flash
      │                                  retry > 4 →  SWEEP: drop  MUST: 유지 (retry 리셋)
-     └ result 1 && tick.cast           state.casts++, retry = 0, attackCount++
+     └ result 1 && tick.cast           state.casts++, retry = 0, castTotal++
                                         근접 스킬 10캐스트마다 flash (현행)
                                         HP 판정 (시전한 캐스트만 셈)
                                           SWEEP: 10캐스트마다 20% 미만 감소 → HP skip(gidSkip)
@@ -99,7 +99,7 @@ clearLevel  →  AutoSmurf로 이전 (den 전용)
 [종료]
   SWEEP 목록이 비면 1회 재스캔 → 합류 없으면 종료
   MUST 전원 사망 확인
-  attackCount > 0 → pickItems(range) → afterAttack (현행 순서)
+  castTotal > 0 → pickItems(range) → afterAttack (현행 순서)
   chests → openChests (현행 동작, Config.OpenChests 미결)
   return true
 ```
@@ -164,7 +164,11 @@ setPosition(unit, distance, coll, minDist)
 - clear의 306 이외 Angle / Detour 게이트 (306 Skip 유지)
 - 공유 retry, gidAttack 배열 → gid별 state
 - refresh의 목록 교체 방식 → merge
-- 999 상한: SWEEP 전용 호출에만 안전장치로 유지. MUST가 있는 호출은 상한 없음 (고체력 보스 정상 전투가 끊기지 않도록)
+- **attackCount 개념 폐지 (사용자 결정)**. 999 상한 삭제. 결과 1을 공격으로 세던 오판도 함께 제거
+  - preattack 주기 → 이번 호출의 실제 시전 횟수(castTotal) % 10
+  - refresh 주기 → 폐지 (매 틱 합류 스캔)
+  - afterAttack/pickItems 가드 → castTotal > 0
+  - SWEEP 종료는 버림(스킬 없음·도달 불가·재시도·HP skip)이나 처치로 보장
 
 ---
 
@@ -180,3 +184,22 @@ setPosition(unit, distance, coll, minDist)
 | R8 | HP skip 기준 | **[확정]** SWEEP은 10캐스트마다 20% 미만이면 skip. MUST는 HP skip 없음 |
 | R9 | 회피 게이트 `distance >= Dodge.Range` (495) | **[확정] 유지.** 사거리 13 미만은 회피해도 위협을 해소하지 못하고 동작만 낭비 |
 | R10 | 잔여 항목 | **[확정]** Static 사거리 불일치는 추후. Sorc 260917(사거리 20)은 **의도된 동작**. Barbarian 선참조는 이번에 함께 수정. openChests는 의도 있음, 현행 유지 후 추후 수정 |
+
+---
+
+## 8. 파일별 변경 계획
+
+| 파일 | 대상 | 변경 |
+|---|---|---|
+| `libs/Attack.js` | `clear` (33-268) | 래퍼로 교체. bossId 확보/throw는 유지하고 `fight`에 위임. 기존 본문 주석 보존 |
+| | `clearList` (341-455) | 래퍼로 교체. 배열이나 스캔 함수를 MUST로 넘긴다. `refresh` 인자는 받되 무시 |
+| | `clearLevel` (271-339) | 주석 처리 (AutoSmurf로 이전) |
+| | 신규 `fight` | 2절 루프. 소 지역(39) 카우킹 감지 시 false 반환 유지 (`Pather.NodeAction` 의존) |
+| | 신규 `tick` 객체와 헬퍼 | 사이드채널 `{cast, moved, fail}`, 틱 스캔 목록(위협 공용), `hasUsableSkill(unit)` (1단) |
+| | `setPosition` (477-684) | 3절로 재작성. 기존 본문 주석 보존 |
+| | `getSkillElement` | 43 → `"none"` |
+| `libs/Misc.js` | `Skill.cast` (247) | `setSkill` 성공 후 시전 단계에서 `Attack.tick.cast = true` |
+| `libs/Attacks/Barbarian.js` | preattack (25-26) | `attackSkill` 선참조 → `Config.AttackSkill[0]` 사거리로 |
+| `bots/AutoSmurf.js` | `clearLevel` 이전 | 함수를 AutoSmurf 내부로 옮기고 호출 2곳(1788, 1839) 교체 |
+
+변경 없음: 직업 파일(Barbarian 제외), `Pather.js`, `Config.js`, 호출부 약 100곳
