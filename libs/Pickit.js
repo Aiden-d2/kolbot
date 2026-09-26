@@ -302,6 +302,10 @@ MainLoop:
 			if (item.mode !== 3 && item.mode !== 5) {
 				break MainLoop;
 			}
+			
+			if (item.x === undefined || item.y === undefined) {	//260926
+				break MainLoop;
+			}
 
 			if (stats.useTk) {
 				Skill.cast(43, 0, item);

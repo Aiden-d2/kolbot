@@ -11,7 +11,6 @@
 */
 
 function AutoSmurf() {
-//SETTING
 // -------- Normal Difficulty -------------
 	var tristLvl = 15,
 		teleLvl = 18,
@@ -22,9 +21,8 @@ function AutoSmurf() {
 		diaLvlnm = 67,
 		baalLvlnm = 71,
 		mercLvl = me.charlvl > baalLvlnm - 2,
-// -------- Hell Difficulty ----------
 
-//---------------------------------------be-sure-of-what-you-edit-under-this-line--------------------------------------------//
+// -------- Other Settings ----------------
 		Leader = false,
 		Boer = false,
 		myPos = Team.Profiles.slice().reverse().indexOf(me.profile) % 4,
@@ -78,6 +76,7 @@ function AutoSmurf() {
 		duriel = false,
 		
 		figurine = false,
+		teamFigurine = false,
 		leaderFigurine = false,
 		travincal = false,
 		mephisto = false,
@@ -87,7 +86,7 @@ function AutoSmurf() {
 		msgLeader = false,	//for cowlevel
 		msgFollower = {};	//for cowlevel
 
-//SYNCING
+//INITIATING
 	this.checkRole = function () { // Checks Config settings to determine role.
 		if (Team.Leader === me.profile) {
 			Leader = true;
@@ -97,123 +96,6 @@ function AutoSmurf() {
 			me.overhead("I am the Boer");
 		} else {
 			me.overhead("I am a Follower");
-		}
-	};
-
-	this.preparation = function () {
-		if (Leader && me.getStat(13) === 0) {
-			D2Bot.printToConsole("=== START ===", 7);
-		}
-		
-		// Check and use quest items that might be left over from the previous game
-		if (me.findItem(552)) {
-			clickItem(1, me.findItem(552));
-			D2Bot.printToConsole("!!! BOOK !!!", 8);
-			delay(me.ping * 2 + 500);
-		}
-		
-		if (me.findItem(545)) {
-			clickItem(1, me.findItem(545));
-			D2Bot.printToConsole("!!! POTION !!!", 8);
-			delay(me.ping * 2 + 500);
-		}
-		
-		if (me.findItem(646)) {
-			clickItem(1, me.findItem(646));
-			D2Bot.printToConsole("!!! SCROLL !!!", 8);
-			delay(me.ping * 2 + 500);
-		}
-
-		if (!Config.Tiered && me.diff > 0) {
-			Config.MiniShopBot = true;
-			print("shop: " + Config.MiniShopBot);
-		}
-	
-		if (me.diff === 2 && !farmingON && !Config.Tiered) {
-			farmingON = true;
-			Messaging.sendToList(Team.Profiles, "farmingON");
-			print("farmingON");
-			me.overhead("farmingON");
-		}
-		
-		if (Config.Tiered) {
-			print("tiered: " + Config.Tiered);
-		}
-		
-		if (mercLvl) {
-			Config.UseMerc = true;
-			Config.UseMercHP = 70;
-			scriptBroadcast(JSON.stringify({useMerc: Config.UseMerc, useMercHP: Config.UseMercHP, useMercRejuv: Config.UseMercRejuv})); //260808
-			print("UseMerc: " + Config.UseMerc + " HP: " + Config.UseMercHP);
-		}
-		
-		if (Leader && me.charlvl > 17 && me.gold < 5000) {
-			Messaging.sendToList(Team.Profiles, "giveGold");
-			pickGold = 1;
-		}
-	};
-
-	this.toggle = function () {	//260810
-		if (!Leader && !me.findItem(549) && me.area === 40) { // Don't have cube, am in Act 2.
-			Messaging.sendToList(Team.Profiles, "getCube");
-		}
-		
-		if (me.findItem(546) || me.findItem(547)) { // Have A Jade Figurine, The Golden Bird. Tell the Teleporting Sorc so she gets us to process it.
-			Messaging.sendToList(Team.Profiles, "figurine");
-
-			figurine = true;
-			leaderFigurine = true;
-		}
-		
-		if (me.getQuest(20, 1)) { // Need to Return to Alkor for Reward. Tell the Teleporting Sorc so she gets us to process it.
-			Messaging.sendToList(Team.Profiles, "figurine");
-
-			figurine = true;
-			leaderFigurine = true;
-		}
-		
-		if (me.diff === 2) {
-			if (!essA && !me.findItem(653) && !me.findItem(654)) {	//260828
-				essA = true;
-				Messaging.sendToList(Team.Profiles, "essA");
-			}
-			
-			if (!essM && !me.findItem(653) && !me.findItem(655)) {	//260828
-				essM = true;
-				Messaging.sendToList(Team.Profiles, "essM");
-			}
-			
-			if (essA || essM) {	//260828
-				print("need token");
-				me.overhead("need token");
-			}
-			
-			var kT = (me.findItems(647, 0) || []).length,	//260831
-				kH = (me.findItems(648, 0) || []).length,
-				kD = (me.findItems(649, 0) || []).length,
-				keyMsg = "key: T=" + kT + "/H=" + kH + "/D=" + kD;
-			
-			if (!farmingON) {	//260831
-				if (!keyT && kT !== 3) {
-					keyT = true;
-					Messaging.sendToList(Team.Profiles, "keyT");
-				}
-				
-				if (!keyH && kH !== 3) {
-					keyH = true;
-					Messaging.sendToList(Team.Profiles, "keyH");
-				}
-				
-				if (!keyD && kD !== 3) {
-					keyD = true;
-					Messaging.sendToList(Team.Profiles, "keyD");
-				}
-			}
-			
-			if (keyT || keyH || keyD) {	//260809
-				print(keyMsg);	//260831
-				me.overhead(keyMsg);	//260831
-			}
 		}
 	};
 
@@ -233,10 +115,10 @@ function AutoSmurf() {
 		Pickit.pickItems();	//eom
 		
 		//moving to last act before party check
-		//if (!me.getQuest(7, 0) && this.partyLevel(teleLvl) && (me.getQuest(6, 0) || me.getQuest(6, 1))) {
-			//Pickit.pickItems();
-			//this.changeAct(2);
-		//}
+		if (!me.getQuest(7, 0) && (me.getQuest(6, 0) || me.getQuest(6, 1)) && this.partyLevel(teleLvl)) {
+			Pickit.pickItems();
+			this.changeAct(2);
+		}
 		if (!me.getQuest(15, 0) && me.getQuest(7, 0)) { // if andy done, but not duriel		say(" Here ****** 2 ");
 			Pickit.pickItems();
 			Town.goToTown(2);
@@ -277,7 +159,6 @@ function AutoSmurf() {
 			hireMerc = true;
 			Messaging.sendToList(Team.Profiles, "hireMerc");
 			print("hireMerc: " + hireMerc);
-			me.overhead("hireMerc: " + hireMerc);
 		}
 		
 		Pather.useWaypoint(null); // Will walk to and interact with waypoint.
@@ -288,22 +169,19 @@ function AutoSmurf() {
 
 		imReady = true; // Prevents premature teamReady announcment.
 		Messaging.sendToList(Team.Profiles, "readyCount");
-		//print("I am ready");
 		me.overhead("imReady");
 		
 		if (imReady && Team.Size === 1) {
 			teamReady = true;
 			Messaging.sendToList(Team.Profiles, "teamReady");
-			//print("Team is ready");
 			me.overhead("teamReady");
 		}
 		
 		var tick = getTickCount();
 		
 		while (!teamReady) {
-			if (getTickCount() - tick > 2 * 60 * 1000) { // Quit after 3 minutes of waiting.
-				me.overhead("Team wasn't in game within 2 minutes.");
-				D2Bot.printToConsole("AutoSmurf: Team didn't join the game within 2 minutes.", 9);
+			if (getTickCount() - tick > 2 * 60 * 1000) { // Quit after 2 minutes of waiting.
+				D2Bot.printToConsole("Team didn't join the game within 2 minutes");
 				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
@@ -324,6 +202,122 @@ function AutoSmurf() {
 		return true;
 	};
 
+	this.preparation = function () {
+		if (Leader && me.getStat(13) === 0) {
+			D2Bot.printToConsole("=== START ===", 7);
+		}
+		
+		// Check and use quest items that might be left over from the previous game
+		if (me.findItem(552)) {
+			clickItem(1, me.findItem(552));
+			D2Bot.printToConsole("!!! BOOK !!!", 8);
+			delay(me.ping * 2 + 500);
+		}
+		
+		if (me.findItem(545)) {
+			clickItem(1, me.findItem(545));
+			D2Bot.printToConsole("!!! POTION !!!", 8);
+			delay(me.ping * 2 + 500);
+		}
+		
+		if (me.findItem(646)) {
+			clickItem(1, me.findItem(646));
+			D2Bot.printToConsole("!!! SCROLL !!!", 8);
+			delay(me.ping * 2 + 500);
+		}
+
+		if (!Config.Tiered && me.diff > 0) {
+			Config.MiniShopBot = true;
+			print("MiniShopBot: " + Config.MiniShopBot);
+		}
+	
+		if (me.diff === 2 && !farmingON && !Config.Tiered) {
+			farmingON = true;
+			Messaging.sendToList(Team.Profiles, "farmingON");
+			print("farmingON");
+		}
+		
+		if (Config.Tiered) {
+			print("Tiered: " + Config.Tiered);
+		}
+		
+		if (mercLvl) {
+			Config.UseMerc = true;
+			Config.UseMercHP = 70;
+			scriptBroadcast(JSON.stringify({useMerc: Config.UseMerc, useMercHP: Config.UseMercHP, useMercRejuv: Config.UseMercRejuv})); //260808
+			print("UseMerc: " + Config.UseMerc + " HP: " + Config.UseMercHP);
+		}
+		
+		if (Leader && me.charlvl > 17 && me.gold < 5000) {
+			Messaging.sendToList(Team.Profiles, "giveGold");
+			pickGold = 1;
+		}
+	};
+
+	this.toggle = function () {	//260810
+		if (!Leader && !me.findItem(549) && me.area === 40) { // Don't have cube, am in Act 2.
+			Messaging.sendToList(Team.Profiles, "getCube");
+		}
+		
+		if (me.findItem(546) || me.findItem(547)) { // Have A Jade Figurine, The Golden Bird. Tell the Teleporting Sorc so she gets us to process it.
+			Messaging.sendToList(Team.Profiles, "figurine");
+
+			figurine = true;
+			teamFigurine = true;
+			leaderFigurine = true;	//260922
+		}
+		
+		if (me.getQuest(20, 1)) { // Need to Return to Alkor for Reward. Tell the Teleporting Sorc so she gets us to process it.
+			Messaging.sendToList(Team.Profiles, "figurine");
+
+			figurine = true;
+			teamFigurine = true;
+		}
+		
+		if (me.diff === 2) {
+			if (!essA && !me.findItem(653) && !me.findItem(654)) {	//260828
+				essA = true;
+				Messaging.sendToList(Team.Profiles, "essA");
+			}
+			
+			if (!essM && !me.findItem(653) && !me.findItem(655)) {	//260828
+				essM = true;
+				Messaging.sendToList(Team.Profiles, "essM");
+			}
+			
+			if (essA || essM) {	//260828
+				print("Token needed");
+			}
+			
+			var kT = (me.findItems(647, 0) || []).length,	//260831
+				kH = (me.findItems(648, 0) || []).length,
+				kD = (me.findItems(649, 0) || []).length,
+				keyMsg = "key: T " + kT + " / H " + kH + " / D " + kD;
+			
+			if (!farmingON) {	//260831
+				if (!keyT && kT !== 3) {
+					keyT = true;
+					Messaging.sendToList(Team.Profiles, "keyT");
+				}
+				
+				if (!keyH && kH !== 3) {
+					keyH = true;
+					Messaging.sendToList(Team.Profiles, "keyH");
+				}
+				
+				if (!keyD && kD !== 3) {
+					keyD = true;
+					Messaging.sendToList(Team.Profiles, "keyD");
+				}
+			}
+			
+			if (keyT || keyH || keyD) {	//260809
+				print(keyMsg);	//260831
+			}
+		}
+	};
+
+//CHECKING
 	this.playerIn = function (area) {
 		if (!area) {
 			area = me.area;
@@ -345,122 +339,6 @@ function AutoSmurf() {
 		}
 
 		return true;
-	};
-
-	this.needToKeepWaiting = function (area) { // Wait for party members to be in specified area.
-		var myPartyId,
-			result = false,
-			player = getParty();
-
-		if (arguments.length < 1) {
-			throw new Error("AutoSmurf.needToKeepWaiting: No area argument supplied.");
-		}
-
-		if (player) {
-			myPartyId = player.partyid;
-
-			while (player.getNext()) {
-				if (player.partyid === myPartyId) {
-					if (player.area !== area) {
-						result = true; // Someone is still not in specified area. Need to keep waiting.
-					}
-				}
-			}
-		} else {
-			result = true; // getParty() didn't return anything. Need to keep waiting.
-		}
-
-		return result;
-	};
-
-	this.waitForPartyMembers = function (area) {
-		var tick = getTickCount(),
-			orgx = me.x,
-			orgy = me.y;
-
-		me.overhead("Waiting for Party Members.");	//eom
-
-		if (arguments.length < 1) {
-			area = me.area;
-		}
-
-		while (this.needToKeepWaiting(area)) {
-			if (!me.inTown) {
-				Attack.clear(20);
-
-				Pather.moveTo(orgx, orgy);
-			}
-
-			delay(500);
-
-			if (getTickCount() - tick > 2 * 60 * 1000) { // Quit after 2 minutes of waiting.
-				//D2Bot.restart();
-				scriptBroadcast("quit");	//260909
-			}
-		}
-	};
-
-	this.okCount = function (range) {
-		var tick = getTickCount(),
-			orgx = me.x,
-			orgy = me.y;
-		
-		if (range === undefined) {	//260921
-			range = 20;
-		}
-		
-		Messaging.sendToList(Team.Profiles, "okCount");
-
-		while (!teamOk) {
-			if (!me.inTown) {
-				Attack.clear(range, undefined, undefined, undefined, false);	//260727
-			}
-
-			Pather.moveTo(orgx, orgy);
-
-			delay(500);
-			
-			if (okCount === Team.Size - 1) {
-				teamOk = true;
-				Messaging.sendToList(Team.Profiles, "teamOk");
-			}
-			
-			if (getTickCount() - tick > 120 * 1000) { // Quit after 2 minutes of waiting.
-				//D2Bot.restart();
-				scriptBroadcast("quit");	//260909
-			}
-		}
-
-		this.teamCount(range);
-	};
-
-	this.teamCount = function (range) {
-		var tick = getTickCount(),
-			orgx = me.x,
-			orgy = me.y;
-
-		Messaging.sendToList(Team.Profiles, "teamCount");
-		
-		while (teamCount !== Team.Size - 1) {
-			if (!me.inTown) {
-				Attack.clear(range, undefined, undefined, undefined, false);	//260727
-			}
-			
-			Pather.moveTo(orgx, orgy);
-
-			delay(500);
-			
-			if (getTickCount() - tick > 120 * 1000) { // Quit after 120s of waiting.
-				//D2Bot.restart();
-				scriptBroadcast("quit");	//260909
-			}
-		}
-		
-		me.overhead("OK");
-		
-		okCount = 0;
-		teamCount = 0;
-		teamOk = false;
 	};
 
 	this.partyLevel = function (level) {
@@ -533,105 +411,224 @@ function AutoSmurf() {
 		return lowestAct;
 	};
 
-	this.pickGold = function () {
-		var i, goldPile;
-
-		Town.goToTown(1);
-		Town.move("stash");
-
-		if (me.getStat(14)) {
-			Town.openStash();
-
-			gold(me.getStat(14), 3); // Stash my Gold to make sure I have room to pick more up.
-
-			delay(me.ping * 2 + 500);
-
-			me.cancel();
+	this.okCount = function (range) {
+		var tick = getTickCount(),
+			orgx = me.x,
+			orgy = me.y;
+		
+		if (range === undefined) {	//260921
+			range = 20;
 		}
+		
+		Messaging.sendToList(Team.Profiles, "okCount");
 
-		for (i = 0; i < 15; i += 1) { // Wait up to 15 seconds for someone to drop Gold for me to pick up.
-			goldPile = getUnit(4, 523, 3);
-
-			delay(1000);
-
-			if (goldPile) {
-				Pickit.pickItem(goldPile);
-				//print("Picked " + goldPile + " Gold.");
+		while (!teamOk) {
+			if (!me.inTown) {
+				Attack.clear(range, undefined, undefined, undefined, false);	//260727
 			}
 
-			if (me.getStat(14)) {
-				Town.openStash();
+			Pather.moveTo(orgx, orgy);
 
-				gold(me.getStat(14), 3); // Stash my Gold.
+			delay(500);
+			
+			if (okCount === Team.Size - 1) {
+				teamOk = true;
+				Messaging.sendToList(Team.Profiles, "teamOk");
+			}
+			
+			if (getTickCount() - tick > 120 * 1000 && !me.dead) { // Quit after 120s of waiting.
+				D2Bot.printToConsole("Party desynced 1");	//260922
+				//D2Bot.restart();
+				scriptBroadcast("quit");	//260909
+			}
+		}
+
+		this.teamCount(range);
+	};
+
+	this.teamCount = function (range) {
+		var tick = getTickCount(),
+			orgx = me.x,
+			orgy = me.y;
+
+		Messaging.sendToList(Team.Profiles, "teamCount");
+		
+		while (teamCount !== Team.Size - 1) {
+			if (!me.inTown) {
+				Attack.clear(range, undefined, undefined, undefined, false);	//260727
+			}
+			
+			Pather.moveTo(orgx, orgy);
+
+			delay(500);
+			
+			if (getTickCount() - tick > 120 * 1000 && !me.dead) { // Quit after 120s of waiting.
+				D2Bot.printToConsole("Party desynced 2");	//260922
+				//D2Bot.restart();
+				scriptBroadcast("quit");	//260909
+			}
+		}
+		
+		me.overhead("OK");
+		
+		okCount = 0;
+		teamCount = 0;
+		teamOk = false;
+	};
+
+	this.buffCount = function(act) { // Goes to Town, buys three Antidote potions from Akara, drinks them, and returns to Catacombs Level 4.
+		var i, akara, lysander, potions, dote, thaw;
+
+		if (act === undefined) {
+			act = 1;
+		}
+		
+		dote = me.findItems(514, -1, 3) || [];
+		thaw = me.findItems(517, -1, 3) || [];
+
+		if (act === 1) {
+			if (!me.inTown) {
+				if (!Pather.usePortal(1, null)) {
+					Town.goToTown(1);
+				}
+			}
+			
+			if (dote.length < 4) {
+				me.overhead("Buying antidote potions");
+				
+				while (!akara || !akara.openMenu()) { // Try more than once to interact with Kashya.
+					Packet.flash(me.gid);
+
+					Town.move("akara");
+
+					akara = getUnit(1, "akara");
+
+					delay(1000);
+				}
+
+				if (akara) {
+					akara.startTrade();
+
+					potions = akara.getItem(514);
+
+					for (i = 0; i < (4 - dote.length); i += 1) {
+						potions.buy();
+					}
+
+					me.cancel();
+				}
+			} else {
+				me.overhead("Antidote potions ready");
+			}
+			
+			if (Leader && me.diff > 0) {
+				Town.move("waypoint");
+			} else {
+				Town.move("portalspot");
+				Pather.moveTo(me.x + myX, me.y + myY);	//260912
+			}
+		}
+
+		if (act === 2) {
+			if (thaw.length < 4) {
+				me.overhead("Buying thawing potions");
+				
+				while (!lysander || !lysander.openMenu()) { // Try more than once to interact with Kashya.
+					Packet.flash(me.gid);
+
+					Town.move("lysander");
+
+					lysander = getUnit(1, "lysander");
+
+					delay(1000);
+				}
+				
+				if (lysander) {	//260908
+					lysander.startTrade();
+
+					potions = lysander.getItem(517);
+
+					for (i = 0; i < (4 - thaw.length); i += 1) {
+						potions.buy();
+					}
+
+					me.cancel();
+				}
+			} else {
+				me.overhead("Thawing potions ready");
+			}
+			
+			if (Leader) {
+				Town.move("waypoint");
+			} else {
+				Town.move("portalspot");
+				Pather.moveTo(me.x + myX, me.y + myY);	//260912
+			}
+		}
+		
+		myBuff = true;
+		Messaging.sendToList(Team.Profiles, "buffCount");
+
+		while (!teamBuff) {
+			delay(250);
+		}
+		
+		if (act === 1) {
+			potions = me.findItems(514, -1, 3);
+		}
+
+		if (act === 2) {
+			potions = me.findItems(517, -1, 3);
+		}
+		
+		if (potions.length) {
+			for (i = 0 ; i < potions.length ; i += 1) {
+				potions[i].interact();
 
 				delay(me.ping * 2 + 500);
-
-				me.cancel();
 			}
 		}
-	};
-
-	this.giveGold = function () {
-		var i, goldPile,
-			dropAmount = me.gold - 5000,
-			maxDropAmount = me.gold - Config.LowGold;
-
-		Town.goToTown(1);
-		Town.move("stash");
-
-		Town.openStash();
-
-		gold(me.getStat(14), 3); // Stash my Gold.
-
-		delay(me.ping * 2 + 500);
-
-		//dropAmount = dropAmount > maxDropAmount ? dropAmount : maxDropAmount; // If dropAmmount is greater than maxDropAmmount override it.
-		dropAmount = Math.min(dropAmount, maxDropAmount);
-
-		//print("Dropping " + Math.round(dropAmount) + " Gold.");
-		me.overhead("Dropping " + Math.round(dropAmount) + " Gold.");
-
-		gold(Math.round(dropAmount), 4); // Remove Gold from Stash (must be a round number).
-
-		delay(me.ping * 2 + 500);
-
-		while (me.getStat(14)) {
-			gold(me.getStat(14)); // Drop Gold
-
-			delay(me.ping * 2 + 500);
-		}
-
-		me.cancel();
-
-		for (i = 0 ; i < 15 ; i += 1) { // Wait 15 seconds for someone to pick up the Gold I've dropped.
-			delay(1000);
-
-			goldPile = getUnit(4, 523, 3);
-
-			if (!goldPile) {
-				break;
-			}
-
-			if (i >= 14 && goldPile) {
-				Pickit.pickItem(goldPile);
-				//print("Got " + goldPile + " Gold.");
+		
+		if (act === 1 && me.diff === 0) {
+			if (Leader) {
+				Pather.usePortal(37, null);
+				Pather.makePortal();
+				me.overhead("tpReady");
+				Messaging.sendToList(Team.Profiles, "tpReady");
+				delay(1000);
+			} else {
+				while (me.inTown) {
+					if (tpReady) {
+						Pather.usePortal(37, null);
+					}
+					
+					delay(250);
+				}
+				
+				tpReady = false;
 			}
 		}
-	};
+		
+		myBuff = false;
+		teamBuff = false;
+		buffCount = 0;
 	
+		return true;
+	};
+
 	this.syncBO = function (act) { //260813
 		if (act < 0 || act > 5) {
-			print("syncBO: invalid act");
+			print("syncBO failed: invalid act");
 			return false;
 		}
 		
 		if (!Team.Boer) {
-			print("syncBO: no boer in my team");
+			print("syncBO failed: no Boer in my team");
 			return false;
 		}
 		
 		if (!this.partyLevel(24)) {
-			print("syncBO: lower level");
+			print("syncBO failed: lower level");
 			return false;
 		}
 		
@@ -683,7 +680,7 @@ function AutoSmurf() {
 		
 		var destination, home, msg;
 		
-		if (!me.getQuest(7, 0) || act === 0 || (!me.getQuest(7, 0) && act === undefined && me.act === 1)) {
+		if (!me.getQuest(7, 0) || act === 0) {
 			if (me.diff === 0) {
 				return false;
 			} else {
@@ -691,7 +688,7 @@ function AutoSmurf() {
 				home = 1;
 				msg = "act0 BO";
 			}
-		} else if (act === 1 || (me.getQuest(7, 0) && act === undefined && me.act === 1)) {
+		} else if (act === 1 || me.act === 1) {
 			destination = 35;
 			home = 1;
 			msg = "act1 BO";
@@ -700,7 +697,7 @@ function AutoSmurf() {
 				syncWP = true;
 				Messaging.sendToList(Team.Profiles, "syncWP");
 			}
-		} else if (!me.getQuest(15, 0) || act === 2 || (!me.getQuest(15, 0) && act === undefined && me.act === 2)) {
+		} else if (act === 2 || me.act === 2) {
 			if (me.diff === 0) {
 				return false;
 			} else {
@@ -713,7 +710,7 @@ function AutoSmurf() {
 					Messaging.sendToList(Team.Profiles, "syncWP");
 				}
 			}
-		} else if (!me.getQuest(23, 0) || act === 3 || (!me.getQuest(23, 0) && act === undefined && me.act === 3)) {
+		} else if (act === 3 || me.act === 3) {
 			if (me.diff === 0) {
 				return false;
 			} else {
@@ -726,7 +723,7 @@ function AutoSmurf() {
 					Messaging.sendToList(Team.Profiles, "syncWP");
 				}
 			}
-		} else if (!me.getQuest(25, 0) || (!me.getQuest(25, 0) && act === undefined && me.act === 4)) {
+		} else if (!me.getQuest(25, 0)) {
 			destination = 35;
 			home = 103;
 			msg = "act4 BO";
@@ -735,7 +732,7 @@ function AutoSmurf() {
 				syncWP = true;
 				Messaging.sendToList(Team.Profiles, "syncWP");
 			}
-		} else if (!me.getQuest(28, 0) || act === 4 || (!me.getQuest(28, 0) && act === undefined && me.act === 4)) {
+		} else if (act === 4 || me.act === 4) {
 			destination = 107;
 			home = 103;
 			msg = "act4+ BO";
@@ -744,12 +741,12 @@ function AutoSmurf() {
 				syncWP = true;
 				Messaging.sendToList(Team.Profiles, "syncWP");
 			}
-		} else if (me.getQuest(39, 0) || act === 5 || (me.getQuest(39, 0) && act === undefined && me.act === 5)) {
-			destination = 118;	//129
+		} else if (me.getQuest(35, 0) || me.getQuest(35, 1)) {
+			destination = 118;
 			home = 109;
 			msg = "act5+ BO";
 			
-			if (!syncWP && !getWaypoint(37)) {	//38 skip due to burning soul
+			if (!syncWP && !getWaypoint(37)) {
 				syncWP = true;
 				Messaging.sendToList(Team.Profiles, "syncWP");
 			}
@@ -801,7 +798,7 @@ function AutoSmurf() {
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
 		}
 		
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 		this.okCount();
 
@@ -868,182 +865,111 @@ function AutoSmurf() {
 		return true;
 	};
 
-	this.buffCount = function(act) { // Goes to Town, buys three Antidote potions from Akara, drinks them, and returns to Catacombs Level 4.
-		var i, akara, lysander, potions, dote, thaw;
+	this.pickGold = function () {
+		var i, goldPile;
 
-		if (act === undefined) {
-			act = 1;
+		Town.goToTown(1);
+		Town.move("stash");
+
+		if (me.getStat(14)) {
+			Town.openStash();
+
+			gold(me.getStat(14), 3); // Stash my Gold to make sure I have room to pick more up.
+
+			delay(me.ping * 2 + 500);
+
+			me.cancel();
 		}
-		
-		dote = me.findItems(514, -1, 3) || [];
-		thaw = me.findItems(517, -1, 3) || [];
 
-		//print("Buying Antidote Potions");
-		
-		if (act === 1) {
-			if (!me.inTown) {
-				if (!Pather.usePortal(1, null)) {
-					Town.goToTown(1);
-				}
+		for (i = 0; i < 15; i += 1) { // Wait up to 15 seconds for someone to drop Gold for me to pick up.
+			goldPile = getUnit(4, 523, 3);
+
+			delay(1000);
+
+			if (goldPile) {
+				Pickit.pickItem(goldPile);
 			}
-			
-			if (dote.length < 4) {
-				me.overhead("Buying Antidote Potions");
-				
-				while (!akara || !akara.openMenu()) { // Try more than once to interact with Kashya.
-					Packet.flash(me.gid);
 
-					Town.move("akara");
+			if (me.getStat(14)) {
+				Town.openStash();
 
-					akara = getUnit(1, "akara");
-
-					delay(1000);
-				}
-
-				if (akara) {
-					akara.startTrade();
-
-					potions = akara.getItem(514);
-
-					for (i = 0; i < (4 - dote.length); i += 1) {
-						potions.buy();
-					}
-
-					me.cancel();
-				}
-			} else {
-				me.overhead("Enough Antidote Potions");
-			}
-			
-			if (Leader && me.diff > 0) {
-				Town.move("waypoint");
-			} else {
-				Town.move("portalspot");
-				Pather.moveTo(me.x + myX, me.y + myY);	//260912
-			}
-		}
-
-		if (act === 2) {
-			if (thaw.length < 4) {
-				me.overhead("Buying Thawing Potions");
-				
-				while (!lysander || !lysander.openMenu()) { // Try more than once to interact with Kashya.
-					Packet.flash(me.gid);
-
-					Town.move("lysander");
-
-					lysander = getUnit(1, "lysander");
-
-					delay(1000);
-				}
-				
-				if (lysander) {	//260908
-					lysander.startTrade();
-
-					potions = lysander.getItem(517);
-
-					for (i = 0; i < (4 - thaw.length); i += 1) {
-						potions.buy();
-					}
-
-					me.cancel();
-				}
-			} else {
-				me.overhead("Enough Thawing Potions");
-			}
-			
-			if (Leader) {
-				Town.move("waypoint");
-			} else {
-				Town.move("portalspot");
-				Pather.moveTo(me.x + myX, me.y + myY);	//260912
-			}
-		}
-		
-		myBuff = true;
-		Messaging.sendToList(Team.Profiles, "buffCount");
-
-		while (!teamBuff) {
-			delay(250);
-		}
-		
-		if (act === 1) {
-			potions = me.findItems(514, -1, 3);
-		}
-
-		if (act === 2) {
-			potions = me.findItems(517, -1, 3);
-		}
-		
-		if (potions.length) {
-			for (i = 0 ; i < potions.length ; i += 1) {
-				potions[i].interact();
+				gold(me.getStat(14), 3); // Stash my Gold.
 
 				delay(me.ping * 2 + 500);
+
+				me.cancel();
 			}
 		}
-		
-		if (act === 1 && me.diff === 0) {
-			if (Leader) {
-				Pather.usePortal(37, null);
-				Pather.makePortal();
-				me.overhead("tpReady");
-				Messaging.sendToList(Team.Profiles, "tpReady");
-				delay(1000);
-			} else {
-				while (me.inTown) {
-					if (tpReady) {
-						Pather.usePortal(37, null);
-					}
-					
-					delay(250);
-				}
-				
-				tpReady = false;
+	};
+
+	this.giveGold = function () {
+		var i, goldPile,
+			dropAmount = me.gold - 5000,
+			maxDropAmount = me.gold - Config.LowGold;
+
+		Town.goToTown(1);
+		Town.move("stash");
+
+		Town.openStash();
+
+		gold(me.getStat(14), 3); // Stash my Gold.
+
+		delay(me.ping * 2 + 500);
+
+		dropAmount = Math.min(dropAmount, maxDropAmount);
+
+		me.overhead("Dropping " + Math.round(dropAmount) + " Gold");
+
+		gold(Math.round(dropAmount), 4); // Remove Gold from Stash (must be a round number).
+
+		delay(me.ping * 2 + 500);
+
+		while (me.getStat(14)) {
+			gold(me.getStat(14)); // Drop Gold
+
+			delay(me.ping * 2 + 500);
+		}
+
+		me.cancel();
+
+		for (i = 0 ; i < 15 ; i += 1) { // Wait 15 seconds for someone to pick up the Gold I've dropped.
+			delay(1000);
+
+			goldPile = getUnit(4, 523, 3);
+
+			if (!goldPile) {
+				break;
+			}
+
+			if (i >= 14 && goldPile) {
+				Pickit.pickItem(goldPile);
 			}
 		}
+	};
+
+//TOGGLING
+	this.setLifeChicken = function (value) {	//260922
+		var key,
+			buildconfig = {};
+			
+		Config.LifeChicken = value;
 		
-		myBuff = false;
-		teamBuff = false;
-		buffCount = 0;
-	
+		for (key in Config) {
+			if (typeof Config[key] !== "function") {
+				buildconfig[key] = Config[key];
+			}
+		}
+
+		Misc.fileAction("_cache/config." + me.profile + ".json", 1, JSON.stringify(buildconfig));
+		scriptBroadcast(JSON.stringify({lifeChicken: value}));
+		
+		print("Config.LifeChicken: " + value);
+
 		return true;
 	};
-
-//PATHING
-	this.clearToExit = function (currentarea, targetarea, cleartype) { // SiC-666 TODO: add moving to exit without clearing after XX minutes.
-		//print("Start clearToExit");
-		me.overhead("Start clearToExit");
-
-		print("Currently in: " + Pather.getAreaName(me.area));
-		me.overhead("Currently in: " + Pather.getAreaName(me.area));
-		
-		//print("Currentarea arg: " + Pather.getAreaName(me.area));
-		me.overhead("Currentarea arg: " + Pather.getAreaName(me.area));
-
-		delay(250);
-		print("Clearing to: " + Pather.getAreaName(targetarea));
-		me.overhead("Clearing to: " + Pather.getAreaName(targetarea));
-		
-		while (me.area === currentarea) {
-			try {
-				Pather.moveToExit(targetarea, true, cleartype);
-			} catch (e) {
-				print("Caught Error.");
-
-				print(e);
-			}
-
-			Packet.flash(me.gid);
-
-			delay(me.ping * 2 + 250);
-		}
-
-		print("End clearToExit");
-		me.overhead("End clearToExit");
-	};
 	
-	this.travel = function (goal) { // 0->9, a custom waypoint getter function
+//PATHING
+	this.travel = function (goal) { // 1->10, a custom waypoint getter function
 		var i, homeTown, nextAreaIndex, target, destination, unit,
 			wpAreas = [],
 			areaIDs = [];
@@ -1051,32 +977,31 @@ function AutoSmurf() {
 		Pather.teleport = true;
 		
 		switch (goal) {
-		default:
-		case 0:
+		case 1:
 			destination = 5; // Dark Wood
 			wpAreas = [1, 3, 4, 5];
 			areaIDs = [2, 3, 4, 10, 5];
 			homeTown = 1;
 			break;
-		case 1:
+		case 2:
 			destination = 35; // Catacombs Level 2
 			wpAreas = [1, 3, 4, 5, 6, 27, 29, 32, 35];
 			areaIDs = [2, 3, 4, 10, 5, 6, 7, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35];
 			homeTown = 1;
 			break;
-		case 2:
+		case 3:
 			destination = 57; // Halls Of The Dead Level 2
 			wpAreas = [42, 57]; // Dry Hills, Halls Of The Dead Level 2
 			areaIDs = [41, 42, 56, 57]; // Rocky Waste, Dry Hills, Halls Of The Dead Level 1, Halls Of The Dead Level 2
 			homeTown = 40;
 			break;
-		case 3:
+		case 4:
 			destination = 44; // Lost City
 			wpAreas = [42, 43, 44]; // Dry Hills, Far Oasis, Lost City
 			areaIDs = [41, 42, 43, 44]; // Dry Hills, Far Oasis, Lost City
 			homeTown = 40;
 			break;
-		case 4:
+		case 5:
 			destination = 74; // Arcane Sanctuary
 			wpAreas = [52, 74];
 			areaIDs = [50, 51, 52, 53, 54, 74];
@@ -1112,10 +1037,12 @@ function AutoSmurf() {
 			areaIDs = [110, 111, 112, 113, 115, 117, 118, 120, 128, 129];
 			homeTown = 109;
 			break;
+		default:
+			return false;
 		}
 
-		print("Traveling to " + getArea(destination).name);
-		me.overhead("Traveling to " + getArea(destination).name);
+		print("Traveling to " + Pather.getAreaName(destination));	//260922
+		me.overhead("Traveling to " + Pather.getAreaName(destination));	//260922
 
 		Town.goToTown();
 	
@@ -1129,21 +1056,20 @@ function AutoSmurf() {
 
 		nextAreaIndex = areaIDs.indexOf(target.course[0]) + 1; // Index of next area
 		
-		print("Travel course = " + target.course);
-		me.overhead("Travel course = " + target.course);
+		print("Travel course: " + target.course);
+		me.overhead("Travel course: " + target.course);
 
 		if (nextAreaIndex < areaIDs.length) { // If next area index is invalid, return true.
-			//if (me.inTown && wpAreas.indexOf(target.course[0]) > -1 && getWaypoint(wpAreas.indexOf(target.course[0]))) {	// Use waypoint to first area if possible
 			if (me.inTown && wpAreas.indexOf(target.course[0]) > -1 && Pather.wpAreas.indexOf(target.course[0]) > -1 && getWaypoint(Pather.wpAreas.indexOf(target.course[0]))) {
 				Pather.useWaypoint(target.course[0]);
 			}
 
 			for (nextAreaIndex; nextAreaIndex < areaIDs.length; nextAreaIndex += 1) {
-				//print("nextAreaIndex = " + nextAreaIndex);
-				me.overhead("nextAreaIndex = " + nextAreaIndex);
+				print("nextAreaIndex: " + nextAreaIndex);
+				me.overhead("nextAreaIndex: " + nextAreaIndex);
 				
-				print("Next location name = " + getArea(areaIDs[nextAreaIndex]).name);
-				me.overhead("Next location name = " + getArea(areaIDs[nextAreaIndex]).name);
+				print("Next location name: " + Pather.getAreaName(areaIDs[nextAreaIndex]));	//260922
+				me.overhead("Next location name: " + Pather.getAreaName(areaIDs[nextAreaIndex]));	//260922
 
 				switch (areaIDs[nextAreaIndex]) { // Special actions for traveling to some areas
 				case 32: // Inner Cloister
@@ -1202,7 +1128,6 @@ function AutoSmurf() {
 
 						delay(10000);
 
-						//print("Attempting to use any portal");
 						me.overhead("Attempting to use any portal");
 
 						while (!Pather.usePortal(129, null)) {
@@ -1252,7 +1177,7 @@ function AutoSmurf() {
 						try {
 							Pather.moveTo(10073, 8670);
 						} catch (e) {
-							print("Caught Error.");
+							print("Caught Error");
 
 							print(e);
 						}
@@ -1260,48 +1185,6 @@ function AutoSmurf() {
 
 					Pather.usePortal(null);
 
-					break;
-				case 46: // Canyon Of The Magi
-					try {
-						this.summoner();
-					} catch (e) {
-						print(e);
-
-						Town.goToTown();
-
-						Town.move("portalspot");
-
-						delay(10000);
-
-						while (!Pather.usePortal(areaIDs[nextAreaIndex], null)) {
-							delay(10000);
-
-							Pather.usePortal(areaIDs[nextAreaIndex]-1, null);
-
-							delay(10000);
-						}
-
-						if (me.area === areaIDs[nextAreaIndex]-1 ) {
-							Pather.moveToExit(areaIDs[nextAreaIndex], true);
-						}
-
-						//delay(me.ping);
-						delay(100);
-					} finally {
-						if (me.area !== areaIDs[nextAreaIndex]) {
-							Town.goToTown();
-
-							Town.move("portalspot");
-
-							delay(10000);
-
-							//Messaging.sendToList(Team.Profiles, "tp");
-
-							while (!Pather.usePortal(areaIDs[nextAreaIndex], null)) {
-								delay(1000);
-							}
-						}
-					}
 					break;
 				case 78: // Flayer Jungle
 					if (!Pather.moveToExit(78, true)) {	//260908
@@ -1362,12 +1245,37 @@ function AutoSmurf() {
 		return true;
 	};
 	
+	this.clearToExit = function (currentarea, targetarea, cleartype) { // SiC-666 TODO: add moving to exit without clearing after XX minutes.
+		me.overhead("Start clearToExit");
+
+		me.overhead("Currently in " + Pather.getAreaName(me.area));
+		
+		delay(250);
+		
+		me.overhead("Clearing to " + Pather.getAreaName(targetarea));
+		
+		while (me.area === currentarea) {
+			try {
+				Pather.moveToExit(targetarea, true, cleartype);
+			} catch (e) {
+				print("Caught Error");
+
+				print(e);
+			}
+
+			Packet.flash(me.gid);
+
+			delay(me.ping * 2 + 250);
+		}
+
+		me.overhead("End clearToExit");
+	};
+	
 	this.changeAct = function (act) {
 		var npc, time, tpTome, i,
 			preArea = me.area;
 
-		//print("change Act " + act);
-		me.overhead("change Act " + act);
+		me.overhead("changeAct " + act);
 		
 		if (me.act === act) {
 			return true;
@@ -1501,7 +1409,6 @@ function AutoSmurf() {
 			if (me.area === preArea) {
 				me.cancel();
 				Town.move("portalspot");
-				print("changeAct failed");
 				D2Bot.printToConsole("changeAct failed");
 				return false;
 			}
@@ -1509,8 +1416,7 @@ function AutoSmurf() {
 			return false;
 		}
 
-		print("checking player in...");
-		me.overhead("checking player in...");
+		me.overhead("Checking player in...");
 		
 		for (time = 0; time < 200; time += 1) {
 			if (this.playerIn()) {
@@ -1546,14 +1452,13 @@ function AutoSmurf() {
 			presetUnit = getPresetUnit(me.area, 2, wpIDs[i]);
 
 			if (presetUnit) {
-				print("getting nearest WP");
-				me.overhead("getting nearest WP");
+				me.overhead("Getting nearest WP...");
 
 				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 10) {
 					try {
 						Pather.moveToPreset(me.area, 2, wpIDs[i], 0, 0, false, false);
 					} catch (e) {
-						print("Caught Error.");
+						print("Caught Error");
 
 						print(e);
 					}
@@ -1636,14 +1541,10 @@ function AutoSmurf() {
 					delay(me.ping * 2 + 500);
 				} else {
 					if (Pickit.canMakeRoom()) {
-						//print("ÿc7Trying to make room for " + Pickit.itemColor(item) + item.name);
-						//me.overhead("Trying to make room for " + Pickit.itemColor(item) + item.name);
 						me.overhead("Trying to make room for " + item.name);	//eom
 
 						Town.visitTown(); // Go to Town and do chores. Will throw an error if it fails to return from Town.
 					} else {
-						//print("ÿc7Not enough room for " + Pickit.itemColor(item) + item.name);
-						//me.overhead("Not enough room for " + Pickit.itemColor(item) + item.name);
 						me.overhead("Not enough room for " + item.name);	//eom
 
 						return false;
@@ -1653,35 +1554,6 @@ function AutoSmurf() {
 				return false;
 			}
 		}
-
-		return true;
-	};
-
-	this.toInventory = function () {
-		var i,
-		items = [],
-		item = me.findItem(-1, 0);
-
-		//print("toInventory");
-		me.overhead("toInventory");
-
-		if (!Town.openStash()) {
-			Town.openStash();
-		}
-		if (item) {
-			do {
-				if (item.classid === 91 || item.classid === 174 || item.classid === 553 || item.classid === 554)	 {
-					items.push(copyUnit(item));
-				}
-			} while (item.getNext());
-		}
-		for (i = 0; i < items.length; i += 1) {
-			if (Storage.Inventory.CanFit(items[i])) {
-				Storage.Inventory.MoveTo(items[i]);
-			}
-		}
-		delay(1000);
-		me.cancel();
 
 		return true;
 	};
@@ -1704,7 +1576,6 @@ function AutoSmurf() {
 				Storage.Inventory.MoveTo(items[i]);
 			}
 			
-			//print("offEquip");
 			me.overhead("offEquip");
 		}
 		
@@ -1720,22 +1591,20 @@ function AutoSmurf() {
 		var amulet = me.findItem("vip"),
 			staff = me.findItem("msf");
 
-		//print("cubing staff");
-		me.overhead("cubing staff");
+		me.overhead("cubingStaff");
 
 		if (!staff || !amulet) {
 			return false;
 		}
-		Town.move("stash");
-		if (!Town.openStash()) {
-			Town.openStash();
-		}
+		
 		Storage.Cube.MoveTo(amulet);
 		Storage.Cube.MoveTo(staff);
 		Cubing.openCube();
 		transmute();
 		//delay(750 + me.ping);
+		
 		delay(me.ping * 2 + 1000);
+		
 		Cubing.emptyCube();
 		me.cancel();
 
@@ -1747,19 +1616,7 @@ function AutoSmurf() {
 			tick = getTickCount(),
 			preArea = me.area;
 
-		//print("place staff");
-		me.overhead("place staff");
-		
-		if (!me.findItem(91, 0, 3)) {
-			Town.goToTown();
-			Town.move("stash");
-			this.toInventory();
-			Town.move("portalspot");
-			if (!Pather.usePortal(preArea, me.name)) {
-				throw new Error("placeStaff: Failed to take TP");
-			}
-			delay(1000);
-		}
+		me.overhead("placeStaff");
 		
 		orifice = getUnit(2, 152);
 		
@@ -1791,8 +1648,7 @@ function AutoSmurf() {
 			brain = me.findItem(555),
 			flail = me.findItem(173);
 
-		//print("cubing flail");
-		me.overhead("cubing flail");
+		me.overhead("cubeFlail");
 		
 		if (me.findItem(174)) { // Already have the finished Flail.
 			return true;
@@ -1802,16 +1658,6 @@ function AutoSmurf() {
 			print("cubeFlail failed: missing ingredient(s)");
 
 			return false;
-		}
-		
-		if (!me.inTown) {
-			Town.goToTown();
-		}
-
-		Town.move("stash");
-		
-		if (!Town.openStash()) {
-			Town.openStash();
 		}
 		
 		Storage.Cube.MoveTo(eye);
@@ -1836,10 +1682,6 @@ function AutoSmurf() {
 			return true;
 		}
 
-		if (!me.inTown) {
-			Town.goToTown();
-		}
-		
 		if (finishedFlail) {
 			if (!Equip.equip(finishedFlail, 4)) {
 				Pickit.pickItems();
@@ -1855,13 +1697,12 @@ function AutoSmurf() {
 
 			if (cursorItem) {
 				if (Storage.Inventory.CanFit(cursorItem)) {
-					//print("Keeping weapon by force.");
-					me.overhead("Keeping weapon by force.");
+					me.overhead("Keeping weapon by force");
 
 					Storage.Inventory.MoveTo(cursorItem);
 				} else {
 					me.cancel();
-					print("No room to keep weapon by force.");
+					print("No room to keep weapon by force");
 
 					cursorItem.drop();
 				}
@@ -1872,12 +1713,6 @@ function AutoSmurf() {
 
 		Pickit.pickItems(); // Will hopefully pick up the character's weapon if it was dropped.
 		
-		Town.move("portalspot");
-		
-		if (!Pather.usePortal(83, me.name)) {
-			throw new Error("AutoSmurf.travincal: Failed to go back from town");
-		}
-
 		return true;
 	};
 
@@ -1885,11 +1720,10 @@ function AutoSmurf() {
 		var i,
 			orb = getUnit(2, 404);
 
-		//print("Smashing the Compelling Orb.");
-		me.overhead("Smashing the Compelling Orb.");
+		me.overhead("Smashing the Compelling Orb");
 
 		if (!orb) {
-			throw new Error("AutoSmurf.placeFlail: Couldn't find Compelling Orb.");
+			throw new Error("placeFlail: Couldn't find Compelling Orb");
 		}
 
 		Pather.moveToUnit(orb, 0, 0, false, false);
@@ -1922,10 +1756,10 @@ function AutoSmurf() {
 						Packet.flash(me.gid);
 					}
 					
-					this.waitForPartyMembers();
+					this.okCount();	//260922
 					
 					this.clearToExit(2, 3, 0);
-					this.waitForPartyMembers();
+					this.okCount();	//260922
 
 					Pather.goWP(me.area, true);
 					Pather.moveTo(me.x + myX, me.y + myY);	//260822
@@ -1943,14 +1777,13 @@ function AutoSmurf() {
 					Packet.flash(me.gid);
 				}
 				
-				this.waitForPartyMembers();
+				this.okCount();	//260922
 				
 				this.clearToExit(2, 8, 0);
-				this.waitForPartyMembers();
+				this.okCount();	//260922
 				
 				for (i = 0; i < 2; i += 1) {
-					//print("clearing - try number " + i);
-					me.overhead("clearing - try number " + i);
+					me.overhead("Clearing retry " + i);
 
 					Attack.clearLevel();
 
@@ -1995,14 +1828,13 @@ function AutoSmurf() {
 					}
 				}
 				
-				this.waitForPartyMembers();
+				this.okCount();	//260922
 				Precast.doPrecast(true);
 				
 				Pather.teleport = false; // not teleporting in Den
 				
 				for (i = 0; i < 3; i += 1) {
-					//print("clearing - try number " + i);
-					me.overhead("clearing - try number " + i);
+					me.overhead("Clearing retry " + i);
 
 					Attack.clearLevel();
 
@@ -2061,26 +1893,21 @@ function AutoSmurf() {
 	this.blood = function () {
 		var burial, kashya;
 		
-		if (me.getQuest(2, 1) || me.getQuest(2, 0)) {
-			//print("getting waypoints...");
-			me.overhead("getting waypoints...");
-		} else {
-			print("ÿc4=== [BLOOD] ===");
-		}
-		
 		if (!doneChores) {
 			Town.doChores(true);
 		}
 		
 		if (!me.getQuest(2, 1) && !me.getQuest(2, 0)) {
+			print("ÿc4=== [BLOOD] ===");
+			
 			Pather.useWaypoint(3);
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
 			this.clearToExit(3, 17, 0);
 			
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
 			burial = getPresetUnit(17, 1, 805);
@@ -2099,19 +1926,21 @@ function AutoSmurf() {
 			}
 			
 			this.clearToExit(17, 3, 0);
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 		}
+		
+		me.overhead("Getting waypoint...");
 		
 		if (me.inTown) {
 			Pather.useWaypoint(3);
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 		}
 
 		this.clearToExit(3, 4, 0);
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 
 		Pather.goWP(me.area, true);
@@ -2122,9 +1951,9 @@ function AutoSmurf() {
 		this.clickWP();
 		
 		Pather.useWaypoint(1);
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		
-		if (!me.getQuest(2, 0)) {
+		if (me.getQuest(2, 1)) {
 			while (!kashya || !kashya.openMenu()) { // Try more than once to interact with Kashya.
 				Packet.flash(me.gid);
 
@@ -2162,16 +1991,15 @@ function AutoSmurf() {
 		if (!me.getQuest(4, 1)) { // not rescues Cain
 			if (me.diff === 0 && !getWaypoint(3)) {
 				
-				//print("getting waypoints...");
-				me.overhead("getting waypoints...");
+				me.overhead("Getting waypoint...");
 				
 				Pather.useWaypoint(4);
 				Pather.moveTo(me.x + myX, me.y + myY);	//260822
-				this.waitForPartyMembers();
+				this.okCount();	//260922
 				Precast.doPrecast(true);
 
 				this.clearToExit(4, 10, 0);
-				this.waitForPartyMembers();
+				this.okCount();	//260922
 				Precast.doPrecast(true);
 
 				while (me.area === 10) {
@@ -2188,6 +2016,7 @@ function AutoSmurf() {
 					this.clickWP();
 					Pather.useWaypoint(1);
 					Town.move("portalspot");
+					
 					while (!Pather.usePortal(5, null)) {
 						delay(250);
 						
@@ -2197,7 +2026,7 @@ function AutoSmurf() {
 					}
 				}
 
-				this.waitForPartyMembers();
+				this.okCount();	//260922
 				Precast.doPrecast(true);
 	
 				Pather.goWP(me.area, true);
@@ -2208,19 +2037,18 @@ function AutoSmurf() {
 				this.clickWP();
 				
 				Pather.useWaypoint(1);
-				this.waitForPartyMembers();
+				this.okCount();	//260922
 				Town.doChores();
 				
 			}
 			
 			if (Leader && me.diff !== 0) { //
-				this.travel(0);
+				this.travel(1);
 			}
 			
 			if (!me.getQuest(4, 3) && !me.getQuest(4, 4)) {
 				//4,4redportal already open ; 4,3 holding scroll
-				//print("getting scroll...");
-				me.overhead("getting scroll...");
+				me.overhead("Getting scroll...");
 
 				if (!me.inTown) {
 					Town.goToTown();
@@ -2230,13 +2058,13 @@ function AutoSmurf() {
 					Pather.useWaypoint(5); //dark wood
 					Pather.moveTo(me.x + myX, me.y + myY);	//260822
 					
-					this.waitForPartyMembers();
+					this.okCount();	//260922
 					Precast.doPrecast(true);
 					
 					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
 					
-					//Attack.clear(25); // treehead
-					Attack.clear(25, 0, getLocaleString(2873));	// Treehead WoodFist	//260921
+					Attack.clear(25);	//260921
+					//Attack.clear(25, 0, getLocaleString(2873));	// Treehead WoodFist	//260921
 					
 					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
 					
@@ -2277,8 +2105,7 @@ function AutoSmurf() {
 				}
 			}
 			
-			//print("getting redportal...");
-			me.overhead("getting redportal...");
+			me.overhead("Getting redportal...");
 			
 			if (me.diff === 0) {
 				Pather.useWaypoint(4); //stoney field
@@ -2296,14 +2123,15 @@ function AutoSmurf() {
 				}
 			}
 			
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
 			Pather.teleport = false;
 
 			Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
 			
-			Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
+			Attack.clear(25);	//260921
+			//Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
 			
 			Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
 			
@@ -2331,8 +2159,7 @@ function AutoSmurf() {
 			
 			Pather.teleport = true;
 			
-			//print("rescue cain...");
-			me.overhead("rescue cain...");
+			me.overhead("Rescue cain");
 
 			for (i = 0; i < 15; i += 1) {
 				if (Pather.usePortal(38)) {
@@ -2345,8 +2172,7 @@ function AutoSmurf() {
 			delay(me.ping * 2 + 500);
 			
 			if (me.area !== 38) {
-				//print("Redportal not found ");
-				me.overhead("Redportal not found ");
+				D2Bot.printToConsole("Redportal not found");	//260923
 				delay(1000);
 				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
@@ -2427,12 +2253,13 @@ function AutoSmurf() {
 		
 		Pather.useWaypoint(4);
 		Pather.moveTo(me.x + myX, me.y + myY);	//260822
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 
 		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
-
-		Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
+		
+		Attack.clear(25);	//260921
+		//Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
 		
 		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true); //260719	//260822
 
@@ -2443,7 +2270,7 @@ function AutoSmurf() {
 			delay(1000);
 		}
 
-		//this.waitForPartyMembers();
+		//this.okCount();	//260922
 		this.okCount();
 		
 		Precast.doPrecast(true);
@@ -2496,11 +2323,11 @@ function AutoSmurf() {
 		if (!getWaypoint(4)) { // black marsh
 			Pather.useWaypoint(5);
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
 			this.clearToExit(5, 6, 0);
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 		
 			Pather.goWP(me.area, true);
@@ -2512,19 +2339,19 @@ function AutoSmurf() {
 		} else {
 			Pather.useWaypoint(6);
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 		}
 		
 		Precast.doPrecast(true);
 
 		this.clearToExit(6, 7, 0);
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
 		this.clearToExit(7, 26, 0);
 		this.clearToExit(26, 27, 0);
 		delay(250);
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 	
 		Pather.goWP(me.area, true);
@@ -2557,7 +2384,7 @@ function AutoSmurf() {
 			
 			Pather.useWaypoint(27);
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 		}
 		
 		Precast.doPrecast(true);
@@ -2570,7 +2397,7 @@ function AutoSmurf() {
 			tick = getTickCount();
 			while (getDistance(me.x, me.y, smith.roomx * 5 + smith.x, smith.roomy * 5 + smith.y) > 15) {
 				if (getTickCount() - tick > 180 * 1000) {
-					print("Failed to move Smith");
+					print("Smith failed: moveTo");
 					break;
 				}
 				
@@ -2578,13 +2405,14 @@ function AutoSmurf() {
 			}
 			
 			if (getUnit(1, 402)) {
-				Attack.clear(15, 0, getLocaleString(2889)); // The Smith
+				Attack.clear(15);	//260921
+				//Attack.clear(15, 0, getLocaleString(2889)); // The Smith
 			} else {
-				print("Failed to getUnit Smith");
+				print("Smith failed: getUnit");
 				return false;
 			}
 		} else {
-			print("Failed to getPreset Smith");
+			print("Smith failed: getPresetUnit");
 			return false;
 		}
 		
@@ -2681,7 +2509,7 @@ function AutoSmurf() {
 				}
 				
 				if (i > 30) {
-					print("malus failed");
+					print("Malus failed");
 					scriptBroadcast("quit");	//260909
 				}
 				
@@ -2714,18 +2542,18 @@ function AutoSmurf() {
 				
 				Pather.useWaypoint(27);
 				Pather.moveTo(me.x + myX, me.y + myY);	//260822
-				this.waitForPartyMembers();
+				this.okCount();	//260922
 			}
 			
 			Precast.doPrecast(true);
 			
 			this.clearToExit(27, 28, 0);
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 		}
 		
 		this.clearToExit(28, 29, 0);
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 
 		Pather.goWP(me.area, true);
@@ -2757,7 +2585,7 @@ function AutoSmurf() {
 			
 			Pather.useWaypoint(29);
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 		}
 		
 		Precast.doPrecast(true);
@@ -2790,7 +2618,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
 		while (me.area === 30) {
@@ -2821,7 +2649,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
 		while (me.area === 31) {
@@ -2852,7 +2680,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 
 		Pather.goWP(me.area, true);
 		Pather.moveTo(me.x + myX, me.y + myY);	//260822
@@ -2883,7 +2711,7 @@ function AutoSmurf() {
 			
 			Pather.useWaypoint(32);
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 		}
 		
 		Pather.teleport = false;
@@ -2892,18 +2720,19 @@ function AutoSmurf() {
 
 		Pather.moveTo(20047, 4898, 10, true);
 
-		Attack.clear(20, 0, getLocaleString(2878)); // Bone Ash
+		Attack.clear(20);	//260921
+		//Attack.clear(20, 0, getLocaleString(2878)); // Bone Ash
 		
 		Pather.moveTo(20047, 4898, 10, true);
 		
 		//Attack.clear(25);
 		
 		this.clearToExit(33, 34, 0);
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
 		this.clearToExit(34, 35, 0);
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
 		Pather.goWP(me.area, true);
@@ -2932,24 +2761,28 @@ function AutoSmurf() {
 		print("ÿc4=== [ANDY] ===");
 		
 		if (runAndy === 0) {
-			Town.goToTown();
-			
-			if (!doneChores) {
-				Town.doChores(true);
+			if (me.area === 35) {
+				Pather.useWaypoint(1);
+			} else {
+				Town.goToTown();
+				
+				if (!doneChores) {
+					Town.doChores(true);
+				}
+				
+				this.syncBO();
 			}
-			
-			this.syncBO();
 		}
 		
 		if ((!me.getQuest(6, 1) && !me.getQuest(6, 0)) || !this.partyLevel(teleLvl)) {
 			if (me.diff === 0) {
 				if (runAndy === 1) {
 					this.clearToExit(35, 36, 0);
-					this.waitForPartyMembers();
+					this.okCount();	//260922
 					Precast.doPrecast(true);
 					
 					this.clearToExit(36, 37, 0);
-					this.waitForPartyMembers();
+					this.okCount();	//260922
 					Precast.doPrecast(true);
 
 					Pather.moveTo(22594, 9641, 10, true);
@@ -2970,7 +2803,7 @@ function AutoSmurf() {
 				
 					Pather.teleport = false;
 					
-					this.waitForPartyMembers();
+					this.okCount();	//260922
 					Precast.doPrecast(true);
 					
 					Pather.moveTo(22594, 9641, 10, true);
@@ -2990,7 +2823,7 @@ function AutoSmurf() {
 				Pather.moveTo(22548, 9568, 5, true);
 			} else {
 				if (Leader) {
-					this.travel(1);
+					this.travel(2);
 				}
 				
 				this.buffCount(1);
@@ -3045,21 +2878,23 @@ function AutoSmurf() {
 			Pather.teleport = true;
 		}
 		
-		if (!this.partyLevel(teleLvl)) {	//260914
-			me.overhead("Not ready to start Act2");
-			D2Bot.printToConsole("Not ready to start Act2");	//260920
-			scriptBroadcast("quit");	//260909
-		} else {	//260921
+		while (!this.partyLevel(teleLvl)) {	//260921
 			if (Leader) {
-				D2Bot.printToConsole("=== ANDY ===", 7);
+				D2Bot.printToConsole("Not ready for act2");
+				//D2Bot.restart();
+				scriptBroadcast("quit");	//260909
 			}
 			
-			if (me.getQuest(6, 1) || me.getQuest(6, 0)) {
-				this.changeAct(2);
-			}
+			delay(10000);
+		}
+		
+		if (Leader) {
+			D2Bot.printToConsole("=== ANDY ===", 7);
 		}
 		
 		doneChores = false;
+		
+		this.changeAct(2);
 		
 		return true;
 	};
@@ -3074,6 +2909,10 @@ function AutoSmurf() {
 		}
 		
 		this.syncBO();
+		
+		if (Leader && !getWaypoint(12)) {
+			this.travel(3);	// Halls Of The Dead Level 2
+		}
 		
 		if (Leader) {
 			Pather.useWaypoint(57); // Halls Of The Dead Level 2
@@ -3090,7 +2929,7 @@ function AutoSmurf() {
 			delay(250);
 		}
 
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
 		Pather.teleport = false;
@@ -3111,7 +2950,7 @@ function AutoSmurf() {
 			try {
 				Pather.moveToPreset(60, 2, 354, 0, 0, 0, false);
 			} catch (e) {
-				print("Caught Error.");
+				print("Caught Error");
 
 				print(e);
 			}
@@ -3169,6 +3008,10 @@ function AutoSmurf() {
 		
 		this.syncBO();
 		
+		if (Leader && !getWaypoint(14)) {
+			this.travel(4); // Lost City
+		}
+		
 		if (me.diff === 0) {
 			if (Leader) {
 				Pather.useWaypoint(44);
@@ -3187,11 +3030,11 @@ function AutoSmurf() {
 			
 			Pather.teleport = false;
 
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 
 			this.clearToExit(58, 61, 0); // Go to Claw Viper Temple Level 2
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
 			Pather.teleport = true;
@@ -3219,13 +3062,6 @@ function AutoSmurf() {
 			if (!Pather.usePortal(40, null)) {
 				Town.goToTown();
 			}
-		
-			if (me.findItem(521)) {
-				Town.move("stash");
-				delay(me.ping * 2 + 200);
-				Town.openStash();
-				Storage.Stash.MoveTo(me.findItem(521));
-			}
 		}
 
 		Town.move("cain");	//260728
@@ -3251,7 +3087,8 @@ function AutoSmurf() {
 	};
 
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
-		var journal, atma, i;
+		var journal, i, atma,
+			chicken = Config.LifeChicken;
 
 		print("ÿc4=== [SUMMONER] ===");
 		
@@ -3261,8 +3098,8 @@ function AutoSmurf() {
 		
 		this.syncBO();
 		
-		if (me.act !== 2 || !me.inTown) {
-			Town.goToTown(2);
+		if (Leader && !getWaypoint(16)) {
+			this.travel(5);
 		}
 		
 		this.buffCount(2);
@@ -3283,7 +3120,7 @@ function AutoSmurf() {
 				try {
 					Pather.moveToPreset(74, 2, 357, 8, 8, false, false);	//260411
 				} catch (e) {
-					print("Caught Error.");
+					print("Caught Error");
 
 					print(e);
 				}
@@ -3308,6 +3145,8 @@ function AutoSmurf() {
 			
 			tpReady = false;
 		}
+		
+		this.setLifeChicken(0);	//260922
 
 		Pather.teleport = false;
 		
@@ -3329,7 +3168,18 @@ function AutoSmurf() {
 		Pather.moveToPreset(74, 2, 357, 3, 3);
 
 		this.okCount(10);	//260921
-	
+		
+		if (me.dead) {	//260923
+			D2Bot.printToConsole("I'm dead");
+			scriptBroadcast("quit");
+
+			while (true) {
+				delay(1000);
+			}
+		}
+
+		this.setLifeChicken(chicken);	//260922
+		
 		journal = getUnit(2, 357);
 		
 		for (i = 0; i < 3; i += 1) {
@@ -3468,7 +3318,7 @@ function AutoSmurf() {
 			
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
 			
-			this.waitForPartyMembers();
+			this.okCount();	//260922
 			Precast.doPrecast(true);
 		}
 		
@@ -3508,7 +3358,7 @@ function AutoSmurf() {
 					try {
 						Pather.moveTo(chest.roomx * 5 + chest.x + myX, chest.roomy * 5 + chest.y + myY, 3, true);	//260822
 					} catch (e) {
-						print("Caught Error.");
+						print("Caught Error");
 						print(e);
 					}
 					
@@ -3519,7 +3369,7 @@ function AutoSmurf() {
 				
 				Attack.openChests(10);
 			} else {
-				print("not found chest");
+				print("Tombs: chest not found");
 				continue;
 			}
 
@@ -3532,7 +3382,7 @@ function AutoSmurf() {
 			} else if (chest.x > 30 && chest.y > 5) {
 				Attack.clearList(Attack.scanList(null, {x1: chest.roomx * 5 + 15, x2: chest.roomx * 5 + 65, y1: chest.roomy * 5 - 20, y2: chest.roomy * 5 + 20}), null, 1);
 			} else {
-				print("chest cord error");
+				print("Tombs: incorrect chest cord");
 				continue;
 			}
 			
@@ -3561,9 +3411,8 @@ function AutoSmurf() {
 			D2Bot.printToConsole("=== TOMBS ===", 7);
 		}
 		
-		while (!this.partyLevel(tombsLvl) && me.diff === 0) {
-			//print("Not ready to start Duriel");
-			me.overhead("Not ready to start Duriel");
+		while (!this.partyLevel(tombsLvl)) {
+			print("Not ready to start Duriel");
 			
 			if (Leader) {
 				//D2Bot.restart();
@@ -3610,13 +3459,6 @@ function AutoSmurf() {
 		this.getQuestItem(92, 356);
 
 		Town.goToTown();
-
-		if (me.findItem(92)) {
-			Town.move("stash");
-			delay(me.ping * 2 + 200);
-			Town.openStash();
-			Storage.Stash.MoveTo(me.findItem(92));
-		}
 
 		if (Leader) {
 			D2Bot.printToConsole("=== STAFF ===", 7);
@@ -3699,7 +3541,7 @@ function AutoSmurf() {
 					try {
 						Pather.moveToUnit(presetUnit, 10, 10, false);
 					} catch (e) {
-						print("Caught Error.");
+						print("Caught Error");
 						print(e);
 					}
 				}
@@ -3735,16 +3577,18 @@ function AutoSmurf() {
 				//throw new Error("Failed to kill Radament")
 			}
 			
-			for (i = 0 ; i < 30 ; i += 1) {	//260806
-				if (me.findItem(552)) {
-					break;
-				}
-				
+			for (i = 0 ; i < 30 ; i += 1) {	//260921
 				if (i > 15 && Leader) {
 					scriptBroadcast("quit");	//260909
 				}
 				
 				this.getQuestItem(552);
+				
+				if (me.findItem(552)) {
+					break;
+				}
+				
+				Attack.clear(15);
 				
 				delay(1000);
 			}
@@ -3825,7 +3669,7 @@ function AutoSmurf() {
 					try {
 						Pather.moveToPreset(getRoom().correcttomb, 2, 152, 0, 0, false, false);
 					} catch (e) {
-						print("Caught Error.");
+						print("Caught Error");
 
 						print(e);
 					}
@@ -3839,8 +3683,7 @@ function AutoSmurf() {
 				Town.move("portalspot");
 				this.okCount();
 				
-				//print("Waiting for Orifice TP.");
-				me.overhead("Waiting for Orifice TP.");
+				me.overhead("Waiting for Orifice TP...");
 				
 				while (me.inTown) {
 					if (tpReady) {
@@ -3856,10 +3699,6 @@ function AutoSmurf() {
 			Config.Dodge.Enabled = false;	//260812
 			Pather.teleport = false;
 
-			//delay(me.ping * 2 + 250);
-			
-			//Attack.clear(10);	//260812
-			
 			orifice = getPresetUnit(getRoom().correcttomb, 2, 152);
 			
 			Attack.clearList(Attack.scanList(null, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}), null, 1);	//260727
@@ -3870,18 +3709,14 @@ function AutoSmurf() {
 			
 			Config.Dodge.Enabled = true;	//260812
 			
-			//print("orifice cleared");	//260910
-			
 			if (Leader) {
 				if (!me.getQuest(10, 0)) { //horadric staff
-					print("placeStaff");	//260910
 					this.placeStaff();
 				}
 				
 				Pather.makePortal();
 			}
 			
-			//print("before hole");	//260910
 			while (!hole) {
 				hole = getUnit(2, 100);
 				
@@ -3893,28 +3728,24 @@ function AutoSmurf() {
 				
 				delay(500);
 			}
-			//print("after hole");	//260910
+			
 			Precast.doPrecast(true);
 			
 			if (!Pather.usePortal(40, null)) {
-				//print("goToTown");	//260910
 				Town.goToTown();
 			}
 			
-			//print("okCount");	//260910
 			this.okCount();
 				
 			if (Leader) {
 				delay(me.ping * 2 + 3000);
-				//print("use hole");	//260910
 				Pather.usePortal(getRoom().correcttomb, null);
 				
 				Pather.useUnit(2, 100, 73);
 				
 				Pather.makePortal();
 			} else {
-				//print("Waiting for Duriel TP.");
-				me.overhead("Waiting for Duriel TP.");
+				me.overhead("Waiting for Duriel TP...");
 				
 				while (!Pather.usePortal(73, null)) {
 					delay(250);
@@ -3980,9 +3811,9 @@ function AutoSmurf() {
 			D2Bot.printToConsole("=== DURIEL ===", 7);
 		}
 		
-		this.changeAct(3);
-
 		doneChores = false;
+		
+		this.changeAct(3);
 		
 		return true;
 	};
@@ -4024,27 +3855,26 @@ function AutoSmurf() {
 			me.cancel();
 		}
 		
-		if (!me.getQuest(20, 1) && !me.getQuest(20, 0)) {
-			while (!me.getQuest(20, 1) && !me.getQuest(20, 0)) { // Haven't done the Jade Figurine quest yet. It's possible another character has the Jade Figurine. After checking myself for it and processing if it had it, I should wait here until the "Return to Alkor for reward" stage.
-				sendPacket(1, 0x40); // This is likely required to refresh the status of me.getQuest(20, 1) as has been tested with me.getQuest(18, 0) in this.travincal()
-
-				delay(1000);
-			}
+		while (!me.getQuest(20, 1) && !me.getQuest(20, 0)) { // should wait here until the "Return to Alkor for reward" stage
+			sendPacket(1, 0x40); // This is likely required to refresh the status of me.getQuest(20, 1)
+			delay(1000);
 		}
 		
 		if (!me.getQuest(20, 0)) {	//260911
-			while (leaderFigurine === false) {
+			while (teamFigurine === false) {
 				delay(1000);
 			}
 			
-			delay(myPos * 15000 + 1);	//260916
+			if (!leaderFigurine) {	//260922
+				delay(myPos * 15000 + 1);	//260916
+			}
 			
 			Town.move("alkor");
 			alkor = getUnit(1, "alkor");
 			
 			for (i = 0 ; i < 100 ; i += 1) {
 				if (i > 90) {
-					D2Bot.printToConsole("Figurine Traffic", 9);
+					D2Bot.printToConsole("Traffic jam in Figurine");
 					//D2Bot.restart();
 					scriptBroadcast("quit");	//260909
 				}
@@ -4062,12 +3892,11 @@ function AutoSmurf() {
 				delay(500);
 			}
 			
-			Messaging.sendToList(Team.Profiles, "leaderFigurine");
+			Messaging.sendToList(Team.Profiles, "teamFigurine");
 			
 			potion = me.findItem(545);
 			
 			if (potion) {
-				//print("potion");
 				clickItem(1, potion);
 				D2Bot.printToConsole("!!! POTION !!!", 8);
 			}
@@ -4081,7 +3910,8 @@ function AutoSmurf() {
 		this.okCount();
 
 		figurine = false;
-		leaderFigurine = false;
+		teamFigurine = false;
+		leaderFigurine = false;	//260922
 
 		if (Leader) {
 			D2Bot.printToConsole("=== FIGURINE ===", 7);
@@ -4129,8 +3959,6 @@ function AutoSmurf() {
 			target = getUnit(4, 548);
 			Pickit.pickItem(target);
 			Town.goToTown();
-		} else {
-			print("already have tome");	//260910
 		}
 		
 		Town.move("alkor");
@@ -4182,14 +4010,6 @@ function AutoSmurf() {
 
 		Town.goToTown();
 
-		if (me.findItem(553)) {
-			Town.move("stash");
-			delay(me.ping * 2 + 200);
-			Town.openStash();
-			Storage.Stash.MoveTo(me.findItem(553));
-			me.cancel();
-		}
-
 		if (Leader) {
 			D2Bot.printToConsole("=== EYE ===", 7);
 		}
@@ -4228,14 +4048,6 @@ function AutoSmurf() {
 
 		Town.goToTown();
 
-		if (me.findItem(554)) {
-			Town.move("stash");
-			delay(me.ping * 2 + 200);
-			Town.openStash();
-			Storage.Stash.MoveTo(me.findItem(554));
-			me.cancel();
-		}
-
 		if (Leader) {
 			D2Bot.printToConsole("=== HEART ===", 7);
 		}
@@ -4273,14 +4085,6 @@ function AutoSmurf() {
 		this.getQuestItem(555, 406);
 
 		Town.goToTown();
-
-		if (me.findItem(555)) {
-			Town.move("stash");
-			delay(me.ping * 2 + 200);
-			Town.openStash();
-			Storage.Stash.MoveTo(me.findItem(555));
-			me.cancel();
-		}
 
 		if (Leader) {
 			D2Bot.printToConsole("=== BRAIN ===", 7);
@@ -4331,7 +4135,7 @@ function AutoSmurf() {
 			presetUnit = getPresetUnit(83, 2, 237);
 
 			if (!presetUnit) {
-				print("!presetUnit");
+				print("Travincal failed: getPresetUnit");
 				return false;
 			}
 
@@ -4349,7 +4153,7 @@ function AutoSmurf() {
 		presetUnit = getPresetUnit(83, 2, 237);
 
 		if (!presetUnit) {
-			print("!presetUnit");
+			print("Travincal failed: getPresetUnit");
 			return false;
 		}
 
@@ -4362,14 +4166,6 @@ function AutoSmurf() {
 		
 		Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 63, x2: presetUnit.roomx * 5 + presetUnit.x + 140, y1: presetUnit.roomy * 5 + presetUnit.y - 81, y2: presetUnit.roomy * 5 + presetUnit.y - 65}), null, 1);
 		
-		//Attack.clearList(Attack.scanList([345, 346, 347], {x1: presetUnit.roomx * 5 + presetUnit.x + 63, x2: presetUnit.roomx * 5 + presetUnit.x + 140, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 65}), null, 1); // Kill the High Council
-		
-		//var unit = getUnit(4, 546);
-		
-		//if (unit) {
-			//this.getQuestItem(546);
-		//}
-		
 		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109 + myX, presetUnit.roomy * 5 + presetUnit.y - 95 + myY);	//260822
 		
 		this.okCount();
@@ -4380,7 +4176,8 @@ function AutoSmurf() {
 			Messaging.sendToList(Team.Profiles, "figurine");
 			
 			figurine = true;
-			leaderFigurine = true;
+			teamFigurine = true;
+			leaderFigurine = true;	//260922
 		}
 		
 		if (Leader && !me.getQuest(18, 0)) { // I am the Teleporting Sorc and I have not completed Khalim's Will yet. Will smash the orb while the others keep the area clear.
@@ -4390,8 +4187,6 @@ function AutoSmurf() {
 
 			this.equipFlail(); // This function purposely throws an error if Khalim's Will isn't present or is lost in the process.
 			
-			Config.PacketCasting = 1;
-
 			this.placeFlail();
 		} else { // I am not the Teleporting Sorc or Khalim's Will has been completed. If it the latter is true the while loop on the next line will be skipped.
 			while (!me.getQuest(18, 0)) { // I am not the Teleporting Sorc and have not completed Khalim's Will yet.
@@ -4495,8 +4290,6 @@ function AutoSmurf() {
 			
 			Pather.moveTo(17515 + myX, 8061 + myY, 3, true);	//260822
 			Attack.clear(35);
-			
-			Pather.teleport = true;
 		}
 
 		if ((me.getQuest(22, 0) || me.getQuest(22, 12))) {
@@ -4513,13 +4306,15 @@ function AutoSmurf() {
 			if (!takeRedPortal) {	//260919
 				Pather.moveTo(17566 + myX, 8069 + myY);	// reportal bridge
 				this.okCount();
+				
+				Pather.teleport = true;
 			}
 			
 			while (getDistance(me.x, me.y, redPortal.roomx * 5 + redPortal.x, redPortal.roomy * 5 + redPortal.y) > 10) {
 				try {
 					Pather.moveToPreset(102, 2, 342, 0, 0, false, false);
 				} catch (e) {
-					print("Caught Error.");
+					print("Caught Error");
 
 					print(e);
 				}
@@ -4532,7 +4327,7 @@ function AutoSmurf() {
 			}
 		} else {
 			Town.goToTown();
-			D2Bot.printToConsole("Mephisto quest failed", 5);
+			D2Bot.printToConsole("Mephisto failed");
 		}
 
 		delay(me.ping * 2 + 500);
@@ -4721,7 +4516,6 @@ function AutoSmurf() {
 		};
 
 		this.seisSeal = function () {
-			//print("Seis layout " + this.seisLayout);
 			me.overhead("Seis layout " + this.seisLayout);
 
 			this.followPath(this.seisLayout === 1 ? this.starToSeisA : this.starToSeisB);
@@ -4758,7 +4552,9 @@ function AutoSmurf() {
 				Pather.teleport = false;
 			}
 			
-			if (!this.getBoss(getLocaleString(2852))) {
+			this.getBoss(getLocaleString(2852));	//260923
+			
+			/*if (!this.getBoss(getLocaleString(2852))) {
 				//print("Seis not found");
 				me.overhead("Seis not found");
 				
@@ -4766,7 +4562,7 @@ function AutoSmurf() {
 					D2Bot.printToConsole("Seis not found");
 				}
 				return false;
-			}
+			}*/
 			
 			try {
 				Attack.clear(35, 0, getLocaleString(2852));
@@ -4781,7 +4577,6 @@ function AutoSmurf() {
 		};
 
 		this.infectorSeal = function () {
-			//print("Inf layout " + this.infLayout);
 			me.overhead("Inf layout " + this.infLayout);
 
 			this.followPath(this.infLayout === 1 ? this.starToInfA : this.starToInfB);
@@ -4825,7 +4620,6 @@ function AutoSmurf() {
 		};
 
 		this.vizierSeal = function () {
-			//print("Viz layout " + this.vizLayout);
 			me.overhead("Viz layout " + this.vizLayout);
 
 			this.followPath(this.vizLayout === 1 ? this.starToVizA : this.starToVizB);
@@ -4951,9 +4745,6 @@ function AutoSmurf() {
 				}
 			}
 
-			//print("Diablo not found");
-			me.overhead("Diablo not found");
-			
 			if (Leader) {
 				D2Bot.printToConsole("Diablo not found");
 			}
@@ -4997,8 +4788,6 @@ function AutoSmurf() {
 		this.starToVizB = [7755,5290, 7720,5275, 7710,5315, 7660,5315,
 							7655,5280];
 
-		// start
-		
 		print("ÿc4=== [DIABLO] ===");
 		
 		Town.goToTown(4);
@@ -5044,8 +4833,6 @@ function AutoSmurf() {
 		Attack.clear(25);
 
 		this.initLayout();
-
-		//print("Started at Star.");
 
 		this.seisSeal();
 		
@@ -5134,10 +4921,6 @@ function AutoSmurf() {
 		
 		this.syncBO();
 		
-		if (me.getQuest(35, 1)) {
-			return true;
-		}
-		
 		if (Leader) {
 			if (!Pather.useWaypoint(111)) {
 				throw new Error();
@@ -5216,7 +4999,7 @@ function AutoSmurf() {
 		
 		this.syncBO();
 		
-		if (!me.getQuest(36, 1) && Leader) {
+		if (Leader && !me.getQuest(36, 1)) {
 			Pather.useWaypoint(111);
 			Precast.doPrecast(true);
 			barbSpots = getPresetUnits (me.area, 2, 473);
@@ -5225,54 +5008,50 @@ function AutoSmurf() {
 				return false;
 			}
 			
-			for (i = 0 ; i < barbSpots.length ; i += 1) {
+			for (i = 0; i < barbSpots.length; i += 1) {
 				coords.push({
 					x: barbSpots[i].roomx * 5 + barbSpots[i].x - 3, //Dark-f: x-3
 					y: barbSpots[i].roomy * 5 + barbSpots[i].y
 				});
 			}
 			
-            //Config.PacketCasting = 1;
+			//Config.PacketCasting = 1;
 			
-			for (k = 0 ; k < coords.length ; k += 1) {
-				//print("going to barbspot "+(k+1)+"/"+barbSpots.length);
-				me.overhead("going to barbspot "+(k+1)+"/"+barbSpots.length);
+			for (k = 0; k < coords.length; k += 1) {
+				me.overhead("Going to barbspot " + (k + 1) + "/" + barbSpots.length);
 				
 				Pather.moveToUnit(coords[k], 0, 0);
 				door = getUnit(1, 434);
 				if (door) {
 					Pather.moveToUnit(door, -5, 0);
-					for (i = 0 ; i < 100 && door.hp ; i += 1) {
-						if (me.getSkill(47, 1)) {	//fire ball
+					for (i = 0; i < 100 && door.hp; i += 1) {
+						if (me.getSkill(47, 0)) {	//fire ball
 							Skill.cast(47, 0, door.x, door.y);
 							delay(10);
-						} else if (me.getSkill(64, 1)) {	//frozen orb
+						} else if (me.getSkill(64, 0)) {	//frozen orb
 							Skill.cast(64, 0, door.x, door.y);
 							delay(10);
-						} else if (me.getSkill(55, 1)) {	//glacial spike
+						} else if (me.getSkill(55, 0)) {	//glacial spike
 							Skill.cast(55, 0, door.x, door.y);
 							delay(10);
-						} else if (me.getSkill(51, 1)) {	//fire wall
+						} else if (me.getSkill(51, 0)) {	//fire wall
 							Skill.cast(51, 0, door.x, door.y);
 							delay(10);
-						} else if (me.getSkill(53, 1)) {	//chain lightning
+						} else if (me.getSkill(53, 0)) {	//chain lightning
 							Skill.cast(53, 0, door.x, door.y);
 							delay(10);
 						}
 						
 						delay(me.ping * 2 + 200);
-                    }
+					}
 				}
 			}
-		} else {
-			Town.move("qual-kehk");
 		}
 		
-		//260531
 		tick = getTickCount();
 		
 		while (!me.getQuest(36, 1)) {
-			if (Leader && getTickCount() - tick > 10 * 1000) {
+			if (Leader && getTickCount() - tick > 1000 * 5) {
 				break;
 			}
 			
@@ -5281,20 +5060,20 @@ function AutoSmurf() {
 			delay(me.ping * 2 + 200); //barb going to town...
 		}
 		
-		if (Leader) {
-			Town.goToTown();		
-			Town.move("qual-kehk");
-		}
+		Town.goToTown();
+		
+		Town.move("qual-kehk");
 		
 		qual = getUnit(1, "qual-kehk");
 		
-		for (i = 0 ; i < 10 ; i += 1) {
+		for (i = 0; i < 10; i += 1) {
 			if (i > 5) {
 				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 			
 			qual.interact();
+			
 			if (qual && qual.openMenu()) {
 				delay(me.ping * 2 + 200);
 				me.cancel();
@@ -5306,7 +5085,7 @@ function AutoSmurf() {
 				break;
 			}
 			
-			delay(me.ping * 2 + 200);
+			delay(me.ping * 2 + 1000);
 		}
 		
 		if (Leader) {
@@ -5339,7 +5118,6 @@ function AutoSmurf() {
 		me.cancel();
 
 		if (!me.getQuest(37, 1)) {
-			//print("anya start");	//260910
 			if (Leader) {
 				Pather.useWaypoint(113); 
 				Precast.doPrecast(true);
@@ -5349,8 +5127,7 @@ function AutoSmurf() {
 				}
 				
 				if (me.diff === 2 && getUnit(1, 639)) {	//260627
-					print("Souls found");
-					D2Bot.printToConsole("Anya: souls found");
+					D2Bot.printToConsole("Souls found in Anya");
 					scriptBroadcast("quit");	//260909
 				}
 				
@@ -5365,8 +5142,7 @@ function AutoSmurf() {
 				}
 				
 				if (me.diff === 2 && getUnit(1, 639)) {	//260910
-					print("Souls found");
-					D2Bot.printToConsole("Anya: souls found");
+					D2Bot.printToConsole("Souls found in Anya");
 					scriptBroadcast("quit");	//260909
 				}
 				
@@ -5487,38 +5263,38 @@ function AutoSmurf() {
 			larzuk.interact();
 			if (larzuk && larzuk.openMenu()) {
 				delay(me.ping * 2 + 200);
-				//print("clear inventory: " + larzuk.openMenu());
 				Town.clearInventory();
 				delay(me.ping * 2 + 200);
 				me.cancel();
 			}
-			
-			Town.move("malah");
-			
-			malah = getUnit(1, "malah");
-			for (i = 0 ; i < 100 ; i += 1) {
-				if (i > 10) {
-					//D2Bot.restart();
-					scriptBroadcast("quit");	//260909
-				}
-				
-				malah.interact();
-				if (malah && malah.openMenu()) {
-					delay(500);
-					me.cancel();
-				}
-				
-				if (me.findItem(646)) {
-					break;
-				}
-				
-				delay(500);
+		}
+		
+		Town.move("malah");
+		
+		malah = getUnit(1, "malah");
+		
+		for (i = 0 ; i < 100 ; i += 1) {
+			if (i > 10) {
+				//D2Bot.restart();
+				scriptBroadcast("quit");	//260909
 			}
+			
+			malah.interact();
+			if (malah && malah.openMenu()) {
+				delay(500);
+				me.cancel();
+			}
+			
+			if (me.findItem(646)) {
+				break;
+			}
+			
+			delay(500);
 		}
 
 		scroll = me.findItem(646);
+		
 		if (scroll) {
-			//print("scroll");
 			clickItem(1, scroll);
 			D2Bot.printToConsole("!!! SCROLL !!!", 8);
 		}
@@ -5533,25 +5309,19 @@ function AutoSmurf() {
 				anya = getUnit(1, "anya");
 				
 				if (anya) {
-					//print("found anya");	//260910
 					break;
 				}
 			}
 		}
 		
 		if (anya) {
-			//print("meet anya");	//260910
 			Town.move("anya");
 			anya.openMenu();
 			me.cancel();
 		}
 		
-		//print("anya cleared");	//260910
-		
 		Town.move("waypoint");
 		Pather.moveTo(me.x + myX, me.y + myY);	//260822
-
-		//this.okCount();
 
 		if (Leader) {
 			D2Bot.printToConsole("=== ANYA ===", 7);
@@ -5818,7 +5588,7 @@ function AutoSmurf() {
 			
 			if (me.diff === 2 && getUnit(1, 641) && farmingON) {	//260903
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: Souls found");
+				print("Baal failed: souls found");
 
 				while (!me.inTown) {
 					Town.goToTown();
@@ -5832,7 +5602,7 @@ function AutoSmurf() {
 			
 			if (me.diff === 2 && getUnit(1, 641) && farmingON) {	//260903
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: Souls found");
+				print("Baal failed: souls found");
 
 				while (!me.inTown) {
 					Town.goToTown();
@@ -5856,7 +5626,7 @@ function AutoSmurf() {
 			while (me.inTown) {
 				if (earlyReturn) {	//260627
 					earlyReturn = false;
-					print("earlyReturn: Souls found");
+					print("Baal failed: souls found");
 					
 					while (!me.inTown) {
 						Town.goToTown();
@@ -5967,10 +5737,9 @@ function AutoSmurf() {
 			}
 			
 			if (hireMerc) {
-				print("need to hire merc");
-			} else {			
-				//print("Not ready to kill Baal.");
-				me.overhead("Not ready to kill Baal");
+				print("Hiring needed");
+			} else {
+				print("Not ready to kill Baal");
 			}
 			
 			doneChores = false;
@@ -5980,11 +5749,18 @@ function AutoSmurf() {
 
 		while (getUnit(1, 543)) {
 			Attack.clearList(Attack.scanList(null, {x1:15072, x2:15118, y1:5002, y2:5074}), null, 1);
-			delay(me.ping * 2 + 100);
-			Pather.moveTo(15092, 5028);	//260810
+			delay(me.ping * 2 + 200);
+			Pather.moveTo(15092, 5028);	//260926
 		}
-
+		
+		var tick = getTickCount();
+		
 		portal = getUnit(2, 563);
+		
+		while (!portal && getTickCount() - portalTick < 5000) {	//260926
+			delay(me.ping * 2 + 500);
+			portal = getUnit(2, 563);
+		}
 		
 		if (portal) {
 			Pather.usePortal(null, null, portal);
@@ -5992,7 +5768,7 @@ function AutoSmurf() {
 			throw new Error("Baal: Couldn't find portal.");
 		}
 		
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
 		Pather.moveTo(15134, 5923);
@@ -6084,7 +5860,8 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 
-		Attack.clear(20, 0, getLocaleString(2875)); // Countess
+		Attack.clear(20);	//260921
+		//Attack.clear(20, 0, getLocaleString(2875)); // Countess
 		
 		Pather.moveToPreset(me.area, 2, 580, myX, myY, true, true);	//260822
 		
@@ -6141,7 +5918,7 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 	
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		Precast.doPrecast(true);
 
 		Pather.moveTo(7548, 14429, 5, true);	//260628
@@ -6306,19 +6083,15 @@ function AutoSmurf() {
 			var driver;
 			
 			if (!driverName) {
-				print("driverName undefined");
 				return false;
 			}
 			
 			driver = getUnit(0, driverName);
 			
 			if (driver && copyUnit(driver).x) {
-				//print("getUnit: " + driver.x + ", " + driver.y + "type: " + typeof driver.x + "mode: " + driver.mode);
 				return driver;
 			}
 		
-			//print("getDriverUnit failed");
-			
 			return false;
 		};
 
@@ -6331,7 +6104,6 @@ function AutoSmurf() {
 			while (!msgLeader) {
 				if (earlyReturn) {
 					earlyReturn = false;
-					//print("earlyReturn");
 					
 					while (!me.inTown) {
 						Town.goToTown();
@@ -6345,40 +6117,35 @@ function AutoSmurf() {
 				
 				if (driver) {
 					me.overhead("driver: " + driver.x + "." + driver.y + " distance: " + Math.round(getDistance(me, driver)));
-					//print("driver: " + driver.x + "." + driver.y + " distance: " + Math.round(getDistance(me, driver)));
 					
 					if (getDistance(me, driver) > 15) {
 						Pather.moveTo(driver.x + myX, driver.y + myY);
 						
-						if (Boer && me.getSkill(149, 0)) {
+						if (Boer && me.getSkill(149, 1)) {
 							Skill.cast(149, 0); // Battle Orders
 						}
 					} else {
 						if (!Attack.clear(25)) {
-							print("clear failed");
 							return false;
 						}
 					}
 				} else {
 					if (msgNode) {
 						me.overhead("msgNode: " + msgNode[0] + "." + msgNode[1] + " distance: " + Math.round(getDistance(me, msgNode[0], msgNode[1])));
-						//print("node: " + msgNode[0] + "." + msgNode[1] + " distance: " + Math.round(getDistance(me, msgNode[0], msgNode[1])));
 						
 						if (getDistance(me, msgNode[0], msgNode[1]) > 15) {
 							Pather.moveTo(msgNode[0] + myX, msgNode[1] + myY);
 							
-							if (Boer && me.getSkill(149, 0)) {
+							if (Boer && me.getSkill(149, 1)) {
 								Skill.cast(149, 0); // Battle Orders
 							}
 						} else {
 							if (!Attack.clear(25)) {
-								print("clear failed");
 								return false;
 							}
 						}
 					} else {
 						if (!Attack.clear(20)) {
-							print("clear failed");
 							return false;
 						}
 					}
@@ -6414,7 +6181,6 @@ function AutoSmurf() {
 			while (rooms.length > 0) {
 				if (earlyReturn) {
 					earlyReturn = false;
-					//print("earlyReturn");
 					
 					while (!me.inTown) {
 						Town.goToTown();
@@ -6461,21 +6227,21 @@ function AutoSmurf() {
 		if (Leader) {
 			if (me.getQuest(4, 10)) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: Already killed the Cow King");
+				print("Cows failed: King killed");
 				
 				return true;
 			}
 
 			if (!me.getQuest(4, 0)) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: Cain quest incomplete");
+				print("Cows failed: Cain incomplete");
 				
 				return true;
 			}
 
 			if (!me.getQuest(40, 0)) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: Baal quest incomplete");
+				print("Cows failed: Baal incomplete");
 				
 				return true;
 			}
@@ -6483,7 +6249,7 @@ function AutoSmurf() {
 			for (i = 0; i < 5; i += 1) {
 				if (earlyReturn) {
 					earlyReturn = false;
-					print("earlyReturn: Quest condition");
+					print("Cows failed: quest unmatched");
 					
 					return true;
 				}
@@ -6527,7 +6293,7 @@ function AutoSmurf() {
 
 				if (!portal) {
 					Messaging.sendToList(Team.Profiles, "earlyReturn");
-					print("earlyReturn: Tristram portal not found");
+					print("Cows failed: enter Tristram");
 						
 					while (!me.inTown) {
 						Town.goToTown();
@@ -6562,7 +6328,7 @@ function AutoSmurf() {
 
 				if (!leg) {
 					Messaging.sendToList(Team.Profiles, "earlyReturn");
-					print("earlyReturn: Failed to get the leg");
+					print("Cows failed: get leg");
 						
 					while (!me.inTown) {
 						Town.goToTown();
@@ -6592,7 +6358,7 @@ function AutoSmurf() {
 
 				if (!akara) {
 					Messaging.sendToList(Team.Profiles, "earlyReturn");
-					print("earlyReturn: Failed to init akara");
+					print("Cows failed: init akara");
 					
 					return true;
 				}
@@ -6615,7 +6381,7 @@ function AutoSmurf() {
 
 				if (!cowTome) {
 					Messaging.sendToList(Team.Profiles, "earlyReturn");
-					print("earlyReturn: Failed to buy cowTome");
+					print("Cows failed: get tome");
 					
 					return true;
 				}
@@ -6627,14 +6393,14 @@ function AutoSmurf() {
 
 			if (!Cubing.emptyCube()) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: Failed to empty cube");
+				print("Cows failed: empty cube");
 				
 				return true;
 			}
 
 			if (!Storage.Cube.MoveTo(leg) || !Storage.Cube.MoveTo(cowTome) || !Cubing.openCube()) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: Failed to cube leg and tome");
+				print("Cows failed: transmute leg and tome");
 				
 				return true;
 			}
@@ -6654,7 +6420,7 @@ function AutoSmurf() {
 
 			if (!portal) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: Portal not found");
+				print("Cows failed: open portal");
 				
 				return true;
 			}
@@ -6669,7 +6435,7 @@ function AutoSmurf() {
 			while (!tpReady) {
 				if (earlyReturn) {
 					earlyReturn = false;
-					print("earlyReturn: Failed to open portal");
+					print("Cows failed: open portal");
 					
 					while (!me.inTown) {
 						Town.goToTown();
@@ -6729,7 +6495,7 @@ function AutoSmurf() {
 		if (Leader) {
 			if (!clearCowLevel(rooms)) {	//260824
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: clearCowLevel failed");
+				print("Cows failed: clearCowLevel");
 				
 				while (!me.inTown) {
 					Town.goToTown();
@@ -6759,7 +6525,7 @@ function AutoSmurf() {
 		} else {
 			if (!followDriver()) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: followDriver failed");
+				print("Cows failed: followDriver");
 				
 				while (!me.inTown) {
 					Town.goToTown();
@@ -6800,6 +6566,10 @@ function AutoSmurf() {
 			}
 		}
 		
+		if (Leader) {
+			D2Bot.printToConsole("=== COWS ===", 7);
+		}
+		
 		Pather.teleport = true;
 		
 		msgNode = false;	//260903
@@ -6835,7 +6605,7 @@ function AutoSmurf() {
 				try {
 					Pather.moveToPreset(74, 2, 357, 8, 8, false, false);
 				} catch (e) {
-					print("Caught Error.");
+					print("Caught Error");
 
 					print(e);
 				}
@@ -6883,7 +6653,7 @@ function AutoSmurf() {
 		
 		Pather.moveToPreset(74, 2, 357, 3, 3);
 
-		this.okCount();
+		this.okCount(10);
 		
 		journal = getUnit(2, 357);
 		
@@ -6977,10 +6747,10 @@ function AutoSmurf() {
 			Pather.moveToPreset(102, 2, 342, 0, 0, false, false);
 		}
 		
-		redPortal = getUnit(2, 342);
-		
 		while (me.area === 102) {
+			redPortal = getUnit(2, 342);
 			Pather.usePortal(null, null, redPortal);
+			delay(me.ping * 2 + 1000);
 		}
 	
 		Pather.teleport = true;
@@ -7010,7 +6780,7 @@ function AutoSmurf() {
 			Pather.useWaypoint(111);
 			
 			if (!Pather.moveToPreset(me.area, 2, 60) || !Pather.usePortal(125)) {
-				throw new Error("moveToPreset failed: Abaddon");
+				throw new Error("Abaddon failed: moveToPreset");
 			}
 			
 			Pather.makePortal();
@@ -7025,7 +6795,7 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		
 		Precast.doPrecast(true);
 		
@@ -7034,7 +6804,7 @@ function AutoSmurf() {
 		presetUnit = getPresetUnit(me.area, 2, 397);
 		
 		if (!presetUnit) {
-			print("getPresetUnit failed: Abaddon");
+			print("Abaddon failed: getPresetUnit");
 			return false;
 		}
 		
@@ -7042,7 +6812,7 @@ function AutoSmurf() {
 		
 		while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 15) {
 			if (getTickCount() - fail > 180 * 1000) {
-				print("moveTo failed: Abaddon");
+				print("Abaddon failed: moveTo");
 				break;
 			}
 			
@@ -7093,7 +6863,7 @@ function AutoSmurf() {
 			Pather.useWaypoint(112);
 			
 			if (!Pather.moveToPreset(me.area, 2, 60) || !Pather.usePortal(126)) {
-				throw new Error("moveToPreset failed: POA");
+				throw new Error("POA failed: moveToPreset");
 			}
 			
 			Pather.makePortal();
@@ -7108,7 +6878,7 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		
 		Precast.doPrecast(true);
 		
@@ -7117,7 +6887,7 @@ function AutoSmurf() {
 		presetUnit = getPresetUnit(me.area, 2, 397);
 		
 		if (!presetUnit) {
-			print("getPresetUnit failed: POA");
+			print("POA failed: getPresetUnit");
 			return false;
 		}
 		
@@ -7125,7 +6895,7 @@ function AutoSmurf() {
 		
 		while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 15) {
 			if (getTickCount() - fail > 180 * 1000) {
-				print("moveTo failed: POA");
+				print("POA failed: moveTo");
 				break;
 			}
 			
@@ -7176,7 +6946,7 @@ function AutoSmurf() {
 			Pather.useWaypoint(117);
 			
 			if (!Pather.moveToPreset(me.area, 2, 60) || !Pather.usePortal(127)) {
-				throw new Error("moveToPreset failed: Infernal");
+				throw new Error("Infernal failed: moveToPreset");
 			}
 			
 			Pather.makePortal();
@@ -7191,7 +6961,7 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		this.waitForPartyMembers();
+		this.okCount();	//260922
 		
 		Precast.doPrecast(true);
 		
@@ -7200,7 +6970,7 @@ function AutoSmurf() {
 		presetUnit = getPresetUnit(me.area, 2, 397);
 		
 		if (!presetUnit) {
-			print("getPresetUnit failed: Infernal");
+			print("Infernal failed: getPresetUnit");
 			return false;
 		}
 		
@@ -7208,7 +6978,7 @@ function AutoSmurf() {
 		
 		while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 15) {
 			if (getTickCount() - fail > 180 * 1000) {
-				print("moveTo failed: Infernal");
+				print("Infernal failed: moveTo");
 				break;
 			}
 			
@@ -7261,7 +7031,7 @@ function AutoSmurf() {
 			
 			if (me.diff === 2 && getUnit(1, 597)) {	//260627
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("earlyReturn: Vipers found");
+				print("Nihlathak failed: Vipers found");
 
 				while (!me.inTown) {
 					Town.goToTown();
@@ -7282,7 +7052,7 @@ function AutoSmurf() {
 			while (me.inTown) {
 				if (earlyReturn) {
 					earlyReturn = false;
-					print("earlyReturn: Vipers found");
+					print("Nihlathak failed: Vipers found");
 					
 					while (!me.inTown) {
 						Town.goToTown();
@@ -7302,7 +7072,7 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		Attack.clear(25);
+		Attack.clear(20);
 		
 		try {
 			//Attack.clear(20, 0, 526); // Nihlathak
@@ -7362,7 +7132,6 @@ function AutoSmurf() {
 		if (imReady && Team.Size === 1) {
 			teamReady = true;
 
-			//print("teamReady");
 			me.overhead("teamReady");
 
 			Messaging.sendToList(Team.Profiles, "teamReady");
@@ -7381,14 +7150,12 @@ function AutoSmurf() {
 			case "readyCount":
 				readyCount += 1;
 
-				//print("readyCount = " + readyCount);
-				me.overhead("readyCount = " + readyCount);
+				me.overhead("readyCount " + readyCount);
 				
 				if (imReady && readyCount === Team.Size - 1) { // Doesn't count my ready because my messages are ignored. Subtract one from Team to account for this.
 					if (!teamReady) { // Only need to change teamReady to true once.
 						teamReady = true;
 						Messaging.sendToList(Team.Profiles, "teamReady");
-						//print("teamReady");
 						me.overhead("teamReady");
 					}
 				}
@@ -7396,7 +7163,6 @@ function AutoSmurf() {
 			case "teamReady":
 				if (!teamReady) { // Only need to change teamReady to true once.
 					teamReady = true;
-					//print("Team was ready");
 					me.overhead("teamReady");
 				}
 				break;
@@ -7405,7 +7171,6 @@ function AutoSmurf() {
 				if (!hireMerc) {
 					hireMerc = true;
 					print("hireMerc");
-					me.overhead("hireMerc");
 				}
 				break;
 				
@@ -7419,42 +7184,31 @@ function AutoSmurf() {
 				if (!farmingON) {
 					farmingON = true;
 					print("farmingON");
-					me.overhead("farmingON");
 				}
 				break;
 			case "essA":
 				if (!essA) {
 					essA = true;
-					//print("essA");
-					//me.overhead("essA");
 				}
 				break;
 			case "essM":
 				if (!essM) {
 					essM = true;
-					//print("essM");
-					//me.overhead("essM");
 				}
 				break;
 			case "keyT":
 				if (!keyT) {
 					keyT = true;
-					//print("keyT");
-					//me.overhead("keyT");
 				}
 				break;
 			case "keyH":
 				if (!keyH) {
 					keyH = true;
-					//print("keyH");
-					//me.overhead("keyH");
 				}
 				break;
 			case "keyD":
 				if (!keyD) {
 					keyD = true;
-					//print("keyD");
-					//me.overhead("keyD");
 				}
 				break;
 
@@ -7468,7 +7222,6 @@ function AutoSmurf() {
 				break;
 			case "teamCount":
 				teamCount += 1;
-				//print("teamCount = " + teamCount);
 				break;
 			
 			case "syncBO":
@@ -7497,14 +7250,12 @@ function AutoSmurf() {
 				
 			case "buffCount":
 				buffCount += 1;
-				//print("buffCount = " + buffCount);
-				me.overhead("buffCount = " + buffCount);
+				me.overhead("buffCount " + buffCount);
 				
 				if (myBuff && buffCount === Team.Size - 1) {	//eom 260412
 					if (!teamBuff) {
 						teamBuff = true;
 						Messaging.sendToList(Team.Profiles, "teamBuff");
-						//print("teamBuff");
 						me.overhead("teamBuff");
 					}
 				}
@@ -7512,7 +7263,6 @@ function AutoSmurf() {
 			case "teamBuff":
 				if (!teamBuff) { // Only need to change teamReady to true once.
 					teamBuff = true;
-					//print("teamBuff");
 					me.overhead("teamBuff");
 				}
 				break;
@@ -7550,8 +7300,8 @@ function AutoSmurf() {
 			case "figurine":
 				figurine = true;
 				break;
-			case "leaderFigurine":
-				leaderFigurine = true;
+			case "teamFigurine":
+				teamFigurine = true;
 				break;
 			case "travincal":
 				travincal = true;
@@ -7612,7 +7362,7 @@ function AutoSmurf() {
 				this.outer();
 			}
 			
-			if (!me.getQuest(3, 1) || !this.partyLevel(tristLvl)) {
+			if (!this.partyLevel(tristLvl)) {	//!me.getQuest(3, 1) || 
 				this.smith(); // area lv9
 			}
 			
@@ -7642,60 +7392,50 @@ function AutoSmurf() {
 		
 		me.automap = true;	//260904
 
-		this.syncBO();
+		if (me.diff === 2) {	//260922
+			Merc.hire(Config.MercSkill);
+		}
 		
+		this.syncBO();
+
 		if (Leader) { // I am the Leader.
 			if (!me.findItem(549) || getCube) { // No cube or team member is requesting cube or am not level 18 yet (required to teleport to the summoner).
-				this.travel(2);	// Halls Of The Dead Level 2
-				
 				Messaging.sendToList(Team.Profiles, "cube");				
 				this.cube();
 			}
 
-			if ((!me.findItem(521) && !me.findItem(91) && !me.getQuest(10, 0)) || !me.getQuest(11, 0)) { // No Amulet of the Viper/Horadric Staff and Horadric Staff quest (staff placed in orifice) is incomplete or The Tainted Sun quest is incomplete.
-				Messaging.sendToList(Team.Profiles, "syncBO");
-				this.syncBO();
-				
-				this.travel(3); // Lost City
-				
+			if ((!me.getQuest(10, 0) && !me.findItem(91) && !me.findItem(521)) || !me.getQuest(11, 0)) { // No Amulet of the Viper/Horadric Staff and Horadric Staff quest (staff placed in orifice) is incomplete or The Tainted Sun quest is incomplete.
 				Messaging.sendToList(Team.Profiles, "amulet");
 				this.amulet();
 			}
 
-			if (!getWaypoint(16)) {
-				Messaging.sendToList(Team.Profiles, "syncBO");
-				this.syncBO();
-				
-				this.travel(4);
-			}
-
-			if ((!me.getQuest(13, 0) && me.getQuest(11 , 0) && getWaypoint(16)) || !getWaypoint(17)) { // Summoner quest incomplete but The Tainted Sun is complete.
+			if ((!me.getQuest(13, 0) || !getWaypoint(17))) { // Summoner quest incomplete but The Tainted Sun is complete.
 				Messaging.sendToList(Team.Profiles, "summoner");
 				this.summoner();
 			}
 
-			if (!this.partyLevel(tombsLvl) && me.diff === 0) {
+			if (!this.partyLevel(tombsLvl)) {
 				Messaging.sendToList(Team.Profiles, "tombs");
 				this.tombs(); // eom
 			}
 			
-			if (!me.findItem(92) && !me.findItem(91) && !me.getQuest(10, 0)) { // No Staff of Kings nor Horadric Staff and Horadric Staff quest (staff placed in orifice) not complete.
+			if (!me.getQuest(10, 0) && !me.findItem(91) && !me.findItem(92)) { // No Staff of Kings nor Horadric Staff and Horadric Staff quest (staff placed in orifice) not complete.
 				Messaging.sendToList(Team.Profiles, "syncBO");
 				this.syncBO();
 				
 				this.staff();
 			}
 
-			if (me.findItem(92) && me.findItem(521) && me.findItem(549)) { // Have The Staff of Kings, The Viper Amulet, and The Horadric Cube.
+			if (me.findItem(549) && me.findItem(521) && me.findItem(92)) { // Have The Staff of Kings, The Viper Amulet, and The Horadric Cube.
 				this.cubeStaff();
 			}
 
-			if (!me.getQuest(9, 1) && !me.getQuest(9, 0)) { // && me.diff <= 2) { // Haven't finished Radament's Lair.
+			if (!me.getQuest(9, 1) && !me.getQuest(9, 0)) {	// Haven't finished Radament's Lair.
 				Messaging.sendToList(Team.Profiles, "radament");				
 				this.radament();
 			}
 
-			if ((me.getQuest(9, 1) || me.getQuest(9, 0)) && !me.getQuest(14, 0) && this.partyLevel(tombsLvl)) { // Haven't completed Duriel and team has reached level goal or this isn't normal difficulty.
+			if (!me.getQuest(14, 0)) { // Haven't completed Duriel and team has reached level goal or this isn't normal difficulty.
 				Messaging.sendToList(Team.Profiles, "duriel");
 				this.duriel();
 			}
@@ -7754,11 +7494,9 @@ function AutoSmurf() {
 				this.figurine();
 			}
 
-			//if (!me.getQuest(22, 0)) {
-				Messaging.sendToList(Team.Profiles, "syncBO");
-				this.syncBO();
-			//}
-			
+			Messaging.sendToList(Team.Profiles, "syncBO");
+			this.syncBO();
+		
 			this.travel(6); // Travel to all waypoints up to and including Travincal if I don't have them.
 
 			if (!me.getQuest(17, 0)) { // Haven't completed Lam Esen's Tome.
@@ -7768,28 +7506,28 @@ function AutoSmurf() {
 				this.tome();
 			}
 
-			if (!me.findItem(553) && !me.findItem(174) && !me.getQuest(18, 0)) { // Don't have Eye and don't have Khalim's Will and haven't completed Khalim's Will.
+			if (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(553)) { // Don't have Eye and don't have Khalim's Will and haven't completed Khalim's Will.
 				Messaging.sendToList(Team.Profiles, "syncBO");
 				this.syncBO();
 				
 				this.eye();
 			}
 
-			if (!me.findItem(554) && !me.findItem(174) && !me.getQuest(18, 0)) { // Don't have Heart and don't have Khalim's Will and haven't completed Khalim's Will.
+			if (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(554)) { // Don't have Heart and don't have Khalim's Will and haven't completed Khalim's Will.
 				Messaging.sendToList(Team.Profiles, "syncBO");
 				this.syncBO();
 				
 				this.heart();
 			}
 
-			if (!me.findItem(555) && !me.findItem(174) && !me.getQuest(18, 0)) { // Don't have Brain and don't have Khalim's Will and haven't completed Khalim's Will.
+			if (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(555)) { // Don't have Brain and don't have Khalim's Will and haven't completed Khalim's Will.
 				Messaging.sendToList(Team.Profiles, "syncBO");
 				this.syncBO();
 				
 				this.brain();
 			}
 
-			if (me.findItem(174) || (me.findItem(553) && me.findItem(554) && me.findItem(555)) || !me.getQuest(20, 0) || !me.getQuest(21, 0)) { // Have Khalim's Will or have Eye, Heart, and Brain, or Golden Bird isn't complete, or The Blackened Temple isn't complete.
+			if (!me.getQuest(21, 0) || !me.getQuest(20, 0) || me.findItem(174) || (me.findItem(553) && me.findItem(554) && me.findItem(555))) { // Have Khalim's Will or have Eye, Heart, and Brain, or Golden Bird isn't complete, or The Blackened Temple isn't complete.
 				Messaging.sendToList(Team.Profiles, "travincal");
 				this.travincal();
 			}
@@ -7798,24 +7536,20 @@ function AutoSmurf() {
 				this.figurine();
 			}
 			
-			if (!me.getQuest(20, 0) && me.getQuest(18, 0) && me.getQuest(21, 0)) {
-				//print("figurine incompleted");
-				me.overhead("figurine incompleted");
-				D2Bot.printToConsole("figurine incompleted");	//260920
+			if (!me.getQuest(20, 0)) {
+				D2Bot.printToConsole("Figurine incompleted");	//260920
 				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
-
-			if (!me.getQuest(23, 0) && me.getQuest(18, 0) && me.getQuest(21, 0) ) { //no matter Golden bird && me.getQuest(20, 0)) { // Haven't been "Able to go to Act IV" yet and have completed Khalim's Will (AKA the stairs to Durance of Hate Level 1 are open), The Blackened Temple (AKA everyone can enter a Durance Of Hate Level 3 Town Portal), and Golden Bird.
-				this.travel(7); // Travel to Durance Of Hate Level 2 Waypoint if I don't have it.
-				
-				if (!me.getQuest(22, 0)) {
-					Messaging.sendToList(Team.Profiles, "mephisto");
-					this.mephisto();
-				} else {
-					Messaging.sendToList(Team.Profiles, "takeRedPortal");
-					this.mephisto(true);
-				}
+			
+			this.travel(7); // Travel to Durance Of Hate Level 2 Waypoint if I don't have it.
+			
+			if (!me.getQuest(22, 0)) {
+				Messaging.sendToList(Team.Profiles, "mephisto");
+				this.mephisto();
+			} else {
+				Messaging.sendToList(Team.Profiles, "takeRedPortal");
+				this.mephisto(true);
 			}
 		} else {
 			while (!me.getQuest(23, 0)) { // Haven't completed "Able to go to Act IV" (AKA haven't gone thru red portal to Act 4)
@@ -7863,8 +7597,9 @@ function AutoSmurf() {
 			}
 
 			if (checkPartyAct === 3) { // If the lowest Town is Act 3.
+				print("Helping straggler complete act3");	//260923
+				me.overhead("Helping straggler complete act3");	//260923
 				Messaging.sendToList(Team.Profiles, "takeRedPortal");
-				D2Bot.printToConsole("Helping straggler complete Act 3", 5);
 				this.mephisto(true);
 			}
 		}
@@ -7904,14 +7639,12 @@ function AutoSmurf() {
 			this.shenk();
 		}
 
-		if ((!me.getQuest(36, 1) || me.getQuest(36, 0)) && me.diff === 0) {
+		if (!me.getQuest(36, 0) && me.diff === 0) {	//260921
 			this.barbs();
 		}
 
 		if (!me.getQuest(37, 0)) { //Dark-f
 			this.anya();
-		} else {
-			//this.okCount();	//260904 fallback for the next join desync
 		}
 
 		this.ancients();
@@ -7939,7 +7672,7 @@ function AutoSmurf() {
 		this.farmingCows();
 	}
 	
-	//farming
+	//extra
 	if (me.getQuest(39, 0) && (runBaal === 0 || me.diff === 2)) {
 		if (me.diff === 0) {
 			this.farmingAbaddon();
@@ -7988,13 +7721,7 @@ function AutoSmurf() {
 		}
 	};
 	
-	print("script ended");
-
-	//while (!Leader) {
-		//delay(10000);
-	//};
-	
-	//D2Bot.restart();
+	print("Script ended");
 
 	return true;
 };

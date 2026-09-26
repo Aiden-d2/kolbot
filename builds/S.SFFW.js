@@ -20,7 +20,6 @@ var AutoBuildTemplate = {
 	BuildGoal: {
 		Stats: [
 			{stat: 0, target: 60},				// Strength
-			{stat: 1, target: 70},				// Energy
 			{stat: 1, target: 182, per: 2},		// Energy
 			{stat: 3, target: 178},				// Vitality
 			{stat: 2, target: 35},				// Dexterity
@@ -39,8 +38,8 @@ var AutoBuildTemplate = {
 			{id: 61, target: 1},				// Fire Mastery
 			{id: 51, target: 20},				// Fire Wall
 			{id: 37, target: 7},				// Warmth
-			{id: 42, target: 17, from: 30},		// Static Field
-			{id: 61, target: 20, from: 30},		// Fire Mastery
+			{id: 42, target: 17, from: 18},		// Static Field
+			{id: 61, target: 20},				// Fire Mastery
 			{id: 58, target: 7, from: 50},		// Energy Shield
 			{id: 43, target: 16, from: 50},		// Telekinesis
 			{id: 37, target: 20, from: 50},		// Warmth
@@ -139,6 +138,11 @@ var AutoBuildTemplate = {
 				Config.PacketCasting = 1;									// 0 = disable, 1 = packet teleport, 2 = full packet casting.
 				
 				Config.AttackSkill = [-1, 51, 43, 51, 43, -1, -1];			// Fire Wall
+				
+				if (me.diff === 0) {
+					Config.CastStatic = 25;	//no limits
+					Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];
+				}
 			}
 		},
 

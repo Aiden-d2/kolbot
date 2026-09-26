@@ -145,6 +145,9 @@ var AutoBuildTemplate = {
 				Config.HPBuffer = 0;		
 				Config.UseMP = 30;
 				Config.PacketCasting = 1;								// 0 = disable, 1 = packet teleport, 2 = full packet casting.
+				
+				Config.AttackSkill = [-1, 500, -1, 500, -1, -1, -1];
+				//Config.AttackSkill = [-1, 3, -1, 3, -1, -1, -1];
 			}
 		},
 
@@ -171,14 +174,12 @@ var AutoBuildTemplate = {
 			Update: function () {
 				Config.Curse[0] = 91;
 				Config.Curse[1] = 91;
-				//Config.AttackSkill = [-1, 500, -1, 500, -1, -1, -1];
 			}
 		},
 
 	46:	{
 			Update: function () {
 				Config.ExplodeCorpses = 74;
-				//Config.AttackSkill = [-1, 3, -1, 3, -1, -1, -1];
 			}
 		}
 };

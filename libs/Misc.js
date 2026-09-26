@@ -2338,6 +2338,20 @@ MainLoop:
 		return mode === 0 ? contents : true;
 	},
 
+	trace: function (msg) {	//260923 temp
+		var d = new Date(),
+			pad = function (n) { return (n < 10 ? "0" : "") + n; },
+			ymd = String(d.getFullYear()) + pad(d.getMonth() + 1) + pad(d.getDate()),	//260923 temp
+			stamp = (d.getMonth() + 1) + "/" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+		
+		if (!dopen("_cache/trace/")) {	//260926
+			dopen("_cache/").create("trace");
+		}
+		
+		return this.fileAction("_cache/trace/trace-" + me.profile + "-" + ymd + ".txt", 2,	//260923 temp
+			stamp + " [" + Pather.getAreaName(me.area) + " " + me.x + "," + me.y + "] " + msg + "\n");
+	},
+
 	errorConsolePrint: true,
 	screenshotErrors: false,
 
@@ -2652,7 +2666,7 @@ var Experience = {
 		//string = "[Game: " + me.gamename + (me.gamepassword ? "//" + me.gamepassword : "") + getGameTime + "] [Level: " + me.getStat(12) + " (" + progress + "%)] [XP: " + gain + "] [Games ETA: " + runsToLevel + "] [Time ETA: " + timeToLevel + "]";
 		//string = me.gamename + (me.gamepassword ? "/" + me.gamepassword : "") + getGameTime + " # Lv " + me.getStat(12) + " (" + gainPercent + "% / " + progress + "%)";
 		//string = "+" + gainPercent + "%" + getGameTime + " / " + progress + "% [lv" + me.getStat(12) + "] # F" + (me.diff === 2 ? me.getStat(39) - 100 : me.diff === 1 ? me.getStat(39) - 40 : me.getStat(39)) + " | L" + (me.diff === 2 ? me.getStat(41) - 100 : me.diff === 1 ? me.getStat(41) - 40 : me.getStat(41)) + " | C" + (me.diff === 2 ? me.getStat(43) - 100 : me.diff === 1 ? me.getStat(43) - 40 : me.getStat(43)) + " | P" + (me.diff === 2 ? me.getStat(45) - 100 : me.diff === 1 ? me.getStat(45) - 40 : me.getStat(45));
-		string = "+" + gainPercent + "%" + getGameTime + " / " + progress + "% [Level " + me.getStat(12) + "]";
+		string = getGameTime + " +" + gainPercent + "% / [Level " + me.getStat(12) + "] " + progress + "%";
 
 		if (gain) {
 			D2Bot.printToConsole(string, 4);

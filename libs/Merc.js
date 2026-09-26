@@ -337,21 +337,21 @@ var Merc = {
 		var stats = DataFile.getStats();
 		
 		if (!stats.Merc || stats.Merc !== skill) {
-			print("merc unmatched");
+			print("Merc unmatched");
 			return false;
 		}
 		
 		if (me.mercrevivecost) {	//260820
-			print("revive needed");
+			print("Revive needed");
 			return true;
 		}
 
 		if (!Misc.poll(function () { return me.getMerc(); }, 3000, 100)) {
-			print("merc not found");
+			print("Merc not found");
 			return false;
 		}
 
-		print("merc matched: " + stats.Merc);
+		print("Merc matched: " + stats.Merc);
 
 		return true;
 	},
