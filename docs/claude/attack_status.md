@@ -1,90 +1,198 @@
-# Attack 계열 현황 노트 (260926 기준)
+# Attack 계열 현황 노트
 
-Claude 세션 간 인수인계용. 이전 분석 문서(260509 / 260510 / 260828 4차 / 260910 5차 패치)를
-현행 코드와 대조한 결과이며, **본 노트가 최신**이다. 줄 번호는 260926 시점 `libs/Attack.js` 기준.
+Claude 세션 간 인수인계용. **본 노트가 최신**이며, 아래 문서와 충돌하면 본 노트를 따른다.
+줄 번호는 260926 시점 `libs/Attack.js` 기준 (다른 파일은 파일명 명시).
 
-## 1. 이전 문서 대비 코드 상태 변화
+반영한 이전 자료
 
-| 항목 | 이전 문서 | 현행 코드 |
-|---|---|---|
-| `Attack.kill` | 260510 트리에 존재 | **없음**. 액트 보스는 `clearList(scanList(classid), null, 1)` (예: `AutoSmurf.js:3017` Andariel) |
-| `Pickit.fastPick` | clear 루프 내 호출 | 없음 |
-| 공격 상한 | 300 | 999 (`clear` / `clearList` 공통) |
-| HP skip (clear) | S42: `attacks >= 10`, 보스(`spectype & 0x7`) 제외, liveUnit 재조회, `lastHp` / `sameHpCount` 3단 | 5회마다 `(hp이전 - hp)/128 < 0.2`면 `gidSkip` 등록 후 shift. **보스 제외 조건은 주석 처리됨** (`:223`). 1회 등록 시 영구 스킵 (`checkSkipped > 0`) |
-| HP skip (clearList) | clear와 동일 3단 | **없음** |
-| collision shift (clear) | 260510: 제거됨 / 4차: 존치 | 존치 (Angle Skip `:159-179`, Detour Skip `:181-187`, 306 Skip `:152-157`) |
-| 종료 처리 | 260510: `monsterList.length === 0`일 때만 pick/openChests, `afterAttack`는 항상 | `attackCount > 0`이면 `pickItems(range)` 다음 `afterAttack`, `openChest` 인자(기본 true)면 **항상** `openChests(min(range,15))` |
-| `openChests`의 `Config.OpenChests` 검사 | 주석 (의도적 유지) | 여전히 주석 (`:1680`). 즉 경로 이동 노드마다 상자 열기 |
-| `clearLevel` | 260509: 선제 clear + `clear(40)` | 선제 clear 없음, `clear(30, spectype)` (260910) |
-| dodge 호출 | 4차: kill/clear/clearList 3곳 주석 | clear / clearList 주석 유지. `dodge()` 본체는 존치, 호출부 0 |
-| `getIntoPosition` | libs 내 호출 0 | 동일. 클래스 파일은 전부 `setPosition`, GIP는 주석 |
-| `Pather.maxTeleDistance` | 4차 8-3: 42 | **45** (`Pather.js:146`), `teleDistance` 35 |
-| `Config.Dodge` | Enabled false / Range 13 / Count 1 / HP 100 / Step 5 | 동일 (`Config.js:87`) |
-| `NoSkipArea` / `DetourPath` | — | `[17]` / `4` |
-
-## 2. 5차 패치(260910) 항목의 현행 반영 여부
-
-| 5차 항목 | 현행 |
+| 자료 | 성격 |
 |---|---|
-| A-1 `getMonsterCount` 경량화 (`N x 1`) | 미반영. 원본 그대로 (`:944`) |
-| A-2 `classid 243` 제외 | 형태를 바꿔 반영: 목록 제외가 아니라 `scoring` 게이트에서 타깃 243 제외 (`:495`, 260915) |
-| A-3 `:664` `if (!scoring)` 주석 | 여전히 주석 → 아래 3-1 결함의 원인 |
-| C-1 `scoring`에서 `!moveNeeded` 제거 | 미반영 |
-| C-3 `distance >= Dodge.Range` 게이트 제거 | 미반영 |
-| F절 `me` 원점 회피 링 / 링 1개 모델 | 미반영. G절 미결 7건 그대로 |
-| D-4 텔레 접근 후보 0 → 폴백 없음 | 그대로 |
+| 260509 `attack_analysis.md`, 260510 `attack_tree_summary.txt` | 2425줄 판 기준. 대부분 낡음 (1절) |
+| 260828 `GIP_dodge_summary.txt` (4차) | setPosition 설계. 일부 5차에서 철회 |
+| 260910 `GIP_dodge_patch.txt` (5차) | 4차 패치 + F절 신설계(미반영) |
+| 260926 `GIP_dodge_detour.txt` (6차) | Detour Skip 분리 설계, 엔진 함수 조사 |
+| 260926 claude.ai 채팅 요약 (붙여넣기) | 공격 로직 전반 검토, 결정사항 없음 |
+| 260926 Claude Code 세션 (본 저장소) | 코드 대조, 신규 결함, 미결 항목 검증 |
 
-## 3. 신규 발견 결함 (이전 문서에 없음)
+상태 표기: **[확정]** 사용자 합의 / **[사실]** 코드로 확인 / **[미결]** 미확인·미합의
 
-### 3-1. 텔레 캐릭 회피 실패 → 멀쩡한 타깃을 스킵 [심각]
-`setPosition`에서 `useTele && scoring`이고 `slotTele`를 못 찾으면 `:665 return false`.
-4차 2-6의 반환 계약은 "회피 실패 → `true`(제자리 시전)"이다.
-현행은 `doCast`가 `return 0`을 반환한다. 그러면 `clear`에서 `retry++`와 `Packet.flash`(300ms+)가 일어나고,
-5회 실패하면 **사거리 안에서 공격할 수 있는 타깃이 shift**된다.
-포위될수록(후보 전멸) 공격을 멈추는 역효과가 난다.
-13링 후보(`i >= teleCount`)는 순회하면서 `slotWalk` / `slotRev`를 채우지만 사용되지 않는다.
-`Config.Dodge.Enabled`가 true인 빌드에서만 발생한다.
-최소 수정: `:664-666`을 `return !moveNeeded;`로 바꾼다.
-5차 G-3("텔레 캐릭이 걷는 것을 허용하는가")과는 별개 문제다.
+---
 
-### 3-2. `clear(bossId)` 성공 반환이 보스 처치를 보장하지 않음 [심각]
-`kill`이 사라져 bossId 경로가 봉인 보스, Countess, Rakanishu, Smith, Bone Ash, Treehead의 주 경로가 됐다
-(`AutoSmurf.js:2239, 2306, 2435, 2581, 2895, 4772, 4816, 4860, 6087`).
-보스는 아래 경로로 조용히 빠지고, 그래도 `return true`가 반환된다.
-- HP skip (보스 제외 조건 주석)
-- `skipCheck`
-- Angle / Detour Skip
-- 공유 retry
+## 1. 현행 구조 요약 [사실]
 
-보스 생존 여부를 검증하지 않는다.
+- 진입점: `clear` (33-268), `clearList` (341-455), `clearLevel` (271-339, 방마다 `clear(30, spectype)`)
+- **`kill` 없음.** 액트 보스는 `clearList(scanList(id), null, 1)`. `canAttack` / `hurt` / `deploy` / `fastPick`도 없음
+- `sortMonsters`, `getScarinessLevel` 호출부 0. 기본 정렬 `sortByDistance`, 매 tick 재정렬
+- `clear(bossId)` 경로 사용처: 봉인 보스, Countess, Rakanishu, Smith, Bone Ash, Treehead
+  (`AutoSmurf.js:2239, 2306, 2435, 2581, 2895, 4772, 4816, 4860, 6087`)
 
-### 3-3. 보스 유닛 무효화 시 사거리 필터 소멸
-`:120-123` `orgx = boss.x`. 유닛이 무효화되면 `undefined`가 되고, `getDistance`가 `NaN`이 된다.
-`NaN > range`는 false이므로 맵 전체 목록을 추격한다.
+### clear
+- 수집 필터 (113): spectype → checkSkipped → checkMonster → skipCheck
+- 루프: checkMonster 실패 / range 초과 → shift (146)
+- `checkCollision(me, target, 0x4)`이고 NoSkipArea 아님 → 306 / Angle / Detour Skip (151-188)
+- `doAttack(target, attackCount % 10 === 0)` (194)
+- 결과 0: `retry++ > 3` → **5회째** shift, 매 실패마다 `Packet.flash` (300ms+2ping)
+- 결과 2: shift
+- 결과 1: gidAttack 누적. 근접 스킬은 10타마다 flash. 5타마다 HP 감소가 20% 미만(`/128 < 0.2`)이면 gidSkip 등록 후 shift
+- 종료: `attackCount > 0`이면 pickItems(range) → afterAttack. `openChest`(기본 true)면 항상 `openChests(min(range,15))`
+- 상한 999. boss 지정 시에만 throw (253)
+- gidSkip 리셋: 지역 변경 또는 마지막 스킵 위치에서 40칸 초과 (82-86)
 
-### 3-4. retry 카운터 공유
-`retry`가 대상별이 아니다. 실패 후 `needSort`로 재정렬되어 다른 대상이 [0]에 오면
-누적된 retry 때문에 1회 실패로 shift될 수 있다. `clear` / `clearList` 공통.
+### clearList
+- HP / Angle / Detour / skipCheck / range 처리 없음
+- refresh 주기마다 재스캔 (379-387). `scanList`는 checkMonster만 적용
+- 999 도달 시 throw. 종료: afterAttack → pickItems. openChests 없음
 
-### 3-5. 기타
-- `clear` 999회 도달: 보스가 없으면 조용히 `true`, `clearList`는 throw. 불일치.
-- `while (!me.gameReady)`에 타임아웃이 없다.
-- `bossId > 999`로 gid와 classid를 구분한다. 문자열 이름은 `NaN` 비교로 우연히 정상 동작한다.
-- `skipCheck`가 몬스터마다 `SkipEnchant` 문자열을 재파싱한다. 현재 Config가 빈 배열이라 무영향.
-- `:229-233` HP skip 로그 if/else가 죽은 코드다.
-- `dodge()`의 `unit` 인자는 사장됐다 (5차 D-2, 호출부 0이라 무영향).
-- `pickItems`는 `me` 기준, `openChests`는 `orgx/orgy` 기준이다.
+### ClassAttack 공통
+- index: `spectype & 0x7`이면 1, 아니면 3
+- timed: [index] → 면역이면 [5]. untimed: [index+1] → 면역이면 [6]. 이후 LowMana 대체
+- doCast 반환: 0 실패 / 1 성공 / 2 유효 스킬 없음. 위치 이동은 전부 `setPosition`
+- **틱 구조 (6차 D절)**: timed/untimed는 `doCast` 안에서 상호배타
+  (Sorceress, Amazon, Assassin, Druid, Wereform)
+  - Sorceress는 Energy Shield + preattack + Static 루프가 별도로 붙는다
+  - Necromancer는 timed switch가 break로 흘러 한 틱에 `setPosition` 최대 2회
+  - `Necromancer.js:146, 159`: 저주 후 `return 1`이 주석 처리됐다 (//260919). 같은 틱에 본 공격까지 진행
+  - Barbarian / Paladin은 단일 스킬
 
-## 4. 유효하게 유지되는 이전 문서 사실
-- 4차 제7부 7-1 엔진/API 사실 (`walkTo` / `moveTo` / `teleportTo` / `checkSpot` / `CollMap`). 단 `maxTeleDistance`는 45
-- 5차 D-3 (접근 모드 ±90 제한), D-7 (`maxTeleDistance` 배제 필요), D-8 (dodge / GIP 비대칭)
-- 5차 H절 확인 항목 전부
-- 4차 9-1 / 9-2 별건 목록 (트랩 T1/T2, WW `0x1`, Paladin 101 이중 호출, `RushThread.js:824`)
+### setPosition (477-684)
+- `moveNeeded`와 `scoring`은 배타. `scoring`에 `distance >= Dodge.Range`와 `classid ≠ 243` 포함 (495, //260915)
+- 링 생성 (517-574) → 한 번 순회하며 슬롯 채움 (576-657) → 슬롯 소비 (659-683)
 
-## 5. 수정 우선순위 제안 (미착수)
-1. 3-1: `setPosition :665` → `return !moveNeeded`
-2. 3-2: 루프 뒤 `boss && Attack.checkMonster(boss)`면 false 또는 throw. HP skip과 retry-shift에서 보스(`spectype & 0x7` 또는 boss gid) 제외
-3. 3-3: 보스 무효화 시 마지막 좌표 유지
-4. 3-4: retry를 gid별로 관리
-5. `openChest` 기본값을 `!!Config.OpenChests`로 변경할지 사용자 결정 필요 (이전 문서상 "의도적 유지")
-6. 5차 G절 미결 7건
+### Config / 빌드
+- `Config.Dodge` = Enabled false / Range 13 / Count 1 / HP 100 / Step 5 (`Config.js:87`)
+- 단 **10개 빌드가 18레벨에서 `Dodge.Enabled = true`**:
+  S.LTNG, S.SFFW, S.FIRE, S.COLD, A.TRAP, D.WIND, D.FGOM, P.CONC, N.SUMM, B.WCRY.
+  HP는 100 그대로라 scoring이 상시 활성이다.
+  (6차 A절의 "scoring 상시 거짓"은 Config 기본값만 본 것으로, 틀렸다)
+- Skip*, CustomAttack, BossPriority는 모든 빌드에서 빈 기본값 (`Config.js:531-540`)
+- `NoSkipArea [17]`, `DetourPath 4`
+- `Pather.teleDistance 35`, `maxTeleDistance 45` (`Pather.js:145-146`).
+  4차 문서의 42는 낡은 값이며, 42와 45가 다르던 문제는 45로 확정
+
+---
+
+## 2. 이전 문서 정정 [사실]
+
+| 항목 | 정정 |
+|---|---|
+| 260509/260510 전반 | 상한 300 → 999. preattack `%15` → `%10`. HP skip은 gidSkip 구조로 clear 전용. S42의 lastHp / sameHpCount 3단 구조와 보스 제외는 현행에 없음 (223 보스 조건 주석) |
+| 4차 7-2 "retry 4회" | 실제로는 5회째 shift |
+| 4차 7-1 Static `×2/3`, "lvl16 = 13" | `Skill.getRange(42)` = `lvl + 4` (`Misc.js:101-102`, //260915). skills.txt 파라미터(기본 반경 5, 레벨당 +1)와 일치하고, ×2/3은 스킬 설명창 표시값이다 |
+| 5차 A-1 `getMonsterCount` 경량화 | **해소됨.** 944-961은 checkMonster 없는 단순 카운터이고, checkMonster는 `buildMonsterList`에서 한 번만 수행한다. 목록 단계의 243 제외만 없음 (495의 타깃 조건으로 대체). 이전 본 노트와 붙여넣은 요약의 "미반영" 기재는 틀렸다 |
+| 5차 A-3 `:664` | 여전히 주석 처리 → 3-2 결함 |
+| 4차 9-1 Paladin 101 이중 호출 | 해소됨. 141에서 한 번 호출 (0x2004) |
+| 260909 doAttack 반환값 설명 | 코드는 0/1/2 |
+| `RushThread.js:824` getIntoPosition 잔존 | 이 저장소에는 RushThread.js 자체가 없다. libs/threads 전체에서 getIntoPosition 활성 호출 0 |
+
+---
+
+## 3. 결함 목록
+
+### 3-1. clearList refresh=1 무한 루프 [사실, 심각]
+- 근거: 379, 414-416, 436-439, `scanList` 457-475
+- `refresh=1`이면 첫 성공(`attackCount > 0`) 이후 **매 반복** 재스캔한다. shift한 몬스터가 곧바로 목록에 다시 들어온다
+- 결과 2(면역)는 대기 없이 반복되고, 결과 0(도달 불가)은 5회 실패 + flash 주기로 반복된다. attackCount가 늘지 않아 999 상한에도 걸리지 않는다
+- 탈출은 사망하거나 해당 몬스터가 사라질 때뿐이다
+- 영향: AutoSmurf의 clearList 호출은 **전부** `refresh=1`이다 (액트 보스, 바알 웨이브 `5880/5911/5982`, 봉인 구역 등). 예: S.FIRE 12~49레벨(`S_FIRE.js:137`)은 화염 면역 몬스터에 즉시 2를 반환한다
+
+### 3-2. 텔레 캐릭 회피 실패 시 공격 실패 [사실, 심각]
+- 근거: 659-667, `Sorceress.js:146`
+- `scoring` 상태(이미 사거리와 LOS 확보)에서 `slotTele`가 없으면 665 `return false`
+- 흐름: doCast 0 → retry + flash → 5회째 shift. 13링의 `slotWalk` / `slotRev`는 채워져도 사용되지 않는다
+- 4차 2-6 계약("회피 실패 → true")과 다르다
+- 1절대로 10개 빌드가 18레벨부터 Dodge를 켜므로 **텔레 쓰는 18레벨 이상 전 빌드에 해당**한다
+- 최소 수정: 665 → `return !moveNeeded;`
+
+### 3-3. clear(bossId)가 보스 생존 상태로 true 반환 [사실, 심각]
+- 보스가 빠지는 경로:
+  - HP skip (223 보스 조건 주석)
+  - skipCheck
+  - Angle / Detour Skip
+  - 공유 retry
+- **HP skip 오판 요인**: doCast가 시전 없이 1을 반환하는 경로
+  - 마나 부족 (`Misc.js:261-268`)
+  - LOS 막힘으로 시전 생략 (`Sorceress.js:151`)
+  - timed 딜레이 대기 (`Sorceress.js:186-194`)
+  - 해머 거리 9 초과 (`Paladin.js:110-114`)
+- 카오스 봉인 보스가 스킵되면 봉인 진행이 깨진다 (`AutoSmurf.js:4714, 4772`)
+
+### 3-4. clearList 999 throw가 잡히지 않음 [사실]
+`AutoSmurf.js:5880, 5911, 5982` (바알 웨이브)는 try가 없다. 3-1로 인해 실제로는 999보다 무한 루프가 먼저 발생할 가능성이 크다.
+
+### 3-5. retry 카운터가 타깃 간 공유 [사실]
+199, 246, 196 / clearList 436-439. 재정렬로 [0]이 바뀌어도 retry가 이어져, 한 번만 실패한 몬스터가 shift될 수 있다.
+
+### 3-6. 보스 유닛 무효화 시 range 필터 소멸 [사실]
+120-123 `orgx = boss.x`가 undefined → `getDistance`가 NaN → `NaN > range`는 false → 맵 전체를 추격한다.
+
+### 3-7. Static 사거리 불일치 [사실, 의도 미결]
+- `Misc.js:102`는 `lvl+4`, `Sorceress.js:64`의 staticRange는 `(lvl+4)*2/3`
+- S.FIRE는 Static 1포인트라 staticRange가 3이고, StaticList 보스의 3칸 안까지 접근한다 (`S_FIRE.js:31, 131`)
+- `Sorceress.js:168-176` (//260917): untimed가 42이면 **timedSkill 사거리**로 setPosition을 호출한다. timedSkill이 -1(면역)이면 `getRange(-1)` = 20이 되어, 20칸 밖에서 Static을 시전한다
+- Static은 나이트메어 33%, 헬 50% 아래로 체력을 깎지 못한다. 63/66의 `Math.round(hp%) > CastStatic` 루프는 CastStatic 설정에 따라 마나가 다 떨어질 때까지 반복할 수 있다 (엔진 hp 스케일 실측 필요)
+
+### 3-8. D.FGOM 46레벨 Wereform 전환이 게임 중 적용되지 않음 [사실]
+- `AutoBuild.levelUpHandler`는 `applyConfigUpdates`만 호출하고, `Attack.init()`은 다시 호출하지 않는다
+- `Attack.init()` 호출처는 `default.dbj:49`, `ToolsThread.js:37`, `TownChicken.js:80`뿐이다
+- 그래서 46레벨이 된 게임에서는 Druid ClassAttack이 AttackSkill 249/243(Armageddon / Shock Wave)을 쓴다. 다음 게임부터 Wereform.js가 로드된다
+
+### 3-9. 기타 [사실]
+- `Barbarian.js:25-26`: `attackSkill`을 대입 전에 참조한다(var 호이스팅으로 undefined → `getRange` 20). Howl(130)도 20이라 현재는 결과가 같지만, AttackSkill[0]을 바꾸면 문제가 된다. preattack 분기에 return이 없어 같은 틱에 본 공격으로 이어진다
+- `Paladin.js:88` `dollAvoid`는 정의가 없다. `Config.AvoidDolls` 키도 없어 실행되지 않는다
+- `clear` 160 `skillRange`는 0x4 블록 안의 var라서, 블록 밖에서 참조하면 직전 타깃 값이 남아 있다 (6차 C-4)
+- 181 `getPath`는 **스냅샷** 좌표, 151 `checkCollision`은 **현재** 좌표로 판정한다 (6차 E-2)
+- `!collPath` 실효 의문: d2bs 소스상 getPath가 null을 반환하는 경로가 없다. 빈 배열이면 비율 0이 되어 도달 불가 몹이 Detour Skip을 통과한다. `Pather.moveTo:280, 337, 417`의 `if (!path)`도 같은 문제 (6차 G-6, DLL 확인 필요)
+- `while (!me.gameReady)` 타임아웃 없음. `bossId > 999`로 gid/classid 구분. clear 999 무보스 시 조용히 true
+- `openChests`의 `Config.OpenChests` 검사는 주석 처리돼 있다. 이전 문서상 "의도적 유지"
+- `pickItems`는 me 기준, `openChests`는 orgx/orgy 기준
+- 5차 C-2: 걷기 회피 링의 원점이 타깃이라 오히려 전진한다. D-4: 텔레 접근 후보 0이면 폴백 없음 (6차 B-5 재확인)
+
+### 3-10. 접근 시 장거리 우회 (6차 B절) [사실]
+- 0x4는 뚫리고 0x1만 막힌 지형에서는 151 게이트에 걸리지 않아 Detour Skip에 도달하지 않는다
+- setPosition의 `slotMove`는 me 기준 검사 없이 확정된다 (619). 결국 675 `moveTo`가 getPath로 크게 우회한다
+- 원안 GIP의 moveTo 폴백을 그대로 물려받은 구조이며, 회귀가 아니다
+
+---
+
+## 4. 설계 결정
+
+### 6차 Detour Skip 분리 [확정]
+- C-1: 목적은 크게 우회해야 하는 몹을 건너뛰는 것이다. 접근 가능한 몹을 잡기 위한 설계가 아니다
+- C-2: 텔레 캐릭도 동일하게 적용한다
+- C-3: Detour Skip만 0x4 블록 밖으로 분리한다. 306 / Angle Skip은 블록 안에 둔다
+- C-4: `skillRange` 대입을 144 `attackSkill` 결정 직후로 옮긴다
+- C-5: 판정식은 기존 183을 그대로 쓴다
+- 작업안(C-6)은 SyntaxError(`,` → `;`)가 있다. 거리 기준, 0x4 케이스 포함, NoSkipArea 제거는 미결
+
+### 철회·기각 (반복 금지)
+- 4차 2-2 상호배타, 4-2 `distance >= 13` 게이트, 4-9 caller unit 고정 → 5차에서 철회
+- 151 공용 게이트에 사거리 OR 추가 → 기각 (306 / Angle Skip이 함께 열림)
+- Detour 조건에 `!useTeleport()` → 기각 (텔레 포함 결정)
+- "181 reduction 0이 텔레 캐릭을 오판정" → 철회
+- 4차 이후 문서의 기타 기각 항목: 6차 F절, 5차 F-5 참조
+
+---
+
+## 5. 미결
+
+| # | 항목 | 출처 |
+|---|---|---|
+| 1 | setPosition 재이원화 여부와 축 (원안 복귀 / 기구 유지 분리 / 5차 F절 me 원점 모델). 촉발 실측 근거 | 5차 G, 6차 G-1 |
+| 2 | Detour 거리 기준 `getDistance(me, target)` vs `(target, orgx, orgy)`. 후자는 146과 겹쳐 range ≤ skillRange 호출에서 영구 불성립 | 6차 G-2 |
+| 3 | 0x4 케이스를 Detour Skip에 포함할지 | 6차 G-3 |
+| 4 | NoSkipArea 제거 의도 | 6차 G-4 |
+| 5 | 0x1 직선 판정 함수 (`checkCollision` vs `CollMap.checkColl`) | 6차 G-5 |
+| 6 | getPath 실패 시 반환값 (빈 배열 여부), radius 의미 → 게임 내 `print(version())`으로 DLL 특정 | 6차 G-6~8 |
+| 7 | Static 사거리 의도 (`lvl+4` vs `×2/3`), 260917 예외의 timedSkill 참조 | 3-7 |
+| 8 | Telekinesis(43) 속성 → S.FIRE 50+ / S.COLD 24+의 [6]=43 폴백 시 결과 2 빈도 | 채팅 요약 |
+| 9 | openChests 설정 무시 유지 여부 | 3-9 |
+| 10 | 5차 G절 1~7 (회피 링 기준각, 접근 링 순회 상한, 664 해제, D-4 폴백 등) | 5차 |
+
+## 6. 리팩터링 방향 (사용자 요청 260926, 범위 미합의)
+사용자는 "어택 로직 전반 리팩터링"을 요청했다. 범위와 정책(HP skip, 상자)은 아직 확인하지 못했다.
+검토 중인 골격:
+- clear / clearList / 보스 처치를 **단일 전투 루프**로 통합
+- 대상별 상태를 gid로 관리 (retry, HP 진행, 벽 판정 캐시)
+- "반드시 죽일 대상"(보스)을 명시하고 스킵 대상에서 제외하며, 종료 시 생존 여부 검증
+- refresh 재스캔 시 이번 호출에서 스킵한 gid 제외 (3-1 해소)
+- setPosition 반환 계약 복구 (3-2)
