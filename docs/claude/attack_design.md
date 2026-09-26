@@ -1,7 +1,7 @@
 # Attack 리팩터링 설계안 (260926 초안, 재검토용)
 
 `attack_status.md`의 [확정] 항목을 하나의 흐름으로 정리한 문서다.
-**◆ 표시**는 정리하면서 새로 드러나 결정이 필요한 지점이다 (7절에 모음).
+재검토 결과는 7절에 있다.
 
 ---
 
@@ -66,12 +66,14 @@ clearLevel  →  AutoSmurf로 이전 (den 전용)
      SWEEP이 sweep 범위를 벗어남 → 제거 (다시 들어오면 재합류 가능)
      MUST가 안 보임 → 제거하지 않고 lastPos 유지
 
-  3. 대상 선정
-     (a) 내 주변 10 이내 유닛이 있으면 → 그중 정렬 1순위          (위험 반경)
-     (b) MUST가 나와 25 이상 떨어져 있으면 → 그 MUST              (목줄)
-         MUST가 안 보이면 → lastPos로 moveTo 후 재스캔, 틱 종료
-     (c) 그 외 → sort 1순위
-     ※ deferUntil이 남은 유닛은 (a)(b)(c) 모두에서 제외 ◆R5
+  3. 목줄 (이동만, 대상 선정과 무관)
+     MUST가 나와 25 이상 → MUST 쪽으로 거리만 좁힘 (주변 10 이내 유닛이 있으면 그 처리가 먼저)
+     MUST가 안 보이면 → lastPos로 moveTo 후 재스캔, 틱 종료
+
+  3b. 대상 선정
+     (a) 내 주변 10 이내 유닛이 있으면 → 그중 정렬 1순위   (위험 반경)
+     (b) 그 외 → sort 1순위 (거리순)
+     ※ 정렬 시 deferUntil이 남은 유닛은 맨 뒤 (매 틱 재정렬로 defer가 무효화되는 것 방지)
 
   4. 공격
      Attack.tick 초기화 {cast:false, moved:false, fail:null}
@@ -84,15 +86,16 @@ clearLevel  →  AutoSmurf로 이전 (den 전용)
      │                                  retry > 4 →  SWEEP: drop  MUST: defer
      └ result 1 && tick.cast           state.casts++, retry = 0, attackCount++
                                         근접 스킬 10캐스트마다 flash (현행)
-                                        HP 판정 (시전한 캐스트만 셈) ◆R8
-                                          진행 없음 → SWEEP: HP skip(gidSkip)  MUST: defer
+                                        HP 판정 (시전한 캐스트만 셈)
+                                          SWEEP: 10캐스트마다 20% 미만 감소 → HP skip(gidSkip)
+                                          MUST: HP skip 없음 (시간 한도로만 종료)
        result 1 && !tick.cast          카운트 없음 (이동만 했거나 딜레이 대기)
 
-     MUST 진행 추적: hp 감소(출처 무관) 시 lastProgress 갱신
-                     now - lastProgress > 30초 → return false ◆R7
+     MUST 종료 보장: hp 감소(출처 무관) 시 진행 시간 리셋
+                     해당 MUST를 공격 대상으로 잡고 있던 시간만 누적, 30초 초과 → return false
 
   drop  = 목록 제거 + dropped[gid]
-  defer = 목록 맨 뒤 + deferUntil = now + N ◆R5
+  defer = deferUntil = now + 3초 (정렬상 맨 뒤)
 
 [종료]
   SWEEP 목록이 비면 1회 재스캔 → 합류 없으면 종료
@@ -110,7 +113,8 @@ clearLevel  →  AutoSmurf로 이전 (den 전용)
 setPosition(unit, distance, coll, minDist)
 
   1. moveNeeded = dist > distance || checkCollision(me, unit, coll)
-     scoring    = Dodge.Enabled && hp% <= Dodge.HP && classid != 243 ◆R9
+     scoring    = Dodge.Enabled && hp% <= Dodge.HP && classid != 243
+                  && distance >= Dodge.Range   (현행 게이트, R9 결정 대기)
      !moveNeeded && !scoring → return true
 
   2. 위협 목록 = 루프 스캔 재사용 (없으면 buildMonsterList), fireList 1회
@@ -164,15 +168,15 @@ setPosition(unit, distance, coll, minDist)
 
 ---
 
-## 7. 재검토에서 드러난 결정 필요 지점
+## 7. 재검토 결과 (260926)
 
-| # | 내용 | 제안 |
+| # | 내용 | 결정 |
 |---|---|---|
-| R1 | MUST는 HP skip(gidSkip) 대상이 아니게 된다. S57의 "보스도 HP skip" 결정과 충돌 | MUST는 제외, SWEEP의 챔피언/유니크는 S57대로 포함 |
-| R2 | 틱당 스캔 1회는 근접·Dodge 비활성 빌드에서 현행보다 비용 증가 (현행 clear는 호출당 1회. 원거리 빌드는 이미 setPosition이 틱마다 buildMonsterList) | SWEEP 합류는 N틱마다, 정리·위협은 기존 목록 재평가 |
-| R3 | 실패 시 반환: 시작 시 보스 미발견은 throw 유지(봉인 catch 경로 의존), 추적 실패는 false | 제안대로 |
-| R5 | defer된 MUST가 목줄(25) 규칙에 바로 다시 선택되면 "뒤로 보내기"가 무력화된다 | defer 시 N초(예: 3초) 선정 제외 |
-| R7 | 30초 한도를 벽시계로 재면, 다른 몹을 치는 동안에도 보스 시간이 소진된다 | 해당 MUST를 대상으로 잡고 있던 시간만 누적 |
-| R8 | HP는 128 스케일. 고체력 보스는 5캐스트에 1단위(0.78%)도 안 줄 수 있어 "진행 없음" 오판. 현행 "5캐스트 20% 미만"은 특히 과함 | MUST는 시간 한도만으로 판단. SWEEP HP skip 기준 재검토 |
-| R9 | 5차 C-3에서 회피 게이트 `distance >= Dodge.Range` 제거를 결정했으나 현행 코드에 남아 있다. 제거하면 근접(사거리 3) 빌드도 회피 채점을 한다 | 유지 여부 결정 필요 |
-| R10 | 미결 잔여: Static 사거리 의도(3-7), Sorc 260917 예외의 timedSkill 참조, Barbarian `attackSkill` 선참조(3-9), `openChests` 설정 무시 | 이번 범위 포함 여부 결정 |
+| R1 | MUST와 HP skip | **[확정]** MUST는 HP skip 없음. MUST가 아니면 보스·유니크·챔피언 모두 스킵 가능 |
+| R2 | 틱당 스캔 비용 | **[확정]** 틱당 1회 스캔. Dodge 활성 시절에도 틱마다 스캔했으므로 문제 없음 |
+| R3 | 실패 시 반환 | **[확정]** 현행 유지 (시작 시 보스 미발견 throw, 추적 실패 false) |
+| R5 | 목줄과 defer | **[확정]** 목줄(25)은 거리만 좁히는 이동이고 대상 선정은 거리순 유지. defer는 매 틱 재정렬로 무효화되므로 3초간 정렬 맨 뒤 표시 (3초는 제안값) |
+| R7 | MUST 시간 한도 측정 | 제안: 해당 MUST를 공격 대상으로 잡은 시간만 누적. 시간 한도는 MUST의 종료 보장용(버리지 않고 HP skip도 없으므로 필요) |
+| R8 | HP skip 기준 | **[확정]** SWEEP은 10캐스트마다 20% 미만이면 skip. MUST는 시간 한도로만 |
+| R9 | 회피 게이트 `distance >= Dodge.Range` (495) | 제안: 유지 (근접·단사거리 스킬은 회피 제외). 사용자 결정 대기 |
+| R10 | Static 사거리, Sorc 260917 예외, Barbarian 선참조, openChests 설정 무시 | **[확정]** 이번 범위에서 제외. openChests는 현행 동작 유지 |
