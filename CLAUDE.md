@@ -7,4 +7,5 @@
 
 ## 분석 노트
 - Attack 계열(clear / clearList / setPosition / dodge) 현황과 미해결 결함: `docs/claude/attack_status.md`
+- Attack 리팩터링 설계안(로직 흐름, 재검토 지점): `docs/claude/attack_design.md`
   작업 전 반드시 먼저 읽고, 결론이 바뀌면 이 노트를 갱신한다.
