@@ -103,7 +103,12 @@ Claude 세션 간 인수인계용. **본 노트가 최신**이며, 아래 문서
 - 1절대로 10개 빌드가 18레벨부터 Dodge를 켜므로 **텔레 쓰는 18레벨 이상 전 빌드에 해당**한다
 - 최소 수정: 665 → `return !moveNeeded;`
 
-### 3-3. clear(bossId)가 보스 생존 상태로 true 반환 [사실, 심각]
+### 3-3. clear(bossId)가 보스 생존 상태로 true 반환 [사실, 심각 / 원인 일부는 의도된 결정]
+> HP skip이 보스에게도 적용되는 것은 **사용자의 의도된 결정**이다 (Session 57, 260621).
+> spectype 조건 제거, 임계 `>0`(1회 즉시 영구 차단), 정상 데미지 시 리셋 제거가 모두 의도적이다.
+> 범위는 당시 `Config.CollSkip`(현 `NoSkipArea`)로 제어한다.
+> 아래는 그 결정이 `clear(bossId)` 반환 계약과 충돌한다는 지적이며, 토론 대상이다.
+
 - 보스가 빠지는 경로:
   - HP skip (223 보스 조건 주석)
   - skipCheck
@@ -188,7 +193,42 @@ Claude 세션 간 인수인계용. **본 노트가 최신**이며, 아래 문서
 | 9 | openChests 설정 무시 유지 여부 | 3-9 |
 | 10 | 5차 G절 1~7 (회피 링 기준각, 접근 링 순회 상한, 664 해제, D-4 폴백 등) | 5차 |
 
-## 6. 리팩터링 방향 (사용자 요청 260926, 범위 미합의)
+## 6. 운영 환경과 설계 이력 (출처: 260621 마스터 문서 16차, 260909 구조 문서)
+
+### 6-1. 운영 환경 [사실]
+- **D2 Legacy 1.14d** (Resurrected 아님). 8캐릭 멀티프로필 팀, 매니저 `D2Bot_LD_patch.exe`
+- 프로필: a1 S.FIRE(리더, 텔레 패서), a2 S.COLD, a3 P.CONC, a4 P.CONV, a5 A.TRAP, a6 D.FGOM, a7 N.SUMM, a8 B.WCRY(BO 담당)
+- `D.WIND`는 파일만 있고 `Build.getBuildType`에 매핑되지 않았다. `Build.js`는 이 저장소에 없다
+- D2BS.dll은 include 경로(`%s\libs\%s` → `%s\%s`)가 패치돼 있다. 모든 경로는 `kolbot/` 기준
+- `default.dbj`가 게임마다 `Attack.js`를 다시 include한다. `Attack` 모듈 상태(gidSkip 등)는 게임 단위로 초기화된다
+- 스레드: default.dbj(봇 본체), ToolsThread(치킨·포션), TownChicken, PartyThread, AutoBuildThread, HeartBeat
+  - ToolsThread와 TownChicken은 각자 `Attack.init()`을 수행한다
+  - Config는 `_cache/config.<profile>.json`으로 동기화된다
+- 260909 구조 문서의 "doAttack → 1 실패 / 2 계속 / 3 처치"는 틀렸다 (코드는 0/1/2)
+
+### 6-2. 전투 루프 설계 이력 요약 [사실]
+같은 문제를 두고 설계가 여러 번 뒤집혔다. 리팩터링 토론에서 같은 시행착오를 반복하지 않기 위한 기록이다.
+
+| 주제 | 변천 |
+|---|---|
+| collision 사전 스킵 | S37 도입 → S42 제거(doCast/GIP에 위임) → S51 collPath 비율 체크 재도입 → S52 `collList`(스킵 대신 보류 후 복귀) → 현행: `collList` 없음, Detour 즉시 shift. `Config.CollPath`는 `DetourPath`, `CollSkip`은 `NoSkipArea`로 이름이 바뀌었다. `MonSkip`은 없다 |
+| Angle Skip | S57 ±90° → 360°(23방향). "사방이 막힌 경우만" 거르는 프리필터로 역할 한정 |
+| HP skip | S37 HP 무변화(10타) → S42 3단(lastHp -1, sameHpCount) → S51 2단 → S56 gidSkip 영구 차단(연속 3회) → **S57 즉시 영구 차단, 보스 포함(의도)** → 현행: 5타마다 20% 미만 |
+| 스킵 분류 원칙 (S56) | 영구화는 "공격은 했는데 못 죽이는" HP skip만. result 2, retry, Angle은 상황 의존적이라 영구화 부적합 |
+| retry | Attack 계열은 `retry++ > 3`(5회) 표준. Pather 계열은 3회 |
+| afterAttack | S57에서 `attackCount > 0` 가드. Necro `raiseArmy` 블로킹 때문이며, openChests는 가드 밖 |
+| clearList refresh | S53 바알 쓰론 잔여몹용으로 도입. 매 성공마다 박스 멤버십을 재검증하는 목적. doll(691)은 스냅샷 유지. 3-1 무한 루프는 이 refresh와 shift의 상호작용에서 생긴다 |
+| GIP / 이동 | S37 무력화 → S39 재활성(루프 내 moveTo가 SafeTele 개입) → S47 walk/moveTo 폴백 → 260826 setPosition 통합 |
+| dodge | S38~39 설계 → 260828 setPosition에 흡수 |
+
+### 6-3. 토론 시 유의점
+- 스킵 정책은 사용자가 운영 관찰을 근거로 여러 차례 직접 결정했다. 결함 지적은 "결정의 결과로 생기는 부작용"으로 제시하고, 결정 자체를 뒤집자고 전제하지 않는다
+- 여러 번 뒤집힌 축(collision 사전 스킵 vs doCast 위임, 스킵 영구화 범위)은 원칙부터 합의해야 다시 흔들리지 않는다
+
+## 7. 리팩터링 방향 (사용자 요청 260926, 범위 미합의)
+- 사용자 판단: 스킵 정책(1번)은 전투 루프 통합(2번)에 포함한다. 메인은 **전투 루프**와 **setPosition** 두 축
+- 제안 순서 (미합의): 루프 틱 구조 → 루프와 setPosition/doCast 사이 계약 → setPosition 내부
+
 사용자는 "어택 로직 전반 리팩터링"을 요청했다. 범위와 정책(HP skip, 상자)은 아직 확인하지 못했다.
 검토 중인 골격:
 - clear / clearList / 보스 처치를 **단일 전투 루프**로 통합
