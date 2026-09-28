@@ -103,9 +103,7 @@ Attack.clear(range, must)
     단, 그 대상이 MUST가 아니고 나와 10 초과이면
       → 나와 25(leashRange) 이상 떨어진 MUST(deferred 제외)가 있으면 그 MUST (목줄)
     카오스(108): 보스 아닌(spectype & 0x1 없음) StormCaster(306)가 나와 0x4로 막혀 있으면 SWEEP 버림 (NoSkipArea 제외, 기존 규칙 복원)
-    게이트 (SWEEP만, NoSkipArea 밖, 나↔대상이 0x5로 막혔을 때. 이전 clear의 0x4 게이트를 조건만 넓혀 복원, 260928)
-      Angle: 대상 둘레 스킬 사거리 23방향 중 대상·나 양쪽에서 0x4로 보이는 자리가 없으면 버림
-      Detour: 나→대상 걷는 경로(getPath 노드 × 5) > 나→대상 직선 × DetourPath(4)면 버림
+    (이전 clear의 Angle/Detour 게이트는 setPosition 접근 판정으로 옮김. 6절. 해머는 getHammerPosition 게이트)
 
  5. 공격
     tick 초기화, tick.must = 대상이 MUST인지 → ClassAttack.doAttack(대상, 이번 호출 실제 시전 수 % 10 === 0)
@@ -159,18 +157,19 @@ setPosition(unit, distance, coll, minDist = 3)
   텔레 회피: 나에게서 maxTeleDistance(45) 초과 후보 제외
 
 정렬 (순서가 "어디로", 위협은 "가도 되는지")
-  접근: 정면에 가까운 순 → 바깥 링 → 위협 적은 순(좌우 동점일 때만)
+  접근: 바깥 링 → 정면에 가까운 순 → 위협 적은 순(좌우 동점일 때만)  (260928, 회피와 같은 링 우선)
   회피: 바깥 링(타깃에서 먼 쪽) → 곧게 물러나는 순. 기준선보다 1마리 이상 적은 후보만 통과
 
 후보 검사 (정렬 순서대로, 첫 통과 채택)
   착지: 텔레 checkSpot(0x1) / 걷기 getCollision & 0x1
   타깃 시야: CollMap.checkColl(unit, 후보, coll)
   접근이면 불장판(4칸) 제외
+  SWEEP 접근(Angle): 나→후보가 0x4로 막힌 자리는 후보 아님 (텔레·걷기 모두, 우회 후보도 포함). MUST는 이 조건 없음
   걷기: 나→후보 직선(0x5) 막힘 → 접근이면 "우회 후보"로 1개 기억, 회피면 제외
 
 구역 진행 (접근·회피 공통)
   정면 채택 → 이동
-  정면 채택 없음 + 우회 후보 → moveTo (길이 판정 없음. 이전 slotMove와 같음. SWEEP의 우회 한도는 clear 게이트가 판정)
+  정면 채택 없음 + 우회 후보 → MUST: moveTo (길이 무관) / SWEEP(Detour): 나→대상 걷는 경로 ≤ 나→대상 직선 × DetourPath(4)일 때만 moveTo. getPath는 호출당 1회, 우회가 필요할 때만
   그래도 없음 → 후면 구역 같은 방식
   접근 결과 순서: 정면 직선 → 정면 우회(moveTo). 정면에 후보가 없을 때만 후면 직선 → 후면 우회
   회피 결과 순서: 물러나기(정면) → 타깃 너머로 뚫고 지나가기(후면). 회피는 우회 없음
@@ -205,7 +204,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | `cast` | `Skill.cast` (`Misc.js`, `setSkill` 성공 직후) | 이번 틱에 실제 시전 단계에 도달 |
 | `moved` | `setPosition` | 이번 틱에 이동 |
 | `fail` | `setPosition` | `"unreachable"` / `"moveFailed"` |
-| `must` | `clear` | 이번 대상이 MUST (현재 참조처 없음, 260928 게이트 복원 후) |
+| `must` | `clear` | 이번 대상이 MUST (setPosition의 Angle·Detour 판정, 해머 게이트 면제) |
 | `monList` | `clear` 스캔 | 위협 목록 (루프 밖이면 null → setPosition이 직접 스캔) |
 
 - `clear`가 `doAttack` 직전에 `cast`, `moved`, `fail`을 초기화한다. 프리캐스트 등 다른 시전은 영향 없다
@@ -222,7 +221,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | `Config.Dodge.HP` | 100 | Config.js | HP% 이하일 때 회피 (100 = 항상) |
 | `Config.Dodge.Step` | 5 | Config.js | 링 간격, 호 간격 |
 | `Config.Dodge.Count` | 1 | Config.js | 미사용 (구 `dodge` 전용). `SafeTele.Count`와는 별개 |
-| `Config.DetourPath` | 4 | Config.js | clear 게이트의 우회 한도: 나→몹 걷는 경로 ≤ 나→몹 직선 × 4 (SWEEP만) |
+| `Config.DetourPath` | 4 | Config.js | 우회 한도: 나→몹 걷는 경로 ≤ 나→몹 직선 × 4 (SWEEP만. setPosition 걷기 우회, 해머 게이트) |
 | `Config.NoSkipArea` | `[17]` | Config.js | 도달 불가 즉시 버림과 HP skip을 하지 않는 지역 |
 | `Attack.dangerRange` | 10 | Attack.js | 위험 반경 |
 | `Attack.leashRange` | 25 | Attack.js | 목줄 |
@@ -263,7 +262,7 @@ setPosition(unit, distance, coll, minDist = 3)
 |---|---|
 | `libs/Misc.js` | `Skill.cast`에 시전 기록 |
 | `libs/Pather.js` | `NodeAction.killMonsters`: spectype 인자 제거. 카오스(108)는 `clear(20)`, 그 외는 `clear(25)`가 false면 `"killMonsters"` 반환(이동 중단). false는 사망·카우킹·스킬 미보유 정지일 때만 (사용자 정리, 260927) |
-| `libs/Attacks/Paladin.js` | 260928 이식했던 게이트는 clear 게이트 복원으로 중복이 되어 주석 처리
+| `libs/Attacks/Paladin.js` | `getHammerPosition` 맨 앞에 이전 clear의 Angle/Detour 게이트 (해머는 setPosition을 안 거침). 조건 0x5 (해머는 몹 옆에 서야 하므로 0x1로 막혀도 이동이 필요). 막히면 `tick.fail = "unreachable"`. MUST·NoSkipArea는 게이트 없음
 | `libs/Attacks/Barbarian.js` | preattack이 대입 전 `attackSkill`을 참조 → `Config.AttackSkill[0]`. `findItem`의 `clear(10, false×4)` → `clear(10)` |
 | `libs/Attack.js` | `getSkillElement`: Telekinesis(43) → `"none"` (면역과 무관하게 사용) |
 | `libs/Config.js` | `Dodge.Range` 13 → 9 |
@@ -303,7 +302,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | 보스 호출 반경 | 0 | 보스 처치가 목적, 잡몹은 위험 반경(10)으로 충분 |
 | 목줄 | 25 이상이면 보스 우선 (거리만 좁힘), 한계 35 | getUnit 가시 거리 약 40 (사용자 경험값) |
 | 반환 계약 | 0/1/2 유지 + 사이드채널 | 직업 파일 8개 무수정 |
-| Angle/Detour 게이트 | **복원 (260928)**. 조건만 0x4 → 0x5 | 제거했더니 setPosition의 우회 판정이 착지 좌표 기준이라 벽 너머 몹까지 돌아가서 침(원안과 다름). 0x5로 넓혀 0x1 장거리 우회 결함도 함께 막음 |
+| Angle/Detour 게이트 | **setPosition 접근 판정으로 (260928)**. Angle = 나에게서 보이는 자리만, Detour = 실제 우회가 필요할 때만 나→대상 기준 4배 | 1차: 게이트 제거 후 우회 비율을 착지 좌표 기준으로 잘못 계산 → 벽 너머까지 돌아감. 2차: clear에 0x5로 복원 → 이동이 필요 없는 사거리 안 몹까지 버림. 이동 필요 여부를 아는 곳은 setPosition뿐 |
 | setPosition 기준 | 접근·회피 한 함수, 순서는 이동, 위협은 통과 조건 | 위협 우선이면 걷는 캐릭이 몹을 관통 |
 | 회피 | 물러나기 우선, 1마리 이상 줄면 채택, 없으면 반대편으로 | 사용자 의도 (원안 dodge의 역방향 탈출) |
 | 접근 | 정면 직선 → 정면 우회 → 후면 직선 → 후면 우회 | 작은 장애물이면 정면 우회가 후면보다 짧다 |

@@ -215,41 +215,42 @@ var ClassAttack = {
 			baseId = getBaseStat("monstats", unit.classid, "baseid"),
 			size = getBaseStat("monstats2", baseId, "sizex");
 
-		// 260928: the Angle/Detour gate is back in Attack.clear (checked for every class before the attack), so this copy is not needed
-//		// Angle/Detour gate of the old Attack.clear, moved here: hammer does not go through setPosition	//260928
-//		// blocked -> Attack.tick.fail = "unreachable": clear drops a sweep target at once (was monsterList.shift())
-//		// must targets skip the gate, as the old clearList had none
-//		if (!Attack.tick.must && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, unit, 0x4)) {
-//			var cx, cy,	//260726
-//				skillRange = Skill.getRange(112),	//260829
-//				blocked = true,
-//				angle = Math.round(Math.atan2(me.y - unit.y, me.x - unit.x) * 180 / Math.PI),
-//				angles = [15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 105, -105, 120, -120, 135, -135, 150, -150, 165, -165, 180];	//260618
+		// Angle/Detour gate of the old Attack.clear, moved here: hammer does not go through setPosition	//260928
+		// blocked -> Attack.tick.fail = "unreachable": clear drops a sweep target at once (was monsterList.shift())
+		// must targets skip the gate, as the old clearList had none
+		// 0x4 -> 0x5: a hammer has to stand next to the target, so a target blocked only by 0x1 also needs a walk; judge it before walking	//260928
+		//if (!Attack.tick.must && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, unit, 0x4)) {
+		if (!Attack.tick.must && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, unit, 0x5)) {
+			var cx, cy,	//260726
+				skillRange = Skill.getRange(112),	//260829
+				blocked = true,
+				angle = Math.round(Math.atan2(me.y - unit.y, me.x - unit.x) * 180 / Math.PI),
+				angles = [15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 105, -105, 120, -120, 135, -135, 150, -150, 165, -165, 180];	//260618
 
-//			for (i = 0; i < angles.length; i += 1) {
-//				cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * skillRange + unit.x);
-//				cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * skillRange + unit.y);
+			for (i = 0; i < angles.length; i += 1) {
+				cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * skillRange + unit.x);
+				cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * skillRange + unit.y);
 
-//				if (!CollMap.checkColl(unit, {x: cx, y: cy}, 0x4) && !CollMap.checkColl(me, {x: cx, y: cy}, 0x4)) {
-//					blocked = false;
-//					break;
-//				}
-//			}
+				if (!CollMap.checkColl(unit, {x: cx, y: cy}, 0x4) && !CollMap.checkColl(me, {x: cx, y: cy}, 0x4)) {
+					blocked = false;
+					break;
+				}
+			}
 
-//			if (blocked) {
-//				Attack.tick.fail = "unreachable";	// [Angle Skip]
+			if (blocked) {
+				Attack.tick.fail = "unreachable";	// [Angle Skip]
 
-//				return false;
-//			}
+				return false;
+			}
 
-//			var collPath = getPath(me.area, unit.x, unit.y, me.x, me.y, 0, Pather.walkDistance);
+			var collPath = getPath(me.area, unit.x, unit.y, me.x, me.y, 0, Pather.walkDistance);
 
-//			if (!collPath || collPath.length * Pather.walkDistance > getDistance(me, unit) * Config.DetourPath) {
-//				Attack.tick.fail = "unreachable";	// [Detour Skip]
+			if (!collPath || collPath.length * Pather.walkDistance > getDistance(me, unit) * Config.DetourPath) {
+				Attack.tick.fail = "unreachable";	// [Detour Skip]
 
-//				return false;
-//			}
-//		}
+				return false;
+			}
+		}
 
 		// in case base stat returns something outrageous
 		if (typeof size !== "number" || size < 1 || size > 3) {

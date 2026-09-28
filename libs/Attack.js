@@ -320,39 +320,39 @@ var Attack = {
 					continue;
 				}
 
-				// Angle/Detour gate of the old clear, restored (sweep only; must targets had no gate in the old clearList)	//260928
-				// condition 0x4 -> 0x5: a target blocked only by 0x1 is also checked, so a long walk around it is skipped
-				if (!target.must && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, target.unit, 0x5)) {
-					var cx, cy,	//260726
-						skillRange = Skill.getRange(Config.AttackSkill[(target.unit.spectype & 0x7) ? 1 : 3]),	//260829
-						blocked = true,
-						angle = Math.round(Math.atan2(me.y - target.unit.y, me.x - target.unit.x) * 180 / Math.PI),
-						angles = [15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 105, -105, 120, -120, 135, -135, 150, -150, 165, -165, 180];	//260618
+				// 260928: the Angle/Detour gate lives in setPosition now (sweep approach: spot in sight from me; walk around only within DetourPath of the target).
+				// Here it did not know whether a move was needed at all, and dropped targets that could be hit from where I stand (0x1 in between)
+				//if (!target.must && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, target.unit, 0x5)) {
+					//var cx, cy,	//260726
+						//skillRange = Skill.getRange(Config.AttackSkill[(target.unit.spectype & 0x7) ? 1 : 3]),	//260829
+						//blocked = true,
+						//angle = Math.round(Math.atan2(me.y - target.unit.y, me.x - target.unit.x) * 180 / Math.PI),
+						//angles = [15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 105, -105, 120, -120, 135, -135, 150, -150, 165, -165, 180];	//260618
 
-					for (i = 0; i < angles.length; i += 1) {
-						cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * skillRange + target.unit.x);
-						cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * skillRange + target.unit.y);
+					//for (i = 0; i < angles.length; i += 1) {
+						//cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * skillRange + target.unit.x);
+						//cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * skillRange + target.unit.y);
 
-						if (!CollMap.checkColl(target.unit, {x: cx, y: cy}, 0x4) && !CollMap.checkColl(me, {x: cx, y: cy}, 0x4)) {
-							blocked = false;
-							break;
-						}
-					}
+						//if (!CollMap.checkColl(target.unit, {x: cx, y: cy}, 0x4) && !CollMap.checkColl(me, {x: cx, y: cy}, 0x4)) {
+							//blocked = false;
+							//break;
+						//}
+					//}
 
-					if (blocked) {
-						drop(target, "angle");
+					//if (blocked) {
+						//drop(target, "angle");
 
-						continue;
-					}
+						//continue;
+					//}
 
-					var collPath = getPath(me.area, target.unit.x, target.unit.y, me.x, me.y, 0, Pather.walkDistance);
+					//var collPath = getPath(me.area, target.unit.x, target.unit.y, me.x, me.y, 0, Pather.walkDistance);
 
-					if (!collPath || collPath.length * Pather.walkDistance > getDistance(me, target.unit) * Config.DetourPath) {
-						drop(target, "detour");
+					//if (!collPath || collPath.length * Pather.walkDistance > getDistance(me, target.unit) * Config.DetourPath) {
+						//drop(target, "detour");
 
-						continue;
-					}
-				}
+						//continue;
+					//}
+				//}
 
 				// 5. attack
 				this.tick.cast = false;
@@ -991,6 +991,7 @@ var Attack = {
 		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier,
 			//longCand = null,	//260928 shortest over-limit detour, kept for must targets
 			//longLen = 0,
+			detourOk, detourPath,	//260928
 			pathOk = false,
 			list = [],
 			baseline = 0,
@@ -1087,8 +1088,10 @@ var Attack = {
 			// Order decides which spot, threat only decides whether a spot is allowed	//260927
 			// approach: shortest walk first (straight ahead, outer ring), threat breaks ties
 			// dodge: back straight away first (outer ring = away from the target, then small offset); a spot must beat the current one by 1+
+			// 260928: approach is outer ring first, then offset (the agreed order, same as dodge; the old code also looked on the skill-range ring first)
 			list.sort(moveNeeded ? function (a, b) {
-				return (a.offset - b.offset) || (b.r - a.r) || (a.threat - b.threat);
+				//return (a.offset - b.offset) || (b.r - a.r) || (a.threat - b.threat);
+				return (b.r - a.r) || (a.offset - b.offset) || (a.threat - b.threat);
 			} : function (a, b) {
 				return (b.r - a.r) || (a.offset - b.offset);
 			});
@@ -1112,8 +1115,15 @@ var Attack = {
 					continue;
 				}
 
+				// sweep approach: the spot must be in sight from me (the old clear's Angle gate, moved here)	//260928
+				if (moveNeeded && !this.tick.must && useTele && CollMap.checkColl(me, {x: c.x, y: c.y}, 0x4)) {
+					continue;
+				}
+
 				if (!useTele && CollMap.checkColl(me, {x: c.x, y: c.y}, 0x5)) {
-					if (moveNeeded && !pathCand) {
+					//if (moveNeeded && !pathCand) {
+					// a walk around is only for a spot in sight (0x1 in the way); behind a wall (0x4) it is not a spot for a sweep target	//260928
+					if (moveNeeded && !pathCand && (this.tick.must || !CollMap.checkColl(me, {x: c.x, y: c.y}, 0x4))) {
 						pathCand = c;	// reachable only by walking around. Checked once below
 					}
 
@@ -1125,9 +1135,23 @@ var Attack = {
 				break;
 			}
 
-			// walking around is judged once, by the clear gate (path to the target vs DetourPath), as in the old code. Here it is the old slotMove: just moveTo	//260928
+			// walking around (the old clear's Detour gate, moved here so it runs only when a walk around is really needed)	//260928
+			// must: any length. sweep: my walking path to the target <= straight distance to the target * DetourPath, one getPath per call
 			if (!choice && pathCand) {
-				pathOk = true;
+				if (this.tick.must) {
+					pathOk = true;
+				} else {
+					if (detourOk === undefined) {
+						detourPath = getPath(me.area, unit.x, unit.y, me.x, me.y, 0, Pather.walkDistance);
+						detourOk = !!(detourPath && detourPath.length && detourPath.length * Pather.walkDistance <= getDistance(me, unit) * Config.DetourPath);
+
+						if (!detourOk) {
+							Misc.trace("[SP] detour " + unit.name + " path:" + (detourPath ? detourPath.length * Pather.walkDistance : "none") + " dist:" + Math.round(getDistance(me, unit)));	//260926 temp
+						}
+					}
+
+					pathOk = detourOk;
+				}
 			}
 
 			//if (!choice && pathCand) {
