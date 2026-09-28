@@ -6323,7 +6323,6 @@ function AutoSmurf() {
 						if (Boer && me.getSkill(149, 1)) {
 							Skill.cast(149, 0); // Battle Orders
 						}
-					//} else if (getDistance(me, driver) > 15) {	// driver is not found in this branch
 					} else if (getDistance(me, msgNode[0], msgNode[1]) > 15) {	//260928
 						result = Pather.moveTo(msgNode[0] + myX, msgNode[1] + myY, 3, true);
 						
