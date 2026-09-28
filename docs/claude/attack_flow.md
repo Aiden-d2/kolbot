@@ -178,7 +178,7 @@ getUnit(1)로 몬스터를 하나씩:
 ### 1-9. 출구 (453~469줄)
 - `finally`: `tick.monList`와 `tick.must`를 비운다. 루프가 어떻게 끝나든(return 포함) 반드시 실행된다.
 - 실제 시전이 1회 이상이면 아이템을 줍고(range가 0이면 기본 반경) `afterAttack`을 부른다.
-- range > 0이면 기준점 주변 `min(range, 15)` 안의 상자를 연다. 세 번째 인자 `openChest`가 `false`면 열지 않는다(okCount·teamCount 대기 루프, 260928).
+- range > 0이면 기준점 주변 `min(range, 15)` 안의 상자를 연다.
 - true를 반환한다.
 
 ### 1-10. 보조 함수 (472~526줄)
