@@ -256,6 +256,7 @@ var ClassAttack = {
 				//}
 
 				delay(300);
+				Attack.tick.cast = true;	//260928 pure summoner: standing by the target counts as an attack tick
 
 				break;
 			default:
