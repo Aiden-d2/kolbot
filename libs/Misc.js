@@ -258,7 +258,8 @@ var Skill = {
 		}
 
 		// Check mana cost, charged skills don't use mana
-		if (!item && this.getManaCost(skillId) + 1 > me.mp) {	//260903
+		//if (!item && this.getManaCost(skillId) + 1 > me.mp) {	//260903
+		if (!item && this.getManaCost(skillId) > me.mp) {	//260928 back to the class files' LowManaSkill test (the +1 left a gap where nothing was cast); the stale cost is fixed in getManaCost
 			// Maybe delay on ALL skills that we don't have enough mana for?
 			if (Config.AttackSkill.concat([42, 54]).concat(Config.LowManaSkill).indexOf(skillId) > -1) {
 				delay(300);
@@ -443,18 +444,18 @@ MainLoop:
 			return 0;
 		}
 
-		if (this.manaCostList.hasOwnProperty(skillId)) {
-			return this.manaCostList[skillId];
-		}
+		//if (this.manaCostList.hasOwnProperty(skillId)) {	//260928 no cache: the cost changes with the skill level (level up, +skills)
+			//return this.manaCostList[skillId];
+		//}
 
 		var skillLvl = me.getSkill(skillId, 1),
 			effectiveShift = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024],
 			lvlmana = getBaseStat(3, skillId, "lvlmana") === 65535 ? -1 : getBaseStat(3, skillId, "lvlmana"), // Correction for skills that need less mana with levels (kolton)
 			ret = Math.max((getBaseStat(3, skillId, "mana") + lvlmana * (skillLvl - 1)) * (effectiveShift[getBaseStat(3, skillId, "manashift")] / 256), getBaseStat(3, skillId, "minmana"));
 
-		if (!this.manaCostList.hasOwnProperty(skillId)) {
-			this.manaCostList[skillId] = ret;
-		}
+		//if (!this.manaCostList.hasOwnProperty(skillId)) {	//260928
+			//this.manaCostList[skillId] = ret;
+		//}
 
 		return ret;
 	}
