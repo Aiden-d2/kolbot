@@ -5934,7 +5934,7 @@ function AutoSmurf() {
 		
 		portal = getUnit(2, 563);
 		
-		while (!portal && getTickCount() - portalTick < 5000) {	//260926
+		while (!portal && getTickCount() - tick < 5000) {	//260926
 			delay(me.ping * 2 + 500);
 			portal = getUnit(2, 563);
 		}
