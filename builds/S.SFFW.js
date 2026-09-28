@@ -137,7 +137,7 @@ var AutoBuildTemplate = {
 				Config.LowManaSkill = [-1, -1];
 				Config.PacketCasting = 1;									// 0 = disable, 1 = packet teleport, 2 = full packet casting.
 				
-				Config.AttackSkill = [-1, 51, 43, 51, 43, -1, -1];			// Fire Wall
+				Config.AttackSkill = [-1, 51, -1, 51, -1, -1, -1];			// Fire Wall
 				
 				if (me.diff === 0) {
 					Config.CastStatic = 25;	//no limits
@@ -160,7 +160,7 @@ var AutoBuildTemplate = {
 			}
 		},
 
-	50:	{
+	46:	{
 			Update: function () {
 				Config.AttackSkill = [-1, 51, 42, 51, 42, -1, 43];			// Fire Wall + Static Field
 			}

@@ -159,7 +159,7 @@ var AutoBuildTemplate = {
 
 	30:	{
 			Update: function () {
-				Config.AttackSkill = [-1, 64, 43, 64, 43, -1, -1];		// Frozen Orb
+				Config.AttackSkill = [-1, 64, -1, 64, -1, -1, 43];		// Frozen Orb
 			}
 		},
 

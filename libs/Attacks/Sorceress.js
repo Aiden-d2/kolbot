@@ -61,7 +61,7 @@ var ClassAttack = {
 					return 0;
 				}
 			) && Math.round(unit.hp * 100 / unit.hpmax) > Config.CastStatic) {
-			staticRange = Math.floor((me.getSkill(42, 1) + 4) * 2 / 3);
+			staticRange = Math.floor((me.getSkill(42, 1) + 4));	//260928 * 2 / 3
 
 			while (!me.dead && Math.round(unit.hp * 100 / unit.hpmax) > Config.CastStatic && Attack.checkMonster(unit)) {
 				if (getDistance(me, unit) > staticRange || checkCollision(me, unit, 0x4)) {
