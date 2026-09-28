@@ -84,6 +84,10 @@ var Town = {
 			Misc.trace("gamble");
 			this.gamble();
 			//this.buyKeys();
+			if (Config.UseKeys) {	//260928 top up keys on regular visits only (never a reason to go to town)
+				Misc.trace("buyKeys");
+				this.buyKeys();
+			}
 			Misc.trace("reviveMerc");
 			this.reviveMerc();
 		
@@ -109,10 +113,6 @@ var Town = {
 		Misc.trace("fillTome");
 		this.fillTome(518);
 		
-		if (Config.UseKeys) {	//260928 top up keys on regular visits only (never a reason to go to town)
-			Misc.trace("buyKeys");
-			this.buyKeys();
-		}
 		Misc.trace("buyPotions");
 		this.buyPotions(shopItems);
 		Misc.trace("repair");
