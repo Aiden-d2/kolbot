@@ -3245,6 +3245,12 @@ function AutoSmurf() {
 			Town.move("waypoint");
 			
 			Pather.useWaypoint(74);
+			
+			Pather.walkTo(me.x + 5, me.y - 5);
+			Pather.walkTo(me.x + 5, me.y + 5);
+			Pather.walkTo(me.x - 5, me.y - 5);
+			Pather.walkTo(me.x - 5, me.y + 5);
+			
 			Precast.doPrecast(true);
 
 			journal = getPresetUnit(74, 2, 357);
