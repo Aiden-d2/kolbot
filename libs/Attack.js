@@ -46,11 +46,13 @@ var Attack = {
 		Attack.clear(range, must)	//260926
 		range - sweep radius around the call position. 0 = no area sweep
 		must  - optional. classid | name | [classid or name, ...] | {box: {x1, x2, y1, y2}}	//260927 "all" removed; a box forces range 0
+		openChest - optional. false = do not open chests at the end (okCount / teamCount wait loops)	//260928
 		        with a must id/name and range > 0, the sweep area follows the must target
 		        must targets are never skipped; the call ends when they are dead
 		        while a must target is alive, monsters within dangerRange of me are handled too
 	*/
-	clear: function (range, must) {	//260926
+	//clear: function (range, must) {	//260926
+	clear: function (range, must, openChest) {	//260928 openChest back: okCount / teamCount call clear every 0.5s and must not run to chests
 		while (!me.gameReady) {
 			delay(40);
 		}
@@ -462,7 +464,8 @@ var Attack = {
 			ClassAttack.afterAttack();
 		}
 
-		if (range > 0) {
+		//if (range > 0) {
+		if (range > 0 && openChest !== false) {	//260928
 			this.openChests(Math.min(range, 15), orgx, orgy);	//260727
 		}
 

@@ -425,7 +425,8 @@ function AutoSmurf() {
 		while (!teamOk) {
 			if (!me.inTown) {
 				//Attack.clear(range, undefined, undefined, undefined, false);	//260727
-				Attack.clear(range);	//260727 //260926
+				//Attack.clear(range);	//260727 //260926
+				Attack.clear(range, undefined, false);	//260928 no chests while waiting for the team (stutter: chest run every 0.5s)
 			}
 
 			Pather.moveTo(orgx, orgy);
@@ -457,7 +458,8 @@ function AutoSmurf() {
 		while (teamCount !== Team.Size - 1) {
 			if (!me.inTown) {
 				//Attack.clear(range, undefined, undefined, undefined, false);	//260727
-				Attack.clear(range);	//260727 //260926
+				//Attack.clear(range);	//260727 //260926
+				Attack.clear(range, undefined, false);	//260928 no chests while waiting for the team (stutter: chest run every 0.5s)
 			}
 			
 			Pather.moveTo(orgx, orgy);
