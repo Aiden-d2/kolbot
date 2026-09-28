@@ -68,8 +68,8 @@ var Attack = {
 		}
 
 		// a configured attack skill that is not actually learned (AutoBuild / goal allocation error) makes every cast fail silently: stop the profile	//260928
-		for (i = 0; i < 7; i += 1) {
-			if (Config.AttackSkill[i] > -1 && !me.getSkill(Config.AttackSkill[i], 1)) {
+		for (i = 0; i < Config.AttackSkill.length; i += 1) {	//260928 array length differs per build
+			if (Config.AttackSkill[i] > -1 && !me.getSkill(Config.AttackSkill[i], 1) && Config.AttackSkill[i] !== 500) {
 				D2Bot.printToConsole("AttackSkill[" + i + "] " + Config.AttackSkill[i] + " not learned (lvl " + me.charlvl + "). Stopping", 9);
 				D2Bot.stop();
 
@@ -473,7 +473,7 @@ var Attack = {
 	hasUsableSkill: function (unit) {
 		var i, custom,
 			index = ((unit.spectype & 0x7) || unit.type === 0) ? 1 : 3,
-			skills = [Config.AttackSkill[index], Config.AttackSkill[index + 1], Config.AttackSkill[5], Config.AttackSkill[6]];
+			skills = [index, index + 1, 5, 6].filter(function (n) { return n < Config.AttackSkill.length; }).map(function (n) { return Config.AttackSkill[n]; });
 
 		custom = this.getCustomAttack(unit);
 
