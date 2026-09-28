@@ -120,7 +120,7 @@ Attack.clear(range, must)
 
 [종료]
   실제 시전 1회 이상 → Pickit.pickItems(range, 0이면 기본 25) → ClassAttack.afterAttack()
-  range > 0 → openChests(min(range, 15), 기준점)   ※ Config.OpenChests 무시는 현행 유지 (추후)
+  상자 없음 (260928). Pather NodeAction.popChests가 clearPath 이동 노드마다 Misc.openChests(15) (Config.OpenChests: 2, 0x5 직선 검사)
   return true
 ```
 
@@ -279,7 +279,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | 인게임 검증 | 필요. `_cache/trace/`의 `[AC]`, `[SP]` 로그 |
 | 임시 로그 삭제 | 검증 후 `//260926 temp` 일괄 삭제 |
 | Static 사거리 불일치 (`Misc.js` lvl+4 vs `Sorceress.js` ×2/3) | 추후 (사용자) |
-| `openChests`의 `Config.OpenChests` 무시 | 추후 (사용자, 의도 있음) |
+| `openChests`의 `Config.OpenChests` 무시 | 해소 (260928): clear에서 상자 제거, `Attack.openChests` 주석, Pather + `Misc.openChests`로 일원화 |
 | 소 레벨 치킨 잦음 (`clearCowLevel`, `followDriver`) | 개선 대상 (사용자). `followDriver`는 1차 교체 완료 |
 | 부활·소환형 우선(scariness) | 보류. 거리순 대전제와 충돌, 어느 안도 트레이드오프 |
 | `.nip` LF 변환 | main 반영 완료 (260928) |

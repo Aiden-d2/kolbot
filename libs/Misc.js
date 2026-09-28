@@ -1473,7 +1473,8 @@ var Misc = {
 
 			unit = unitList.shift();
 
-			if (unit && (Pather.useTeleport() || !checkCollision(me, unit, 0x4)) && this.openChest(unit)) {
+			//if (unit && (Pather.useTeleport() || !checkCollision(me, unit, 0x4)) && this.openChest(unit)) {
+			if (unit && !CollMap.checkColl(me, unit, 0x5) && this.openChest(unit)) {	//260928 walk and teleport alike: a straight, walkable line (as Attack.openChests did)
 				Pickit.pickItems();
 			}
 		}
