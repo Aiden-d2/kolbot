@@ -262,7 +262,7 @@ setPosition(unit, distance, coll, minDist = 3)
 |---|---|
 | `libs/Misc.js` | `Skill.cast`에 시전 기록 |
 | `libs/Pather.js` | `NodeAction.killMonsters`: spectype 인자 제거. 카오스(108)는 `clear(20)`, 그 외는 `clear(25)`가 false면 `"killMonsters"` 반환(이동 중단). false는 사망·카우킹·스킬 미보유 정지일 때만 (사용자 정리, 260927) |
-| `libs/Attacks/Paladin.js` | `getHammerPosition` 맨 앞에 이전 clear의 Angle/Detour 게이트 (해머는 setPosition을 안 거침). 조건 0x5 (해머는 몹 옆에 서야 하므로 0x1로 막혀도 이동이 필요). 막히면 `tick.fail = "unreachable"`. MUST·NoSkipArea는 게이트 없음
+| `libs/Attacks/Paladin.js` | `getHammerPosition` 맨 앞에 이전 clear의 Angle/Detour 게이트 (해머는 setPosition을 안 거침). 조건 0x5 (해머는 몹 옆에 서야 하므로 0x1로 막혀도 이동이 필요). 막히면 `tick.fail = "unreachable"`. MUST·NoSkipArea는 게이트 없음 |
 | `libs/Attacks/Barbarian.js` | preattack이 대입 전 `attackSkill`을 참조 → `Config.AttackSkill[0]`. `findItem`의 `clear(10, false×4)` → `clear(10)` |
 | `libs/Attack.js` | `getSkillElement`: Telekinesis(43) → `"none"` (면역과 무관하게 사용) |
 | `libs/Config.js` | `Dodge.Range` 13 → 9 |
