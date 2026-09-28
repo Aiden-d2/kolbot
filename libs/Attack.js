@@ -69,7 +69,7 @@ var Attack = {
 
 		// a configured attack skill that is not actually learned (AutoBuild / goal allocation error) makes every cast fail silently: stop the profile	//260928
 		for (i = 0; i < Config.AttackSkill.length; i += 1) {	//260928 array length differs per build (B.WCRY has 5)
-			if (Config.AttackSkill[i] > 0 && !me.getSkill(Config.AttackSkill[i], 1)) {	// 0 = basic Attack, always available
+			if (Config.AttackSkill[i] > -1 && !me.getSkill(Config.AttackSkill[i], 1)) {
 				D2Bot.printToConsole("AttackSkill[" + i + "] " + Config.AttackSkill[i] + " not learned (lvl " + me.charlvl + "). Stopping", 9);
 				D2Bot.stop();
 

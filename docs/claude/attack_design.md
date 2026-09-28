@@ -69,7 +69,7 @@ Attack.clear(range, must)
 ```
 [진입]
   gameReady 대기, range 검증, AttackSkill 검증
-  스킬 보유 검사: AttackSkill 배열 길이만큼(빌드마다 다름, B.WCRY는 5칸), 1 이상인 슬롯마다(0 = 기본 공격 제외) me.getSkill(id, 1). 없으면 콘솔 메시지 + D2Bot.stop() + false
+  스킬 보유 검사: AttackSkill 배열 길이만큼(빌드마다 다름, B.WCRY는 5칸), -1이 아닌 슬롯마다 me.getSkill(id, 1) (기본 스킬 0~3은 레벨 1로 보유). 없으면 콘솔 메시지 + D2Bot.stop() + false
   박스면 range = 0
   gidSkip 리셋: 지역 변경 or 마지막 스킵 위치에서 40 초과
   MUST 대기 창: id·이름·배열이면 now + 5 × (ping×2 + 100)ms. 이 동안 "MUST가 있다"고 간주 (멈추지 않음)
