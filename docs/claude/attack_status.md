@@ -25,11 +25,13 @@
 | 3-9d | getPath 빈 배열이면 우회 판정 통과 | 해소(부분) | setPosition은 `path.length`까지 확인. `Pather.moveTo`의 `if (!path)`는 그대로 |
 | 3-9e | `while (!me.gameReady)` 타임아웃 없음 | 해당 없음 | 사용자: 무한 대기일 수 없음 |
 | 3-9f | `bossId > 999`로 gid/classid 구분 | 해소 | 규칙 제거 |
-| 3-9g | `openChests`의 `Config.OpenChests` 무시 | 추후 | 의도 있음 |
+| 3-9g | `openChests`의 `Config.OpenChests` 무시 | 해소 | clear에서 상자 제거, Pather `popChests`(clearPath, 반경 15, `OpenChests: 2`)로 일원화 (260928) |
 | 3-9h | 걷기 회피가 타깃 쪽으로 전진 (5차 C-2) | 해소 | 회피는 바깥 링(타깃에서 먼 쪽)부터 |
 | 3-9i | 텔레 접근 후보 0이면 폴백 없음 (5차 D-4) | 해소 | 후면 구역, 45 초과는 moveTo(여러 번 텔레) |
 | 3-10 | 0x1만 막힌 지형에서 접근 시 장거리 우회 | 해소 | 우회는 `DetourPath`(4배) 이내만, 순서: 정면 직선 → 정면 우회 → 후면. MUST만 마지막 수단으로 한도 초과 우회 허용 |
 | 3-11 | 설정된 공격 스킬을 실제로 보유하지 않으면(AutoBuild 오류, goal 배분) 시전이 조용히 실패해 모든 몹을 스킵 | 해소 | `clear` 시작 시 보유 검사 → 콘솔 메시지 + `D2Bot.stop()` (260928) |
+| 3-12 | 마나가 `비용 ≤ mp < 비용 + 1`이면 공격 없이 멈춤 (`Skill.cast`는 `+1`로 거부, 직업 파일은 `비용 > mp`일 때만 LowManaSkill로 전환) | 해소 (인게임 확인 필요) | `+1` 제거, `getManaCost` 캐시 제거. `+1`은 캐시된(레벨업 전) 비용 때문에 생긴 Molten Boulder 멈춤을 덮던 것으로 추정 (260928) |
+| 3-13 | okCount·teamCount 대기 중 버벅거림 | 조치 (인게임 확인 필요) | 대기 루프의 clear가 0.5초마다 `openChests`로 오브젝트 전체를 훑던 것 제거 (3-9g). 원인 확정은 아님 |
 
 ### 0-1. 1차 구현의 회귀 (260928 점검에서 발견, 수정됨)
 | 항목 | 기존 동작 | 1차 구현 | 수정 |

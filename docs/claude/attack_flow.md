@@ -348,10 +348,13 @@ setPosition과 직업 파일은 반환값(0/1/2)만으로는 "왜 실패했는�
 
 | 파일 | 변경 |
 |---|---|
-| `libs/Misc.js` `Skill.cast` | `setSkill` 성공 직후 `Attack.tick.cast = true` (clear가 실제 시전을 알게) |
+| `libs/Misc.js` `Skill.cast` | `setSkill` 성공 직후 `Attack.tick.cast = true` (clear가 실제 시전을 알게). 마나 판정 `비용 > mp` (260928, `+1` 제거) |
+| `libs/Misc.js` `getManaCost` | 캐시 제거, 매번 현재 스킬 레벨로 계산 (260928) |
+| `libs/Misc.js` `openChests` | 갈 수 있는지 검사 `CollMap.checkColl(me, 상자, 0x5)`, 걷기·텔레 공통 (260928) |
 | `libs/Pather.js` `NodeAction.killMonsters` | spectype 인자 제거. 108은 `clear(20)`, 그 외 `clear(25)`가 false면 이동 중단 |
+| `libs/Pather.js` `NodeAction.popChests` | 전투 이동(`clearPath`)일 때만 `Misc.openChests(15)` (260928) |
 | `libs/AutoBuild.js` `levelUpHandler` | 레벨업 때 `Attack.init()` 재호출 (46레벨 Wereform) |
-| `libs/Config.js` | `Dodge.Range` 13 → 9 |
+| `libs/Config.js` | `Dodge.Range` 13 → 9, `OpenChests: 2` |
 | `libs/Attacks/Barbarian.js` | 선공 사거리를 `Config.AttackSkill[0]`로 (대입 전 변수 참조 버그), `findItem`의 `clear(10)` |
 | `libs/Attacks/Necromancer.js` | 소환 전용(500) 틱을 시전으로 셈: `Attack.tick.cast = true` |
 | `libs/Attacks/Paladin.js` `getHammerPosition` | 해머는 setPosition을 안 거치므로, 맨 앞에 예전 clear의 Angle/Detour 게이트(30여 줄)를 두었다. 조건 0x5. 막히면 `tick.fail = "unreachable"`. MUST·NoSkipArea는 제외 |

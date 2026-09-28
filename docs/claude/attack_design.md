@@ -260,12 +260,12 @@ setPosition(unit, distance, coll, minDist = 3)
 
 | 파일 | 변경 |
 |---|---|
-| `libs/Misc.js` | `Skill.cast`에 시전 기록 |
+| `libs/Misc.js` | `Skill.cast`에 시전 기록. 마나 판정 `비용 + 1 > mp` → `비용 > mp` (260928, 직업 파일의 LowManaSkill 판정과 일치). `getManaCost` 캐시 제거 (매번 현재 스킬 레벨로 계산). `openChests`의 갈 수 있는지 검사를 `CollMap.checkColl(me, 상자, 0x5)`로 (걷기·텔레 공통) |
 | `libs/Pather.js` | `NodeAction.killMonsters`: spectype 인자 제거. 카오스(108)는 `clear(20)`, 그 외는 `clear(25)`가 false면 `"killMonsters"` 반환(이동 중단). false는 사망·카우킹·스킬 미보유 정지일 때만 (사용자 정리, 260927) |
 | `libs/Attacks/Paladin.js` | `getHammerPosition` 맨 앞에 이전 clear의 Angle/Detour 게이트 (해머는 setPosition을 안 거침). 조건 0x5 (해머는 몹 옆에 서야 하므로 0x1로 막혀도 이동이 필요). 막히면 `tick.fail = "unreachable"`. MUST·NoSkipArea는 게이트 없음 |
 | `libs/Attacks/Barbarian.js` | preattack이 대입 전 `attackSkill`을 참조 → `Config.AttackSkill[0]`. `findItem`의 `clear(10, false×4)` → `clear(10)` |
 | `libs/Attack.js` | `getSkillElement`: Telekinesis(43) → `"none"` (면역과 무관하게 사용) |
-| `libs/Config.js` | `Dodge.Range` 13 → 9 |
+| `libs/Config.js` | `Dodge.Range` 13 → 9, `OpenChests: 2` (260928) |
 | `libs/AutoBuild.js` | `levelUpHandler`에서 `Attack.init()` 재호출 (46레벨 Wereform이 그 게임부터 적용) |
 | `bots/AutoSmurf.js` | 호출부 변환, `clearLevel` → den 내부 `clearDen`, `getBoss`, 트라빈컬·고대인 배열, 소 `followDriver` 교체(아래) |
 | `bots/AutoSmurf.js`, `threads/Reload.js` | 줄바꿈 CRLF → LF (내용 변경 없음, 별도 커밋) |

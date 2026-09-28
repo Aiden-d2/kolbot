@@ -11,7 +11,12 @@
 - **사용자가 요청하지 않는 한 코드는 임의로 수정하지 않는다.** 원인 분석, 검토, 제안까지만 하고, 수정은 요청을 받은 뒤에 한다 (260928).
 - `AutoSmurf.js`, `Reload.js`, `nips/*.nip`은 LF다 (260928 main 반영). 사용자의 로컬 파일은 CRLF일 수 있으므로 비교 시 `git diff --ignore-cr-at-eol`로 본다.
 
+## 작업 흐름 (260928 합의)
+- 작업 시작 시 작업 브랜치를 main 최신으로 맞춘 뒤 수정 → 커밋·푸시 → PR 생성 → 사용자 확인 → 요청 시 병합.
+- 확실한 것만 말한다. 추정은 추정이라고 밝히고 근거(코드 줄, 데이터)를 붙인다. 기존 흐름은 유지하고 지적된 결함만 고친다.
+
 ## 분석 노트
+- **새 대화는 먼저 읽을 것:** 인수인계 메모(현재 상태, 게임 확인 대기 항목, 미결 작업): `docs/claude/handoff.md`
 - Attack 계열(clear / clearList / setPosition / dodge) 현황과 미해결 결함: `docs/claude/attack_status.md`
 - Attack 리팩터링 설계안(로직 흐름, 재검토 지점): `docs/claude/attack_design.md`
 - 이전 코드와 현재 코드의 동작 대조표(모의 실행 결과): `docs/claude/attack_compare.md`
