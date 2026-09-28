@@ -414,7 +414,8 @@ var Attack = {
 					// doAttack said 1 without casting (no LOS after moving, skill delay, low mana)
 					target.idle += 1;
 
-					if (target.idle > 10 && !target.must) {
+					//if (target.idle > 10 && !target.must) {
+					if (target.idle >= 5 && !target.must) {	//260928 5, same count as the old HP skip that used to catch these ticks
 						drop(target, "idle");
 					} else if (target.idle % 5 === 0) {
 						Packet.flash(me.gid);	// CollMap and the engine can disagree on LOS; resync before trying again

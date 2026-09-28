@@ -115,7 +115,7 @@ Attack.clear(range, must)
     결과 2가 아니면                    deferred 해제
     tick.fail == "unreachable"        SWEEP 버림 / MUST flash 후 계속   (NoSkipArea에서는 아래 재시도 경로)
     결과 0 or tick.fail               대상별 retry + flash. 5회째: SWEEP 버림 / MUST retry 리셋
-    결과 1 && 시전 없음 (idle)         SWEEP 10회 연속이면 버림 / 5회마다 flash (시전하면 0으로)
+    결과 1 && 시전 없음 (idle)         SWEEP 5회 연속이면 버림(이전 HP 스킵과 같은 횟수) / MUST는 5회마다 flash (시전하면 0으로)
     결과 1 && 실제 시전               대상별 시전 수 +1
                                       근접 스킬(사거리 < 4) 10시전마다 flash
                                       SWEEP HP skip: 5시전 동안 HP 감소 20% 미만 → gidSkip 등록 + 버림 (NoSkipArea 제외, 기준 HP는 합류 시점)
@@ -230,7 +230,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | MUST 대기 창 | 5 × (ping×2+100)ms | Attack.js | 시작 시 보스 등장 대기 (전투는 계속) |
 | 시야 잃은 MUST 탐색 | 3회 | Attack.js | |
 | SWEEP 재시도 | 5회 | Attack.js | 대상별 |
-| SWEEP idle | 10회 연속 | Attack.js | 결과 1인데 시전 없음. 예전 HP skip이 잡던 "헛돌기"를 대신함 |
+| SWEEP idle | 5회 연속 | Attack.js | 결과 1인데 시전 없음. 예전 HP skip이 잡던 "헛돌기"를 대신함 |
 | SWEEP HP skip | 5시전, 20% 미만 | Attack.js | 실제 시전만 센다 |
 
 ---
