@@ -43,9 +43,12 @@ var NodeAction = {
 	},
 
 	// Open chests while pathing
-	popChests: function () {
-		if (!!Config.OpenChests) {
-			Misc.openChests(20);
+	//popChests: function () {
+	popChests: function (arg) {	//260928
+		//if (!!Config.OpenChests) {
+			//Misc.openChests(20);
+		if (!!Config.OpenChests && arg.clearPath !== false) {	//260928 only on clearing moves, like killMonsters / shrines / wells
+			Misc.openChests(15);	//260928 inside the area killMonsters just cleared (20/25)
 		}
 	},
 

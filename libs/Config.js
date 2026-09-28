@@ -67,7 +67,8 @@ var Config = {
 	PickitFiles: ["X.nip", "Y.nip", "Z.nip", "V.nip"],
 	
 	//Pathing
-	OpenChests: false,
+	//OpenChests: false,
+	OpenChests: 2,	//260928 2 = the full container list (what Attack.clear used to open). Opened by Pather on clearPath moves
 	ScanShrines: [1, 2, 3],
 	UseWells: true,	//260806
 	

@@ -462,9 +462,10 @@ var Attack = {
 			ClassAttack.afterAttack();
 		}
 
-		if (range > 0) {
-			this.openChests(Math.min(range, 15), orgx, orgy);	//260727
-		}
+		// 260928: chests are opened by Pather (NodeAction.popChests) on clearPath moves, after killMonsters has cleared the node
+		//if (range > 0) {
+			//this.openChests(Math.min(range, 15), orgx, orgy);	//260727
+		//}
 
 		return true;
 	},
@@ -2442,49 +2443,50 @@ AuraLoop: // Skip monsters with auras
 		return false;
 	},
 	
-	// Open chests when clearing
-	openChests: function (range, orgx, orgy) {	//260807
-		//if (!Config.OpenChests) {
-			//return false;
-		//}
+	// ---- 260928: replaced by Misc.openChests (Pather popChests on clearPath moves; the clear-end and Tombs calls are gone). kept for rollback ----
+//	// Open chests when clearing
+//	openChests: function (range, orgx, orgy) {	//260807
+//		//if (!Config.OpenChests) {
+//			//return false;
+//		//}
 
-		if (orgx === undefined || orgy === undefined) {
-			orgx = me.x;
-			orgy = me.y;
-		}
+//		if (orgx === undefined || orgy === undefined) {
+//			orgx = me.x;
+//			orgy = me.y;
+//		}
 
-		var unit, chest,
-			opened = false,
-			list = [],
-			ids = ["chest", "loose rock", "hidden stash", "loose boulder", "corpseonstick", "casket", "armorstand", "weaponrack", "barrel", "holeanim", "tomb2",
-				"tomb3", "roguecorpse", "ratnest", "corpse", "goo pile", "largeurn", "urn", "chest3", "jug", "skeleton", "guardcorpse", "sarcophagus", "object2",
-				"cocoon", "basket", "stash", "hollow log", "hungskeleton", "pillar", "skull pile", "jar3", "jar2", "jar1", "bonechest", "woodchestl",
-				"woodchestr", "barrel wilderness", "burialchestr", "burialchestl", "explodingchest", "chestl", "chestr", "groundtomb", "icecavejar1", "icecavejar2",
-				"icecavejar3", "icecavejar4", "deadperson", "deadperson2", "evilurn", "tomb1l", "tomb3l", "groundtombl"];	//eom
-			//ids = ["chest", "chest3", "weaponrack", "armorstand"];//, "skullpile"
+//		var unit, chest,
+//			opened = false,
+//			list = [],
+//			ids = ["chest", "loose rock", "hidden stash", "loose boulder", "corpseonstick", "casket", "armorstand", "weaponrack", "barrel", "holeanim", "tomb2",
+//				"tomb3", "roguecorpse", "ratnest", "corpse", "goo pile", "largeurn", "urn", "chest3", "jug", "skeleton", "guardcorpse", "sarcophagus", "object2",
+//				"cocoon", "basket", "stash", "hollow log", "hungskeleton", "pillar", "skull pile", "jar3", "jar2", "jar1", "bonechest", "woodchestl",
+//				"woodchestr", "barrel wilderness", "burialchestr", "burialchestl", "explodingchest", "chestl", "chestr", "groundtomb", "icecavejar1", "icecavejar2",
+//				"icecavejar3", "icecavejar4", "deadperson", "deadperson2", "evilurn", "tomb1l", "tomb3l", "groundtombl"];	//eom
+//			//ids = ["chest", "chest3", "weaponrack", "armorstand"];//, "skullpile"
 
-		unit = getUnit(2);
+//		unit = getUnit(2);
 
-		if (unit) {
-			do {
-				if (unit.name && !unit.mode && getDistance(unit, orgx, orgy) <= range && ids.indexOf(unit.name.toLowerCase()) > -1 && !CollMap.checkColl(me, unit, 0x5)) {	//260806
-					list.push(copyUnit(unit));
-				}
-			} while (unit.getNext());
-		}
+//		if (unit) {
+//			do {
+//				if (unit.name && !unit.mode && getDistance(unit, orgx, orgy) <= range && ids.indexOf(unit.name.toLowerCase()) > -1 && !CollMap.checkColl(me, unit, 0x5)) {	//260806
+//					list.push(copyUnit(unit));
+//				}
+//			} while (unit.getNext());
+//		}
 
-		while (list.length) {
-			list.sort(Sort.units);
-			
-			if (Misc.openChest(list.shift())) {
-				opened = true;
-			}
-		}
-		
-		if (opened) {
-			Pickit.pickItems(range, orgx, orgy);
-		}
-		
-		return true;
-	}
+//		while (list.length) {
+//			list.sort(Sort.units);
+
+//			if (Misc.openChest(list.shift())) {
+//				opened = true;
+//			}
+//		}
+
+//		if (opened) {
+//			Pickit.pickItems(range, orgx, orgy);
+//		}
+
+//		return true;
+//	}
 };

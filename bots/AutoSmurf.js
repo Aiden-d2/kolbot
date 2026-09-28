@@ -3512,7 +3512,7 @@ function AutoSmurf() {
 					Packet.flash(me.gid);
 				}
 				
-				Attack.openChests(10);
+				//Attack.openChests(10);	//260928 the moveTo above has clearPath on: Pather opens the chest at the nodes
 			} else {
 				print("Tombs: chest not found");
 				continue;
