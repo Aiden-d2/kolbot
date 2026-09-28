@@ -2198,9 +2198,9 @@ var Misc = {
 					}
 				}
 
-				if (Config.OpenChests && Town.needKeys()) {
-					check = true;
-				}
+				//if (Config.OpenChests && Town.needKeys()) {	//260928 keys are not bought in town -> endless town trips. Keys are topped up on regular visits (Town.doChores)
+				//	check = true;
+				//}
 			} catch (e) {
 				check = false;
 			}

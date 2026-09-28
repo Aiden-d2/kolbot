@@ -69,6 +69,7 @@ var Config = {
 	//Pathing
 	//OpenChests: false,
 	OpenChests: 2,	//260928 2 = the full container list (what Attack.clear used to open). Opened by Pather on clearPath moves
+	UseKeys: false,	//260928 key handling (need check, buying, keeping) apart from OpenChests. Off: only assassins open locked chests
 	ScanShrines: [1, 2, 3],
 	UseWells: true,	//260806
 	

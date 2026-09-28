@@ -108,6 +108,11 @@ var Town = {
 		this.clearInventory();
 		Misc.trace("fillTome");
 		this.fillTome(518);
+		
+		if (Config.UseKeys) {	//260928 top up keys on regular visits only (never a reason to go to town)
+			Misc.trace("buyKeys");
+			this.buyKeys();
+		}
 		Misc.trace("buyPotions");
 		this.buyPotions(shopItems);
 		Misc.trace("repair");
@@ -1070,7 +1075,8 @@ CursorLoop:
 	},
 
 	checkKeys: function () {
-		if (!Config.OpenChests || me.classid === 6 || me.gold < 540 || (!me.getItem("key") && !Storage.Inventory.CanFit({sizex: 1, sizey: 1}))) {
+		//if (!Config.OpenChests || me.classid === 6 || me.gold < 540 || (!me.getItem("key") && !Storage.Inventory.CanFit({sizex: 1, sizey: 1}))) {
+		if (!Config.UseKeys || me.classid === 6 || me.gold < 540 || (!me.getItem("key") && !Storage.Inventory.CanFit({sizex: 1, sizey: 1}))) {	//260928
 			return 12;
 		}
 
@@ -1799,7 +1805,8 @@ MainLoop:
 		];
 
 		if (ignoredTypes.indexOf(item.itemType) > -1) return false;
-		if (!Config.OpenChests && item.itemType === 41) return false; // Keys only when OpenChests
+		//if (!Config.OpenChests && item.itemType === 41) return false; // Keys only when OpenChests
+		if (Config.UseKeys && item.itemType === 41) return false; // Keys only when UseKeys	//260928 was inverted: kept keys when OpenChests was off
 		if (ignoredClassids.indexOf(item.classid) > -1) return false;
 		if (item.code === "529" && !me.findItem(518, 0, 3)) return false;
 		if (item.code === "530" && !me.findItem(519, 0, 3)) return false;
