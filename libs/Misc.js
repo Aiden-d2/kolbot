@@ -289,6 +289,10 @@ var Skill = {
 			return false;
 		}
 
+		if (typeof Attack === "object" && Attack.tick) {	//260926 lets Attack.clear tell a real cast from a no-op doAttack
+			Attack.tick.cast = true;
+		}
+
 		if (Config.PacketCasting > 1) {
 			switch (typeof x) {
 			case "number":

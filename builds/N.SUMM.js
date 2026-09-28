@@ -1,10 +1,10 @@
 /*
 	Base Stats
 	----------
- 	[0]Strength: 15
- 	[1]Energy: 25
- 	[2]Dexterity: 25
- 	[3]Vitality: 15
+ 	[0]Strength: 15		+45
+ 	[1]Energy: 25		+0
+ 	[2]Dexterity: 25	+10
+ 	[3]Vitality: 15		+450
 
 	Skills				Levelreq			SkillID
 	------------		--------			-------

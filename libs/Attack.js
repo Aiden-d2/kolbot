@@ -30,7 +30,27 @@ var Attack = {
 		}
 	},
 
-	clear: function (range, spectype, bossId, sortFunc, openChest) { // 260727
+	// Per-tick side channel written by setPosition / Skill.cast and read by clear	//260926
+	tick: {
+		cast: false,
+		moved: false,
+		fail: null,
+		must: false,	//260928
+		monList: null
+	},
+
+	dangerRange: 10,	//260926 units this close are handled first while a must target is alive
+	leashRange: 25,	//260926 a must target farther than this is chased before the sweep continues
+
+	/*
+		Attack.clear(range, must)	//260926
+		range - sweep radius around the call position. 0 = no area sweep
+		must  - optional. classid | name | [classid or name, ...] | {box: {x1, x2, y1, y2}}	//260927 "all" removed; a box forces range 0
+		        with a must id/name and range > 0, the sweep area follows the must target
+		        must targets are never skipped; the call ends when they are dead
+		        while a must target is alive, monsters within dangerRange of me are handled too
+	*/
+	clear: function (range, must) {	//260926
 		while (!me.gameReady) {
 			delay(40);
 		}
@@ -39,27 +59,7 @@ var Attack = {
 			range = 25;
 		}
 
-		if (spectype === undefined) {
-			spectype = 0;
-		}
-
-		if (bossId === undefined) {
-			bossId = false;
-		}
-
-		if (sortFunc === undefined) {
-			sortFunc = false;
-		}
-
-		//if (pickit === undefined) {
-			//pickit = true;
-		//}
-
-		if (openChest === undefined) {	//260727
-			openChest = true;
-		}
-
-		if (typeof (range) !== "number") {
+		if (typeof range !== "number") {
 			throw new Error("Attack.clear: range must be a number.");
 		}
 
@@ -67,432 +67,900 @@ var Attack = {
 			return false;
 		}
 
-		if (!sortFunc) {
-			//sortFunc = this.sortMonsters;
-			sortFunc = this.sortByDistance;	//260812
+		// a configured attack skill that is not actually learned (AutoBuild / goal allocation error) makes every cast fail silently: stop the profile	//260928
+		for (i = 0; i < 7; i += 1) {
+			if (Config.AttackSkill[i] > -1 && !me.getSkill(Config.AttackSkill[i], 1)) {
+				D2Bot.printToConsole("AttackSkill[" + i + "] " + Config.AttackSkill[i] + " not learned (lvl " + me.charlvl + "). Stopping", 9);
+				D2Bot.stop();
+
+				return false;
+			}
 		}
 
-		var i, boss, orgx, orgy, target, result, monsterList, attackSkill,
-			retry = 0,
-			attackCount = 0,
-			needSort = true;	//260901
+		var i, unit, gid, entry, target, result, attackSkill, mustAlive, nearest, nearestLive, dist, lostEntry,
+			mustSeen = false,
+			orgx = me.x,
+			orgy = me.y,
+			entries = {},
+			dropped = {},
+			castTotal = 0,
+			spec = this.mustSpec(must);
 
-		this.gidAttack = [];
-		
+		// a box already defines the area; a sweep range on top would pull in targets outside it	//260927
+		if (spec && spec.box && range > 0) {
+			Misc.trace("[AC] box call with range " + range + " -> 0");	//260926 temp
+			range = 0;
+		}
+
 		if (!this.gidSkip || (this.gidSkipPos && (this.gidSkipPos.area !== me.area || getDistance(me, this.gidSkipPos.x, this.gidSkipPos.y) > 40))) {	//260902
-			//print("[HP Skip Reset] area: " + me.area);
 			this.gidSkip = {};
 			this.gidSkipPos = null;
 		}
-		
-		if (bossId) {
-			for (i = 0; !boss && i < 5; i += 1) {	//260722
-				boss = bossId > 999 ? getUnit(1, -1, -1, bossId) : getUnit(1, bossId);
-				
-				if (!boss) {
-					delay(me.ping * 2 + 100);
-				}
-			}
 
-			if (!boss) {
-				throw new Error("Attack.clear: " + bossId + " not found");
-			}
+		// A named/classid boss may need a moment to show up. Keep fighting what is close meanwhile instead of idling	//260927
+		var mustPendingUntil = spec && spec.ids ? getTickCount() + 5 * (me.ping * 2 + 100) : 0;
 
-			orgx = boss.x;
-			orgy = boss.y;
-		} else {
-			orgx = me.x;
-			orgy = me.y;
-		}
-		
-		monsterList = [];
-		target = getUnit(1);
-
-		if (target) {
-			do {
-				if ((!spectype || (target.spectype & spectype)) && !this.checkSkipped(target) && this.checkMonster(target) && this.skipCheck(target)) {
-					monsterList.push(copyUnit(target));
-				}
-			} while (target.getNext());
+		function drop(e, reason) {
+			Misc.trace("[AC] drop " + reason + " " + e.unit.name + " gid:" + e.gid);	//260926 temp
+			dropped[e.gid] = true;
+			delete entries[e.gid];
 		}
 
-		while (monsterList.length > 0 && attackCount < 999) {	// 260521
-			if (boss) {
-				orgx = boss.x;
-				orgy = boss.y;
-			}
-
-			if (me.dead) {
-				return false;
-			}
-			
-			if (me.area === 39 && this.getCowKing(range)) {	//260727
-				return false;
-			}
-
-			if (Config.TownCheck) {
-				Misc.townCheck();
-			}
-			
-			if (needSort) {	//260901
-				monsterList.sort(sortFunc);
-				needSort = false;
-			}
-
-			target = copyUnit(monsterList[0]);
-			
-			attackSkill = Config.AttackSkill[(target.spectype & 0x7) ? 1 : 3];
-
-			if (!this.checkMonster(target) || getDistance(target, orgx, orgy) > range) {	//260530
-				monsterList.shift();
-				continue;
-			}
-			
-			if (Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, target, 0x4)) {
-				if (me.area === 108 && target.classid === 306 && !(target.spectype & 0x1)) {	//260829
-					//print("[306 Skip] " + target.name);
-					monsterList.shift();
-					
-					continue;	//260816
+		try {
+			while (true) {
+				if (me.dead) {
+					return false;
 				}
-				
-				var cx, cy,	//260726
-					skillRange = Skill.getRange(attackSkill),	//260829
-					blocked = true,
-					angle = Math.round(Math.atan2(me.y - target.y, me.x - target.x) * 180 / Math.PI),
-					angles = [15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 105, -105, 120, -120, 135, -135, 150, -150, 165, -165, 180];	//260618
-				
-				for (i = 0; i < angles.length; i += 1) {
-					cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * skillRange + target.x);
-					cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * skillRange + target.y);
 
-					if (!CollMap.checkColl(target, {x: cx, y: cy}, 0x4) && !CollMap.checkColl(me, {x: cx, y: cy}, 0x4)) {
-						blocked = false;
+				if (me.area === 39 && this.getCowKing(range)) {	//260727
+					return false;
+				}
+
+				if (Config.TownCheck) {
+					Misc.townCheck();
+				}
+
+				// 1. scan once per tick. The full list doubles as the threat list for setPosition
+				this.tick.monList = [];
+				mustAlive = !mustSeen && getTickCount() < mustPendingUntil;	//260927 treat a pending boss as alive so the danger radius stays on
+
+				for (gid in entries) {
+					if (entries.hasOwnProperty(gid) && entries[gid].must) {
+						mustAlive = true;
+
 						break;
 					}
 				}
 
-				if (blocked) {
-					//print("[Angle Skip] " + target.name + " dist: " + Math.floor(getDistance(me, target)) + " area: " + me.area);
-					monsterList.shift();
-					continue;
+				unit = getUnit(1);
+
+				if (unit) {
+					do {
+						if (!this.checkMonster(unit)) {
+							continue;
+						}
+
+						this.tick.monList.push(copyUnit(unit));
+
+						if (entries[unit.gid] || dropped[unit.gid]) {
+							continue;
+						}
+
+						if (spec && this.mustMatch(spec, unit)) {
+							entries[unit.gid] = {unit: copyUnit(unit), gid: unit.gid, must: true, box: !!spec.box, retry: 0, idle: 0, casts: 0, lastPos: {x: unit.x, y: unit.y}};
+							mustAlive = true;
+							mustSeen = true;
+							Misc.trace("[AC] must join " + unit.name + " gid:" + unit.gid);	//260926 temp
+
+							continue;
+						}
+
+						dist = range > 0 && getDistance(unit, orgx, orgy) <= range;
+
+						if (!dist && !(mustAlive && getDistance(me, unit) <= this.dangerRange)) {
+							continue;
+						}
+
+						// 1st tier: certain and cheap. Rejected units never come back in this call
+						if (this.checkSkipped(unit) || !this.skipCheck(unit) || !this.hasUsableSkill(unit)) {
+							dropped[unit.gid] = true;
+
+							continue;
+						}
+
+						entries[unit.gid] = {unit: copyUnit(unit), gid: unit.gid, must: false, danger: !dist, retry: 0, idle: 0, casts: 0, hpMark: unit.hp, markCast: 0};	//260928 HP mark taken at join, so the check lands on the 5th cast
+					} while (unit.getNext());
 				}
-				
-				var collPath = getPath(me.area, target.x, target.y, me.x, me.y, 0, Pather.walkDistance);
-				
-				if (!collPath || collPath.length * Pather.walkDistance > getDistance(me, target) * Config.DetourPath) {
-					//print("[Detour Skip] " + target.name + " path: " + (collPath ? collPath.length * Pather.walkDistance : "null") + " ratio: " + (collPath ? (collPath.length * Pather.walkDistance / Math.floor(getDistance(me, target))).toFixed(1) : "-") + " dist: " + Math.floor(getDistance(me, target)) + " area: " + me.area);
-					monsterList.shift();
-					continue;
-				}
-			}
-			
-			//if (Config.Dodge.Enabled && me.hp * 100 / me.hpmax <= Config.Dodge.HP && Skill.getRange(attackSkill) > 5) {
-				//this.dodge(target, Skill.getRange(attackSkill), 1, Config.Dodge.Range);
-			//}
 
-			result = ClassAttack.doAttack(target, attackCount % 10 === 0);	//260906
-			
-			needSort = true;	//260901
+				// 2. prune
+				target = null;
+				nearest = null;
+				nearestLive = null;	//260928 nearest that is not deferred
+				mustAlive = false;
 
-			if (result) {
-				retry = 0;
+				// the sweep area moves with the must target (nearest one; last seen spot if out of sight). Once they are dead it stays where they fell	//260927
+				if (range > 0 && spec && spec.ids) {
+					lostEntry = null;
 
-				if (result === 2) {
-					monsterList.shift();
-					continue;
-				}
+					for (gid in entries) {
+						if (entries.hasOwnProperty(gid) && entries[gid].must && (!lostEntry || getDistance(me, entries[gid].lastPos.x, entries[gid].lastPos.y) < getDistance(me, lostEntry.lastPos.x, lostEntry.lastPos.y))) {
+							lostEntry = entries[gid];
+						}
+					}
 
-				for (i = 0; i < this.gidAttack.length; i += 1) {
-					if (this.gidAttack[i].gid === target.gid) {
-						break;
+					if (lostEntry) {
+						if (copyUnit(lostEntry.unit).x) {
+							lostEntry.lastPos = {x: lostEntry.unit.x, y: lostEntry.unit.y};
+						}
+
+						orgx = lostEntry.lastPos.x;
+						orgy = lostEntry.lastPos.y;
 					}
 				}
 
-				if (i === this.gidAttack.length) {
-					this.gidAttack.push({gid: target.gid, attacks: 0, name: target.name, hp: target.hp});
-				}
+				for (gid in entries) {
+					if (!entries.hasOwnProperty(gid)) {
+						continue;
+					}
 
-				this.gidAttack[i].attacks += 1;
-				attackCount += 1;
+					entry = entries[gid];
 
-				if (this.gidAttack[i].attacks % 10 === 0 && Skill.getRange(attackSkill) < 4) {	//260902
-					Packet.flash(me.gid);
-				}
-				
-				if (Config.NoSkipArea.indexOf(me.area) < 0) {	//!(target.spectype & 0x7)) {
-					if (this.gidAttack[i].attacks % 5 === 0) {	//260902
-						if ((this.gidAttack[i].hp - target.hp) / 128 < 0.2) {
-							this.gidSkip[target.gid] = (this.gidSkip[target.gid] || 0) + 1;	//260621
-							this.gidSkipPos = {x: me.x, y: me.y, area: me.area};
-							
-							if (this.gidSkip[target.gid] > 0) {
-								//print("[HP Skip]: " + target.name + " classid: " + target.classid + " HP: " + target.hp + " / " + this.gidAttack[i].hp + " gid: " + target.gid + " area: " + me.area);
-							} else {
-								//print("[HP Skip]: " + target.name + " HP: " + target.hp + " / " + this.gidAttack[i].hp + " count: " + this.gidSkip[target.gid] + " area: " + me.area);
+					if (entry.must) {
+						if (!copyUnit(entry.unit).x || entry.unit.area !== me.area) {
+							// lost from sight: go to where it was last seen. Still gone there -> it is dead or far away
+							if (getDistance(me, entry.lastPos.x, entry.lastPos.y) < 5) {
+								Misc.trace("[AC] must lost " + entry.gid);	//260926 temp
+								delete entries[gid];
+
+								continue;
 							}
-							
-							monsterList.shift();
-						} else {
-							this.gidAttack[i].hp = target.hp;
-							//this.gidSkip[target.gid] = 0;
+
+							entry.lost = true;
+							mustAlive = true;
+
+							continue;
+						}
+
+						if (!this.checkMonster(entry.unit)) {
+							delete entries[gid];
+
+							continue;
+						}
+
+						if (entry.box && !this.mustMatch(spec, entry.unit)) {
+							delete entries[gid];
+
+							continue;
+						}
+
+						entry.lost = false;
+						entry.lastPos = {x: entry.unit.x, y: entry.unit.y};
+						mustAlive = true;
+					} else {
+						if (!this.checkMonster(entry.unit)) {
+							delete entries[gid];
+
+							continue;
+						}
+
+						if (entry.danger ? getDistance(me, entry.unit) > this.dangerRange : getDistance(entry.unit, orgx, orgy) > range) {
+							delete entries[gid];
+
+							continue;
+						}
+					}
+
+					if (!nearest || getDistance(me, entry.unit) < getDistance(me, nearest.unit)) {
+						nearest = entry;
+					}
+
+					if (!entry.deferred && (!nearestLive || getDistance(me, entry.unit) < getDistance(me, nearestLive.unit))) {	//260928
+						nearestLive = entry;
+					}
+				}
+
+				// 3. nothing visible left: a lost must target is searched at its last known position
+				if (!nearest) {
+					lostEntry = null;
+
+					for (gid in entries) {
+						if (entries.hasOwnProperty(gid) && entries[gid].lost) {
+							lostEntry = entries[gid];
+
+							break;
+						}
+					}
+
+					if (!lostEntry) {
+						if (!mustSeen && getTickCount() < mustPendingUntil) {	//260927 boss not in sight yet: wait a moment, then scan again
+							delay(me.ping + 50);
+
+							continue;
+						}
+
+						break;
+					}
+
+					lostEntry.searches = (lostEntry.searches || 0) + 1;
+					Misc.trace("[AC] must search " + lostEntry.gid + " at " + lostEntry.lastPos.x + "," + lostEntry.lastPos.y);	//260926 temp
+
+					try {
+						Pather.moveTo(lostEntry.lastPos.x, lostEntry.lastPos.y, 3);
+					} catch (e1) {
+						lostEntry.searches = 99;
+					}
+
+					if (lostEntry.searches > 3) {
+						Misc.trace("[AC] must search gave up " + lostEntry.gid);	//260926 temp
+						delete entries[lostEntry.gid];
+					}
+
+					continue;
+				}
+
+				// 4. target: nearest first. A must target drifting past leashRange wins unless something is close to me
+				// deferred must targets (no usable skill last time) go to the back: picked only when nothing else is left	//260928
+				target = nearestLive || nearest;
+
+				if (!target.must && getDistance(me, target.unit) > this.dangerRange) {
+					for (gid in entries) {
+						if (entries.hasOwnProperty(gid) && entries[gid].must && !entries[gid].lost && !entries[gid].deferred && getDistance(me, entries[gid].unit) >= this.leashRange) {	//260928 !deferred
+							target = entries[gid];
+							Misc.trace("[AC] leash " + target.unit.name + " dist:" + Math.round(getDistance(me, target.unit)));	//260926 temp
+
+							break;
 						}
 					}
 				}
-			} else {
-				if (retry++ > 3) {
-					//print("[Retry Skip]: " + target.name + " area: " + me.area);	// 260523
-					monsterList.shift();
-					retry = 0;
-				}
 
-				Packet.flash(me.gid);
-			}
-		}
-		
-		if (boss && attackCount >= 999) {
-			throw new Error("Failed to clear boss " + bossId);
-		}
+				// Chaos Sanctuary: a non-boss Storm Caster behind a wall is not worth the walk (restored from the old clear)	//260928
+				if (!target.must && me.area === 108 && target.unit.classid === 306 && !(target.unit.spectype & 0x1) && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, target.unit, 0x4)) {
+					drop(target, "306");
 
-		if (attackCount > 0) {
-			Pickit.pickItems(range);
-			
-			ClassAttack.afterAttack();
-		}
-		
-		if (openChest) {	//260727
-			this.openChests(Math.min(range, 15), orgx, orgy);
-		}
-
-		return true;
-	},
-
-	// Clear an entire area based on monster spectype
-	clearLevel: function (spectype) {
-		var room, result, rooms, myRoom, currentArea, previousArea;
-
-		function RoomSort(a, b) {
-			return getDistance(myRoom[0], myRoom[1], a[0], a[1]) - getDistance(myRoom[0], myRoom[1], b[0], b[1]);
-		}
-
-		room = getRoom();
-
-		if (!room) {
-			return false;
-		}
-
-		if (spectype === undefined) {
-			spectype = 0;
-		}
-
-		rooms = [];
-
-		currentArea = getArea().id;
-
-		do {
-			rooms.push([room.x * 5 + room.xsize / 2, room.y * 5 + room.ysize / 2]);
-		} while (room.getNext());
-
-		while (rooms.length > 0) {
-			// for Den questing
-			if (me.area === 8 && me.getQuest(1, 1)) {	//260627
-				break;
-			}
-			
-			// get the first room + initialize myRoom var
-			if (!myRoom) {
-				room = getRoom(me.x, me.y);
-			}
-
-			if (room) {
-				if (room instanceof Array) { // use previous room to calculate distance
-					myRoom = [room[0], room[1]];
-				} else { // create a new room to calculate distance (first room, done only once)
-					myRoom = [room.x * 5 + room.xsize / 2, room.y * 5 + room.ysize / 2];
-				}
-			}
-
-			rooms.sort(RoomSort);
-			room = rooms.shift();
-
-			result = Pather.getNearestWalkable(room[0], room[1], 20, 3);	//260826 prev. 18/3
-
-			if (result) {
-				Pather.moveTo(result[0], result[1], 3, spectype);
-				previousArea = result;
-
-				if (!this.clear(30, spectype)) {	//40	//260910
-					break;
-				}
-			}
-			// Make sure bot does not get stuck in different area.
-			else if (currentArea !== getArea().id) {
-				Pather.moveTo(previousArea[0], previousArea[1], 3, spectype);
-			}
-			
-			if (me.area === 8 && !me.getQuest(1, 1)) {	//260627
-				sendPacket(1, 0x40);
-			}
-		}
-
-		return true;
-	},
-
-	clearList: function (mainArg, sortFunc, refresh) { // 260510
-		if (Config.AttackSkill[1] < 0 || Config.AttackSkill[3] < 0) {
-			return false;
-		}
-
-		var i, target, result, monsterList, attackSkill,
-			retry = 0,
-			attackCount = 0,
-			needSort = true;	//260901
-
-		this.gidAttack = [];
-
-		if (!sortFunc) {
-			//sortFunc = this.sortMonsters;
-			sortFunc = this.sortByDistance;	//260812
-		}
-
-		if (typeof mainArg === "function") {
-			monsterList = mainArg.call();
-		} else if (mainArg && typeof mainArg === "object") {
-			monsterList = mainArg.slice(0);
-		} else {
-			return false;
-		}
-
-		if (!monsterList || !monsterList.length) {
-			return false;
-		}
-
-		while (monsterList.length > 0 && attackCount < 999) {
-			if (me.dead) {
-				return false;
-			}
-
-			if (Config.TownCheck) {
-				Misc.townCheck();
-			}
-
-			if (refresh && typeof mainArg === "function" && attackCount > 0 && attackCount % refresh === 0) {
-				var refreshed = mainArg.call();
-				
-				if (refreshed && refreshed.length) {
-					//monsterList = refreshed.filter(function (u) { return Attack.checkMonster(u); });
-					monsterList = refreshed;	//260901
-					needSort = true;
-				}
-			}
-
-			if (needSort) {	//260901
-				monsterList.sort(sortFunc);
-				needSort = false;
-			}
-			
-			target = copyUnit(monsterList[0]);
-
-			if (!this.checkMonster(target)) {
-				monsterList.shift();
-				continue;
-			}
-			
-			attackSkill = Config.AttackSkill[(target.spectype & 0x7) ? 1 : 3];
-
-			//if (Config.Dodge.Enabled && me.hp * 100 / me.hpmax <= Config.Dodge.HP && Skill.getRange(attackSkill) > 5) {
-				//this.dodge(target, Skill.getRange(attackSkill), 1, Config.Dodge.Range);
-			//}
-
-			result = ClassAttack.doAttack(target, attackCount % 10 === 0);	//260906
-			
-			needSort = true;
-
-			if (result) {
-				retry = 0;
-
-				if (result === 2) {
-					monsterList.shift();
 					continue;
 				}
 
-				for (i = 0; i < this.gidAttack.length; i += 1) {
-					if (this.gidAttack[i].gid === target.gid) {
-						break;
+				// 5. attack
+				this.tick.cast = false;
+				this.tick.moved = false;
+				this.tick.fail = null;
+				this.tick.must = !!target.must;	//260928 setPosition lets a must target take any detour
+
+				attackSkill = Config.AttackSkill[(target.unit.spectype & 0x7) ? 1 : 3];
+				result = ClassAttack.doAttack(target.unit, castTotal % 10 === 0);
+
+				// 6. evaluate
+				if (result === 2) {	// no usable skill
+					if (target.must) {
+						// never given up: to the back of the queue. Wait only when nothing else is left (immunity may break, others may kill it)	//260928
+						if (!target.deferred) {
+							Misc.trace("[AC] defer " + target.unit.name + " gid:" + target.gid);	//260926 temp
+						}
+
+						target.deferred = true;
+
+						if (!nearestLive) {
+							delay(me.ping + 50);
+						}
+					} else {
+						drop(target, "noskill");
 					}
+
+					continue;
 				}
 
-				if (i === this.gidAttack.length) {
-					this.gidAttack.push({gid: target.gid, attacks: 0, name: target.name});
+				target.deferred = false;	//260928
+
+				if (this.tick.fail === "unreachable" && Config.NoSkipArea.indexOf(me.area) < 0) {
+					if (target.must) {
+						Packet.flash(me.gid);
+					} else {
+						drop(target, "unreachable");
+					}
+
+					continue;
 				}
 
-				this.gidAttack[i].attacks += 1;
-				attackCount += 1;
+				if (!result || this.tick.fail) {
+					target.retry += 1;
+					Packet.flash(me.gid);
 
-				if (this.gidAttack[i].attacks % 10 === 0 && Skill.getRange(attackSkill) < 4) {	//260902
+					if (target.retry > 4) {
+						if (target.must) {
+							target.retry = 0;
+						} else {
+							drop(target, "retry");
+						}
+					}
+
+					continue;
+				}
+
+				if (!this.tick.cast) {
+					// doAttack said 1 without casting (no LOS after moving, skill delay, low mana)
+					target.idle += 1;
+
+					if (target.idle > 10 && !target.must) {
+						drop(target, "idle");
+					} else if (target.idle % 5 === 0) {
+						Packet.flash(me.gid);	// CollMap and the engine can disagree on LOS; resync before trying again
+					}
+
+					continue;
+				}
+
+				target.retry = 0;
+				target.idle = 0;
+				target.casts += 1;
+				castTotal += 1;
+
+				if (target.casts % 10 === 0 && Skill.getRange(attackSkill) < 4) {	//260902
 					Packet.flash(me.gid);
 				}
-			} else {
-				if (retry++ > 3) {
-					monsterList.shift();
-					retry = 0;
+
+				// HP skip (sweep only): less than 20% HP lost over 5 casts	//260928 10 -> 5 (casts are real casts now, no misses counted)
+				if (!target.must && Config.NoSkipArea.indexOf(me.area) < 0) {
+					if (target.hpMark === undefined) {
+						target.hpMark = target.unit.hp;
+						target.markCast = target.casts;
+					} else if (target.casts - target.markCast >= 5) {	//260928
+						if ((target.hpMark - target.unit.hp) / 128 < 0.2) {
+							this.gidSkip[target.gid] = (this.gidSkip[target.gid] || 0) + 1;	//260621
+							this.gidSkipPos = {x: me.x, y: me.y, area: me.area};
+							drop(target, "hp");
+						} else {
+							target.hpMark = target.unit.hp;
+							target.markCast = target.casts;
+						}
+					}
 				}
-
-				Packet.flash(me.gid);
 			}
-		}
-		
-		if (attackCount >= 999) {
-			throw new Error("attackCount exceeded");
+		} finally {
+			this.tick.monList = null;
+			this.tick.must = false;	//260928
 		}
 
-		if (attackCount > 0) {
+		Misc.trace("[AC] end range:" + range + " casts:" + castTotal);	//260926 temp
+
+		if (castTotal > 0) {
+			Pickit.pickItems(range > 0 ? range : undefined);
 			ClassAttack.afterAttack();
-			Pickit.pickItems();
 		}
-		
+
+		if (range > 0) {
+			this.openChests(Math.min(range, 15), orgx, orgy);	//260727
+		}
+
 		return true;
 	},
 
-	scanList: function (classids, box, range) {	// 260629
-		var isArray = classids && typeof classids === "object";
-		return function () {
-			var list = [],
-				monster = (!classids || isArray) ? getUnit(1) : getUnit(1, classids);
+	// Normalize the must argument of clear	//260926
+	mustSpec: function (must) {
+		if (must === undefined || must === null || must === false) {
+			return null;
+		}
 
-			if (monster) {
-				do {
-					if (!Attack.checkMonster(monster)) { continue; }
-					if (isArray && classids.indexOf(monster.classid) === -1) { continue; }
-					if (box && (monster.x < box.x1 || monster.x > box.x2 || monster.y < box.y1 || monster.y > box.y2)) { continue; }
-					if (range !== undefined && getDistance(me, monster) > range) { continue; }
-					list.push(copyUnit(monster));
-				} while (monster.getNext());
-			}
+		//if (must === "all") {	//260927 removed: the only caller (Ancients) has per-ancient calls
+			//return {all: true};
+		//}
 
-			return list;
-		};
+		if (typeof must === "object" && must.box) {
+			return {box: must.box};
+		}
+
+		if (must instanceof Array) {
+			return {ids: must};
+		}
+
+		return {ids: [must]};
 	},
 
-	setPosition: function (unit, distance, coll, minDist) {	//260828
+	mustMatch: function (spec, unit) {	//260926
+		//if (spec.all) {	//260927
+			//return true;
+		//}
+
+		if (spec.box) {
+			return unit.x >= spec.box.x1 && unit.x <= spec.box.x2 && unit.y >= spec.box.y1 && unit.y <= spec.box.y2;
+		}
+
+		return spec.ids.some(function (id) {
+			return typeof id === "string" ? unit.name === id : unit.classid === id;
+		});
+	},
+
+	// Does any configured attack skill work on this unit (resist only; mirrors doAttack skill slots)	//260926
+	hasUsableSkill: function (unit) {
+		var i, custom,
+			index = ((unit.spectype & 0x7) || unit.type === 0) ? 1 : 3,
+			skills = [Config.AttackSkill[index], Config.AttackSkill[index + 1], Config.AttackSkill[5], Config.AttackSkill[6]];
+
+		custom = this.getCustomAttack(unit);
+
+		if (custom) {
+			skills = skills.concat(custom);
+		}
+
+		for (i = 0; i < skills.length; i += 1) {
+			if (skills[i] > -1 && this.checkResist(unit, skills[i])) {
+				return true;
+			}
+		}
+
+		return false;
+	},
+
+	// ---- 260926: replaced by clear / mustSpec / mustMatch / hasUsableSkill above. clearLevel moved to AutoSmurf. kept for rollback ----
+//	clear: function (range, spectype, bossId, sortFunc, openChest) { // 260727
+//		while (!me.gameReady) {
+//			delay(40);
+//		}
+
+//		if (range === undefined) {
+//			range = 25;
+//		}
+
+//		if (spectype === undefined) {
+//			spectype = 0;
+//		}
+
+//		if (bossId === undefined) {
+//			bossId = false;
+//		}
+
+//		if (sortFunc === undefined) {
+//			sortFunc = false;
+//		}
+
+//		//if (pickit === undefined) {
+//			//pickit = true;
+//		//}
+
+//		if (openChest === undefined) {	//260727
+//			openChest = true;
+//		}
+
+//		if (typeof (range) !== "number") {
+//			throw new Error("Attack.clear: range must be a number.");
+//		}
+
+//		if (Config.AttackSkill[1] < 0 || Config.AttackSkill[3] < 0) {
+//			return false;
+//		}
+
+//		if (!sortFunc) {
+//			//sortFunc = this.sortMonsters;
+//			sortFunc = this.sortByDistance;	//260812
+//		}
+
+//		var i, boss, orgx, orgy, target, result, monsterList, attackSkill,
+//			retry = 0,
+//			attackCount = 0,
+//			needSort = true;	//260901
+
+//		this.gidAttack = [];
+		
+//		if (!this.gidSkip || (this.gidSkipPos && (this.gidSkipPos.area !== me.area || getDistance(me, this.gidSkipPos.x, this.gidSkipPos.y) > 40))) {	//260902
+//			//print("[HP Skip Reset] area: " + me.area);
+//			this.gidSkip = {};
+//			this.gidSkipPos = null;
+//		}
+		
+//		if (bossId) {
+//			for (i = 0; !boss && i < 5; i += 1) {	//260722
+//				boss = bossId > 999 ? getUnit(1, -1, -1, bossId) : getUnit(1, bossId);
+				
+//				if (!boss) {
+//					delay(me.ping * 2 + 100);
+//				}
+//			}
+
+//			if (!boss) {
+//				throw new Error("Attack.clear: " + bossId + " not found");
+//			}
+
+//			orgx = boss.x;
+//			orgy = boss.y;
+//		} else {
+//			orgx = me.x;
+//			orgy = me.y;
+//		}
+		
+//		monsterList = [];
+//		target = getUnit(1);
+
+//		if (target) {
+//			do {
+//				if ((!spectype || (target.spectype & spectype)) && !this.checkSkipped(target) && this.checkMonster(target) && this.skipCheck(target)) {
+//					monsterList.push(copyUnit(target));
+//				}
+//			} while (target.getNext());
+//		}
+
+//		while (monsterList.length > 0 && attackCount < 999) {	// 260521
+//			if (boss) {
+//				orgx = boss.x;
+//				orgy = boss.y;
+//			}
+
+//			if (me.dead) {
+//				return false;
+//			}
+			
+//			if (me.area === 39 && this.getCowKing(range)) {	//260727
+//				return false;
+//			}
+
+//			if (Config.TownCheck) {
+//				Misc.townCheck();
+//			}
+			
+//			if (needSort) {	//260901
+//				monsterList.sort(sortFunc);
+//				needSort = false;
+//			}
+
+//			target = copyUnit(monsterList[0]);
+			
+//			attackSkill = Config.AttackSkill[(target.spectype & 0x7) ? 1 : 3];
+
+//			if (!this.checkMonster(target) || getDistance(target, orgx, orgy) > range) {	//260530
+//				monsterList.shift();
+//				continue;
+//			}
+			
+//			if (Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, target, 0x4)) {
+//				if (me.area === 108 && target.classid === 306 && !(target.spectype & 0x1)) {	//260829
+//					//print("[306 Skip] " + target.name);
+//					monsterList.shift();
+					
+//					continue;	//260816
+//				}
+				
+//				var cx, cy,	//260726
+//					skillRange = Skill.getRange(attackSkill),	//260829
+//					blocked = true,
+//					angle = Math.round(Math.atan2(me.y - target.y, me.x - target.x) * 180 / Math.PI),
+//					angles = [15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 105, -105, 120, -120, 135, -135, 150, -150, 165, -165, 180];	//260618
+				
+//				for (i = 0; i < angles.length; i += 1) {
+//					cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * skillRange + target.x);
+//					cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * skillRange + target.y);
+
+//					if (!CollMap.checkColl(target, {x: cx, y: cy}, 0x4) && !CollMap.checkColl(me, {x: cx, y: cy}, 0x4)) {
+//						blocked = false;
+//						break;
+//					}
+//				}
+
+//				if (blocked) {
+//					//print("[Angle Skip] " + target.name + " dist: " + Math.floor(getDistance(me, target)) + " area: " + me.area);
+//					monsterList.shift();
+//					continue;
+//				}
+				
+//				var collPath = getPath(me.area, target.x, target.y, me.x, me.y, 0, Pather.walkDistance);
+				
+//				if (!collPath || collPath.length * Pather.walkDistance > getDistance(me, target) * Config.DetourPath) {
+//					//print("[Detour Skip] " + target.name + " path: " + (collPath ? collPath.length * Pather.walkDistance : "null") + " ratio: " + (collPath ? (collPath.length * Pather.walkDistance / Math.floor(getDistance(me, target))).toFixed(1) : "-") + " dist: " + Math.floor(getDistance(me, target)) + " area: " + me.area);
+//					monsterList.shift();
+//					continue;
+//				}
+//			}
+			
+//			//if (Config.Dodge.Enabled && me.hp * 100 / me.hpmax <= Config.Dodge.HP && Skill.getRange(attackSkill) > 5) {
+//				//this.dodge(target, Skill.getRange(attackSkill), 1, Config.Dodge.Range);
+//			//}
+
+//			result = ClassAttack.doAttack(target, attackCount % 10 === 0);	//260906
+			
+//			needSort = true;	//260901
+
+//			if (result) {
+//				retry = 0;
+
+//				if (result === 2) {
+//					monsterList.shift();
+//					continue;
+//				}
+
+//				for (i = 0; i < this.gidAttack.length; i += 1) {
+//					if (this.gidAttack[i].gid === target.gid) {
+//						break;
+//					}
+//				}
+
+//				if (i === this.gidAttack.length) {
+//					this.gidAttack.push({gid: target.gid, attacks: 0, name: target.name, hp: target.hp});
+//				}
+
+//				this.gidAttack[i].attacks += 1;
+//				attackCount += 1;
+
+//				if (this.gidAttack[i].attacks % 10 === 0 && Skill.getRange(attackSkill) < 4) {	//260902
+//					Packet.flash(me.gid);
+//				}
+				
+//				if (Config.NoSkipArea.indexOf(me.area) < 0) {	//!(target.spectype & 0x7)) {
+//					if (this.gidAttack[i].attacks % 5 === 0) {	//260902
+//						if ((this.gidAttack[i].hp - target.hp) / 128 < 0.2) {
+//							this.gidSkip[target.gid] = (this.gidSkip[target.gid] || 0) + 1;	//260621
+//							this.gidSkipPos = {x: me.x, y: me.y, area: me.area};
+							
+//							if (this.gidSkip[target.gid] > 0) {
+//								//print("[HP Skip]: " + target.name + " classid: " + target.classid + " HP: " + target.hp + " / " + this.gidAttack[i].hp + " gid: " + target.gid + " area: " + me.area);
+//							} else {
+//								//print("[HP Skip]: " + target.name + " HP: " + target.hp + " / " + this.gidAttack[i].hp + " count: " + this.gidSkip[target.gid] + " area: " + me.area);
+//							}
+							
+//							monsterList.shift();
+//						} else {
+//							this.gidAttack[i].hp = target.hp;
+//							//this.gidSkip[target.gid] = 0;
+//						}
+//					}
+//				}
+//			} else {
+//				if (retry++ > 3) {
+//					//print("[Retry Skip]: " + target.name + " area: " + me.area);	// 260523
+//					monsterList.shift();
+//					retry = 0;
+//				}
+
+//				Packet.flash(me.gid);
+//			}
+//		}
+		
+//		if (boss && attackCount >= 999) {
+//			throw new Error("Failed to clear boss " + bossId);
+//		}
+
+//		if (attackCount > 0) {
+//			Pickit.pickItems(range);
+			
+//			ClassAttack.afterAttack();
+//		}
+		
+//		if (openChest) {	//260727
+//			this.openChests(Math.min(range, 15), orgx, orgy);
+//		}
+
+//		return true;
+//	},
+
+//	// Clear an entire area based on monster spectype
+//	clearLevel: function (spectype) {
+//		var room, result, rooms, myRoom, currentArea, previousArea;
+
+//		function RoomSort(a, b) {
+//			return getDistance(myRoom[0], myRoom[1], a[0], a[1]) - getDistance(myRoom[0], myRoom[1], b[0], b[1]);
+//		}
+
+//		room = getRoom();
+
+//		if (!room) {
+//			return false;
+//		}
+
+//		if (spectype === undefined) {
+//			spectype = 0;
+//		}
+
+//		rooms = [];
+
+//		currentArea = getArea().id;
+
+//		do {
+//			rooms.push([room.x * 5 + room.xsize / 2, room.y * 5 + room.ysize / 2]);
+//		} while (room.getNext());
+
+//		while (rooms.length > 0) {
+//			// for Den questing
+//			if (me.area === 8 && me.getQuest(1, 1)) {	//260627
+//				break;
+//			}
+			
+//			// get the first room + initialize myRoom var
+//			if (!myRoom) {
+//				room = getRoom(me.x, me.y);
+//			}
+
+//			if (room) {
+//				if (room instanceof Array) { // use previous room to calculate distance
+//					myRoom = [room[0], room[1]];
+//				} else { // create a new room to calculate distance (first room, done only once)
+//					myRoom = [room.x * 5 + room.xsize / 2, room.y * 5 + room.ysize / 2];
+//				}
+//			}
+
+//			rooms.sort(RoomSort);
+//			room = rooms.shift();
+
+//			result = Pather.getNearestWalkable(room[0], room[1], 20, 3);	//260826 prev. 18/3
+
+//			if (result) {
+//				Pather.moveTo(result[0], result[1], 3, spectype);
+//				previousArea = result;
+
+//				if (!this.clear(30, spectype)) {	//40	//260910
+//					break;
+//				}
+//			}
+//			// Make sure bot does not get stuck in different area.
+//			else if (currentArea !== getArea().id) {
+//				Pather.moveTo(previousArea[0], previousArea[1], 3, spectype);
+//			}
+			
+//			if (me.area === 8 && !me.getQuest(1, 1)) {	//260627
+//				sendPacket(1, 0x40);
+//			}
+//		}
+
+//		return true;
+//	},
+
+//	clearList: function (mainArg, sortFunc, refresh) { // 260510
+//		if (Config.AttackSkill[1] < 0 || Config.AttackSkill[3] < 0) {
+//			return false;
+//		}
+
+//		var i, target, result, monsterList, attackSkill,
+//			retry = 0,
+//			attackCount = 0,
+//			needSort = true;	//260901
+
+//		this.gidAttack = [];
+
+//		if (!sortFunc) {
+//			//sortFunc = this.sortMonsters;
+//			sortFunc = this.sortByDistance;	//260812
+//		}
+
+//		if (typeof mainArg === "function") {
+//			monsterList = mainArg.call();
+//		} else if (mainArg && typeof mainArg === "object") {
+//			monsterList = mainArg.slice(0);
+//		} else {
+//			return false;
+//		}
+
+//		if (!monsterList || !monsterList.length) {
+//			return false;
+//		}
+
+//		while (monsterList.length > 0 && attackCount < 999) {
+//			if (me.dead) {
+//				return false;
+//			}
+
+//			if (Config.TownCheck) {
+//				Misc.townCheck();
+//			}
+
+//			if (refresh && typeof mainArg === "function" && attackCount > 0 && attackCount % refresh === 0) {
+//				var refreshed = mainArg.call();
+				
+//				if (refreshed && refreshed.length) {
+//					//monsterList = refreshed.filter(function (u) { return Attack.checkMonster(u); });
+//					monsterList = refreshed;	//260901
+//					needSort = true;
+//				}
+//			}
+
+//			if (needSort) {	//260901
+//				monsterList.sort(sortFunc);
+//				needSort = false;
+//			}
+			
+//			target = copyUnit(monsterList[0]);
+
+//			if (!this.checkMonster(target)) {
+//				monsterList.shift();
+//				continue;
+//			}
+			
+//			attackSkill = Config.AttackSkill[(target.spectype & 0x7) ? 1 : 3];
+
+//			//if (Config.Dodge.Enabled && me.hp * 100 / me.hpmax <= Config.Dodge.HP && Skill.getRange(attackSkill) > 5) {
+//				//this.dodge(target, Skill.getRange(attackSkill), 1, Config.Dodge.Range);
+//			//}
+
+//			result = ClassAttack.doAttack(target, attackCount % 10 === 0);	//260906
+			
+//			needSort = true;
+
+//			if (result) {
+//				retry = 0;
+
+//				if (result === 2) {
+//					monsterList.shift();
+//					continue;
+//				}
+
+//				for (i = 0; i < this.gidAttack.length; i += 1) {
+//					if (this.gidAttack[i].gid === target.gid) {
+//						break;
+//					}
+//				}
+
+//				if (i === this.gidAttack.length) {
+//					this.gidAttack.push({gid: target.gid, attacks: 0, name: target.name});
+//				}
+
+//				this.gidAttack[i].attacks += 1;
+//				attackCount += 1;
+
+//				if (this.gidAttack[i].attacks % 10 === 0 && Skill.getRange(attackSkill) < 4) {	//260902
+//					Packet.flash(me.gid);
+//				}
+//			} else {
+//				if (retry++ > 3) {
+//					monsterList.shift();
+//					retry = 0;
+//				}
+
+//				Packet.flash(me.gid);
+//			}
+//		}
+		
+//		if (attackCount >= 999) {
+//			throw new Error("attackCount exceeded");
+//		}
+
+//		if (attackCount > 0) {
+//			ClassAttack.afterAttack();
+//			Pickit.pickItems();
+//		}
+		
+//		return true;
+//	},
+
+//	scanList: function (classids, box, range) {	// 260629
+//		var isArray = classids && typeof classids === "object";
+//		return function () {
+//			var list = [],
+//				monster = (!classids || isArray) ? getUnit(1) : getUnit(1, classids);
+
+//			if (monster) {
+//				do {
+//					if (!Attack.checkMonster(monster)) { continue; }
+//					if (isArray && classids.indexOf(monster.classid) === -1) { continue; }
+//					if (box && (monster.x < box.x1 || monster.x > box.x2 || monster.y < box.y1 || monster.y > box.y2)) { continue; }
+//					if (range !== undefined && getDistance(me, monster) > range) { continue; }
+//					list.push(copyUnit(monster));
+//				} while (monster.getNext());
+//			}
+
+//			return list;
+//		};
+//	},
+
+	/*
+		Attack.setPosition(unit, distance, coll, minDist)	//260926
+		Candidates are ring spots that keep unit in range and in sight (rings every Dodge.Step, arc spacing Dodge.Step).
+		  approach (out of range or no LOS): front straight > front detour > back straight > back detour.
+		           Shortest walk first; fire tiles excluded; threat only breaks ties
+		           a must target (Attack.tick.must) takes the shorter over-limit detour as a last resort	//260928
+		  dodge (in range, Dodge on, skill range >= Dodge.Range, 1+ monster within Dodge.Range): back straight away first
+		           (outer ring first), taking the first spot with at least 1 monster fewer than where I stand;
+		           if the backing-away half has none, go through to the far side	//260927
+		Returns false only when an approach fails. Attack.tick.fail says why: "unreachable" | "moveFailed"
+	*/
+	setPosition: function (unit, distance, coll, minDist) {	//260926
 		if (!unit || !copyUnit(unit).x) {
 			return false;
 		}
 
 		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 3;
 
-		var i, c, fit, n, adj, prev, useTele, monList,
+		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, path, moved, tier,
+			longCand = null,	//260928 shortest over-limit detour, kept for must targets
+			longLen = 0,
+			pathOk = false,
 			list = [],
-			fireList = null,
 			baseline = 0,
-			teleCount = 0,
-			slotTele = null,
-			slotWalk = null,
-			slotMove = null,
-			slotRev = null,
-			revGate = false,
 			moveNeeded = getDistance(me, unit) > distance || checkCollision(me, unit, coll),
-			scoring = Config.Dodge.Enabled && !moveNeeded && distance >= Config.Dodge.Range && me.hp * 100 / me.hpmax <= Config.Dodge.HP && unit.classid !== 243,	//260915
+			scoring = Config.Dodge.Enabled && distance >= Config.Dodge.Range && me.hp * 100 / me.hpmax <= Config.Dodge.HP && unit.classid !== 243,	//260915
 			angle = Math.atan2(me.y - unit.y, me.x - unit.x);
 
 		if (!moveNeeded && !scoring) {
@@ -503,246 +971,473 @@ var Attack = {
 		fireList = this.getFireList();
 
 		if (scoring) {
-			monList = this.buildMonsterList();
-
+			monList = this.tick.monList || this.buildMonsterList();
 			baseline = this.getMonsterCount(me.x, me.y, Config.Dodge.Range, monList, fireList);
 
-			if (baseline === 0) {
+			if (baseline === 0 && !moveNeeded) {
+				return true;
+			}
+		}
+
+		// rings every Dodge.Step inward; reduced rings below 5 are dropped, the skill-range ring is always kept	//260927
+		radii = [distance];
+
+		for (r = distance - Config.Dodge.Step; r >= 5; r -= Config.Dodge.Step) {
+			radii.push(r);
+		}
+
+		choice = null;
+		pathCand = null;
+		pathOk = false;
+
+		// candidates with lo < |offset| <= hi on every ring (arc spacing Dodge.Step)
+		function build(lo, hi) {
+			var out = [];
+
+			for (i = 0; i < radii.length; i += 1) {
+				r = radii[i];
+
+				if (r < 1) {
+					continue;
+				}
+
+				step = Config.Dodge.Step / r * 180 / Math.PI;
+
+				for (k = 0; ; k += 1) {
+					offset = k === 0 ? 0 : (k % 2 ? Math.ceil(k / 2) : -Math.ceil(k / 2)) * step;
+
+					if (Math.abs(offset) > hi) {
+						break;
+					}
+
+					if (Math.abs(offset) > lo) {
+						out.push({
+							x: Math.round(Math.cos(angle + offset * Math.PI / 180) * r + unit.x),
+							y: Math.round(Math.sin(angle + offset * Math.PI / 180) * r + unit.y),
+							r: r,
+							offset: Math.abs(offset)
+						});
+					}
+				}
+
+				if (hi === 180 && r < 4) {
+					out.push({x: Math.round(Math.cos(angle + Math.PI) * r + unit.x), y: Math.round(Math.sin(angle + Math.PI) * r + unit.y), r: r, offset: 180});
+				}
+			}
+
+			return out;
+		}
+
+		// front half first, back half only when the front has nothing usable (built and scored lazily)	//260927
+		// approach: a short walk around to a front spot beats going to the back
+		// dodge: front = backing away from the target; if that side is walled off or no safer, go through to the far side
+		for (tier = 0; tier < 2 && !choice && !pathOk; tier += 1) {
+			pathCand = null;
+
+			list = tier === 0 ? build(-1, 90) : build(90, 180);
+
+			for (i = list.length - 1; i >= 0; i -= 1) {
+				c = list[i];
+
+				// a dodge is a single short hop
+				if (useTele && !moveNeeded && getDistance(me.x, me.y, c.x, c.y) > Pather.maxTeleDistance) {
+					list.splice(i, 1);
+
+					continue;
+				}
+
+				c.threat = scoring ? this.getMonsterCount(c.x, c.y, Config.Dodge.Range, monList, fireList) : 0;
+			}
+
+			// Order decides which spot, threat only decides whether a spot is allowed	//260927
+			// approach: shortest walk first (straight ahead, outer ring), threat breaks ties
+			// dodge: back straight away first (outer ring = away from the target, then small offset); a spot must beat the current one by 1+
+			list.sort(moveNeeded ? function (a, b) {
+				return (a.offset - b.offset) || (b.r - a.r) || (a.threat - b.threat);
+			} : function (a, b) {
+				return (b.r - a.r) || (a.offset - b.offset);
+			});
+
+			for (i = 0; i < list.length; i += 1) {
+				c = list[i];
+
+				if (!moveNeeded && c.threat >= baseline) {
+					continue;	// not safer than where I stand
+				}
+
+				if (useTele ? !Pather.checkSpot(c.x, c.y, 0x1, false) : (getCollision(me.area, c.x, c.y) & 0x1)) {
+					continue;
+				}
+
+				if (CollMap.checkColl(unit, {x: c.x, y: c.y}, coll)) {
+					continue;
+				}
+
+				if (moveNeeded && this.checkFire(c.x, c.y, fireList)) {
+					continue;
+				}
+
+				if (!useTele && CollMap.checkColl(me, {x: c.x, y: c.y}, 0x5)) {
+					if (moveNeeded && !pathCand) {
+						pathCand = c;	// reachable only by walking around. Checked once below
+					}
+
+					continue;
+				}
+
+				choice = c;
+
+				break;
+			}
+
+			if (!choice && pathCand) {
+				path = getPath(me.area, pathCand.x, pathCand.y, me.x, me.y, 0, Pather.walkDistance);
+				pathOk = !!(path && path.length && path.length * Pather.walkDistance <= getDistance(me.x, me.y, pathCand.x, pathCand.y) * Config.DetourPath);
+
+				if (!pathOk) {
+					Misc.trace("[SP] detour " + unit.name + " tier:" + tier + " path:" + (path ? path.length * Pather.walkDistance : "none") + " dist:" + Math.round(getDistance(me.x, me.y, pathCand.x, pathCand.y)));	//260926 temp
+
+					if (path && path.length && (!longCand || path.length < longLen)) {	//260928
+						longCand = pathCand;
+						longLen = path.length;
+					}
+				}
+			}
+		}
+
+		if (choice) {
+			try {
+				if (!useTele) {
+					moved = Pather.walkTo(choice.x, choice.y, minDist);
+				} else if (getDistance(me.x, me.y, choice.x, choice.y) <= Pather.maxTeleDistance) {
+					moved = Pather.teleportTo(choice.x, choice.y);
+				} else {
+					moved = Pather.moveTo(choice.x, choice.y, 1);	// several hops
+				}
+			} catch (e1) {
+				moved = false;
+			}
+
+			if (moved) {
+				this.tick.moved = true;
+
 				return true;
 			}
 
-			revGate = this.getMonsterCount(me.x, me.y, 4, monList, fireList) > 2;
-		}
-
-		function add(d, offset) {
-			var rad = angle + offset * Math.PI / 180,
-				cx = Math.round(Math.cos(rad) * d + unit.x),
-				cy = Math.round(Math.sin(rad) * d + unit.y);
-
-			if (useTele && getDistance(me.x, me.y, cx, cy) > Pather.maxTeleDistance) {
-				return;
+			if (!moveNeeded) {
+				return true;	// failed dodge: attack from here
 			}
 
-			list.push({x: cx, y: cy, dist: d, offset: offset});
-		}
+			this.tick.fail = "moveFailed";
 
-		function build(d) {
-			var k, step, offset;
-
-			if (d < 1) {
-				return;
-			}
-
-			step = Config.Dodge.Step / d * 180 / Math.PI;
-
-			for (k = 0; ; k += 1) {
-				offset = k === 0 ? 0 : (k % 2 ? Math.ceil(k / 2) : -Math.ceil(k / 2)) * step;
-
-				if (Math.abs(offset) > 180) {
-					break;
-				}
-
-				add(d, offset);
-			}
-
-			if (d < 4) {
-				add(d, 180);
-			}
-		}
-
-		if (useTele) {
-			build(distance);
-			teleCount = list.length;
-
-			if (scoring && distance !== Config.Dodge.Range) {
-				build(Config.Dodge.Range);
-			}
-		} else if (moveNeeded) {
-			build(distance);
-			prev = distance;
-
-			for (n = 1; n < 3; n += 1) {
-				adj = distance - n * Math.floor(distance / 3 - 1);
-
-				if (adj > 0 && adj < prev) {
-					build(adj);
-					prev = adj;
-				}
-			}
-		} else {
-			build(Config.Dodge.Range);
-		}
-
-		for (i = 0; i < list.length; i += 1) {
-			c = list[i];
-
-			if (slotTele && i >= teleCount) {
-				break;
-			}
-			
-			if (slotMove && c.dist !== distance) {
-				break;
-			}
-
-			if (i < teleCount) {
-				if (!Pather.checkSpot(c.x, c.y, 0x1, false)) {
-					continue;
-				}
-			} else {
-				fit = c.dist === (moveNeeded ? distance : Config.Dodge.Range)
-					&& (Math.abs(c.offset) <= 90 || revGate);
-
-				if (!fit && (scoring || slotMove)) {
-					continue;
-				}
-				
-				if (getCollision(me.area, c.x, c.y) & 0x1) {
-					continue;
-				}
-			}
-
-			if (CollMap.checkColl(unit, {x: c.x, y: c.y}, coll)) {
-				continue;
-			}
-
-			if (!scoring) {
-				if (this.checkFire(c.x, c.y, fireList)) {
-					continue;
-				}
-
-				if (useTele) {
-					slotTele = c;
-
-					break;
-				}
-
-				if (!slotMove) {
-					slotMove = c;
-				}
-			}
-
-			if (i >= teleCount) {
-				if (!fit || CollMap.checkColl(me, {x: c.x, y: c.y}, 0x5)) {
-					continue;
-				}
-			}
-
-			if (!scoring) {
-				slotWalk = c;
-
-				break;
-			}
-
-			c.mc = this.getMonsterCount(c.x, c.y, Config.Dodge.Range, monList, fireList);
-
-			if (c.mc >= baseline) {
-				continue;
-			}
-
-			if (i < teleCount) {
-				if (!slotTele || c.mc < slotTele.mc) {
-					slotTele = c;
-				}
-			} else if (Math.abs(c.offset) <= 90) {
-				if (!slotWalk || c.mc < slotWalk.mc) {
-					slotWalk = c;
-				}
-			} else if (!slotRev || c.mc < slotRev.mc) {
-				slotRev = c;
-			}
-
-			if (c.mc === 0) {
-				break;
-			}
-		}
-
-		if (useTele) {
-			if (slotTele) {
-				return Pather.teleportTo(slotTele.x, slotTele.y) || !moveNeeded;
-			}
-
-			//if (!scoring) {
-				return false;
-			//}
-		}
-
-		c = slotWalk || slotRev;
-
-		if (c) {
-			return Pather.walkTo(c.x, c.y, minDist) || !moveNeeded;
-		}
-
-		if (slotMove) {
-			try {
-				return Pather.moveTo(slotMove.x, slotMove.y, 1);
-			} catch (e) {
-				return false;
-			}
-		}
-
-		return !moveNeeded;
-	},
-
-	getIntoPosition: function (unit, distance, coll, minDist) {	// 260508
-		if (!unit || !unit.x || !unit.y) {
 			return false;
 		}
-		
-		if (me.charlvl < 24) {
-			//distance = Math.min(distance, Config.Dodge.Range);	//260813
-		}
-		
-		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 3;	// 260613
-		
-		var i, cx, cy, n, adj,
-			angle = Math.round(Math.atan2(me.y - unit.y, me.x - unit.x) * 180 / Math.PI),
-			angles = [0, 15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 135, -135, 180],	//260715
-			//angles = [0, 15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 105, -105, 120, -120, 135, -135, 150, -150, 165, -165, 180];
-			fireList = this.getFireList();	//260806
-		
-		//print("[GIP] dist: " + Math.floor(getDistance(me, unit)) + " range: " + Math.floor(distance) + " area: " + me.area);	// 260528
-		
-		if (Pather.useTeleport()) {
-			for (i = 0; i < angles.length; i += 1) {
-				cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * distance + unit.x);
-				cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * distance + unit.y);
 
-				if (Pather.checkSpot(cx, cy, 0x1, false) && !CollMap.checkColl(unit, {x: cx, y: cy}, coll) && !this.checkFire(cx, cy, fireList)) {	//260806
-					//print("[GIP] result:TELE->(" + cx + ", " + cy + ") offset:" + angles[i] + " dist:" + Math.floor(getDistance(unit, cx, cy)));	// 260528
-					return Pather.teleportTo(cx, cy);
-				}
-			}
-		}
-		
-		// walkTo fallback
-		for (i = 0; i < 13; i += 1) {
-			cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * distance + unit.x);
-			cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * distance + unit.y);
-		
-			if (!(getCollision(me.area, cx, cy) & 0x1) && !CollMap.checkColl(unit, {x: cx, y: cy}, coll) && !CollMap.checkColl(me, {x: cx, y: cy}, 0x5) && !this.checkFire(cx, cy, fireList)) {	//260806
-				//print("[GIP] result:WALK->(" + cx + ", " + cy + ") offset: " + angles[i] + " dist: " + Math.floor(getDistance(unit, cx, cy))); // 260528
-				return Pather.walkTo(cx, cy, minDist);	//260613
-			}
-		}
-		
-		// moveTo fallback
-		for (n = 0; n < 3; n += 1) { // 260530
-			adj = distance - n * Math.floor(distance / 3 - 1);
-			
-			for (i = 0; i < angles.length; i += 1) {
-				cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * adj + unit.x);
-				cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * adj + unit.y);
-				
-				if (!(getCollision(me.area, cx, cy) & 0x1) && !CollMap.checkColl(unit, {x: cx, y: cy}, coll) && !this.checkFire(cx, cy, fireList)) {	//260806
-					//print("[GIP] result:MOVE->(" + cx + ", " + cy + ") offset: " + angles[i] + " dist: " + Math.floor(getDistance(unit, cx, cy)) + " range: " + adj);	//260528
-					return Pather.moveTo(cx, cy, 1);
-				}
-			}
+		if (!moveNeeded) {
+			return true;	// no better spot: attack from here
 		}
 
-		//print("[GIP]: no valid point area: " + me.area);	// 260524
+		// a must target is never unreachable while a walkable path exists: take the shorter of the front/back detours, however long	//260928
+		if (!pathOk && longCand && this.tick.must) {
+			Misc.trace("[SP] must detour " + unit.name + " path:" + longLen * Pather.walkDistance);	//260926 temp
+			pathCand = longCand;
+			pathOk = true;
+		}
+
+		if (pathOk) {
+			try {
+				moved = Pather.moveTo(pathCand.x, pathCand.y, 1);
+			} catch (e2) {
+				moved = false;
+			}
+
+			if (moved) {
+				this.tick.moved = true;
+
+				return true;
+			}
+
+			this.tick.fail = "moveFailed";
+
+			return false;
+		}
+
+		this.tick.fail = "unreachable";
+
 		return false;
 	},
+
+	// ---- 260926: replaced by setPosition above. kept for rollback ----
+//	setPosition: function (unit, distance, coll, minDist) {	//260828
+//		if (!unit || !copyUnit(unit).x) {
+//			return false;
+//		}
+
+//		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 3;
+
+//		var i, c, fit, n, adj, prev, useTele, monList,
+//			list = [],
+//			fireList = null,
+//			baseline = 0,
+//			teleCount = 0,
+//			slotTele = null,
+//			slotWalk = null,
+//			slotMove = null,
+//			slotRev = null,
+//			revGate = false,
+//			moveNeeded = getDistance(me, unit) > distance || checkCollision(me, unit, coll),
+//			scoring = Config.Dodge.Enabled && !moveNeeded && distance >= Config.Dodge.Range && me.hp * 100 / me.hpmax <= Config.Dodge.HP && unit.classid !== 243,	//260915
+//			angle = Math.atan2(me.y - unit.y, me.x - unit.x);
+
+//		if (!moveNeeded && !scoring) {
+//			return true;
+//		}
+
+//		useTele = Pather.useTeleport();
+//		fireList = this.getFireList();
+
+//		if (scoring) {
+//			monList = this.buildMonsterList();
+
+//			baseline = this.getMonsterCount(me.x, me.y, Config.Dodge.Range, monList, fireList);
+
+//			if (baseline === 0) {
+//				return true;
+//			}
+
+//			revGate = this.getMonsterCount(me.x, me.y, 4, monList, fireList) > 2;
+//		}
+
+//		function add(d, offset) {
+//			var rad = angle + offset * Math.PI / 180,
+//				cx = Math.round(Math.cos(rad) * d + unit.x),
+//				cy = Math.round(Math.sin(rad) * d + unit.y);
+
+//			if (useTele && getDistance(me.x, me.y, cx, cy) > Pather.maxTeleDistance) {
+//				return;
+//			}
+
+//			list.push({x: cx, y: cy, dist: d, offset: offset});
+//		}
+
+//		function build(d) {
+//			var k, step, offset;
+
+//			if (d < 1) {
+//				return;
+//			}
+
+//			step = Config.Dodge.Step / d * 180 / Math.PI;
+
+//			for (k = 0; ; k += 1) {
+//				offset = k === 0 ? 0 : (k % 2 ? Math.ceil(k / 2) : -Math.ceil(k / 2)) * step;
+
+//				if (Math.abs(offset) > 180) {
+//					break;
+//				}
+
+//				add(d, offset);
+//			}
+
+//			if (d < 4) {
+//				add(d, 180);
+//			}
+//		}
+
+//		if (useTele) {
+//			build(distance);
+//			teleCount = list.length;
+
+//			if (scoring && distance !== Config.Dodge.Range) {
+//				build(Config.Dodge.Range);
+//			}
+//		} else if (moveNeeded) {
+//			build(distance);
+//			prev = distance;
+
+//			for (n = 1; n < 3; n += 1) {
+//				adj = distance - n * Math.floor(distance / 3 - 1);
+
+//				if (adj > 0 && adj < prev) {
+//					build(adj);
+//					prev = adj;
+//				}
+//			}
+//		} else {
+//			build(Config.Dodge.Range);
+//		}
+
+//		for (i = 0; i < list.length; i += 1) {
+//			c = list[i];
+
+//			if (slotTele && i >= teleCount) {
+//				break;
+//			}
+			
+//			if (slotMove && c.dist !== distance) {
+//				break;
+//			}
+
+//			if (i < teleCount) {
+//				if (!Pather.checkSpot(c.x, c.y, 0x1, false)) {
+//					continue;
+//				}
+//			} else {
+//				fit = c.dist === (moveNeeded ? distance : Config.Dodge.Range)
+//					&& (Math.abs(c.offset) <= 90 || revGate);
+
+//				if (!fit && (scoring || slotMove)) {
+//					continue;
+//				}
+				
+//				if (getCollision(me.area, c.x, c.y) & 0x1) {
+//					continue;
+//				}
+//			}
+
+//			if (CollMap.checkColl(unit, {x: c.x, y: c.y}, coll)) {
+//				continue;
+//			}
+
+//			if (!scoring) {
+//				if (this.checkFire(c.x, c.y, fireList)) {
+//					continue;
+//				}
+
+//				if (useTele) {
+//					slotTele = c;
+
+//					break;
+//				}
+
+//				if (!slotMove) {
+//					slotMove = c;
+//				}
+//			}
+
+//			if (i >= teleCount) {
+//				if (!fit || CollMap.checkColl(me, {x: c.x, y: c.y}, 0x5)) {
+//					continue;
+//				}
+//			}
+
+//			if (!scoring) {
+//				slotWalk = c;
+
+//				break;
+//			}
+
+//			c.mc = this.getMonsterCount(c.x, c.y, Config.Dodge.Range, monList, fireList);
+
+//			if (c.mc >= baseline) {
+//				continue;
+//			}
+
+//			if (i < teleCount) {
+//				if (!slotTele || c.mc < slotTele.mc) {
+//					slotTele = c;
+//				}
+//			} else if (Math.abs(c.offset) <= 90) {
+//				if (!slotWalk || c.mc < slotWalk.mc) {
+//					slotWalk = c;
+//				}
+//			} else if (!slotRev || c.mc < slotRev.mc) {
+//				slotRev = c;
+//			}
+
+//			if (c.mc === 0) {
+//				break;
+//			}
+//		}
+
+//		if (useTele) {
+//			if (slotTele) {
+//				return Pather.teleportTo(slotTele.x, slotTele.y) || !moveNeeded;
+//			}
+
+//			//if (!scoring) {
+//				return false;
+//			//}
+//		}
+
+//		c = slotWalk || slotRev;
+
+//		if (c) {
+//			return Pather.walkTo(c.x, c.y, minDist) || !moveNeeded;
+//		}
+
+//		if (slotMove) {
+//			try {
+//				return Pather.moveTo(slotMove.x, slotMove.y, 1);
+//			} catch (e) {
+//				return false;
+//			}
+//		}
+
+//		return !moveNeeded;
+//	},
+
+	// ---- 260928: getIntoPosition is dead with the new clear / setPosition. kept for a later cleanup ----
+//	getIntoPosition: function (unit, distance, coll, minDist) {	// 260508
+//		if (!unit || !unit.x || !unit.y) {
+//			return false;
+//		}
+//		
+//		if (me.charlvl < 24) {
+//			//distance = Math.min(distance, Config.Dodge.Range);	//260813
+//		}
+//		
+//		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 3;	// 260613
+//		
+//		var i, cx, cy, n, adj,
+//			angle = Math.round(Math.atan2(me.y - unit.y, me.x - unit.x) * 180 / Math.PI),
+//			angles = [0, 15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 135, -135, 180],	//260715
+//			//angles = [0, 15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 105, -105, 120, -120, 135, -135, 150, -150, 165, -165, 180];
+//			fireList = this.getFireList();	//260806
+//		
+//		//print("[GIP] dist: " + Math.floor(getDistance(me, unit)) + " range: " + Math.floor(distance) + " area: " + me.area);	// 260528
+//		
+//		if (Pather.useTeleport()) {
+//			for (i = 0; i < angles.length; i += 1) {
+//				cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * distance + unit.x);
+//				cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * distance + unit.y);
+
+//				if (Pather.checkSpot(cx, cy, 0x1, false) && !CollMap.checkColl(unit, {x: cx, y: cy}, coll) && !this.checkFire(cx, cy, fireList)) {	//260806
+//					//print("[GIP] result:TELE->(" + cx + ", " + cy + ") offset:" + angles[i] + " dist:" + Math.floor(getDistance(unit, cx, cy)));	// 260528
+//					return Pather.teleportTo(cx, cy);
+//				}
+//			}
+//		}
+//		
+//		// walkTo fallback
+//		for (i = 0; i < 13; i += 1) {
+//			cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * distance + unit.x);
+//			cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * distance + unit.y);
+//		
+//			if (!(getCollision(me.area, cx, cy) & 0x1) && !CollMap.checkColl(unit, {x: cx, y: cy}, coll) && !CollMap.checkColl(me, {x: cx, y: cy}, 0x5) && !this.checkFire(cx, cy, fireList)) {	//260806
+//				//print("[GIP] result:WALK->(" + cx + ", " + cy + ") offset: " + angles[i] + " dist: " + Math.floor(getDistance(unit, cx, cy))); // 260528
+//				return Pather.walkTo(cx, cy, minDist);	//260613
+//			}
+//		}
+//		
+//		// moveTo fallback
+//		for (n = 0; n < 3; n += 1) { // 260530
+//			adj = distance - n * Math.floor(distance / 3 - 1);
+//			
+//			for (i = 0; i < angles.length; i += 1) {
+//				cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * adj + unit.x);
+//				cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * adj + unit.y);
+//				
+//				if (!(getCollision(me.area, cx, cy) & 0x1) && !CollMap.checkColl(unit, {x: cx, y: cy}, coll) && !this.checkFire(cx, cy, fireList)) {	//260806
+//					//print("[GIP] result:MOVE->(" + cx + ", " + cy + ") offset: " + angles[i] + " dist: " + Math.floor(getDistance(unit, cx, cy)) + " range: " + adj);	//260528
+//					return Pather.moveTo(cx, cy, 1);
+//				}
+//			}
+//		}
+
+//		//print("[GIP]: no valid point area: " + me.area);	// 260524
+//		return false;
+//	},
 	
 	checkFire: function (x, y, fireList) {	//260806
 		var i;
@@ -773,156 +1468,158 @@ var Attack = {
 		return list;
 	},
 	
-	dodge: function (unit, distance, spread, range) { // 260501
-		if (arguments.length < 4) {
-			throw new Error("dodge: Not enough arguments supplied");
-		}
+	// ---- 260928: dodge is dead with the new clear / setPosition. kept for a later cleanup ----
+//	dodge: function (unit, distance, spread, range) { // 260501
+//		if (arguments.length < 4) {
+//			throw new Error("dodge: Not enough arguments supplied");
+//		}
 
-		if (me.charlvl < 24) {
-			distance = Math.min(distance, Config.Dodge.Range);
-		}
+//		if (me.charlvl < 24) {
+//			distance = Math.min(distance, Config.Dodge.Range);
+//		}
 
-		var i, count, grid, currCount, index, offsets, rad, tx, ty, wx, wy, col, angle, idealPos, monList, fireList;	//260806
-			
-			monList = this.buildMonsterList();
-			fireList = this.getFireList();	//260806
-			count = this.getMonsterCount(me.x, me.y, Config.Dodge.Range, monList, fireList);	// 260505
+//		var i, count, grid, currCount, index, offsets, rad, tx, ty, wx, wy, col, angle, idealPos, monList, fireList;	//260806
+//			
+//			monList = this.buildMonsterList();
+//			fireList = this.getFireList();	//260806
+//			count = this.getMonsterCount(me.x, me.y, Config.Dodge.Range, monList, fireList);	// 260505
 
-			if (count < Config.Dodge.Count) {
-				return true;
-			}
-			
-			monList.sort(Sort.units);
-			unit = monList[0];	//260508
-			
-			angle = Math.atan2(me.y - unit.y, me.x - unit.x);	// 260505
-			idealPos = {
-				x: Math.round(Math.cos(angle) * distance + unit.x),	// 260505
-				y: Math.round(Math.sin(angle) * distance + unit.y)	// 260505
-			};
+//			if (count < Config.Dodge.Count) {
+//				return true;
+//			}
+//			
+//			monList.sort(Sort.units);
+//			unit = monList[0];	//260508
+//			
+//			angle = Math.atan2(me.y - unit.y, me.x - unit.x);	// 260505
+//			idealPos = {
+//				x: Math.round(Math.cos(angle) * distance + unit.x),	// 260505
+//				y: Math.round(Math.sin(angle) * distance + unit.y)	// 260505
+//			};
 
-		function gridSort(a, b) {
-			return getDistance(a.x, a.y, idealPos.x, idealPos.y) - getDistance(b.x, b.y, idealPos.x, idealPos.y);
-		}
-		
-		col = 0;	//260508
-		
-		//print("[DGE] count: " + count + " dist: " + Math.floor(getDistance(me, unit)) + " range: " + distance + " area: " + me.area);	// 260528
-		
-		// teleport // 260505
-		if (Pather.useTeleport() && distance >= Config.Dodge.Range) {	// 260505
-			CollMap.getNearbyRooms(unit.x, unit.y);
+//		function gridSort(a, b) {
+//			return getDistance(a.x, a.y, idealPos.x, idealPos.y) - getDistance(b.x, b.y, idealPos.x, idealPos.y);
+//		}
+//		
+//		col = 0;	//260508
+//		
+//		//print("[DGE] count: " + count + " dist: " + Math.floor(getDistance(me, unit)) + " range: " + distance + " area: " + me.area);	// 260528
+//		
+//		// teleport // 260505
+//		if (Pather.useTeleport() && distance >= Config.Dodge.Range) {	// 260505
+//			CollMap.getNearbyRooms(unit.x, unit.y);
 
-			grid = this.buildGrid(unit.x - distance, unit.x + distance, unit.y - distance, unit.y + distance, spread);
+//			grid = this.buildGrid(unit.x - distance, unit.x + distance, unit.y - distance, unit.y + distance, spread);
 
-			if (!grid.length) {
-				return false;
-			}
+//			if (!grid.length) {
+//				return false;
+//			}
 
-			grid.sort(gridSort);
+//			grid.sort(gridSort);
 
-			for (i = 0; i < grid.length; i += 1) {
-				if (Pather.checkSpot(grid[i].x, grid[i].y, 0x1, true) && !CollMap.checkColl(unit, {x: grid[i].x, y: grid[i].y}, 0x4)) {//260806 && !this.checkFire(grid[i].x, grid[i].y)) { // 260530
-					currCount = this.getMonsterCount(grid[i].x, grid[i].y, range, monList, fireList);	//260806
+//			for (i = 0; i < grid.length; i += 1) {
+//				if (Pather.checkSpot(grid[i].x, grid[i].y, 0x1, true) && !CollMap.checkColl(unit, {x: grid[i].x, y: grid[i].y}, 0x4)) {//260806 && !this.checkFire(grid[i].x, grid[i].y)) { // 260530
+//					currCount = this.getMonsterCount(grid[i].x, grid[i].y, range, monList, fireList);	//260806
 
-					if (currCount < count) {
-						index = i;
-						count = currCount;
-					}
+//					if (currCount < count) {
+//						index = i;
+//						count = currCount;
+//					}
 
-					if (currCount === 0) {
-						break;
-					}
-				}
-			}
+//					if (currCount === 0) {
+//						break;
+//					}
+//				}
+//			}
 
-			if (typeof index === "number") {
-				//print("[DGE] result:TELE->(" + grid[index].x + ", " + grid[index].y + ") count: " + count + " dist: " + Math.floor(getDistance(unit, grid[index].x, grid[index].y)));	// 260528
-				return Pather.teleportTo(grid[index].x, grid[index].y);
-			}
-		}
-		
-		// walk fallback
-		if (getDistance(me, unit) < distance) {
-			offsets = [0, 15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90];	// 260512
+//			if (typeof index === "number") {
+//				//print("[DGE] result:TELE->(" + grid[index].x + ", " + grid[index].y + ") count: " + count + " dist: " + Math.floor(getDistance(unit, grid[index].x, grid[index].y)));	// 260528
+//				return Pather.teleportTo(grid[index].x, grid[index].y);
+//			}
+//		}
+//		
+//		// walk fallback
+//		if (getDistance(me, unit) < distance) {
+//			offsets = [0, 15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90];	// 260512
 
-			for (i = 0; i < offsets.length; i += 1) {
-				rad = angle + offsets[i] * Math.PI / 180;
-				tx = Math.round(unit.x + Math.cos(rad) * Math.min(distance, Config.Dodge.Range));
-				ty = Math.round(unit.y + Math.sin(rad) * Math.min(distance, Config.Dodge.Range));
+//			for (i = 0; i < offsets.length; i += 1) {
+//				rad = angle + offsets[i] * Math.PI / 180;
+//				tx = Math.round(unit.x + Math.cos(rad) * Math.min(distance, Config.Dodge.Range));
+//				ty = Math.round(unit.y + Math.sin(rad) * Math.min(distance, Config.Dodge.Range));
 
-				if (!(getCollision(me.area, tx, ty) & 0x1) && !CollMap.checkColl(me, {x: tx, y: ty}, 0x5)) {//260806 && !this.checkFire(tx, ty)) {	//260530
-					col += 1;
-					if (!CollMap.checkColl(unit, {x: tx, y: ty}, 0x4)) {
-						currCount = this.getMonsterCount(tx, ty, Config.Dodge.Range, monList, fireList);	//260806
-						if (currCount < count) {
-							wx = tx;
-							wy = ty;
-							count = currCount;
-						}
-						
-						if (currCount === 0) {
-							break;
-						}
-					}
-				}
-			}
-			
-			if (wx === undefined && this.getMonsterCount(me.x, me.y, 4, monList, fireList) > 2 && col < Math.ceil(offsets.length / 3)) {	//260806
-				//print("[DGE] WALK: reverse fallback col: " + col);
-				for (i = 0; i < offsets.length; i += 1) {
-					rad = (angle + Math.PI) + offsets[i] * Math.PI / 180;
-					tx = Math.round(unit.x + Math.cos(rad) * Math.min(distance, Config.Dodge.Range) * 1.5);
-					ty = Math.round(unit.y + Math.sin(rad) * Math.min(distance, Config.Dodge.Range) * 1.5);
+//				if (!(getCollision(me.area, tx, ty) & 0x1) && !CollMap.checkColl(me, {x: tx, y: ty}, 0x5)) {//260806 && !this.checkFire(tx, ty)) {	//260530
+//					col += 1;
+//					if (!CollMap.checkColl(unit, {x: tx, y: ty}, 0x4)) {
+//						currCount = this.getMonsterCount(tx, ty, Config.Dodge.Range, monList, fireList);	//260806
+//						if (currCount < count) {
+//							wx = tx;
+//							wy = ty;
+//							count = currCount;
+//						}
+//						
+//						if (currCount === 0) {
+//							break;
+//						}
+//					}
+//				}
+//			}
+//			
+//			if (wx === undefined && this.getMonsterCount(me.x, me.y, 4, monList, fireList) > 2 && col < Math.ceil(offsets.length / 3)) {	//260806
+//				//print("[DGE] WALK: reverse fallback col: " + col);
+//				for (i = 0; i < offsets.length; i += 1) {
+//					rad = (angle + Math.PI) + offsets[i] * Math.PI / 180;
+//					tx = Math.round(unit.x + Math.cos(rad) * Math.min(distance, Config.Dodge.Range) * 1.5);
+//					ty = Math.round(unit.y + Math.sin(rad) * Math.min(distance, Config.Dodge.Range) * 1.5);
 
-					if (!(getCollision(me.area, tx, ty) & 0x1) && !CollMap.checkColl(me, {x: tx, y: ty}, 0x5) && !CollMap.checkColl(unit, {x: tx, y: ty}, 0x4)) {//260806 && !this.checkFire(tx, ty)) {	//260530
-						currCount = this.getMonsterCount(tx, ty, Config.Dodge.Range, monList, fireList);	//260806
-						if (currCount < count) {
-							wx = tx;
-							wy = ty;
-							count = currCount;
-						}
-						
-						if (currCount === 0) {
-							break;
-						}
-					}
-				}
-			}
-			
-			if (wx !== undefined) {
-				//print("[DGE] result:WALK->(" + wx + ", " + wy + ") count: " + count + " dist: " + Math.floor(getDistance(unit, wx, wy)));	// 260528
-				return Pather.walkTo(wx, wy);	//260517
-			}
-		} else {
-			//print("[DGE] WALK skip: dist " + Math.floor(getDistance(me, unit)) + " >= skillRange " + distance); // 260506
-			return false;
-		}
-		
-		//print("[DGE]: no valid point area: " + me.area);	// 260528
-		return false;
-	},
+//					if (!(getCollision(me.area, tx, ty) & 0x1) && !CollMap.checkColl(me, {x: tx, y: ty}, 0x5) && !CollMap.checkColl(unit, {x: tx, y: ty}, 0x4)) {//260806 && !this.checkFire(tx, ty)) {	//260530
+//						currCount = this.getMonsterCount(tx, ty, Config.Dodge.Range, monList, fireList);	//260806
+//						if (currCount < count) {
+//							wx = tx;
+//							wy = ty;
+//							count = currCount;
+//						}
+//						
+//						if (currCount === 0) {
+//							break;
+//						}
+//					}
+//				}
+//			}
+//			
+//			if (wx !== undefined) {
+//				//print("[DGE] result:WALK->(" + wx + ", " + wy + ") count: " + count + " dist: " + Math.floor(getDistance(unit, wx, wy)));	// 260528
+//				return Pather.walkTo(wx, wy);	//260517
+//			}
+//		} else {
+//			//print("[DGE] WALK skip: dist " + Math.floor(getDistance(me, unit)) + " >= skillRange " + distance); // 260506
+//			return false;
+//		}
+//		
+//		//print("[DGE]: no valid point area: " + me.area);	// 260528
+//		return false;
+//	},
 
-	buildGrid: function (xmin, xmax, ymin, ymax, spread) {
-		if (xmin >= xmax || ymin >= ymax || spread < 1) {
-			throw new Error("buildGrid: Bad parameters");
-		}
+	// ---- 260928: buildGrid is dead with the new clear / setPosition. kept for a later cleanup ----
+//	buildGrid: function (xmin, xmax, ymin, ymax, spread) {
+//		if (xmin >= xmax || ymin >= ymax || spread < 1) {
+//			throw new Error("buildGrid: Bad parameters");
+//		}
 
-		var i, j, coll,
-			grid = [];
+//		var i, j, coll,
+//			grid = [];
 
-		for (i = xmin; i <= xmax; i += spread) {
-			for (j = ymin; j <= ymax; j += spread) {
-				coll = CollMap.getColl(i, j, true);
+//		for (i = xmin; i <= xmax; i += spread) {
+//			for (j = ymin; j <= ymax; j += spread) {
+//				coll = CollMap.getColl(i, j, true);
 
-				if (typeof coll === "number") {
-					grid.push({x: i, y: j, coll: coll});
-				}
-			}
-		}
+//				if (typeof coll === "number") {
+//					grid.push({x: i, y: j, coll: coll});
+//				}
+//			}
+//		}
 
-		return grid;
-	},
+//		return grid;
+//	},
 
 	buildMonsterList: function () {
 		var monster,
@@ -1036,112 +1733,115 @@ var Attack = {
 		return true;
 	},
 
-	getScarinessLevel: function (unit) {
-		var scariness = 0; //, ids = [58, 59, 60, 61, 62, 101, 102, 103, 104, 105, 278, 279, 280, 281, 282, 298, 299, 300, 645, 646, 647, 662, 663, 664, 667, 668, 669, 670, 675, 676];
+	// ---- 260928: getScarinessLevel is dead with the new clear / setPosition. kept for a later cleanup ----
+//	getScarinessLevel: function (unit) {
+//		var scariness = 0; //, ids = [58, 59, 60, 61, 62, 101, 102, 103, 104, 105, 278, 279, 280, 281, 282, 298, 299, 300, 645, 646, 647, 662, 663, 664, 667, 668, 669, 670, 675, 676];
 
-		// Only handling monsters for now
-		if (unit.type !== 1) {
-			return undefined;
-		}
+//		// Only handling monsters for now
+//		if (unit.type !== 1) {
+//			return undefined;
+//		}
 
-		// Minion
-		if (unit.spectype & 0x08) {
-			scariness += 1;
-		}
+//		// Minion
+//		if (unit.spectype & 0x08) {
+//			scariness += 1;
+//		}
 
-		// Champion
-		if (unit.spectype & 0x02) {
-			scariness += 2;
-		}
+//		// Champion
+//		if (unit.spectype & 0x02) {
+//			scariness += 2;
+//		}
 
-		// Boss
-		if (unit.spectype & 0x04) {
-			scariness += 4;
-		}
+//		// Boss
+//		if (unit.spectype & 0x04) {
+//			scariness += 4;
+//		}
 
-		// Summoner or the like
-		if (Attack.ids.indexOf(unit.classid) > -1) {	//260806
-			scariness += 8;
-		}
+//		// Summoner or the like
+//		if (Attack.ids.indexOf(unit.classid) > -1) {	//260806
+//			scariness += 8;
+//		}
 
-		return scariness;
-	},
+//		return scariness;
+//	},
 
-	sortByDistance: function (unitA, unitB) {
-		return getDistance(me, unitA) - getDistance(me, unitB);
-	},
+	// ---- 260928: sortByDistance is dead with the new clear / setPosition. kept for a later cleanup ----
+//	sortByDistance: function (unitA, unitB) {
+//		return getDistance(me, unitA) - getDistance(me, unitB);
+//	},
 
-	// Sort monsters based on distance, spectype and classId (summoners are attacked first)
-	sortMonsters: function (unitA, unitB) {
-		// No special sorting for were-form
-		if (Config.Wereform) {
-			return getDistance(me, unitA) - getDistance(me, unitB);
-		}
+	// ---- 260928: sortMonsters is dead with the new clear / setPosition. kept for a later cleanup ----
+//	// Sort monsters based on distance, spectype and classId (summoners are attacked first)
+//	sortMonsters: function (unitA, unitB) {
+//		// No special sorting for were-form
+//		if (Config.Wereform) {
+//			return getDistance(me, unitA) - getDistance(me, unitB);
+//		}
 
-		// Barb optimization
-		if (me.classid === 4) {
-			/*if (!Attack.checkResist(unitA, Attack.getSkillElement(Config.AttackSkill[(unitA.spectype & 0x7) ? 1 : 3]))) {
-				return 1;
-			}
+//		// Barb optimization
+//		if (me.classid === 4) {
+//			/*if (!Attack.checkResist(unitA, Attack.getSkillElement(Config.AttackSkill[(unitA.spectype & 0x7) ? 1 : 3]))) {
+//				return 1;
+//			}
 
-			if (!Attack.checkResist(unitB, Attack.getSkillElement(Config.AttackSkill[(unitB.spectype & 0x7) ? 1 : 3]))) {
-				return -1;
-			}*/
-			var resistA = !Attack.checkResist(unitA, Attack.getSkillElement(Config.AttackSkill[(unitA.spectype & 0x7) ? 1 : 3]));
-			var resistB = !Attack.checkResist(unitB, Attack.getSkillElement(Config.AttackSkill[(unitB.spectype & 0x7) ? 1 : 3])); // 260419
+//			if (!Attack.checkResist(unitB, Attack.getSkillElement(Config.AttackSkill[(unitB.spectype & 0x7) ? 1 : 3]))) {
+//				return -1;
+//			}*/
+//			var resistA = !Attack.checkResist(unitA, Attack.getSkillElement(Config.AttackSkill[(unitA.spectype & 0x7) ? 1 : 3]));
+//			var resistB = !Attack.checkResist(unitB, Attack.getSkillElement(Config.AttackSkill[(unitB.spectype & 0x7) ? 1 : 3])); // 260419
 
-			if (resistA && !resistB) {
-				return 1;
-			}
+//			if (resistA && !resistB) {
+//				return 1;
+//			}
 
-			if (resistB && !resistA) {
-				return -1;
-			}
-		}
+//			if (resistB && !resistA) {
+//				return -1;
+//			}
+//		}
 
-		//var ids = [58, 59, 60, 61, 62, 101, 102, 103, 104, 105, 278, 279, 280, 281, 282, 298, 299, 300, 645, 646, 647, 662, 663, 664, 667, 668, 669, 670, 675, 676];
+//		//var ids = [58, 59, 60, 61, 62, 101, 102, 103, 104, 105, 278, 279, 280, 281, 282, 298, 299, 300, 645, 646, 647, 662, 663, 664, 667, 668, 669, 670, 675, 676];
 
-		if (me.area !== 61 && Attack.ids.indexOf(unitA.classid) > -1 && Attack.ids.indexOf(unitB.classid) > -1) {	//260806
-			// Kill "scary" uniques first (like Bishibosh)
-			if ((unitA.spectype & 0x04) && (unitB.spectype & 0x04)) {
-				return getDistance(me, unitA) - getDistance(me, unitB);
-			}
+//		if (me.area !== 61 && Attack.ids.indexOf(unitA.classid) > -1 && Attack.ids.indexOf(unitB.classid) > -1) {	//260806
+//			// Kill "scary" uniques first (like Bishibosh)
+//			if ((unitA.spectype & 0x04) && (unitB.spectype & 0x04)) {
+//				return getDistance(me, unitA) - getDistance(me, unitB);
+//			}
 
-			if (unitA.spectype & 0x04) {
-				return -1;
-			}
+//			if (unitA.spectype & 0x04) {
+//				return -1;
+//			}
 
-			if (unitB.spectype & 0x04) {
-				return 1;
-			}
+//			if (unitB.spectype & 0x04) {
+//				return 1;
+//			}
 
-			return getDistance(me, unitA) - getDistance(me, unitB);
-		}
+//			return getDistance(me, unitA) - getDistance(me, unitB);
+//		}
 
-		if (Attack.ids.indexOf(unitA.classid) > -1) {	//260806
-			return -1;
-		}
+//		if (Attack.ids.indexOf(unitA.classid) > -1) {	//260806
+//			return -1;
+//		}
 
-		if (Attack.ids.indexOf(unitB.classid) > -1) {	//260806
-			return 1;
-		}
+//		if (Attack.ids.indexOf(unitB.classid) > -1) {	//260806
+//			return 1;
+//		}
 
-		if (Config.BossPriority) {
-			if ((unitA.spectype & 0x5) && (unitB.spectype & 0x5)) {
-				return getDistance(me, unitA) - getDistance(me, unitB);
-			}
+//		if (Config.BossPriority) {
+//			if ((unitA.spectype & 0x5) && (unitB.spectype & 0x5)) {
+//				return getDistance(me, unitA) - getDistance(me, unitB);
+//			}
 
-			if (unitA.spectype & 0x5) {
-				return -1;
-			}
+//			if (unitA.spectype & 0x5) {
+//				return -1;
+//			}
 
-			if (unitB.spectype & 0x5) {
-				return 1;
-			}
-		}
+//			if (unitB.spectype & 0x5) {
+//				return 1;
+//			}
+//		}
 
-		return getDistance(me, unitA) - getDistance(me, unitB);
-	},
+//		return getDistance(me, unitA) - getDistance(me, unitB);
+//	},
 
 	getCowKing: function (range) {
 		var king = getUnit(1, 391);
@@ -1159,53 +1859,54 @@ var Attack = {
 		return false;
 	},
 	
-	// Filter monsters based on classId, spectype and range
-	getMob: function (classid, spectype, range, center) {
-		var monsterList = [],
-			monster = getUnit(1);
+	// ---- 260928: getMob is dead with the new clear / setPosition. kept for a later cleanup ----
+//	// Filter monsters based on classId, spectype and range
+//	getMob: function (classid, spectype, range, center) {
+//		var monsterList = [],
+//			monster = getUnit(1);
 
-		if (range === undefined) {
-			range = 25;
-		}
+//		if (range === undefined) {
+//			range = 25;
+//		}
 
-		if (!center) {
-			center = me;
-		}
+//		if (!center) {
+//			center = me;
+//		}
 
-		switch (typeof classid) {
-		case "number":
-		case "string":
-			monster = getUnit(1, classid);
+//		switch (typeof classid) {
+//		case "number":
+//		case "string":
+//			monster = getUnit(1, classid);
 
-			if (monster) {
-				do {
-					if (getDistance(center.x, center.y, monster.x, monster.y) <= range && (!spectype || (monster.spectype & spectype)) && this.checkMonster(monster)) {
-						monsterList.push(copyUnit(monster));
-					}
-				} while (monster.getNext());
-			}
+//			if (monster) {
+//				do {
+//					if (getDistance(center.x, center.y, monster.x, monster.y) <= range && (!spectype || (monster.spectype & spectype)) && this.checkMonster(monster)) {
+//						monsterList.push(copyUnit(monster));
+//					}
+//				} while (monster.getNext());
+//			}
 
-			break;
-		case "object":
-			monster = getUnit(1);
+//			break;
+//		case "object":
+//			monster = getUnit(1);
 
-			if (monster) {
-				do {
-					if (classid.indexOf(monster.classid) > -1 && getDistance(center.x, center.y, monster.x, monster.y) <= range && (!spectype || (monster.spectype & spectype)) && this.checkMonster(monster)) {
-						monsterList.push(copyUnit(monster));
-					}
-				} while (monster.getNext());
-			}
+//			if (monster) {
+//				do {
+//					if (classid.indexOf(monster.classid) > -1 && getDistance(center.x, center.y, monster.x, monster.y) <= range && (!spectype || (monster.spectype & spectype)) && this.checkMonster(monster)) {
+//						monsterList.push(copyUnit(monster));
+//					}
+//				} while (monster.getNext());
+//			}
 
-			break;
-		}
+//			break;
+//		}
 
-		if (!monsterList.length) {
-			return false;
-		}
+//		if (!monsterList.length) {
+//			return false;
+//		}
 
-		return monsterList;
-	},
+//		return monsterList;
+//	},
 	
 	// Check if a set of coords is valid/accessable
 	validSpot: function (x, y) {
@@ -1426,6 +2127,7 @@ AuraLoop: // Skip monsters with auras
 			return "physical";
 		case 101: // Holy Bolt
 			return "holybolt"; // no need to use this.elements array because it returns before going over the array
+		case 43: // Telekinesis - works regardless of immunities	//260926
 		case 243: // Shock Wave	//260620
 		case 249: // Armageddon	//260620
 			return "none";

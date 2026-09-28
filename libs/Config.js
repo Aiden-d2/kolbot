@@ -86,7 +86,8 @@ var Config = {
 
 	Dodge: {
 		Enabled: false,
-		Range: 13,
+		//Range: 13,
+		Range: 9,	//260927 skills with at least this range dodge (Frozen Orb / Nova 9 included); also the radius monsters are counted in (trigger and candidates)
 		Count: 1,
 		HP: 100,
 		Step: 5

@@ -28,17 +28,14 @@ var NodeAction = {
 	},
 
 	// Kill monsters while pathing
-	killMonsters: function (arg) {
+	killMonsters: function (arg) {	//260927
 		if (arg.clearPath !== false) {
-			if (me.area === 39) {
-				if (!Attack.clear(25, typeof arg.clearPath === "number" ? arg.clearPath : 0)) {	//260901
-					print("killMonsters failed");
+			if (me.area === 108) {
+				Attack.clear(20);
+			} else {
+				if (!Attack.clear(25)) {
 					return "killMonsters";
 				}
-			} else if (me.area === 108) {
-				Attack.clear(20, typeof arg.clearPath === "number" ? arg.clearPath : 0);
-			} else {
-				Attack.clear(25, typeof arg.clearPath === "number" ? arg.clearPath : 0);
 			}
 		}
 		

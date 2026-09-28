@@ -125,6 +125,7 @@ var AutoBuild = new function AutoBuild () {
 	function levelUpHandler (obj) {
 		if (typeof obj === "object" && obj.hasOwnProperty("event") && obj["event"] === "level up") {
 			applyConfigUpdates();
+			Attack.init();	//260928 reload attack file on level up (Wereform at 46)
 		}
 	};
 
