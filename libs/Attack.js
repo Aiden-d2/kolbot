@@ -974,8 +974,9 @@ var Attack = {
 		Attack.setPosition(unit, distance, coll, minDist)	//260926
 		Candidates are ring spots that keep unit in range and in sight (rings every Dodge.Step, arc spacing Dodge.Step).
 		  approach (out of range or no LOS): front straight > front detour (moveTo) > back straight > back detour.
-		           Shortest walk first; fire tiles excluded; threat only breaks ties
-		           a detour is not length-checked here: the clear gate (Angle/Detour, sweep only) already did it	//260928
+		           Outer ring first, then small offset; fire tiles excluded; threat only breaks ties	//260928
+		           sweep target only: the spot must be in sight from me (0x4), and a detour is taken only if
+		           my walking path to the target <= straight distance * DetourPath (the old clear's Angle/Detour gate)	//260928
 		  dodge (in range, Dodge on, skill range >= Dodge.Range, 1+ monster within Dodge.Range): back straight away first
 		           (outer ring first), taking the first spot with at least 1 monster fewer than where I stand;
 		           if the backing-away half has none, go through to the far side	//260927
@@ -1086,7 +1087,7 @@ var Attack = {
 			}
 
 			// Order decides which spot, threat only decides whether a spot is allowed	//260927
-			// approach: shortest walk first (straight ahead, outer ring), threat breaks ties
+			// approach: outer ring first, then straight ahead; threat breaks ties	//260928
 			// dodge: back straight away first (outer ring = away from the target, then small offset); a spot must beat the current one by 1+
 			// 260928: approach is outer ring first, then offset (the agreed order, same as dodge; the old code also looked on the skill-range ring first)
 			list.sort(moveNeeded ? function (a, b) {
@@ -1201,7 +1202,7 @@ var Attack = {
 			return true;	// no better spot: attack from here
 		}
 
-		// no longer needed: setPosition has no detour ratio, a must target walks around like everyone else	//260928
+		// no longer needed: a must target takes any detour directly (pathOk above)	//260928
 		//if (!pathOk && longCand && this.tick.must) {
 			//Misc.trace("[SP] must detour " + unit.name + " path:" + longLen * Pather.walkDistance);	//260926 temp
 			//pathCand = longCand;
