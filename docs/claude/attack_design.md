@@ -103,6 +103,9 @@ Attack.clear(range, must)
     단, 그 대상이 MUST가 아니고 나와 10 초과이면
       → 나와 25(leashRange) 이상 떨어진 MUST(deferred 제외)가 있으면 그 MUST (목줄)
     카오스(108): 보스 아닌(spectype & 0x1 없음) StormCaster(306)가 나와 0x4로 막혀 있으면 SWEEP 버림 (NoSkipArea 제외, 기존 규칙 복원)
+    게이트 (SWEEP만, NoSkipArea 밖, 나↔대상이 0x5로 막혔을 때. 이전 clear의 0x4 게이트를 조건만 넓혀 복원, 260928)
+      Angle: 대상 둘레 스킬 사거리 23방향 중 대상·나 양쪽에서 0x4로 보이는 자리가 없으면 버림
+      Detour: 나→대상 걷는 경로(getPath 노드 × 5) > 나→대상 직선 × DetourPath(4)면 버림
 
  5. 공격
     tick 초기화, tick.must = 대상이 MUST인지 → ClassAttack.doAttack(대상, 이번 호출 실제 시전 수 % 10 === 0)
@@ -167,10 +170,9 @@ setPosition(unit, distance, coll, minDist = 3)
 
 구역 진행 (접근·회피 공통)
   정면 채택 → 이동
-  정면 채택 없음 + 우회 후보 → getPath 1회, 경로/직선 ≤ DetourPath(4) 이면 moveTo
+  정면 채택 없음 + 우회 후보 → moveTo (길이 판정 없음. 이전 slotMove와 같음. SWEEP의 우회 한도는 clear 게이트가 판정)
   그래도 없음 → 후면 구역 같은 방식
-  MUST(tick.must)면 마지막으로: 4배를 넘은 정면·후면 우회 중 경로가 짧은 쪽으로 moveTo (경로가 있을 때만)
-  접근 결과 순서: 정면 직선 → 정면 우회 → 후면 직선 → 후면 우회 → (MUST만) 한도 초과 우회 중 짧은 쪽
+  접근 결과 순서: 정면 직선 → 정면 우회(moveTo). 정면에 후보가 없을 때만 후면 직선 → 후면 우회
   회피 결과 순서: 물러나기(정면) → 타깃 너머로 뚫고 지나가기(후면). 회피는 우회 없음
 
 이동
@@ -179,7 +181,7 @@ setPosition(unit, distance, coll, minDist = 3)
 
 반환
   이동 성공 / 이동 불필요 / 회피 후보 없음 / 회피 이동 실패 → true (제자리 시전)
-  접근 후보 없음 or 우회 초과(MUST는 경로 자체가 없을 때) → false, tick.fail = "unreachable"
+  접근 후보 없음 → false, tick.fail = "unreachable"
   접근 이동 실패 (throw 포함) → false, tick.fail = "moveFailed"
 ```
 
@@ -203,7 +205,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | `cast` | `Skill.cast` (`Misc.js`, `setSkill` 성공 직후) | 이번 틱에 실제 시전 단계에 도달 |
 | `moved` | `setPosition` | 이번 틱에 이동 |
 | `fail` | `setPosition` | `"unreachable"` / `"moveFailed"` |
-| `must` | `clear` | 이번 대상이 MUST (setPosition의 한도 초과 우회 허용) |
+| `must` | `clear` | 이번 대상이 MUST (현재 참조처 없음, 260928 게이트 복원 후) |
 | `monList` | `clear` 스캔 | 위협 목록 (루프 밖이면 null → setPosition이 직접 스캔) |
 
 - `clear`가 `doAttack` 직전에 `cast`, `moved`, `fail`을 초기화한다. 프리캐스트 등 다른 시전은 영향 없다
@@ -220,7 +222,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | `Config.Dodge.HP` | 100 | Config.js | HP% 이하일 때 회피 (100 = 항상) |
 | `Config.Dodge.Step` | 5 | Config.js | 링 간격, 호 간격 |
 | `Config.Dodge.Count` | 1 | Config.js | 미사용 (구 `dodge` 전용). `SafeTele.Count`와는 별개 |
-| `Config.DetourPath` | 4 | Config.js | 우회 한도 (경로/직선). MUST는 한도 초과도 마지막 수단으로 허용 |
+| `Config.DetourPath` | 4 | Config.js | clear 게이트의 우회 한도: 나→몹 걷는 경로 ≤ 나→몹 직선 × 4 (SWEEP만) |
 | `Config.NoSkipArea` | `[17]` | Config.js | 도달 불가 즉시 버림과 HP skip을 하지 않는 지역 |
 | `Attack.dangerRange` | 10 | Attack.js | 위험 반경 |
 | `Attack.leashRange` | 25 | Attack.js | 목줄 |
@@ -261,7 +263,7 @@ setPosition(unit, distance, coll, minDist = 3)
 |---|---|
 | `libs/Misc.js` | `Skill.cast`에 시전 기록 |
 | `libs/Pather.js` | `NodeAction.killMonsters`: spectype 인자 제거. 카오스(108)는 `clear(20)`, 그 외는 `clear(25)`가 false면 `"killMonsters"` 반환(이동 중단). false는 사망·카우킹·스킬 미보유 정지일 때만 (사용자 정리, 260927) |
-| `libs/Attacks/Paladin.js` | `getHammerPosition` 맨 앞에 이전 clear의 Angle/Detour 게이트를 그대로 이식 (해머는 setPosition을 안 거침). 막히면 `tick.fail = "unreachable"` → SWEEP 즉시 버림. MUST(`tick.must`)와 NoSkipArea는 게이트 없음 (이전 clearList와 같음) |
+| `libs/Attacks/Paladin.js` | 260928 이식했던 게이트는 clear 게이트 복원으로 중복이 되어 주석 처리
 | `libs/Attacks/Barbarian.js` | preattack이 대입 전 `attackSkill`을 참조 → `Config.AttackSkill[0]`. `findItem`의 `clear(10, false×4)` → `clear(10)` |
 | `libs/Attack.js` | `getSkillElement`: Telekinesis(43) → `"none"` (면역과 무관하게 사용) |
 | `libs/Config.js` | `Dodge.Range` 13 → 9 |
@@ -294,14 +296,14 @@ setPosition(unit, distance, coll, minDist = 3)
 | 포기 판단 주체 | 루프 | 목록을 줄여 비용 절감이 주 축, 8봇이라 비용 8배 |
 | 판단 단계 | 1단 확정 제외 / 2단 추정(도달 불가) / 3단 사후(HP, 재시도) | 확실하고 쌀 때만 미리 버린다 |
 | MUST | 버림·HP skip·시간 한도·999 상한 모두 없음. 쓸 스킬이 없을 때만 뒤로 보냄(deferred) | 못 죽이면 진행이 막히는 대상. 다른 캐릭도 공격 중. 박스 안 면역 몹 때문에 나머지를 못 치는 일을 막음 |
-| MUST 우회 | 4배 한도 초과 우회도 마지막 수단으로 허용 | 기존 clearList는 경로 길이와 무관하게 접근. 한도 때문에 영구 도달 불가가 되던 회귀 수정 |
+| MUST 우회 | 길이와 무관하게 moveTo | 기존 clearList와 같음 (게이트 없음) |
 | 스킬 미보유 | 콘솔 메시지 + `D2Bot.stop()` | 대체 스킬로 쳐도 도움이 안 됨. throw는 Loader가 잡아 매 게임 반복되거나 중간 try에 삼켜짐 |
 | HP skip | 5시전 20% | 실제 시전만 세므로 5회로 오탐 없음. 10회는 너무 오래 끎 |
 | 대상 우선순위 | 목줄(멀어진 MUST) → 거리순 | 거리순이 대전제. 위협이 붙어 있으면 그쪽 먼저 |
 | 보스 호출 반경 | 0 | 보스 처치가 목적, 잡몹은 위험 반경(10)으로 충분 |
 | 목줄 | 25 이상이면 보스 우선 (거리만 좁힘), 한계 35 | getUnit 가시 거리 약 40 (사용자 경험값) |
 | 반환 계약 | 0/1/2 유지 + 사이드채널 | 직업 파일 8개 무수정 |
-| Angle/Detour 게이트 | 제거 | 사이드채널로 도달 불가를 알면 첫 실패에 버림. 실제 스킬 사거리로 판정 |
+| Angle/Detour 게이트 | **복원 (260928)**. 조건만 0x4 → 0x5 | 제거했더니 setPosition의 우회 판정이 착지 좌표 기준이라 벽 너머 몹까지 돌아가서 침(원안과 다름). 0x5로 넓혀 0x1 장거리 우회 결함도 함께 막음 |
 | setPosition 기준 | 접근·회피 한 함수, 순서는 이동, 위협은 통과 조건 | 위협 우선이면 걷는 캐릭이 몹을 관통 |
 | 회피 | 물러나기 우선, 1마리 이상 줄면 채택, 없으면 반대편으로 | 사용자 의도 (원안 dodge의 역방향 탈출) |
 | 접근 | 정면 직선 → 정면 우회 → 후면 직선 → 후면 우회 | 작은 장애물이면 정면 우회가 후면보다 짧다 |

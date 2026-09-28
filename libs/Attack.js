@@ -320,6 +320,40 @@ var Attack = {
 					continue;
 				}
 
+				// Angle/Detour gate of the old clear, restored (sweep only; must targets had no gate in the old clearList)	//260928
+				// condition 0x4 -> 0x5: a target blocked only by 0x1 is also checked, so a long walk around it is skipped
+				if (!target.must && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, target.unit, 0x5)) {
+					var cx, cy,	//260726
+						skillRange = Skill.getRange(Config.AttackSkill[(target.unit.spectype & 0x7) ? 1 : 3]),	//260829
+						blocked = true,
+						angle = Math.round(Math.atan2(me.y - target.unit.y, me.x - target.unit.x) * 180 / Math.PI),
+						angles = [15, -15, 30, -30, 45, -45, 60, -60, 75, -75, 90, -90, 105, -105, 120, -120, 135, -135, 150, -150, 165, -165, 180];	//260618
+
+					for (i = 0; i < angles.length; i += 1) {
+						cx = Math.round(Math.cos((angle + angles[i]) * Math.PI / 180) * skillRange + target.unit.x);
+						cy = Math.round(Math.sin((angle + angles[i]) * Math.PI / 180) * skillRange + target.unit.y);
+
+						if (!CollMap.checkColl(target.unit, {x: cx, y: cy}, 0x4) && !CollMap.checkColl(me, {x: cx, y: cy}, 0x4)) {
+							blocked = false;
+							break;
+						}
+					}
+
+					if (blocked) {
+						drop(target, "angle");
+
+						continue;
+					}
+
+					var collPath = getPath(me.area, target.unit.x, target.unit.y, me.x, me.y, 0, Pather.walkDistance);
+
+					if (!collPath || collPath.length * Pather.walkDistance > getDistance(me, target.unit) * Config.DetourPath) {
+						drop(target, "detour");
+
+						continue;
+					}
+				}
+
 				// 5. attack
 				this.tick.cast = false;
 				this.tick.moved = false;
@@ -938,9 +972,9 @@ var Attack = {
 	/*
 		Attack.setPosition(unit, distance, coll, minDist)	//260926
 		Candidates are ring spots that keep unit in range and in sight (rings every Dodge.Step, arc spacing Dodge.Step).
-		  approach (out of range or no LOS): front straight > front detour > back straight > back detour.
+		  approach (out of range or no LOS): front straight > front detour (moveTo) > back straight > back detour.
 		           Shortest walk first; fire tiles excluded; threat only breaks ties
-		           a must target (Attack.tick.must) takes the shorter over-limit detour as a last resort	//260928
+		           a detour is not length-checked here: the clear gate (Angle/Detour, sweep only) already did it	//260928
 		  dodge (in range, Dodge on, skill range >= Dodge.Range, 1+ monster within Dodge.Range): back straight away first
 		           (outer ring first), taking the first spot with at least 1 monster fewer than where I stand;
 		           if the backing-away half has none, go through to the far side	//260927
@@ -953,9 +987,9 @@ var Attack = {
 
 		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 3;
 
-		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, path, moved, tier,
-			longCand = null,	//260928 shortest over-limit detour, kept for must targets
-			longLen = 0,
+		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier,
+			//longCand = null,	//260928 shortest over-limit detour, kept for must targets
+			//longLen = 0,
 			pathOk = false,
 			list = [],
 			baseline = 0,
@@ -1090,19 +1124,24 @@ var Attack = {
 				break;
 			}
 
+			// walking around is judged once, by the clear gate (path to the target vs DetourPath), as in the old code. Here it is the old slotMove: just moveTo	//260928
 			if (!choice && pathCand) {
-				path = getPath(me.area, pathCand.x, pathCand.y, me.x, me.y, 0, Pather.walkDistance);
-				pathOk = !!(path && path.length && path.length * Pather.walkDistance <= getDistance(me.x, me.y, pathCand.x, pathCand.y) * Config.DetourPath);
-
-				if (!pathOk) {
-					Misc.trace("[SP] detour " + unit.name + " tier:" + tier + " path:" + (path ? path.length * Pather.walkDistance : "none") + " dist:" + Math.round(getDistance(me.x, me.y, pathCand.x, pathCand.y)));	//260926 temp
-
-					if (path && path.length && (!longCand || path.length < longLen)) {	//260928
-						longCand = pathCand;
-						longLen = path.length;
-					}
-				}
+				pathOk = true;
 			}
+
+			//if (!choice && pathCand) {
+				//path = getPath(me.area, pathCand.x, pathCand.y, me.x, me.y, 0, Pather.walkDistance);
+				//pathOk = !!(path && path.length && path.length * Pather.walkDistance <= getDistance(me.x, me.y, pathCand.x, pathCand.y) * Config.DetourPath);	// ratio against the landing spot, not the target: wrong basis
+
+				//if (!pathOk) {
+					//Misc.trace("[SP] detour " + unit.name + " tier:" + tier + " path:" + (path ? path.length * Pather.walkDistance : "none") + " dist:" + Math.round(getDistance(me.x, me.y, pathCand.x, pathCand.y)));	//260926 temp
+
+					//if (path && path.length && (!longCand || path.length < longLen)) {	//260928
+						//longCand = pathCand;
+						//longLen = path.length;
+					//}
+				//}
+			//}
 		}
 
 		if (choice) {
@@ -1137,12 +1176,12 @@ var Attack = {
 			return true;	// no better spot: attack from here
 		}
 
-		// a must target is never unreachable while a walkable path exists: take the shorter of the front/back detours, however long	//260928
-		if (!pathOk && longCand && this.tick.must) {
-			Misc.trace("[SP] must detour " + unit.name + " path:" + longLen * Pather.walkDistance);	//260926 temp
-			pathCand = longCand;
-			pathOk = true;
-		}
+		// no longer needed: setPosition has no detour ratio, a must target walks around like everyone else	//260928
+		//if (!pathOk && longCand && this.tick.must) {
+			//Misc.trace("[SP] must detour " + unit.name + " path:" + longLen * Pather.walkDistance);	//260926 temp
+			//pathCand = longCand;
+			//pathOk = true;
+		//}
 
 		if (pathOk) {
 			try {
