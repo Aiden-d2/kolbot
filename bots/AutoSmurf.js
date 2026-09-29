@@ -1989,7 +1989,7 @@ function AutoSmurf() {
 			Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true, true);
 			
 			try {
-				Attack.clear(15, getLocaleString(3111)); // Blood Raven //260929
+				Attack.clear(0, getLocaleString(3111)); // Blood Raven //260929
 			} catch (e) {
 				print(e);
 			}
