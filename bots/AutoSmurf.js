@@ -5353,7 +5353,7 @@ function AutoSmurf() {
 				delay(250);
 			}
 			
-			Attack.clear(0, [540, 541, 542]);	//260928 all three as must targets, nearest first. If ancients get missed again: restore the "all" line and the single calls below
+			Attack.clear(0, [540, 541, 542]);	//260928 all three as must targets, nearest first
 			
 			delay(me.ping * 2 + 1000);
 			me.cancel();
