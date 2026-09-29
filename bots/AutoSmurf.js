@@ -473,6 +473,29 @@ function AutoSmurf() {
 		teamOk = false;
 	};
 
+	// Log only (no behavior change): waits exactly like delay(wait) and records whether an object dialog showed and when it ended.	//260929 temp
+	// For the Game.exe 0x661406 crash (stale NPC talk callback run when a dialog ends), see docs/claude/handoff.md 7.
+	this.watchDialog = function (wait) {	//260929 temp
+		var talking,
+			tick = getTickCount(),
+			shown = -1,
+			gone = -1;
+		
+		while (getTickCount() - tick < wait) {
+			talking = getIsTalkingNPC();
+			
+			if (talking && shown < 0) {
+				shown = getTickCount() - tick;
+			} else if (!talking && shown >= 0 && gone < 0) {
+				gone = getTickCount() - tick;
+			}
+			
+			delay(10);
+		}
+		
+		Misc.trace("[OD] " + (shown < 0 ? "no dialog" : "dialog at " + shown + "ms " + (gone < 0 ? "still up" : "gone at " + gone + "ms")) + " wait:" + wait);
+	};
+
 	this.buffCount = function(act) { // Goes to Town, buys three Antidote potions from Akara, drinks them, and returns to Catacombs Level 4.
 		var i, akara, lysander, potions, dote, thaw;
 
@@ -3221,9 +3244,7 @@ function AutoSmurf() {
 			if (journal) {
 				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-				delay(me.ping * 2 + 1000);
-
-				Misc.click(0, 0);
+				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			}
 		}
 
@@ -3973,7 +3994,7 @@ function AutoSmurf() {
 			target = getUnit(2, 193);
 
 			Misc.openChest(target);
-			delay(300);
+			this.watchDialog(300);	//260929 temp was delay
 
 			target = getUnit(4, 548);
 			Pickit.pickItem(target);
@@ -5164,7 +5185,7 @@ function AutoSmurf() {
 							Pather.moveToUnit(anya);
 						}
 						anya.interact();
-						delay(me.ping * 2 + 200);
+						this.watchDialog(me.ping * 2 + 200);	//260929 temp was delay
 						me.cancel();
 					}
 
@@ -5208,7 +5229,7 @@ function AutoSmurf() {
 					}
 					
 					anya.interact();
-					delay(me.ping * 2 + 1000);
+					this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
 					me.cancel();
 				}
 			} else {
@@ -5348,7 +5369,7 @@ function AutoSmurf() {
 				while (altar.mode !== 2) {
 					Pather.moveToUnit(altar);
 					altar.interact();
-					delay(me.ping * 2 + 2000);
+					this.watchDialog(me.ping * 2 + 2000);	//260929 temp was delay
 					me.cancel();
 				}
 			}
@@ -5359,13 +5380,13 @@ function AutoSmurf() {
 			
 			Attack.clear(0, [540, 541, 542]);	//260928 all three as must targets, nearest first
 			
-			delay(me.ping * 2 + 1000);
+			this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
 			me.cancel();
 			sendPacket(1, 0x40); //fresh Quest state.
 			
 			if (!me.getQuest(39,0)) {	//260719
 				
-				delay(me.ping * 2 + 1000);
+				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
 				me.cancel();
 				sendPacket(1, 0x40); //fresh Quest state.
 			}
@@ -5384,8 +5405,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			Misc.click(0, 0);
-			me.cancel();	//260916
+			me.cancel();	//260916	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			Pather.makePortal();
 			Pather.moveToExit([128, 129], true);
 			this.clickWP();
@@ -6607,9 +6627,7 @@ function AutoSmurf() {
 			if (journal) {
 				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-				delay(me.ping * 2 + 1000);
-
-				Misc.click(0, 0);
+				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			}
 		}
 		

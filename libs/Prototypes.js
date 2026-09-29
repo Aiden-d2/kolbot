@@ -1249,3 +1249,32 @@ Unit.prototype.castChargedSkill = function (...args) {
 
 	return false;
 };
+
+// me.cancel() while an NPC or object dialog is showing: record who cut it.	//260929 temp
+// An NPC talk cut this way leaves the game's talk callback registered (Game.exe 0x661406 crash, docs/claude/handoff.md 7).
+try {	//260929 temp: never let the trace hook break script loading
+	if (typeof me.cancelTalkTrace === "undefined") {
+		me.cancelTalkTrace = me.cancel;
+	}
+
+	if (typeof me.cancelTalkTrace === "function" && me.cancel === me.cancelTalkTrace) {	// replace only when the original is kept
+		me.cancel = function () {
+			var npc, stack;
+
+			try {
+				if (me.gameReady && getIsTalkingNPC()) {
+					npc = getInteractedNPC();
+					stack = new Error().stack.split("\n").slice(1, 4).map(function (line) {
+						return line.substring(line.lastIndexOf("\\") + 1);
+					}).join(" < ");
+
+					Misc.trace("[TK] cancel during talk npc:" + (npc ? npc.name : "none") + " at " + stack);
+				}
+			} catch (e) {
+			}
+
+			return me.cancelTalkTrace.apply(me, arguments);
+		};
+	}
+} catch (e) {
+}
