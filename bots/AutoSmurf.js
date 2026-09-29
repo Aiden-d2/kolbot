@@ -473,6 +473,23 @@ function AutoSmurf() {
 		teamOk = false;
 	};
 
+	// Object dialogs (journal, frozen Anya, ancients' altar): wait as before, but cancel the dialog as soon as it shows.	//260929
+	// An NPC talk cut short by me.cancel() leaves the game's talk callback registered; when an object dialog then ends by itself,
+	// the game runs that callback without an NPC menu list and crashes (Game.exe 0x661406). Cancelling before it ends avoids that.
+	this.cancelObjectDialog = function (wait) {	//260929
+		var tick = getTickCount();
+		
+		while (getTickCount() - tick < wait) {
+			if (getIsTalkingNPC()) {
+				me.cancel();
+			}
+			
+			delay(10);
+		}
+		
+		me.cancel();
+	};
+
 	this.buffCount = function(act) { // Goes to Town, buys three Antidote potions from Akara, drinks them, and returns to Catacombs Level 4.
 		var i, akara, lysander, potions, dote, thaw;
 
@@ -3222,9 +3239,7 @@ function AutoSmurf() {
 				if (journal) {
 					sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-					delay(me.ping * 2 + 1000);
-
-					Misc.click(0, 0);
+					this.cancelObjectDialog(me.ping * 2 + 1000);	//260929 was delay + Misc.click(0, 0)
 				}
 			}
 		} else {
@@ -5172,8 +5187,7 @@ function AutoSmurf() {
 							Pather.moveToUnit(anya);
 						}
 						anya.interact();
-						delay(me.ping * 2 + 200);
-						me.cancel();
+						this.cancelObjectDialog(me.ping * 2 + 200);	//260929
 					}
 
 					if (!Pather.usePortal(109, null)) {
@@ -5216,8 +5230,7 @@ function AutoSmurf() {
 					}
 					
 					anya.interact();
-					delay(me.ping * 2 + 1000);
-					me.cancel();
+					this.cancelObjectDialog(me.ping * 2 + 1000);	//260929
 				}
 			} else {
 				delay(5000);
@@ -5356,8 +5369,7 @@ function AutoSmurf() {
 				while (altar.mode !== 2) {
 					Pather.moveToUnit(altar);
 					altar.interact();
-					delay(me.ping * 2 + 2000);
-					me.cancel();
+					this.cancelObjectDialog(me.ping * 2 + 2000);	//260929
 				}
 			}
 
@@ -6616,9 +6628,7 @@ function AutoSmurf() {
 				if (journal) {
 					sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-					delay(me.ping * 2 + 1000);
-
-					Misc.click(0, 0);
+					this.cancelObjectDialog(me.ping * 2 + 1000);	//260929 was delay + Misc.click(0, 0)
 				}
 			}
 		}
