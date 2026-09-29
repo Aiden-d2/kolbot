@@ -2048,14 +2048,14 @@ function AutoSmurf() {
 			burial = getPresetUnit(17, 1, 805);
 			
 			//Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true, true);
-			Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true);
+			Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true, true);
 			
-			Attack.clear(15);
+			//Attack.clear(15);
 			
 			try {
 				//Attack.clear(15, 0, getLocaleString(3111)); // Blood Raven
 				//Attack.clearList(Attack.scanList(getLocaleString(3111)), null, 1); // Blood Raven
-				Attack.clear(0, getLocaleString(3111)); // Blood Raven //260926
+				Attack.clear(15, getLocaleString(3111)); // Blood Raven //260929
 			} catch (e) {
 				print(e);
 				//throw new Error("Failed to kill Raven")
@@ -2957,6 +2957,7 @@ function AutoSmurf() {
 			
 				Pather.moveTo(22548, 9582, 5, true);
 				Pather.moveTo(22548, 9568, 5, true);
+				Pather.moveTo(22548, 9554, 5, true);	//260929
 			} else {
 				if (Leader) {
 					this.travel(2);
@@ -2980,12 +2981,12 @@ function AutoSmurf() {
 				Pather.teleport = false;
 			}
 			
-			Attack.clear(20);	//260921
+			//Attack.clear(20);	//260921
 			
 			try {
 				//Attack.clear(25, 0, 156);	// Andariel
 				//Attack.clearList(Attack.scanList(156), null, 1);	// Andariel
-				Attack.clear(0, 156);	// Andariel //260926
+				Attack.clear(25, 156);	// Andariel //260929
 			} catch (e) {
 				print(e);
 				//Attack.clear(25);
@@ -3085,7 +3086,7 @@ function AutoSmurf() {
 
 		while (getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 10) {
 			try {
-				Pather.moveToPreset(60, 2, 354, 0, 0, 0, false);
+				Pather.moveToPreset(60, 2, 354, 0, 0, true);	//260929
 			} catch (e) {
 				print("Caught Error");
 
@@ -3293,7 +3294,7 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 		
-		Attack.clear(10);	//260921
+		//Attack.clear(10);	//260921
 		
 		try {
 			//Attack.clear(10, 0, 250);	//Summoner
@@ -3716,19 +3717,19 @@ function AutoSmurf() {
 
 			delay(me.ping * 2 + 200);
 			
-			Attack.clear(15);
+			//Attack.clear(15);
 			
 			try {
 				//Attack.clear(20, 0, 229); // Radament
 				//Attack.clearList(Attack.scanList(229), null, 1); // Radament
-				Attack.clear(0, 229); // Radament //260926
+				Attack.clear(15, 229); // Radament //260926
 			} catch (e) {
 				print(e);
 				//throw new Error("Failed to kill Radament")
 			}
 			
 			for (i = 0 ; i < 30 ; i += 1) {	//260921
-				if (i > 15 && Leader) {
+				if (i > 15) {	//260929
 					scriptBroadcast("quit");	//260909
 				}
 				
@@ -4553,12 +4554,12 @@ function AutoSmurf() {
 			
 			delay(me.ping * 2 + 200);
 			
-			Attack.clear(20);
+			//Attack.clear(20);
 			
 			try {
 				//Attack.clear(30, 0, 256);	// Izual
 				//Attack.clearList(Attack.scanList(256), null, 1);	// Izual
-				Attack.clear(0, 256);	// Izual //260926
+				Attack.clear(20, 256);	// Izual //260929
 			} catch (e) {
 				print(e);
 			}
@@ -4665,7 +4666,7 @@ function AutoSmurf() {
 			var i, boss,
 				glow = getUnit(2, 131);
 
-			for (i = 0; i < 50; i += 1) {
+			for (i = 0; i < 25; i += 1) {	//260929
 				boss = getUnit(1, name);
 				
 				if (boss) {
@@ -5122,12 +5123,12 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		Attack.clear(25);	//260921
+		//Attack.clear(25);	//260921
 		
 		try {
 			//Attack.clear(30, 0, getLocaleString(22435));	// Shenk the Overseer
 			//Attack.clearList(Attack.scanList(getLocaleString(22435)), null, 1);	// Shenk the Overseer
-			Attack.clear(0, getLocaleString(22435));	// Shenk the Overseer //260926
+			Attack.clear(25, getLocaleString(22435));	// Shenk the Overseer //260929
 		} catch (e) {
 			print(e);
 			//throw new Error("Failed to kill Shenk")
@@ -6044,7 +6045,7 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 
-		Attack.clear(20);	//260921
+		Attack.clear(15, getLocaleString(2875));	//260929
 		//Attack.clear(20, 0, getLocaleString(2875)); // Countess
 		
 		Pather.moveToPreset(me.area, 2, 580, myX, myY, true, true);	//260822
@@ -6169,12 +6170,12 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		Attack.clear(20);	//260921
+		//Attack.clear(20);	//260921
 	
 		try {
 			//Attack.clear(25, 0, 156); // Andariel
 			//Attack.clearList(Attack.scanList(156), null, 1);	// Andariel
-			Attack.clear(0, 156);	// Andariel //260926
+			Attack.clear(25, 156);	// Andariel //260929
 		} catch (e) {
 			print(e);
 			//Attack.clear(25);
@@ -6904,7 +6905,7 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		Attack.clear(10);	//260921
+		//Attack.clear(10);	//260921
 		
 		try {
 			//Attack.clear(10, 0, 250);	//Summoner
@@ -7343,12 +7344,12 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		Attack.clear(20);
+		//Attack.clear(20);
 		
 		try {
 			//Attack.clear(20, 0, 526); // Nihlathak
 			//Attack.clearList(Attack.scanList(526), null, 1); // Nihlathak
-			Attack.clear(0, 526); // Nihlathak //260926
+			Attack.clear(20, 526); // Nihlathak //260929
 		} catch (e) {
 			print(e);
 			//Attack.clear(20);
