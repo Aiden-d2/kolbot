@@ -2887,7 +2887,11 @@ function AutoSmurf() {
 			}
 			
 			delay(me.ping * 2 + 2000); // Wait for minions to die.
-			
+
+			Pather.moveTo(22549 + myX, 9520 + myY);	//260929 regroup before the portal, same as farmingAndy
+
+			this.okCount();	//260929
+
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
 					Pather.makePortal();
