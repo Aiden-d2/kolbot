@@ -893,7 +893,7 @@ MainLoop:
 				return false;
 			}
 			
-			delay(3000);	//260929
+			delay(1000);	//260929
 		}
 		
 		me.blockMouse = false;
