@@ -2878,8 +2878,7 @@ function AutoSmurf() {
 				Precast.doPrecast(true);
 			
 				Pather.moveTo(22548, 9582, 5, true);
-				Pather.moveTo(22548, 9568, 5, true);
-				Pather.moveTo(22548, 9554, 5, true);	//260929
+				//Pather.moveTo(22548, 9568, 5, true);	//260929
 			} else {
 				if (Leader) {
 					this.travel(2);
@@ -3177,7 +3176,7 @@ function AutoSmurf() {
 
 			while (getDistance(me.x, me.y, journal.roomx * 5 + journal.x + 8, journal.roomy * 5 + journal.y + 8) > 10) {	//260411
 				try {
-					Pather.moveToPreset(74, 2, 357, 8, 8);	//260411	//260929
+					Pather.moveToPreset(74, 2, 357, 4, 4);	//260929
 				} catch (e) {
 					print("Caught Error");
 
@@ -3210,7 +3209,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		try {
-			Attack.clear(0, 250);	//Summoner //260926
+			Attack.clear(10, 250);	//Summoner //260929
 		} catch (e) {
 			print(e);
 		}
