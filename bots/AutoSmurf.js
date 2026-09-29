@@ -3317,7 +3317,8 @@ function AutoSmurf() {
 		journal = getPresetUnit(74, 2, 357);
 		
 		//Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}), null, 1);
-		Attack.clear(0, {box: {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}});	//260926
+		//Attack.clear(0, {box: {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}});	//260926
+		Attack.clear(0, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13});	//260926	//260929
 		
 		Pather.moveToPreset(74, 2, 357, 3, 3);
 
@@ -3529,16 +3530,20 @@ function AutoSmurf() {
 
 			if (chest.x < 5 && chest.y < 30) {
 				//Attack.clearList(Attack.scanList(null, {x1: chest.roomx * 5 - 25, x2: chest.roomx * 5 + 25, y1: chest.roomy * 5 + 20, y2: chest.roomy * 5 + 60}), null, 1);
-				Attack.clear(0, {box: {x1: chest.roomx * 5 - 25, x2: chest.roomx * 5 + 25, y1: chest.roomy * 5 + 20, y2: chest.roomy * 5 + 60}});	//260926
+				//Attack.clear(0, {box: {x1: chest.roomx * 5 - 25, x2: chest.roomx * 5 + 25, y1: chest.roomy * 5 + 20, y2: chest.roomy * 5 + 60}});	//260926
+				Attack.clear(0, {x1: chest.roomx * 5 - 25, x2: chest.roomx * 5 + 25, y1: chest.roomy * 5 + 20, y2: chest.roomy * 5 + 60});	//260926	//260929
 			} else if (chest.x < 30 && chest.y < 5) {
 				//Attack.clearList(Attack.scanList(null, {x1: chest.roomx * 5 + 20, x2: chest.roomx * 5 + 60, y1: chest.roomy * 5 - 25, y2: chest.roomy * 5 + 25}), null, 1);
-				Attack.clear(0, {box: {x1: chest.roomx * 5 + 20, x2: chest.roomx * 5 + 60, y1: chest.roomy * 5 - 25, y2: chest.roomy * 5 + 25}});	//260926
+				//Attack.clear(0, {box: {x1: chest.roomx * 5 + 20, x2: chest.roomx * 5 + 60, y1: chest.roomy * 5 - 25, y2: chest.roomy * 5 + 25}});	//260926
+				Attack.clear(0, {x1: chest.roomx * 5 + 20, x2: chest.roomx * 5 + 60, y1: chest.roomy * 5 - 25, y2: chest.roomy * 5 + 25});	//260926	//260929
 			} else if (chest.x > 5 && chest.y > 30) {
 				//Attack.clearList(Attack.scanList(null, {x1: chest.roomx * 5 - 20, x2: chest.roomx * 5 + 20, y1: chest.roomy * 5 + 15, y2: chest.roomy * 5 + 65}), null, 1);
-				Attack.clear(0, {box: {x1: chest.roomx * 5 - 20, x2: chest.roomx * 5 + 20, y1: chest.roomy * 5 + 15, y2: chest.roomy * 5 + 65}});	//260926
+				//Attack.clear(0, {box: {x1: chest.roomx * 5 - 20, x2: chest.roomx * 5 + 20, y1: chest.roomy * 5 + 15, y2: chest.roomy * 5 + 65}});	//260926
+				Attack.clear(0, {x1: chest.roomx * 5 - 20, x2: chest.roomx * 5 + 20, y1: chest.roomy * 5 + 15, y2: chest.roomy * 5 + 65});	//260926	//260929
 			} else if (chest.x > 30 && chest.y > 5) {
 				//Attack.clearList(Attack.scanList(null, {x1: chest.roomx * 5 + 15, x2: chest.roomx * 5 + 65, y1: chest.roomy * 5 - 20, y2: chest.roomy * 5 + 20}), null, 1);
-				Attack.clear(0, {box: {x1: chest.roomx * 5 + 15, x2: chest.roomx * 5 + 65, y1: chest.roomy * 5 - 20, y2: chest.roomy * 5 + 20}});	//260926
+				//Attack.clear(0, {box: {x1: chest.roomx * 5 + 15, x2: chest.roomx * 5 + 65, y1: chest.roomy * 5 - 20, y2: chest.roomy * 5 + 20}});	//260926
+				Attack.clear(0, {x1: chest.roomx * 5 + 15, x2: chest.roomx * 5 + 65, y1: chest.roomy * 5 - 20, y2: chest.roomy * 5 + 20});	//260926	//260929
 			} else {
 				print("Tombs: incorrect chest cord");
 				continue;
@@ -3731,7 +3736,7 @@ function AutoSmurf() {
 			try {
 				//Attack.clear(20, 0, 229); // Radament
 				//Attack.clearList(Attack.scanList(229), null, 1); // Radament
-				Attack.clear(15, 229); // Radament //260926
+				Attack.clear(15, 229); // Radament //260929
 			} catch (e) {
 				print(e);
 				//throw new Error("Failed to kill Radament")
@@ -3863,7 +3868,8 @@ function AutoSmurf() {
 			orifice = getPresetUnit(getRoom().correcttomb, 2, 152);
 			
 			//Attack.clearList(Attack.scanList(null, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}), null, 1);	//260727
-			Attack.clear(0, {box: {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}});	//260727 //260926
+			//Attack.clear(0, {box: {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}});	//260727 //260926
+			Attack.clear(0, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25});	//260727 //260926	//260929
 		
 			Pather.moveToUnit(orifice);
 
@@ -3883,7 +3889,8 @@ function AutoSmurf() {
 				hole = getUnit(2, 100);
 				
 				//Attack.clearList(Attack.scanList(null, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}), null, 1);
-				Attack.clear(0, {box: {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}});	//260926
+				//Attack.clear(0, {box: {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}});	//260926
+				Attack.clear(0, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25});	//260926	//260929
 				
 				if (getDistance(me, orifice) > 8) {
 					Pather.moveToUnit(orifice);
@@ -4364,7 +4371,8 @@ function AutoSmurf() {
 				sendPacket(1, 0x40); // This is required to refresh the status of me.getQuest(18, 0). Without it, me.getQuest(18, 0) will not == 1 until the Quest Tab is opened on the character.
 
 				//Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86}), null, 1);
-				Attack.clear(0, {box: {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86}});	//260926
+				//Attack.clear(0, {box: {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86}});	//260926
+				Attack.clear(0, {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86});	//260926	//260929
 
 				Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109, presetUnit.roomy * 5 + presetUnit.y - 95);
 				
@@ -5843,7 +5851,8 @@ function AutoSmurf() {
 		
 		//Attack.clear(25);	//260903
 		//Attack.clearList(Attack.scanList(null, {x1:15072, x2:15118, y1:5002, y2:5074}), null, 1);	//260916
-		Attack.clear(0, {box: {x1:15072, x2:15118, y1:5002, y2:5074}});	//260916 //260926
+		//Attack.clear(0, {box: {x1:15072, x2:15118, y1:5002, y2:5074}});	//260916 //260926
+		Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260916 //260926	//260929
 		
 	BaalLoop:	//260629
 		while (true) {
@@ -5875,7 +5884,8 @@ function AutoSmurf() {
 
 			if (wave) {
 				//Attack.clearList(Attack.scanList(null, {x1:15072, x2:15118, y1:5002, y2:5074}), null, 1);
-				Attack.clear(0, {box: {x1:15072, x2:15118, y1:5002, y2:5074}});	//260926
+				//Attack.clear(0, {box: {x1:15072, x2:15118, y1:5002, y2:5074}});	//260926
+				Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260926	//260929
 				
 				this.checkHydra();
 				
@@ -5946,7 +5956,8 @@ function AutoSmurf() {
 
 		while (getUnit(1, 543)) {
 			//Attack.clearList(Attack.scanList(null, {x1:15072, x2:15118, y1:5002, y2:5074}), null, 1);
-			Attack.clear(0, {box: {x1:15072, x2:15118, y1:5002, y2:5074}});	//260926
+			//Attack.clear(0, {box: {x1:15072, x2:15118, y1:5002, y2:5074}});	//260926
+			Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260926	//260929
 			delay(me.ping * 2 + 200);
 			Pather.moveTo(15092, 5028);	//260926
 		}
@@ -6936,7 +6947,8 @@ function AutoSmurf() {
 		
 		//Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 10, x2: journal.roomx * 5 + journal.x + 18, y1: journal.roomy * 5 + journal.y - 10, y2: journal.roomy * 5 + journal.y + 17}), null, 1);
 		//Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}), null, 1);
-		Attack.clear(0, {box: {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}});	//260926
+		//Attack.clear(0, {box: {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}});	//260926
+		Attack.clear(0, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13});	//260926	//260929
 		
 		Pather.moveToPreset(74, 2, 357, 3, 3);
 

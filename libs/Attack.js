@@ -45,7 +45,8 @@ var Attack = {
 	/*
 		Attack.clear(range, must)	//260926
 		range - sweep radius around the call position. 0 = no area sweep
-		must  - optional. classid | name | [classid or name, ...] | {box: {x1, x2, y1, y2}}	//260927 "all" removed; a box forces range 0
+		//must  - optional. classid | name | [classid or name, ...] | {box: {x1, x2, y1, y2}}	//260927 "all" removed; a box forces range 0
+		must  - optional. classid | name | [classid or name, ...] | {x1, x2, y1, y2}	//260929 box passed as is (no "box" wrapper); a box forces range 0
 		        with a must id/name and range > 0, the sweep area follows the must target
 		        must targets are never skipped; the call ends when they are dead
 		        while a must target is alive, monsters within dangerRange of me are handled too
@@ -480,12 +481,17 @@ var Attack = {
 			//return {all: true};
 		//}
 
-		if (typeof must === "object" && must.box) {
-			return {box: must.box};
-		}
+		//if (typeof must === "object" && must.box) {	//260929
+			//return {box: must.box};
+		//}
 
 		if (must instanceof Array) {
 			return {ids: must};
+		}
+
+		// an array is also typeof "object", so the box check comes after it	//260929
+		if (typeof must === "object" && must.x1 !== undefined) {
+			return {box: must};
 		}
 
 		return {ids: [must]};

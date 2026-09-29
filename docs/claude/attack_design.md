@@ -43,7 +43,7 @@ Attack.clear(range, must)
 | classid | `156` | `unit.classid === 156` | 같은 classid 전부 |
 | 이름 | `getLocaleString(2852)` | `unit.name === 이름` | 같은 이름 전부 |
 | 배열 | `[345, 346, 347]` | 하나라도 맞으면 | classid·이름 혼용 가능 |
-| 박스 | `{box: {x1, x2, y1, y2}}` | 좌표가 박스 안 | **range는 강제 0** |
+| 박스 | `{x1, x2, y1, y2}` (260929 `box` 감싸기 제거) | 좌표가 박스 안 | **range는 강제 0** |
 
 - `"all"`은 제거했다. gid 지정(`> 999`) 규칙도 없다.
 
@@ -243,7 +243,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | `clear(0, 이름)` | 2 | Blood Raven, Shenk |
 | `clear(0, [345, 346, 347])` | 1 | 트라빈컬 평의회 (박스 5곳 대체) |
 | `clear(0, [540, 541, 542])` | 1 | 고대인. 개별 호출 3개는 주석 (다시 놓치면 `"all"` 자리와 개별 호출 복원) |
-| `clear(0, {box})` | 12 | 바알 웨이브(3), Tombs(4), Duriel(2), Summoner(2), Khalim's Will 대기 루프(1) |
+| `clear(0, {x1, x2, y1, y2})` | 12 | 바알 웨이브(3), Tombs(4), Duriel(2), Summoner(2), Khalim's Will 대기 루프(1) |
 | `clear(35, 이름)` | 1 | `getBoss` (카오스 봉인 3곳) |
 
 ### 9-1. getBoss (카오스 봉인)
