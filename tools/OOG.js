@@ -893,7 +893,7 @@ MainLoop:
 				return false;
 			}
 			
-			delay(2000);	//260921
+			delay(3000);	//260929
 		}
 		
 		me.blockMouse = false;
@@ -1201,7 +1201,7 @@ MainLoop:
 				break;
 			}
 
-			delay(2000);	//260921
+			delay(1000);	//260929
 		}
 
 		me.blockMouse = false;
