@@ -7,20 +7,15 @@
 var ClassAttack = {
 	doAttack: function (unit, preattack) {
 		
-		//print("[DBG] - doAttack");
-		
 		if (Config.MercWatch && Town.needMerc()) {
 			print("mercwatch");
 			Town.visitTown();
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-			//if (getDistance(me, unit) > Skill.getRange(Config.AttackSkill[0]) || checkCollision(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
@@ -97,18 +92,15 @@ var ClassAttack = {
 			}
 
 			if (!this.getHammerPosition(unit)) {
-				//print("Can't get to " + unit.name);
 
 				// Fallback to secondary skill if it exists
 				if (Config.AttackSkill[5] > -1 && Config.AttackSkill[5] !== 112 && Attack.checkResist(unit, Config.AttackSkill[5])) {
-					//return this.doCast(unit, Config.AttackSkill[5], Config.AttackSkill[6]);	//260526
 				}
 
 				return 0;
 			}
 
 			if (getDistance(me, unit) > 9 || unit.dead) {
-				//print(getDistance(me, unit));
 
 				return 1;
 			}
@@ -127,21 +119,10 @@ var ClassAttack = {
 
 			return 1;
 		case 101:
-			//if (getDistance(me, unit) > Skill.getRange(attackSkill) + 3 || CollMap.checkColl(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(attackSkill), 0x4)) {
-				//if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4)) {	//260826
-					//return 0;
-				//}
-			//}
 
-			//CollMap.reset();
-
-			//if (getDistance(me, unit) > Skill.getRange(attackSkill) || CollMap.checkColl(me, unit, 0x2004, 2)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(attackSkill), 0x2004, true)) {
 				if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x2004)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead) {
 				if (aura > -1) {
@@ -154,12 +135,9 @@ var ClassAttack = {
 			return 1;
 		case 121: // FoH
 			if (!me.getState(121)) {
-				//if (getDistance(me, unit) > Skill.getRange(attackSkill) || CollMap.checkColl(me, unit, 0x2004, 2)) {
-					//if (!Attack.getIntoPosition(unit, Skill.getRange(attackSkill), 0x2004, true)) {
 					if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x2004)) {	//260826
 						return 0;
 					}
-				//}
 
 				if (!unit.dead) {
 					if (aura > -1) {
@@ -178,15 +156,10 @@ var ClassAttack = {
 				return 0;
 			}
 
-			//if (Math.floor(getDistance(me, unit)) > Skill.getRange(attackSkill) || checkCollision(me, unit, 0x4)) {
-				//walk = attackSkill !== 97 && Skill.getRange(attackSkill) < 4 && getDistance(me, unit) < 10 && !checkCollision(me, unit, 0x1);
-
 				// walk short distances instead of tele for melee attacks. teleport if failed to walk
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(attackSkill), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead) {
 				if (aura > -1) {
@@ -219,7 +192,6 @@ var ClassAttack = {
 		// blocked -> Attack.tick.fail = "unreachable": clear drops a sweep target at once (was monsterList.shift())
 		// must targets skip the gate, as the old clearList had none
 		// 0x4 -> 0x5: a hammer has to stand next to the target, so a target blocked only by 0x1 also needs a walk; judge it before walking	//260928
-		//if (!Attack.tick.must && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, unit, 0x4)) {
 		if (!Attack.tick.must && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, unit, 0x5)) {
 			var cx, cy,	//260726
 				skillRange = Skill.getRange(112),	//260829

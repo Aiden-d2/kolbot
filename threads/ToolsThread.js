@@ -30,7 +30,6 @@ function main() {
 		quitFlag = false,
 		timerLastDrink = [];
 
-	//print("ÿc3Start ToolsThread script");	//260903
 	D2Bot.init();
 	Config.init(false);
 	Pickit.init(false);
@@ -98,7 +97,6 @@ function main() {
 
 		for (i = 0; i < items.length; i += 1) {
 			if (type < 3 && items[i].mode === 0 && items[i].location === 3 && items[i].itemType === pottype) {
-				//print("ÿc2Drinking potion from inventory.");	//eom
 				me.overhead("Drinking potion from inventory.");	//eom
 
 				return copyUnit(items[i]);
@@ -122,14 +120,12 @@ function main() {
 			if (script) {
 				if (script.running) {
 					if (i === 0) { // default.dbj
-						//print("ÿc1Pausing.");	//eom
 						me.overhead("Pausing.");	//eom
 					}
 
 					script.pause();
 				} else {
 					if (i === 0) { // default.dbj
-						//print("ÿc2Resuming.");	//eom
 						me.overhead("Resuming.");	//eom
 					}
 
@@ -163,7 +159,6 @@ function main() {
 
 	this.exit = function () {
 		this.stopDefault();
-		//D2Bot.restart();
 		quit();
 	};
 
@@ -309,7 +304,6 @@ function main() {
 			}
 		}
 
-		//return id || "";
 		return (id + " absX=" + absX + " absY=" + absY + " (" + roomX + "/" + roomY + ")") || "";  // 260630
 	};
 
@@ -439,7 +433,6 @@ function main() {
 					debugInfo.lastAction = obj.lastAction;
 				}
 
-				//D2Bot.store(JSON.stringify(debugInfo));
 				DataFile.updateStats("debugInfo", JSON.stringify(debugInfo));
 			}
 
@@ -452,7 +445,6 @@ function main() {
 
 	addEventListener("keyup", this.keyEvent);
 	addEventListener("scriptmsg", this.scriptEvent);
-	//addEventListener("gamepacket", Events.gamePacket);
 
 	// Load Fastmod
 	Packet.changeStat(105, Config.FCR);
@@ -551,7 +543,6 @@ function main() {
 		}
 
 		if (quitFlag) {
-			//print("ÿc8Run duration ÿc2" + ((getTickCount() - me.gamestarttime) / 1000));
 
 			if (Config.LogExperience) {
 				Experience.log();
@@ -566,11 +557,9 @@ function main() {
 		if (debugInfo.area !== Pather.getAreaName(me.area)) {
 			debugInfo.area = Pather.getAreaName(me.area);
 
-			//D2Bot.store(JSON.stringify(debugInfo));
 			DataFile.updateStats("debugInfo", JSON.stringify(debugInfo));
 		}
 
-		//delay(20);
 		delay(10);	//260515
 	}
 

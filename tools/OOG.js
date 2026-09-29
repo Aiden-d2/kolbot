@@ -269,7 +269,6 @@ var D2Bot = {
 			args: []
 		};
 
-		//print("ÿc1Heart beat " + this.handle);
 		sendCopyData(null, this.handle, 0xbbbb, JSON.stringify(obj));
 	},
 
@@ -394,7 +393,6 @@ var DataFile = {
 
 		string = JSON.stringify(obj);
 
-		//FileTools.writeText("data/" + me.profile + ".json", string);
 		Misc.fileAction("_cache/" + me.profile + ".json", 1, string);
 
 		return obj;
@@ -407,7 +405,6 @@ var DataFile = {
 			DataFile.create();
 		}
 
-		//string = FileTools.readText("data/" + me.profile + ".json");
 		string = Misc.fileAction("_cache/" + me.profile + ".json", 0);
 
 		try {
@@ -458,12 +455,10 @@ var DataFile = {
 
 				break;
 			case "lastArea":
-				//if (obj.lastArea === Pather.getAreaName(me.area)) {
 				if (obj.lastArea === Pather.getAreaName(me.area) + " (" + me.area + ")") {	//eom
 					return;
 				}
 
-				//obj.lastArea = Pather.getAreaName(me.area);
 				obj.lastArea = Pather.getAreaName(me.area) + " (" + me.area + ")";	//eom
 
 				break;
@@ -496,7 +491,6 @@ var DataFile = {
 
 		string = JSON.stringify(obj);
 
-		//FileTools.writeText("data/" + me.profile + ".json", string);
 		Misc.fileAction("_cache/" + me.profile + ".json", 1, string);
 	}
 };
@@ -561,7 +555,6 @@ var ControlAction = {
 			return true;
 		}
 
-		//delay(200);
 		control.setText(text);
 
 		return true;

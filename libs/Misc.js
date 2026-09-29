@@ -103,12 +103,10 @@ var Skill = {
 		case 132: // Leap
 			var leap = [4, 7, 8, 10, 11, 12, 12, 13, 14, 14, 14, 14, 15, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 17];
 
-			//return leap[Math.min(me.getSkill(132, 1) - 1, 24)];
 			return Math.floor(leap[Math.min(me.getSkill(132, 1) - 1, 24)] * 3 / 2 - 1);	//260513
 		case 230: // Arctic Blast
 			var arctic = [5, 6, 6, 6, 6, 7, 7, 8, 8, 8, 8, 9, 9, 10, 10, 10, 10, 11, 11, 12];
 
-			//return arctic[Math.min(me.getSkill(230, 1) - 1, 19)];
 			return Math.floor(arctic[Math.min(me.getSkill(230, 1) - 1, 19)] * 3 / 2 - 1);	//260513
 		case 84: // Bone Spear
 		case 93: // Bone Spirit
@@ -258,7 +256,6 @@ var Skill = {
 		}
 
 		// Check mana cost, charged skills don't use mana
-		//if (!item && this.getManaCost(skillId) + 1 > me.mp) {	//260903
 		if (!item && this.getManaCost(skillId) > me.mp) {	//260928 back to the class files' LowManaSkill test (the +1 left a gap where nothing was cast); the stale cost is fixed in getManaCost
 			// Maybe delay on ALL skills that we don't have enough mana for?
 			if (Config.AttackSkill.concat([42, 54]).concat(Config.LowManaSkill).indexOf(skillId) > -1) {
@@ -444,18 +441,10 @@ MainLoop:
 			return 0;
 		}
 
-		//if (this.manaCostList.hasOwnProperty(skillId)) {	//260928 no cache: the cost changes with the skill level (level up, +skills)
-			//return this.manaCostList[skillId];
-		//}
-
 		var skillLvl = me.getSkill(skillId, 1),
 			effectiveShift = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024],
 			lvlmana = getBaseStat(3, skillId, "lvlmana") === 65535 ? -1 : getBaseStat(3, skillId, "lvlmana"), // Correction for skills that need less mana with levels (kolton)
 			ret = Math.max((getBaseStat(3, skillId, "mana") + lvlmana * (skillLvl - 1)) * (effectiveShift[getBaseStat(3, skillId, "manashift")] / 256), getBaseStat(3, skillId, "minmana"));
-
-		//if (!this.manaCostList.hasOwnProperty(skillId)) {	//260928
-			//this.manaCostList[skillId] = ret;
-		//}
 
 		return ret;
 	}
@@ -550,7 +539,6 @@ var Equip = {
 			
 				if (item.bodylocation === bodyLoc) {
 					if (getCursorType() === 3) {
-						//Misc.click(0, 0, me);
 
 						cursorItem = getUnit(100);
 
@@ -834,8 +822,6 @@ var Equip = {
 		var i, j, tier, bodyLoc, tome, scroll,
 			items = me.findItems(-1, 0);
 
-		//print("[DBG] - autoEquip");
-		
 		if (!items) {
 			return false;
 		}
@@ -1028,14 +1014,12 @@ var Grant = {
 				
 				if (target && NTIP.GetScore(target, "Merc") === tier) {
 					if (getCursorType() === 3) {
-						//Misc.click(0, 0, me);
 
 						cursorItem = getUnit(100);
 
 						if (cursorItem) {
 							if (!Storage.Inventory.CanFit(cursorItem) || !Storage.Inventory.MoveTo(cursorItem)) {
 								Packet.dropItem(cursorItem);
-								//cursorItem.drop();
 							}
 						}
 					}
@@ -1172,7 +1156,6 @@ var Grant = {
 						if (grant) {	//260805
 							var result = NTIP.Evaluate(grant);
 							
-							//me.overhead("[Granted " + tier + "] " + items[0].name);
 							me.overhead("[Granted " + tier + "] " + grant.name);	//260920
 							Misc.logItem("Granted [" + tier + "]", grant, result.line);
 							Misc.itemLogger("Granted", grant, result.line);	//260815
@@ -1362,13 +1345,11 @@ var Misc = {
 
 		for (i = 0; i < (cain ? 2 : 10); i += 1) {
 			if (Pather.moveTo(unit.x + 1, unit.y + 2, 3) && getDistance(me, unit.x + 1, unit.y + 2) < 5) {
-				//Misc.click(0, 0, unit);
 				sendPacket(1, 0x13, 4, unit.type, 4, unit.gid);
 			}
 			
 			tick = getTickCount();
 
-			//while (getTickCount() - tick < 1000) {
 			while (getTickCount() - tick < Math.min(me.ping * 5, 300)) {	//260627
 				if (unit.mode) {
 					return true;
@@ -1474,7 +1455,6 @@ var Misc = {
 
 			unit = unitList.shift();
 
-			//if (unit && (Pather.useTeleport() || !checkCollision(me, unit, 0x4)) && this.openChest(unit)) {
 			if (unit && !CollMap.checkColl(me, unit, 0x5) && this.openChest(unit)) {	//260928 walk and teleport alike: a straight, walkable line (as Attack.openChests did)
 				Pickit.pickItems();
 			}
@@ -1589,7 +1569,6 @@ var Misc = {
 		for (i = 0; i < 3; i += 1) {
 			if (getDistance(me, unit) < 4 || Pather.moveToUnit(unit, 3, 0)) {
 				Misc.click(0, 0, unit);
-				//unit.interact();
 			}
 
 			tick = getTickCount();
@@ -1782,16 +1761,11 @@ var Misc = {
 		case "Field Kept":
 		case "Equipped":	//eom
 		case "Granted":	//260730
-		//case "Cubing":	//eom
-		//case "Runewording":	//eom
 		case "Ingredient":	//260831
-		//case "Crafting":	//eom
 		case "Runeworded":	//eom
 		case "Runeworded Fail":	//eom
-		//case "Rerolled":	//eom
 		case "Transmuted":	//eom
 		case "Transmuted Fail":	//eom
-		//case "Crafted":	//eom
 		case "Stashed":	//eom
 		case "Shopped":
 		case "Gambled":
@@ -2045,7 +2019,6 @@ var Misc = {
 		}
 
 		if (keptLine) {
-			//desc += ("\n\\xffc0Line: " + keptLine);	//eom
 			desc += ("\n\\xffc0" + keptLine);	//eom
 		}
 
@@ -2168,7 +2141,6 @@ var Misc = {
 							}
 
 							if (needhp) {
-								//print("We need healing potions");	//eom
 								me.overhead("We need healing potions");	//eom
 
 								check = true;
@@ -2189,7 +2161,6 @@ var Misc = {
 							}
 
 							if (needmp) {
-								//print("We need mana potions");	//eom
 								me.overhead("We need mana potions");	//eom
 
 								check = true;
@@ -2198,9 +2169,6 @@ var Misc = {
 					}
 				}
 
-				//if (Config.OpenChests && Town.needKeys()) {	//260928 keys are not bought in town -> endless town trips. Keys are topped up on regular visits (Town.doChores)
-				//	check = true;
-				//}
 			} catch (e) {
 				check = false;
 			}
@@ -2208,8 +2176,6 @@ var Misc = {
 
 		if (check) {
 			scriptBroadcast("townCheck");
-			//print("TownChicken broadcast sending");  // 260531
-			//delay(me.ping * 2);
 			delay(me.ping);	//260712
 
 			return true;
@@ -2279,39 +2245,6 @@ var Misc = {
 	},
 
 	// hopefully multi-thread and multi-profile friendly txt func
-	/*fileAction: function (path, mode, msg) {
-		var i, file,
-			contents = "";
-
-MainLoop:
-		for (i = 0; i < 30; i += 1) {
-			try {
-				file = File.open(path, mode);
-
-				switch (mode) {
-				case 0: // read
-					contents = file.readLine();
-
-					break MainLoop;
-				case 1: // write
-				case 2: // append
-					file.write(msg);
-
-					break MainLoop;
-				}
-			} catch (e) {
-
-			} finally {
-				if (file) {
-					file.close();
-				}
-			}
-
-			delay(100);
-		}
-
-		return mode === 0 ? contents : true;
-	},*/
 
 	fileAction: function (path, mode, msg) {
 		var i,
@@ -2431,7 +2364,6 @@ MainLoop:
 	// Use a NPC menu. Experimental function, subject to change
 	// id = string number (with exception of Ressurect merc). http://www.blizzhackers.cc/viewtopic.php?f=209&t=378493
 	useMenu: function (id) {
-		//print("useMenu " + getLocaleString(id));
 
 		var i, npc, lines;
 
@@ -2636,8 +2568,6 @@ var Experience = {
 			tTLMinutes = Math.floor(((tTLrawtimeToLevel % 86400) % 3600) / 60),
 			tTLSeconds = ((tTLrawtimeToLevel % 86400) % 3600) % 60;
 
-		//return tDays + "d " + tTLHours + "h " + tTLMinutes + "m " + tTLSeconds + "s";
-		//return tTLDays + "d " + tTLHours + "h " + tTLMinutes + "m";
 		return (tTLDays ? tTLDays + " d " : "") + (tTLHours ? tTLHours + " h " : "") + (tTLMinutes ? tTLMinutes + " m" : "");
 	},
 
@@ -2654,7 +2584,6 @@ var Experience = {
 			rawSeconds = "0" + rawSeconds;
 		}
 
-		//return rawMinutes + "m " + rawSeconds + "s";
 		return " [" + rawMinutes + ":" + rawSeconds + "]";
 	},
 
@@ -2669,9 +2598,6 @@ var Experience = {
 			getGameTime = this.getGameTime(),
 			timeToLevel = this.timeToLevel();
 
-		//string = "[Game: " + me.gamename + (me.gamepassword ? "//" + me.gamepassword : "") + getGameTime + "] [Level: " + me.getStat(12) + " (" + progress + "%)] [XP: " + gain + "] [Games ETA: " + runsToLevel + "] [Time ETA: " + timeToLevel + "]";
-		//string = me.gamename + (me.gamepassword ? "/" + me.gamepassword : "") + getGameTime + " # Lv " + me.getStat(12) + " (" + gainPercent + "% / " + progress + "%)";
-		//string = "+" + gainPercent + "%" + getGameTime + " / " + progress + "% [lv" + me.getStat(12) + "] # F" + (me.diff === 2 ? me.getStat(39) - 100 : me.diff === 1 ? me.getStat(39) - 40 : me.getStat(39)) + " | L" + (me.diff === 2 ? me.getStat(41) - 100 : me.diff === 1 ? me.getStat(41) - 40 : me.getStat(41)) + " | C" + (me.diff === 2 ? me.getStat(43) - 100 : me.diff === 1 ? me.getStat(43) - 40 : me.getStat(43)) + " | P" + (me.diff === 2 ? me.getStat(45) - 100 : me.diff === 1 ? me.getStat(45) - 40 : me.getStat(45));
 		string = getGameTime + " +" + gainPercent + "% / [Level " + me.getStat(12) + "] " + progress + "%";
 
 		if (gain) {
@@ -2679,7 +2605,6 @@ var Experience = {
 			print(string);	//260610
 
 			if (me.getStat(12) > DataFile.getStats().level) {
-				//D2Bot.printToConsole("Level up : " + me.getStat(12), 5);
 			}
 		} else {	//260910
 			D2Bot.printToConsole("no exp" + getGameTime, 4);
@@ -2947,7 +2872,6 @@ CursorLoop:
 	},
 
 	moveNPC: function (npc, dwX, dwY) { // commented the patched packet
-		//sendPacket(1, 0x59, 4, npc.type, 4, npc.gid, 4, dwX, 4, dwY);
 	},
 
 	teleWalk: function (x, y, maxDist) {
@@ -3052,7 +2976,6 @@ var Messaging = {
 		}
 
 		if (!sendCopyData(null, profileName, mode, JSON.stringify({message: message, sender: me.profile}))) {
-			//print("sendToProfile: failed to get response from " + profileName);
 
 			if (getResponse) {
 				removeEventListener("copydata", copyDataEvent);

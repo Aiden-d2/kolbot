@@ -71,19 +71,13 @@ var Town = {
 			shopItems = false;
 		}
 		
-		//print("[DBG] - doChores");
-		
 		if (!me.inTown) {
 			this.goToTown();
 		}
 
-		//Attack.weaponSwitch(Attack.getPrimarySlot());
-		//Merc.updateTiers();
-		
 		if (shopItems) {
 			Misc.trace("gamble");
 			this.gamble();
-			//this.buyKeys();
 			if (Config.UseKeys) {	//260928 top up keys on regular visits only (never a reason to go to town)
 				Misc.trace("buyKeys");
 				this.buyKeys();
@@ -190,7 +184,6 @@ var Town = {
 
 	// Start a task and return the NPC Unit
 	initNPC: function (task, reason) {
-		//print("initNPC: " + reason);	//eom
 		me.overhead("initNPC: " + reason);	//eom
 
 		var npc = getInteractedNPC();
@@ -250,7 +243,6 @@ var Town = {
 	// Go to a town healer
 	heal: function () {
 		if (!this.needHealing()) {
-			//print("no need heal");	//260922
 			return false;
 		}
 
@@ -284,7 +276,6 @@ var Town = {
 
 		var i, j, npc, useShift, col, beltSize, pot,
 			needPots = false,
-			//needBuffer = true,
 			needBuffer = false,	//260525
 			buffer = {
 				hp: 0,
@@ -360,7 +351,6 @@ var Town = {
 				pot = this.getPotion(npc, Config.BeltColumn[i]);
 
 				if (pot) {
-					//print("ÿc2column ÿc0" + i + "ÿc2 needs ÿc0" + col[i] + " ÿc2potions");
 
 					// Shift+buy will trigger if there's no empty columns or if only the current column is empty
 					if (useShift) {
@@ -648,7 +638,6 @@ var Town = {
 		// Avoid unnecessary NPC visits
 		for (i = 0; i < list.length; i += 1) {
 			// Only unid items or sellable junk (low level) should trigger a NPC visit
-			//if ((!list[i].getFlag(0x10) || Config.LowGold > 0) && ([-1, 4].indexOf(Pickit.checkItem(list[i]).result) > -1 || (!list[i].getFlag(0x10) && Item.hasTier(list[i])))) {
 			if ((!list[i].getFlag(0x10) || Config.LowGold > 0) && ([-1, 4].indexOf(Pickit.checkItem(list[i]).result) > -1)) {	//260814
 				break;
 			}
@@ -683,9 +672,7 @@ MainLoop:
 				case 4:	// 260821 below lvl 20 the Pickit.js:74-83 cost gate is under the 80g id scroll price -> sell unid as before
 					if (me.charlvl < 25) {
 						Misc.itemLogger("Sold", item);
-						//Misc.logItem("Sold", item, result.line);
 						item.sell();
-						//delay(me.ping * 2 + 100);	//eom
 						delay(me.ping * 2);	//260411
 
 						break;
@@ -706,12 +693,10 @@ MainLoop:
 									tpTomePos = {x: tpTome.x, y: tpTome.y};
 
 									tpTome.sell();
-									//delay(me.ping * 2 + 100);	//eom
 									delay(me.ping * 2);	//260411
 								}
 							}
 
-							//delay(me.ping * 2 + 100);	//eom
 							delay(me.ping * 2);	//260411
 
 							if (Storage.Inventory.CanFit(scroll)) {
@@ -742,9 +727,7 @@ MainLoop:
 					case -1: // unidentified
 						break;
 					case 2: // cubing
-						//Misc.itemLogger("Kept", item, "Cubing-Town");
 						Misc.itemLogger("Ingredient", item, me.findItems(item.classid, 0).length);	//eom
-						//Misc.logItem("Kept", item, result.line);
 						Cubing.update();
 
 						break;
@@ -753,11 +736,8 @@ MainLoop:
 						
 						break;
 					default:
-						//print("Sold " + item.name + " " + result.line);
 						Misc.itemLogger("Sold", item, result.line);
-						//Misc.logItem("Sold", item, result.line);
 						item.sell();
-						//delay(me.ping * 2 + 100);	//eom
 						delay(me.ping * 2);	//260411
 						
 						break;
@@ -795,7 +775,6 @@ CursorLoop:
 					break CursorLoop;
 				}
 
-				//delay(10);
 				delay(me.ping);	//260411
 			}
 		}
@@ -804,7 +783,6 @@ CursorLoop:
 			return false;
 		}
 
-		//delay(270);
 		delay(me.ping * 2 + 200);	//260411
 
 		for (i = 0; i < 3; i += 1) {
@@ -816,17 +794,14 @@ CursorLoop:
 
 			while (getTickCount() - tick < 500) {
 				if (unit.getFlag(0x10)) {
-					//delay(50);
 					delay(me.ping * 2);	//260411
 
 					return true;
 				}
 
-				//delay(10);
 				delay(me.ping);	//260411
 			}
 
-			//delay(300);
 			delay(me.ping * 2 + 200);	//260411
 		}
 
@@ -852,7 +827,6 @@ CursorLoop:
 			return false;
 		}
 
-		//print("ÿc4MiniShopBotÿc0: Scanning " + npc.itemcount + " items.");	//eom
 		me.overhead("MiniShopBot: Scanning " + npc.itemcount + " items.");	//eom
 
 		do {
@@ -873,8 +847,6 @@ CursorLoop:
 					if (Storage.Inventory.CanFit(items[i]) && me.getStat(14) + me.getStat(15) >= items[i].getItemCost(0)) {
 						Misc.itemLogger("Shopped", items[i], result.line);	//eom 260412
 						
-						//if (!Item.hasTier(items[i]) && !Merc.hasTier(items[i])) {
-						//if (!(result.tier > 0 || result.merc > 0)) {	//260814
 						if (!result.tier && !result.merc) {	//260911
 							Misc.logItem("Shopped", items[i], result.line);
 						}
@@ -893,7 +865,6 @@ CursorLoop:
 					print(e);
 				}
 			}
-			//delay(200);
 			delay(10);	//eom
 		}
 
@@ -978,8 +949,6 @@ CursorLoop:
 						case 1:
 							Misc.itemLogger("Gambled", newItem, result.line);	//eom 260412
 								
-							//if (!Item.hasTier(newItem) && !Merc.hasTier(newItem)) {
-							//if (!(result.tier > 0 || result.merc > 0)) {	//260814
 							if (!result.tier && !result.merc) {	//260911
 								Misc.logItem("Gambled", newItem, result.line);
 							}
@@ -1009,8 +978,6 @@ CursorLoop:
 
 			me.cancel();
 		}
-		
-		//this.move("portalspot");
 		
 		return true;
 	},
@@ -1075,7 +1042,6 @@ CursorLoop:
 	},
 
 	checkKeys: function () {
-		//if (!Config.OpenChests || me.classid === 6 || me.gold < 540 || (!me.getItem("key") && !Storage.Inventory.CanFit({sizex: 1, sizey: 1}))) {
 		if (!Config.UseKeys || me.classid === 6 || me.gold < 540 || (!me.getItem("key") && !Storage.Inventory.CanFit({sizex: 1, sizey: 1}))) {	//260928
 			return 12;
 		}
@@ -1110,10 +1076,6 @@ CursorLoop:
 		}
 
 		repairAction = this.needRepair();
-
-		//if (force && repairAction.indexOf("repair") === -1) {
-			//repairAction.push("repair");
-		//}
 
 		if (!repairAction || !repairAction.length) {
 			if (((me.act !== 1 && me.diff === 0) || ((me.act === 4 || me.act === 5) && Config.MiniShopBot)) && shopItems) {	//260712
@@ -1237,7 +1199,6 @@ CursorLoop:
 			}
 		} else {
 			if (me.inTown) {
-				//print("ÿc4Town: ÿc1Can't afford repairs.");	//eom
 				me.overhead("Town: Can't afford repairs.");	//eom
 			}
 		}
@@ -1268,7 +1229,6 @@ CursorLoop:
 				} while (spare.getNext());
 			}
 			
-			//print(stack);
 		}
 		
 		if (item) {
@@ -1282,7 +1242,6 @@ CursorLoop:
 						case 44: // Javelins
 						case 87: // Amazon javelins
 							quantity = item.getStat(70) + stack;
-							//print(quantity);
 
 							if (typeof quantity === "number" && quantity * 100 / (getBaseStat("items", item.classid, "maxstack") + item.getStat(254)) <= repairPercent) { // Stat 254 = increased stack size
 								itemList.push(copyUnit(item));
@@ -1326,7 +1285,6 @@ CursorLoop:
 
 	reviveMerc: function () {
 		if (me.gold < Config.MercMinGold) {	//260919
-			//print("low gold for merc");	//260921
 			return false;
 		}
 		
@@ -1340,7 +1298,6 @@ CursorLoop:
 		}
 
 		var i, tick, dialog, lines,
-			//tick = getTickCount(),	//260820
 			preArea = me.area,
 			npc = this.initNPC("Merc", "reviveMerc");
 
@@ -1380,7 +1337,6 @@ MainLoop:
 
 		if (!!me.getMerc()) {
 			if (Config.MercWatch) { // Cast BO on merc so he doesn't just die again
-				//print("MercWatch precast");	//eom
 				me.overhead("MercWatch precast");	//eom
 				Pather.useWaypoint("random");
 				Precast.doPrecast(true);
@@ -1399,7 +1355,6 @@ MainLoop:
 		var i, merc;
 
 		if (me.gametype === 0 || !Config.UseMerc || me.gold < me.mercrevivecost) { // gametype 0 = classic
-			//print("[needMerc] gametype=" + me.gametype + " config=" + Config.UseMerc + " gold=" + me.gold + " cost=" + me.mercrevivecost);	//260817
 			return false;
 		}
 
@@ -1408,7 +1363,6 @@ MainLoop:
 			merc = me.getMerc();
 
 			if (merc && merc.mode !== 0 && merc.mode !== 12) {
-				//print("[needMerc] merc=" + !!merc + " mode=" + merc.mode);	//260817
 				return false;
 			}
 
@@ -1416,7 +1370,6 @@ MainLoop:
 		}
 
 		if (!me.mercrevivecost) { // In case we never had a merc and Config.UseMerc is still set to true for some odd reason
-			//print("[needMerc] gold=" + me.gold + " cost=" + me.mercrevivecost);	//260817
 			return false;
 		}
 
@@ -1442,8 +1395,6 @@ MainLoop:
 			return true;
 		}
 		
-		//print("stash");
-		
 		me.cancel();
 
 		var i, result, keep,
@@ -1456,10 +1407,7 @@ MainLoop:
 					
 					keep = Cubing.keepItem(items[i]) || Runewords.keepItem(items[i]);	//eom 260404
 
-					//if (result) {	// && !Item.hasTier(items[i])) {	//eom
-					//if (keep || (result.result > 0 && result.result < 4 && !(result.tier > 0 || result.merc > 0))) {	//260814
 					if (keep || (result.result > 0 && result.result < 4)) {	//260821
-						//Misc.logItem("Stashed", items[i], result.line);
 						Misc.itemLogger("Stashed", items[i], result.line);	//eom 260412
 						Storage.Stash.MoveTo(items[i]);
 					}
@@ -1470,7 +1418,6 @@ MainLoop:
 		// Stash gold
 		if (stashGold) {
 			if (me.getStat(14) >= Config.StashGold && me.getStat(15) < 25e5 && this.openStash()) {
-				//print("stash gold @ " + me.getStat(14) + " / " + Config.StashGold);
 				gold(me.getStat(14), 3);
 				delay(1000); // allow UI to initialize
 				me.cancel();
@@ -1482,7 +1429,6 @@ MainLoop:
 
 	needStash: function () {
 		if (Config.StashGold && me.getStat(14) >= Config.StashGold && me.getStat(15) < 25e5) {
-			//print("need stash gold @ " + me.getStat(14) + " / " + Config.StashGold);
 			return true;
 		}
 
@@ -1492,7 +1438,6 @@ MainLoop:
 		if (items) {	//eom
 			for (i = 0; i < items.length; i += 1) {
 				if (Storage.Stash.CanFit(items[i])) {
-					//print("true: " + items[i].name);
 					return true;
 				}
 			}
@@ -1520,7 +1465,6 @@ MainLoop:
 
 				if (stash) {
 					Misc.click(0, 0, stash);
-					//stash.interact();
 
 					tick = getTickCount();
 
@@ -1670,15 +1614,6 @@ MainLoop:
 			do {
 				switch (item.itemType) {
 				case 76: // Healing
-					/*if (Config.BeltColumn[item.x % 4] !== "hp") {
-						if (Config.HPBuffer > this.myPotion("hp")) {
-							Storage.Inventory.MoveTo(item);
-							print("move buffer: " + item.name);
-							delay(me.ping * 2 + 1000);
-						} else {
-							clearList.push(copyUnit(item));
-						}
-					}*/
 					
 					if (Config.BeltColumn[item.x % 4] !== "hp") {	//260822
 						bufferList.push(copyUnit(item));
@@ -1686,15 +1621,6 @@ MainLoop:
 
 					break;
 				case 77: // Mana
-					/*if (Config.BeltColumn[item.x % 4] !== "mp") {
-						if (Config.MPBuffer > this.myPotion("mp")) {
-							Storage.Inventory.MoveTo(item);
-							print("move buffer: " + item.name);
-							delay(me.ping * 2 + 1000);
-						} else {
-							clearList.push(copyUnit(item));
-						}
-					}*/
 					
 					//260822 normal only - drop mana tiers the current act's vendor no longer sells
 					if (me.diff === 0 && ((me.act === 2 && item.code === "mp1") || (me.act === 3 && (item.code === "mp1" || item.code === "mp2")))) {
@@ -1709,15 +1635,6 @@ MainLoop:
 
 					break;
 				case 78: // Rejuvenation
-					/*if (Config.BeltColumn[item.x % 4] !== "rv") {
-						if (Config.RejuvBuffer > this.myPotion("rv")) {
-							Storage.Inventory.MoveTo(item);
-							print("move buffer: " + item.name);
-							delay(me.ping * 2 + 1000);
-						} else {
-							clearList.push(copyUnit(item));
-						}
-					}*/
 					
 					if (Config.BeltColumn[item.x % 4] !== "rv") {	//260822
 						bufferList.push(copyUnit(item));
@@ -1733,7 +1650,6 @@ MainLoop:
 
 				if (item.itemType === 76 ? Config.HPBuffer > this.myPotion("hp") : item.itemType === 77 ? Config.MPBuffer > this.myPotion("mp") : Config.RejuvBuffer > this.myPotion("rv")) {
 					Storage.Inventory.MoveTo(item);
-					//print("move buffer: " + item.name);
 					delay(me.ping * 2 + 1000);
 				} else {
 					clearList.push(item);
@@ -1745,12 +1661,9 @@ MainLoop:
 				
 			while (clearList.length > 0) {
 				if (me.charlvl >= 17 && me.charlvl <= 19) {	//260917
-					//print("[clearBelt] drop " + (i + 1) + "/" + clength + " gid:" + clearList[0].gid + " type:" + clearList[0].type + " name:" + clearList[0].name + " mode:" + clearList[0].mode + " loc:" + item.location + " bodyloc:" + clearList[0].bodylocation);
 				}
 				clearList.shift().drop();	//260901
 				delay(me.ping * 2 + 1000);
-				//clearList.shift().interact();
-				//delay(200);
 				i += 1;
 			}
 		}
@@ -1765,7 +1678,6 @@ MainLoop:
 		for (i = 0; !!items && i < items.length; i += 1) {
 			if (items[i].location === 3 && items[i].mode === 0 && items[i].itemType === 22) {
 				if (getUIFlag(0xC) || (Config.PacketShopping && getInteractedNPC() && getInteractedNPC().itemcount > 0)) { // Might as well sell the item if already in shop
-					//print("clearInventory sell " + items[i].name);	//eom
 					me.overhead("clearInventory sell " + items[i].name);	//eom
 					
 					Misc.itemLogger("Sold", items[i]);
@@ -1805,7 +1717,6 @@ MainLoop:
 		];
 
 		if (ignoredTypes.indexOf(item.itemType) > -1) return false;
-		//if (!Config.OpenChests && item.itemType === 41) return false; // Keys only when OpenChests
 		if (Config.UseKeys && item.itemType === 41) return false; // Keys only when UseKeys	//260928 was inverted: kept keys when OpenChests was off
 		if (ignoredClassids.indexOf(item.classid) > -1) return false;
 		if (item.code === "529" && !me.findItem(518, 0, 3)) return false;
@@ -1820,8 +1731,6 @@ MainLoop:
 	clearInventory: function () {
 		var i, col, result, item, beltSize,
 			items = [];
-
-		//this.checkQuestItems(); // only golden bird quest for now
 
 		// Return potions to belt
 		item = me.getItem(-1, 0);
@@ -1892,14 +1801,12 @@ MainLoop:
 
 			// Cleanup healing potions
 			while (items[0].length > Config.HPBuffer) {
-				//items[0].shift().interact();
 				items[0].shift().drop();	//eom
 				delay(200 + me.ping * 2);
 			}
 
 			// Cleanup mana potions
 			while (items[1].length > Config.MPBuffer) {
-				//items[1].shift().interact();
 				items[1].shift().drop();	//eom
 				delay(200 + me.ping * 2);
 			}
@@ -1961,7 +1868,6 @@ MainLoop:
 						delay(me.ping * 2 + 200);
 					}
 					
-					//print("moved to inventory to drop " + items[i].name);	//eom
 					me.overhead("moved from stash to drop " + items[i].name);	//eom
 					
 					Storage.Inventory.MoveTo(items[i]);
@@ -1969,7 +1875,6 @@ MainLoop:
 					break;
 				case 4: // Sell item
 					try {
-						//print("moved to inventory to sell " + items[i].name);	//eom
 						me.overhead("moved from stash to sell " + items[i].name);	//eom
 						
 						Storage.Inventory.MoveTo(items[i]);
@@ -2000,12 +1905,10 @@ MainLoop:
 
 					if (getUIFlag(0xC) || (Config.PacketShopping && getInteractedNPC() && getInteractedNPC().itemcount > 0)) {
 						me.overhead("clearInventory sell " + items[i].name);
-						//print("clearInventory sell " + items[i].name);
 						Misc.itemLogger("Sold", items[i]);
 						items[i].sell();
 					} else {
 						me.overhead("clearInventory drop " + items[i].name);
-						//print("clearInventory drop " + items[i].name);
 						Misc.itemLogger("Dropped", items[i]);
 						items[i].drop();
 					}
@@ -2014,7 +1917,6 @@ MainLoop:
 				case 4: // Sell item
 					try {
 						me.overhead("LowGold sell " + items[i].name);
-						//print("LowGold sell " + items[i].name);
 						this.initNPC("Shop", "clearInventory");
 						Misc.itemLogger("Sold", items[i]);
 						items[i].sell();
@@ -2034,7 +1936,6 @@ MainLoop:
 	act : [{}, {}, {}, {}, {}],
 
 	initialize: function () {
-		//print("Initialize town " + me.act);
 
 		switch (me.act) {
 		case 1:
@@ -2194,7 +2095,6 @@ MainLoop:
 		}
 
 		for (i = 0; i < townSpot.length; i += 2) {
-			//print("moveToSpot: " + spot + " from " + me.x + ", " + me.y);
 
 			if (getDistance(me, townSpot[i], townSpot[i + 1]) > 2) {
 				Pather.moveTo(townSpot[i], townSpot[i + 1], 3, false, true);
@@ -2252,17 +2152,13 @@ MainLoop:
 	goToTown: function (act) {	//eom
 		var towns = [1, 40, 75, 103, 109];
 
-		//print("[DBG] - goToTown");
-		
 		if (!me.inTown) {
 			if (!Pather.makePortal()) {
 				throw new Error("Town.goToTown: Failed to make TP");
-				//return false;	//eom
 			}
 
 			if (!Pather.usePortal(null, me.name)) {
 				throw new Error("Town.goToTown: Failed to take TP");
-				//return false;	//eom
 			}
 		}
 
@@ -2272,7 +2168,6 @@ MainLoop:
 
 		if (act < 1 || act > 5) {
 			throw new Error("Town.goToTown: Invalid act");
-			//return false;	//eom
 		}
 
 		if (act !== me.act) {
@@ -2280,7 +2175,6 @@ MainLoop:
 				Pather.useWaypoint(towns[act - 1]);
 			} catch (WPError) {
 				throw new Error("Town.goToTown: Failed use WP");
-				//return false;	//eom
 			}
 		}
 
@@ -2289,11 +2183,7 @@ MainLoop:
 
 	visitTown: function () {
 
-		//print("[DBG] - visitTown");
-		
 		if (me.inTown) {
-			//this.doChores();	//prevent recursion	//260821
-			//this.move("stash");	//prevent recursion	//260821
 			
 			Equip.autoEquip();	//260821
 			Grant.autoEquip();
@@ -2322,10 +2212,6 @@ MainLoop:
 		if (!Pather.usePortal(preArea, me.name)) { // this part is essential
 			throw new Error("Town.visitTown: Failed to go back from town");
 		}
-
-		/*if (Config.PublicMode) {
-			Pather.makePortal();
-		}*/
 
 		return true;
 	}

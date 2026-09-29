@@ -127,10 +127,6 @@ var Pickit = {
 			ref = null,
 			pickList = [];
 
-		//print("[DBG] - pickItems");
-		
-		//Town.clearBelt();	//eom
-		
 		if (range === undefined) {	//260501
 			range = 25;	//260907
 		}
@@ -178,7 +174,6 @@ var Pickit = {
 					if (!canFit) {
 						// Check if any of the current inventory items can be stashed or need to be identified and eventually sold to make room
 						if (this.canMakeRoom()) {
-							//print("ÿc7Trying to make room for " + this.itemColor(pickList[0]) + pickList[0].name);	//eom
 							me.overhead("Trying to make room for " + pickList[0].name);	//eom
 
 							// Go to town and do town chores
@@ -190,14 +185,11 @@ var Pickit = {
 							}
 
 							// Town visit failed - abort
-							//print("ÿc7Not enough room for " + this.itemColor(pickList[0]) + pickList[0].name);	//eom
 							me.overhead("Not enough room for " + pickList[0].name);	//eom
 
 							return false;
 						}
 
-						//Misc.itemLogger("No room for", pickList[0]);
-						//print("ÿc7Not enough room for " + this.itemColor(pickList[0]) + pickList[0].name);	//eom
 						me.overhead("Not enough room for " + pickList[0].name);	//eom
 					}
 
@@ -328,7 +320,6 @@ MainLoop:
 
 				if (stats.classid === 523) {
 					if (!item.getStat(14) || item.getStat(14) < stats.gold) {
-						//print("ÿc7Picked up " + stats.color + (item.getStat(14) ? (item.getStat(14) - stats.gold) : stats.gold) + " " + stats.name);	//eom
 						me.overhead("Picked up " + (item.getStat(14) ? (item.getStat(14) - stats.gold) : stats.gold) + " " + stats.name);	//eom
 
 						return true;
@@ -338,13 +329,11 @@ MainLoop:
 				if (item.mode !== 3 && item.mode !== 5) {
 					switch (stats.classid) {
 					case 543: // Key
-						//print("ÿc7Picked up " + stats.color + stats.name + " ÿc7(" + Town.checkKeys() + "/12)");	//eom
 						me.overhead("Picked up " + stats.name + " (" + Town.checkKeys() + "/12)");	//eom
 
 						return true;
 					case 529: // Scroll of Town Portal
 					case 530: // Scroll of Identify
-						//print("ÿc7Picked up " + stats.color + stats.name + " ÿc7(" + Town.checkScrolls(stats.classid === 529 ? "tbk" : "ibk") + "/20)");	//eom
 						me.overhead("Picked up " + stats.name + " (" + Town.checkScrolls(stats.classid === 529 ? "tbk" : "ibk") + "/20)");	//eom
 
 						return true;
@@ -359,7 +348,6 @@ MainLoop:
 			// TK failed, disable it
 			stats.useTk = false;
 
-			//print("pick retry");
 		}
 
 		stats.picked = me.itemcount > itemCount || !!me.getItem(-1, -1, gid);
@@ -369,7 +357,6 @@ MainLoop:
 
 			switch (status && status.result) {	//260805
 			case 1:
-				//print("ÿc7Picked up " + stats.color + stats.name + " ÿc0(ilvl " + stats.ilvl + (keptLine ? ") (" + keptLine + ")" : ")"));	//eom
 				me.overhead("Picked up " + stats.name + " (ilvl " + stats.ilvl + (status.line ? ") (" + status.line + ")" : ")"));	//260805
 
 				if (this.ignoreLog.indexOf(stats.type) === -1) {
@@ -382,27 +369,21 @@ MainLoop:
 
 				break;
 			case 2:
-				//print("ÿc7Picked up " + stats.color + stats.name + " ÿc0(ilvl " + stats.ilvl + ")" + " (Cubing)");	//eom
 				me.overhead("Picked up " + stats.name + " (ilvl " + stats.ilvl + ")" + " (Ingredient)");	//eom
 				
 				Misc.itemLogger("Ingredient", item, me.findItems(item.classid, 0).length);
-				//Misc.logItem("Cubing", item, me.findItems(item.classid).length);	//eom
 				Cubing.update();
 
 				break;
 			case 3:
-				//print("ÿc7Picked up " + stats.color + stats.name + " ÿc0(ilvl " + stats.ilvl + ")" + " (Runewords)");	//eom
 				me.overhead("Picked up " + stats.name + " (ilvl " + stats.ilvl + ")" + " (Ingredient)");	//eom
 				
 				Misc.itemLogger("Ingredient", item, me.findItems(item.classid, 0).length);
-				//Misc.logItem("Runewording", item, me.findItems(item.classid).length);	//eom
 				Runewords.update(stats.classid, gid);
 
 				break;
 				
 			default:
-				//print("ÿc7Picked up " + stats.color + stats.name + " ÿc0(ilvl " + stats.ilvl + (keptLine ? ") (" + keptLine + ")" : ")") + " status:" + status);	//260705
-				//me.overhead("Picked up " + stats.name + " (ilvl " + stats.ilvl + (keptLine ? ") (" + keptLine + ")" : ")"));	//eom
 
 				break;
 

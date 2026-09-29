@@ -112,7 +112,6 @@ function ReceiveCopyData (mode, msg) {
 
 	switch (mode) {
 	case 1: // JoinInfo
-		//print("Got Join Info");
 
 		joinInfo = JSON.parse(msg);
 
@@ -181,7 +180,6 @@ function main () {
 	}
 
 	if (gameInfo.error) {
-		//D2Bot.retrieve();
 		delay(200);
 		
 		gameCount = DataFile.getStats().runs; // 260524
@@ -193,7 +191,6 @@ function main () {
 		}
 
 		if (gameInfo.crashInfo) {	//260707
-			//D2Bot.printToConsole("Crash Info: Script: " + gameInfo.crashInfo.currScript + " Area: " + gameInfo.crashInfo.area + (gameInfo.crashInfo.hasOwnProperty("lastAction") ? " " + gameInfo.crashInfo.lastAction : ""), 10);
 		}
 
 		ControlAction.timeoutDelay("Crash Delay", StarterConfig.CrashDelay * 1e3);
@@ -202,14 +199,12 @@ function main () {
 		gameInfo.error = false; //260808
 	}
 
-	//D2Bot.store(JSON.stringify({currScript: "none", area: "out of game"}));
 	DataFile.updateStats("debugInfo", JSON.stringify({currScript: "none", area: "out of game"}));
 
 	while (true) {
 		while (me.ingame) { // returns true before actually in game so we can't only use this check
 			if (me.gameReady) { // returns false when switching acts so we can't use while
 				if (!ingame) {
-					//print("ÿc4Updating Status");	//260903
 					D2Bot.updateStatus("Game: " + me.gamename);
 
 					lastGameStatus = "ingame";
@@ -233,8 +228,6 @@ function main () {
 function joinCheck (leader) {
 	D2Bot.requestGame(leader);
 	delay(500);	//eom	//260807
-
-	//print(leader + " " + joinInfo.inGame + " " + lastGame.toSource() + " " + joinInfo.gameName);
 
 	if (!joinInfo.inGame || (lastGame.length && lastGame.indexOf(joinInfo.gameName) === -1)) {
 		D2Bot.printToConsole("Game is finished. Stopping join delay.");
@@ -279,7 +272,6 @@ MainSwitch:
 		}
 
 		if (ingame) {
-			//print("updating runs");	//260903
 			D2Bot.updateRuns();
 
 			lastGameTick = getTickCount();
@@ -317,7 +309,6 @@ MainSwitch:
 		D2Bot.updateStatus("Lobby Chat");
 
 		if (ingame) {
-			//print("updating runs");	//260903
 			D2Bot.updateRuns();
 
 			lastGameTick = getTickCount();
@@ -364,15 +355,6 @@ MainSwitch:
 
 			leader.push(Team.Leader);	//260904
 			
-			/*for (i in JoinSettings) {
-				if (JoinSettings.hasOwnProperty(i) && typeof i === "string") {
-					for (j = 0; j < JoinSettings[i].length; j += 1) {
-						if (JoinSettings[i][j] === me.profile || JoinSettings[i][j] === "all") {
-							leader.push(i);
-						}
-					}
-				}
-			}*/
 		}
 
 		if (!leader || !leader.length) {
@@ -557,7 +539,6 @@ JoinLoop2:
 				} else {	//eom
 					ControlAction.timeoutDelay("Key retry delay", StarterConfig.RetryKeyDelay * 1000);
 					D2Bot.restart(true);
-					//D2Bot.stop();
 				}
 
 				break;
@@ -572,7 +553,6 @@ JoinLoop2:
 				} else {	//eom
 					ControlAction.timeoutDelay("Key retry delay", StarterConfig.RetryKeyDelay * 1000);
 					D2Bot.restart(true);
-					//D2Bot.stop();
 				}
 
 				break;
@@ -592,7 +572,6 @@ JoinLoop2:
 				} else {	//eom
 					ControlAction.timeoutDelay("Key retry delay", StarterConfig.RetryKeyDelay * 1000);
 					D2Bot.restart(true);
-					//D2Bot.stop();
 				}
 
 				break;
@@ -749,7 +728,6 @@ JoinLoop2:
 				} else {	//eom
 					ControlAction.timeoutDelay("Key retry delay", StarterConfig.RetryKeyDelay * 1000);
 					D2Bot.restart(true);
-					//D2Bot.stop();
 				}
 			}
 		}
@@ -825,7 +803,6 @@ JoinLoop2:
 	default:
 		if (location !== undefined) {
 			D2Bot.printToConsole("Unhandled location " + location);
-			//takeScreenshot();
 			delay(500);
 			D2Bot.restart();
 		}

@@ -105,7 +105,6 @@ var Runeword = {
 
 var Runewords = {
 	needList: [],
-	//pickitEntries: [],
 	validGids: [],
 
 	init: function () {
@@ -114,23 +113,6 @@ var Runewords = {
 		}
 
 		var i;//, info, parsedLine;
-
-		/*this.pickitEntries = [];
-
-		// initiate pickit entries
-		for (i = 0; i < Config.KeepRunewords.length; i += 1) {
-			info = {
-				file: "KeepRunewords",	//eom 260411
-				line : i + 1,	//eom 260411
-				string: Config.KeepRunewords[i]	//eom 260411
-			};
-			
-			parsedLine = NTIP.ParseLineInt(Config.KeepRunewords[i], info);	//260610 reverted
-
-			if (parsedLine) {
-				this.pickitEntries.push([parsedLine, info]);	//260901
-			}
-		}*/
 
 		// change text to classid
 		for (i = 0; i < Config.Runewords.length; i += 1) {
@@ -371,8 +353,6 @@ RuneLoop:
 
 		var i, items, parts, logString;	//260831
 
-		//print("[DBG] - makeRunewords");
-		
 		while (true) {
 			this.buildLists();
 
@@ -397,16 +377,11 @@ RuneLoop:
 			print("ÿc4[Runeword] ÿc0" + logString);
 			D2Bot.printToConsole("# [Runeword] " + logString, 5);
 			
-			//print("ÿc4Runewords: ÿc0Made runeword: " + items[0].fname.split("\n").reverse().join(" ").replace(/ÿc[0-9!"+<;.*]/, ""));
-			//D2Bot.printToConsole("# " + items[0].fname.split("\n").reverse().join(" ").replace(/ÿc[0-9!"+<;.*]/, ""), 5);
-
 			var result = NTIP.Evaluate(items[0]);	//260907
 			
 			if (result.result) {	//260814
 				Misc.itemLogger("Runeworded", items[0], result.line);
 		
-				//if (!Item.hasTier(items[0])) {
-				//if (!(result.tier > 0)) {	//260814
 				if (!result.tier && !result.merc) {	//260911
 					Misc.logItem("Runeworded", items[0], result.line);
 				}
@@ -458,11 +433,7 @@ RuneLoop:
 				print("ÿc4[Reset] ÿc0" + logString);
 				D2Bot.printToConsole("# [Reset] " + logString, 5);
 
-				//print("ÿc4Runewords: ÿc0Rerolling runeword: " + base.fname.split("\n").reverse().join(" ").replace(/ÿc[0-9!"+<;.*]/, ""));
-				//D2Bot.printToConsole("Rerolling runeword: " + base.fname.split("\n").reverse().join(" ").replace(/ÿc[0-9!"+<;.*]/, ""), 5);
-				
 				transmute();
-				//Misc.itemLogger("Rerolled", base);	//eom
 				delay(500);
 
 				if (!Cubing.emptyCube()) { // can't pull the item out = no space = fail

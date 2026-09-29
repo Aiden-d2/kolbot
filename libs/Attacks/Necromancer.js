@@ -103,8 +103,6 @@ var ClassAttack = {
 
 	doAttack: function (unit, preattack) {
 		
-		//print("[DBG] - doAttack");
-
 		if (!this.cursesSet || this.curseState.length !== Config.Curse.length) {	// 260514
 			this.initCurses();
 		}
@@ -114,12 +112,9 @@ var ClassAttack = {
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(Config.AttackSkill[0]) || checkCollision(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
@@ -135,7 +130,6 @@ var ClassAttack = {
 
 		if (Config.Curse.length > 0 && Config.Curse[0] > 0 && this.isCursable(unit) && (unit.spectype & 0x7) && !unit.getState(this.curseState[0])) {	//260510
 			if (getDistance(me, unit) > this.curseRange || checkCollision(me, unit, 0x4)) {	//260902
-				//if (!Attack.getIntoPosition(unit, 25, 0x4)) {
 				if (!Attack.setPosition(unit, this.curseRange, 0x4)) {	//260902
 					return 0;
 				}
@@ -143,12 +137,10 @@ var ClassAttack = {
 
 			Skill.cast(Config.Curse[0], 0, unit);
 
-			//return 1;	//260919
 		}
 
 		if (Config.Curse.length > 1 && Config.Curse[1] > 0 && this.isCursable(unit) && !(unit.spectype & 0x7) && !unit.getState(this.curseState[1])) {	//260510
 			if (getDistance(me, unit) > this.curseRange || checkCollision(me, unit, 0x4)) {	//260902
-				//if (!Attack.getIntoPosition(unit, 25, 0x4)) {
 				if (!Attack.setPosition(unit, this.curseRange, 0x4)) {	//260902
 					return 0;
 				}
@@ -156,7 +148,6 @@ var ClassAttack = {
 
 			Skill.cast(Config.Curse[1], 0, unit);
 
-			//return 1;	//260919
 		}
 
 		// Get timed skill
@@ -234,12 +225,9 @@ var ClassAttack = {
 			switch (timedSkill) {
 			case 92: // Poison Nova
 				if (!this.novaTick || getTickCount() - this.novaTick > Config.PoisonNovaDelay * 1000) {
-					//if (Math.round(getDistance(me, unit)) > Skill.getRange(timedSkill) || checkCollision(me, unit, 0x4)) {
-						//if (!Attack.getIntoPosition(unit, Skill.getRange(timedSkill), 0x4)) {
 						if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {	//260826
 							return 0;
 						}
-					//}
 
 					if (!unit.dead && Skill.cast(timedSkill, Skill.getHand(timedSkill), unit)) {
 						this.novaTick = getTickCount();
@@ -248,12 +236,9 @@ var ClassAttack = {
 
 				break;
 			case 500: // Pure Summoner
-				//if (Math.round(getDistance(me, unit)) > Skill.getRange(timedSkill) || checkCollision(me, unit, 0x4)) {
-					//if (!Attack.getIntoPosition(unit, Skill.getRange(timedSkill), 0x4)) {
 					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {	//260826
 						return 0;
 					}
-				//}
 
 				delay(300);
 				Attack.tick.cast = true;	//260928 pure summoner: standing by the target counts as an attack tick
@@ -264,15 +249,11 @@ var ClassAttack = {
 					return 0;
 				}
 
-				//if (Math.round(getDistance(me, unit)) > Skill.getRange(timedSkill) || checkCollision(me, unit, 0x4)) {
 					// Allow short-distance walking for melee skills
-					//walk = Skill.getRange(timedSkill) < 4 && getDistance(me, unit) < 10 && !checkCollision(me, unit, 0x1);
 
-					//if (!Attack.getIntoPosition(unit, Skill.getRange(timedSkill), 0x4)) {
 					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {	//260826
 						return 0;
 					}
-				//}
 
 				if (!unit.dead) {
 					Skill.cast(timedSkill, Skill.getHand(timedSkill), unit);
@@ -287,15 +268,11 @@ var ClassAttack = {
 				return 0;
 			}
 
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(untimedSkill) || checkCollision(me, unit, 0x4)) {
 				// Allow short-distance walking for melee skills
-				//walk = Skill.getRange(untimedSkill) < 4 && getDistance(me, unit) < 10 && !checkCollision(me, unit, 0x1);
 
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(untimedSkill), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead) {
 				Skill.cast(untimedSkill, Skill.getHand(untimedSkill), unit);
@@ -382,7 +359,6 @@ var ClassAttack = {
 				return true;
 			}
 		
-			//print("[ARMY] corpses=" + corpseList.length);
 			corpse = corpseList.shift();
 			
 			if (me.getMinionCount(6) < maxRevives) {
@@ -492,7 +468,6 @@ var ClassAttack = {
 			if (Config.Skeletons + Config.SkeletonMages + Config.Revives === 0) {
 				// We don't need corpses as we are not a Summoner Necro, Spam CE till monster dies or we run out of bodies.
 				if (corpseList.length > 0) {
-					//print("[Explode] range=" + range + " unit=" + unit.name + " corpses=" + corpseList.length);	// 260510
 					
 					do {
 						corpse = corpseList.shift();
@@ -502,11 +477,9 @@ var ClassAttack = {
 								me.overhead("Exploding: " + corpse.classid + " " + corpse.name + " id:" + corpse.gid); // Added corpse ID so I can see when it blows another monster with the same ClassID and Name
 
 								if (Skill.cast(Config.ExplodeCorpses, 0, corpse)) {
-									//print("[Explode] ok");
 									delay(me.ping + 1);
 								}
 							} else {
-								//print("[Explode] failed dead:" + unit.dead + " checkCorpse:" + this.checkCorpse(corpse));	// 260510
 							}
 						}
 					} while (corpseList.length > 0);
@@ -514,7 +487,6 @@ var ClassAttack = {
 			} else {	//260510
 				if (me.area === 39) {
 					if (corpseList.length > 0) {
-						//print("[Explode MM] range=" + range + " unit=" + unit.name + " corpses=" + corpseList.length);	// 260510
 						
 						do {
 							corpse = corpseList.shift();
@@ -524,18 +496,15 @@ var ClassAttack = {
 									me.overhead("Exploding Cow: " + corpse.classid + " " + corpse.name);
 									
 									if (Skill.cast(Config.ExplodeCorpses, 0, corpse)) {
-										//print("[Explode MM] ok");
 										delay(200);
 									}
 								} else {
-									//print("[Explode MM] failed dead:" + unit.dead + " checkCorpse:" + this.checkCorpse(corpse));	// 260510
 								}
 							}
 						} while (corpseList.length > 0);
 					}
 				} else if (me.getMinionCount(4) >= maxSkeletons) {
 					if (corpseList.length > 0) {
-						//print("[Explode MM] range=" + range + " unit=" + unit.name + " corpses=" + corpseList.length);	// 260510
 						
 						do {
 							corpse = corpseList.shift();
@@ -545,11 +514,9 @@ var ClassAttack = {
 									me.overhead("Exploding Max: " + corpse.classid + " " + corpse.name);
 									
 									if (Skill.cast(Config.ExplodeCorpses, 0, corpse)) {
-										//print("[Explode MM] ok");
 										delay(200);
 									}
 								} else {
-									//print("[Explode MM] failed dead:" + unit.dead + " checkCorpse:" + this.checkCorpse(corpse));	// 260510
 								}
 							}
 						} while (corpseList.length > 0);
@@ -558,7 +525,6 @@ var ClassAttack = {
 				// We are a Summoner Necro, we should conserve corpses, only blow 2 at a time so we can check for needed re-summons.
 					for (i = 0; i < 2; i += 1) {
 						if (corpseList.length > 0) {
-							//print("[Explode] range=" + range + " unit=" + unit.name + " corpses=" + corpseList.length);	// 260510
 							corpse = corpseList.shift();
 
 							if (corpse) {
@@ -566,11 +532,9 @@ var ClassAttack = {
 									me.overhead("Exploding: " + corpse.classid + " " + corpse.name);
 
 									if (Skill.cast(Config.ExplodeCorpses, 0, corpse)) {
-										//print("[Explode] ok");
 										delay(200);
 									}
 								} else {
-									//print("[Explode] failed dead:" + unit.dead + " checkCorpse:" + this.checkCorpse(corpse));	// 260510
 								}
 							}
 						} else {

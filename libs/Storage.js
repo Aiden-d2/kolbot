@@ -204,7 +204,6 @@ Loop:
 
 				while ((getTickCount() - nDelay) < Math.max(1000, me.ping * 3 + 500)) {
 					if (!me.itemoncursor) {
-						//print("Successfully placed " + item.name + " at X: " + nPos.x + " Y: " + nPos.y);	//eom
 						me.overhead("Successfully placed " + item.name + " at X: " + nPos.x + " Y: " + nPos.y);	//eom
 						
 						delay(200);
@@ -216,8 +215,6 @@ Loop:
 				}
 			}
 
-			//return true;	//260816
-			
 			print("[Storage.MoveTo] retry item:" + item.name + " loc:" + this.location);	//260816
 			return false;	//260816
 		} catch (e) {
@@ -376,7 +373,6 @@ Loop:
 		}
 
 		return rv	//260827
-		//return !me.itemoncursor;
 	};
 
 	/* Container.Dump()
