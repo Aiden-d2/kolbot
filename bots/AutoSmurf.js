@@ -3294,6 +3294,8 @@ function AutoSmurf() {
 			D2Bot.printToConsole("=== SUMMONER ===", 7);
 		}
 		
+		print(me.getQuest(13, 0));	//260929
+		
 		doneChores = false;
 		
 		return true;
