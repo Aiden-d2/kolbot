@@ -134,7 +134,7 @@ var AutoBuildTemplate = {
 				Config.LowManaSkill = [-1, -1];
 				Config.PacketCasting = 1;								// 0 = disable, 1 = packet teleport, 2 = full packet casting.
 				
-				Config.AttackSkill = [-1, 112, 114, 112, 114, -1, -1];
+				Config.AttackSkill = [-1, 112, 114, 112, 114, 101, 114];
 				Config.Vigor = true;
 			}
 		},
@@ -154,14 +154,9 @@ var AutoBuildTemplate = {
 			}
 		},
 
-	30:	{
-			Update: function () {
-				Config.AttackSkill = [-1, 112, 123, 112, 123, 101, 123];	// Blessed Hammer + Conviction
-			}
-		},
-
 	46:	{
 			Update: function () {
+				Config.AttackSkill = [-1, 112, 123, 112, 123, 101, 123];	// Blessed Hammer + Conviction
 				Config.Cleansing = true;
 			}
 		}
