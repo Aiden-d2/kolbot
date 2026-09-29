@@ -67,7 +67,6 @@ var Config = {
 	PickitFiles: ["X.nip", "Y.nip", "Z.nip", "V.nip"],
 	
 	//Pathing
-	//OpenChests: false,
 	OpenChests: 2,	//260928 2 = the full container list (what Attack.clear used to open). Opened by Pather on clearPath moves
 	UseKeys: false,	//260928 key handling (need check, buying, keeping) apart from OpenChests. Off: only assassins open locked chests
 	ScanShrines: [1, 2, 3],
@@ -88,7 +87,6 @@ var Config = {
 
 	Dodge: {
 		Enabled: false,
-		//Range: 13,
 		Range: 9,	//260927 skills with at least this range dodge (Frozen Orb / Nova 9 included); also the radius monsters are counted in (trigger and candidates)
 		Count: 1,
 		HP: 100,
