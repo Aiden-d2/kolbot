@@ -473,30 +473,27 @@ function AutoSmurf() {
 		teamOk = false;
 	};
 
-	// Object dialogs (journal, frozen Anya, ancients' altar): wait as before, but cancel the dialog as soon as it shows.	//260929
-	// An NPC talk cut short by me.cancel() leaves the game's talk callback registered; when an object dialog then ends by itself,
-	// the game runs that callback without an NPC menu list and crashes (Game.exe 0x661406). Cancelling before it ends avoids that.
-	this.cancelObjectDialog = function (wait) {	//260929
-		var tick = getTickCount(),
-			seen = -1,	//260929 temp ms until the dialog first showed
-			cancels = 0;	//260929 temp
+	// Log only (no behavior change): waits exactly like delay(wait) and records whether an object dialog showed and when it ended.	//260929 temp
+	// For the Game.exe 0x661406 crash (stale NPC talk callback run when a dialog ends), see docs/claude/handoff.md 7.
+	this.watchDialog = function (wait) {	//260929 temp
+		var talking,
+			tick = getTickCount(),
+			shown = -1,
+			gone = -1;
 		
 		while (getTickCount() - tick < wait) {
-			if (getIsTalkingNPC()) {
-				if (seen < 0) {	//260929 temp
-					seen = getTickCount() - tick;
-				}
-				
-				me.cancel();
-				cancels += 1;	//260929 temp
+			talking = getIsTalkingNPC();
+			
+			if (talking && shown < 0) {
+				shown = getTickCount() - tick;
+			} else if (!talking && shown >= 0 && gone < 0) {
+				gone = getTickCount() - tick;
 			}
 			
 			delay(10);
 		}
 		
-		Misc.trace("[OD] " + (seen < 0 ? "no dialog" : "dialog at " + seen + "ms cancels:" + cancels) + " wait:" + wait);	//260929 temp
-		
-		me.cancel();
+		Misc.trace("[OD] " + (shown < 0 ? "no dialog" : "dialog at " + shown + "ms " + (gone < 0 ? "still up" : "gone at " + gone + "ms")) + " wait:" + wait);
 	};
 
 	this.buffCount = function(act) { // Goes to Town, buys three Antidote potions from Akara, drinks them, and returns to Catacombs Level 4.
@@ -3247,7 +3244,9 @@ function AutoSmurf() {
 			if (journal) {
 				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-				this.cancelObjectDialog(me.ping * 2 + 1000);	//260929 was delay + Misc.click(0, 0)
+				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
+
+				Misc.click(0, 0);
 			}
 		}
 
@@ -3997,7 +3996,7 @@ function AutoSmurf() {
 			target = getUnit(2, 193);
 
 			Misc.openChest(target);
-			this.cancelObjectDialog(300);	//260929
+			this.watchDialog(300);	//260929 temp was delay
 
 			target = getUnit(4, 548);
 			Pickit.pickItem(target);
@@ -5188,7 +5187,8 @@ function AutoSmurf() {
 							Pather.moveToUnit(anya);
 						}
 						anya.interact();
-						this.cancelObjectDialog(me.ping * 2 + 200);	//260929
+						this.watchDialog(me.ping * 2 + 200);	//260929 temp was delay
+						me.cancel();
 					}
 
 					if (!Pather.usePortal(109, null)) {
@@ -5231,7 +5231,8 @@ function AutoSmurf() {
 					}
 					
 					anya.interact();
-					this.cancelObjectDialog(me.ping * 2 + 1000);	//260929
+					this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
+					me.cancel();
 				}
 			} else {
 				delay(5000);
@@ -5370,7 +5371,8 @@ function AutoSmurf() {
 				while (altar.mode !== 2) {
 					Pather.moveToUnit(altar);
 					altar.interact();
-					this.cancelObjectDialog(me.ping * 2 + 2000);	//260929
+					this.watchDialog(me.ping * 2 + 2000);	//260929 temp was delay
+					me.cancel();
 				}
 			}
 
@@ -6628,7 +6630,9 @@ function AutoSmurf() {
 			if (journal) {
 				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-				this.cancelObjectDialog(me.ping * 2 + 1000);	//260929 was delay + Misc.click(0, 0)
+				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
+
+				Misc.click(0, 0);
 			}
 		}
 		
