@@ -103,7 +103,7 @@ Attack.clear(range, must)
     단, 그 대상이 MUST가 아니면
       → 나와 25(leashRange) 이상 떨어진 MUST(deferred·lost 제외)가 있으면 그 MUST (목줄)
       (260929: "그 대상이 나와 10 초과일 때만" 조건 제거. 주변 10을 먼저 치워도 가는 길은 어차피 청소하지 않고 보스만 멀어진다)
-    카오스(108): 보스 아닌(spectype & 0x1 없음) StormCaster(306)가 나와 0x4로 막혀 있으면 SWEEP 버림 (NoSkipArea 제외, 기존 규칙 복원)
+    카오스(108): 보스 아닌(spectype & 0x1 없음) StormCaster(306)가 나와 0x4로 막혀 있으면 SWEEP 버림 (기존 규칙 복원)
     (이전 clear의 Angle/Detour 게이트는 setPosition 접근 판정으로 옮김. 6절. 해머는 getHammerPosition 게이트)
 
  5. 공격
@@ -112,12 +112,12 @@ Attack.clear(range, must)
  6. 평가
     결과 2 (유효 스킬 없음)            SWEEP 버림 / MUST deferred(뒤로). 다른 후보가 없을 때만 짧게 대기
     결과 2가 아니면                    deferred 해제
-    tick.fail == "unreachable"        SWEEP 버림 / MUST flash 후 계속   (NoSkipArea에서는 아래 재시도 경로)
+    tick.fail == "unreachable"        SWEEP 버림 / MUST 뒤로 보냄(deferred, 남은 게 없을 때만 대기)   (260929: flash 후 재선택 → deferred, NoSkipArea 제거)
     결과 0 or tick.fail               대상별 retry + flash. 5회째: SWEEP 버림 / MUST retry 리셋
     결과 1 && 시전 없음 (idle)         SWEEP 5회 연속이면 버림(이전 HP 스킵과 같은 횟수) / MUST는 5회마다 flash (시전하면 0으로)
     결과 1 && 실제 시전               대상별 시전 수 +1
                                       근접 스킬(사거리 < 4) 10시전마다 flash
-                                      SWEEP HP skip: 5시전 동안 HP 감소 20% 미만 → gidSkip 등록 + 버림 (NoSkipArea 제외, 기준 HP는 합류 시점)
+                                      SWEEP HP skip: 5시전 동안 HP 감소 20% 미만 → gidSkip 등록 + 버림 (기준 HP는 합류 시점)
 
 [종료]
   실제 시전 1회 이상 → Pickit.pickItems(range, 0이면 기본 25) → ClassAttack.afterAttack()
@@ -165,6 +165,7 @@ setPosition(unit, distance, coll, minDist = 3)
   착지: 텔레 checkSpot(0x1) / 걷기 getCollision & 0x1
   타깃 시야: CollMap.checkColl(unit, 후보, coll)
   접근이면 불장판(4칸) 제외
+  박스 호출(tick.box): 박스 밖 착지 자리는 후보 아님 (접근·회피 공통. 도착 좌표만 검사하므로 직선으로 가든 우회하든 같음. 경로는 박스 밖을 지나도 됨) (260929)
   SWEEP 접근(Angle): 나→후보가 0x4로 막힌 자리는 후보 아님 (텔레·걷기 모두, 우회 후보도 포함). MUST는 이 조건 없음
   걷기: 나→후보 직선(0x5) 막힘 → 접근이면 "우회 후보"로 1개 기억, 회피면 제외
 
@@ -181,7 +182,7 @@ setPosition(unit, distance, coll, minDist = 3)
 
 반환
   이동 성공 / 이동 불필요 / 회피 후보 없음 / 회피 이동 실패 → true (제자리 시전)
-  접근 후보 없음 → false, tick.fail = "unreachable"
+  접근 후보 없음 → false, tick.fail = "unreachable" (박스 밖이라 뺀 후보가 있으면 trace `[SP] fence`)
   접근 이동 실패 (throw 포함) → false, tick.fail = "moveFailed"
 ```
 
@@ -206,6 +207,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | `moved` | `setPosition` | 이번 틱에 이동 |
 | `fail` | `setPosition` | `"unreachable"` / `"moveFailed"` |
 | `must` | `clear` | 이번 대상이 MUST (setPosition의 Angle·Detour 판정, 해머 게이트 면제) |
+| `box` | `clear` | 박스 호출의 박스. setPosition 착지 자리를 박스 안으로 제한 (260929). finally에서 null |
 | `monList` | `clear` 스캔 | 위협 목록 (루프 밖이면 null → setPosition이 직접 스캔) |
 
 - `clear`가 `doAttack` 직전에 `cast`, `moved`, `fail`을 초기화한다. 프리캐스트 등 다른 시전은 영향 없다
@@ -223,7 +225,6 @@ setPosition(unit, distance, coll, minDist = 3)
 | `Config.Dodge.Step` | 5 | Config.js | 링 간격, 호 간격 |
 | `Config.Dodge.Count` | 1 | Config.js | 미사용 (구 `dodge` 전용). `SafeTele.Count`와는 별개 |
 | `Config.DetourPath` | 4 | Config.js | 우회 한도: 나→몹 걷는 경로 ≤ 나→몹 직선 × 4 (SWEEP만. setPosition 걷기 우회, 해머 게이트) |
-| `Config.NoSkipArea` | `[17]` | Config.js | 도달 불가 즉시 버림과 HP skip을 하지 않는 지역 |
 | `Attack.dangerRange` | 10 | Attack.js | 위험 반경 |
 | `Attack.leashRange` | 25 | Attack.js | 목줄 |
 | `Pather.maxTeleDistance` | 45 | Pather.js | 한 번의 텔레 한계 |
@@ -263,7 +264,7 @@ setPosition(unit, distance, coll, minDist = 3)
 |---|---|
 | `libs/Misc.js` | `Skill.cast`에 시전 기록. 마나 판정 `비용 + 1 > mp` → `비용 > mp` (260928, 직업 파일의 LowManaSkill 판정과 일치). `getManaCost` 캐시 제거 (매번 현재 스킬 레벨로 계산). `openChests`의 갈 수 있는지 검사를 `CollMap.checkColl(me, 상자, 0x5)`로 (걷기·텔레 공통) |
 | `libs/Pather.js` | `NodeAction.killMonsters`: spectype 인자 제거. 카오스(108)는 `clear(20)`, 그 외는 `clear(25)`가 false면 `"killMonsters"` 반환(이동 중단). false는 사망·카우킹·스킬 미보유 정지일 때만 (사용자 정리, 260927) |
-| `libs/Attacks/Paladin.js` | `getHammerPosition` 맨 앞에 이전 clear의 Angle/Detour 게이트 (해머는 setPosition을 안 거침). 조건 0x5 (해머는 몹 옆에 서야 하므로 0x1로 막혀도 이동이 필요). 막히면 `tick.fail = "unreachable"`. MUST·NoSkipArea는 게이트 없음 |
+| `libs/Attacks/Paladin.js` | `getHammerPosition` 맨 앞에 이전 clear의 Angle/Detour 게이트 (해머는 setPosition을 안 거침). 조건 0x5 (해머는 몹 옆에 서야 하므로 0x1로 막혀도 이동이 필요). 막히면 `tick.fail = "unreachable"`. MUST는 게이트 없음 (260929 NoSkipArea 제거). 박스 울타리는 적용 안 함(설 자리가 몹 옆 5칸 이내, 회피 없음) |
 | `libs/Attacks/Barbarian.js` | preattack이 대입 전 `attackSkill`을 참조 → `Config.AttackSkill[0]`. `findItem`의 `clear(10, false×4)` → `clear(10)` |
 | `libs/Attack.js` | `getSkillElement`: Telekinesis(43) → `"none"` (면역과 무관하게 사용) |
 | `libs/Config.js` | `Dodge.Range` 13 → 9, `OpenChests: 2` (260928) |
@@ -313,6 +314,10 @@ setPosition(unit, distance, coll, minDist = 3)
 | 고대인 | `[540, 541, 542]` 시험 | 예전 배열 호출이 놓친 원인(빈 목록 즉시 종료, 첫 성공 전 refresh 없음, shift)이 해소됨 |
 | 레벨업 | `Attack.init()` 무조건 재호출 | 이미 include한 파일은 엔진이 건너뜀. 부작용 없음 (핸들러는 default.dbj에만 등록) |
 | 박스 + range | range 강제 0 | 박스 밖 대상이 섞이지 않게 |
+| 박스 울타리 (260929) | 박스 호출이면 setPosition 착지 자리를 박스 안으로 제한. 모든 박스 호출(아케인·톰즈·탈무덤·트라빈컬·바알 쓰론) 자동 적용, 새 인자 없음. 도착 좌표만 검사. 해머 제외 | 박스는 대상 필터보다 "박스 밖으로 나가지 않기"가 주 목적(사용자). 링이 사거리부터 5까지 있어 바깥 링이 박스 밖이면 안쪽 링에서 고름 |
+| MUST unreachable (260929) | flash 후 재선택 → 뒤로 보냄(deferred) | 거리순이라 같은 MUST를 계속 골라 나머지를 못 쳤음. 다른 전투 중 내 위치·몹 위치가 바뀌면 풀림. MUST unreachable은 몹 주위 반경 5~사거리의 모든 자리가 실패할 때만 나와 드묾(텔레·걷기 모두 길이 제한 없음). 대가: deferred 동안 목줄 제외 |
+| 바바리안 선공격 (260929) | Howl 사거리 밖일 때의 setPosition 실패 → `return 0` | 리턴 없이 본공격으로 넘어가 `tick.fail = "unreachable"`이 남아, 본공격이 성공한 틱도 unreachable로 판정됨. 다른 클래스는 모두 실패 시 return 0. 사거리 안이면 setPosition을 안 부르는 거리 조건(진동 방지)은 그대로 |
+| NoSkipArea (260929) | 키와 조건 5곳 제거 | 로컬 `[]`로 1막~헬 파밍 한 사이클 문제없음 (사용자 확인) |
 
 ### 12-2. 기각 (반복 금지)
 | 안 | 기각 이유 |

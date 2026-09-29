@@ -10,7 +10,10 @@ var ClassAttack = {
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Attack.getSkillElement(Config.AttackSkill[0])) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
 			
 			if (getDistance(me, unit) > Skill.getRange(Config.AttackSkill[0])) {	//260927 attackSkill was read before assignment
-				Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4);
+				// a failed approach ends the tick: going on to the main attack left tick.fail "unreachable" behind for a tick that did attack	//260929
+				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260929
+					return 0;
+				}
 			} else {
 				Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]));
 			}

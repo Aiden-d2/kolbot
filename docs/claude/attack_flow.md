@@ -163,13 +163,13 @@ getUnit(1)로 몬스터를 하나씩:
 | 순서 | 조건 | SWEEP | MUST |
 |---|---|---|---|
 | ① (367~384) | doAttack이 2 반환 (먹히는 스킬 없음) | 버림 (`noskill`) | 뒤로 보냄(`deferred`). 다른 대상이 없을 때만 잠깐 대기 |
-| — (386) | 2가 아니면 | | deferred 해제 (면역이 풀렸을 수 있음) |
-| ② (388~396) | `tick.fail == "unreachable"` (setPosition이 갈 자리 없다고 함), NoSkipArea 밖 | **즉시 버림** (`unreachable`) | flash만 하고 계속 |
+| ② | `tick.fail == "unreachable"` (setPosition이 갈 자리 없다고 함) | **즉시 버림** (`unreachable`) | 뒤로 보냄(`deferred`). 다른 대상이 없을 때만 잠깐 대기 (260929, 이전: flash만 하고 계속) |
+| — | 2도 unreachable도 아니면 (260929 ② 뒤로 옮김) | | deferred 해제 (면역이 풀렸거나 설 자리가 생겼을 수 있음) |
 | ③ (398~411) | 결과 0 또는 `tick.fail` 있음 (이동 실패 등) | retry +1, flash. 5번째에 버림 (`retry`) | retry +1, flash. 5번째에 0으로 되돌리고 계속 |
 | ④ (413~425) | 결과 1인데 `tick.cast`가 false (시전 안 함) | idle +1. **5번 연속이면 버림** (`idle`) | idle +1. 5의 배수마다 flash |
 | ⑤ (427~430) | 실제로 시전함 | retry·idle 0으로, 시전 수 +1 | 같음 |
 | ⑥ (432~434) | 근접 스킬(사거리 4 미만)이고 시전 10회마다 | flash | 같음 |
-| ⑦ (436~451) | **HP 스킵** (SWEEP만, NoSkipArea 밖): 시전 5회 동안 HP가 20% 미만으로 줄면 | `gidSkip`에 기록하고 버림 (`hp`). 20% 이상 줄었으면 기준 HP를 새로 잡음 | 해당 없음 |
+| ⑦ (436~451) | **HP 스킵** (SWEEP만): 시전 5회 동안 HP가 20% 미만으로 줄면 | `gidSkip`에 기록하고 버림 (`hp`). 20% 이상 줄었으면 기준 HP를 새로 잡음 | 해당 없음 |
 
 - `drop`으로 버린 대상은 이번 clear 호출이 끝날 때까지 다시 받지 않는다.
 - clear는 이동 중 경로 노드마다, 또는 대기 루프에서 반복해서 불리므로, 다음 호출에서 다시 잡힐 수 있다.
@@ -357,5 +357,5 @@ setPosition과 직업 파일은 반환값(0/1/2)만으로는 "왜 실패했는�
 | `libs/Config.js` | `Dodge.Range` 13 → 9, `OpenChests: 2` |
 | `libs/Attacks/Barbarian.js` | 선공 사거리를 `Config.AttackSkill[0]`로 (대입 전 변수 참조 버그), `findItem`의 `clear(10)` |
 | `libs/Attacks/Necromancer.js` | 소환 전용(500) 틱을 시전으로 셈: `Attack.tick.cast = true` |
-| `libs/Attacks/Paladin.js` `getHammerPosition` | 해머는 setPosition을 안 거치므로, 맨 앞에 예전 clear의 Angle/Detour 게이트(30여 줄)를 두었다. 조건 0x5. 막히면 `tick.fail = "unreachable"`. MUST·NoSkipArea는 제외 |
+| `libs/Attacks/Paladin.js` `getHammerPosition` | 해머는 setPosition을 안 거치므로, 맨 앞에 예전 clear의 Angle/Detour 게이트(30여 줄)를 두었다. 조건 0x5. 막히면 `tick.fail = "unreachable"`. MUST는 제외 |
 | `bots/AutoSmurf.js` | 호출부를 새 형태로 변환 (1-0절 표), `clearDen`, `followDriver`, 고대인 배열 호출 |
