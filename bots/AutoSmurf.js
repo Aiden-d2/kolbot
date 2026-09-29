@@ -3140,7 +3140,7 @@ function AutoSmurf() {
 	};
 
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
-		var journal, i, atma,
+		var journal, i,
 			chicken = Config.LifeChicken;
 
 		print("ÿc4=== [SUMMONER] ===");
@@ -5803,7 +5803,7 @@ function AutoSmurf() {
 		
 		Pather.moveToPreset(me.area, 2, 580, myX, myY);	//260929
 		
-		this.okCount();
+		this.okCount(15);
 
 		Precast.doPrecast(true);
 		
