@@ -89,6 +89,12 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - `ignoredCheck`의 열쇠 조건은 원래 반대로 동작했다(OpenChests가 꺼져 있을 때 보관). 지금은 UseKeys가 켜져 있을 때만 보관한다.
 - 파티 방침: 잠긴 상자는 어새신만 연다. `Misc.openChest`의 잠김 검사(열쇠가 없으면 이동 전에 건너뜀)는 유지한다.
 
+**Pather 이동의 pop 인자 (260929)**
+- `pop`은 경로의 마지막 노드를 지워 목적지 한 노드 앞(걷기 약 5칸, 텔레 최대 약 35칸)에서 멈추게 한다(`Pather.moveTo`). `Pather.js`는 건드리지 않고 AutoSmurf 호출부에서만 정한다.
+- 규칙: **기본은 pop 없음.** 순수 이동으로 **몬스터에게 다가갈 때만**(바로 붙지 않게) pop을 쓴다. 텔레도 걷기와 똑같이 적용한다. 위치 선정·재집결(clear 뒤 재이동, `myX`/`myY` 자리, 오프셋으로 설 자리를 정한 이동)은 pop 없음.
+- 현재 pop=true: Blood Raven 묘지(`moveTo`), Treehead 나무 첫 이동(738), Rakanishu 스톤 첫 이동(737, cain·trist). clear 뒤 재이동(나무·스톤·trist·Countess 580)은 pop을 뺐다.
+- 뒤에 붙은 기본값 인자(오프셋 0, clearPath false, pop false)는 쓰지 않는다.
+
 ## 6. 알아 두면 좋은 사실 (확인됨)
 - **D2BS `me.mp`:** 실제 마나를 내림한 정수다(`JSUnit.cpp:262`, stat 8 `>> 8`).
 - **D2BS `include`:** 이미 include한 파일은 다시 실행하지 않는다(`Script.cpp:308`).

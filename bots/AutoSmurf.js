@@ -1523,7 +1523,8 @@ function AutoSmurf() {
 
 				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 10) {
 					try {
-						Pather.moveToPreset(me.area, 2, wpIDs[i], 0, 0, false, false);
+						//Pather.moveToPreset(me.area, 2, wpIDs[i], 0, 0, false, false);
+						Pather.moveToPreset(me.area, 2, wpIDs[i]);	//260929
 					} catch (e) {
 						print("Caught Error");
 
@@ -1556,7 +1557,8 @@ function AutoSmurf() {
 
 						delay(me.ping * 2 + 500);
 
-						Pather.moveToUnit(presetUnit, 0, 0, false, false);
+						//Pather.moveToUnit(presetUnit, 0, 0, false, false);
+						Pather.moveToUnit(presetUnit);	//260929
 					}
 				}
 			}
@@ -1793,7 +1795,8 @@ function AutoSmurf() {
 			throw new Error("placeFlail: Couldn't find Compelling Orb");
 		}
 
-		Pather.moveToUnit(orb, 0, 0, false, false);
+		//Pather.moveToUnit(orb, 0, 0, false, false);
+		Pather.moveToUnit(orb);	//260929
 
 		for (i = 0; i < 5; i += 1) {
 			if (orb) {
@@ -2202,7 +2205,8 @@ function AutoSmurf() {
 					Attack.clear(25);	//260921
 					//Attack.clear(25, 0, getLocaleString(2873));	// Treehead WoodFist	//260921
 					
-					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
+					//Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
+					Pather.moveToPreset(me.area, 1, 738, 5, 5, true); //move to tree	//260929
 					
 					if (Leader) {
 						if (!Pather.getPortal(null, null)) {
@@ -2269,7 +2273,8 @@ function AutoSmurf() {
 			Attack.clear(25);	//260921
 			//Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
 			
-			Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
+			//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
+			Pather.moveToPreset(me.area, 1, 737, myX, myY, true);	//260822	//260929
 			
 			if (!me.getQuest(4, 4) && me.findItem(525)) {		 //redportal already open
 				stoneA = getUnit(2, 17);
@@ -2288,7 +2293,8 @@ function AutoSmurf() {
 			} else {
 				while (!Pather.getPortal(38)) {
 					Attack.clear(20);
-					Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
+					//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
+					Pather.moveToPreset(me.area, 1, 737, myX, myY, true);	//260822	//260929
 					delay(500);
 				}
 			}
@@ -2397,7 +2403,8 @@ function AutoSmurf() {
 		Attack.clear(25);	//260921
 		//Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
 		
-		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true); //260719	//260822
+		//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true); //260719	//260822
+		Pather.moveToPreset(me.area, 1, 737, myX, myY, true); //260719	//260822	//260929
 
 		for (i = 0; i < 5; i += 1) {
 			if (Pather.usePortal(38)) {
@@ -3262,7 +3269,8 @@ function AutoSmurf() {
 
 			while (getDistance(me.x, me.y, journal.roomx * 5 + journal.x + 8, journal.roomy * 5 + journal.y + 8) > 10) {	//260411
 				try {
-					Pather.moveToPreset(74, 2, 357, 8, 8, false, false);	//260411
+					//Pather.moveToPreset(74, 2, 357, 8, 8, false, false);	//260411
+					Pather.moveToPreset(74, 2, 357, 8, 8);	//260411	//260929
 				} catch (e) {
 					print("Caught Error");
 
@@ -3689,7 +3697,8 @@ function AutoSmurf() {
 				
 				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 40) {
 					try {
-						Pather.moveToUnit(presetUnit, 10, 10, false);
+						//Pather.moveToUnit(presetUnit, 10, 10, false);
+						Pather.moveToUnit(presetUnit, 10, 10);	//260929
 					} catch (e) {
 						print("Caught Error");
 						print(e);
@@ -3818,7 +3827,8 @@ function AutoSmurf() {
 
 				while (getDistance(me.x, me.y, orifice.roomx * 5 + orifice.x, orifice.roomy * 5 + orifice.y) > 10) {
 					try {
-						Pather.moveToPreset(getRoom().correcttomb, 2, 152, 0, 0, false, false);
+						//Pather.moveToPreset(getRoom().correcttomb, 2, 152, 0, 0, false, false);
+						Pather.moveToPreset(getRoom().correcttomb, 2, 152);	//260929
 					} catch (e) {
 						print("Caught Error");
 
@@ -4475,7 +4485,8 @@ function AutoSmurf() {
 			
 			while (getDistance(me.x, me.y, redPortal.roomx * 5 + redPortal.x, redPortal.roomy * 5 + redPortal.y) > 10) {
 				try {
-					Pather.moveToPreset(102, 2, 342, 0, 0, false, false);
+					//Pather.moveToPreset(102, 2, 342, 0, 0, false, false);
+					Pather.moveToPreset(102, 2, 342);	//260929
 				} catch (e) {
 					print("Caught Error");
 
@@ -5195,7 +5206,8 @@ function AutoSmurf() {
 			for (k = 0; k < coords.length; k += 1) {
 				me.overhead("Going to barbspot " + (k + 1) + "/" + barbSpots.length);
 				
-				Pather.moveToUnit(coords[k], 0, 0);
+				//Pather.moveToUnit(coords[k], 0, 0);
+				Pather.moveToUnit(coords[k]);	//260929
 				door = getUnit(1, 434);
 				if (door) {
 					Pather.moveToUnit(door, -5, 0);
@@ -5308,7 +5320,8 @@ function AutoSmurf() {
 				
 				while (true) {
 					unit = getPresetUnit(me.area, 2, 460);
-					Pather.moveToUnit(unit, 10, 10, false);
+					//Pather.moveToUnit(unit, 10, 10, false);
+					Pather.moveToUnit(unit, 10, 10);	//260929
 					
 					anya = getUnit(2, 558);	
 					if (anya && getDistance(me, anya) < 50) {
@@ -5346,7 +5359,8 @@ function AutoSmurf() {
 			Pather.teleport = true;	//260920
 			
 			unit = getPresetUnit(me.area, 2, 460); // don't delete this // eom
-			Pather.moveToUnit(unit, 0, 0, false);
+			//Pather.moveToUnit(unit, 0, 0, false);
+			Pather.moveToUnit(unit);	//260929
 			
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
 			
@@ -6048,7 +6062,8 @@ function AutoSmurf() {
 		Attack.clear(15, getLocaleString(2875));	//260929
 		//Attack.clear(20, 0, getLocaleString(2875)); // Countess
 		
-		Pather.moveToPreset(me.area, 2, 580, myX, myY, true, true);	//260822
+		//Pather.moveToPreset(me.area, 2, 580, myX, myY, true, true);	//260822
+		Pather.moveToPreset(me.area, 2, 580, myX, myY, true);	//260822	//260929
 		
 		this.okCount();
 
@@ -6872,7 +6887,8 @@ function AutoSmurf() {
 
 			while (getDistance(me.x, me.y, journal.roomx * 5 + journal.x + 8, journal.roomy * 5 + journal.y + 8) > 10) {
 				try {
-					Pather.moveToPreset(74, 2, 357, 8, 8, false, false);
+					//Pather.moveToPreset(74, 2, 357, 8, 8, false, false);
+					Pather.moveToPreset(74, 2, 357, 8, 8);	//260929
 				} catch (e) {
 					print("Caught Error");
 
@@ -7016,7 +7032,8 @@ function AutoSmurf() {
 		redPortal = getPresetUnit(102, 2, 342);
 		
 		while (getDistance(me.x, me.y, redPortal.roomx * 5 + redPortal.x, redPortal.roomy * 5 + redPortal.y) > 10) {
-			Pather.moveToPreset(102, 2, 342, 0, 0, false, false);
+			//Pather.moveToPreset(102, 2, 342, 0, 0, false, false);
+			Pather.moveToPreset(102, 2, 342);	//260929
 		}
 		
 		while (me.area === 102) {
