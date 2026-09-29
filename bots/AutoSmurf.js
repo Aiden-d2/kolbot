@@ -477,15 +477,24 @@ function AutoSmurf() {
 	// An NPC talk cut short by me.cancel() leaves the game's talk callback registered; when an object dialog then ends by itself,
 	// the game runs that callback without an NPC menu list and crashes (Game.exe 0x661406). Cancelling before it ends avoids that.
 	this.cancelObjectDialog = function (wait) {	//260929
-		var tick = getTickCount();
+		var tick = getTickCount(),
+			seen = -1,	//260929 temp ms until the dialog first showed
+			cancels = 0;	//260929 temp
 		
 		while (getTickCount() - tick < wait) {
 			if (getIsTalkingNPC()) {
+				if (seen < 0) {	//260929 temp
+					seen = getTickCount() - tick;
+				}
+				
 				me.cancel();
+				cancels += 1;	//260929 temp
 			}
 			
 			delay(10);
 		}
+		
+		Misc.trace("[OD] " + (seen < 0 ? "no dialog" : "dialog at " + seen + "ms cancels:" + cancels) + " wait:" + wait);	//260929 temp
 		
 		me.cancel();
 	};
