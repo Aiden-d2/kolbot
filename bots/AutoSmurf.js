@@ -3244,9 +3244,7 @@ function AutoSmurf() {
 			if (journal) {
 				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
-
-				Misc.click(0, 0);
+				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			}
 		}
 
@@ -5382,13 +5380,13 @@ function AutoSmurf() {
 			
 			Attack.clear(0, [540, 541, 542]);	//260928 all three as must targets, nearest first
 			
-			delay(me.ping * 2 + 1000);
+			this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
 			me.cancel();
 			sendPacket(1, 0x40); //fresh Quest state.
 			
 			if (!me.getQuest(39,0)) {	//260719
 				
-				delay(me.ping * 2 + 1000);
+				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
 				me.cancel();
 				sendPacket(1, 0x40); //fresh Quest state.
 			}
@@ -5407,8 +5405,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			Misc.click(0, 0);
-			me.cancel();	//260916
+			me.cancel();	//260916	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			Pather.makePortal();
 			Pather.moveToExit([128, 129], true);
 			this.clickWP();
@@ -6630,9 +6627,7 @@ function AutoSmurf() {
 			if (journal) {
 				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
-
-				Misc.click(0, 0);
+				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			}
 		}
 		
