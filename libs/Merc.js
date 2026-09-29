@@ -317,13 +317,37 @@ var Merc = {
 	packet: function (pByte) {
 		switch (pByte[0]) {
 			case 0x4f:
+				Merc.packetLog("0x4f");	//260929 temp [MP] log
 				Merc.list = [];
 				break;
 			case 0x4e:
+				Merc.packetLog("0x4e");	//260929 temp [MP] log
 				var name = ((pByte[1]) | (pByte[2] << 8)),
 					seed = ((pByte[3]) | (pByte[4] << 8) | (pByte[5] << 16) | (pByte[6] << 24)) >>> 0;
 				Merc.list.push(new Merc.candidate(name, seed));
 				break;
+		}
+	},
+
+	// Log only (no behavior change): when the mercenary list packets arrive, measured from the moment the
+	// gamepacket listener is turned on, and how far the hire NPC is at that time.	//260929 temp
+	// D2BS makes the game thread wait for the script on every packet while the listener is on (Events.cpp
+	// PacketEventCallback, up to 500ms each); suspected cause of the 17:40 a3/a8 hang (docs/claude/handoff.md 7).
+	packetTick: 0,	//260929 temp
+	packetNpc: "",	//260929 temp
+
+	packetLog: function (what) {	//260929 temp
+		var npc, dist = "none";
+
+		try {
+			npc = getUnit(1, Merc.packetNpc);
+
+			if (npc) {
+				dist = Math.round(getDistance(me, npc));
+			}
+
+			Misc.trace("[MP] " + what + " at " + (getTickCount() - Merc.packetTick) + "ms npc:" + Merc.packetNpc + " dist:" + dist);
+		} catch (e) {
 		}
 	},
 
@@ -415,12 +439,16 @@ var Merc = {
 		Town.goToTown(act);
 		
 		addEventListener("gamepacket", Merc.packet);
+		Merc.packetTick = getTickCount();	//260929 temp [MP] log: listener on time
 
 		var npcName = Town.tasks[me.act - 1]["Merc"];
+		Merc.packetNpc = npcName;	//260929 temp [MP] log
 	
 		Town.move(npcName);
+		Merc.packetLog("arrived");	//260929 temp [MP] log
 		
 		Town.initNPC("Merc", "hireMerc");
+		Merc.packetLog("menu done");	//260929 temp [MP] log
 
 		removeEventListener("gamepacket", Merc.packet);
 
