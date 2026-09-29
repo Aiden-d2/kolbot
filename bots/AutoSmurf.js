@@ -3252,41 +3252,6 @@ function AutoSmurf() {
 		
 		me.cancel();
 		
-		if (Leader) {
-			if (!Pather.getPortal(null, null)) {
-				Pather.makePortal();
-			}
-		}
-		
-		var tick = getTickCount();
-		
-		while (!Pather.usePortal(null, null)) {
-			delay(me.ping * 2 + 200);
-			
-			if (getTickCount() - tick > 3 * 1000) {
-				Town.goToTown();
-				delay(me.ping * 2 + 100);
-				break;
-			}
-		}
-		
-		Town.move("atma");
-		atma = getUnit(1, "atma");
-		atma.openMenu();
-		me.cancel();
-		
-		Town.move("portalspot");
-		
-		while (!Pather.usePortal(74, null)) {
-			delay(me.ping * 2 + 200);
-		}
-		
-		if (Leader) {
-			if (!Pather.getPortal(null, null)) {
-				Pather.makePortal();
-			}
-		}
-		
 		while (me.area === 74) {
 			Pather.usePortal(46);
 			delay(me.ping * 2 + 200);
@@ -5834,9 +5799,9 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 
-		Attack.clear(15, getLocaleString(2875));	//260929
+		Attack.clear(0, getLocaleString(2875));	//260929
 		
-		Pather.moveToPreset(me.area, 2, 580, myX, myY, true);	//260822	//260929
+		Pather.moveToPreset(me.area, 2, 580, myX, myY);	//260929
 		
 		this.okCount();
 
