@@ -3213,17 +3213,25 @@ function AutoSmurf() {
 		
 		journal = getUnit(2, 357);
 		
-		for (i = 0; i < 3; i += 1) {
-			if (Pather.getPortal(46)) {
-				break;
+		if (Leader) {	//260929 only the leader reads the journal; the others use the red portal it opens
+			for (i = 0; i < 3; i += 1) {
+				if (Pather.getPortal(46)) {
+					break;
+				}
+				
+				if (journal) {
+					sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
+
+					delay(me.ping * 2 + 1000);
+
+					Misc.click(0, 0);
+				}
 			}
+		} else {
+			var waitTick = getTickCount();	//260929 wait for the leader's red portal
 			
-			if (journal) {
-				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
-
-				delay(me.ping * 2 + 1000);
-
-				Misc.click(0, 0);
+			while (!Pather.getPortal(46) && getTickCount() - waitTick < 10 * 1000) {
+				delay(250);
 			}
 		}
 
@@ -6599,17 +6607,19 @@ function AutoSmurf() {
 		
 		journal = getUnit(2, 357);
 		
-		for (i = 0; i < 3; i += 1) {
-			if (Pather.getPortal(46)) {
-				break;
-			}
-			
-			if (journal) {
-				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
+		if (Leader) {	//260929 only the leader reads the journal; the others wait in the usePortal(46) loop below
+			for (i = 0; i < 3; i += 1) {
+				if (Pather.getPortal(46)) {
+					break;
+				}
+				
+				if (journal) {
+					sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-				delay(me.ping * 2 + 1000);
+					delay(me.ping * 2 + 1000);
 
-				Misc.click(0, 0);
+					Misc.click(0, 0);
+				}
 			}
 		}
 		
