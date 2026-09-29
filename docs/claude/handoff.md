@@ -123,4 +123,9 @@ ProcDump(`C:\CrashDumps`)가 원래 예외 지점을 잡는다. WER 덤프의 0x
 - a7 덤프 상태가 이와 같다: 콜백 0x4b6a30, 메시지 0x172, `[0x7c0c69]`=0, 목록 NULL, 처리 중이던 텍스트는 저널(`[0x7bf234]`=0x165=357). 약 3분 전 AMULET 단계에서 Cain·Drognan에 `openMenu(); me.cancel();`을 했다. 메시지 0x172가 Drognan 대사인지는 확인하지 못했다.
 - 스크립트 쪽 발생 지점 후보: `Packet.openMenu`(`Misc.js:2617-2657`)는 NPC와 상호작용 중인데 메뉴(UI 0x08)가 500ms 넘게 안 뜨면 `me.cancel()`을 부른다. 퀘스트 대사 중이 이 상태다. `Unit.openMenu`(`Prototypes.js`)도 같은 구조다.
 - 이전의 Malah 크래시(약 8건, identify/buyPotions 중)도 이 유형일 가능성이 높다(덤프 없음, 추정).
-- 조치: 저널은 리더만 읽는다(260929, `summoner`, `farmingSummoner`). 근본 조치(대사 중에는 `me.cancel()` 대신 창 클릭 `sendClick`으로 넘기고, 메뉴가 뜬 뒤에만 닫기)는 설계 검토 중이다. `Misc.click`/`clickMap`은 월드 클릭 함수를 직접 부르므로 대사 닫기 핸들러를 타지 않는다.
+- 대사 텍스트가 스스로 끝나거나 클릭으로 끝나면 콜백이 실행된다(NPC 대사는 목록이 있어 안전, 오브젝트 대사는 목록이 없어 남은 콜백이 있으면 크래시). `me.cancel()`(대사 중 → `ClearScreen`)은 텍스트를 먼저 지워 콜백이 실행되지 않는다. 그래서 **오브젝트 대사는 끝나기 전에 끊는다**(blizzhackers kolbot도 같은 방식, D2BS 이력의 "summoner bug" 수정). NPC 대사 뒤 남은 콜백은 다음 NPC 상호작용 때 목록이 새로 만들어져 무해해진다. 콜백은 게임을 나가도 지워지지 않는다(0x4a0680).
+- 대사 확인: `getIsTalkingNPC()`(대사 닫기 핸들러 등록 여부). UI 0x08은 D2BS에서 NPCMENU와 DIALOG가 같은 값이라 대사 확인용으로 못 쓴다. `sendClick`은 창 메시지(메인 스레드), `clickMap`/`Misc.click`은 월드 클릭 함수 직접 호출.
+- 대사를 띄우는 오브젝트(objects.txt): 357 Horazon's Journal(OperateFn 42), 558 얼어붙은 Anya(67), 546 고대인 제단(65), 193 Lam Esen's Tome(28, `Misc.openChest`로 엶, 대사 여부 모름), 8 Tower Tome(6, 스크립트에서 안 씀).
+- 이전 Malah 크래시(약 8건)와 고대인 크래시(몇 건)는 덤프가 없어 확정 못 함. 앤야 단계는 Malah·Anya 대사 끊기와 얼어붙은 Anya 오브젝트 대사(1초 넘게 방치)가 모여 있다. 크래시 위치는 콜백을 남긴 곳이 아니라 다음 대사가 끝나는 곳이라 제각각일 수 있다.
+- 조치(260929): 저널은 리더만 읽는다(`summoner`, `farmingSummoner`). `this.cancelObjectDialog(wait)`: 기존 대기 시간은 유지하고 `getIsTalkingNPC()`이면 즉시 `me.cancel()`. 저널(`Misc.click` 제거), 얼어붙은 Anya 2곳, 고대인 제단에 적용. 새 덤프가 0x661406에서 사라지는지 확인한다.
+- 참고: 7절 이전 임바모드 비교의 기준 데이터(blizzhackers/d2data)는 D2R 기준이었다. `none.wav`(NPC 음성 대부분 교체), `CelFile null`, `Draw` 비움은 모드 변경이 맞지만, "게임 수치 표는 원본과 거의 같음"은 1.14d 기준으로 확인한 것이 아니다. 음성이 없어 대사가 빨리 끝나는지는 확인 못 함.
