@@ -299,11 +299,13 @@ var Attack = {
 					continue;
 				}
 
-				// 4. target: nearest first. A must target drifting past leashRange wins unless something is close to me
+				//// 4. target: nearest first. A must target drifting past leashRange wins unless something is close to me
+				// 4. target: nearest first. A must target drifting past leashRange wins right away; what is close to me is handled once I am next to it	//260929
 				// deferred must targets (no usable skill last time) go to the back: picked only when nothing else is left	//260928
 				target = nearestLive || nearest;
 
-				if (!target.must && getDistance(me, target.unit) > this.dangerRange) {
+				//if (!target.must && getDistance(me, target.unit) > this.dangerRange) {
+				if (!target.must) {	//260929 no "nothing within dangerRange" condition: clearing around me first only let the boss drift away, the way there is not cleared anyway
 					for (gid in entries) {
 						if (entries.hasOwnProperty(gid) && entries[gid].must && !entries[gid].lost && !entries[gid].deferred && getDistance(me, entries[gid].unit) >= this.leashRange) {	//260928 !deferred
 							target = entries[gid];
@@ -489,8 +491,8 @@ var Attack = {
 			return {ids: must};
 		}
 
-		// an array is also typeof "object", so the box check comes after it	//260929
-		if (typeof must === "object" && must.x1 !== undefined) {
+		// arrays are taken above, so any other object is a box	//260929
+		if (typeof must === "object") {
 			return {box: must};
 		}
 

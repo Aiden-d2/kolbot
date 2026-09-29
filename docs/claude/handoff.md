@@ -65,7 +65,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 세부는 `attack_design.md` 12절, `attack_compare.md`를 본다.
 
 **대상 선택과 스킵**
-- 대상 선택은 **거리순이 대전제**다. 예외는 목줄(MUST가 25 이상 멀어지고, 10 안에 붙은 몹이 없을 때)뿐이다.
+- 대상 선택은 **거리순이 대전제**다. 예외는 목줄(MUST가 25 이상 멀어지면 바로 그 MUST)뿐이다. 260929에 "10 안에 붙은 몹이 없을 때" 조건을 뺐다.
 - MUST는 포기하지 않는다. 쓸 스킬이 없으면 deferred(뒤로 보내기)한다.
 - HP 스킵: 실제 시전 5회에 20%. 시전 없는 틱은 5회 연속이면 제외한다.
 
@@ -88,6 +88,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 조치: townCheck 열쇠 조건 주석 처리. 열쇠 관리는 `Config.UseKeys`(기본 false)로 `OpenChests`에서 분리했다(`checkKeys`, `ignoredCheck`, `doChores`의 `buyKeys`). 열쇠 부족은 마을 가기 이유로 쓰지 않는다. 3막 `buyKeys` 건너뜀 때문에 다시 반복할 수 있기 때문이다.
 - `ignoredCheck`의 열쇠 조건은 원래 반대로 동작했다(OpenChests가 꺼져 있을 때 보관). 지금은 UseKeys가 켜져 있을 때만 보관한다.
 - 파티 방침: 잠긴 상자는 어새신만 연다. `Misc.openChest`의 잠김 검사(열쇠가 없으면 이동 전에 건너뜀)는 유지한다.
+
+**보스 호출과 박스 (260929)**
+- 박스는 `{x1, x2, y1, y2}`를 그대로 넘긴다(`box` 감싸기 제거). `mustSpec`: 배열(`instanceof Array`) → 그 밖의 객체는 박스 → 나머지는 id/이름.
+- 보스 호출 레인지: 사용자가 뒷정리가 필요한 보스에 레인지를 줬다(Blood Raven 15, Andariel 25 ×2, Radament 15, Izual 20, Shenk 25, Countess 15, Nihlathak 20). Summoner·Duriel·Mephisto·Diablo·고대인·Baal은 0 유지(뒤에 박스·청소 이동이 있거나 혼자 나오는 보스). 보스 호출 앞의 별도 `Attack.clear(N)`은 사용자가 주석 처리했다.
+- 트라빈컬: 평의회 배열 must → 박스 2개(1~4 합집합, 5). 이유와 지형은 `attack_design.md` 12절.
 
 **Pather 이동의 pop 인자 (260929)**
 - `pop`은 경로의 마지막 노드를 지워 목적지 한 노드 앞(걷기 약 5칸, 텔레 최대 약 35칸)에서 멈추게 한다(`Pather.moveTo`). `Pather.js`는 건드리지 않고 AutoSmurf 호출부에서만 정한다.

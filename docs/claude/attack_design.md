@@ -100,8 +100,9 @@ Attack.clear(range, must)
  4. 대상 선정 (거리순이 대전제)
     후보: deferred 아닌 대상. 없으면 deferred 포함
     가장 가까운 대상
-    단, 그 대상이 MUST가 아니고 나와 10 초과이면
-      → 나와 25(leashRange) 이상 떨어진 MUST(deferred 제외)가 있으면 그 MUST (목줄)
+    단, 그 대상이 MUST가 아니면
+      → 나와 25(leashRange) 이상 떨어진 MUST(deferred·lost 제외)가 있으면 그 MUST (목줄)
+      (260929: "그 대상이 나와 10 초과일 때만" 조건 제거. 주변 10을 먼저 치워도 가는 길은 어차피 청소하지 않고 보스만 멀어진다)
     카오스(108): 보스 아닌(spectype & 0x1 없음) StormCaster(306)가 나와 0x4로 막혀 있으면 SWEEP 버림 (NoSkipArea 제외, 기존 규칙 복원)
     (이전 clear의 Angle/Detour 게이트는 setPosition 접근 판정으로 옮김. 6절. 해머는 getHammerPosition 게이트)
 
@@ -239,11 +240,11 @@ setPosition(unit, distance, coll, minDist = 3)
 | 형태 | 개수 | 예 |
 |---|---|---|
 | `clear(N)` | 34 | 일반 소탕, Pather 경로 이동(25/20), den `clearDen`(30), 팀 대기, 소 `followDriver`(25/15) |
-| `clear(0, classid)` | 12 | Andariel(2), Summoner(2), Radament, Duriel, Mephisto(2), Izual, Diablo, Nihlathak, Baal(544) |
-| `clear(0, 이름)` | 2 | Blood Raven, Shenk |
-| `clear(0, [345, 346, 347])` | 1 | 트라빈컬 평의회 (박스 5곳 대체) |
+| `clear(0, classid)` | 7 | Summoner(2), Duriel, Mephisto(2), Diablo, Baal(544) (260929 기준) |
+| `clear(N, classid)` | 5 | Andariel(2) 25, Radament 15, Izual 20, Nihlathak 20 (260929 사용자 수정) |
+| `clear(N, 이름)` | 3 | Blood Raven 15, Shenk 25, Countess 15 (260929 사용자 수정) |
 | `clear(0, [540, 541, 542])` | 1 | 고대인. 개별 호출 3개는 주석 (다시 놓치면 `"all"` 자리와 개별 호출 복원) |
-| `clear(0, {x1, x2, y1, y2})` | 12 | 바알 웨이브(3), Tombs(4), Duriel(2), Summoner(2), Khalim's Will 대기 루프(1) |
+| `clear(0, {x1, x2, y1, y2})` | 14 | 바알 웨이브(3), Tombs(4), Duriel(2), Summoner(2), 트라빈컬(2: 박스 1~4 합집합, 박스 5), Khalim's Will 대기 루프(1). 260929 `box` 감싸기 제거 |
 | `clear(35, 이름)` | 1 | `getBoss` (카오스 봉인 3곳) |
 
 ### 9-1. getBoss (카오스 봉인)
@@ -298,9 +299,9 @@ setPosition(unit, distance, coll, minDist = 3)
 | MUST 우회 | 길이와 무관하게 moveTo | 기존 clearList와 같음 (게이트 없음) |
 | 스킬 미보유 | 콘솔 메시지 + `D2Bot.stop()` | 대체 스킬로 쳐도 도움이 안 됨. throw는 Loader가 잡아 매 게임 반복되거나 중간 try에 삼켜짐 |
 | HP skip | 5시전 20% | 실제 시전만 세므로 5회로 오탐 없음. 10회는 너무 오래 끎 |
-| 대상 우선순위 | 목줄(멀어진 MUST) → 거리순 | 거리순이 대전제. 위협이 붙어 있으면 그쪽 먼저 |
-| 보스 호출 반경 | 0 | 보스 처치가 목적, 잡몹은 위험 반경(10)으로 충분 |
-| 목줄 | 25 이상이면 보스 우선 (거리만 좁힘), 한계 35 | getUnit 가시 거리 약 40 (사용자 경험값) |
+| 대상 우선순위 | 목줄(멀어진 MUST) → 거리순 | 거리순이 대전제. 260929: 목줄은 주변에 몹이 붙어 있어도 바로 작동 (먼저 붙고, 붙은 뒤 거리순으로 정리) |
+| 보스 호출 반경 | 뒷정리가 필요한 보스는 레인지(사용자 지정), 나머지 0 | 레인지를 주면 보스 기준 원 안을 처치 뒤까지 정리한다(원은 보스를 따라가고, 죽으면 그 자리에 남음). 0이면 보스가 죽는 즉시 끝나고 잡몹이 남는다. 260929: 레인지 0 보스(Summoner·Duriel·Mephisto·Diablo·고대인·Baal)는 뒤에 박스·청소 이동이 있거나 혼자 나오는 보스라 0 유지 |
+| 목줄 | 25 이상이면 보스 우선 (거리만 좁힘, 이동은 clearPath 없는 순수 이동), 한계 35. 260929 주변 10 조건 제거 | getUnit 가시 거리 약 40 (사용자 경험값). 출발 조건으로는 가는 길에 둘러싸이는 것을 막지 못하고 확률만 줄인다 |
 | 반환 계약 | 0/1/2 유지 + 사이드채널 | 직업 파일 8개 무수정 |
 | Angle/Detour 게이트 | **setPosition 접근 판정으로 (260928)**. Angle = 나에게서 보이는 자리만, Detour = 실제 우회가 필요할 때만 나→대상 기준 4배 | 1차: 게이트 제거 후 우회 비율을 착지 좌표 기준으로 잘못 계산 → 벽 너머까지 돌아감. 2차: clear에 0x5로 복원 → 이동이 필요 없는 사거리 안 몹까지 버림. 이동 필요 여부를 아는 곳은 setPosition뿐 |
 | setPosition 기준 | 접근·회피 한 함수, 순서는 이동, 위협은 통과 조건 | 위협 우선이면 걷는 캐릭이 몹을 관통 |
@@ -308,7 +309,7 @@ setPosition(unit, distance, coll, minDist = 3)
 | 접근 | 정면 직선 → 정면 우회 → 후면 직선 → 후면 우회 | 작은 장애물이면 정면 우회가 후면보다 짧다 |
 | 링 | 5칸 간격, 5 미만 제외 | 호 간격과 같은 격자, 중복 링 제거 |
 | `Dodge.Range` | 9 (사거리 기준과 반경 공용) | 사거리 9~12 스킬(Frozen Orb, Nova 포함) 회피 |
-| 트라빈컬 | `[345, 346, 347]` | 새 엔진은 위험 우선 + 거리순이라 박스 분할이 불필요 |
+| 트라빈컬 | ~~`[345, 346, 347]`~~ → 박스 2개 (260929) | MUST는 끝까지 쫓아서 이동 불가 타일 너머까지 추적한다. 지형: 1~3은 벽으로 막힌 연결 방, 4는 2번에서 이어지는 계단 통로, 5는 4 너머의 트인 마당. 1~4(정확한 합집합)를 먼저, 5를 나중에. 5가 같은 목록에 있으면 0x1 너머 우회(직선 × 4 이내)로 4를 지나 5로 나갈 수 있다 |
 | 고대인 | `[540, 541, 542]` 시험 | 예전 배열 호출이 놓친 원인(빈 목록 즉시 종료, 첫 성공 전 refresh 없음, shift)이 해소됨 |
 | 레벨업 | `Attack.init()` 무조건 재호출 | 이미 include한 파일은 엔진이 건너뜀. 부작용 없음 (핸들러는 default.dbj에만 등록) |
 | 박스 + range | range 강제 0 | 박스 밖 대상이 섞이지 않게 |

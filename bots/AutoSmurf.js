@@ -4330,8 +4330,12 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 		
-		Attack.clear(0, [345, 346, 347]);	//260927 the whole council as must targets (original kolbot Travincal ids); replaces the 5 boxes below
-		
+		//Attack.clear(0, [345, 346, 347]);	//260927 the whole council as must targets (original kolbot Travincal ids); replaces the 5 boxes below
+		// 260929: back to boxes. Must targets are chased anywhere, a box drops what leaves it.
+		// Rooms 1-3 are walled and connected, 4 is the stair passage off room 2, 5 is the open yard past 4: clear 1-4 first, then go out to 5
+		Attack.clear(0, {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 81});	//260929 boxes 1-4 (their exact union)
+		Attack.clear(0, {x1: presetUnit.roomx * 5 + presetUnit.x + 63, x2: presetUnit.roomx * 5 + presetUnit.x + 140, y1: presetUnit.roomy * 5 + presetUnit.y - 81, y2: presetUnit.roomy * 5 + presetUnit.y - 65});	//260929 box 5
+
 		//Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 108, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 81}), null, 1);
 		//Attack.clear(0, {box: {x1: presetUnit.roomx * 5 + presetUnit.x + 108, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 81}});	//260926
 		//Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 89, x2: presetUnit.roomx * 5 + presetUnit.x + 108, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86}), null, 1);
