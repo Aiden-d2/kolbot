@@ -36,6 +36,7 @@ var Attack = {
 		moved: false,
 		fail: null,
 		must: false,	//260928
+		box: null,	//260929 box of a box call: setPosition only lands inside it
 		monList: null
 	},
 
@@ -314,7 +315,7 @@ var Attack = {
 				}
 
 				// Chaos Sanctuary: a non-boss Storm Caster behind a wall is not worth the walk (restored from the old clear)	//260928
-				if (!target.must && me.area === 108 && target.unit.classid === 306 && !(target.unit.spectype & 0x1) && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, target.unit, 0x4)) {
+				if (!target.must && me.area === 108 && target.unit.classid === 306 && !(target.unit.spectype & 0x1) && checkCollision(me, target.unit, 0x4)) {	//260929 NoSkipArea removed
 					drop(target, "306");
 
 					continue;
@@ -328,6 +329,7 @@ var Attack = {
 				this.tick.moved = false;
 				this.tick.fail = null;
 				this.tick.must = !!target.must;	//260928 setPosition lets a must target take any detour
+				this.tick.box = spec && spec.box ? spec.box : null;	//260929 the box is a fence: I do not step out of it
 
 				attackSkill = Config.AttackSkill[(target.unit.spectype & 0x7) ? 1 : 3];
 				result = ClassAttack.doAttack(target.unit, castTotal % 10 === 0);
@@ -352,17 +354,26 @@ var Attack = {
 					continue;
 				}
 
-				target.deferred = false;	//260928
-
-				if (this.tick.fail === "unreachable" && Config.NoSkipArea.indexOf(me.area) < 0) {
+				if (this.tick.fail === "unreachable") {	//260929 NoSkipArea removed
 					if (target.must) {
-						Packet.flash(me.gid);
+						// no spot to hit it from: to the back of the queue like "no usable skill". My spot or its spot may change while the rest is cleared	//260929 was flash and pick it again
+						if (!target.deferred) {
+							Misc.trace("[AC] defer unreachable " + target.unit.name + " gid:" + target.gid);	//260926 temp
+						}
+
+						target.deferred = true;
+
+						if (!nearestLive) {
+							delay(me.ping + 50);
+						}
 					} else {
 						drop(target, "unreachable");
 					}
 
 					continue;
 				}
+
+				target.deferred = false;	//260928
 
 				if (!result || this.tick.fail) {
 					target.retry += 1;
@@ -402,7 +413,7 @@ var Attack = {
 				}
 
 				// HP skip (sweep only): less than 20% HP lost over 5 casts	//260928 10 -> 5 (casts are real casts now, no misses counted)
-				if (!target.must && Config.NoSkipArea.indexOf(me.area) < 0) {
+				if (!target.must) {	//260929 NoSkipArea removed
 					if (target.hpMark === undefined) {
 						target.hpMark = target.unit.hp;
 						target.markCast = target.casts;
@@ -421,6 +432,7 @@ var Attack = {
 		} finally {
 			this.tick.monList = null;
 			this.tick.must = false;	//260928
+			this.tick.box = null;	//260929
 		}
 
 		Misc.trace("[AC] end range:" + range + " casts:" + castTotal);	//260926 temp
@@ -495,6 +507,7 @@ var Attack = {
 		  dodge (in range, Dodge on, skill range >= Dodge.Range, 1+ monster within Dodge.Range): back straight away first
 		           (outer ring first), taking the first spot with at least 1 monster fewer than where I stand;
 		           if the backing-away half has none, go through to the far side	//260927
+		  box call (Attack.tick.box): only spots inside the box, for approach and dodge alike	//260929
 		Returns false only when an approach fails. Attack.tick.fail says why: "unreachable" | "moveFailed"
 	*/
 	setPosition: function (unit, distance, coll, minDist) {	//260926
@@ -506,6 +519,7 @@ var Attack = {
 
 		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier,
 			detourOk, detourPath,	//260928
+			fence = this.tick.box, fenced = 0,	//260929
 			pathOk = false,
 			list = [],
 			baseline = 0,
@@ -588,6 +602,14 @@ var Attack = {
 
 			for (i = list.length - 1; i >= 0; i -= 1) {
 				c = list[i];
+
+				// box call: the landing spot stays inside the box (the path may cross outside)	//260929
+				if (fence && (c.x < fence.x1 || c.x > fence.x2 || c.y < fence.y1 || c.y > fence.y2)) {
+					list.splice(i, 1);
+					fenced += 1;
+
+					continue;
+				}
 
 				// a dodge is a single short hop
 				if (useTele && !moveNeeded && getDistance(me.x, me.y, c.x, c.y) > Pather.maxTeleDistance) {
@@ -716,6 +738,10 @@ var Attack = {
 			this.tick.fail = "moveFailed";
 
 			return false;
+		}
+
+		if (fenced) {
+			Misc.trace("[SP] fence " + unit.name + " spots outside box:" + fenced);	//260926 temp
 		}
 
 		this.tick.fail = "unreachable";

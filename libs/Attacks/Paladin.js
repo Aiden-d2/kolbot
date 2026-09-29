@@ -192,7 +192,7 @@ var ClassAttack = {
 		// blocked -> Attack.tick.fail = "unreachable": clear drops a sweep target at once (was monsterList.shift())
 		// must targets skip the gate, as the old clearList had none
 		// 0x4 -> 0x5: a hammer has to stand next to the target, so a target blocked only by 0x1 also needs a walk; judge it before walking	//260928
-		if (!Attack.tick.must && Config.NoSkipArea.indexOf(me.area) < 0 && checkCollision(me, unit, 0x5)) {
+		if (!Attack.tick.must && checkCollision(me, unit, 0x5)) {	//260929 NoSkipArea removed
 			var cx, cy,	//260726
 				skillRange = Skill.getRange(112),	//260829
 				blocked = true,

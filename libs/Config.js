@@ -72,7 +72,6 @@ var Config = {
 	ScanShrines: [1, 2, 3],
 	UseWells: true,	//260806
 	
-	NoSkipArea: [],	//8, 17, 38, 131	//260916
 	DetourPath: 4,
 	
 	SafeTele: {	//eom 260525

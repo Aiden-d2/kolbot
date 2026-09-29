@@ -1,4 +1,4 @@
-# 인수인계 메모 (260928)
+# 인수인계 메모 (260929)
 
 새 대화는 이 문서부터 읽는다. 이어서 CLAUDE.md의 분석 노트(설계·흐름·대조표·결함 현황)를 필요한 만큼 읽는다.
 
@@ -46,13 +46,15 @@
 | 5 | 해머딘이 벽 너머 몹에서 헛돌지 않는가 | trace `[AC] drop unreachable` | 해머 게이트 0x5 |
 | 6 | 상자가 전투 이동 중에만 열리는가 | 이동 중 상자, 텔레 이동 | `Config.OpenChests: 2`, `popChests` |
 | 7 | 18레벨 이상 캐릭터의 "Going to town" 반복이 사라졌는가 | 드루이드 등 골드 540 이상 캐릭터 | 아래 5절 열쇠 항목 |
+| 8 | 박스 호출에서 박스 밖으로 나가지 않는가 (260929 울타리) | 트라빈컬·바알 쓰론·톰즈·탈무덤·아케인, trace `[SP] fence` | `attack_design.md` 12-1 박스 울타리 |
+| 9 | 박스 가장자리 MUST에 붙잡히지 않는가 (260929 unreachable → deferred) | trace `[AC] defer unreachable` | 12-1 MUST unreachable |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
 ## 4. 미결 작업 (사용자 결정 또는 확인 후)
 | # | 작업 | 상태 | 메모 |
 |---|---|---|---|
-| 1 | **NoSkipArea 키와 조건 제거** | 로컬 `[]`로 테스트 중 | 문제없으면 제거. 제거할 곳: `Config.js` 키, `Attack.js`의 306 스킵·unreachable 즉시 제외·HP 스킵 조건 3곳, `Paladin.js` 해머 게이트 조건. 조건에서 `Config.NoSkipArea.indexOf(me.area) < 0 &&`만 빼면 동작은 같다 |
+| 1 | ~~NoSkipArea 키와 조건 제거~~ | **완료 (260929)** | 로컬 `[]`로 1막~헬 파밍 한 사이클 문제없음(사용자 확인) → 제거. 제거할 곳: `Config.js` 키, `Attack.js`의 306 스킵·unreachable 즉시 제외·HP 스킵 조건 3곳, `Paladin.js` 해머 게이트 조건. 조건에서 `Config.NoSkipArea.indexOf(me.area) < 0 &&`만 빼면 동작은 같다 |
 | 2 | **임시 로그 정리** | 인게임 검증 후 | `//260926 temp` 표시가 붙은 `Misc.trace("[AC] ...")`, `"[SP] ..."` 줄. `Pather.js`의 redPortal `//260926 temp`는 사용자 코드라 먼저 물어본다 |
 | 3 | ~~주석 처리된 옛 코드 정리~~ | **완료 (260929)** | JS/dbj/dbl 32개 파일에서 주석 처리된 옛 코드와 `/* */` 옛 코드 블록, 롤백용 머리글을 지움(Attack.js 2500 → 1349줄). 주석을 뺀 코드 토큰이 정리 전과 같음을 확인. nip·Config.js·builds의 꺼 둔 옵션과 설명 주석·날짜 표기·줄 끝 메모는 유지. 이전 코드는 커밋 `fcd2713` |
 | 4 | **소 레벨 치킨 잦음** | 개선 대상 | `followDriver`는 사용자 코드로 교체됨(30 초과 이동, 15~30 clearPath 이동, 근접 clear). 리더 쪽 `clearCowLevel`(팔로워를 기다리지 않고 방마다 이동)은 아직 손대지 않음 |
@@ -66,7 +68,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 **대상 선택과 스킵**
 - 대상 선택은 **거리순이 대전제**다. 예외는 목줄(MUST가 25 이상 멀어지면 바로 그 MUST)뿐이다. 260929에 "10 안에 붙은 몹이 없을 때" 조건을 뺐다.
-- MUST는 포기하지 않는다. 쓸 스킬이 없으면 deferred(뒤로 보내기)한다.
+- MUST는 포기하지 않는다. 쓸 스킬이 없거나 칠 자리가 없으면(unreachable, 260929) deferred(뒤로 보내기)한다.
 - HP 스킵: 실제 시전 5회에 20%. 시전 없는 틱은 5회 연속이면 제외한다.
 
 **벽과 우회**
@@ -93,6 +95,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 박스는 `{x1, x2, y1, y2}`를 그대로 넘긴다(`box` 감싸기 제거). `mustSpec`: 배열(`instanceof Array`) → 그 밖의 객체는 박스 → 나머지는 id/이름.
 - 보스 호출 레인지: 사용자가 뒷정리가 필요한 보스에 레인지를 줬다(Blood Raven 15, Andariel 25 ×2, Radament 15, Izual 20, Shenk 25, Countess 15, Nihlathak 20). Summoner·Duriel·Mephisto·Diablo·고대인·Baal은 0 유지(뒤에 박스·청소 이동이 있거나 혼자 나오는 보스). 보스 호출 앞의 별도 `Attack.clear(N)`은 사용자가 주석 처리했다.
 - 트라빈컬: 평의회 배열 must → 박스 2개(1~4 합집합, 5). 이유와 지형은 `attack_design.md` 12절.
+
+**박스 울타리 (260929)**
+- 박스는 대상 필터보다 "박스 밖으로 나가지 않기"가 주 목적이다(사용자). `clear`가 박스 호출이면 `tick.box`를 채우고, `setPosition`은 박스 밖 착지 자리를 후보에서 뺀다(접근·회피·우회 공통). 도착 좌표만 검사하고 경로는 따지지 않는다.
+- 모든 박스 호출에 자동 적용(새 인자·함수 없음). 해머는 설 자리가 몹 옆 5칸 이내이고 회피가 없어 제외.
+- 함께 바꾼 것: MUST unreachable을 flash 후 재선택 → deferred. 바바리안 선공격(Howl 사거리 밖) setPosition 실패 시 `return 0` (남은 `tick.fail` 때문에 본공격 성공 틱이 unreachable로 판정되던 것). NoSkipArea 제거.
 
 **Pather 이동의 pop 인자 (260929)**
 - `pop`은 경로의 마지막 노드를 지워 목적지 한 노드 앞(걷기 약 5칸, 텔레 최대 약 35칸)에서 멈추게 한다(`Pather.moveTo`). `Pather.js`는 건드리지 않고 AutoSmurf 호출부에서만 정한다.
