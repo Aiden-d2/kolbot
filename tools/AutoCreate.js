@@ -58,7 +58,7 @@ var AutoCreate = {
 		
 		var profile = profiles.slice().reverse();
 		
-		delay(profile.indexOf(me.profile) * 30000 + 1000);	//260929
+		delay(profile.indexOf(me.profile) * 25000 + 1000);	//260929-2
 		
 		D2Bot.printToConsole("AutoCreate: creating account " + info.account, 7);
 
