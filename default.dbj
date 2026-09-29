@@ -45,7 +45,6 @@ function main() {
 
 	// Initialize libs - load config variables, build pickit list, attacks, containers and cubing and runeword recipes
 	Config.init(true);
-	//Pickit.init(true);
 	Attack.init();
 	Storage.Init();
 	Runewords.init();
@@ -57,7 +56,6 @@ function main() {
 	// Check for experience decrease -> log death. Skip report if life chicken is disabled.
 	if (stats.name === me.name && me.getStat(13) < stats.experience && Config.LifeChicken > 0) {
 		D2Bot.printToConsole("You died in last game", 9);
-		//D2Bot.printToConsole("Experience decreased by " + (stats.experience - me.getStat(13)), 9);
 		DataFile.updateStats("deaths");
 		D2Bot.updateDeaths();
 	}
@@ -68,16 +66,11 @@ function main() {
 	load("threads/ToolsThread.js");
 	load("threads/PartyThread.js");	//260908
 
-	//if (Config.TownCheck || Config.TownHP || Config.TownMP) {
 		load("threads/TownChicken.js");
-	//}
 
 	// One time maintenance - get corpse, clear leftover items, pick items in case anything important was dropped
 	if (!Scripts.UserAddon && !Scripts.Test) {
 		Town.getCorpse();
-		//Town.clearBelt();
-		//Town.clearInventory();
-		//Pickit.pickItems();
 	}
 
 	me.automap = true;

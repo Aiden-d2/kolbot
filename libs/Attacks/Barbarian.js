@@ -6,30 +6,13 @@
 
 var ClassAttack = {
 	doAttack: function (unit, preattack) {
-		//var needRepair = Town.needRepair();
-
-		//if ((Config.MercWatch && Town.needMerc()) || needRepair.length > 0) {
-			//Town.visitTown(!!needRepair.length);
-		//}
-
-		//print("[DBG] - doAttack");
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Attack.getSkillElement(Config.AttackSkill[0])) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(Config.AttackSkill[0]) || checkCollision(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {
-				//if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
-					//return 0;
-				//}
-			//}
 			
-			//if (getDistance(me, unit) > Skill.getRange(attackSkill)) {	//260906
-				//Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4);
 			if (getDistance(me, unit) > Skill.getRange(Config.AttackSkill[0])) {	//260927 attackSkill was read before assignment
 				Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4);
 			} else {
 				Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]));
-				//return 1;
-				//return 0;	//260505				
 			}
 		}
 
@@ -62,20 +45,10 @@ var ClassAttack = {
 	},
 
 	afterAttack: function (pickit) {
-		//var needRepair;
 
 		Misc.unShift();
 		Precast.doPrecast(false);
 
-		//needRepair = Town.needRepair();
-
-		//if (needRepair && needRepair.length > 0 && me.charlvl > 30 && !me.getSkill(154, 1)) { // Repair check
-			//Town.visitTown(true);
-		//}
-
-		//if (pickit) {
-			//this.findItem(me.area === 83 ? 60 : 20);
-		//}
 	},
 
 	doCast: function (unit, attackSkill) {
@@ -85,12 +58,9 @@ var ClassAttack = {
 
 		switch (attackSkill) {
 		case 151:
-			//if (Math.ceil(getDistance(me, unit)) > Skill.getRange(attackSkill) || checkCollision(me, unit, 0x1)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(attackSkill), 0x1)) {
 				if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x1)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead) {
 				this.whirlwind(unit);
@@ -98,12 +68,9 @@ var ClassAttack = {
 
 			return 1;
 		case 154:	// 260613
-			//if (Math.ceil(getDistance(me, unit)) > Skill.getRange(attackSkill) || checkCollision(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(attackSkill), 0x4, 1)) {
 				if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4, 1)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead) {
 				Skill.cast(attackSkill, Skill.getHand(attackSkill), unit);
@@ -115,14 +82,9 @@ var ClassAttack = {
 				return 0;
 			}
 
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(attackSkill) || checkCollision(me, unit, 0x4)) {
-				//walk = Skill.getRange(attackSkill) < 4 && getDistance(me, unit) < 10 && !checkCollision(me, unit, 0x1);
-
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(attackSkill), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead) {
 				Skill.cast(attackSkill, Skill.getHand(attackSkill), unit);
@@ -144,7 +106,6 @@ var ClassAttack = {
 			angles.unshift(120);
 		}
 
-		//me.runwalk = 0;
 		angle = Math.round(Math.atan2(me.y - unit.y, me.x - unit.x) * 180 / Math.PI);
 
 		for (i = 0; i < angles.length; i += 1) { // get a better spot
@@ -209,7 +170,6 @@ MainLoop:
 						Attack.weaponSwitch(Attack.getPrimarySlot());
 					}
 
-					//Attack.clear(10, false, false, false, false);
 					Attack.clear(10);	//260927
 
 					retry = true;
@@ -223,7 +183,6 @@ MainLoop:
 
 				if (this.checkCorpse(corpse)) {
 					if (getDistance(me, corpse) > 30 || checkCollision(me, corpse, 0x1)) {
-						//Pather.moveToUnit(corpse);
 						Pather.useTeleport() ? Pather.teleportTo(corpse.x, corpse.y) : Pather.walkTo(corpse.x, corpse.y);	// 260508
 					}
 

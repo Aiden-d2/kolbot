@@ -121,8 +121,6 @@ var Cubing = {
 			return;
 		}
 
-		//print("We have " + Config.Recipes.length + " cubing recipe(s).");
-
 		var i;
 
 		for (i = 0; i < Config.Recipes.length; i += 1) {
@@ -774,8 +772,6 @@ IngredientLoop:
 
 		for (i = 0; i < this.neededIngredients.length; i += 1) {
 			if (unit.classid === this.neededIngredients[i].classid && this.validItem(unit, this.neededIngredients[i].recipe, result)) {	//260805
-				//debugLog("Cubing: " + unit.name + " " + this.neededIngredients[i].recipe.Index + " " + (this.neededIngredients[i].recipe.hasOwnProperty("MainRecipe") ? this.neededIngredients[i].recipe.MainRecipe : "") + this.getRecipeNeeds(this.neededIngredients[i].recipe.Index));
-				//return this.neededIngredients[i].recipe.Index;	//eom
 				return true;
 			}
 		}
@@ -793,8 +789,6 @@ IngredientLoop:
 		for (i = 0; i < this.validIngredients.length; i += 1) {
 			if (unit.mode === 0 && unit.gid === this.validIngredients[i].gid) {
 				return true;	//260816
-				//return this.validIngredients[i].recipe ? this.validIngredients[i].recipe.Index : true;	//eom
-				//return this.validIngredients[i].recipe ? this.validIngredients[i].recipe.Index : true;  //eom
 			}
 		}
 
@@ -950,16 +944,12 @@ IngredientLoop:
 
 		var i, j, items, string, result, tempArray, logType, recipeIndex;	//260909
 
-		//print("[DBG] - doCubing");
-		
 		this.update();
 		// Randomize the recipe array to prevent recipe blocking (multiple caster items etc.)
 		tempArray = this.recipes.slice().shuffle();
 
 		for (i = 0; i < tempArray.length; i += 1) {
-			//string = "@ ";
 			recipeIndex = tempArray[i].Index;	//260909
-			//string = "[" + (RecipeName[recipeIndex] || "Unknown") + "]";	//260831
 			string = RecipeName[recipeIndex] || "[Unknown]";	//260911
 			logType = 999;	//260829
 			items = this.checkRecipe(tempArray[i]);
@@ -975,12 +965,10 @@ IngredientLoop:
 				i = -1;
 				
 				if (recipeIndex !== Recipe.Token) {
-					//string += items[0].name.trim() + (items[0].getFlag(0x400000) ? " (Eth)" : "");	//260831
 					string += " " + getLocaleString(getBaseStat(0, items[0].classid, "namestr")).trim() + (items[0].getFlag(0x400000) ? " (Eth)" : "");	//260909
 				}
 				
 				while (items.length) {
-					//string += (items[0].name.trim() + (items.length > 1 ? " + " : ""));
 					logType = Math.min(logType, items[0].itemType);	//260829
 					Storage.Cube.MoveTo(items[0]);
 					items.shift();
@@ -992,9 +980,6 @@ IngredientLoop:
 
 				transmute();
 				delay(700 + me.ping);
-				//print("ÿc4Cubing: " + string);
-				//me.overhead("Cubing: " + string);	//eom
-				//if (Config.LogCubingInfo && items.itemType <= 90) {	//260816
 				
 				if (logType <= 90) {	//260901
 					me.overhead(string);
@@ -1022,8 +1007,6 @@ IngredientLoop:
 						case 1:
 							Misc.itemLogger("Transmuted", items[j], result.line);	//260620
 
-							//if (!Item.hasTier(items[j])) 
-							//if (!(result.tier > 0)) {	//260814
 							if (!result.tier && !result.merc) {	//260911
 								Misc.logItem("Transmuted", items[j], result.line);
 							}

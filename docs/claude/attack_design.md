@@ -21,8 +21,8 @@ AutoSmurf.getBoss(name)                 카오스 봉인 보스 대기 + 처치
 ```
 
 - 제거: `clearList`, `scanList`, `clearLevel`(Attack), `kill`(이전에 이미 제거), `attackCount`와 999 상한, `gidAttack`
-- 기존 함수 본문은 롤백용 주석으로 보존 (`// ---- 260926: replaced by ...`)
-- 새 엔진 기준 죽은 코드도 주석 처리 (`// ---- 260928: ... is dead`): `getIntoPosition`, `dodge`, `buildGrid`, `sortMonsters`, `sortByDistance`, `getScarinessLevel`, `getMob`. 나중에 사용자가 일괄 정리 (`Config.Dodge.Count`는 main에서 값 유지, 미사용)
+- 기존 함수 본문은 롤백용 주석으로 보존했다가 260929 주석 일괄 정리 때 지웠다 (정리 직전 커밋 `fcd2713`)
+- 새 엔진 기준 죽은 코드도 주석 처리했다가 260929에 지움 (`// ---- 260928: ... is dead`): `getIntoPosition`, `dodge`, `buildGrid`, `sortMonsters`, `sortByDistance`, `getScarinessLevel`, `getMob`. 나중에 사용자가 일괄 정리 (`Config.Dodge.Count`는 main에서 값 유지, 미사용)
 
 ---
 

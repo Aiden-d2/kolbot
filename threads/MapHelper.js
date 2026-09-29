@@ -19,7 +19,6 @@ function main() {
 	var obj, action,
 		mapThread = getScript("threads/MapThread.js");
 
-	//Config.init();
 	Pickit.init();
 	Storage.Init();
 	addEventListener("scriptmsg", function (msg) {

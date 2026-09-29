@@ -231,9 +231,6 @@ var Precast = new function () {
 			break;
 		case 5: // Druid
 			if (me.getSkill(235, 0) && (!me.getState(151) || force) && !me.getState(139) && !me.getState(140)) {	//260620
-				//if (me.getState(139) || me.getState(140)) {
-					//Misc.unShift();
-				//}
 				this.precastSkill(235); // Cyclone Armor
 			}
 

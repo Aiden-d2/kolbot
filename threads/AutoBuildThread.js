@@ -65,7 +65,6 @@ function spendStats () {	//260516
 		}
 		return;
 	}
-	//if (me.getStat(4) <= 0) { return; }
 	var stats = goal.Stats;
 	
 	do {	//260917
@@ -208,10 +207,8 @@ function getRequiredSkills (id) {
 
 		for (var i = 0; i < results.length; i++) {
 			var skill = results[i];
-			//var skillInValidRange = (0 < skill && skill <= 280) && (![217, 218, 219, 220].contains(skill));	//260625
 			var hardPointsInSkill = me.getSkill(skill, 0);
 
-			//if (skillInValidRange && !hardPointsInSkill) {
 			if (skillInValidRange(skill) && ![217, 218, 219, 220].contains(skill) && !hardPointsInSkill) {  // 260625
 				requirements.push(skill);
 				searchSkillTree(skill);	// search children;
@@ -287,7 +284,6 @@ function spendSkillPoints () {
 			}
 		}
 
-		//delay(200);	// TODO: How long should we wait... if at all?	//260625
 	}
 
 	return spentEveryPoint;
@@ -306,8 +302,6 @@ function spendSkillPoints () {
 function main () {
 	try {
 		AutoBuild.print("Loaded helper thread");
-		//spendStats();	// 260516
-		//spendSkills();	// 260516
 
 		while (true) {	//260625
 			var levels = gainedLevels();
@@ -318,7 +312,6 @@ function main () {
 			if (levels > 0) {
 				AutoBuild.print("Level up detected (", prevLevel, "-->", me.charlvl, ")");
 				
-				//AutoBuild.applyConfigUpdates();	//260803 order change with broadcast	//260807 disabled
 				scriptBroadcast({event: "level up"});	//260803
 
 				prevLevel += 1;

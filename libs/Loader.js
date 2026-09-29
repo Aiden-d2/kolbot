@@ -121,9 +121,7 @@ var Loader = {
 					}
 
 					if (this.skipTown.indexOf(script) > -1 || Town.goToTown()) {
-						//print("ÿc2Starting script: ÿc9" + script);
 						print("Loaded ÿc9[" + script + ".js]");	// 260903
-						//scriptBroadcast(JSON.stringify({currScript: script}));
 						Messaging.sendToScript("threads/ToolsThread.js", JSON.stringify({currScript: script}));
 						
 						reconfiguration = typeof Scripts[script] === 'object';

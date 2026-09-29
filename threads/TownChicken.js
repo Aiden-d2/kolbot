@@ -36,14 +36,12 @@ function main() {
 			if (script) {
 				if (script.running) {
 					if (i === 0) { // default.dbj
-						//print("ÿc1Pausing.");	//eom
 						me.overhead("Pausing.");	//eom
 					}
 
 					script.pause();
 				} else {
 					if (i === 0) { // default.dbj
-						//print("ÿc2Resuming.");	//eom
 						me.overhead("Resuming.");	//eom
 						
 						script.resume();
@@ -60,7 +58,6 @@ function main() {
 	addEventListener("scriptmsg",
 		function (msg) {
 			if (msg === "townCheck") {
-				//print("TownChicken recv: " + msg);  // 260531
 				if (me.area === 136) {
 					print("Can't tp from uber trist.");
 				} else if (me.area === 120) {
@@ -68,7 +65,6 @@ function main() {
 					D2Bot.printToConsole("cannot open TP");
 				} else {
 					townCheck = true;
-					//print("townCheck: " + townCheck);
 				}
 			}
 		});
@@ -86,7 +82,6 @@ function main() {
 		if (!me.dead && !me.inTown && (townCheck ||
 			(Config.TownHP > 0 && me.hp < Math.floor(me.hpmax * Config.TownHP / 100)) ||
 			(Config.TownMP > 0 && me.mp < Math.floor(me.mpmax * Config.TownMP / 100)))) {
-			//print("while: " + townCheck);
 			this.togglePause();
 
 			while (!me.gameReady) {	//260525

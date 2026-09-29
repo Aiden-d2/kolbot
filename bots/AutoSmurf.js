@@ -182,7 +182,6 @@ function AutoSmurf() {
 		while (!teamReady) {
 			if (getTickCount() - tick > 2 * 60 * 1000) { // Quit after 2 minutes of waiting.
 				D2Bot.printToConsole("Team didn't join the game within 2 minutes");
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 			
@@ -424,7 +423,6 @@ function AutoSmurf() {
 
 		while (!teamOk) {
 			if (!me.inTown) {
-				//Attack.clear(range, undefined, undefined, undefined, false);	//260727
 				Attack.clear(range);	//260727 //260926
 			}
 
@@ -439,7 +437,6 @@ function AutoSmurf() {
 			
 			if (getTickCount() - tick > 120 * 1000 && !me.dead) { // Quit after 120s of waiting.
 				D2Bot.printToConsole("Party desynced 1");	//260922
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 		}
@@ -456,7 +453,6 @@ function AutoSmurf() {
 		
 		while (teamCount !== Team.Size - 1) {
 			if (!me.inTown) {
-				//Attack.clear(range, undefined, undefined, undefined, false);	//260727
 				Attack.clear(range);	//260727 //260926
 			}
 			
@@ -466,7 +462,6 @@ function AutoSmurf() {
 			
 			if (getTickCount() - tick > 120 * 1000 && !me.dead) { // Quit after 120s of waiting.
 				D2Bot.printToConsole("Party desynced 2");	//260922
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 		}
@@ -665,7 +660,6 @@ function AutoSmurf() {
 			delay(500);
 			
 			if (getTickCount() - tick > 30 * 1000) { // Quit after 30s of waiting.
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 		}
@@ -849,8 +843,6 @@ function AutoSmurf() {
 				delay(me.ping * 2 + 200);
 			}
 		}
-		
-		//Pather.moveTo(me.x + myX, me.y + myY);	//260822
 		
 		this.okCount();
 		
@@ -1219,7 +1211,6 @@ function AutoSmurf() {
 
 					break;
 				default:
-					//Pather.moveToExit(areaIDs[nextAreaIndex], true);
 					for (i = 0; i < 3; i += 1) { // 260511
 						Pather.moveToExit(areaIDs[nextAreaIndex], true);
 						
@@ -1247,71 +1238,6 @@ function AutoSmurf() {
 		return true;
 	};
 	
-	// ---- 260928: moved into this.den as clearDen (den is the only user). kept for rollback ----
-//	// Moved from Attack.clearLevel. Den is the only user	//260926
-//	this.clearLevel = function () {
-//		var room, result, rooms, myRoom, currentArea, previousArea;
-
-//		function RoomSort(a, b) {
-//			return getDistance(myRoom[0], myRoom[1], a[0], a[1]) - getDistance(myRoom[0], myRoom[1], b[0], b[1]);
-//		}
-
-//		room = getRoom();
-
-//		if (!room) {
-//			return false;
-//		}
-
-//		rooms = [];
-//		currentArea = getArea().id;
-
-//		do {
-//			rooms.push([room.x * 5 + room.xsize / 2, room.y * 5 + room.ysize / 2]);
-//		} while (room.getNext());
-
-//		while (rooms.length > 0) {
-//			// for Den questing
-//			if (me.area === 8 && me.getQuest(1, 1)) {	//260627
-//				break;
-//			}
-
-//			// get the first room + initialize myRoom var
-//			if (!myRoom) {
-//				room = getRoom(me.x, me.y);
-//			}
-
-//			if (room) {
-//				if (room instanceof Array) { // use previous room to calculate distance
-//					myRoom = [room[0], room[1]];
-//				} else { // create a new room to calculate distance (first room, done only once)
-//					myRoom = [room.x * 5 + room.xsize / 2, room.y * 5 + room.ysize / 2];
-//				}
-//			}
-
-//			rooms.sort(RoomSort);
-//			room = rooms.shift();
-
-//			result = Pather.getNearestWalkable(room[0], room[1], 20, 3);	//260826 prev. 18/3
-
-//			if (result) {
-//				Pather.moveTo(result[0], result[1], 3, true);
-//				previousArea = result;
-
-//				if (!Attack.clear(30)) {	//40	//260910
-//					break;
-//				}
-//			} else if (currentArea !== getArea().id) { // Make sure bot does not get stuck in different area.
-//				Pather.moveTo(previousArea[0], previousArea[1], 3, true);
-//			}
-
-//			if (me.area === 8 && !me.getQuest(1, 1)) {	//260627
-//				sendPacket(1, 0x40);
-//			}
-//		}
-
-//		return true;
-//	};
-
 	this.clearToExit = function (currentarea, targetarea, cleartype) { // SiC-666 TODO: add moving to exit without clearing after XX minutes.
 		me.overhead("Start clearToExit");
 
@@ -1390,7 +1316,6 @@ function AutoSmurf() {
 				
 				if (tpTome && tpTome.getStat(70) > 0) {
 					Pather.moveToExit(50, true);
-					//delay(me.ping * 2 + rand(100, 1000));
 					
 					if (!Pather.getPortal(null, null)) {
 						Pather.makePortal();
@@ -1493,7 +1418,6 @@ function AutoSmurf() {
 			}
 			
 			if (time > 120) {
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 			
@@ -1523,7 +1447,6 @@ function AutoSmurf() {
 
 				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 10) {
 					try {
-						//Pather.moveToPreset(me.area, 2, wpIDs[i], 0, 0, false, false);
 						Pather.moveToPreset(me.area, 2, wpIDs[i]);	//260929
 					} catch (e) {
 						print("Caught Error");
@@ -1545,7 +1468,6 @@ function AutoSmurf() {
 						delay(me.ping * 2 + 500);
 
 						if (getUIFlag(0x14)) {
-							//delay(me.ping);
 							delay(me.ping * 2 + 200);
 
 							me.cancel();
@@ -1557,7 +1479,6 @@ function AutoSmurf() {
 
 						delay(me.ping * 2 + 500);
 
-						//Pather.moveToUnit(presetUnit, 0, 0, false, false);
 						Pather.moveToUnit(presetUnit);	//260929
 					}
 				}
@@ -1670,7 +1591,6 @@ function AutoSmurf() {
 		Storage.Cube.MoveTo(staff);
 		Cubing.openCube();
 		transmute();
-		//delay(750 + me.ping);
 		
 		delay(me.ping * 2 + 1000);
 		
@@ -1705,7 +1625,6 @@ function AutoSmurf() {
 
 		staff.toCursor();
 		submitItem();
-		//delay(750 + me.ping);
 		delay(me.ping * 2 + 1000);
 
 		return true;
@@ -1735,7 +1654,6 @@ function AutoSmurf() {
 		Storage.Cube.MoveTo(flail);
 		Cubing.openCube();
 		transmute();
-		//delay(750 + me.ping);
 		delay(me.ping * 2 + 1000);
 		
 		Cubing.emptyCube();
@@ -1795,7 +1713,6 @@ function AutoSmurf() {
 			throw new Error("placeFlail: Couldn't find Compelling Orb");
 		}
 
-		//Pather.moveToUnit(orb, 0, 0, false, false);
 		Pather.moveToUnit(orb);	//260929
 
 		for (i = 0; i < 5; i += 1) {
@@ -1919,8 +1836,6 @@ function AutoSmurf() {
 				for (i = 0; i < 2; i += 1) {
 					me.overhead("Clearing retry " + i);
 
-					//Attack.clearLevel();
-					//this.clearLevel();	//260926
 					clearDen();	//260928
 
 					sendPacket(1, 0x40); // Refresh quest status
@@ -1972,8 +1887,6 @@ function AutoSmurf() {
 				for (i = 0; i < 3; i += 1) {
 					me.overhead("Clearing retry " + i);
 
-					//Attack.clearLevel();
-					//this.clearLevel();	//260926
 					clearDen();	//260928
 
 					sendPacket(1, 0x40); // Refresh quest status
@@ -2050,18 +1963,12 @@ function AutoSmurf() {
 			
 			burial = getPresetUnit(17, 1, 805);
 			
-			//Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true, true);
 			Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true, true);
 			
-			//Attack.clear(15);
-			
 			try {
-				//Attack.clear(15, 0, getLocaleString(3111)); // Blood Raven
-				//Attack.clearList(Attack.scanList(getLocaleString(3111)), null, 1); // Blood Raven
 				Attack.clear(15, getLocaleString(3111)); // Blood Raven //260929
 			} catch (e) {
 				print(e);
-				//throw new Error("Failed to kill Raven")
 			}
 			
 			this.clearToExit(17, 3, 0);
@@ -2203,9 +2110,7 @@ function AutoSmurf() {
 					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
 					
 					Attack.clear(25);	//260921
-					//Attack.clear(25, 0, getLocaleString(2873));	// Treehead WoodFist	//260921
 					
-					//Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
 					Pather.moveToPreset(me.area, 1, 738, 5, 5, true); //move to tree	//260929
 					
 					if (Leader) {
@@ -2271,9 +2176,7 @@ function AutoSmurf() {
 			Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
 			
 			Attack.clear(25);	//260921
-			//Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
 			
-			//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
 			Pather.moveToPreset(me.area, 1, 737, myX, myY, true);	//260822	//260929
 			
 			if (!me.getQuest(4, 4) && me.findItem(525)) {		 //redportal already open
@@ -2293,7 +2196,6 @@ function AutoSmurf() {
 			} else {
 				while (!Pather.getPortal(38)) {
 					Attack.clear(20);
-					//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
 					Pather.moveToPreset(me.area, 1, 737, myX, myY, true);	//260822	//260929
 					delay(500);
 				}
@@ -2316,7 +2218,6 @@ function AutoSmurf() {
 			if (me.area !== 38) {
 				D2Bot.printToConsole("Redportal not found");	//260923
 				delay(1000);
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 			
@@ -2341,7 +2242,6 @@ function AutoSmurf() {
 				}
 				
 				Misc.openChest(slave);
-				//delay(250);
 				
 				if (!Pather.usePortal(1, null)) {
 					Town.goToTown();
@@ -2401,9 +2301,7 @@ function AutoSmurf() {
 		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);	//260822
 		
 		Attack.clear(25);	//260921
-		//Attack.clear(25, 0, getLocaleString(2872));	// Rakanishu
 		
-		//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true); //260719	//260822
 		Pather.moveToPreset(me.area, 1, 737, myX, myY, true); //260719	//260822	//260929
 
 		for (i = 0; i < 5; i += 1) {
@@ -2413,14 +2311,12 @@ function AutoSmurf() {
 			delay(1000);
 		}
 
-		//this.okCount();	//260922
 		this.okCount();
 		
 		Precast.doPrecast(true);
 		
 		for (i = 0; i < path.length; i += 2) {	//260627
 			Pather.moveTo(path[i] + myX, path[i + 1] + myY, 10, true);	//260822
-			//Attack.clear(25);
 		}
 		
 		if (Leader) {
@@ -2549,7 +2445,6 @@ function AutoSmurf() {
 			
 			if (getUnit(1, 402)) {
 				Attack.clear(15);	//260921
-				//Attack.clear(15, 0, getLocaleString(2889)); // The Smith
 			} else {
 				print("Smith failed: getUnit");
 				return false;
@@ -2864,11 +2759,8 @@ function AutoSmurf() {
 		Pather.moveTo(20047, 4898, 10, true);
 
 		Attack.clear(20);	//260921
-		//Attack.clear(20, 0, getLocaleString(2878)); // Bone Ash
 		
 		Pather.moveTo(20047, 4898, 10, true);
-		
-		//Attack.clear(25);
 		
 		this.clearToExit(33, 34, 0);
 		this.okCount();	//260922
@@ -2988,16 +2880,10 @@ function AutoSmurf() {
 				Pather.teleport = false;
 			}
 			
-			//Attack.clear(20);	//260921
-			
 			try {
-				//Attack.clear(25, 0, 156);	// Andariel
-				//Attack.clearList(Attack.scanList(156), null, 1);	// Andariel
 				Attack.clear(25, 156);	// Andariel //260929
 			} catch (e) {
 				print(e);
-				//Attack.clear(25);
-				//throw new Error("Failed to kill Andariel")
 			}
 			
 			delay(me.ping * 2 + 2000); // Wait for minions to die.
@@ -3026,7 +2912,6 @@ function AutoSmurf() {
 		while (!this.partyLevel(teleLvl)) {	//260921
 			if (Leader) {
 				D2Bot.printToConsole("Not ready for act2");
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 			
@@ -3079,8 +2964,6 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		//Attack.clear(20);
-		
 		for (i = 0 ; i < 5 ; i += 1) {
 			chest = getPresetUnit(60, 2, 354);
 
@@ -3107,8 +2990,6 @@ function AutoSmurf() {
 			this.getQuestItem(549, 354);
 		}
 		
-		//delay(me.ping * 2 + rand(100, 1000));
-
 		if (Leader) {
 			if (!Pather.getPortal(null, null)) {
 				Pather.makePortal();
@@ -3269,7 +3150,6 @@ function AutoSmurf() {
 
 			while (getDistance(me.x, me.y, journal.roomx * 5 + journal.x + 8, journal.roomy * 5 + journal.y + 8) > 10) {	//260411
 				try {
-					//Pather.moveToPreset(74, 2, 357, 8, 8, false, false);	//260411
 					Pather.moveToPreset(74, 2, 357, 8, 8);	//260411	//260929
 				} catch (e) {
 					print("Caught Error");
@@ -3302,22 +3182,14 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 		
-		//Attack.clear(10);	//260921
-		
 		try {
-			//Attack.clear(10, 0, 250);	//Summoner
-			//Attack.clearList(Attack.scanList(250), null, 1);	//Summoner
 			Attack.clear(0, 250);	//Summoner //260926
 		} catch (e) {
 			print(e);
-			//Attack.clear(10);
-			//throw new Error("Failed to kill Summoner")
 		}
 		
 		journal = getPresetUnit(74, 2, 357);
 		
-		//Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}), null, 1);
-		//Attack.clear(0, {box: {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}});	//260926
 		Attack.clear(0, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13});	//260926	//260929
 		
 		Pather.moveToPreset(74, 2, 357, 3, 3);
@@ -3348,7 +3220,6 @@ function AutoSmurf() {
 				delay(me.ping * 2 + 1000);
 
 				Misc.click(0, 0);
-				//me.cancel();
 			}
 		}
 
@@ -3392,12 +3263,10 @@ function AutoSmurf() {
 		}
 		
 		while (me.area === 74) {
-			//me.cancel();
 			Pather.usePortal(46);
 			delay(me.ping * 2 + 200);
 		}
 		
-		//me.cancel();
 		Pather.goWP(me.area);	//260611
 		Pather.moveTo(me.x + myX, me.y + myY);	//260822
 
@@ -3522,27 +3391,18 @@ function AutoSmurf() {
 					Packet.flash(me.gid);
 				}
 				
-				//Attack.openChests(10);	//260928 the moveTo above has clearPath on: Pather opens the chest at the nodes
 			} else {
 				print("Tombs: chest not found");
 				continue;
 			}
 
 			if (chest.x < 5 && chest.y < 30) {
-				//Attack.clearList(Attack.scanList(null, {x1: chest.roomx * 5 - 25, x2: chest.roomx * 5 + 25, y1: chest.roomy * 5 + 20, y2: chest.roomy * 5 + 60}), null, 1);
-				//Attack.clear(0, {box: {x1: chest.roomx * 5 - 25, x2: chest.roomx * 5 + 25, y1: chest.roomy * 5 + 20, y2: chest.roomy * 5 + 60}});	//260926
 				Attack.clear(0, {x1: chest.roomx * 5 - 25, x2: chest.roomx * 5 + 25, y1: chest.roomy * 5 + 20, y2: chest.roomy * 5 + 60});	//260926	//260929
 			} else if (chest.x < 30 && chest.y < 5) {
-				//Attack.clearList(Attack.scanList(null, {x1: chest.roomx * 5 + 20, x2: chest.roomx * 5 + 60, y1: chest.roomy * 5 - 25, y2: chest.roomy * 5 + 25}), null, 1);
-				//Attack.clear(0, {box: {x1: chest.roomx * 5 + 20, x2: chest.roomx * 5 + 60, y1: chest.roomy * 5 - 25, y2: chest.roomy * 5 + 25}});	//260926
 				Attack.clear(0, {x1: chest.roomx * 5 + 20, x2: chest.roomx * 5 + 60, y1: chest.roomy * 5 - 25, y2: chest.roomy * 5 + 25});	//260926	//260929
 			} else if (chest.x > 5 && chest.y > 30) {
-				//Attack.clearList(Attack.scanList(null, {x1: chest.roomx * 5 - 20, x2: chest.roomx * 5 + 20, y1: chest.roomy * 5 + 15, y2: chest.roomy * 5 + 65}), null, 1);
-				//Attack.clear(0, {box: {x1: chest.roomx * 5 - 20, x2: chest.roomx * 5 + 20, y1: chest.roomy * 5 + 15, y2: chest.roomy * 5 + 65}});	//260926
 				Attack.clear(0, {x1: chest.roomx * 5 - 20, x2: chest.roomx * 5 + 20, y1: chest.roomy * 5 + 15, y2: chest.roomy * 5 + 65});	//260926	//260929
 			} else if (chest.x > 30 && chest.y > 5) {
-				//Attack.clearList(Attack.scanList(null, {x1: chest.roomx * 5 + 15, x2: chest.roomx * 5 + 65, y1: chest.roomy * 5 - 20, y2: chest.roomy * 5 + 20}), null, 1);
-				//Attack.clear(0, {box: {x1: chest.roomx * 5 + 15, x2: chest.roomx * 5 + 65, y1: chest.roomy * 5 - 20, y2: chest.roomy * 5 + 20}});	//260926
 				Attack.clear(0, {x1: chest.roomx * 5 + 15, x2: chest.roomx * 5 + 65, y1: chest.roomy * 5 - 20, y2: chest.roomy * 5 + 20});	//260926	//260929
 			} else {
 				print("Tombs: incorrect chest cord");
@@ -3578,7 +3438,6 @@ function AutoSmurf() {
 			print("Not ready to start Duriel");
 			
 			if (Leader) {
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 			
@@ -3702,7 +3561,6 @@ function AutoSmurf() {
 				
 				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 40) {
 					try {
-						//Pather.moveToUnit(presetUnit, 10, 10, false);
 						Pather.moveToUnit(presetUnit, 10, 10);	//260929
 					} catch (e) {
 						print("Caught Error");
@@ -3731,15 +3589,10 @@ function AutoSmurf() {
 
 			delay(me.ping * 2 + 200);
 			
-			//Attack.clear(15);
-			
 			try {
-				//Attack.clear(20, 0, 229); // Radament
-				//Attack.clearList(Attack.scanList(229), null, 1); // Radament
 				Attack.clear(15, 229); // Radament //260929
 			} catch (e) {
 				print(e);
-				//throw new Error("Failed to kill Radament")
 			}
 			
 			for (i = 0 ; i < 30 ; i += 1) {	//260921
@@ -3832,7 +3685,6 @@ function AutoSmurf() {
 
 				while (getDistance(me.x, me.y, orifice.roomx * 5 + orifice.x, orifice.roomy * 5 + orifice.y) > 10) {
 					try {
-						//Pather.moveToPreset(getRoom().correcttomb, 2, 152, 0, 0, false, false);
 						Pather.moveToPreset(getRoom().correcttomb, 2, 152);	//260929
 					} catch (e) {
 						print("Caught Error");
@@ -3867,8 +3719,6 @@ function AutoSmurf() {
 
 			orifice = getPresetUnit(getRoom().correcttomb, 2, 152);
 			
-			//Attack.clearList(Attack.scanList(null, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}), null, 1);	//260727
-			//Attack.clear(0, {box: {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}});	//260727 //260926
 			Attack.clear(0, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25});	//260727 //260926	//260929
 		
 			Pather.moveToUnit(orifice);
@@ -3888,8 +3738,6 @@ function AutoSmurf() {
 			while (!hole) {
 				hole = getUnit(2, 100);
 				
-				//Attack.clearList(Attack.scanList(null, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}), null, 1);
-				//Attack.clear(0, {box: {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25}});	//260926
 				Attack.clear(0, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25});	//260926	//260929
 				
 				if (getDistance(me, orifice) > 8) {
@@ -3923,12 +3771,9 @@ function AutoSmurf() {
 			}
 			
 			try {
-				//Attack.clearList(Attack.scanList(211), null, 1);	// Duriel
 				Attack.clear(0, 211);	// Duriel //260926
-				//Attack.kill(211);	// Duriel
 			} catch (e) {
 				print(e);
-				//throw new Error("Failed to kill Duriel")
 			}
 			
 			Pather.moveTo(22579, 15706, 3, true);
@@ -4046,7 +3891,6 @@ function AutoSmurf() {
 			for (i = 0 ; i < 100 ; i += 1) {
 				if (i > 90) {
 					D2Bot.printToConsole("Traffic jam in Figurine");
-					//D2Bot.restart();
 					scriptBroadcast("quit");	//260909
 				}
 				
@@ -4281,8 +4125,6 @@ function AutoSmurf() {
 			Town.goToTown(3);
 		}
 		
-		//Pather.moveTo(5148 + myX, 5066 + myY, 5);	//260822
-		
 		if (!me.getQuest(21, 0)) {
 			while (!cain || !cain.openMenu()) { // Try more than once to interact with Deckard Cain.
 				Packet.flash(me.gid);
@@ -4330,24 +4172,11 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 		
-		//Attack.clear(0, [345, 346, 347]);	//260927 the whole council as must targets (original kolbot Travincal ids); replaces the 5 boxes below
 		// 260929: back to boxes. Must targets are chased anywhere, a box drops what leaves it.
 		// Rooms 1-3 are walled and connected, 4 is the stair passage off room 2, 5 is the open yard past 4: clear 1-4 first, then go out to 5
 		Attack.clear(0, {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 81});	//260929 boxes 1-4 (their exact union)
 		Attack.clear(0, {x1: presetUnit.roomx * 5 + presetUnit.x + 63, x2: presetUnit.roomx * 5 + presetUnit.x + 140, y1: presetUnit.roomy * 5 + presetUnit.y - 81, y2: presetUnit.roomy * 5 + presetUnit.y - 65});	//260929 box 5
 
-		//Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 108, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 81}), null, 1);
-		//Attack.clear(0, {box: {x1: presetUnit.roomx * 5 + presetUnit.x + 108, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 81}});	//260926
-		//Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 89, x2: presetUnit.roomx * 5 + presetUnit.x + 108, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86}), null, 1);
-		//Attack.clear(0, {box: {x1: presetUnit.roomx * 5 + presetUnit.x + 89, x2: presetUnit.roomx * 5 + presetUnit.x + 108, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86}});	//260926
-		//Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 89, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 81}), null, 1);
-		//Attack.clear(0, {box: {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 89, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 81}});	//260926
-		//Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 89, x2: presetUnit.roomx * 5 + presetUnit.x + 108, y1: presetUnit.roomy * 5 + presetUnit.y - 86, y2: presetUnit.roomy * 5 + presetUnit.y - 81}), null, 1);
-		//Attack.clear(0, {box: {x1: presetUnit.roomx * 5 + presetUnit.x + 89, x2: presetUnit.roomx * 5 + presetUnit.x + 108, y1: presetUnit.roomy * 5 + presetUnit.y - 86, y2: presetUnit.roomy * 5 + presetUnit.y - 81}});	//260926
-		
-		//Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 63, x2: presetUnit.roomx * 5 + presetUnit.x + 140, y1: presetUnit.roomy * 5 + presetUnit.y - 81, y2: presetUnit.roomy * 5 + presetUnit.y - 65}), null, 1);
-		//Attack.clear(0, {box: {x1: presetUnit.roomx * 5 + presetUnit.x + 63, x2: presetUnit.roomx * 5 + presetUnit.x + 140, y1: presetUnit.roomy * 5 + presetUnit.y - 81, y2: presetUnit.roomy * 5 + presetUnit.y - 65}});	//260926
-		
 		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109 + myX, presetUnit.roomy * 5 + presetUnit.y - 95 + myY);	//260822
 		
 		this.okCount();
@@ -4374,8 +4203,6 @@ function AutoSmurf() {
 			while (!me.getQuest(18, 0)) { // I am not the Teleporting Sorc and have not completed Khalim's Will yet.
 				sendPacket(1, 0x40); // This is required to refresh the status of me.getQuest(18, 0). Without it, me.getQuest(18, 0) will not == 1 until the Quest Tab is opened on the character.
 
-				//Attack.clearList(Attack.scanList(null, {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86}), null, 1);
-				//Attack.clear(0, {box: {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86}});	//260926
 				Attack.clear(0, {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86});	//260926	//260929
 
 				Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109, presetUnit.roomy * 5 + presetUnit.y - 95);
@@ -4465,12 +4292,9 @@ function AutoSmurf() {
 			Pather.teleport = false;
 			
 			try {
-				//Attack.clearList(Attack.scanList(242), null, 1);	// Mephisto
 				Attack.clear(0, 242);	// Mephisto //260926
-				//Attack.kill(242);	// Mephisto
 			} catch (e) {
 				print(e);
-				//throw new Error("Failed to kill Mephisto")
 			}
 			
 			Pather.moveTo(17515 + myX, 8061 + myY, 3, true);	//260822
@@ -4497,7 +4321,6 @@ function AutoSmurf() {
 			
 			while (getDistance(me.x, me.y, redPortal.roomx * 5 + redPortal.x, redPortal.roomy * 5 + redPortal.y) > 10) {
 				try {
-					//Pather.moveToPreset(102, 2, 342, 0, 0, false, false);
 					Pather.moveToPreset(102, 2, 342);	//260929
 				} catch (e) {
 					print("Caught Error");
@@ -4577,11 +4400,7 @@ function AutoSmurf() {
 			
 			delay(me.ping * 2 + 200);
 			
-			//Attack.clear(20);
-			
 			try {
-				//Attack.clear(30, 0, 256);	// Izual
-				//Attack.clearList(Attack.scanList(256), null, 1);	// Izual
 				Attack.clear(20, 256);	// Izual //260929
 			} catch (e) {
 				print(e);
@@ -4693,7 +4512,6 @@ function AutoSmurf() {
 				boss = getUnit(1, name);
 				
 				if (boss) {
-					//return Attack.clear(35);
 					return Attack.clear(35, name);	//260927 boss is a must target, the 35 sweep comes with it
 				}
 
@@ -4744,24 +4562,7 @@ function AutoSmurf() {
 			
 			this.getBoss(getLocaleString(2852));	//260923
 			
-			/*if (!this.getBoss(getLocaleString(2852))) {
-				//print("Seis not found");
-				me.overhead("Seis not found");
-				
-				if (Leader) {
-					D2Bot.printToConsole("Seis not found");
-				}
-				return false;
-			}*/
-			
 			// 260927: handled inside getBoss (boss found -> clear(35, name), not found -> clear(35))
-			//try {
-				////Attack.clear(35, 0, getLocaleString(2852));
-				//Attack.clear(0, getLocaleString(2852));	//260926
-			//} catch (e) {
-				//print(e);
-				//Attack.clear(35);
-			//}
 			
 			Precast.doPrecast(true);
 			
@@ -4800,13 +4601,6 @@ function AutoSmurf() {
 			this.getBoss(getLocaleString(2853));
 			
 			// 260927: handled inside getBoss (boss found -> clear(35, name), not found -> clear(35))
-			//try {
-				////Attack.clear(35, 0, getLocaleString(2853));
-				//Attack.clear(0, getLocaleString(2853));	//260926
-			//} catch (e) {
-				//print(e);
-				//Attack.clear(35);
-			//}
 			
 			Precast.doPrecast(true);
 
@@ -4845,13 +4639,6 @@ function AutoSmurf() {
 			this.getBoss(getLocaleString(2851));
 			
 			// 260927: handled inside getBoss (boss found -> clear(35, name), not found -> clear(35))
-			//try {
-				////Attack.clear(35, 0, getLocaleString(2851));
-				//Attack.clear(0, getLocaleString(2851));	//260926
-			//} catch (e) {
-				//print(e);
-				//Attack.clear(35);
-			//}
 			
 			return true;
 		};
@@ -5070,9 +4857,7 @@ function AutoSmurf() {
 		this.diabloPrep();
 		
 		try {
-			//Attack.clearList(Attack.scanList(243), null, 1); // Diablo
 			Attack.clear(0, 243); // Diablo //260926
-			//Attack.kill(243); // Diablo
 		} catch (e) {
 			print(e);
 		}
@@ -5146,15 +4931,10 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		//Attack.clear(25);	//260921
-		
 		try {
-			//Attack.clear(30, 0, getLocaleString(22435));	// Shenk the Overseer
-			//Attack.clearList(Attack.scanList(getLocaleString(22435)), null, 1);	// Shenk the Overseer
 			Attack.clear(25, getLocaleString(22435));	// Shenk the Overseer //260929
 		} catch (e) {
 			print(e);
-			//throw new Error("Failed to kill Shenk")
 		}
 		
 		if (Leader) {
@@ -5213,12 +4993,9 @@ function AutoSmurf() {
 				});
 			}
 			
-			//Config.PacketCasting = 1;
-			
 			for (k = 0; k < coords.length; k += 1) {
 				me.overhead("Going to barbspot " + (k + 1) + "/" + barbSpots.length);
 				
-				//Pather.moveToUnit(coords[k], 0, 0);
 				Pather.moveToUnit(coords[k]);	//260929
 				door = getUnit(1, 434);
 				if (door) {
@@ -5267,7 +5044,6 @@ function AutoSmurf() {
 		
 		for (i = 0; i < 10; i += 1) {
 			if (i > 5) {
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 			
@@ -5332,7 +5108,6 @@ function AutoSmurf() {
 				
 				while (true) {
 					unit = getPresetUnit(me.area, 2, 460);
-					//Pather.moveToUnit(unit, 10, 10, false);
 					Pather.moveToUnit(unit, 10, 10);	//260929
 					
 					anya = getUnit(2, 558);	
@@ -5371,7 +5146,6 @@ function AutoSmurf() {
 			Pather.teleport = true;	//260920
 			
 			unit = getPresetUnit(me.area, 2, 460); // don't delete this // eom
-			//Pather.moveToUnit(unit, 0, 0, false);
 			Pather.moveToUnit(unit);	//260929
 			
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
@@ -5386,7 +5160,6 @@ function AutoSmurf() {
 							Pather.moveToUnit(anya);
 						}
 						anya.interact();
-						//delay(300 + me.ping);
 						delay(me.ping * 2 + 200);
 						me.cancel();
 					}
@@ -5431,7 +5204,6 @@ function AutoSmurf() {
 					}
 					
 					anya.interact();
-					//delay(1000 + me.ping);
 					delay(me.ping * 2 + 1000);
 					me.cancel();
 				}
@@ -5476,7 +5248,6 @@ function AutoSmurf() {
 		
 		for (i = 0 ; i < 100 ; i += 1) {
 			if (i > 10) {
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 			
@@ -5580,12 +5351,8 @@ function AutoSmurf() {
 
 			while (!getUnit(1, 542)) {
 				delay(250);
-				//me.cancel();
 			}
 			
-			//Attack.clearList(Attack.scanList(null), null, 1);	//260722
-			//Attack.clear(0, "all");	//260722 //260926
-			// 260927: "all" removed; each ancient is handled by its own call below
 			Attack.clear(0, [540, 541, 542]);	//260928 all three as must targets, nearest first. If ancients get missed again: restore the "all" line and the single calls below
 			
 			delay(me.ping * 2 + 1000);
@@ -5593,23 +5360,6 @@ function AutoSmurf() {
 			sendPacket(1, 0x40); //fresh Quest state.
 			
 			if (!me.getQuest(39,0)) {	//260719
-				//if (getUnit(1, 541)) {	//260928 replaced by the array call above
-					//Attack.clearList(Attack.scanList(541), null, 1);	//260723
-					//Attack.clear(0, 541);	//260723 //260926
-					//Attack.kill(541);
-				//}
-				
-				//if (getUnit(1, 542)) {	//260928 replaced by the array call above
-					//Attack.clearList(Attack.scanList(542), null, 1);	//260723
-					//Attack.clear(0, 542);	//260723 //260926
-					//Attack.kill(542);
-				//}
-				
-				//if (getUnit(1, 540)) {	//260928 replaced by the array call above
-					//Attack.clearList(Attack.scanList(540), null, 1);	//260723
-					//Attack.clear(0, 540);	//260723 //260926
-					//Attack.kill(540);
-				//}
 				
 				delay(me.ping * 2 + 1000);
 				me.cancel();
@@ -5678,9 +5428,6 @@ function AutoSmurf() {
 				break;
 			case 3: // Paladin
 				if (Config.AttackSkill[3] === 112) { // 112	Blessed Hammer
-					//if (Config.AttackSkill[4] > 0) {
-						//Skill.setSkill(Config.AttackSkill[4], 0);
-					//}
 					if (me.getState(2) && me.getSkill(109, 1)) {
 						Skill.setSkill(109, 0);
 					} else if (Config.Meditation && me.getSkill(120, 1)) {
@@ -5853,9 +5600,6 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		//Attack.clear(25);	//260903
-		//Attack.clearList(Attack.scanList(null, {x1:15072, x2:15118, y1:5002, y2:5074}), null, 1);	//260916
-		//Attack.clear(0, {box: {x1:15072, x2:15118, y1:5002, y2:5074}});	//260916 //260926
 		Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260916 //260926	//260929
 		
 	BaalLoop:	//260629
@@ -5887,8 +5631,6 @@ function AutoSmurf() {
 			}
 
 			if (wave) {
-				//Attack.clearList(Attack.scanList(null, {x1:15072, x2:15118, y1:5002, y2:5074}), null, 1);
-				//Attack.clear(0, {box: {x1:15072, x2:15118, y1:5002, y2:5074}});	//260926
 				Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260926	//260929
 				
 				this.checkHydra();
@@ -5959,8 +5701,6 @@ function AutoSmurf() {
 		}
 
 		while (getUnit(1, 543)) {
-			//Attack.clearList(Attack.scanList(null, {x1:15072, x2:15118, y1:5002, y2:5074}), null, 1);
-			//Attack.clear(0, {box: {x1:15072, x2:15118, y1:5002, y2:5074}});	//260926
 			Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260926	//260929
 			delay(me.ping * 2 + 200);
 			Pather.moveTo(15092, 5028);	//260926
@@ -5987,12 +5727,9 @@ function AutoSmurf() {
 		Pather.moveTo(15134, 5923);
 		
 		try {
-			//Attack.clearList(Attack.scanList(544), null, 1);	//260723
 			Attack.clear(0, 544);	//260723 //260926
-			//Attack.kill(544); // Baal
 		} catch (e) {
 			print(e);
-			//throw new Error("Failed to kill Baal")
 		}
 		
 		runBaal = 1;
@@ -6010,7 +5747,6 @@ function AutoSmurf() {
 				Pather.makePortal();
 			}
 			
-			//D2Bot.stop();	//stop
 		}
 		
 		var tick = getTickCount();
@@ -6075,9 +5811,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 
 		Attack.clear(15, getLocaleString(2875));	//260929
-		//Attack.clear(20, 0, getLocaleString(2875)); // Countess
 		
-		//Pather.moveToPreset(me.area, 2, 580, myX, myY, true, true);	//260822
 		Pather.moveToPreset(me.area, 2, 580, myX, myY, true);	//260822	//260929
 		
 		this.okCount();
@@ -6200,15 +5934,10 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		//Attack.clear(20);	//260921
-	
 		try {
-			//Attack.clear(25, 0, 156); // Andariel
-			//Attack.clearList(Attack.scanList(156), null, 1);	// Andariel
 			Attack.clear(25, 156);	// Andariel //260929
 		} catch (e) {
 			print(e);
-			//Attack.clear(25);
 		}
 		
 		delay(me.ping * 2 + 2000); // Wait for minions to die.
@@ -6377,8 +6106,6 @@ function AutoSmurf() {
 					}
 				}
 				
-				//Packet.flash(me.gid);
-				
 				delay(me.ping * 2 + 200);
 			}
 			
@@ -6386,86 +6113,11 @@ function AutoSmurf() {
 				Pather.moveTo(msgNode[0] + myX, msgNode[1] + myY);
 			}
 			
-			//msgLeader = false;
-			
 			me.overhead("followDriver end");
 			
 			return true;
 		};
 		
-		// ---- 260928: previous followDriver. kept for rollback ----
-//		var followDriver = function () {	//260903
-//			var driver, result,
-//				driverName = getDriverName();
-//			
-//			me.overhead("followDriver start");
-//			
-//			while (!msgLeader) {
-//				if (earlyReturn) {
-//					earlyReturn = false;
-//					
-//					while (!me.inTown) {
-//						Town.goToTown();
-//						delay(me.ping * 2 + 200);
-//					}
-//					
-//					return false;
-//				}
-//				
-//				driver = getDriverUnit(driverName);
-//				
-//				if (driver) {
-//					me.overhead("driver: " + driver.x + "." + driver.y + " distance: " + Math.round(getDistance(me, driver)));
-//					
-//					if (getDistance(me, driver) > 15) {
-//						Pather.moveTo(driver.x + myX, driver.y + myY);
-//						
-//						if (Boer && me.getSkill(149, 1)) {
-//							Skill.cast(149, 0); // Battle Orders
-//						}
-//					} else {
-//						if (!Attack.clear(25)) {
-//							return false;
-//						}
-//					}
-//				} else {
-//					if (msgNode) {
-//						me.overhead("msgNode: " + msgNode[0] + "." + msgNode[1] + " distance: " + Math.round(getDistance(me, msgNode[0], msgNode[1])));
-//						
-//						if (getDistance(me, msgNode[0], msgNode[1]) > 15) {
-//							Pather.moveTo(msgNode[0] + myX, msgNode[1] + myY);
-//							
-//							if (Boer && me.getSkill(149, 1)) {
-//								Skill.cast(149, 0); // Battle Orders
-//							}
-//						} else {
-//							if (!Attack.clear(25)) {
-//								return false;
-//							}
-//						}
-//					} else {
-//						if (!Attack.clear(20)) {
-//							return false;
-//						}
-//					}
-//				}
-//				
-//				//Packet.flash(me.gid);
-//				
-//				delay(me.ping * 2 + 200);
-//			}
-//			
-//			if (msgNode && getDistance(me, msgNode[0], msgNode[1]) > 15) {
-//				Pather.moveTo(msgNode[0] + myX, msgNode[1] + myY);
-//			}
-//			
-//			//msgLeader = false;
-//			
-//			me.overhead("followDriver end");
-//			
-//			return true;
-//		};
-
 		var clearCowLevel = function (rooms) {
 			var room, myRoom, node, result;
 			
@@ -6509,8 +6161,6 @@ function AutoSmurf() {
 						return false;
 					}
 				}
-				
-				//Packet.flash(me.gid);
 				
 				delay(me.ping * 2 + 200);
 			}
@@ -6556,8 +6206,6 @@ function AutoSmurf() {
 				delay(me.ping * 2 + 200);
 			}
 		}
-		
-		//this.okCount();
 		
 		Town.doChores();
 		
@@ -6804,8 +6452,6 @@ function AutoSmurf() {
 				this.okCount();
 				
 				Pather.teleport = true;
-				//msgLeader = false;
-				//msgFollower = {};
 				earlyReturn = false;
 				
 				return true;
@@ -6835,8 +6481,6 @@ function AutoSmurf() {
 				
 				Pather.teleport = true;
 				msgNode = false;	//260903
-				//msgLeader = false;
-				//msgFollower = {};
 				earlyReturn = false;
 				
 				return true;
@@ -6902,7 +6546,6 @@ function AutoSmurf() {
 
 			while (getDistance(me.x, me.y, journal.roomx * 5 + journal.x + 8, journal.roomy * 5 + journal.y + 8) > 10) {
 				try {
-					//Pather.moveToPreset(74, 2, 357, 8, 8, false, false);
 					Pather.moveToPreset(74, 2, 357, 8, 8);	//260929
 				} catch (e) {
 					print("Caught Error");
@@ -6936,22 +6579,14 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		//Attack.clear(10);	//260921
-		
 		try {
-			//Attack.clear(10, 0, 250);	//Summoner
-			//Attack.clearList(Attack.scanList(250), null, 1);	//Summoner
 			Attack.clear(0, 250);	//Summoner //260926
 		} catch (e) {
 			print(e);
-			//Attack.clear(10);
 		}
 		
 		journal = getPresetUnit(74, 2, 357);
 		
-		//Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 10, x2: journal.roomx * 5 + journal.x + 18, y1: journal.roomy * 5 + journal.y - 10, y2: journal.roomy * 5 + journal.y + 17}), null, 1);
-		//Attack.clearList(Attack.scanList(null, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}), null, 1);
-		//Attack.clear(0, {box: {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13}});	//260926
 		Attack.clear(0, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13});	//260926	//260929
 		
 		Pather.moveToPreset(74, 2, 357, 3, 3);
@@ -6971,7 +6606,6 @@ function AutoSmurf() {
 				delay(me.ping * 2 + 1000);
 
 				Misc.click(0, 0);
-				//me.cancel();
 			}
 		}
 		
@@ -6980,11 +6614,8 @@ function AutoSmurf() {
 		me.cancel();
 		
 		while (me.area === 74) {
-			//me.cancel();
 			Pather.usePortal(46);
 		}
-		
-		//me.cancel();
 		
 		this.clickWP();
 		Pather.useWaypoint(1);
@@ -7029,9 +6660,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		try {
-			//Attack.clearList(Attack.scanList(242), null, 1);	// Mephisto
 			Attack.clear(0, 242);	// Mephisto //260926
-			//Attack.kill(242);	// Mephisto
 		} catch (e) {
 			print(e);
 		}
@@ -7048,7 +6677,6 @@ function AutoSmurf() {
 		redPortal = getPresetUnit(102, 2, 342);
 		
 		while (getDistance(me.x, me.y, redPortal.roomx * 5 + redPortal.x, redPortal.roomy * 5 + redPortal.y) > 10) {
-			//Pather.moveToPreset(102, 2, 342, 0, 0, false, false);
 			Pather.moveToPreset(102, 2, 342);	//260929
 		}
 		
@@ -7377,15 +7005,10 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		//Attack.clear(20);
-		
 		try {
-			//Attack.clear(20, 0, 526); // Nihlathak
-			//Attack.clearList(Attack.scanList(526), null, 1); // Nihlathak
 			Attack.clear(20, 526); // Nihlathak //260929
 		} catch (e) {
 			print(e);
-			//Attack.clear(20);
 		}
 		
 		
@@ -7844,7 +7467,6 @@ function AutoSmurf() {
 			
 			if (!me.getQuest(20, 0)) {
 				D2Bot.printToConsole("Figurine incompleted");	//260920
-				//D2Bot.restart();
 				scriptBroadcast("quit");	//260909
 			}
 			

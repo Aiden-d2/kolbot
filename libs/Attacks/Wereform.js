@@ -15,12 +15,9 @@ var ClassAttack = {
 				Misc.shapeShift(Config.Wereform);
 			}
 			
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(Config.AttackSkill[0]) || checkCollision(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
@@ -76,7 +73,6 @@ var ClassAttack = {
 	},
 
 	afterAttack: function () {
-		//Misc.unShift();	//eom
 		Precast.doPrecast(false);
 	},
 
@@ -95,22 +91,12 @@ var ClassAttack = {
 			}
 
 			// Teleport closer
-			//if (Math.ceil(getDistance(me, unit)) > 10) {
-				//Misc.unShift();	//eom
 
-				//if (!Attack.getIntoPosition(unit, 10, 0x4)) {
-				//	return 0;
-				//}
-			//}
-			
 			Misc.shapeShift(Config.Wereform);
 
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(timedSkill) || checkCollision(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(timedSkill), 0x4, 1)) {
 				if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4, 1)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead) {
 				Skill.cast(timedSkill, Skill.getHand(timedSkill), unit);
@@ -125,22 +111,12 @@ var ClassAttack = {
 			}
 
 			// Teleport closer
-			//if (Math.ceil(getDistance(me, unit)) > 10) {
-				//Misc.unShift();	//eom
-
-				//if (!Attack.getIntoPosition(unit, 10, 0x4)) {
-					//return 0;
-				//}
-			//}
 
 			Misc.shapeShift(Config.Wereform);
 
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(untimedSkill) || checkCollision(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(untimedSkill), 0x4, 1)) {
 				if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4, 1)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead) {
 				Skill.cast(untimedSkill, Skill.getHand(untimedSkill), unit);

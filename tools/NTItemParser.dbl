@@ -94,10 +94,6 @@ NTIP.OpenFile = function (filepath, notify) {
 		}
 	}
 
-	//if (notify) {
-		//print("ÿc4Loaded NIP: ÿc2" + filename + "ÿc4. Lines: ÿc2" + lines.length + "ÿc4. Valid entries: ÿc2" + entries + ". ÿc4Time: ÿc2" + (getTickCount() - tick) + " ms");
-	//}
-
 	return true;
 };
 

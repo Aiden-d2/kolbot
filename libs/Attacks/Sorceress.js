@@ -7,8 +7,6 @@
 var ClassAttack = {
 	doAttack: function (unit, preattack) {
 		
-		//print("[DBG] - doAttack");
-
 		if (Config.MercWatch && Town.needMerc()) {
 			print("mercwatch");
 			Town.visitTown();
@@ -19,12 +17,9 @@ var ClassAttack = {
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(Config.AttackSkill[0]) || checkCollision(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
@@ -65,7 +60,6 @@ var ClassAttack = {
 
 			while (!me.dead && Math.round(unit.hp * 100 / unit.hpmax) > Config.CastStatic && Attack.checkMonster(unit)) {
 				if (getDistance(me, unit) > staticRange || checkCollision(me, unit, 0x4)) {
-					//if (!Attack.getIntoPosition(unit, staticRange, 0x4)) {
 					if (!Attack.setPosition(unit, staticRange, 0x4, 1)) {	//260826
 						return 0;
 					}
@@ -138,15 +132,11 @@ var ClassAttack = {
 				return 0;
 			}
 
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(timedSkill) || checkCollision(me, unit, 0x4)) {
 				// Allow short-distance walking for melee skills
-				//walk = Skill.getRange(timedSkill) < 4 && getDistance(me, unit) < 10 && !checkCollision(me, unit, 0x1);
 
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(timedSkill), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead && !checkCollision(me, unit, 0x4)) {
 				Skill.cast(timedSkill, Skill.getHand(timedSkill), unit);
@@ -160,11 +150,8 @@ var ClassAttack = {
 				return 0;
 			}
 			
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(untimedSkill) || checkCollision(me, unit, 0x4)) {
 				// Allow short-distance walking for melee skills
-				//walk = Skill.getRange(untimedSkill) < 4 && getDistance(me, unit) < 10 && !checkCollision(me, unit, 0x1);
 
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(untimedSkill), 0x4)) {
 				if (untimedSkill === 42) {	//260917 static exception
 					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {
 						return 0;
@@ -174,7 +161,6 @@ var ClassAttack = {
 						return 0;
 					}
 				}
-			//}
 
 			if (!unit.dead) {
 				Skill.cast(untimedSkill, Skill.getHand(untimedSkill), unit);

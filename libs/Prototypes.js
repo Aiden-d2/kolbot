@@ -199,7 +199,6 @@ Unit.prototype.buy = function (shiftBuy, gamble) {
 		itemCount = me.itemcount;
 
 	for (i = 0; i < 3; i += 1) {
-		//print("BUY " + this.name + " " + i);
 
 		this.shop(shiftBuy ? 6 : 2);
 
@@ -940,7 +939,6 @@ Unit.prototype.getColor = function () {
 			"Lord's": Color.darkgold,
 			"Fool's": Color.white,
 			"King's": Color.darkgold,
-			//"Master's": Color.darkgold,
 			"Elysian": Color.darkgold,
 			"Fiery": Color.darkred,
 			"Smoldering": Color.darkred,

@@ -43,10 +43,7 @@ var NodeAction = {
 	},
 
 	// Open chests while pathing
-	//popChests: function () {
 	popChests: function (arg) {	//260928
-		//if (!!Config.OpenChests) {
-			//Misc.openChests(20);
 		if (!!Config.OpenChests && arg.clearPath !== false) {	//260928 only on clearing moves, like killMonsters / shrines / wells
 			Misc.openChests(15);	//260928 inside the area killMonsters just cleared (20/25)
 		}
@@ -55,9 +52,6 @@ var NodeAction = {
 	// Scan shrines while pathing
 	getShrines: function (arg) {
 		if (!!Config.ScanShrines && Config.ScanShrines.length > 0 && arg.clearPath !== false) {	//260622
-			//if (Pather.useTeleport() === true) {
-				//print("[Shrine] clearPath: " + arg.clearPath + " useTeleport: " + Pather.useTeleport() + " area: " + me.area);	//260622
-			//}
 			
 			Misc.scanShrines();
 		}
@@ -87,9 +81,7 @@ var NodeAction = {
 			
 			var target = wellList[0];
 			
-			//print("[Well] before mode:" + target.mode + " clearPath: " + arg.clearPath + " useTeleport: " + Pather.useTeleport() + " area: " + me.area);
 			Misc.getShrine(target);
-			//print("[Well] after mode:" + target.mode + " area: " + me.area);
 		}
 	}
 };
@@ -174,8 +166,6 @@ var Pather = {
 
 			if (baseline < Config.SafeTele.Count) return targetNode;
 
-			//print("[SafeTele] node:(" + targetNode.x + "," + targetNode.y + ") mc:" + baseline + " area:" + me.area);
-
 			angle = Math.atan2(targetNode.y - me.y, targetNode.x - me.x);
 
 			safeNode = false;
@@ -213,7 +203,6 @@ var Pather = {
 					
 					mc = Attack.getMonsterCount(tx, ty, Config.SafeTele.Range, monList, fireList);	//260807
 
-					//if (!(getCollision(me.area, tx, ty) & 0x1) && mc < baseline) {
 					if (mc < baseline) {	//260823
 						baseline = mc;
 						safeNode = {x: tx, y: ty, monCount: mc};
@@ -230,11 +219,8 @@ var Pather = {
 			}
 
 			if (safeNode) {
-				//print("[SafeTele] selected:(" + safeNode.x + "," + safeNode.y + ") mc:" + safeNode.monCount);
 				return safeNode;
 			}
-
-			//print("[SafeTele] FAILED - original:(" + targetNode.x + "," + targetNode.y + ")");
 
 			return targetNode;
 		}
@@ -310,7 +296,6 @@ var Pather = {
 			
 			if (!me.inTown && !useTeleport) {
 				while (path.length > 1 && getDistance(me, path[1]) < getDistance(me, path[0])) {	//260727
-					//me.overhead("skip target node: " + path[0].x + ", " + path[0].y + " / [0]=" + Math.round(getDistance(me, path[0]) * 100) / 100 + " vs [1]=" + Math.round(getDistance(me, path[1]) * 100) / 100);
 					path.shift();
 				}
 			}
@@ -404,7 +389,6 @@ var Pather = {
 					if (fail > 0 && !useTeleport && !me.inTown) {
 						// Don't go berserk on longer paths
 						if (!cleared) {
-							//Attack.clear(5);
 
 							cleared = true;
 						}
@@ -445,8 +429,6 @@ var Pather = {
 
 		PathDebug.removeHooks();
 
-		//print("[DBG] - moveTo");
-		
 		Misc.trace("moveTo end");
 		
 		return getDistance(me, node.x, node.y) <= 5;
@@ -634,7 +616,6 @@ ModeLoop:
 				if ((getDistance(door, x, y) < 4 && getDistance(me, door) < 9) || getDistance(me, door) < 4) {
 					for (i = 0; i < 3; i += 1) {
 						Misc.click(0, 0, door);
-						//door.interact();
 
 						tick = getTickCount();
 
@@ -779,11 +760,8 @@ ModeLoop:
 				};
 
 				if (currExit.target === areas[i]) {
-					//dest = this.getNearestWalkable(currExit.x, currExit.y, 5, 1);
 					dest = this.getNearestWalkable(currExit.x, currExit.y, 10, 2);	//260824
 					
-					//print("[EXIT] exit:(" + currExit.x + "," + currExit.y + ") dest:" + (dest ? "(" + dest[0] + "," + dest[1] + ") off:" + Math.floor(getDistance(currExit.x, currExit.y, dest[0], dest[1])) : "FAIL") + " type:" + currExit.type + " area:" + me.area);	//260823
-
 					if (!dest) {
 						return false;
 					}
@@ -866,7 +844,6 @@ ModeLoop:
 		if (room) {
 			CollMap.addRoom(room);
 
-			//return this.getNearestWalkable(x, y, 20, 4);
 			return this.getNearestWalkable(x, y, 20, 3);	//260826
 		}
 
@@ -930,7 +907,6 @@ ModeLoop:
 		}
 
 		if (!unit) {
-			//throw new Error("openUnit: Unit not found. ID: " + unit);
 			throw new Error("openUnit: Unit not found. ID: " + id);	//eom 260411
 		}
 
@@ -1065,8 +1041,6 @@ ModeLoop:
 
 		var i, tick, wp, coord, retry, npc;
 
-		//print("[DBG] - useWaypoint");
-		
 		for (i = 0; i < 12; i += 1) {
 			if (me.area === targetArea || me.dead) {
 				break;
@@ -1106,11 +1080,6 @@ ModeLoop:
 				}
 				
 				Misc.click(0, 0, wp);
-				
-				//if (me.area === targetArea) {	//260911
-					//me.cancel();
-					//return true;
-				//}
 				
 				tick = getTickCount();
 
@@ -1156,7 +1125,6 @@ ModeLoop:
 				}
 				
 				if (!getUIFlag(0x14)) {
-					//print("waypoint retry " + (i + 1));	//eom
 					me.overhead("waypoint retry " + (i + 1));	//eom
 					retry = Math.min(i + 1, 5);
 					coord = CollMap.getRandCoordinate(me.x, -5 * retry, 5 * retry, me.y, -5 * retry, 5 * retry);
@@ -1215,8 +1183,6 @@ ModeLoop:
 
 		var i, portal, oldPortal, oldGid, tick, tpTome;
 
-		//print("[DBG] - makePortal");
-		
 		for (i = 0; i < 10; i += 1) {	//260808
 			if (me.dead) {
 				break;
@@ -1295,8 +1261,6 @@ MainLoop:
 		var i, tick, portal, redPortal,
 			preArea = me.area;
 
-		//print("[DBG] - usePortal");
-		
 		for (i = 0; i < 14; i += 1) {	//260809
 			if (me.dead) {
 				break;
@@ -1372,8 +1336,6 @@ MainLoop:
 			delay(me.ping * 2 + 200);	//260808
 		}
 		
-		//delay(me.ping * 2 + 1000);	//260828
-
 		return targetArea ? me.area === targetArea : me.area !== preArea;
 	},
 
@@ -1533,8 +1495,6 @@ MainLoop:
 			this.journeyTo(area);
 		}
 		
-		//print("[DBG] - goWP");
-		
 		for (i = 0 ; i < wpIDs.length ; i += 1) {
 			presetUnit = getPresetUnit(me.area, 2, wpIDs[i]);
 
@@ -1581,8 +1541,6 @@ MainLoop:
 			this.journeyTo(area);
 		}
 
-		//print("[DBG] - getWP");
-		
 		for (i = 0; i < wpIDs.length; i += 1) {
 			preset = getPresetUnit(area, 2, wpIDs[i]);
 
@@ -1605,8 +1563,6 @@ MainLoop:
 
 		print(target.course);
 
-		//print("[DBG] - journeyTo");
-		
 		if (target.useWP) {
 			Town.goToTown();
 		}
@@ -1654,7 +1610,6 @@ MainLoop:
 						}
 
 						Misc.click(0, 0, unit);
-						//unit.interact();
 
 						tick = getTickCount();
 

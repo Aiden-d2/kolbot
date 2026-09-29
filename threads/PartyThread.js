@@ -109,8 +109,6 @@ function partyInGame () {	//260908
 		return;
 	}
 	
-	//scriptBroadcast("quit");
-
 	retry += 1;
 	
 	if (retry === 1) {

@@ -104,26 +104,6 @@ var CollMap = new function () {
 		return undefined;
 	};
 
-	/*this.getRoomIndex = function (x, y, cacheOnly) {
-		if (this.rooms.length > 25) {
-			this.reset();
-		}
-
-		var i;
-
-		for (i = 0; i < this.rooms.length; i += 1) {
-			if (this.coordsInRoom(x, y, this.rooms[i])) {
-				return i;
-			}
-		}
-
-		if (!cacheOnly && this.addRoom(x, y)) {
-			return i;
-		}
-
-		return undefined;
-	};*/
-
 	this.coordsInRoom = function (x, y, room) {
 		if (room && x >= room.x * 5 && x < room.x * 5 + room.xsize && y >= room.y * 5 && y < room.y * 5 + room.ysize) {
 			return true;
@@ -226,10 +206,8 @@ var CollMap = new function () {
 				continue;
 			}
 
-			//retry++;	//260816
 		} while (getCollision(me.area, coordX, coordY) & 1);
 
-		// print("Move " + retry + " from (" + cX + ", " + cY + ") to (" + coordX + ", " + coordY + ")");
 		return {x:coordX, y:coordY};
 	};
 };

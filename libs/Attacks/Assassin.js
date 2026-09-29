@@ -10,19 +10,14 @@ var ClassAttack = {
 
 	doAttack: function (unit, preattack) {
 		
-		//print("[DBG] - doAttack");
-
 		if (Config.MercWatch && Town.needMerc()) {
 			Town.visitTown();
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(Config.AttackSkill[0]) || checkCollision(me, unit, 0x4)) {
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
@@ -40,7 +35,6 @@ var ClassAttack = {
 		if (Config.AggressiveCloak && Config.UseCloakofShadows && me.getSkill(264, 1) && !me.getState(121) && !me.getState(153)) {
 			if (getDistance(me, unit) < 20) {
 				Skill.cast(264, 0);
-			//} else if (!Attack.getIntoPosition(unit, 20, 0x4)) {
 			} else if (!Attack.setPosition(unit, 20, 0x4)) {	//260826
 				return 0;
 			}
@@ -50,7 +44,6 @@ var ClassAttack = {
 
 		if (checkTraps) {
 			if (getDistance(me, unit) > this.trapRange || checkCollision(me, unit, 0x4)) {	//260902
-				//if (!Attack.getIntoPosition(unit, this.trapRange, 0x4) || (checkCollision(me, unit, 0x1) && (getCollision(unit.area, unit.x, unit.y) & 0x1))) {
 				if (!Attack.setPosition(unit, this.trapRange, 0x4) || (checkCollision(me, unit, 0x1) && (getCollision(unit.area, unit.x, unit.y) & 0x1))) {	//260826
 					return 0;
 				}
@@ -122,12 +115,9 @@ var ClassAttack = {
 		if (timedSkill > -1 && (!me.getState(121) || !Skill.isTimed(timedSkill))) {
 			switch (timedSkill) {
 			case 151: // Whirlwind
-				//if (Math.round(getDistance(me, unit)) > Skill.getRange(timedSkill) || checkCollision(me, unit, 0x1)) {
-					//if (!Attack.getIntoPosition(unit, Skill.getRange(timedSkill), 0x1)) {
 					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x1)) {	//260826
 						return 0;
 					}
-				//}
 
 				if (!unit.dead) {
 					this.whirlwind(unit);
@@ -139,15 +129,11 @@ var ClassAttack = {
 					return 0;
 				}
 
-				//if (Math.round(getDistance(me, unit)) > Skill.getRange(timedSkill) || checkCollision(me, unit, 0x4)) {
 					// Allow short-distance walking for melee skills
-					//walk = Skill.getRange(timedSkill) < 4 && getDistance(me, unit) < 10 && !checkCollision(me, unit, 0x1);
 
-					//if (!Attack.getIntoPosition(unit, Skill.getRange(timedSkill), 0x4)) {
 					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {	//260826
 						return 0;
 					}
-				//}
 
 				if (!unit.dead) {
 					Skill.cast(timedSkill, Skill.getHand(timedSkill), unit);
@@ -162,15 +148,11 @@ var ClassAttack = {
 				return 0;
 			}
 
-			//if (Math.round(getDistance(me, unit)) > Skill.getRange(untimedSkill) || checkCollision(me, unit, 0x4)) {
 				// Allow short-distance walking for melee skills
-				//walk = Skill.getRange(untimedSkill) < 4 && getDistance(me, unit) < 10 && !checkCollision(me, unit, 0x1);
 
-				//if (!Attack.getIntoPosition(unit, Skill.getRange(untimedSkill), 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4)) {	//260826
 					return 0;
 				}
-			//}
 
 			if (!unit.dead) {
 				Skill.cast(untimedSkill, Skill.getHand(untimedSkill), unit);

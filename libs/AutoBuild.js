@@ -64,9 +64,7 @@ var AutoBuild = new function AutoBuild () {
 
 
 	function getTemplateFilename () {
-		//var classname = ["M", "S", "N", "P", "B", "D", "A"][me.classid];
 		var build = Build.getBuildType();
-		//var template = "build/"+classname+"."+build+".js";
 		var template = "builds/" + build + ".js";	//260902
 		return template.toLowerCase();
 	};
@@ -114,7 +112,6 @@ var AutoBuild = new function AutoBuild () {
 
 		// Resynchronize our Config object with all past changes
 		// made to it by AutoBuild system
-		//applyConfigUpdates();	//260803
 		
 		if (currentScript === "default.dbj") {	//260803
 			applyConfigUpdates();

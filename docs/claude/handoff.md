@@ -21,7 +21,7 @@
 **규칙** (CLAUDE.md에도 있음)
 - **요청 없이 코드를 고치지 않는다.** 분석, 검토, 제안까지만 한다.
 - main은 절대 직접 덮어쓰지 않는다.
-- 지우지 않고 주석 처리한다. 수정 줄에는 `//YYMMDD` 표기를 한다.
+- 지운다(260929부터, 주석으로 남기지 않음). 이전 코드는 git 기록으로 찾는다. 주석 일괄 정리 직전 커밋은 `fcd2713`. 수정 줄에는 `//YYMMDD` 표기를 한다.
 - `AutoSmurf.js`, `Reload.js`, `nips/*.nip`은 LF다. 사용자의 로컬 파일은 CRLF일 수 있다.
 
 **사용자가 중요하게 보는 것** (지난 대화에서 여러 번 지적받음)
@@ -54,7 +54,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 |---|---|---|---|
 | 1 | **NoSkipArea 키와 조건 제거** | 로컬 `[]`로 테스트 중 | 문제없으면 제거. 제거할 곳: `Config.js` 키, `Attack.js`의 306 스킵·unreachable 즉시 제외·HP 스킵 조건 3곳, `Paladin.js` 해머 게이트 조건. 조건에서 `Config.NoSkipArea.indexOf(me.area) < 0 &&`만 빼면 동작은 같다 |
 | 2 | **임시 로그 정리** | 인게임 검증 후 | `//260926 temp` 표시가 붙은 `Misc.trace("[AC] ...")`, `"[SP] ..."` 줄. `Pather.js`의 redPortal `//260926 temp`는 사용자 코드라 먼저 물어본다 |
-| 3 | **주석 처리된 옛 코드 정리** | 사용자가 나중에 일괄 | `Attack.js`의 옛 clear/clearList/scanList/setPosition 본문, 죽은 함수(getIntoPosition, dodge, buildGrid, sortMonsters, sortByDistance, getScarinessLevel, getMob, openChests), `Config.Dodge.Count`, `Misc.manaCostList` 변수 |
+| 3 | ~~주석 처리된 옛 코드 정리~~ | **완료 (260929)** | JS/dbj/dbl 32개 파일에서 주석 처리된 옛 코드와 `/* */` 옛 코드 블록, 롤백용 머리글을 지움(Attack.js 2500 → 1349줄). 주석을 뺀 코드 토큰이 정리 전과 같음을 확인. nip·Config.js·builds의 꺼 둔 옵션과 설명 주석·날짜 표기·줄 끝 메모는 유지. 이전 코드는 커밋 `fcd2713` |
 | 4 | **소 레벨 치킨 잦음** | 개선 대상 | `followDriver`는 사용자 코드로 교체됨(30 초과 이동, 15~30 clearPath 이동, 근접 clear). 리더 쪽 `clearCowLevel`(팔로워를 기다리지 않고 방마다 이동)은 아직 손대지 않음 |
 | 5 | 부활·소환형(샤먼) 우선 | 보류 | 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류함 |
 | 6 | `lostEntry` 등 변수 이름 | 사용자가 공부 후 직접 다듬기로 함 | `attack_flow.md` 변수 사전에 표시 |
