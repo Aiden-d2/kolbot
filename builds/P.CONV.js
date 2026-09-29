@@ -30,7 +30,6 @@ var AutoBuildTemplate = {
 			{id: 117, target: 1},			// Holy Shield
 			{id: 119, target: 1},			// Sanctuary
 			{id: 112, target: 20},			// Blessed Hammer
-			{id: 115, target: 10},			// Vigor
 			{id: 123, target: 10},			// Conviction
 			{id: 115, target: 20},			// Vigor
 			{id: 108, target: 10, from:51},	// Blessed Aim
