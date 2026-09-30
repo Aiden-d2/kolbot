@@ -76,7 +76,7 @@ var Config = {
 	
 	SafeTele: {	//eom 260525
 		Enabled: true,
-		Range: 9,
+		Range: 10,	//260930 9 -> 10: monsters closer than 10 (was within 9)
 		Count: 1,
 		Angle: 60,
 		Step: 5,

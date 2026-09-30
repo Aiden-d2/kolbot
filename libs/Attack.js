@@ -538,7 +538,7 @@ var Attack = {
 		if (!moveNeeded) {	//260930 threat is a dodge matter only (approach no longer counts monsters)
 			threatRange = Math.min(distance, Config.Dodge.Range);	//260930 radius and dodge distance in one value
 			monList = this.tick.monList || this.buildMonsterList();
-			baseline = this.getMonsterCount(me.x, me.y, threatRange, monList, fireList, true);
+			baseline = this.getMonsterCount(me.x, me.y, threatRange, monList, fireList);
 
 			if (baseline < Config.Dodge.Count) {	//260930
 				return true;
@@ -655,7 +655,7 @@ var Attack = {
 					continue;
 				}
 
-				if (!moveNeeded && this.getMonsterCount(c.x, c.y, threatRange, monList, fireList, true) >= baseline) {	//260930 after the cheap checks, counts closer than R
+				if (!moveNeeded && this.getMonsterCount(c.x, c.y, threatRange, monList, fireList) >= baseline) {	//260930 after the cheap checks, counts closer than R
 					continue;	// not safer than where I stand
 				}
 
@@ -790,14 +790,12 @@ var Attack = {
 		return monList;
 	},
 
-	getMonsterCount: function (x, y, range, list, fireList, below) {	//260829	//260930 below: count closer than range (dodge) instead of within (SafeTele)
-		var i, d,
+	getMonsterCount: function (x, y, range, list, fireList) {	//260829
+		var i,
 			count = 0;
 		
 		for (i = 0; i < list.length; i += 1) {
-			d = getDistance(x, y, list[i].x, list[i].y);
-
-			if (below ? d < range : d <= range) {
+			if (getDistance(x, y, list[i].x, list[i].y) < range) {	//260930 <= -> < (closer than range; dodge and SafeTele alike)
 				count += 1;
 			}
 		}
