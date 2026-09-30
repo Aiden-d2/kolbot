@@ -439,13 +439,11 @@ var Precast = new function () {
 		}
 
 		while (me.getMinionCount(minion) < count) {
-			if (Skill.getManaCost(skillId) > me.mp) {	//260930 low mana: skip, the next doPrecast refills (was waiting here until mana came back)
+			if (!Skill.cast(skillId, 0)) {	//260930 cast refused (low mana etc.): skip, the next doPrecast refills (was waiting here until mana came back)
 				break;
 			}
 
 			rv = true;
-
-			Skill.cast(skillId, 0);
 			delay(200);
 		}
 
