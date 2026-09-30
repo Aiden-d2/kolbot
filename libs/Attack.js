@@ -493,8 +493,8 @@ var Attack = {
 		           my walking path to the target <= straight distance * DetourPath (the old clear's Angle/Detour gate)	//260928
 		  dodge (in range, Dodge on, skill range >= Dodge.MinSkillRange, 1+ monster closer than R = min(skill range, Dodge.Range)):	//260930
 		           one ring at R (teleport: at the skill range), back straight away first,
-		           taking the spot with the fewest monsters (closer than R) in the backing-away half, 1+ fewer than where I stand	//261001
-		           (ties: straighter back first); if that half has none, the fewest on the far side	//260927
+		           taking the first spot with at least 1 monster fewer (closer than R) than where I stand;
+		           if the backing-away half has none, go through to the far side	//260927
 		  box call (Attack.tick.box): only spots inside the box, for approach and dodge alike	//260929
 		Returns false only when an approach fails. Attack.tick.fail says why: "unreachable" | "moveFailed"
 	*/
@@ -505,7 +505,7 @@ var Attack = {
 
 		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 1;	//260930 3 -> 1 (a dodge that stops 3 short lands inside the threat radius again)
 
-		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, threatRange, count,	//260930	//261001 count
+		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, threatRange,	//260930
 			detourOk, detourPath,	//260928
 			fence = this.tick.box,	//260929
 			pathOk = false,
@@ -606,8 +606,8 @@ var Attack = {
 
 			}
 
-			// approach: order decides the spot (outer ring first, then straight ahead)	//260927
-			// dodge: one ring, the spot with the fewest monsters in this half (ties: back straight away first); it must beat the current one by 1+	//261001 fewest instead of the first better
+			// Order decides which spot, threat only decides whether a dodge spot is allowed	//260927
+			// approach: outer ring first, then straight ahead. dodge: one ring, back straight away first; a spot must beat the current one by 1+	//260930
 			list.sort(function (a, b) {
 				return (b.r - a.r) || (a.offset - b.offset);
 			});
@@ -641,21 +641,8 @@ var Attack = {
 					continue;
 				}
 
-				if (!moveNeeded) {	//261001 dodge: keep the fewest (a dodge that only drops 3 -> 2 dodges again next tick)
-					count = this.getMonsterCount(c.x, c.y, threatRange, monList, fireList);	//260930 after the cheap checks, counts closer than R
-
-					if (count >= baseline) {
-						continue;	// not safer than where I stand, or than the best spot so far
-					}
-
-					choice = c;
-					baseline = count;
-
-					if (count === 0) {
-						break;
-					}
-
-					continue;
+				if (!moveNeeded && this.getMonsterCount(c.x, c.y, threatRange, monList, fireList) >= baseline) {	//260930 after the cheap checks, counts closer than R
+					continue;	// not safer than where I stand
 				}
 
 				choice = c;

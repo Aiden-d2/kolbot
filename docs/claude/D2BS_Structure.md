@@ -469,7 +469,7 @@ setPosition(unit, distance, coll, minDist) → bool   ★ 위치 선정 단일 �
           MUST 대상(tick.must)은 조건 없이 이동
     회피  사거리 안 && Dodge.Enabled && distance ≥ Dodge.MinSkillRange (classid 243 제외)
           && R = min(사거리, Dodge.Range) 미만 몹 1마리 이상: 링 하나(걷기 R, 텔레 사거리)에서
-          현재 위치보다 1 이상 적은 자리 중 몹 수 최소로 (동점은 곧게 물러나는 쪽, 261001)
+          현재 위치보다 몹 수가 1 이상 적은 첫 자리로 (260930)
     false 는 접근 실패뿐. 이유는 tick.fail = "unreachable" | "moveFailed"
 checkFire(x, y, fireList)       → bool   불장판 좌표 배제
 getFireList()                   → Array
@@ -493,11 +493,11 @@ useTeleport()                   → bool  텔레포트 스킬 또는 아이템 �
                                         상태이상(139, 140) 없음 && !inTown
 moveTo(x, y, retry, clearPath, pop) → bool | "killMonsters"
     clearPath 기본 false, pop 기본 false (true 면 경로 마지막 노드 제거)
-    텔레 경로 노드 간격: getTeleDistance() = narrowAreas(62/63/64/88/89/91/74) 30, 그 외 teleDistance (261001 첫 경로·SafeTele 뒤·실패 재계산 모두)
+    텔레 경로 노드 간격: 기본 teleDistance, area 62/63/64/88/89/91/74 는 30
     TownCheck 이면 노드마다 Misc.townCheck()
     텔레 && SafeTele.Skip 지역 아님: 노드마다 safeCheckNode 로 재배치
-      Attack.getMonsterCount 가 SafeTele.Range 미만 몬스터를 1마리 이상 세면 (261001 Count 삭제)
-      getTeleDistance() 부터 Min 까지 Step 씩 줄이며 대체 노드 탐색 (최근 5개 제외)
+      Attack.getMonsterCount 가 SafeTele.Range 안 몬스터를 Count 이상 세면
+      teleDistance 부터 Min 까지 Step 씩 줄이며 대체 노드 탐색 (최근 5개 제외)
     노드 도착마다 NodeAction.go({clearPath, prevNode, node}).
       killMonsters 가 "killMonsters" 를 돌려주면 moveTo 도 그 값을 반환
 teleportTo(x, y, maxRange)      → bool  최대 10회 시전(회차당 me.attacking 기준 최대 2초), 기본 maxRange 5
@@ -954,7 +954,7 @@ Attack.clear(range, must)
 | 모드 | 조건 | 동작 |
 |---|---|---|
 | 접근 | 사거리 밖 또는 시야 차단 | 대상 주변 링 후보(바깥 링 → 작은 각도 순). 앞쪽 직선 > 앞쪽 우회 > 뒤쪽 직선 > 뒤쪽 우회. 불장판 배제, 몹 수는 동점일 때만 비교. SWEEP 대상은 0x4 가시성·DetourPath 제한 |
-| 회피 | 이동 불필요 && Dodge 조건 충족 (5절) | 물러나는 쪽(정면 반)에서 현재보다 적은 자리 중 몹 수 최소, 없으면 반대편에서 최소 (261001) |
+| 회피 | 이동 불필요 && Dodge 조건 충족 (5절) | 뒤로 물러나는 쪽부터 현재보다 몹이 적은 첫 자리, 없으면 반대편 |
 
 텔레포트 사용 시 `Pather.teleDistance`(35) 이내 후보는 teleportTo, 넘으면 moveTo(여러 번 텔레)로 간다 (260930 maxTeleDistance 삭제).
 
@@ -1062,8 +1062,8 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | `UseKeys` | `Town.doChores`(buyKeys) / `checkKeys` / `ignoredCheck` |
 | `ScanShrines` `UseWells` | `Pather.NodeAction`, `Misc.scanShrines` |
 | `NoSkipArea` `DetourPath` | `Attack.clear` / `setPosition`, `Paladin.getHammerPosition` |
-| `SafeTele{Enabled Range Angle Step Min Skip}` (261001 Count 삭제) | `Pather.moveTo`의 `safeCheckNode` |
-| `Dodge{Enabled Range MinSkillRange}` | `Attack.setPosition`. `Enabled`는 `AutoSmurf.duriel` 안에서 잠시 끄고 다시 켬 (260930 HP·Step·Max·Count 삭제) |
+| `SafeTele{Enabled Range Count Angle Step Min Skip}` | `Pather.moveTo`의 `safeCheckNode` |
+| `Dodge{Enabled Range HP Step}` | `Attack.setPosition`. `Enabled`는 `AutoSmurf.duriel` 안에서 잠시 끄고 다시 켬. `Count`는 미사용 |
 | `Gear` `Tiered` `TieredGear` `TierGoal` `TierNow` | `NTIP.EvaluateItem` / `GetScore`, `Equip` 계열, `AutoSmurf.preparation`(`Tiered`) |
 | `TierMerc` `MercStat` | `NTIP` merc 게이트·`GetScore`, `Grant`, `ToolsThread` |
 | `MercSkill` | `AutoSmurf` → `Merc.hire` |
