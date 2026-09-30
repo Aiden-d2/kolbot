@@ -308,6 +308,101 @@ function main() {
 		return (id + " absX=" + absX + " absY=" + absY + " (" + roomX + "/" + roomY + ")") || "";  // 260630
 	};
 
+	// Missile range meter (temp). Pause first, press Numpad 5, then cast the skill once by hand toward open ground	//260930 temp
+	// Tracks every new missile (test alone: sub-missiles such as Frozen Orb shards may be owned by the orb, not by me), and prints per missile type
+	// the farthest point reached from where I stood and who owns it: me / another missile (its classid) / other	//260930
+	this.meter = null;
+
+	this.startMeter = function () {	//260930 temp
+		var m = getUnit(3);
+
+		this.meter = {old: {}, list: {}, armed: getTickCount(), lastNew: 0};
+
+		if (m) {
+			do {
+				this.meter.old[m.gid] = true;	// missiles already flying are not mine to measure
+			} while (m.getNext());
+		}
+
+		me.overhead("Meter: cast now");
+		print("[MM] armed at " + me.x + "," + me.y + " me.gid:" + me.gid);
+	};
+
+	this.runMeter = function () {	//260930 temp
+		var m, t, gid, cls, line, alive,
+			now = getTickCount(),
+			seen = {},
+			byClass = {};
+
+		m = getUnit(3);
+
+		if (m) {
+			do {
+				seen[m.gid] = true;
+				t = this.meter.list[m.gid];
+
+				if (!t) {
+					if (this.meter.old[m.gid]) {	//260930 no owner filter
+						continue;
+					}
+
+					t = this.meter.list[m.gid] = {name: m.name, classid: m.classid, owner: m.owner, ownertype: m.ownertype, cx: me.x, cy: me.y, sx: m.x, sy: m.y, max: 0, born: now, last: now};
+					this.meter.lastNew = now;
+				}
+
+				t.max = Math.max(t.max, getDistance(t.cx, t.cy, m.x, m.y));
+				t.last = now;
+			} while (m.getNext());
+		}
+
+		alive = 0;
+
+		for (gid in this.meter.list) {
+			if (this.meter.list.hasOwnProperty(gid) && seen[gid]) {
+				alive += 1;
+			}
+		}
+
+		// nothing cast within 15s: give up. Otherwise finish once every tracked missile is gone for 1s
+		if (!this.meter.lastNew) {
+			if (now - this.meter.armed > 15000) {
+				print("[MM] no missile seen");
+				me.overhead("Meter: nothing");
+				this.meter = null;
+			}
+
+			return;
+		}
+
+		if (alive > 0 || now - this.meter.lastNew < 1000) {
+			return;
+		}
+
+		for (gid in this.meter.list) {
+			if (this.meter.list.hasOwnProperty(gid)) {
+				t = this.meter.list[gid];
+				cls = byClass[t.classid] || (byClass[t.classid] = {name: t.name, n: 0, max: 0, life: 0, spawn: 0, owners: {}});
+				cls.owners[t.owner === me.gid ? "me" : (this.meter.list[t.owner] ? "missile " + this.meter.list[t.owner].classid : t.owner + "/type " + t.ownertype)] = true;
+				cls.n += 1;
+				cls.max = Math.max(cls.max, t.max);
+				cls.life = Math.max(cls.life, t.last - t.born);
+				cls.spawn = Math.max(cls.spawn, getDistance(t.cx, t.cy, t.sx, t.sy));
+			}
+		}
+
+		for (cls in byClass) {
+			if (byClass.hasOwnProperty(cls)) {
+				t = byClass[cls];
+				line = "[MM] " + t.name + " (classid " + cls + ") x" + t.n + " max:" + t.max.toFixed(1) + " life:" + t.life + "ms (~" + Math.round(t.life / 40) + " frames) spawn:" + t.spawn.toFixed(1) + " owner:" + Object.keys(t.owners).join(",");
+				print(line);
+				D2Bot.printToConsole(line);
+			}
+		}
+
+		me.overhead("Meter: done");
+		this.meter = null;
+	};
+
 	//260903
 	this.keyEvent = function (key) {
 		switch (key) {
@@ -335,7 +430,8 @@ function main() {
 			break;
 		case 100: // Numpad 4
 			break;
-		case 101: // Numpad 5
+		case 101: // Numpad 5 (missile range meter, temp)	//260930 temp
+			this.startMeter();
 			break;
 		case 102: // Numpad 6
 			break;
@@ -557,6 +653,15 @@ function main() {
 			this.exit();
 
 			break;
+		}
+
+		if (this.meter) {	//260930 temp
+			try {
+				this.runMeter();
+			} catch (e2) {
+				print("[MM] " + e2);
+				this.meter = null;
+			}
 		}
 
 		if (debugInfo.area !== Pather.getAreaName(me.area)) {

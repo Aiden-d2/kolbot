@@ -76,7 +76,7 @@ var Config = {
 	
 	SafeTele: {	//eom 260525
 		Enabled: true,
-		Range: 9,
+		Range: 10,	//260930 9 -> 10: monsters closer than 10 (was within 9)
 		Count: 1,
 		Angle: 60,
 		Step: 5,
@@ -86,10 +86,8 @@ var Config = {
 
 	Dodge: {
 		Enabled: false,
-		Range: 9,	//260927 skills with at least this range dodge (Frozen Orb / Nova 9 included); also the radius monsters are counted in (trigger and candidates)
-		Count: 1,
-		HP: 100,
-		Step: 5
+		Range: 10,	//260930 R = min(skill range, Range): monsters closer than R are counted, and a walking dodge backs off to R from the target (teleport: the skill range)
+		MinSkillRange: 5	//260930 skills with at least this range dodge
 	},
 	
 	//Gear

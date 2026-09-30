@@ -94,7 +94,7 @@ var ClassAttack = {
 
 			Misc.shapeShift(Config.Wereform);
 
-				if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4, 1)) {	//260826
+				if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {	//260826	//260930 minDist 1 is the default now
 					return 0;
 				}
 
@@ -114,7 +114,7 @@ var ClassAttack = {
 
 			Misc.shapeShift(Config.Wereform);
 
-				if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4, 1)) {	//260826
+				if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4)) {	//260826	//260930 minDist 1 is the default now
 					return 0;
 				}
 

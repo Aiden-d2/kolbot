@@ -57,11 +57,11 @@ var Skill = {
 			return 6;
 		case 151: // Whirlwind
 		case 229: // Molten Boulder
-		case 243: // Shock Wave
-		case 249: // Armageddon
+		case 243: // Shock Wave	//260930 back to 7 (same as Armageddon for D.FGOM)
+		case 249: // Armageddon	//260930 back to 7
 			return 7;
-		case 48: // Nova	//260917
-		case 64: // Frozen Orb	//260917
+		case 48: // Nova	//260917	//260930 back to 9 (10 for a day)
+		case 64: // Frozen Orb	//260917	//260930 back to 9
 		case 92: // Poison Nova
 			return 9;
 		case 15: // Poison Javelin
@@ -75,6 +75,7 @@ var Skill = {
 		case 35: // Lightning Fury
 		case 67: // Teeth
 		case 101: // Holy Bolt
+		case 130: // Howl	//260901	//260930 20 -> 15 (measured 15.0 at skill level 20)
 		case 234: // Fissure
 		case 244: // Volcano
 		case 251: // Fire Blast
@@ -90,7 +91,6 @@ var Skill = {
 		case 31: // Freezing Arrow
 		case 51: // Fire Wall	//260917
 		case 121: // Fist of the Heavens
-		case 130: // Howl	//260901
 		case 140: // Double Throw
 		case 253: // Psychic Hammer
 		case 275: // Dragon Flight

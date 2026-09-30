@@ -135,7 +135,6 @@ var Pather = {
 	teleport: true,
 	walkDistance: 5,
 	teleDistance: 35,	//260829
-	maxTeleDistance: 45,	//260826
 	cancelFlags: [0x01, 0x02, 0x04, 0x08, 0x14, 0x16, 0x0c, 0x0f, 0x17, 0x19, 0x1A],
 	wpAreas: [1, 3, 4, 5, 6, 27, 29, 32, 35, 40, 48, 42, 57, 43, 44, 52, 74, 46, 75, 76, 77, 78, 79, 80, 81, 83, 101, 103, 106, 107, 109, 111, 112, 113, 115, 123, 117, 118, 129],
 	recursion: true,
@@ -456,12 +455,6 @@ var Pather = {
 		y - the y coord to teleport to
 	*/
 	teleportTo: function (x, y, maxRange) {
-		if (Math.floor(getDistance(me.x, me.y, x, y)) > this.maxTeleDistance) {	//260826
-			Misc.trace("[teleportTo skipped] dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);	//260930 print -> trace (diagnostic)
-			
-			return false;
-		}
-		
 		var i, tick, casting;
 
 		if (maxRange === undefined) {
