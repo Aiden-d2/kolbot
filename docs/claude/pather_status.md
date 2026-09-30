@@ -225,6 +225,17 @@ getTeleDistance: function () {
 - **불 옆 상자 제외**: 같은 루프에서 이름 `"fire"`인 오브젝트 중 나에게서 range+4(기본 19) 안의 좌표를 모으고, 후보 상자마다 `Attack.checkFire(x, y, 모은 불)`(반경 4 이하)이면 뺀다. `getUnit` 추가 호출 없음.
 - 근거: `CorpseOnStick`(57·58)은 InitFn 0·Lit 0으로 불·데미지가 없는 시체 상자다. 불과 바닥 데미지는 옆의 `fire` 오브젝트(160·161·162 등, InitFn 22 → 모드 변경 이벤트가 반경 Parm0+1 안 플레이어에게 데미지, `ObjMode.cpp:328`). D2BS 오브젝트 이름 = objects.txt Name, 대소문자 무시(`D2Helpers.cpp:87`). 지금 상자 경로에는 불 검사가 없다.
 - 이름으로 `corpseonstick`을 빼는 안은 기각: 불 없는 시체도 빠지고 다른 상자는 못 거른다.
+- **컨테이너별 트랩 값 확인 (261001, objects.txt + D2MOO `Objects.cpp`)**: 목록 54종의 초기화 함수(InitFn)를 대조했다.
+  | InitFn | 목록의 컨테이너 | InteractType |
+  |---|---|---|
+  | 03 Chest | chest, chest3, chestl/r, woodchest, burialchest, tomb 계열, groundtomb, casket 일부, deadperson, object2, hidden stash 일부, barrel wilderness 일부, evilurn | (몬스터 레벨/8+5)% 확률로 트랩 1~8, 잠김 가능이면 0x80 |
+  | 02 Urn | urn, largeurn, jar1~3, icecavejar1~4, basket 일부, bonechest, cocoon, corpse 일부, hungskeleton, ratnest 일부, skeleton 일부, guardcorpse, stash(정글) | 같은 확률로 트랩 1~8 |
+  | 27 GooPile | goo pile | 33.3%로 3 |
+  | 57 SparklyChest | 반짝이는 상자 | 03과 같음 |
+  | 없음 | barrel(일반·폭발), armorstand, weaponrack, holeanim, casket·sarcophagus 일부, roguecorpse, corpseonstick, loose rock·boulder, hollow log, pillar, skull pile, jug, 퀘스트 상자(큐브·스크롤·지팡이·칼림) | 0 (걸러지지 않음) |
+  - 이 함수들은 값을 0 또는 트랩 번호로만 쓴다(다른 용도는 우물·제단·포털뿐, 목록에 없음). 값이 들어가는 컨테이너의 동작 함수는 모두 열 때 `SetTrapCallback(InteractType & 0x7F)`를 부르고(`ObjMode.cpp:1247`, 2468, 2516, 2578, 2609, 정글 은닉처), 트랩 번호 1~8은 모두 트랩 함수에 연결된다. → **0이 아니면 진짜 트랩, 트랩 없는 컨테이너는 걸러지지 않는다.**
+  - Countess 탑 5층(25): 프리셋 580(특별 상자 자리, `Objects.cpp:172` `OBJECTS_SpawnSpecialChest`)은 일반 chest로 생기며 반짝이 상자 + 항상 트랩 3(`:194`). 이 자리는 봇이 Countess 위치로 쓰는 프리셋(`AutoSmurf.js` `moveToPreset(me.area, 2, 580, …)`)이다. Countess 구간 이동은 clearPath가 없어 원래도 열지 않았다 → 실제 변화 없음.
+  - 남은 추정: 클라이언트 `objtype`이 서버 값과 같은지. 확인용 trace `[chest] skip trap|fire name: classid: objtype: dist:`(상자당 1회, `Misc.traceChestSkip`, `//261001 temp`)를 넣었다. 확인되면 지운다.
 
 ## 4. setPosition 회피 "가장 적은 자리" (261001 반영)
 - **지금 코드**: 정해진 순서(곧게 물러나기 → 좌우)대로 보다가 기준(내 자리 몹 수)보다 1 이상 적은 **첫** 자리를 채택(`Attack.js:644`). 기준 3, 채택 자리 2면 다음 틱도 2 > 0이라 다시 회피.

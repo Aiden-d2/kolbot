@@ -52,7 +52,7 @@
 | 11 | Howl 15 사거리에서 헛캐스팅이 없는가 (260930) | B.WCRY | 12-1 스킬 사거리 |
 | 12 | 회피가 물러나는 쪽의 몹 최소 자리로 가고, 회피 반복이 줄었는가 (261001) | FONV·D.FGOM·B.WCRY 회피 장면 | `pather_status.md` 4절 |
 | 13 | Flayer Dungeon·Arcane에서 텔레 이동이 30 간격을 유지하는가 (SafeTele 뒤·실패 뒤 포함, 261001) | trace `[teleportTo failed]`, `path total nodes` | `pather_status.md` 3-1 |
-| 14 | 상자 제외: 트랩 상자(`objtype & 0x7F`)를 건너뛰는가, 트랩 없는 컨테이너까지 빠지지 않는가(상자 외 컨테이너의 objtype 값 미확인), 불 옆 꼬챙이 시체를 안 여는가 (261001) | 상자 여는 장면, 1막 CorpseOnStick | `pather_status.md` 3-8 |
+| 14 | 상자 제외: trace `[chest] skip trap`의 objtype 하위 7비트가 1~8이고, `[chest] skip fire`가 불 옆 상자(1막 CorpseOnStick 등)에서 찍히는가 (261001). 트랩 없는 컨테이너 오판은 게임 코드로 없음 확인 | trace `[chest] skip` | `pather_status.md` 3-8 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -88,7 +88,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | # | 작업 | 상태 | 메모 |
 |---|---|---|---|
 | 1 | ~~NoSkipArea 키와 조건 제거~~ | **완료 (260929)** | 로컬 `[]`로 1막~헬 파밍 한 사이클 문제없음(사용자 확인) → 제거. 제거할 곳: `Config.js` 키, `Attack.js`의 306 스킵·unreachable 즉시 제외·HP 스킵 조건 3곳, `Paladin.js` 해머 게이트 조건. 조건에서 `Config.NoSkipArea.indexOf(me.area) < 0 &&`만 빼면 동작은 같다 |
-| 2 | **임시 로그 정리** | 인게임 검증 후 | `//260926 temp` 표시가 붙은 `Misc.trace("[AC] ...")`, `"[SP] ..."` 줄. `ToolsThread.js`의 미사일 사거리 측정기(Numpad 5, `[MM]`, `//260930 temp`)도 측정이 끝나면 지운다. `Pather.js`의 redPortal `//260926 temp`는 사용자 코드라 먼저 물어본다 |
+| 2 | **임시 로그 정리** | 인게임 검증 후 | `//260926 temp` 표시가 붙은 `Misc.trace("[AC] ...")`, `"[SP] ..."` 줄. `Misc.js`의 `[chest] skip` trace(`traceChestSkip`, `//261001 temp`)도 확인 뒤 지운다. `ToolsThread.js`의 미사일 사거리 측정기(Numpad 5, `[MM]`, `//260930 temp`)도 측정이 끝나면 지운다. `Pather.js`의 redPortal `//260926 temp`는 사용자 코드라 먼저 물어본다 |
 | 3 | ~~주석 처리된 옛 코드 정리~~ | **완료 (260929)** | JS/dbj/dbl 32개 파일에서 주석 처리된 옛 코드와 `/* */` 옛 코드 블록, 롤백용 머리글을 지움(Attack.js 2500 → 1349줄). 주석을 뺀 코드 토큰이 정리 전과 같음을 확인. nip·Config.js·builds의 꺼 둔 옵션과 설명 주석·날짜 표기·줄 끝 메모는 유지. 이전 코드는 커밋 `fcd2713` |
 | 4 | **소 레벨 치킨 잦음** | 개선 대상 | `followDriver`는 사용자 코드로 교체됨(30 초과 이동, 15~30 clearPath 이동, 근접 clear). 리더 쪽 `clearCowLevel`(팔로워를 기다리지 않고 방마다 이동)은 아직 손대지 않음 |
 | 5 | 부활·소환형(샤먼) 우선 | 보류 | 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류함 |
