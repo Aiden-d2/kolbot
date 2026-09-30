@@ -73,6 +73,13 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - okCount·teamCount 대기 간격 500 → 1000ms(260930 사용자 요청). 120초 타임아웃은 시간 기준이라 그대로.
 - 참고(1번 관련): 같은 자리에서 `[AC] end casts:0`이 10회 이상 이어진 대기 구간 845개, 합계 약 9000초. 최장은 카오스 생추어리·증오의 억류지 3층·Frozen River 등 팔로워 대기 루프(최장 121초, 초당 약 2회 clear 호출). 설계상 대기 중 방어이며, 버벅거림 여부는 trace로 판단 불가.
 
+**261001 Pather·setPosition 검토 (작업 브랜치 `claude/pather-analysis-refactor-w9td75`, 코드 변경 없음)**
+- 결정됨, 수정 요청 대기: 7개 지역 텔레 간격 30을 모든 텔레 경로에(`Pather.getTeleDistance`, setPosition 한 번 텔레 한계는 35 그대로), `SafeTele.Count` 삭제(몹 1마리부터 발동), setPosition 회피는 구역(물러나기 → 반대편) 안 몹 수 최소. 구현안은 되돌린 커밋 `303b432`에 있음.
+- 기각·유지: SafeTele 0x4 시야 검사(기각), setPosition 자리 기억(탈락), `"killMonsters"` 반환(유지), Warriv 1막 경유(의도).
+- 재검토: SafeTele를 clearPath true 이동에서 끄기 — 결함 근거 없음, 유지 권장(`pather_status.md` 3-6).
+- 보류: journeyTo throw, 죽은 코드(`cleared`·`MainLoop:`·`j`/`wp`), PathDebug(사용자가 더 알아본 뒤).
+- 실수 기록: 결정을 요청으로 보고 코드를 고쳤다가 되돌림(`8c33a7b`). CLAUDE.md 작업 규칙에 "결정은 요청이 아니다" 추가.
+
 ## 4. 미결 작업 (사용자 결정 또는 확인 후)
 | # | 작업 | 상태 | 메모 |
 |---|---|---|---|
