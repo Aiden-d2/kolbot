@@ -428,7 +428,7 @@ function AutoSmurf() {
 
 			Pather.moveTo(orgx, orgy);
 
-			delay(500);
+			delay(1000);	//260930 was 500
 			
 			if (okCount === Team.Size - 1) {
 				teamOk = true;
@@ -458,7 +458,7 @@ function AutoSmurf() {
 			
 			Pather.moveTo(orgx, orgy);
 
-			delay(500);
+			delay(1000);	//260930 was 500
 			
 			if (getTickCount() - tick > 120 * 1000 && !me.dead) { // Quit after 120s of waiting.
 				D2Bot.printToConsole("Party desynced 2");	//260922
@@ -4322,7 +4322,11 @@ function AutoSmurf() {
 			
 			while (me.area === 102) {
 				redPortal = getUnit(2, 342);
-				Pather.usePortal(null, null, redPortal); // Go to Act 4.
+
+				if (redPortal) {	//260930 without the unit usePortal falls back to getPortal(null, null): any party blue portal (back to act 3 town)
+					Pather.usePortal(null, null, redPortal); // Go to Act 4.
+				}
+
 				delay(me.ping * 2 + 1000);
 			}
 		} else {

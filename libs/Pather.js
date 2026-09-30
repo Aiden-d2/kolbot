@@ -1258,11 +1258,15 @@ MainLoop:
 
 		me.cancel();
 
-		var i, tick, portal, redPortal,
+		var i, tick, portal, redPortal, loadMs,
 			preArea = me.area;
 
 		for (i = 0; i < 14; i += 1) {	//260809
 			if (me.dead) {
+				break;
+			}
+
+			if (redPortal && i >= 10) {	//260930 red portal: 10 tries (most took 1, at most 5 on 260930)
 				break;
 			}
 
@@ -1310,22 +1314,36 @@ MainLoop:
 
 				tick = getTickCount();
 
-				while (getTickCount() - tick < (redPortal ? 3000 : me.ping * 2 + 300)) {	//260926
-					if (me.area !== preArea) {
-						if (redPortal) {	//260926 temp
-							Misc.trace("usePortal 342 changed area:" + me.area + " ms:" + (getTickCount() - tick));
+				if (redPortal) {	//260930 was a flat 3s: a request that took changed the act within about 1s (47/47 on 260930). Wait 1.5s, and while the act loads (gameReady false) keep waiting and never send again
+					loadMs = -1;
+
+					while (getTickCount() - tick < 1500 || !me.gameReady) {
+						if (!me.gameReady && loadMs < 0) {
+							loadMs = getTickCount() - tick;
 						}
-						
-						delay(me.ping * 2 + 300);	//260830
-						
-						return true;
+
+						if (me.gameReady && me.area && me.area !== preArea) {	// me.area is undefined while loading
+							Misc.trace("usePortal 342 changed area:" + me.area + " ms:" + (getTickCount() - tick) + " loading at:" + loadMs);	//260930 temp
+
+							delay(me.ping * 2 + 300);
+
+							return true;
+						}
+
+						delay(10);
 					}
-					
-					delay(10);
-				}
-				
-				if (redPortal) {	//260926 temp
-					Misc.trace("usePortal 342 timeout");
+
+					Misc.trace("usePortal 342 timeout loading at:" + loadMs);	//260930 temp
+				} else {
+					while (getTickCount() - tick < me.ping * 2 + 300) {
+						if (me.area !== preArea) {
+							delay(me.ping * 2 + 300);	//260830
+
+							return true;
+						}
+
+						delay(10);
+					}
 				}
 			}
 			
