@@ -564,7 +564,7 @@ var Town = {
 			try {
 				tp.buy();
 			} catch (e1) {
-				print(e1);
+				Misc.caughtError("Town.fillTome", e1);	//260930
 
 				return false;
 			}
@@ -580,7 +580,7 @@ var Town = {
 					tome.buy();
 					delay(me.ping * 2 + 200);
 				} catch (e1) {
-					print(e1);
+					Misc.caughtError("Town.fillTome", e1);	//260930
 
 					// Couldn't buy the tome, don't spam the scrolls
 					return false;
@@ -600,7 +600,7 @@ var Town = {
 			scroll.buy(true);
 			delay(me.ping * 2 + 200);
 		} catch (e2) {
-			print(e2.message);
+			Misc.caughtError("Town.fillTome", e2);	//260930
 
 			return false;
 		}
@@ -813,7 +813,7 @@ CursorLoop:
 			return true;
 		}
 		
-		var i, item, result,
+		var i, item, result, name, classid, gids, bought,
 			items = [],
 			npc = getInteractedNPC();
 
@@ -845,24 +845,29 @@ CursorLoop:
 			if (result.result === 1) {	// && Item.autoEquipCheck(items[i])) {	//eom
 				try {
 					if (Storage.Inventory.CanFit(items[i]) && me.getStat(14) + me.getStat(15) >= items[i].getItemCost(0)) {
-						Misc.itemLogger("Shopped", items[i], result.line);	//eom 260412
-						
-						if (!result.tier && !result.merc) {	//260911
-							Misc.logItem("Shopped", items[i], result.line);
+						// log only what really came in: a teammate in the same game can buy the same item first (same nip), then this buy fails	//260930 was logged before buy()
+						name = items[i].name;
+						classid = items[i].classid;
+						gids = (me.getItems() || []).map(function (it) { return it.gid; });
+						bought = items[i].buy() ? (me.getItems() || []).filter(function (it) { return gids.indexOf(it.gid) === -1 && it.classid === classid; })[0] : null;
+
+						if (bought) {
+							Misc.itemLogger("Shopped", bought, result.line);	//eom 260412
+							
+							if (!result.tier && !result.merc) {	//260911
+								Misc.logItem("Shopped", bought, result.line);
+							}
 						}
 						
 						if (me.diff === 0 && items[i].itemType === 19) {	//260712 norm belt shopping, buy only one
-							print("Shopped " + items[i].name + " " + result.result + " " + result.tier + " " + result.line);	//260805
-							items[i].buy();
+							Misc.trace("Shopped " + name + " " + result.result + " " + result.tier + " " + result.line + (bought ? "" : " (not bought)"));	//260805	//260930 name taken before buy()	//260930 print -> trace (diagnostic)
 							return true;
 						}
-						
-						items[i].buy();
 						
 						delay(me.ping + 100);	//eom
 					}
 				} catch (e) {
-					print(e);
+					Misc.caughtError("Town.shopItems", e);	//260930
 				}
 			}
 			delay(10);	//eom
@@ -1033,7 +1038,7 @@ CursorLoop:
 		try {
 			key.buy(true);
 		} catch (e) {
-			print(e.message);
+			Misc.caughtError("Town.buyKeys", e);	//260930
 
 			return false;
 		}
@@ -1832,7 +1837,7 @@ MainLoop:
 						delay(me.ping * 2 + 200);
 					}
 					
-					print("moved from cube to drop " + items[i].name);
+					Misc.trace("moved from cube to drop " + items[i].name);	//260930 print -> trace (diagnostic)
 					me.overhead("moved from cube to drop " + items[i].name);
 					
 					Storage.Inventory.MoveTo(items[i]);
@@ -1840,13 +1845,13 @@ MainLoop:
 					break;
 				case 4: // Sell item
 					try {
-						print("moved from cube to sell " + items[i].name);
+						Misc.trace("moved from cube to sell " + items[i].name);	//260930 print -> trace (diagnostic)
 						me.overhead("moved from cube to sell " + items[i].name);
 						
 						Storage.Inventory.MoveTo(items[i]);
 						delay(me.ping * 2 + 200);
 					} catch (e) {
-						print(e);
+						Misc.caughtError("Town.clearInventory", e);	//260930
 					}
 
 					break;
@@ -1880,7 +1885,7 @@ MainLoop:
 						Storage.Inventory.MoveTo(items[i]);
 						delay(me.ping * 2 + 200);
 					} catch (e) {
-						print(e);
+						Misc.caughtError("Town.clearInventory", e);	//260930
 					}
 
 					break;
@@ -1922,7 +1927,7 @@ MainLoop:
 						items[i].sell();
 						delay(me.ping * 2 + 200);
 					} catch (e) {
-						print(e);
+						Misc.caughtError("Town.clearInventory", e);	//260930
 					}
 
 					break;

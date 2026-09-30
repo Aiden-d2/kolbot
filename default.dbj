@@ -43,6 +43,8 @@ function main() {
 	var i, stats,
 		startTime = getTickCount();
 
+	Misc.trace("=== game " + me.gamename + " ===");	//260930 game boundary in the trace file
+
 	// Initialize libs - load config variables, build pickit list, attacks, containers and cubing and runeword recipes
 	Config.init(true);
 	Attack.init();

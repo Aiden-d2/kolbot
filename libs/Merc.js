@@ -329,8 +329,8 @@ var Merc = {
 		}
 	},
 
-	// Log only (no behavior change): when the mercenary list packets arrive, measured from the moment the
-	// gamepacket listener is turned on, and how far the hire NPC is at that time.	//260929 temp
+	// Log only (no behavior change): when the mercenary list packets arrive, measured from the start of the
+	// walk to the hire NPC, and how far the hire NPC is at that time.	//260930 temp
 	// D2BS makes the game thread wait for the script on every packet while the listener is on (Events.cpp
 	// PacketEventCallback, up to 500ms each); suspected cause of the 17:40 a3/a8 hang (docs/claude/handoff.md 7).
 	packetTick: 0,	//260929 temp
@@ -438,8 +438,7 @@ var Merc = {
 		
 		Town.goToTown(act);
 		
-		addEventListener("gamepacket", Merc.packet);
-		Merc.packetTick = getTickCount();	//260929 temp [MP] log: listener on time
+		Merc.packetTick = getTickCount();	//260930 temp [MP] log: walk start (was listener on time)
 
 		var npcName = Town.tasks[me.act - 1]["Merc"];
 		Merc.packetNpc = npcName;	//260929 temp [MP] log
@@ -447,6 +446,7 @@ var Merc = {
 		Town.move(npcName);
 		Merc.packetLog("arrived");	//260929 temp [MP] log
 		
+		addEventListener("gamepacket", Merc.packet);	//260930 moved from before Town.move: the list packets arrive only once the menu opens (8/8 [MP] samples), so the listener no longer stalls the game thread during the walk
 		Town.initNPC("Merc", "hireMerc");
 		Merc.packetLog("menu done");	//260929 temp [MP] log
 
@@ -530,7 +530,7 @@ var Merc = {
 			}
 
 			retry += 1;
-			print("[hire] hiring retry (" + (retry) + "/5)");
+			Misc.trace("[hire] hiring retry (" + (retry) + "/5)");	//260930 print -> trace (diagnostic)
 		}
 		
 		Grant.updateTiers();  //260916

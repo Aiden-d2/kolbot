@@ -89,7 +89,6 @@ var Attack = {
 
 		// a box already defines the area; a sweep range on top would pull in targets outside it	//260927
 		if (spec && spec.box && range > 0) {
-			Misc.trace("[AC] box call with range " + range + " -> 0");	//260926 temp
 			range = 0;
 		}
 
@@ -102,7 +101,6 @@ var Attack = {
 		var mustPendingUntil = spec && spec.ids ? getTickCount() + 5 * (me.ping * 2 + 100) : 0;
 
 		function drop(e, reason) {
-			Misc.trace("[AC] drop " + reason + " " + e.unit.name + " gid:" + e.gid);	//260926 temp
 			dropped[e.gid] = true;
 			delete entries[e.gid];
 		}
@@ -151,7 +149,6 @@ var Attack = {
 							entries[unit.gid] = {unit: copyUnit(unit), gid: unit.gid, must: true, box: !!spec.box, retry: 0, idle: 0, casts: 0, lastPos: {x: unit.x, y: unit.y}};
 							mustAlive = true;
 							mustSeen = true;
-							Misc.trace("[AC] must join " + unit.name + " gid:" + unit.gid);	//260926 temp
 
 							continue;
 						}
@@ -210,7 +207,6 @@ var Attack = {
 						if (!copyUnit(entry.unit).x || entry.unit.area !== me.area) {
 							// lost from sight: go to where it was last seen. Still gone there -> it is dead or far away
 							if (getDistance(me, entry.lastPos.x, entry.lastPos.y) < 5) {
-								Misc.trace("[AC] must lost " + entry.gid);	//260926 temp
 								delete entries[gid];
 
 								continue;
@@ -283,7 +279,6 @@ var Attack = {
 					}
 
 					lostEntry.searches = (lostEntry.searches || 0) + 1;
-					Misc.trace("[AC] must search " + lostEntry.gid + " at " + lostEntry.lastPos.x + "," + lostEntry.lastPos.y);	//260926 temp
 
 					try {
 						Pather.moveTo(lostEntry.lastPos.x, lostEntry.lastPos.y, 3);
@@ -292,7 +287,6 @@ var Attack = {
 					}
 
 					if (lostEntry.searches > 3) {
-						Misc.trace("[AC] must search gave up " + lostEntry.gid);	//260926 temp
 						delete entries[lostEntry.gid];
 					}
 
@@ -307,7 +301,6 @@ var Attack = {
 					for (gid in entries) {
 						if (entries.hasOwnProperty(gid) && entries[gid].must && !entries[gid].lost && !entries[gid].deferred && getDistance(me, entries[gid].unit) >= this.leashRange) {	//260928 !deferred
 							target = entries[gid];
-							Misc.trace("[AC] leash " + target.unit.name + " dist:" + Math.round(getDistance(me, target.unit)));	//260926 temp
 
 							break;
 						}
@@ -338,10 +331,6 @@ var Attack = {
 				if (result === 2) {	// no usable skill
 					if (target.must) {
 						// never given up: to the back of the queue. Wait only when nothing else is left (immunity may break, others may kill it)	//260928
-						if (!target.deferred) {
-							Misc.trace("[AC] defer " + target.unit.name + " gid:" + target.gid);	//260926 temp
-						}
-
 						target.deferred = true;
 
 						if (!nearestLive) {
@@ -357,10 +346,6 @@ var Attack = {
 				if (this.tick.fail === "unreachable") {	//260929 NoSkipArea removed
 					if (target.must) {
 						// no spot to hit it from: to the back of the queue like "no usable skill". My spot or its spot may change while the rest is cleared	//260929 was flash and pick it again
-						if (!target.deferred) {
-							Misc.trace("[AC] defer unreachable " + target.unit.name + " gid:" + target.gid);	//260926 temp
-						}
-
 						target.deferred = true;
 
 						if (!nearestLive) {
@@ -435,7 +420,9 @@ var Attack = {
 			this.tick.box = null;	//260929
 		}
 
-		Misc.trace("[AC] end range:" + range + " casts:" + castTotal);	//260926 temp
+		if (spec && spec.ids && !mustSeen) {	//260930 clear returns true either way: note a boss that never showed up
+			Misc.trace("boss not found: " + spec.ids.join(", "));
+		}
 
 		if (castTotal > 0) {
 			Pickit.pickItems(range > 0 ? range : undefined);
@@ -520,7 +507,7 @@ var Attack = {
 
 		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, threatRange,	//260930
 			detourOk, detourPath,	//260928
-			fence = this.tick.box, fenced = 0,	//260929
+			fence = this.tick.box,	//260929
 			pathOk = false,
 			list = [],
 			baseline = 0,
@@ -613,7 +600,6 @@ var Attack = {
 				// box call: the landing spot stays inside the box (the path may cross outside)	//260929
 				if (fence && (c.x < fence.x1 || c.x > fence.x2 || c.y < fence.y1 || c.y > fence.y2)) {
 					list.splice(i, 1);
-					fenced += 1;
 
 					continue;
 				}
@@ -673,10 +659,6 @@ var Attack = {
 					if (detourOk === undefined) {
 						detourPath = getPath(me.area, unit.x, unit.y, me.x, me.y, 0, Pather.walkDistance);
 						detourOk = !!(detourPath && detourPath.length && detourPath.length * Pather.walkDistance <= getDistance(me, unit) * Config.DetourPath);
-
-						if (!detourOk) {
-							Misc.trace("[SP] detour " + unit.name + " path:" + (detourPath ? detourPath.length * Pather.walkDistance : "none") + " dist:" + Math.round(getDistance(me, unit)));	//260926 temp
-						}
 					}
 
 					pathOk = detourOk;
@@ -733,10 +715,6 @@ var Attack = {
 			this.tick.fail = "moveFailed";
 
 			return false;
-		}
-
-		if (fenced) {
-			Misc.trace("[SP] fence " + unit.name + " spots outside box:" + fenced);	//260926 temp
 		}
 
 		this.tick.fail = "unreachable";

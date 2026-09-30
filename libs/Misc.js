@@ -2291,6 +2291,43 @@ MainLoop:
 			stamp + " [" + Pather.getAreaName(me.area) + " " + me.x + "," + me.y + "] " + msg + "\n");
 	},
 
+	// Console lines (CLAUDE.md log rules): an early quit reason is red (9), an error grey (10), both with where it happened. The same line goes to the trace	//260930
+	where: function () {
+		return Pather.getAreaName(me.area) + " " + me.x + "," + me.y;
+	},
+
+	quitReason: "",	//260930 set by quitGame: this script is on its way out (AutoSmurf prints "Script ended" only without it)
+
+	// early quit: the reason once (a loop may call it again until the game closes), then quit
+	// console false: a common event every profile would print alike -> pass Leader so only the leader prints it
+	quitGame: function (reason, detail, console) {	//260930
+		if (!this.quitReason) {
+			this.quitReason = reason;
+
+			if (console !== false) {
+				D2Bot.printToConsole(reason + " (" + this.where() + ")", 9);
+			}
+
+			this.trace("[Quit] " + reason + (detail ? ": " + detail : ""));
+		}
+
+		scriptBroadcast("quit");
+	},
+
+	caughtErrors: {},	//260930
+
+	// an error caught where it happened: every time in the trace, once a game per place in the console
+	caughtError: function (place, e) {	//260930
+		var msg = e && e.message ? e.message : String(e);
+
+		this.trace("[Error] " + place + ": " + msg + (e && e.fileName ? " (" + e.fileName.substring(e.fileName.lastIndexOf("\\") + 1) + " #" + e.lineNumber + ")" : ""));
+
+		if (!this.caughtErrors[place]) {
+			this.caughtErrors[place] = true;
+			D2Bot.printToConsole(place + ": " + msg + " (" + this.where() + ")", 10);
+		}
+	},
+
 	errorConsolePrint: true,
 	screenshotErrors: false,
 
@@ -2343,8 +2380,7 @@ MainLoop:
 			D2Bot.printToConsole(oogmsg, 10);
 		}
 
-		showConsole();
-		print(msg);
+		this.trace("[Error] " + oogmsg.trim());	//260930 was showConsole() + print(msg): errors go to the console and the trace, print keeps the game flow
 		this.fileAction("_cache/ScriptErrorLog.txt", 2, filemsg);
 
 		if (this.screenshotErrors) {
