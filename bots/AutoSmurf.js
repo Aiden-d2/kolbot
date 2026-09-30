@@ -181,7 +181,7 @@ function AutoSmurf() {
 		
 		while (!teamReady) {
 			if (getTickCount() - tick > 2 * 60 * 1000) { // Quit after 2 minutes of waiting.
-				Misc.quitGame("Team didn't join the game within 2 minutes", null, Leader);	//260930
+				Misc.quitGame("Team didn't join the game within 2 minutes");	//260930 each profile: whoever waited prints (the missing one cannot)
 			}
 			
 			delay(1000);
@@ -680,7 +680,7 @@ function AutoSmurf() {
 			delay(500);
 			
 			if (getTickCount() - tick > 30 * 1000) { // Quit after 30s of waiting.
-				Misc.quitGame("syncBO timeout", null, Leader);	//260930
+				Misc.quitGame("syncBO timeout");	//260930 each profile: whoever waited prints
 			}
 		}
 		
@@ -1438,7 +1438,7 @@ function AutoSmurf() {
 			}
 			
 			if (time > 120) {
-				Misc.quitGame("Players not in after act change", null, Leader);	//260909	//260930
+				Misc.quitGame("Players not in after act change");	//260909	//260930 each profile: the one stuck (maybe the leader) cannot print
 			}
 			
 			delay(1000);
