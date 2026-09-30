@@ -76,7 +76,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 **261001 Pather·setPosition 검토 (작업 브랜치 `claude/pather-analysis-refactor-w9td75`, 코드 변경 없음)**
 - 결정됨, 수정 요청 대기: 7개 지역 텔레 간격 30을 모든 텔레 경로에(`Pather.getTeleDistance`, setPosition 한 번 텔레 한계는 35 그대로), `SafeTele.Count` 삭제(몹 1마리부터 발동), setPosition 회피는 구역(물러나기 → 반대편) 안 몹 수 최소. 구현안은 되돌린 커밋 `303b432`에 있음.
 - 기각·유지: SafeTele 0x4 시야 검사(기각), setPosition 자리 기억(탈락), `"killMonsters"` 반환(유지), Warriv 1막 경유(의도).
-- 재검토: SafeTele를 clearPath true 이동에서 끄기 — 결함 근거 없음, 유지 권장(`pather_status.md` 3-6).
+- 기각: SafeTele를 clearPath true 이동에서 끄기(`pather_status.md` 3-6).
+- 결정됨, 수정 요청 대기: 상자 제외 — 트랩 전부(`objtype & 0x7F`, `explodingchest`), 불 옆(같은 `getUnit(2)` 루프에서 fire 수집, 반경 4)(`pather_status.md` 3-8).
 - 보류: journeyTo throw, 죽은 코드(`cleared`·`MainLoop:`·`j`/`wp`), PathDebug(사용자가 더 알아본 뒤).
 - 실수 기록: 결정을 요청으로 보고 코드를 고쳤다가 되돌림(`8c33a7b`). CLAUDE.md 작업 규칙에 "결정은 요청이 아니다" 추가.
 
