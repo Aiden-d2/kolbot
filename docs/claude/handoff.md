@@ -48,6 +48,8 @@
 | 7 | 18레벨 이상 캐릭터의 "Going to town" 반복이 사라졌는가 | 드루이드 등 골드 540 이상 캐릭터 | 아래 5절 열쇠 항목 |
 | 8 | 박스 호출에서 박스 밖으로 나가지 않는가 (260929 울타리) | 트라빈컬·바알 쓰론·톰즈·탈무덤·아케인, trace `[SP] fence` | `attack_design.md` 12-1 박스 울타리 |
 | 9 | 박스 가장자리 MUST에 붙잡히지 않는가 (260929 unreachable → deferred) | trace `[AC] defer unreachable` | 12-1 MUST unreachable |
+| 10 | 회피가 몹에서 10칸 자리로 짧게 물러나는가, FONV·D.FGOM 진동 없는가 (260930) | 좁은 지형 소서, D.FGOM | 12-1 회피 거리 |
+| 11 | Howl 15, FO·Nova·Shock Wave·Armageddon 10 사거리에서 헛캐스팅이 없는가 (260930) | B.WCRY, S.FONV, D.FGOM | 12-1 스킬 사거리 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 

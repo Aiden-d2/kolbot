@@ -57,17 +57,17 @@ var Skill = {
 			return 6;
 		case 151: // Whirlwind
 		case 229: // Molten Boulder
-		case 243: // Shock Wave
-		case 249: // Armageddon
 			return 7;
-		case 48: // Nova	//260917
-		case 64: // Frozen Orb	//260917
 		case 92: // Poison Nova
 			return 9;
 		case 15: // Poison Javelin
 		case 25: // Plague Javelin
+		case 48: // Nova	//260917	//260930 9 -> 10 (measured 11.3), same as Frozen Orb for FONV
+		case 64: // Frozen Orb	//260917	//260930 9 -> 10 (orb 14.1 by data), same as Nova for FONV
 		case 107: // Charge
 		case 225: // Firestorm
+		case 243: // Shock Wave	//260930 7 -> 10 (measured 12.4)
+		case 249: // Armageddon	//260930 7 -> 10, same as Shock Wave for D.FGOM
 			return 10;
 		case 8: // Inner Sight
 		case 17: // Slow Missiles
@@ -75,6 +75,7 @@ var Skill = {
 		case 35: // Lightning Fury
 		case 67: // Teeth
 		case 101: // Holy Bolt
+		case 130: // Howl	//260901	//260930 20 -> 15 (measured 15.0 at skill level 20)
 		case 234: // Fissure
 		case 244: // Volcano
 		case 251: // Fire Blast
@@ -90,7 +91,6 @@ var Skill = {
 		case 31: // Freezing Arrow
 		case 51: // Fire Wall	//260917
 		case 121: // Fist of the Heavens
-		case 130: // Howl	//260901
 		case 140: // Double Throw
 		case 253: // Psychic Hammer
 		case 275: // Dragon Flight

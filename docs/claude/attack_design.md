@@ -147,19 +147,20 @@ setPosition(unit, distance, coll, minDist = 3)
 
 판정
   이동 필요(접근) = 나와 unit 거리 > distance || checkCollision(me, unit, coll)
-  회피 채점     = Dodge.Enabled && distance >= Dodge.Range(9) && HP% <= Dodge.HP && unit.classid != 243
+  회피 채점     = Dodge.Enabled && distance > Dodge.Range(9) && HP% <= Dodge.HP && unit.classid != 243   (260930 >= → >)
   둘 다 아님 → true
-  회피 채점이면 기준선 = 내 위치 Dodge.Range(9) 안 몹 수 (불장판 +100). 기준선 0이고 접근 아님 → true
+  회피 채점이면 기준선 = 내 위치 Dodge.Range(9) 안 몹 수 (불장판 +100). 기준선 < Dodge.Count(1)이고 접근 아님 → true (260930 Count 다시 사용)
 
 후보
-  unit 중심 링. 반경 distance, distance-5, distance-10, … (5 미만 링은 버림, distance 링은 항상 유지)
+  unit 중심 링. 접근: 반경 distance, distance-5, distance-10, … (5 미만 링은 버림, distance 링은 항상 유지)
+  회피: 링 하나, 반경 min(distance, Dodge.Max(10)) (260930. 사거리 > 9라 링은 항상 10 → 대상 몹이 위협 반경 9 밖)
   각 링에서 unit→나 방향(offset 0)부터 좌우 교대, 호 간격 Dodge.Step(5)칸
   구역: 정면(|offset| ≤ 90) 먼저, 후면(90 < |offset| ≤ 180)은 정면에서 못 찾았을 때만 생성·채점
   텔레 회피: 나에게서 maxTeleDistance(45) 초과 후보 제외
 
 정렬 (순서가 "어디로", 위협은 "가도 되는지")
   접근: 바깥 링 → 정면에 가까운 순 → 위협 적은 순(좌우 동점일 때만)  (260928, 회피와 같은 링 우선)
-  회피: 바깥 링(타깃에서 먼 쪽) → 곧게 물러나는 순. 기준선보다 1마리 이상 적은 후보만 통과
+  회피: 곧게 물러나는 순. 기준선보다 1마리 이상 적은 후보만 통과. 몹 수는 싼 검사(착지·시야·직선)를 통과한 후보만 셈 (260930)
 
 후보 검사 (정렬 순서대로, 첫 통과 채택)
   착지: 텔레 checkSpot(0x1) / 걷기 getCollision & 0x1
@@ -220,10 +221,11 @@ setPosition(unit, distance, coll, minDist = 3)
 | 이름 | 값 | 위치 | 의미 |
 |---|---|---|---|
 | `Config.Dodge.Enabled` | false (빌드 10종이 18레벨에서 true) | Config.js | 회피 사용 |
-| `Config.Dodge.Range` | **9** | Config.js | 회피하는 스킬 사거리 기준이자 몹 수 반경 |
+| `Config.Dodge.Range` | **9** | Config.js | 사거리가 이보다 큰 스킬만 회피(260930 `>`), 몹 수 반경(발동·후보) |
+| `Config.Dodge.Max` | **10** | Config.js | 회피 링 반경 = min(사거리, Max) (260930 새로 추가) |
 | `Config.Dodge.HP` | 100 | Config.js | HP% 이하일 때 회피 (100 = 항상) |
 | `Config.Dodge.Step` | 5 | Config.js | 링 간격, 호 간격 |
-| `Config.Dodge.Count` | 1 | Config.js | 미사용 (구 `dodge` 전용). `SafeTele.Count`와는 별개 |
+| `Config.Dodge.Count` | 1 | Config.js | 반경 안 몹이 이 수 이상이면 회피 (260930 다시 사용). `SafeTele.Count`와는 별개 |
 | `Config.DetourPath` | 4 | Config.js | 우회 한도: 나→몹 걷는 경로 ≤ 나→몹 직선 × 4 (SWEEP만. setPosition 걷기 우회, 해머 게이트) |
 | `Attack.dangerRange` | 10 | Attack.js | 위험 반경 |
 | `Attack.leashRange` | 25 | Attack.js | 목줄 |
@@ -307,6 +309,8 @@ setPosition(unit, distance, coll, minDist = 3)
 | Angle/Detour 게이트 | **setPosition 접근 판정으로 (260928)**. Angle = 나에게서 보이는 자리만, Detour = 실제 우회가 필요할 때만 나→대상 기준 4배 | 1차: 게이트 제거 후 우회 비율을 착지 좌표 기준으로 잘못 계산 → 벽 너머까지 돌아감. 2차: clear에 0x5로 복원 → 이동이 필요 없는 사거리 안 몹까지 버림. 이동 필요 여부를 아는 곳은 setPosition뿐 |
 | setPosition 기준 | 접근·회피 한 함수, 순서는 이동, 위협은 통과 조건 | 위협 우선이면 걷는 캐릭이 몹을 관통 |
 | 회피 | 물러나기 우선, 1마리 이상 줄면 채택, 없으면 반대편으로 | 사용자 의도 (원안 dodge의 역방향 탈출) |
+| 회피 거리 (260930) | 링 하나, min(사거리, `Max` 10). 사거리 > 9인 스킬만 | 좁은 지형에서 사거리 끝(20~25)까지 물러나 캐스팅 한 번이 길어짐. 260927에 링을 사거리부터 만들며 옛 dodge·첫 병합의 13 상한이 사라진 게 원인. 안쪽 링 추가는 막다른 곳에서 반대편 전환을 한 번 늦출 뿐이라 기각. 반복 회피는 감수 |
+| 스킬 사거리 (260930 측정) | Howl 20→15, Frozen Orb·Nova 9→10, Shock Wave·Armageddon 7→10 | `ToolsThread` Numpad 5 측정기: 좌표 = 속도×프레임×3/64 (감속은 프레임마다 Accel/1000). Nova 11.3, Howl 15.0(스킬 레벨 20), Shock Wave 12.4, FO 구슬 14.1(계산, 클라이언트 미사일 목록에 안 나와 측정 불가). FONV(FO·Nova), D.FGOM(Armageddon·Shock Wave)은 진동 방지로 같은 값 |
 | 접근 | 정면 직선 → 정면 우회 → 후면 직선 → 후면 우회 | 작은 장애물이면 정면 우회가 후면보다 짧다 |
 | 링 | 5칸 간격, 5 미만 제외 | 호 간격과 같은 격자, 중복 링 제거 |
 | `Dodge.Range` | 9 (사거리 기준과 반경 공용) | 사거리 9~12 스킬(Frozen Orb, Nova 포함) 회피 |

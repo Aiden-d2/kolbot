@@ -504,8 +504,8 @@ var Attack = {
 		           Outer ring first, then small offset; fire tiles excluded; threat only breaks ties	//260928
 		           sweep target only: the spot must be in sight from me (0x4), and a detour is taken only if
 		           my walking path to the target <= straight distance * DetourPath (the old clear's Angle/Detour gate)	//260928
-		  dodge (in range, Dodge on, skill range >= Dodge.Range, 1+ monster within Dodge.Range): back straight away first
-		           (outer ring first), taking the first spot with at least 1 monster fewer than where I stand;
+		  dodge (in range, Dodge on, skill range > Dodge.Range, Dodge.Count+ monsters within Dodge.Range): one ring at min(skill range, Dodge.Max),	//260930
+		           back straight away first, taking the first spot with at least 1 monster fewer than where I stand;
 		           if the backing-away half has none, go through to the far side	//260927
 		  box call (Attack.tick.box): only spots inside the box, for approach and dodge alike	//260929
 		Returns false only when an approach fails. Attack.tick.fail says why: "unreachable" | "moveFailed"
@@ -524,7 +524,7 @@ var Attack = {
 			list = [],
 			baseline = 0,
 			moveNeeded = getDistance(me, unit) > distance || checkCollision(me, unit, coll),
-			scoring = Config.Dodge.Enabled && distance >= Config.Dodge.Range && me.hp * 100 / me.hpmax <= Config.Dodge.HP && unit.classid !== 243,	//260915
+			scoring = Config.Dodge.Enabled && distance > Config.Dodge.Range && me.hp * 100 / me.hpmax <= Config.Dodge.HP && unit.classid !== 243,	//260915	//260930 >= -> > (the dodge ring must lie outside the threat radius)
 			angle = Math.atan2(me.y - unit.y, me.x - unit.x);
 
 		if (!moveNeeded && !scoring) {
@@ -538,16 +538,21 @@ var Attack = {
 			monList = this.tick.monList || this.buildMonsterList();
 			baseline = this.getMonsterCount(me.x, me.y, Config.Dodge.Range, monList, fireList);
 
-			if (baseline === 0 && !moveNeeded) {
+			if (baseline < Config.Dodge.Count && !moveNeeded) {	//260930 was baseline === 0 (Count 1)
 				return true;
 			}
 		}
 
-		// rings every Dodge.Step inward; reduced rings below 5 are dropped, the skill-range ring is always kept	//260927
-		radii = [distance];
+		if (moveNeeded) {
+			// approach: rings every Dodge.Step inward; reduced rings below 5 are dropped, the skill-range ring is always kept	//260927
+			radii = [distance];
 
-		for (r = distance - Config.Dodge.Step; r >= 5; r -= Config.Dodge.Step) {
-			radii.push(r);
+			for (r = distance - Config.Dodge.Step; r >= 5; r -= Config.Dodge.Step) {
+				radii.push(r);
+			}
+		} else {
+			// dodge: one ring, never farther than Dodge.Max from the target (narrow ground: backing off to the skill range took too long)	//260930
+			radii = [Math.min(distance, Config.Dodge.Max || distance)];	// an old Config / cached config json without Max: skill range as before
 		}
 
 		choice = null;
@@ -618,7 +623,7 @@ var Attack = {
 					continue;
 				}
 
-				c.threat = scoring ? this.getMonsterCount(c.x, c.y, Config.Dodge.Range, monList, fireList) : 0;
+				c.threat = scoring && moveNeeded ? this.getMonsterCount(c.x, c.y, Config.Dodge.Range, monList, fireList) : 0;	//260930 dodge counts only the spots that pass the cheap checks (below)
 			}
 
 			// Order decides which spot, threat only decides whether a spot is allowed	//260927
@@ -633,10 +638,6 @@ var Attack = {
 
 			for (i = 0; i < list.length; i += 1) {
 				c = list[i];
-
-				if (!moveNeeded && c.threat >= baseline) {
-					continue;	// not safer than where I stand
-				}
 
 				if (useTele ? !Pather.checkSpot(c.x, c.y, 0x1, false) : (getCollision(me.area, c.x, c.y) & 0x1)) {
 					continue;
@@ -662,6 +663,10 @@ var Attack = {
 					}
 
 					continue;
+				}
+
+				if (!moveNeeded && this.getMonsterCount(c.x, c.y, Config.Dodge.Range, monList, fireList) >= baseline) {	//260930 moved after the cheap checks
+					continue;	// not safer than where I stand
 				}
 
 				choice = c;
