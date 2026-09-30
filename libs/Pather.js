@@ -1266,10 +1266,6 @@ MainLoop:
 				break;
 			}
 
-			if (redPortal && i >= 10) {	//260930 red portal: 10 tries (most took 1, at most 5 on 260930)
-				break;
-			}
-
 			if (i > 0 && owner && me.inTown) {
 				Town.move("portalspot");
 			}

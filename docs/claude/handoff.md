@@ -56,7 +56,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 5번 통과: 해머딘(a4·a5)이 같은 자리에서 같은 몹을 5회 넘게 제외한 경우는 3~5초짜리(카우 레벨, 탈무덤 #6 대기 루프)뿐, 헛돎 없음.
 - 8번 통과: `[SP] fence` 16건(a8 트라빈컬 4:39 Toorc 15회/2초, a2 8:19 1회). 박스 밖 자리를 걸렀고, a8은 2초 뒤 clear가 끝남.
 - 9번 통과: `[AC] defer unreachable` 4건, `[AC] defer`(스킬 없음) 34건 모두 0~18초 안에 clear가 끝남(최장: 탈무덤 #2 Apparition 18초, casts 15~37). a2 8:19 Toorc 건은 18초 뒤 마을(Kurast Docktown)로 이동(end 줄 없음, TownChicken 추정).
-- 빨간 포털(260930, 사용자 채택): 260926 사용자 코드의 `usePortal 342` 로그 47회(8개 프로필) 전부 102→103 성공, 1회 35·2회 9·3~5회 3, 성공은 전송 뒤 약 1초 안. → `Pather.usePortal` 빨간 포털만 시도 10회로 제한, 대기를 3초 고정에서 "1.5초 + 로딩 중(`me.gameReady` false)엔 끝날 때까지 대기, 재전송 안 함"으로 바꿈. 성공 판정은 로딩 뒤(`gameReady` && `me.area`) — 로딩 중 `me.area`는 undefined라 "지역 바뀜"으로 잘못 잡힐 수 있어서. 로그에 `loading at:<ms>`(로딩 시작 시점, -1이면 못 봄) 추가. 호출부(mephisto `while (me.area === 102)`)는 `getUnit(2, 342)`가 null이면 `usePortal`을 안 부름(null이면 `getPortal(null, null)`이 파티 파란 포털을 집어 3막 마을로 갈 수 있음).
+- 빨간 포털(260930, 사용자 채택): 260926 사용자 코드의 `usePortal 342` 로그 47회(8개 프로필) 전부 102→103 성공, 1회 35·2회 9·3~5회 3, 성공은 전송 뒤 약 1초 안. → `Pather.usePortal`(시도 14회 루프는 그대로, 10회 제한은 넣었다가 사용자 결정으로 뺌) 빨간 포털 대기를 3초 고정에서 "1.5초 + 로딩 중(`me.gameReady` false)엔 끝날 때까지 대기, 재전송 안 함"으로 바꿈. 성공 판정은 로딩 뒤(`gameReady` && `me.area`) — 로딩 중 `me.area`는 undefined라 "지역 바뀜"으로 잘못 잡힐 수 있어서. 로그에 `loading at:<ms>`(로딩 시작 시점, -1이면 못 봄) 추가. 호출부(mephisto `while (me.area === 102)`)는 `getUnit(2, 342)`가 null이면 `usePortal`을 안 부름(null이면 `getPortal(null, null)`이 파티 파란 포털을 집어 3막 마을로 갈 수 있음).
 - okCount·teamCount 대기 간격 500 → 1000ms(260930 사용자 요청). 120초 타임아웃은 시간 기준이라 그대로.
 - 참고(1번 관련): 같은 자리에서 `[AC] end casts:0`이 10회 이상 이어진 대기 구간 845개, 합계 약 9000초. 최장은 카오스 생추어리·증오의 억류지 3층·Frozen River 등 팔로워 대기 루프(최장 121초, 초당 약 2회 clear 호출). 설계상 대기 중 방어이며, 버벅거림 여부는 trace로 판단 불가.
 
