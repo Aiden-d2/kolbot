@@ -81,6 +81,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | 6 | `lostEntry` 등 변수 이름 | 사용자가 공부 후 직접 다듬기로 함 | `attack_flow.md` 변수 사전에 표시 |
 | 7 | Static 사거리 불일치 | 추후 (사용자) | `Misc.js` `Skill.getRange(42)`는 lvl+4, `Sorceress.js` 스태틱 선시전 루프는 (lvl+4) × 2 / 3 (260929 사용자가 × 2 / 3으로 되돌림) |
 | 8 | 18레벨 이후 `LowManaSkill = [-1, -1]` | 설계 의도 | 마나가 없으면 대체 공격 없이 기다린다. 결함 아님 |
+| 9 | **while + catch 무한 루프** | 보류 (260930 사용자: 기록만) | `AutoSmurf.js`의 `while (목표까지 거리 > N) { try { moveToPreset/moveTo/moveToExit } catch { print } }` 10곳(1197 Arcane, 1277 moveToExit, 1475 WP, 3007 Cube 상자, 3181·6545 저널, 3376 탈무덤 상자, 3557, 3681 Orifice, 4317 빨간 포털)은 탈출 조건이 없다. 경로 계산이 계속 실패하면 같은 자리에서 무한 반복. 줄 번호는 260930 기준 |
 
 ## 5. 이번 대화에서 확정된 주요 결정 (요약)
 세부는 `attack_design.md` 12절, `attack_compare.md`를 본다.
