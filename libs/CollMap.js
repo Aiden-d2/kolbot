@@ -189,7 +189,7 @@ var CollMap = new function () {
 
 		do {
 			if (retry > 30) {
-				print("failed to get valid coordinate");
+				(typeof Misc === "object" ? Misc.trace : print)("failed to get valid coordinate");	//260930 print -> trace (diagnostic)
 				coordX = cX;
 				coordY = cY;
 

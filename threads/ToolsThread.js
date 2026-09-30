@@ -66,7 +66,8 @@ function main() {
 
 					if (getTickCount() - pingTimer[i] >= Config.PingQuit[i].Duration * 1000) {
 						if (print) {
-							D2Bot.printToConsole("High ping (" + me.ping + "/" + Config.PingQuit[i].Ping + ") - leaving game.", 9);
+							D2Bot.printToConsole("High ping " + me.ping + "/" + Config.PingQuit[i].Ping + " (" + Misc.where() + ")", 9);	//260930 where it happened, same form as the other quit reasons
+							Misc.trace("[Quit] High ping " + me.ping + "/" + Config.PingQuit[i].Ping);	//260930
 						}
 
 						scriptBroadcast("pingquit");
@@ -227,7 +228,7 @@ function main() {
 				try {
 					clickItem(2, potion);
 				} catch (e) {
-					print("Couldn't give the potion to merc.");
+					Misc.trace("Couldn't give the potion to merc.");	//260930 print -> trace (diagnostic)
 				}
 			}
 
@@ -465,7 +466,8 @@ function main() {
 				}
 
 				if (Config.LifeChicken > 0 && me.hp <= Math.floor(me.hpmax * Config.LifeChicken / 100)) {
-					D2Bot.printToConsole("Life Chicken (" + me.hp + "/" + me.hpmax + ")" + " in " + Pather.getAreaName(me.area), 9);
+					D2Bot.printToConsole("Life Chicken " + me.hp + "/" + me.hpmax + " (" + Misc.where() + ")", 9);	//260930
+					Misc.trace("[Quit] Life Chicken " + me.hp + "/" + me.hpmax);	//260930
 					print("[Chicken] Life (" + me.hp + "/" + me.hpmax + ") area:" + me.area + " (" + me.x + "," + me.y + ")");	//eom 260415
 					D2Bot.updateChickens();
 					this.exit();
@@ -482,7 +484,8 @@ function main() {
 				}
 
 				if (Config.ManaChicken > 0 && me.mp <= Math.floor(me.mpmax * Config.ManaChicken / 100)) {
-					D2Bot.printToConsole("Mana Chicken: (" + me.mp + "/" + me.mpmax + ") in " + Pather.getAreaName(me.area), 9);
+					D2Bot.printToConsole("Mana Chicken " + me.mp + "/" + me.mpmax + " (" + Misc.where() + ")", 9);	//260930
+					Misc.trace("[Quit] Mana Chicken " + me.mp + "/" + me.mpmax);	//260930
 					D2Bot.updateChickens();
 					this.exit();
 
@@ -496,7 +499,8 @@ function main() {
 
 					if (ironGolem) {
 						if (ironGolem.hp <= Math.floor(128 * Config.IronGolemChicken / 100)) { // ironGolem.hpmax is bugged with BO
-							D2Bot.printToConsole("Irom Golem Chicken in " + Pather.getAreaName(me.area), 9);
+							D2Bot.printToConsole("Iron Golem Chicken (" + Misc.where() + ")", 9);	//260930
+							Misc.trace("[Quit] Iron Golem Chicken");	//260930
 							D2Bot.updateChickens();
 							this.exit();
 
@@ -511,7 +515,8 @@ function main() {
 					
 					if (mercHP > 0 && merc && merc.mode !== 12) {
 						if (mercHP < Config.MercChicken) {
-							D2Bot.printToConsole("Merc Chicken in " + Pather.getAreaName(me.area), 9);
+							D2Bot.printToConsole("Merc Chicken (" + Misc.where() + ")", 9);	//260930
+							Misc.trace("[Quit] Merc Chicken");	//260930
 							D2Bot.updateChickens();
 							this.exit();
 

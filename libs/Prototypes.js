@@ -324,7 +324,7 @@ Unit.prototype.toCursor = function () {
 
 Unit.prototype.drop = function () {
 	if (this.type !== 4) {
-		print("[DBG] drop");	//260916
+		Misc.trace("[DBG] drop");	//260916	//260930 print -> trace (diagnostic)
 		throw new Error("Unit.drop: Must be used with items.");
 	}
 

@@ -294,6 +294,22 @@ var Pather = {
 				}
 			}
 			
+			if (useTeleport && me.inTown) {	//260930 a teleport path that runs into town (useTeleport is decided once at the start): town blocks teleport, walk the rest
+				useTeleport = false;
+				adjustedNode = getPath(me.area, x, y, me.x, me.y, 0, this.walkDistance);
+				Misc.trace("moveTo entered town, walk the rest -> " + x + "," + y + " path:" + (adjustedNode ? adjustedNode.length : "none"));	//260930
+
+				if (adjustedNode) {
+					path = adjustedNode.reverse();
+
+					if (pop) {
+						path.pop();
+					}
+				}
+
+				continue;
+			}
+
 			if (!me.inTown && !useTeleport) {
 				while (path.length > 1 && getDistance(me, path[1]) < getDistance(me, path[0])) {	//260727
 					path.shift();
@@ -334,7 +350,7 @@ var Pather = {
 						continue;
 					}
 					
-					print("[SafeTele] teleportTo FAILED - safeNode:(" + checkedNode.x + "," + checkedNode.y + ") dist:" + Math.floor(getDistance(me.x, me.y, checkedNode.x, checkedNode.y)));
+					Misc.trace("[SafeTele] teleportTo FAILED - safeNode:(" + checkedNode.x + "," + checkedNode.y + ") dist:" + Math.floor(getDistance(me.x, me.y, checkedNode.x, checkedNode.y)));	//260930 print -> trace (diagnostic)
 				}
 			}
 
@@ -441,12 +457,12 @@ var Pather = {
 	*/
 	teleportTo: function (x, y, maxRange) {
 		if (Math.floor(getDistance(me.x, me.y, x, y)) > this.maxTeleDistance) {	//260826
-			print("[teleportTo skipped] dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);
+			Misc.trace("[teleportTo skipped] dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);	//260930 print -> trace (diagnostic)
 			
 			return false;
 		}
 		
-		var i, tick;
+		var i, tick, casting;
 
 		if (maxRange === undefined) {
 			maxRange = 5;
@@ -462,17 +478,31 @@ MainLoop:
 			}
 
 			tick = getTickCount();
+			casting = false;
 
-			while (getTickCount() - tick < Math.max(200, me.ping * 2)) {	//260807
+			// judge the cast by my mode instead of a fixed wait	//260930
+			// not started within max(200, ping*2): the cast was lost, cast again now (no idle wait in a fight)
+			// started: wait it out, never cast over it. Ended without moving (hit, blocked): cast again now
+			while (getTickCount() - tick < 2000) {
 				if (getDistance(me.x, me.y, x, y) <= maxRange) {	//260413
 					return true;
 				}
 
+				if (me.attacking) {
+					casting = true;
+				} else if (casting || getTickCount() - tick >= Math.max(200, me.ping * 2)) {	//260807
+					break;
+				}
+
 				delay(20);
+			}
+
+			if (casting && getDistance(me.x, me.y, x, y) <= maxRange) {	// position can trail the end of the cast by a moment
+				return true;
 			}
 			
 			if (i === 9) {	// 260528
-				print("[teleportTo failed] attempt:" + (i + 1) + " dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);
+				Misc.trace("[teleportTo failed] attempt:" + (i + 1) + " dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);	//260930 print -> trace (diagnostic)
 			}
 		}
 		
@@ -965,7 +995,17 @@ ModeLoop:
 			throw new Error("useUnit: Unit not found. ID: " + id);
 		}
 		
+		function moved() {	//260930 checked only once the area has loaded: me.area is undefined while loading
+			return me.gameReady && !!me.area && (targetArea ? me.area === targetArea : me.area !== preArea);
+		}
+
 		for (i = 0; i < 7; i += 1) {	//260903
+			if (moved()) {	//260930 moved in right after the last wait: the unit is in the old area now, do not walk or click it
+				delay(100);
+
+				return true;
+			}
+
 			if (getDistance(me, unit) > 5) {
 				this.moveToUnit(unit);
 			}
@@ -984,7 +1024,7 @@ ModeLoop:
 				delay(Math.max(me.ping * 2, 300));	//260903
 				
 				if (id === 547) {	//260921
-					print("ArreatSummit Gate");
+					Misc.trace("ArreatSummit Gate");	//260930 print -> trace (diagnostic)
 					delay(3000);
 				}
 			}
@@ -997,8 +1037,9 @@ ModeLoop:
 
 			tick = getTickCount();
 
-			while (getTickCount() - tick < me.ping * 2 + 300) {	//260903
-				if ((!targetArea && me.area !== preArea) || me.area === targetArea) {
+			// about 1s like usePortal, and while an area loads (act change portal) keep waiting instead of walking and clicking again	//260930 was ping*2+300
+			while (getTickCount() - tick < Math.max(1000, me.ping * 2 + 300) || !me.gameReady) {
+				if (moved()) {
 					delay(100);
 					return true;
 				}
@@ -1006,7 +1047,7 @@ ModeLoop:
 				delay(10);
 			}
 			
-			print("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area);	//260622
+			Misc.trace("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area);	//260622	//260930 print -> trace (diagnostic)
 			
 			coord = CollMap.getRandCoordinate(me.x, -1, 1, me.y, -1, 1, 3);
 			this.moveTo(coord.x, coord.y);
@@ -1158,7 +1199,7 @@ ModeLoop:
 				
 				Packet.flash(me.gid);
 			} else {
-				print("[WP] wp.area:" + (wp ? wp.area : "null") + " me.area:" + me.area + " target:" + targetArea + " retry:" + i);	// 260517
+				Misc.trace("[WP] wp.area:" + (wp ? wp.area : "null") + " me.area:" + me.area + " target:" + targetArea + " retry:" + i);	// 260517	//260930 print -> trace (diagnostic)
 				Packet.flash(me.gid);
 			}
 
@@ -1183,58 +1224,85 @@ ModeLoop:
 
 		var i, portal, oldPortal, oldGid, tick, tpTome;
 
+		// my portal that is not oldGid	//260930
+		function newPortal() {
+			var p = getUnit(2, "portal");
+
+			if (p) {
+				do {
+					if (p.getParent() === me.name && p.gid !== oldGid) {
+						return copyUnit(p);
+					}
+				} while (p.getNext());
+			}
+
+			return null;
+		}
+
+		// the portal I had before the first cast, taken once: a portal that shows up late from an earlier cast is new and mine	//260930 was taken again every try, so a late portal counted as old and was cast over
+		oldPortal = getUnit(2, "portal");
+
+		if (oldPortal) {
+			do {
+				if (oldPortal.getParent() === me.name) {
+					oldGid = oldPortal.gid;
+
+					break;
+				}
+			} while (oldPortal.getNext());
+		}
+
 		for (i = 0; i < 10; i += 1) {	//260808
 			if (me.dead) {
 				break;
 			}
 
-			tpTome = me.findItem("tsc", 0, 3) || me.findItem("tbk", 0, 3); //260712
+			portal = newPortal();	//260930 a late portal from the last cast: use it instead of casting again
 
-			if (!tpTome) {
-				throw new Error("makePortal: No TP tomes.");
+			if (portal && i > 0) {
+				Misc.trace("makePortal late portal used try:" + i);	//260930
 			}
 
-			if (!tpTome.getStat(70) && !me.findItem("tsc", 0, 3)) { //eom
-				throw new Error("makePortal: No scrolls.");
-			}
-
-			oldPortal = getUnit(2, "portal");
-
-			if (oldPortal) {
-				do {
-					if (oldPortal.getParent() === me.name) {
-						oldGid = oldPortal.gid;
-
-						break;
-					}
-				} while (oldPortal.getNext());
-			}
-
-			tpTome.interact();
-			
-			tick = getTickCount();
-
-MainLoop:
-			while (getTickCount() - tick < me.ping * 2 + 300) {	//260808
-				portal = getUnit(2, "portal");
-
-				if (portal) {
-					do {
-						if (portal.getParent() === me.name && portal.gid !== oldGid) {
-							if (use) {
-								if (this.usePortal(null, null, copyUnit(portal))) {
-									return true;
-								}
-
-								break MainLoop; // don't spam usePortal
-							} else {
-								return copyUnit(portal);
-							}
-						}
-					} while (portal.getNext());
+			if (!portal) {
+				if (i > 0) {
+					Misc.trace("makePortal cast again try:" + i);	//260930
 				}
 
-				delay(10);
+				tpTome = me.findItem("tsc", 0, 3) || me.findItem("tbk", 0, 3); //260712
+
+				if (!tpTome) {
+					throw new Error("makePortal: No TP tomes.");
+				}
+
+				if (!tpTome.getStat(70) && !me.findItem("tsc", 0, 3)) { //eom
+					throw new Error("makePortal: No scrolls.");
+				}
+
+				tpTome.interact();
+
+				tick = getTickCount();
+
+				while (getTickCount() - tick < Math.max(1000, me.ping * 2 + 300)) {	//260930 was ping*2+300 (a portal often takes longer)
+					portal = newPortal();
+
+					if (portal) {
+						break;
+					}
+
+					delay(10);
+				}
+			}
+
+			if (portal) {
+				if (!use) {
+					return portal;
+				}
+
+				if (this.usePortal(null, null, portal)) {
+					return true;
+				}
+
+				oldGid = portal.gid;	//260930 could not take it: cast a new one next time (don't spam usePortal)
 			}
 			
 			Packet.flash(me.gid);
@@ -1258,7 +1326,7 @@ MainLoop:
 
 		me.cancel();
 
-		var i, tick, portal, redPortal,
+		var i, tick, portal, redPortal, loadMs,
 			preArea = me.area;
 
 		for (i = 0; i < 14; i += 1) {	//260809
@@ -1310,22 +1378,30 @@ MainLoop:
 
 				tick = getTickCount();
 
-				while (getTickCount() - tick < (redPortal ? 3000 : me.ping * 2 + 300)) {	//260926
-					if (me.area !== preArea) {
-						if (redPortal) {	//260926 temp
-							Misc.trace("usePortal 342 changed area:" + me.area + " ms:" + (getTickCount() - tick));
+				// a request that took moved within about 1s (red portal 47/47 on 260930); sending again sooner only doubles a slow request	//260930 was a flat 3s (red) / ping*2+300 (others)
+				// while an area loads (gameReady false, act change) keep waiting and never send again. me.area is undefined while loading
+				loadMs = -1;
+
+				while (getTickCount() - tick < (redPortal ? 1500 : Math.max(1000, me.ping * 2 + 300)) || !me.gameReady) {
+					if (!me.gameReady && loadMs < 0) {
+						loadMs = getTickCount() - tick;
+					}
+
+					if (me.gameReady && me.area && me.area !== preArea) {
+						if (redPortal) {
+							Misc.trace("usePortal 342 changed area:" + me.area + " ms:" + (getTickCount() - tick) + " loading at:" + loadMs);	//260930 temp
 						}
-						
+
 						delay(me.ping * 2 + 300);	//260830
-						
+
 						return true;
 					}
-					
+
 					delay(10);
 				}
-				
-				if (redPortal) {	//260926 temp
-					Misc.trace("usePortal 342 timeout");
+
+				if (redPortal) {
+					Misc.trace("usePortal 342 timeout loading at:" + loadMs);	//260930 temp
 				}
 			}
 			
@@ -1504,16 +1580,14 @@ MainLoop:
 
 				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 10) {
 					if (attempt >= 10) {	//eom 260411
-						print("[goWP] Failed to reach WP after 10 attempts. area:" + me.area);
+						Misc.trace("[goWP] Failed to reach WP after 10 attempts. area:" + me.area);	//260930 print -> trace (diagnostic)
 						break;
 					}
 					
 					try {
 						this.moveToPreset(me.area, 2, wpIDs[i], 0, 0, clearPath, false);
 					} catch (e) {
-						print("Caught Error.");
-
-						print(e);
+						Misc.caughtError("Pather.goWP", e);	//260930
 					}
 
 					Packet.flash(me.gid);
@@ -1561,7 +1635,7 @@ MainLoop:
 
 		target = this.plotCourse(area, me.area);
 
-		print(target.course);
+		Misc.trace(target.course);	//260930 print -> trace (diagnostic)
 
 		if (target.useWP) {
 			Town.goToTown();

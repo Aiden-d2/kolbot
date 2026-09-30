@@ -215,10 +215,10 @@ Loop:
 				}
 			}
 
-			print("[Storage.MoveTo] retry item:" + item.name + " loc:" + this.location);	//260816
+			Misc.trace("[Storage.MoveTo] retry item:" + item.name + " loc:" + this.location);	//260816	//260930 print -> trace (diagnostic)
 			return false;	//260816
 		} catch (e) {
-			print("[Storage.MoveTo] catch: " + e.message + " item:" + (item ? item.name : "?") + " loc:" + this.location);	//260816
+			Misc.trace("[Storage.MoveTo] catch: " + e.message + " item:" + (item ? item.name : "?") + " loc:" + this.location);	//260816	//260930 print -> trace (diagnostic)
 			return false;
 		}
 	};
@@ -325,6 +325,7 @@ Loop:
 			}
 
 			if (!placed && blocker.toCursor()) {
+				Misc.trace("[MoveToSlot] no room, dropped blocker " + blocker.fname);	//260930 temp: this drop leaves no ItemLog line	//260930 print -> trace (diagnostic)
 				blocker.drop();
 				delay(200);
 			}
@@ -354,10 +355,13 @@ Loop:
 			delay(200);
 		}
 
+		var dropped = "none";	//260930 temp
+
 		if (me.itemoncursor) {
 			var cursorItem = getUnit(100);
 
 			if (cursorItem) {
+				dropped = cursorItem.fname;	//260930 temp
 				cursorItem.drop();
 			}
 		}
@@ -367,9 +371,13 @@ Loop:
 		var rv = (!!target && target.mode === 0 && target.location === this.location && target.x === col && target.y === row);	//260827
 
 		if (rv) {	//260827
-			print("[MoveToSlot] " + item.fname);	//260922
+			Misc.trace("[MoveToSlot] " + item.fname);	//260922	//260930 print -> trace (diagnostic)
 		} else {
-			print("[MoveToSlot] " + item.fname + " ÿc1FAILED");	//260922
+			Storage.Reload();	//260930 temp: what the slot holds now, what was dropped from the cursor, where the item ended up
+
+			var occupant = this.buffer[row][col] > 0 ? this.itemList[this.buffer[row][col] - 1] : null;
+
+			Misc.trace("[MoveToSlot] " + item.fname + " FAILED slot:" + (occupant ? occupant.fname : "empty") + " dropped:" + dropped + " item:" + (target ? "loc " + target.location + " mode " + target.mode + " at " + target.x + "," + target.y : "gone"));	//260922	//260930 temp detail	//260930 print -> trace (diagnostic)
 		}
 
 		return rv	//260827

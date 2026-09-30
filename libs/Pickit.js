@@ -594,7 +594,7 @@ MainLoop:
 
 			break;
 		case undefined: // Yes, it does happen
-			print("undefined item (!?)");
+			Misc.trace("undefined item (!?)");	//260930 print -> trace (diagnostic)
 
 			return false;
 		}
