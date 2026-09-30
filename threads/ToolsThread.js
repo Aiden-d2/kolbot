@@ -308,7 +308,8 @@ function main() {
 	};
 
 	// Missile range meter (temp). Pause first, press Numpad 5, then cast the skill once by hand toward open ground	//260930 temp
-	// Tracks every new missile I own (sub-missiles too, e.g. Frozen Orb shards spawned far away), and prints per missile type the farthest point reached from where I stood	//260930 owner instead of 5 around me
+	// Tracks every new missile (test alone: sub-missiles such as Frozen Orb shards may be owned by the orb, not by me), and prints per missile type
+	// the farthest point reached from where I stood and who owns it: me / another missile (its classid) / other	//260930
 	this.meter = null;
 
 	this.startMeter = function () {	//260930 temp
@@ -340,11 +341,11 @@ function main() {
 				t = this.meter.list[m.gid];
 
 				if (!t) {
-					if (this.meter.old[m.gid] || m.owner !== me.gid) {	//260930 owner confirmed to be my gid
+					if (this.meter.old[m.gid]) {	//260930 no owner filter
 						continue;
 					}
 
-					t = this.meter.list[m.gid] = {name: m.name, classid: m.classid, owner: m.owner, cx: me.x, cy: me.y, sx: m.x, sy: m.y, max: 0, born: now, last: now};
+					t = this.meter.list[m.gid] = {name: m.name, classid: m.classid, owner: m.owner, ownertype: m.ownertype, cx: me.x, cy: me.y, sx: m.x, sy: m.y, max: 0, born: now, last: now};
 					this.meter.lastNew = now;
 				}
 
@@ -379,7 +380,8 @@ function main() {
 		for (gid in this.meter.list) {
 			if (this.meter.list.hasOwnProperty(gid)) {
 				t = this.meter.list[gid];
-				cls = byClass[t.classid] || (byClass[t.classid] = {name: t.name, n: 0, max: 0, life: 0, spawn: 0, owner: t.owner});
+				cls = byClass[t.classid] || (byClass[t.classid] = {name: t.name, n: 0, max: 0, life: 0, spawn: 0, owners: {}});
+				cls.owners[t.owner === me.gid ? "me" : (this.meter.list[t.owner] ? "missile " + this.meter.list[t.owner].classid : t.owner + "/type " + t.ownertype)] = true;
 				cls.n += 1;
 				cls.max = Math.max(cls.max, t.max);
 				cls.life = Math.max(cls.life, t.last - t.born);
@@ -390,7 +392,7 @@ function main() {
 		for (cls in byClass) {
 			if (byClass.hasOwnProperty(cls)) {
 				t = byClass[cls];
-				line = "[MM] " + t.name + " (classid " + cls + ") x" + t.n + " max:" + t.max.toFixed(1) + " life:" + t.life + "ms (~" + Math.round(t.life / 40) + " frames) spawn:" + t.spawn.toFixed(1) + " owner:" + t.owner;
+				line = "[MM] " + t.name + " (classid " + cls + ") x" + t.n + " max:" + t.max.toFixed(1) + " life:" + t.life + "ms (~" + Math.round(t.life / 40) + " frames) spawn:" + t.spawn.toFixed(1) + " owner:" + Object.keys(t.owners).join(",");
 				print(line);
 				D2Bot.printToConsole(line);
 			}
