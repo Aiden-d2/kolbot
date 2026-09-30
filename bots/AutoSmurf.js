@@ -5784,30 +5784,7 @@ function AutoSmurf() {
 		Attack.clear(15, getLocaleString(2875));	//260929
 		
 		Pather.moveToPreset(me.area, 2, 580, myX, myY);	//260929
-
-		// the Countess chest at preset 580 (one, sparkly, always a poison cloud trap): open it after the room is cleared, everyone alike	//261001
-		poi = getPresetUnit(me.area, 2, 580);
-
-		if (poi) {
-			var chest = getUnit(2, "chest");
-
-			if (chest) {
-				do {
-					if (chest.mode === 0 && getDistance(chest, poi.roomx * 5 + poi.x, poi.roomy * 5 + poi.y) < 5) {
-						try {
-							if (Misc.openChest(copyUnit(chest), false, true)) {
-								Pickit.pickItems();
-							}
-						} catch (e) {
-							Misc.caughtError("Countess chest", e);
-						}
-
-						break;
-					}
-				} while (chest.getNext());
-			}
-		}
-
+		
 		this.okCount(15);
 
 		Precast.doPrecast(true);

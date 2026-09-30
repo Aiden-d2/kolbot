@@ -1325,9 +1325,9 @@ var Misc = {
 	},
 
 	// Open a chest Unit
-	openChest: function (unit, cain, countess) {	//261001 countess
-		// Skip invalid and Countess chests. The Countess chest (sparkly, always a poison cloud trap) is opened only by farmingCountess after the fight	//261001
-		if (!unit || (!countess && (unit.x === 12526 || unit.x === 12565))) {	//261001 countess exception
+	openChest: function (unit, cain) {
+		// Skip invalid and Countess chests
+		if (!unit || unit.x === 12526 || unit.x === 12565) {
 			return false;
 		}
 
