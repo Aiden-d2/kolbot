@@ -51,6 +51,13 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
+**260930 trace 8개(a1~a8) 판정** (a4·a5는 해머딘: `[SP] detour` 0건, 해머는 setPosition을 안 거침. a7은 N.SUMM)
+- 4번 통과: `[AC] drop unreachable` 3732건(Abaddon·Pit of Acheron·Infernal Pit·탈무덤 순). 같은 몹이 반복 제외된 최장은 Den of Evil Gargantuan Beast 4:14~4:15(a4 19회)인데, 이동 중 clear가 부를 때마다 다시 판정한 것이고 제자리에 묶이지 않았다. `[SP] detour` 464건, 경로/직선 비 중앙값 4.6(DetourPath 4). 이 중 118건은 `path:0`(getPath가 빈 배열)이라 "우회 과다"가 아니라 경로 없음이다(표시만 detour, 동작은 제외로 같음).
+- 5번 통과: 해머딘(a4·a5)이 같은 자리에서 같은 몹을 5회 넘게 제외한 경우는 3~5초짜리(카우 레벨, 탈무덤 #6 대기 루프)뿐, 헛돎 없음.
+- 8번 통과: `[SP] fence` 16건(a8 트라빈컬 4:39 Toorc 15회/2초, a2 8:19 1회). 박스 밖 자리를 걸렀고, a8은 2초 뒤 clear가 끝남.
+- 9번 통과: `[AC] defer unreachable` 4건, `[AC] defer`(스킬 없음) 34건 모두 0~18초 안에 clear가 끝남(최장: 탈무덤 #2 Apparition 18초, casts 15~37). a2 8:19 Toorc 건은 18초 뒤 마을(Kurast Docktown)로 이동(end 줄 없음, TownChicken 추정).
+- 참고(1번 관련): 같은 자리에서 `[AC] end casts:0`이 10회 이상 이어진 대기 구간 845개, 합계 약 9000초. 최장은 카오스 생추어리·증오의 억류지 3층·Frozen River 등 팔로워 대기 루프(최장 121초, 초당 약 2회 clear 호출). 설계상 대기 중 방어이며, 버벅거림 여부는 trace로 판단 불가.
+
 ## 4. 미결 작업 (사용자 결정 또는 확인 후)
 | # | 작업 | 상태 | 메모 |
 |---|---|---|---|
