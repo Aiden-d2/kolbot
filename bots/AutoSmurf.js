@@ -1073,7 +1073,7 @@ function AutoSmurf() {
 
 		nextAreaIndex = areaIDs.indexOf(target.course[0]) + 1; // Index of next area
 		
-		print("Travel course: " + target.course);
+		Misc.trace("Travel course: " + target.course);	//260930 print -> trace (diagnostic)
 		me.overhead("Travel course: " + target.course);
 
 		if (nextAreaIndex < areaIDs.length) { // If next area index is invalid, return true.
@@ -1082,7 +1082,7 @@ function AutoSmurf() {
 			}
 
 			for (nextAreaIndex; nextAreaIndex < areaIDs.length; nextAreaIndex += 1) {
-				print("nextAreaIndex: " + nextAreaIndex);
+				Misc.trace("nextAreaIndex: " + nextAreaIndex);	//260930 print -> trace (diagnostic)
 				me.overhead("nextAreaIndex: " + nextAreaIndex);
 				
 				print("Next location name: " + Pather.getAreaName(areaIDs[nextAreaIndex]));	//260922
@@ -3293,7 +3293,7 @@ function AutoSmurf() {
 			D2Bot.printToConsole("=== SUMMONER ===", 7);
 		}
 		
-		print(me.getQuest(13, 0));	//260929
+		Misc.trace(me.getQuest(13, 0));	//260929	//260930 print -> trace (diagnostic)
 		
 		doneChores = false;
 		

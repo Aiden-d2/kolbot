@@ -227,7 +227,7 @@ function main() {
 				try {
 					clickItem(2, potion);
 				} catch (e) {
-					print("Couldn't give the potion to merc.");
+					Misc.trace("Couldn't give the potion to merc.");	//260930 print -> trace (diagnostic)
 				}
 			}
 

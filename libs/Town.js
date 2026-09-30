@@ -860,7 +860,7 @@ CursorLoop:
 						}
 						
 						if (me.diff === 0 && items[i].itemType === 19) {	//260712 norm belt shopping, buy only one
-							print("Shopped " + name + " " + result.result + " " + result.tier + " " + result.line + (bought ? "" : " (not bought)"));	//260805	//260930 name taken before buy()
+							Misc.trace("Shopped " + name + " " + result.result + " " + result.tier + " " + result.line + (bought ? "" : " (not bought)"));	//260805	//260930 name taken before buy()	//260930 print -> trace (diagnostic)
 							return true;
 						}
 						
@@ -1837,7 +1837,7 @@ MainLoop:
 						delay(me.ping * 2 + 200);
 					}
 					
-					print("moved from cube to drop " + items[i].name);
+					Misc.trace("moved from cube to drop " + items[i].name);	//260930 print -> trace (diagnostic)
 					me.overhead("moved from cube to drop " + items[i].name);
 					
 					Storage.Inventory.MoveTo(items[i]);
@@ -1845,7 +1845,7 @@ MainLoop:
 					break;
 				case 4: // Sell item
 					try {
-						print("moved from cube to sell " + items[i].name);
+						Misc.trace("moved from cube to sell " + items[i].name);	//260930 print -> trace (diagnostic)
 						me.overhead("moved from cube to sell " + items[i].name);
 						
 						Storage.Inventory.MoveTo(items[i]);

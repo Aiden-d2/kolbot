@@ -530,7 +530,7 @@ var Merc = {
 			}
 
 			retry += 1;
-			print("[hire] hiring retry (" + (retry) + "/5)");
+			Misc.trace("[hire] hiring retry (" + (retry) + "/5)");	//260930 print -> trace (diagnostic)
 		}
 		
 		Grant.updateTiers();  //260916

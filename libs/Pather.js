@@ -297,6 +297,7 @@ var Pather = {
 			if (useTeleport && me.inTown) {	//260930 a teleport path that runs into town (useTeleport is decided once at the start): town blocks teleport, walk the rest
 				useTeleport = false;
 				adjustedNode = getPath(me.area, x, y, me.x, me.y, 0, this.walkDistance);
+				Misc.trace("moveTo entered town, walk the rest -> " + x + "," + y + " path:" + (adjustedNode ? adjustedNode.length : "none"));	//260930
 
 				if (adjustedNode) {
 					path = adjustedNode.reverse();
@@ -349,7 +350,7 @@ var Pather = {
 						continue;
 					}
 					
-					print("[SafeTele] teleportTo FAILED - safeNode:(" + checkedNode.x + "," + checkedNode.y + ") dist:" + Math.floor(getDistance(me.x, me.y, checkedNode.x, checkedNode.y)));
+					Misc.trace("[SafeTele] teleportTo FAILED - safeNode:(" + checkedNode.x + "," + checkedNode.y + ") dist:" + Math.floor(getDistance(me.x, me.y, checkedNode.x, checkedNode.y)));	//260930 print -> trace (diagnostic)
 				}
 			}
 
@@ -456,7 +457,7 @@ var Pather = {
 	*/
 	teleportTo: function (x, y, maxRange) {
 		if (Math.floor(getDistance(me.x, me.y, x, y)) > this.maxTeleDistance) {	//260826
-			print("[teleportTo skipped] dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);
+			Misc.trace("[teleportTo skipped] dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);	//260930 print -> trace (diagnostic)
 			
 			return false;
 		}
@@ -501,7 +502,7 @@ MainLoop:
 			}
 			
 			if (i === 9) {	// 260528
-				print("[teleportTo failed] attempt:" + (i + 1) + " dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);
+				Misc.trace("[teleportTo failed] attempt:" + (i + 1) + " dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);	//260930 print -> trace (diagnostic)
 			}
 		}
 		
@@ -1023,7 +1024,7 @@ ModeLoop:
 				delay(Math.max(me.ping * 2, 300));	//260903
 				
 				if (id === 547) {	//260921
-					print("ArreatSummit Gate");
+					Misc.trace("ArreatSummit Gate");	//260930 print -> trace (diagnostic)
 					delay(3000);
 				}
 			}
@@ -1046,7 +1047,7 @@ ModeLoop:
 				delay(10);
 			}
 			
-			print("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area);	//260622
+			Misc.trace("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area);	//260622	//260930 print -> trace (diagnostic)
 			
 			coord = CollMap.getRandCoordinate(me.x, -1, 1, me.y, -1, 1, 3);
 			this.moveTo(coord.x, coord.y);
@@ -1198,7 +1199,7 @@ ModeLoop:
 				
 				Packet.flash(me.gid);
 			} else {
-				print("[WP] wp.area:" + (wp ? wp.area : "null") + " me.area:" + me.area + " target:" + targetArea + " retry:" + i);	// 260517
+				Misc.trace("[WP] wp.area:" + (wp ? wp.area : "null") + " me.area:" + me.area + " target:" + targetArea + " retry:" + i);	// 260517	//260930 print -> trace (diagnostic)
 				Packet.flash(me.gid);
 			}
 
@@ -1258,7 +1259,15 @@ ModeLoop:
 
 			portal = newPortal();	//260930 a late portal from the last cast: use it instead of casting again
 
+			if (portal && i > 0) {
+				Misc.trace("makePortal late portal used try:" + i);	//260930
+			}
+
 			if (!portal) {
+				if (i > 0) {
+					Misc.trace("makePortal cast again try:" + i);	//260930
+				}
+
 				tpTome = me.findItem("tsc", 0, 3) || me.findItem("tbk", 0, 3); //260712
 
 				if (!tpTome) {
@@ -1571,7 +1580,7 @@ MainLoop:
 
 				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 10) {
 					if (attempt >= 10) {	//eom 260411
-						print("[goWP] Failed to reach WP after 10 attempts. area:" + me.area);
+						Misc.trace("[goWP] Failed to reach WP after 10 attempts. area:" + me.area);	//260930 print -> trace (diagnostic)
 						break;
 					}
 					
@@ -1628,7 +1637,7 @@ MainLoop:
 
 		target = this.plotCourse(area, me.area);
 
-		print(target.course);
+		Misc.trace(target.course);	//260930 print -> trace (diagnostic)
 
 		if (target.useWP) {
 			Town.goToTown();
