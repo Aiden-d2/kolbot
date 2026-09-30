@@ -564,7 +564,7 @@ var Town = {
 			try {
 				tp.buy();
 			} catch (e1) {
-				print(e1);
+				Misc.caughtError("Town.fillTome", e1);	//260930
 
 				return false;
 			}
@@ -580,7 +580,7 @@ var Town = {
 					tome.buy();
 					delay(me.ping * 2 + 200);
 				} catch (e1) {
-					print(e1);
+					Misc.caughtError("Town.fillTome", e1);	//260930
 
 					// Couldn't buy the tome, don't spam the scrolls
 					return false;
@@ -600,7 +600,7 @@ var Town = {
 			scroll.buy(true);
 			delay(me.ping * 2 + 200);
 		} catch (e2) {
-			print(e2.message);
+			Misc.caughtError("Town.fillTome", e2);	//260930
 
 			return false;
 		}
@@ -867,7 +867,7 @@ CursorLoop:
 						delay(me.ping + 100);	//eom
 					}
 				} catch (e) {
-					print(e);
+					Misc.caughtError("Town.shopItems", e);	//260930
 				}
 			}
 			delay(10);	//eom
@@ -1038,7 +1038,7 @@ CursorLoop:
 		try {
 			key.buy(true);
 		} catch (e) {
-			print(e.message);
+			Misc.caughtError("Town.buyKeys", e);	//260930
 
 			return false;
 		}
@@ -1851,7 +1851,7 @@ MainLoop:
 						Storage.Inventory.MoveTo(items[i]);
 						delay(me.ping * 2 + 200);
 					} catch (e) {
-						print(e);
+						Misc.caughtError("Town.clearInventory", e);	//260930
 					}
 
 					break;
@@ -1885,7 +1885,7 @@ MainLoop:
 						Storage.Inventory.MoveTo(items[i]);
 						delay(me.ping * 2 + 200);
 					} catch (e) {
-						print(e);
+						Misc.caughtError("Town.clearInventory", e);	//260930
 					}
 
 					break;
@@ -1927,7 +1927,7 @@ MainLoop:
 						items[i].sell();
 						delay(me.ping * 2 + 200);
 					} catch (e) {
-						print(e);
+						Misc.caughtError("Town.clearInventory", e);	//260930
 					}
 
 					break;

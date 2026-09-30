@@ -1587,9 +1587,7 @@ MainLoop:
 					try {
 						this.moveToPreset(me.area, 2, wpIDs[i], 0, 0, clearPath, false);
 					} catch (e) {
-						print("Caught Error.");
-
-						print(e);
+						Misc.caughtError("Pather.goWP", e);	//260930
 					}
 
 					Packet.flash(me.gid);

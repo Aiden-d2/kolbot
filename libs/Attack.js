@@ -420,6 +420,10 @@ var Attack = {
 			this.tick.box = null;	//260929
 		}
 
+		if (spec && spec.ids && !mustSeen) {	//260930 clear returns true either way: note a boss that never showed up
+			Misc.trace("boss not found: " + spec.ids.join(", "));
+		}
+
 		if (castTotal > 0) {
 			Pickit.pickItems(range > 0 ? range : undefined);
 			ClassAttack.afterAttack();
