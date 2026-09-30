@@ -294,6 +294,21 @@ var Pather = {
 				}
 			}
 			
+			if (useTeleport && me.inTown) {	//260930 a teleport path that runs into town (useTeleport is decided once at the start): town blocks teleport, walk the rest
+				useTeleport = false;
+				adjustedNode = getPath(me.area, x, y, me.x, me.y, 0, this.walkDistance);
+
+				if (adjustedNode) {
+					path = adjustedNode.reverse();
+
+					if (pop) {
+						path.pop();
+					}
+				}
+
+				continue;
+			}
+
 			if (!me.inTown && !useTeleport) {
 				while (path.length > 1 && getDistance(me, path[1]) < getDistance(me, path[0])) {	//260727
 					path.shift();
@@ -446,7 +461,7 @@ var Pather = {
 			return false;
 		}
 		
-		var i, tick;
+		var i, tick, casting;
 
 		if (maxRange === undefined) {
 			maxRange = 5;
@@ -462,13 +477,27 @@ MainLoop:
 			}
 
 			tick = getTickCount();
+			casting = false;
 
-			while (getTickCount() - tick < Math.max(200, me.ping * 2)) {	//260807
+			// judge the cast by my mode instead of a fixed wait	//260930
+			// not started within max(200, ping*2): the cast was lost, cast again now (no idle wait in a fight)
+			// started: wait it out, never cast over it. Ended without moving (hit, blocked): cast again now
+			while (getTickCount() - tick < 2000) {
 				if (getDistance(me.x, me.y, x, y) <= maxRange) {	//260413
 					return true;
 				}
 
+				if (me.attacking) {
+					casting = true;
+				} else if (casting || getTickCount() - tick >= Math.max(200, me.ping * 2)) {	//260807
+					break;
+				}
+
 				delay(20);
+			}
+
+			if (casting && getDistance(me.x, me.y, x, y) <= maxRange) {	// position can trail the end of the cast by a moment
+				return true;
 			}
 			
 			if (i === 9) {	// 260528
@@ -965,7 +994,17 @@ ModeLoop:
 			throw new Error("useUnit: Unit not found. ID: " + id);
 		}
 		
+		function moved() {	//260930 checked only once the area has loaded: me.area is undefined while loading
+			return me.gameReady && !!me.area && (targetArea ? me.area === targetArea : me.area !== preArea);
+		}
+
 		for (i = 0; i < 7; i += 1) {	//260903
+			if (moved()) {	//260930 moved in right after the last wait: the unit is in the old area now, do not walk or click it
+				delay(100);
+
+				return true;
+			}
+
 			if (getDistance(me, unit) > 5) {
 				this.moveToUnit(unit);
 			}
@@ -997,8 +1036,9 @@ ModeLoop:
 
 			tick = getTickCount();
 
-			while (getTickCount() - tick < me.ping * 2 + 300) {	//260903
-				if ((!targetArea && me.area !== preArea) || me.area === targetArea) {
+			// about 1s like usePortal, and while an area loads (act change portal) keep waiting instead of walking and clicking again	//260930 was ping*2+300
+			while (getTickCount() - tick < Math.max(1000, me.ping * 2 + 300) || !me.gameReady) {
+				if (moved()) {
 					delay(100);
 					return true;
 				}
@@ -1183,58 +1223,77 @@ ModeLoop:
 
 		var i, portal, oldPortal, oldGid, tick, tpTome;
 
+		// my portal that is not oldGid	//260930
+		function newPortal() {
+			var p = getUnit(2, "portal");
+
+			if (p) {
+				do {
+					if (p.getParent() === me.name && p.gid !== oldGid) {
+						return copyUnit(p);
+					}
+				} while (p.getNext());
+			}
+
+			return null;
+		}
+
+		// the portal I had before the first cast, taken once: a portal that shows up late from an earlier cast is new and mine	//260930 was taken again every try, so a late portal counted as old and was cast over
+		oldPortal = getUnit(2, "portal");
+
+		if (oldPortal) {
+			do {
+				if (oldPortal.getParent() === me.name) {
+					oldGid = oldPortal.gid;
+
+					break;
+				}
+			} while (oldPortal.getNext());
+		}
+
 		for (i = 0; i < 10; i += 1) {	//260808
 			if (me.dead) {
 				break;
 			}
 
-			tpTome = me.findItem("tsc", 0, 3) || me.findItem("tbk", 0, 3); //260712
+			portal = newPortal();	//260930 a late portal from the last cast: use it instead of casting again
 
-			if (!tpTome) {
-				throw new Error("makePortal: No TP tomes.");
-			}
+			if (!portal) {
+				tpTome = me.findItem("tsc", 0, 3) || me.findItem("tbk", 0, 3); //260712
 
-			if (!tpTome.getStat(70) && !me.findItem("tsc", 0, 3)) { //eom
-				throw new Error("makePortal: No scrolls.");
-			}
-
-			oldPortal = getUnit(2, "portal");
-
-			if (oldPortal) {
-				do {
-					if (oldPortal.getParent() === me.name) {
-						oldGid = oldPortal.gid;
-
-						break;
-					}
-				} while (oldPortal.getNext());
-			}
-
-			tpTome.interact();
-			
-			tick = getTickCount();
-
-MainLoop:
-			while (getTickCount() - tick < me.ping * 2 + 300) {	//260808
-				portal = getUnit(2, "portal");
-
-				if (portal) {
-					do {
-						if (portal.getParent() === me.name && portal.gid !== oldGid) {
-							if (use) {
-								if (this.usePortal(null, null, copyUnit(portal))) {
-									return true;
-								}
-
-								break MainLoop; // don't spam usePortal
-							} else {
-								return copyUnit(portal);
-							}
-						}
-					} while (portal.getNext());
+				if (!tpTome) {
+					throw new Error("makePortal: No TP tomes.");
 				}
 
-				delay(10);
+				if (!tpTome.getStat(70) && !me.findItem("tsc", 0, 3)) { //eom
+					throw new Error("makePortal: No scrolls.");
+				}
+
+				tpTome.interact();
+
+				tick = getTickCount();
+
+				while (getTickCount() - tick < Math.max(1000, me.ping * 2 + 300)) {	//260930 was ping*2+300 (a portal often takes longer)
+					portal = newPortal();
+
+					if (portal) {
+						break;
+					}
+
+					delay(10);
+				}
+			}
+
+			if (portal) {
+				if (!use) {
+					return portal;
+				}
+
+				if (this.usePortal(null, null, portal)) {
+					return true;
+				}
+
+				oldGid = portal.gid;	//260930 could not take it: cast a new one next time (don't spam usePortal)
 			}
 			
 			Packet.flash(me.gid);
@@ -1310,36 +1369,30 @@ MainLoop:
 
 				tick = getTickCount();
 
-				if (redPortal) {	//260930 was a flat 3s: a request that took changed the act within about 1s (47/47 on 260930). Wait 1.5s, and while the act loads (gameReady false) keep waiting and never send again
-					loadMs = -1;
+				// a request that took moved within about 1s (red portal 47/47 on 260930); sending again sooner only doubles a slow request	//260930 was a flat 3s (red) / ping*2+300 (others)
+				// while an area loads (gameReady false, act change) keep waiting and never send again. me.area is undefined while loading
+				loadMs = -1;
 
-					while (getTickCount() - tick < 1500 || !me.gameReady) {
-						if (!me.gameReady && loadMs < 0) {
-							loadMs = getTickCount() - tick;
-						}
+				while (getTickCount() - tick < (redPortal ? 1500 : Math.max(1000, me.ping * 2 + 300)) || !me.gameReady) {
+					if (!me.gameReady && loadMs < 0) {
+						loadMs = getTickCount() - tick;
+					}
 
-						if (me.gameReady && me.area && me.area !== preArea) {	// me.area is undefined while loading
+					if (me.gameReady && me.area && me.area !== preArea) {
+						if (redPortal) {
 							Misc.trace("usePortal 342 changed area:" + me.area + " ms:" + (getTickCount() - tick) + " loading at:" + loadMs);	//260930 temp
-
-							delay(me.ping * 2 + 300);
-
-							return true;
 						}
 
-						delay(10);
+						delay(me.ping * 2 + 300);	//260830
+
+						return true;
 					}
 
+					delay(10);
+				}
+
+				if (redPortal) {
 					Misc.trace("usePortal 342 timeout loading at:" + loadMs);	//260930 temp
-				} else {
-					while (getTickCount() - tick < me.ping * 2 + 300) {
-						if (me.area !== preArea) {
-							delay(me.ping * 2 + 300);	//260830
-
-							return true;
-						}
-
-						delay(10);
-					}
 				}
 			}
 			

@@ -57,6 +57,15 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 8번 통과: `[SP] fence` 16건(a8 트라빈컬 4:39 Toorc 15회/2초, a2 8:19 1회). 박스 밖 자리를 걸렀고, a8은 2초 뒤 clear가 끝남.
 - 9번 통과: `[AC] defer unreachable` 4건, `[AC] defer`(스킬 없음) 34건 모두 0~18초 안에 clear가 끝남(최장: 탈무덤 #2 Apparition 18초, casts 15~37). a2 8:19 Toorc 건은 18초 뒤 마을(Kurast Docktown)로 이동(end 줄 없음, TownChicken 추정).
 - 빨간 포털(260930, 사용자 채택): 260926 사용자 코드의 `usePortal 342` 로그 47회(8개 프로필) 전부 102→103 성공, 1회 35·2회 9·3~5회 3, 성공은 전송 뒤 약 1초 안. → `Pather.usePortal`(시도 14회 루프는 그대로, 10회 제한은 넣었다가 사용자 결정으로 뺌) 빨간 포털 대기를 3초 고정에서 "1.5초 + 로딩 중(`me.gameReady` false)엔 끝날 때까지 대기, 재전송 안 함"으로 바꿈. 성공 판정은 로딩 뒤(`gameReady` && `me.area`) — 로딩 중 `me.area`는 undefined라 "지역 바뀜"으로 잘못 잡힐 수 있어서. 로그에 `loading at:<ms>`(로딩 시작 시점, -1이면 못 봄) 추가. 호출부(mephisto `while (me.area === 102)`)는 `getUnit(2, 342)`가 null이면 `usePortal`을 안 부름(null이면 `getPortal(null, null)`이 파티 파란 포털을 집어 3막 마을로 갈 수 있음).
+- 포털·유닛·텔레포트·상점 정리(260930, 사용자 채택, d2bs 로그 8개 + trace 8개 + ItemLog 근거):
+  - 원본 kolbot 대비: useUnit 3회·3초 대기 → 7회·ping×2+300ms, usePortal 대기 1→2.1초 증가 → ping×2+300ms 고정, makePortal 500ms+ → ping×2+300ms, teleportTo 3회·max(500, ping×2+200) → 10회·max(200, ping×2). 서버가 받아들인 요청도 1초 가까이 걸릴 수 있어(빨간 포털 기록), 짧은 대기는 느린 요청을 겹쳐 보내게 만들었다. useUnit 타임아웃 하루 59회(d2bs 8개). 판데모니움→해로가스 포털(`AutoSmurf.js:1408` useUnit 566)에서 로딩 중·직후 옛 유닛으로 이동·상호작용(a3 04:53:51 `dist:74`).
+  - `usePortal`: 파란 포털도 대기 max(1000, ping×2+300), 빨간 포털 1500. 로딩 중(`gameReady` false)엔 대기·재전송 없음. 성공 판정은 로딩 뒤(`me.area`는 로딩 중 undefined). flash(3회마다)는 1초 뒤라 유지. 같은 액트 포털에서 `gameReady`가 false가 되는지는 근거 없음(액트 전환만 근거 있음) — 그 경우엔 1초 대기만 적용되는 셈.
+  - `useUnit`: 대기 max(1000, ping×2+300) + 로딩 중 대기, 회차 시작에 "이미 넘어갔으면 끝"(옛 유닛으로 이동·클릭 방지).
+  - `makePortal`: `oldGid`를 첫 시전 전에 한 번만 잡음(매 회차 다시 잡아 늦게 뜬 내 포털을 옛것으로 보고 다시 시전하던 문제). 회차 시작에 늦게 뜬 포털이 있으면 다시 시전하지 않고 씀. 대기 max(1000, ping×2+300).
+  - `teleportTo`: 고정 대기 대신 `me.attacking`(시전 동작) 기준 — max(200, ping×2) 안에 시전 동작이 안 시작되면 바로 재시전, 시작됐으면 끝날 때까지 기다리고(겹쳐 시전 안 함), 끝났는데 제자리면 바로 재시전. 회차당 최대 2초. 패킷 텔레포트에서 시전 모드가 안 잡히면 예전과 같은 시간 기준으로 동작.
+  - `moveTo`: `useTeleport`는 시작 때 한 번 정해진다. 텔레포트 경로가 마을로 들어가면(a2 07:53 Blood Moor → 로그 캠프, teleportTo failed 3회) 걷기로 바꾸고 걷기 경로로 다시 계산. `getNearestWalkable` 보정(7개 지역만)과는 무관.
+  - 상점(`Town.js` MiniShopBot): ItemLog에 같은 아이템을 두 프로필이 같은 초에 Shopped로 기록한 쌍 4개(00:56:13 a2·a5 등) — 같은 게임 상점 공유, 먼저 산 쪽만 실제 구매. d2bs `Shopped undefined`는 그 순간 아이템이 사라져 D2BS가 못 찾은 것(`JSUnit.cpp` 191~194). 기록을 `buy()` 성공 뒤, 인벤토리에 새로 들어온 아이템으로 남기도록 바꿈. 일반 난이도 벨트 출력엔 이름을 buy 전에 잡고 실패면 `(not bought)`.
+  - 벨트 물약 `MoveToSlot FAILED`(8개 로그 9회): 실패는 모두 2~3초 걸림 = 커서에서 안 내려가 1.5초 대기 후 커서 아이템을 바닥에 버리는 경로(`Storage.js`)로 추정, ItemLog엔 기록 안 됨. 실패 줄에 칸 점유 아이템·버린 아이템·물약 위치를 찍도록 함(`//260930 temp`), 자리 없어 막던 아이템을 버릴 때도 출력.
 - okCount·teamCount 대기 간격 500 → 1000ms(260930 사용자 요청). 120초 타임아웃은 시간 기준이라 그대로.
 - 참고(1번 관련): 같은 자리에서 `[AC] end casts:0`이 10회 이상 이어진 대기 구간 845개, 합계 약 9000초. 최장은 카오스 생추어리·증오의 억류지 3층·Frozen River 등 팔로워 대기 루프(최장 121초, 초당 약 2회 clear 호출). 설계상 대기 중 방어이며, 버벅거림 여부는 trace로 판단 불가.
 
