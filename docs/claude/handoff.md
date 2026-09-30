@@ -50,6 +50,9 @@
 | 9 | 박스 가장자리 MUST에 붙잡히지 않는가 (260929 unreachable → deferred) | trace `[AC] defer unreachable` | 12-1 MUST unreachable |
 | 10 | 걷기 회피가 min(사거리, 10)칸 자리로 짧게 물러나는가, 텔레는 사거리만큼. War Cry·Tornado(사거리 5)·D.FGOM(7)도 회피. FONV·D.FGOM 진동 없는가 (260930) | 좁은 지형 소서, B.WCRY, D.WIND, D.FGOM | 12-1 회피 거리. 반경·회피 거리 분리 여부는 이후 재논의 |
 | 11 | Howl 15 사거리에서 헛캐스팅이 없는가 (260930) | B.WCRY | 12-1 스킬 사거리 |
+| 12 | 회피가 물러나는 쪽의 몹 최소 자리로 가고, 회피 반복이 줄었는가 (261001) | FONV·D.FGOM·B.WCRY 회피 장면 | `pather_status.md` 4절 |
+| 13 | Flayer Dungeon·Arcane에서 텔레 이동이 30 간격을 유지하는가 (SafeTele 뒤·실패 뒤 포함, 261001) | trace `[teleportTo failed]`, `path total nodes` | `pather_status.md` 3-1 |
+| 14 | 상자 제외: 트랩 상자(`objtype & 0x7F`)를 건너뛰는가, 트랩 없는 컨테이너까지 빠지지 않는가(상자 외 컨테이너의 objtype 값 미확인), 불 옆 꼬챙이 시체를 안 여는가 (261001) | 상자 여는 장면, 1막 CorpseOnStick | `pather_status.md` 3-8 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -73,12 +76,12 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - okCount·teamCount 대기 간격 500 → 1000ms(260930 사용자 요청). 120초 타임아웃은 시간 기준이라 그대로.
 - 참고(1번 관련): 같은 자리에서 `[AC] end casts:0`이 10회 이상 이어진 대기 구간 845개, 합계 약 9000초. 최장은 카오스 생추어리·증오의 억류지 3층·Frozen River 등 팔로워 대기 루프(최장 121초, 초당 약 2회 clear 호출). 설계상 대기 중 방어이며, 버벅거림 여부는 trace로 판단 불가.
 
-**261001 Pather·setPosition 검토 (작업 브랜치 `claude/pather-analysis-refactor-w9td75`, 코드 변경 없음)**
-- 결정됨, 수정 요청 대기: 7개 지역 텔레 간격 30을 모든 텔레 경로에(`Pather.getTeleDistance`, setPosition 한 번 텔레 한계는 35 그대로), `SafeTele.Count` 삭제(몹 1마리부터 발동), setPosition 회피는 구역(물러나기 → 반대편) 안 몹 수 최소. 구현안은 되돌린 커밋 `303b432`에 있음.
+**261001 Pather·setPosition·상자 (작업 브랜치 `claude/pather-analysis-refactor-w9td75`, 사용자 요청으로 코드 반영)**
+- 반영: 7개 지역 텔레 간격 30을 모든 텔레 경로에(`Pather.getTeleDistance`, setPosition 한 번 텔레 한계는 35 그대로), `SafeTele.Count` 삭제(몹 1마리부터 발동), setPosition 회피는 구역(물러나기 → 반대편) 안 몹 수 최소.
 - 기각·유지: SafeTele 0x4 시야 검사(기각), setPosition 자리 기억(탈락), `"killMonsters"` 반환(유지), Warriv 1막 경유(의도).
 - 기각: SafeTele를 clearPath true 이동에서 끄기(`pather_status.md` 3-6).
-- 결정됨, 수정 요청 대기: 상자 제외 — 트랩 전부(`objtype & 0x7F`, `explodingchest`), 불 옆(같은 `getUnit(2)` 루프에서 fire 수집, 반경 4)(`pather_status.md` 3-8).
-- 보류: journeyTo throw, 죽은 코드(`cleared`·`MainLoop:`·`j`/`wp`), PathDebug(사용자가 더 알아본 뒤).
+- 반영: 상자 제외 — 트랩 전부(`objtype & 0x7F`, `explodingchest`), 불 옆(같은 `getUnit(2)` 루프에서 fire 수집, 반경 4)(`pather_status.md` 3-8).
+- 기각·보류: journeyTo throw, 죽은 코드(`cleared`·`MainLoop:`·`j`/`wp`), PathDebug, `NodeAction.go`의 `prevNode` 주석 규칙, `moveTo`의 `errorReport //260922 temp`.
 - 실수 기록: 결정을 요청으로 보고 코드를 고쳤다가 되돌림(`8c33a7b`). CLAUDE.md 작업 규칙에 "결정은 요청이 아니다" 추가.
 
 ## 4. 미결 작업 (사용자 결정 또는 확인 후)
