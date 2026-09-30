@@ -234,7 +234,7 @@ getTeleDistance: function () {
   | 57 SparklyChest | 반짝이는 상자 | 03과 같음 |
   | 없음 | barrel(일반·폭발), armorstand, weaponrack, holeanim, casket·sarcophagus 일부, roguecorpse, corpseonstick, loose rock·boulder, hollow log, pillar, skull pile, jug, 퀘스트 상자(큐브·스크롤·지팡이·칼림) | 0 (걸러지지 않음) |
   - 이 함수들은 값을 0 또는 트랩 번호로만 쓴다(다른 용도는 우물·제단·포털뿐, 목록에 없음). 값이 들어가는 컨테이너의 동작 함수는 모두 열 때 `SetTrapCallback(InteractType & 0x7F)`를 부르고(`ObjMode.cpp:1247`, 2468, 2516, 2578, 2609, 정글 은닉처), 트랩 번호 1~8은 모두 트랩 함수에 연결된다. → **0이 아니면 진짜 트랩, 트랩 없는 컨테이너는 걸러지지 않는다.**
-  - Countess 탑 5층(25): 프리셋 580(특별 상자 자리, `Objects.cpp:172` `OBJECTS_SpawnSpecialChest`)은 일반 chest로 생기며 반짝이 상자 + 항상 트랩 3(`:194`). 이 자리는 봇이 Countess 위치로 쓰는 프리셋(`AutoSmurf.js` `moveToPreset(me.area, 2, 580, …)`)이다. Countess 구간 이동은 clearPath가 없어 원래도 열지 않았다 → 실제 변화 없음.
+  - Countess 탑 5층(25): 프리셋 580(`Objects.cpp:172` `OBJECTS_SpawnSpecialChest`) 자리에는 classid 371 `ForgottenTowerChest`가 생긴다(`ObjectsIds.h` `OBJECT_CHEST = 371`, 다른 층은 반짝이 상자). 371은 OperateFn 0·Selectable 0으로 열 수 없는 **퀘스트 소품**이다(InitFn 47 `CountessChest`가 퀘스트에 등록, 최초 퀘스트 완료 때 한 번 열리는 연출, 이후 모양만 남음 — 사용자 확인 261001). 원본·블리즈해커 kolbot의 `Misc.openChest` Countess 좌표(12526, 12565) 막기는 이 때문이다. 패킷(0x13)으로 상호작용하면 서버 `D2_ASSERT(pOperateFn)`(`ObjMode.cpp:2968~2970`)에 걸릴 수 있다(추정). → **열지 않음, 원본 막기 유지** (261001, 여는 코드 `7971b20`은 `61e4e1b`로 되돌림).
   - 남은 추정: 클라이언트 `objtype`이 서버 값과 같은지. 확인용 trace `[chest] skip trap|fire name: classid: objtype: dist:`(상자당 1회, `Misc.traceChestSkip`, `//261001 temp`)를 넣었다. 확인되면 지운다.
 
 ## 4. setPosition 회피 "가장 적은 자리" (261001 반영)
