@@ -27,18 +27,18 @@ var AutoBuildTemplate = {
 		],
 		
 		Skills: [
+			{id: 273, target: 1, from: 46},	// Mind Blast
+			{id: 268, target: 1},			// Shadow Warrior
 			{id: 271, target: 20},			// Lightning Sentry
 			{id: 261, target: 20},			// Charged Bolt Sentry
 			{id: 256, target: 1},			// Shock Web
 			{id: 251, target: 1},			// Fire Blast
-			{id: 267, target: 1},			// Fade
-			{id: 268, target: 1},			// Shadow Warrior
 			{id: 258, target: 1},			// Burst of Speed
 			{id: 252, target: 1},			// Claw Mastery
+			{id: 267, target: 8},			// Fade
 			{id: 256, target: 20, from: 46},// Shock Web
-			{id: 267, target: 8, from: 46},	// Fade
 			{id: 276, target: 20, from: 46},// Death Sentry
-			{id: 251, target: 16, from: 46},// Fire Blast
+			{id: 268, target: 15, from: 46},// Shadow Warrior
 		]
 	},
 
@@ -118,7 +118,7 @@ var AutoBuildTemplate = {
 
 	6:	{
 			Update: function () {
-				Config.AttackSkill = [-1, 256, -1, 256, -1, 251, -1];		// Shock Web
+				Config.AttackSkill = [-1, 256, -1, 256, -1, -1, -1];		// Shock Web
 				Config.UseBoS = true;
 			}
 		},
@@ -143,7 +143,9 @@ var AutoBuildTemplate = {
 				Config.PacketCasting = 1;									// 0 = disable, 1 = packet teleport, 2 = full packet casting.
 				
 				Config.UseBoS = false;
-				Config.UseFade = true;	
+				Config.UseFade = true;
+				
+				Config.SummonShadow = "Warrior";
 			}
 		},
 
@@ -168,7 +170,7 @@ var AutoBuildTemplate = {
 
 	46:	{
 			Update: function () {
-				Config.SummonShadow = "Warrior";
+				Config.AttackSkill = [-1, 256, -1, 256, -1, 273, -1];		// Mind Blast
 			}
 		}
 };
