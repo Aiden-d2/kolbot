@@ -34,4 +34,5 @@
 - Attack 리팩터링 설계안(로직 흐름, 재검토 지점): `docs/claude/attack_design.md`
 - 이전 코드와 현재 코드의 동작 대조표(모의 실행 결과): `docs/claude/attack_compare.md`
 - clear / setPosition 흐름 해설(공부용, 줄 번호 기준): `docs/claude/attack_flow.md`
+- Pather 현황(SafeTele·setPosition 대조, 결함·정리 후보): `docs/claude/pather_status.md`
   작업 전 반드시 먼저 읽고, 결론이 바뀌면 이 노트를 갱신한다.

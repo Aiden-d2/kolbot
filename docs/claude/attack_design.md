@@ -229,7 +229,7 @@ setPosition(unit, distance, coll, minDist = 1)   (260930 3 → 1. 1을 넘기던
 | `Config.DetourPath` | 4 | Config.js | 우회 한도: 나→몹 걷는 경로 ≤ 나→몹 직선 × 4 (SWEEP만. setPosition 걷기 우회, 해머 게이트) |
 | `Attack.dangerRange` | 10 | Attack.js | 위험 반경 |
 | `Attack.leashRange` | 25 | Attack.js | 목줄 |
-| `Pather.maxTeleDistance` | 45 | Pather.js | 한 번의 텔레 한계 |
+| ~~`Pather.maxTeleDistance`~~ | | | 260930 삭제 (한 번 텔레는 `teleDistance` 35 이내, 넘으면 moveTo) |
 | MUST 대기 창 | 5 × (ping×2+100)ms | Attack.js | 시작 시 보스 등장 대기 (전투는 계속) |
 | 시야 잃은 MUST 탐색 | 3회 | Attack.js | |
 | SWEEP 재시도 | 5회 | Attack.js | 대상별 |
