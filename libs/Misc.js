@@ -1423,6 +1423,7 @@ var Misc = {
 	openChests: function (range) {
 		var unit,
 			unitList = [],
+			fireList = [],	//261001 fires near the chests in range, gathered in the same object scan
 			containers = ["chest", "chest3", "armorstand", "weaponrack"];
 
 		if (!range) {
@@ -1435,7 +1436,7 @@ var Misc = {
 				"chest", "loose rock", "hidden stash", "loose boulder", "corpseonstick", "casket", "armorstand", "weaponrack", "barrel", "holeanim", "tomb2",
 				"tomb3", "roguecorpse", "ratnest", "corpse", "goo pile", "largeurn", "urn", "chest3", "jug", "skeleton", "guardcorpse", "sarcophagus", "object2",
 				"cocoon", "basket", "stash", "hollow log", "hungskeleton", "pillar", "skullpile", "skull pile", "jar3", "jar2", "jar1", "bonechest", "woodchestl",
-				"woodchestr", "barrel wilderness", "burialchestr", "burialchestl", "explodingchest", "chestl", "chestr", "groundtomb", "icecavejar1", "icecavejar2",
+				"woodchestr", "barrel wilderness", "burialchestr", "burialchestl", "chestl", "chestr", "groundtomb", "icecavejar1", "icecavejar2",	//261001 "explodingchest" removed (trap)
 				"icecavejar3", "icecavejar4", "deadperson", "deadperson2", "evilurn", "tomb1l", "tomb3l", "groundtombl"
 			];
 		}
@@ -1444,11 +1445,21 @@ var Misc = {
 
 		if (unit) {
 			do {
-				if (unit.name && unit.mode === 0 && getDistance(me.x, me.y, unit.x, unit.y) <= range && containers.indexOf(unit.name.toLowerCase()) > -1) {
+				if (unit.name && unit.name.toLowerCase() === "fire" && getDistance(me.x, me.y, unit.x, unit.y) <= range + 4) {	//261001 fire objects (bonfire, fire small/medium/large, brazier) that can reach a chest in range
+					fireList.push({x: unit.x, y: unit.y});
+				}
+
+				// objtype low 7 bits = trap type (lightning, firebolt, poison, nova, fire, trap monsters), bit 7 = locked	//261001
+				if (unit.name && unit.mode === 0 && getDistance(me.x, me.y, unit.x, unit.y) <= range && containers.indexOf(unit.name.toLowerCase()) > -1 && !(unit.objtype & 0x7F)) {	//261001 trapped chests skipped
 					unitList.push(copyUnit(unit));
 				}
 			} while (unit.getNext());
 		}
+
+		// a chest next to a fire (e.g. a burning staked corpse): opening it means standing in the fire	//261001
+		unitList = unitList.filter(function (chest) {
+			return !Attack.checkFire(chest.x, chest.y, fireList);
+		});
 
 		while (unitList.length > 0) {
 			unitList.sort(Sort.units);

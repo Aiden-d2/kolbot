@@ -50,6 +50,9 @@
 | 9 | 박스 가장자리 MUST에 붙잡히지 않는가 (260929 unreachable → deferred) | trace `[AC] defer unreachable` | 12-1 MUST unreachable |
 | 10 | 걷기 회피가 min(사거리, 10)칸 자리로 짧게 물러나는가, 텔레는 사거리만큼. War Cry·Tornado(사거리 5)·D.FGOM(7)도 회피. FONV·D.FGOM 진동 없는가 (260930) | 좁은 지형 소서, B.WCRY, D.WIND, D.FGOM | 12-1 회피 거리. 반경·회피 거리 분리 여부는 이후 재논의 |
 | 11 | Howl 15 사거리에서 헛캐스팅이 없는가 (260930) | B.WCRY | 12-1 스킬 사거리 |
+| 12 | 회피가 물러나는 쪽의 몹 최소 자리로 가고, 회피 반복이 줄었는가 (261001) | FONV·D.FGOM·B.WCRY 회피 장면 | `pather_status.md` 4절 |
+| 13 | Flayer Dungeon·Arcane에서 텔레 이동이 30 간격을 유지하는가 (SafeTele 뒤·실패 뒤 포함, 261001) | trace `[teleportTo failed]`, `path total nodes` | `pather_status.md` 3-1 |
+| 14 | 상자 제외: 트랩 상자(`objtype & 0x7F`)를 건너뛰는가, 트랩 없는 컨테이너까지 빠지지 않는가(상자 외 컨테이너의 objtype 값 미확인), 불 옆 꼬챙이 시체를 안 여는가 (261001) | 상자 여는 장면, 1막 CorpseOnStick | `pather_status.md` 3-8 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -72,6 +75,14 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 콘솔·오류·종료 정리(260930, CLAUDE.md "로그 규칙"): `Misc.where`/`quitGame`/`caughtError` 추가(Misc.js). AutoSmurf의 quit 21곳 전부 `quitGame`으로(이유 없던 곳: syncBO timeout, Area reversed(playerIn 4곳), Malus failed, Not ready to start Duriel, Radament quest item not found, Qual-Kehk talk failed, Malah scroll not received). changeAct 실패(메뉴 4곳·전환 안 됨·예외)는 조기 종료로 바꿈 — 콘솔 `changeAct N failed`, 단계는 trace. playerIn 관문 유지, 120초 초과는 `Players not in after act change`(각자 — 걸린 쪽이 리더일 수 있어 기다린 쪽이 찍음. `Team didn't join`, `syncBO timeout`도 같은 이유로 각자. `Area reversed`는 전원이 같은 자리라 리더만. 안 온 사람 이름은 넣지 않음, 사용자 결정). `Mephisto failed`·`Diablo not found`는 콘솔만 있던 것을 quit으로. 잡힌 오류 37곳(AutoSmurf 28, Town 8, Pather 1)을 `caughtError`로. `errorReport`의 showConsole+print 제거, trace 추가. 치킨·핑 콘솔 줄 형식 통일(`Life Chicken 955/3072 (지역 x,y)`) + trace. `BOed` print 삭제. 구간 헤더 43곳 trace에도. `Script ended` 콘솔은 리더만·조기 종료 없을 때만. Attack.clear: 보스 지정인데 한 번도 못 보면 trace `boss not found`(동작 그대로, clear는 여전히 true).
 - okCount·teamCount 대기 간격 500 → 1000ms(260930 사용자 요청). 120초 타임아웃은 시간 기준이라 그대로.
 - 참고(1번 관련): 같은 자리에서 `[AC] end casts:0`이 10회 이상 이어진 대기 구간 845개, 합계 약 9000초. 최장은 카오스 생추어리·증오의 억류지 3층·Frozen River 등 팔로워 대기 루프(최장 121초, 초당 약 2회 clear 호출). 설계상 대기 중 방어이며, 버벅거림 여부는 trace로 판단 불가.
+
+**261001 Pather·setPosition·상자 (작업 브랜치 `claude/pather-analysis-refactor-w9td75`, 사용자 요청으로 코드 반영)**
+- 반영: 7개 지역 텔레 간격 30을 모든 텔레 경로에(`Pather.getTeleDistance`, setPosition 한 번 텔레 한계는 35 그대로), `SafeTele.Count` 삭제(몹 1마리부터 발동), setPosition 회피는 구역(물러나기 → 반대편) 안 몹 수 최소.
+- 기각·유지: SafeTele 0x4 시야 검사(기각), setPosition 자리 기억(탈락), `"killMonsters"` 반환(유지), Warriv 1막 경유(의도).
+- 기각: SafeTele를 clearPath true 이동에서 끄기(`pather_status.md` 3-6).
+- 반영: 상자 제외 — 트랩 전부(`objtype & 0x7F`, `explodingchest`), 불 옆(같은 `getUnit(2)` 루프에서 fire 수집, 반경 4)(`pather_status.md` 3-8).
+- 기각·보류: journeyTo throw, 죽은 코드(`cleared`·`MainLoop:`·`j`/`wp`), PathDebug, `NodeAction.go`의 `prevNode` 주석 규칙, `moveTo`의 `errorReport //260922 temp`.
+- 실수 기록: 결정을 요청으로 보고 코드를 고쳤다가 되돌림(`8c33a7b`). CLAUDE.md 작업 규칙에 "결정은 요청이 아니다" 추가.
 
 ## 4. 미결 작업 (사용자 결정 또는 확인 후)
 | # | 작업 | 상태 | 메모 |
