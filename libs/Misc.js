@@ -57,6 +57,8 @@ var Skill = {
 			return 6;
 		case 151: // Whirlwind
 		case 229: // Molten Boulder
+		case 243: // Shock Wave	//260930 back to 7 (same as Armageddon for D.FGOM)
+		case 249: // Armageddon	//260930 back to 7
 			return 7;
 		case 92: // Poison Nova
 			return 9;
@@ -66,8 +68,6 @@ var Skill = {
 		case 64: // Frozen Orb	//260917	//260930 9 -> 10 (orb 14.1 by data), same as Nova for FONV
 		case 107: // Charge
 		case 225: // Firestorm
-		case 243: // Shock Wave	//260930 7 -> 10 (measured 12.4)
-		case 249: // Armageddon	//260930 7 -> 10, same as Shock Wave for D.FGOM
 			return 10;
 		case 8: // Inner Sight
 		case 17: // Slow Missiles

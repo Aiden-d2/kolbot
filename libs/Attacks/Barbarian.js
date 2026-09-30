@@ -71,7 +71,7 @@ var ClassAttack = {
 
 			return 1;
 		case 154:	// 260613
-				if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4, 1)) {	//260826
+				if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4)) {	//260826	//260930 minDist 1 is the default now
 					return 0;
 				}
 

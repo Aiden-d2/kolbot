@@ -86,11 +86,9 @@ var Config = {
 
 	Dodge: {
 		Enabled: false,
-		Range: 9,	//260930 skills with a range above this dodge (Frozen Orb / Nova / Shock Wave / Armageddon 10); also the radius monsters are counted in (trigger and candidates)
-		Count: 1,	//260930 dodge when at least this many monsters are within Range
-		Max: 10,	//260930 dodge ring: min(skill range, Max) from the target
-		HP: 100,
-		Step: 5
+		Range: 10,	//260930 R = min(skill range, Range): monsters closer than R are counted, and a walking dodge backs off to R from the target (teleport: the skill range)
+		MinSkillRange: 5,	//260930 skills with at least this range dodge
+		Count: 1	//260930 dodge when at least this many monsters are closer than R
 	},
 	
 	//Gear

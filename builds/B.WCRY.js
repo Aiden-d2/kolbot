@@ -142,7 +142,6 @@ var AutoBuildTemplate = {
 	30:	{
 			Update: function () {
 				Config.AttackSkill = [130, 154, -1, 154, -1];			// War Cry
-				Config.LowManaSkill = [130];
 			}
 		}
 };
