@@ -308,7 +308,7 @@ function main() {
 	};
 
 	// Missile range meter (temp). Pause first, press Numpad 5, then cast the skill once by hand toward open ground	//260930 temp
-	// Tracks every new missile that appears within 5 of me, and prints per missile type the farthest point reached from where I stood
+	// Tracks every new missile I own (sub-missiles too, e.g. Frozen Orb shards spawned far away), and prints per missile type the farthest point reached from where I stood	//260930 owner instead of 5 around me
 	this.meter = null;
 
 	this.startMeter = function () {	//260930 temp
@@ -340,7 +340,7 @@ function main() {
 				t = this.meter.list[m.gid];
 
 				if (!t) {
-					if (this.meter.old[m.gid] || getDistance(me, m) > 5) {
+					if (this.meter.old[m.gid] || m.owner !== me.gid) {	//260930 owner confirmed to be my gid
 						continue;
 					}
 
