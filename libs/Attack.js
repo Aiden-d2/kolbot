@@ -504,7 +504,7 @@ var Attack = {
 		           Outer ring first, then small offset; fire tiles excluded	//260930 no threat tie-break (safety is the next tick's dodge)
 		           sweep target only: the spot must be in sight from me (0x4), and a detour is taken only if
 		           my walking path to the target <= straight distance * DetourPath (the old clear's Angle/Detour gate)	//260928
-		  dodge (in range, Dodge on, skill range >= Dodge.MinSkillRange, Dodge.Count+ monsters closer than R = min(skill range, Dodge.Range)):	//260930
+		  dodge (in range, Dodge on, skill range >= Dodge.MinSkillRange, 1+ monster closer than R = min(skill range, Dodge.Range)):	//260930
 		           one ring at R (teleport: at the skill range), back straight away first,
 		           taking the first spot with at least 1 monster fewer (closer than R) than where I stand;
 		           if the backing-away half has none, go through to the far side	//260927
@@ -540,7 +540,7 @@ var Attack = {
 			monList = this.tick.monList || this.buildMonsterList();
 			baseline = this.getMonsterCount(me.x, me.y, threatRange, monList, fireList);
 
-			if (baseline < Config.Dodge.Count) {	//260930
+			if (baseline === 0) {	//260930 Dodge.Count removed
 				return true;
 			}
 		}

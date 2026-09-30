@@ -150,7 +150,7 @@ setPosition(unit, distance, coll, minDist = 1)   (260930 3 → 1. 1을 넘기던
   회피 채점     = Dodge.Enabled && distance >= Dodge.MinSkillRange(5) && unit.classid != 243   (260930 HP 조건 삭제)
   둘 다 아님 → true
   R = min(distance, Dodge.Range(10))   (260930 위협 반경과 걷기 회피 거리를 한 값으로)
-  회피(접근 아님)면 기준선 = 내 위치에서 R 미만 몹 수 (불장판 +100). 기준선 < Dodge.Count(1) → true
+  회피(접근 아님)면 기준선 = 내 위치에서 R 미만 몹 수 (불장판 +100). 기준선 0 → true (260930 Dodge.Count 삭제)
   접근은 몹 수를 세지 않음 (260930 좌우 동점 처리 삭제. 불장판 제외는 유지)
 
 후보
@@ -225,8 +225,7 @@ setPosition(unit, distance, coll, minDist = 1)   (260930 3 → 1. 1을 넘기던
 | `Config.Dodge.Enabled` | false (빌드 10종이 18레벨에서 true) | Config.js | 회피 사용 |
 | `Config.Dodge.Range` | **10** | Config.js | R = min(사거리, Range): R 미만 몹을 셈(발동·후보), 걷기 회피 거리 (260930) |
 | `Config.Dodge.MinSkillRange` | 5 | Config.js | 사거리가 이 값 이상인 스킬만 회피 (260930 새로 추가) |
-| `Config.Dodge.Count` | 1 | Config.js | R 미만 몹이 이 수 이상이면 회피 (260930 다시 사용). `SafeTele.Count`와는 별개 |
-| ~~`Dodge.HP`, `Dodge.Step`, `Dodge.Max`~~ | | | 260930 삭제 (HP 조건 없음, 간격은 상수 5, Max는 Range로 통합) |
+| ~~`Dodge.HP`, `Dodge.Step`, `Dodge.Max`, `Dodge.Count`~~ | | | 260930 삭제 (HP 조건 없음, 간격은 상수 5, Max는 Range로 통합, 발동은 R 미만 몹 1마리 이상) |
 | `Config.DetourPath` | 4 | Config.js | 우회 한도: 나→몹 걷는 경로 ≤ 나→몹 직선 × 4 (SWEEP만. setPosition 걷기 우회, 해머 게이트) |
 | `Attack.dangerRange` | 10 | Attack.js | 위험 반경 |
 | `Attack.leashRange` | 25 | Attack.js | 목줄 |
@@ -311,7 +310,7 @@ setPosition(unit, distance, coll, minDist = 1)   (260930 3 → 1. 1을 넘기던
 | setPosition 기준 | 접근·회피 한 함수, 순서는 이동, 위협은 통과 조건 | 위협 우선이면 걷는 캐릭이 몹을 관통 |
 | 회피 | 물러나기 우선, 1마리 이상 줄면 채택, 없으면 반대편으로 | 사용자 의도 (원안 dodge의 역방향 탈출) |
 | 회피 거리 (260930) | 링 하나: 걷기 R = min(사거리, `Range` 10), 텔레 사거리. R 미만 몹을 셈. 사거리 5 이상 스킬만. 이동 minDist 1 | 좁은 지형에서 사거리 끝(20~25)까지 물러나 캐스팅 한 번이 길어짐. 260927에 링을 사거리부터 만들며 옛 dodge·첫 병합의 13 상한이 사라진 게 원인. 안쪽 링 추가는 막다른 곳에서 반대편 전환을 한 번 늦출 뿐이라 기각. 반복 회피는 감수. 반경 = 회피 거리라 좌표 반올림(±0.7)과 도착 오차로 경계가 생기지만 예전 버전들도 같았고 오작동은 없어 허용(반경 R−2 안 기각: 사거리 7에서 너무 좁음). minDist 3이면 3칸 앞에서 멈춰 반경 안에 다시 들어가므로 기본값 1. 반경·회피 거리를 따로 둘지는 게임 확인 뒤 재논의. `getMonsterCount`는 "반경 미만"으로 통일하고 SafeTele.Range를 9 → 10으로(정수 좌표라 9 초과 10 미만 거리가 있어 1칸 가까이 넓어짐) |
-| 스킬 사거리 (260930 측정) | Howl 20→15, Frozen Orb·Nova 9→10 (Shock Wave·Armageddon 7 유지). B.WCRY `LowManaSkill = [130]` 삭제(War Cry 5 ↔ Howl 진동 방지) | `ToolsThread` Numpad 5 측정기: 좌표 = 속도×프레임×3/64 (감속은 프레임마다 Accel/1000). Nova 11.3, Howl 15.0(스킬 레벨 20), Shock Wave 12.4, FO 구슬 14.1(계산, 클라이언트 미사일 목록에 안 나와 측정 불가). FONV(FO·Nova 10·10), D.FGOM(Armageddon·Shock Wave 7·7)은 진동 방지로 같은 값 |
+| 스킬 사거리 (260930 측정) | Howl 20→15 (Frozen Orb·Nova 9, Shock Wave·Armageddon 7 유지. FO·Nova는 하루 10이었다가 9로 되돌림). B.WCRY `LowManaSkill = [130]` 삭제(War Cry 5 ↔ Howl 진동 방지) | `ToolsThread` Numpad 5 측정기: 좌표 = 속도×프레임×3/64 (감속은 프레임마다 Accel/1000). Nova 11.3, Howl 15.0(스킬 레벨 20), Shock Wave 12.4, FO 구슬 14.1(계산, 클라이언트 미사일 목록에 안 나와 측정 불가). FONV(FO·Nova 9·9), D.FGOM(Armageddon·Shock Wave 7·7)은 진동 방지로 같은 값 |
 | 접근 | 정면 직선 → 정면 우회 → 후면 직선 → 후면 우회 | 작은 장애물이면 정면 우회가 후면보다 짧다 |
 | 링 | 5칸 간격, 5 미만 제외 | 호 간격과 같은 격자, 중복 링 제거 |
 | `Dodge.Range` | ~~9 (사거리 기준과 반경 공용)~~ → 260930 10 (반경·회피 거리 공용), 문턱은 `MinSkillRange` 5 | 사거리 9~12 스킬(Frozen Orb, Nova 포함) 회피 |

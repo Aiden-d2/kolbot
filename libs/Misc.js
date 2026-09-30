@@ -60,12 +60,12 @@ var Skill = {
 		case 243: // Shock Wave	//260930 back to 7 (same as Armageddon for D.FGOM)
 		case 249: // Armageddon	//260930 back to 7
 			return 7;
+		case 48: // Nova	//260917	//260930 back to 9 (10 for a day)
+		case 64: // Frozen Orb	//260917	//260930 back to 9
 		case 92: // Poison Nova
 			return 9;
 		case 15: // Poison Javelin
 		case 25: // Plague Javelin
-		case 48: // Nova	//260917	//260930 9 -> 10 (measured 11.3), same as Frozen Orb for FONV
-		case 64: // Frozen Orb	//260917	//260930 9 -> 10 (orb 14.1 by data), same as Nova for FONV
 		case 107: // Charge
 		case 225: // Firestorm
 			return 10;

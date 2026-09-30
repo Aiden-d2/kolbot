@@ -87,8 +87,7 @@ var Config = {
 	Dodge: {
 		Enabled: false,
 		Range: 10,	//260930 R = min(skill range, Range): monsters closer than R are counted, and a walking dodge backs off to R from the target (teleport: the skill range)
-		MinSkillRange: 5,	//260930 skills with at least this range dodge
-		Count: 1	//260930 dodge when at least this many monsters are closer than R
+		MinSkillRange: 5	//260930 skills with at least this range dodge
 	},
 	
 	//Gear
