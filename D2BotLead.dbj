@@ -19,11 +19,11 @@ var StarterConfig = {
 	AfterGameMessage: "", // Default message after a finished game. Can be an array of messages
 	SwitchKeyDelay: 10, // Seconds to wait before switching a used/banned key or after realm down
 	
-	RetryKeyDelay: 10, // eom 
+	RetryKeyDelay: 30, // eom //261001 10 -> 30
 	
 	CrashDelay: 5, // Seconds to wait after a d2 window crash
 	FTJDelay: 30, // Seconds to wait after failing to create a game
-	RealmDownDelay: 10, // Minutes to wait after getting Realm Down message
+	RealmDownDelay: 5, // Minutes to wait after getting Realm Down message //261001 10 -> 5
 	UnableToConnectDelay: 5, // Minutes to wait after Unable To Connect message
 	CDKeyInUseDelay: 1, // Minutes to wait before connecting again if CD-Key is in use.
 	ConnectingTimeout: 15, // Seconds to wait before cancelling the 'Connecting...' screen
@@ -161,9 +161,17 @@ function setNextGame() {
 }
 
 function locationTimeout(time, location) {
-	var endtime = getTickCount() + time;
+	var sec,
+		endtime = getTickCount() + time,
+		name = OOGLog.locationName(location);	//261001 remaining time on the status bar
 
 	while (getLocation() === location && endtime > getTickCount()) {
+		if (sec !== Math.ceil((endtime - getTickCount()) / 1000)) {	//261001
+			sec = Math.ceil((endtime - getTickCount()) / 1000);
+
+			D2Bot.updateStatus(name + " (" + Math.max(sec, 0) + "s)");
+		}
+
 		delay(500);
 	}
 
@@ -183,6 +191,17 @@ function updateCount() {
 
 	delay(1000);
 	ControlAction.click(6, 33, 572, 128, 35);
+}
+
+// a bad CDKey: switch keys if the profile does, else stop (the key stays bad)	//261001
+function badKey(text) {
+	if (gameInfo.switchKeys) {
+		OOGLog.print(text + " - switch key");
+		ControlAction.timeoutDelay("Key switch delay", StarterConfig.SwitchKeyDelay * 1000);
+		D2Bot.restart(true);
+	} else {
+		OOGLog.stop(text);
+	}
 }
 
 function ScriptMsgEvent(msg) {
@@ -260,7 +279,7 @@ function restCheck() {	// 260922 called in lobby
 
 	// remain > RestTime is impossible unless tick base changed -> skip
 	if (remain > 0 && remain <= StarterConfig.RestTime * 1e3) {
-		D2Bot.printToConsole("Rest wait " + Math.ceil(remain / 60000) + " min (" + info.count + " games)");
+		OOGLog.print("Rest: " + info.count + " games - wait " + Math.ceil(remain / 60000) + "m");	//261001
 		ControlAction.timeoutDelay("Rest wait", remain);
 	}
 
@@ -336,7 +355,7 @@ function main() {
 		if (!!DataFile.getStats().debugInfo) {
 			gameInfo.crashInfo = DataFile.getStats().debugInfo;
 
-			D2Bot.printToConsole(JSON.parse(gameInfo.crashInfo).currScript + " : " + JSON.parse(gameInfo.crashInfo).area, 10);
+			OOGLog.print("Crash: " + JSON.parse(gameInfo.crashInfo).currScript + " " + JSON.parse(gameInfo.crashInfo).area + " - wait " + StarterConfig.CrashDelay + "s");	//261001
 		}
 
 		if (gameInfo.crashInfo) {	//260707
@@ -619,7 +638,7 @@ MainSwitch:
 		if (lastGameStatus === "pending") {
 			isUp = "no";
 
-			D2Bot.printToConsole("Failed to create game");
+			OOGLog.print("Create game failed - wait " + StarterConfig.FTJDelay + "s");	//261001
 			ControlAction.timeoutDelay("FTJ delay", StarterConfig.FTJDelay * 1e3);
 			D2Bot.updateRuns();
 		}
@@ -658,7 +677,10 @@ MainSwitch:
 		try {
 			login(me.profile);
 		} catch (e) {
-			if (getLocation() === 12 && loginRetry < 2) {
+			if (getLocation() === 12 && !loginRetry && !ControlAction.findCharacter({charName: Profile(me.profile).character})) {	//261001 not in the list -> create it
+				sendKey(0x24);
+				AutoCreate.character();
+			} else if (getLocation() === 12 && loginRetry < 2) {
 				if (loginRetry === 0) {
 					// start from beginning of the char list
 					sendKey(0x24);
@@ -680,6 +702,8 @@ MainSwitch:
 				}
 
 				loginRetry++;
+			} else if (getLocation() === 12) {	//261001 retries used up
+				OOGLog.stop("Login failed: " + Profile(me.profile).character, e);
 			} else {
 				me.blockKeys = false;
 				print(e + " " + getLocation());
@@ -703,12 +727,12 @@ MainSwitch:
 			switch (string) {
 			case getLocaleString(5207):
 				D2Bot.updateStatus("Invalid Password");
-				D2Bot.printToConsole("Invalid Password");
+				OOGLog.stop("Invalid password: " + Profile(me.profile).username);	//261001
 
 				break;
 			case getLocaleString(5208):
 				D2Bot.updateStatus("Invalid Account");
-				D2Bot.printToConsole("Invalid Account");
+				OOGLog.print("Invalid account: " + Profile(me.profile).username + " - create");	//261001
 				
 				if (AutoCreate.account()) {	// 260902
 					break MainSwitch;	// 260902
@@ -720,55 +744,31 @@ MainSwitch:
 			case getLocaleString(5202): // cd key intended for another product
 			case getLocaleString(10915): // lod key intended for another product
 				D2Bot.updateStatus("Invalid CDKey");
-				D2Bot.printToConsole("Invalid CDKey: " + gameInfo.mpq, 6);
 				D2Bot.CDKeyDisabled();
-
-				if (gameInfo.switchKeys) {
-					ControlAction.timeoutDelay("Key switch delay", StarterConfig.SwitchKeyDelay * 1000);
-					D2Bot.restart(true);
-				} else {	//eom
-					ControlAction.timeoutDelay("Key retry delay", StarterConfig.RetryKeyDelay * 1000);
-					D2Bot.restart(true);
-				}
+				badKey("Wrong product CDKey: " + gameInfo.mpq);	//261001 no key switch -> stop
 
 				break;
 			case getLocaleString(5199):
 				D2Bot.updateStatus("Disabled CDKey");
-				D2Bot.printToConsole("Disabled CDKey: " + gameInfo.mpq, 6);
 				D2Bot.CDKeyDisabled();
-
-				if (gameInfo.switchKeys) {
-					ControlAction.timeoutDelay("Key switch delay", StarterConfig.SwitchKeyDelay * 1000);
-					D2Bot.restart(true);
-				} else {	//eom
-					ControlAction.timeoutDelay("Key retry delay", StarterConfig.RetryKeyDelay * 1000);
-					D2Bot.restart(true);
-				}
+				badKey("Disabled CDKey: " + gameInfo.mpq);	//261001 no key switch -> stop
 
 				break;
 			case getLocaleString(10913):
 				D2Bot.updateStatus("Disabled LoD CDKey");
-				D2Bot.printToConsole("Disabled LoD CDKey: " + gameInfo.mpq, 6);
 				D2Bot.CDKeyDisabled();
-
-				if (gameInfo.switchKeys) {
-					ControlAction.timeoutDelay("Key switch delay", StarterConfig.SwitchKeyDelay * 1000);
-					D2Bot.restart(true);
-				} else {	//eom
-					ControlAction.timeoutDelay("Key retry delay", StarterConfig.RetryKeyDelay * 1000);
-					D2Bot.restart(true);
-				}
+				badKey("Disabled LoD CDKey: " + gameInfo.mpq);	//261001 no key switch -> stop
 
 				break;
 			case getLocaleString(5347):
 				D2Bot.updateStatus("Disconnected");
-				D2Bot.printToConsole("Disconnected");
+				OOGLog.print("Disconnected - retry");	//261001
 				ControlAction.click(6, 335, 412, 128, 35);
 
 				break MainSwitch;
 			default:
 				D2Bot.updateStatus("Login Error");
-				D2Bot.printToConsole("Login Error - " + string);
+				OOGLog.print("Login error: " + string + " - " + (gameInfo.switchKeys ? "switch key" : "wait " + StarterConfig.RetryKeyDelay + "s, restart"));	//261001
 
 				if (gameInfo.switchKeys) {
 					ControlAction.timeoutDelay("Key switch delay", StarterConfig.SwitchKeyDelay * 1000);
@@ -814,15 +814,14 @@ MainSwitch:
 		}
 
 		updateCount();
+		OOGLog.print("Realm down - wait " + StarterConfig.RealmDownDelay + "m, " + (gameInfo.switchKeys && !gameInfo.rdBlocker ? "switch key" : "restart"));	//261001 printed before the wait
 		ControlAction.timeoutDelay("Realm Down", StarterConfig.RealmDownDelay * 6e4);
 		D2Bot.CDKeyRD();
 
 		if (gameInfo.switchKeys && !gameInfo.rdBlocker) {
-			D2Bot.printToConsole("Realm Down - Changing CD-Key");
 			ControlAction.timeoutDelay("Key switch delay", StarterConfig.SwitchKeyDelay * 1000);
 			D2Bot.restart(true);
 		} else {
-			D2Bot.printToConsole("Realm Down - Restart");
 			D2Bot.restart();
 		}
 
@@ -845,7 +844,7 @@ MainSwitch:
 
 		break;
 	case 19: // Login - Cdkey In Use
-		D2Bot.printToConsole(gameInfo.mpq + " is in use by " + ControlAction.getText(4, 158, 310, 485, 40), 10);
+		OOGLog.print("CDKey in use: " + gameInfo.mpq + " by " + ControlAction.readText(4, 158, 310, 485, 40) + " - " + (gameInfo.switchKeys ? "switch key" : "wait " + StarterConfig.CDKeyInUseDelay + "m"));	//261001
 		D2Bot.CDKeyInUse();
 
 		if (gameInfo.switchKeys) {
@@ -881,7 +880,7 @@ MainSwitch:
 
 		switch (string) {
 		case getLocaleString(10914):
-			D2Bot.printToConsole(gameInfo.mpq + " LoD key in use by " + ControlAction.getText(4, 158, 310, 485, 40), 6);
+			OOGLog.print("LoD CDKey in use: " + gameInfo.mpq + " by " + ControlAction.readText(4, 158, 310, 485, 40) + " - " + (gameInfo.switchKeys ? "switch key" : "wait " + StarterConfig.CDKeyInUseDelay + "m"));	//261001
 			D2Bot.CDKeyInUse();
 
 			if (gameInfo.switchKeys) {
@@ -894,14 +893,7 @@ MainSwitch:
 
 			break;
 		default:
-			if (gameInfo.switchKeys) {
-				D2Bot.printToConsole("Invalid CD-Key");
-				ControlAction.timeoutDelay("Key switch delay", StarterConfig.SwitchKeyDelay * 1000);
-				D2Bot.restart(true);
-			} else {
-				ControlAction.click(6, 335, 450, 128, 35);
-				ControlAction.timeoutDelay("Invalid CD-Key", StarterConfig.CDKeyInUseDelay * 6e4);
-			}
+			badKey("Invalid CDKey: " + gameInfo.mpq);	//261001 no key switch -> stop
 
 			break;
 		}
@@ -923,16 +915,8 @@ MainSwitch:
 
 			if (string === getLocaleString(11161)) { // CDKey disabled from realm play
 				D2Bot.updateStatus("Realm Disabled CDKey");
-				D2Bot.printToConsole("Realm Disabled CDKey: " + gameInfo.mpq, 6);
 				D2Bot.CDKeyDisabled();
-
-				if (gameInfo.switchKeys) {
-					ControlAction.timeoutDelay("Key switch delay", StarterConfig.SwitchKeyDelay * 1000);
-					D2Bot.restart(true);
-				} else {	//eom
-					ControlAction.timeoutDelay("Key retry delay", StarterConfig.RetryKeyDelay * 1000);
-					D2Bot.restart(true);
-				}
+				badKey("Realm disabled CDKey: " + gameInfo.mpq);	//261001 no key switch -> stop
 			}
 		}
 
@@ -985,16 +969,16 @@ MainSwitch:
 
 		break;
 	case 28: // Lobby - Game Does Not Exist
-		D2Bot.printToConsole("Game doesn't exist");
-
 		if (gameInfo.rdBlocker) {
-			D2Bot.printToConsole(gameInfo.mpq + " is probably flagged.", 6);
+			OOGLog.print("Game not found");	//261001
+			OOGLog.print("CDKey flagged: " + gameInfo.mpq + (gameInfo.switchKeys ? " - switch key" : ""));	//261001
 
 			if (gameInfo.switchKeys) {
 				ControlAction.timeoutDelay("Key switch delay", StarterConfig.SwitchKeyDelay * 1000);
 				D2Bot.restart(true);
 			}
 		} else {
+			OOGLog.print("Game not found - wait " + StarterConfig.GameDoesNotExistTimeout + "s");	//261001
 			locationTimeout(StarterConfig.GameDoesNotExistTimeout * 1e3, location);
 		}
 
@@ -1006,7 +990,7 @@ MainSwitch:
 		break;
 	default:
 		if (location !== undefined) {
-			D2Bot.printToConsole("Unhandled location " + location);
+			OOGLog.print("Unhandled location - restart");	//261001
 			delay(500);
 			D2Bot.restart();
 		}

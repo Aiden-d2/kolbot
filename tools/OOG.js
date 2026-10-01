@@ -570,6 +570,17 @@ var ControlAction = {
 		return control.getText();
 	},
 
+	// text of a control as one line ("(no text)" if unreadable)	//261001
+	readText: function (type, x, y, xsize, ysize) {
+		var text = this.getText(type, x, y, xsize, ysize);
+
+		if (text instanceof Array) {
+			text = text.join(" ");
+		}
+
+		return text ? String(text) : "(no text)";
+	},
+
 	joinChannel: function (channel) {
 		me.blockMouse = true;
 
@@ -841,6 +852,7 @@ MainLoop:
 
 				break;
 			case 10: // login error
+				OOGLog.print("Create account failed: " + info.account + " \"" + this.readText(4, 199, 377, 402, 140) + "\"");	//261001
 				me.blockMouse = false;	// 260902
 
 				return false;	// 260902
@@ -852,8 +864,8 @@ MainLoop:
 				this.click(6, 33, 572, 128, 35);
 
 				break;
-			case 30: // disconnected	// 260907
-				print("disconnected location: " + getLocation());
+			case 30: // popup	//261001 text box as in makeCharacter (unconfirmed for this popup)
+				OOGLog.print("Create account failed: " + info.account + " \"" + this.readText(4, 268, 320, 264, 120) + "\"");	//261001
 				me.blockMouse = false;
 
 				return false;
@@ -888,11 +900,13 @@ MainLoop:
 			}
 			
 			if (getTickCount() - tick >= 30000) {
+				OOGLog.print("Create account failed: " + info.account + " \"(timeout)\"");	//261001
 				me.blockMouse = false;
 
 				return false;
 			}
-			
+
+			D2Bot.updateStatus("Creating account (" + Math.max(0, Math.ceil((30000 - getTickCount() + tick) / 1000)) + "s)");	//261001
 			delay(1000);	//260929
 		}
 		
@@ -1098,6 +1112,8 @@ MainLoop:
 		return false;
 	},
 
+	charNameTaken: "",	//261001 popup text of the last "name exists" (AutoCreate stops if the name is still missing)
+
 	makeCharacter: function (info) {
 		me.blockMouse = true;
 
@@ -1106,9 +1122,16 @@ MainLoop:
 		}
 
 		var control,
+			stuckTick = 0,	//261001 time on a screen this loop does not handle
 			clickCoords = [];
 
+		D2Bot.updateStatus("Creating character");	//261001
+
 		while (getLocation() !== 1) { // cycle until in lobby
+			if ([12, 42, 29, 15, 30].indexOf(getLocation()) > -1) {	//261001
+				stuckTick = 0;
+			}
+
 			switch (getLocation()) {
 			case 12: // character select
 			case 42: // empty character select
@@ -1191,13 +1214,32 @@ MainLoop:
 
 				break;
 			case 30: // char name exists (text box 4, 268, 320, 264, 120)
+				this.charNameTaken = this.readText(4, 268, 320, 264, 120);	//261001
+				Misc.trace("Character name taken: " + info.charName + " \"" + this.charNameTaken + "\"");	//261001
 				ControlAction.click(6, 351, 337, 96, 32);
 				ControlAction.click(6, 33, 572, 128, 35);
 
 				me.blockMouse = false;
 
 				return false;
-			default:
+			default:	//261001 1 min on an unhandled screen (no reply) -> cancel, the starter retries
+				if (!stuckTick) {
+					stuckTick = getTickCount();
+				}
+
+				if (getTickCount() - stuckTick >= 60000) {
+					if (getLocation() === 16) { // please wait
+						ControlAction.click(6, 351, 337, 96, 32);
+					}
+
+					OOGLog.print("Create character timeout: " + info.charName + " - retry");
+					me.blockMouse = false;
+
+					return false;
+				}
+
+				D2Bot.updateStatus("Creating character (" + Math.max(0, Math.ceil((60000 - getTickCount() + stuckTick) / 1000)) + "s)");
+
 				break;
 			}
 
@@ -1229,5 +1271,42 @@ MainLoop:
 		}
 
 		return false;
+	}
+};
+
+// Out-of-game log (CLAUDE.md log rules, 261001): grey console "event: target - action (loc N)", the same line to the trace ([OOG loc N] by Misc.trace)
+var OOGLog = {
+	print: function (text, detail) {
+		D2Bot.printToConsole(text + " (loc " + getLocation() + ")", 10);
+		Misc.trace(text + (detail ? " | " + detail : ""));
+	},
+
+	// log, ask D2Bot# to stop this profile and wait for it
+	stop: function (text, detail) {
+		this.print(text + " - stop", detail);
+		me.blockMouse = false;
+		me.blockKeys = false;
+		D2Bot.stop();
+
+		while (true) {
+			delay(1000);
+		}
+	},
+
+	// status bar name of a screen a starter waits on (locationTimeout)
+	names: {
+		2: "Waiting In Line",
+		4: "Creating Game",
+		5: "Joining Game",
+		16: "Please Wait",
+		21: "Connecting",
+		23: "Connecting",
+		25: "Please Wait",
+		28: "Game Does Not Exist",
+		42: "Connecting"
+	},
+
+	locationName: function (location) {
+		return this.names[location] || "Location " + location;
 	}
 };

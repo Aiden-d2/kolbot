@@ -2319,7 +2319,7 @@ MainLoop:
 		}
 		
 		return this.fileAction("_cache/trace/trace-" + me.profile + "-" + ymd + ".txt", 2,	//260923 temp
-			stamp + " [" + Pather.getAreaName(me.area) + " " + me.x + "," + me.y + "] " + msg + "\n");
+			stamp + " [" + (me.ingame ? Pather.getAreaName(me.area) + " " + me.x + "," + me.y : "OOG loc " + getLocation()) + "] " + msg + "\n");	//261001 out of game: the screen (location) number
 	},
 
 	// Console lines (CLAUDE.md log rules): an early quit reason is red (9), an error grey (10), both with where it happened. The same line goes to the trace	//260930

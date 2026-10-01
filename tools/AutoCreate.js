@@ -40,8 +40,7 @@ var AutoCreate = {
 		var info = this.getInfo();
 
 		if (!info || !info.account) {
-			D2Bot.printToConsole("AutoCreate: no account info", 9);
-			return false;
+			OOGLog.stop("No account info");	//261001
 		}
 
 		ControlAction.click(6, 335, 412, 128, 35); // dismiss login error
@@ -58,32 +57,40 @@ var AutoCreate = {
 		
 		var profile = profiles.slice().reverse();
 		
-		delay(profile.indexOf(me.profile) * 25000 + 1000);	//260929-2
-		
-		D2Bot.printToConsole("AutoCreate: creating account " + info.account, 7);
+		ControlAction.timeoutDelay("Create account wait", profile.indexOf(me.profile) * 25000 + 1000);	//260929-2	//261001 remaining time on the status bar
 
-		return ControlAction.makeAccount(info);
+		return ControlAction.makeAccount(info);	//261001 the starter printed "Invalid account: X - create"
 	},
 
+	// 42 empty character select, 12 character select without the profile character (the starter checked the list)	//261001
 	character: function () {
-		if (getLocation() !== 42) {
+		var location = getLocation();
+
+		if (location !== 42 && location !== 12) {	//261001 12 added
 			return false;
 		}
 
 		var control = getControl(6, 33, 528, 168, 60);
 
-		if (!control || control.disabled === 4) { // greyed out = realm down
+		if (!control || control.disabled === 4) { // greyed out: 42 = realm down, 12 = all slots used	//261001
+			if (location === 12 && control) {
+				OOGLog.stop("Character slots full: " + Profile(me.profile).character);
+			}
+
 			return false;
 		}
 
 		var info = this.getInfo();
 
 		if (!info || !info.charName) {
-			D2Bot.printToConsole("AutoCreate: no character info", 9);
-			return false;
+			OOGLog.stop("No character info");	//261001
 		}
 
-		D2Bot.printToConsole("AutoCreate: creating " + info.charClass + " " + info.charName, 7);
+		if (ControlAction.charNameTaken) {	//261001 the name was taken and it is still not in the list -> another account has it
+			OOGLog.stop("Character name taken: " + info.charName + " \"" + ControlAction.charNameTaken + "\"");
+		}
+
+		OOGLog.print("Create character: " + info.charName + " " + info.charClass);	//261001
 
 		return ControlAction.makeCharacter(info);
 	}
