@@ -1,14 +1,22 @@
-# 인수인계 메모 (260929)
+# 인수인계 메모 (261001)
 
-새 대화는 이 문서부터 읽는다. 이어서 CLAUDE.md의 분석 노트(설계·흐름·대조표·결함 현황)를 필요한 만큼 읽는다.
+새 대화는 이 문서부터 읽는다. 이어서 CLAUDE.md(작업 규칙, **로그 규칙**)와 분석 노트를 필요한 만큼 읽는다.
 
 ---
 
 ## 1. 현재 상태
-- **코드:** Attack 리팩터링과 후속 수정이 모두 main에 반영되어 있다(사용자가 직접 업로드, main `5a2bc1f` 기준).
-- **문서:** `CLAUDE.md`, `docs/claude/*.md`도 작업 브랜치에 올린다. main 반영(PR)은 요청이 있을 때만 한다.
-- **인게임 검증:** 일부만 됐다. 아래 3절의 확인 항목이 남아 있다.
-- **작업 브랜치:** `claude/attack-docs`. 이 세션 환경에서는 원격 브랜치 삭제가 거부된다. 지워야 하면 사용자가 GitHub에서 지운다.
+- **코드:** 260930 작업까지 모두 main에 반영됨(PR #7, 머지 커밋 `603fee8`). 작업 브랜치 `claude/funny-pasteur-4ymxd2`도 같은 내용.
+- **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
+- **인게임 검증:** 아직 안 됨(문법 검사만). 다음 사이클에서 볼 것:
+  1. 용병 고용: trace `[MP]`에 `arrived` 뒤로 `0x4f`/`0x4e`가 찍히고 고용되는지
+  2. 빨간 포털: trace `usePortal 342 changed ... loading at:` 값이 -1이 아닌지, timeout 감소
+  3. 타운 이동·포털 속도가 평소대로인지, `[useUnit] timeout`(이제 trace)·`[teleportTo failed]`(trace) 감소, 몹 사이 텔레포트 멈칫 없음, 마을 텔레포트 시도(`moveTo entered town`) 확인
+  4. 콘솔: 조기 종료 빨강 `이유 (지역 x,y)`, 오류 회색(게임당 자리별 1회), 리더만 `Script ended`(끝까지 도달했을 때만)
+  5. 벨트 물약 `[MoveToSlot] ... FAILED slot: dropped: item:`(trace) 값으로 원인 확정
+  6. 상점 `Shopped ... (not bought)`(trace)과 ItemLog 중복 기록 사라짐
+- **분석에 필요한 파일:** 프로필별 trace(`_cache/trace/`), d2bs 로그, 매니저 콘솔 로그, 크래시면 `C:\CrashDumps`의 첫 덤프(접미사 없는 파일)와 `procdump_<PID>.log`, 필요하면 `_cache/ItemLog.txt`.
+- **임시 로그 정리 대기:** `[MP]`(용병), `usePortal 342`(빨간 포털), 벨트 물약 상세는 한 사이클 확인 뒤 삭제 후보. `[TK]`/`[OD]`는 NPC 대사 크래시(유형 B) 사례를 볼 때까지 유지.
+- **이 세션 환경:** 원격 브랜치 삭제가 거부된다. 지워야 하면 사용자가 GitHub에서 지운다.
 
 ## 2. 작업 방식 (사용자와 합의한 것)
 **흐름**
