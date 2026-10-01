@@ -3281,7 +3281,8 @@ function AutoSmurf() {
 			D2Bot.printToConsole("=== SUMMONER ===", 7);
 		}
 		
-		Misc.trace(me.getQuest(13, 0));	//260929	//260930 print -> trace (diagnostic)
+		Misc.trace("summoner quest 13,0 " + me.getQuest(13, 0));	//261001
+		Misc.trace("summoner quest 13,1 " + me.getQuest(13, 1));	//261001
 		
 		doneChores = false;
 		
