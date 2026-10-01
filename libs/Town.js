@@ -526,10 +526,11 @@ var Town = {
 			return true;
 		}
 
-		var scroll, tome, myTP, tp,
-			buffer = {
-				tp: 0
-			},
+		if (code === 518 && me.gold < (me.findItem(518, 0, 3) ? 100 : 400)) {	//261001 no shop visit without gold (TP scroll 100, tome 400)
+			return false;
+		}
+
+		var scroll, tome,
 			npc = this.initNPC("Shop", "fillTome");
 
 		if (!npc) {
@@ -537,40 +538,6 @@ var Town = {
 		}
 
 		delay(me.ping * 2 + 200);	//eom
-		
-		if (me.gold < 400 && code === 518 && !me.findItem(518, 0, 3)) {
-
-			myTP = me.getItem(-1, 0);
-
-			if (myTP) {
-				do {
-					if (myTP.location === 3) {
-						switch (myTP.itemType) {
-						case 22:
-							buffer.tp += 1;
-
-							break;
-						}
-					}
-				} while (myTP.getNext());
-			}
-			
-			if (buffer.tp >= 3) {
-				return true;
-			}
-			
-			tp = npc.getItem(529);
-			
-			try {
-				tp.buy();
-			} catch (e1) {
-				Misc.caughtError("Town.fillTome", e1);	//260930
-
-				return false;
-			}
-			
-			return true;
-		}
 
 		if (code === 518 && !me.findItem(518, 0, 3)) {
 			tome = npc.getItem(518);
@@ -653,12 +620,6 @@ var Town = {
 			return false;
 		}
 
-		tome = me.findItem(530, 0, 3) || me.findItem(519, 0, 3);	//260715
-
-		if (tome && tome.getStat(70) < list.length) {
-			this.fillTome(519);
-		}
-
 MainLoop:
 		while (list.length > 0) {
 			item = list.shift();
@@ -680,9 +641,18 @@ MainLoop:
 
 					// falls through
 				case -1:
-					if (tome) {
-						this.identifyItem(item, tome);
-					} else {
+					//261001 pick the identify source per item: ID tome with charges (refill if empty) -> loose ID scroll -> buy one
+					tome = me.findItem(519, 0, 3);
+
+					if (tome && tome.getStat(70) < 1) {
+						this.fillTome(519);
+
+						tome = me.findItem(519, 0, 3);
+					}
+
+					scroll = tome && tome.getStat(70) > 0 ? tome : me.findItem(530, 0, 3);
+
+					if (!scroll) {
 						scroll = npc.getItem(530);
 
 						if (scroll) {
@@ -705,12 +675,20 @@ MainLoop:
 						}
 
 						scroll = me.findItem(530, 0, 3);
+					}
 
-						if (!scroll) {
-							break MainLoop;
-						}
+					if (!scroll) {
+						Misc.trace("identify stopped: no ID scroll for " + item.name + " (gold " + me.gold + ")");	//261001
 
-						this.identifyItem(item, scroll);
+						break MainLoop;
+					}
+
+					timer = getTickCount();	//261001
+
+					if (!this.identifyItem(item, scroll)) {	//261001
+						Misc.trace("identify failed: " + item.name + " (" + (scroll.classid === 519 ? "tome" : "scroll") + ", " + (getTickCount() - timer) + "ms)");
+					} else if (getTickCount() - timer >= 2000) {	//261001 slow success (no failure line)
+						Misc.trace("identify slow: " + item.name + " (" + (scroll.classid === 519 ? "tome" : "scroll") + ", " + (getTickCount() - timer) + "ms)");
 					}
 
 					result = Pickit.checkItem(item);
