@@ -5612,7 +5612,7 @@ function AutoSmurf() {
 					Pather.moveTo(15092, 5028);
 					Precast.doPrecast(true);
 				} else if (me.classid === 5) {	//dru
-					Pather.moveTo(15092, 5018);	//260830
+					Pather.moveTo(15092, 5013);	//261001
 				} else {
 					Pather.moveTo(15092, 5040);
 				}
@@ -5758,10 +5758,12 @@ function AutoSmurf() {
 
 			switch (poi.roomx * 5 + poi.x) {
 			case 12565:
-				Pather.moveTo(12555, 11043);
+				//Pather.moveTo(12555, 11043);
+				Pather.moveTo(12555, 11012);	//261001
 				break;
 			case 12526:
-				Pather.moveTo(12548, 11060);
+				//Pather.moveTo(12548, 11060);
+				Pather.moveTo(12517, 11060);	//261001
 				break;
 			}
 			
@@ -7305,7 +7307,7 @@ function AutoSmurf() {
 				this.amulet();
 			}
 
-			if ((!me.getQuest(13, 0) || !getWaypoint(17))) { // Summoner quest incomplete but The Tainted Sun is complete.
+			if (((!me.getQuest(13, 1) && !me.getQuest(13, 0)) || !getWaypoint(17))) { // Summoner quest incomplete but The Tainted Sun is complete.
 				Messaging.sendToList(Team.Profiles, "summoner");
 				this.summoner();
 			}
