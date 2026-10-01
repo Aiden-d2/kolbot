@@ -104,7 +104,7 @@ Unit.prototype.openMenu = function (addDelay) {
 	}
 
 	var i, tick,
-		talkTick = 0;	//261001
+		talk = {keys: 0};	//261001
 
 	for (i = 0; i < 5; i += 1) {
 		if (getDistance(me, this) > 4) {
@@ -116,19 +116,14 @@ Unit.prototype.openMenu = function (addDelay) {
 
 		while (getTickCount() - tick < 5000) {
 			if (getUIFlag(0x08)) {
-				if (talkTick) {	//261001
-					Misc.trace("[TK] talk waited " + (getTickCount() - talkTick) + "ms npc:" + this.name);
-				}
-
+				Packet.endTalk(talk, this);	//261001
 				delay(Math.max(700 + me.ping, 500 + me.ping * 2 + addDelay * 500));
 
 				return true;
 			}
 
-			if (getIsTalkingNPC() && (!talkTick || getTickCount() - talkTick < 10000)) {	//261001 let the talk end on its own: me.cancel() during a talk leaves a stale callback (Game.exe 0x661406 crash, handoff 7)
-				talkTick = talkTick || getTickCount();
+			if (Packet.skipTalk(talk)) {	//261001 space through the talk instead of me.cancel() (Packet.skipTalk)
 				tick = getTickCount();
-				delay(100);
 
 				continue;
 			}
@@ -146,6 +141,8 @@ Unit.prototype.openMenu = function (addDelay) {
 		delay(me.ping * 2);
 		Packet.flash(me.gid);
 	}
+
+	Packet.endTalk(talk, this);	//261001
 
 	return false;
 };
