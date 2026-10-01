@@ -14,6 +14,7 @@
   4. 콘솔: 조기 종료 빨강 `이유 (지역 x,y)`, 오류 회색(게임당 자리별 1회), 리더만 `Script ended`(끝까지 도달했을 때만)
   5. 벨트 물약 `[MoveToSlot] ... FAILED slot: dropped: item:`(trace) 값으로 원인 확정
   6. 상점 `Shopped ... (not bought)`(trace)과 ItemLog 중복 기록 사라짐
+  7. 용병 고용 이동 중 "D2BS is not responding" 멈춤(17:40형)이 다시 나는지 — 리스너 위치 변경이 이 가설의 대응이다(7절). 멈추면 `-h` 덤프로 메인 스레드가 D2BS 패킷 이벤트 대기 안인지 본다
 - **분석에 필요한 파일:** 프로필별 trace(`_cache/trace/`), d2bs 로그, 매니저 콘솔 로그, 크래시면 `C:\CrashDumps`의 첫 덤프(접미사 없는 파일)와 `procdump_<PID>.log`, 필요하면 `_cache/ItemLog.txt`.
 - **임시 로그 정리 대기:** `[MP]`(용병), `usePortal 342`(빨간 포털), 벨트 물약 상세는 한 사이클 확인 뒤 삭제 후보. `[TK]`/`[OD]`는 NPC 대사 크래시(유형 B) 사례를 볼 때까지 유지.
 - **이 세션 환경:** 원격 브랜치 삭제가 거부된다. 지워야 하면 사용자가 GitHub에서 지운다.
@@ -47,15 +48,15 @@
 ## 3. 게임에서 확인할 것 (사용자 확인 대기)
 | # | 항목 | 확인 방법 | 관련 |
 |---|---|---|---|
-| 1 | okCount·teamCount 대기 중 버벅거림이 사라졌는가 | 지역 전환 후 파티 대기 장면 | `attack_status.md` 3-13. 원인이 상자 훑기라는 건 추정 |
+| 1 | okCount·teamCount 대기 중 버벅거림이 사라졌는가 | 지역 전환 후 파티 대기 장면 | `attack_status.md` 3-13. 원인이 상자 훑기라는 건 추정. 260930부터 대기 간격 1000ms(clear 호출도 반으로) |
 | 2 | 레벨 6 캐릭터가 마나 부족 때 멈추지 않고 기본 공격을 하는가 | 저레벨 전투 | 3-12 |
 | 3 | 드루 Molten Boulder(마나 11.5)에서 멈춤이 다시 생기지 않는가 | D.FGOM | 3-12. 다시 생기면 "캐시가 원인"이라는 추정이 틀린 것 |
-| 4 | 벽 너머 몹 스킵, 강(0x1) 너머 장거리 우회 스킵 | trace `[AC] drop unreachable`, `[SP] detour` | `attack_design.md` 6절 |
-| 5 | 해머딘이 벽 너머 몹에서 헛돌지 않는가 | trace `[AC] drop unreachable` | 해머 게이트 0x5 |
+| 4 | ~~벽 너머 몹 스킵, 강(0x1) 너머 장거리 우회 스킵~~ | **통과 (260930 trace 8개)** | 아래 판정. `[AC]`/`[SP]` 로그는 삭제됨 |
+| 5 | ~~해머딘이 벽 너머 몹에서 헛돌지 않는가~~ | **통과 (260930)** | 해머 게이트 0x5 |
 | 6 | 상자가 전투 이동 중에만 열리는가 | 이동 중 상자, 텔레 이동 | `Config.OpenChests: 2`, `popChests` |
 | 7 | 18레벨 이상 캐릭터의 "Going to town" 반복이 사라졌는가 | 드루이드 등 골드 540 이상 캐릭터 | 아래 5절 열쇠 항목 |
-| 8 | 박스 호출에서 박스 밖으로 나가지 않는가 (260929 울타리) | 트라빈컬·바알 쓰론·톰즈·탈무덤·아케인, trace `[SP] fence` | `attack_design.md` 12-1 박스 울타리 |
-| 9 | 박스 가장자리 MUST에 붙잡히지 않는가 (260929 unreachable → deferred) | trace `[AC] defer unreachable` | 12-1 MUST unreachable |
+| 8 | ~~박스 호출에서 박스 밖으로 나가지 않는가 (260929 울타리)~~ | **통과 (260930)** | `attack_design.md` 12-1 박스 울타리 |
+| 9 | ~~박스 가장자리 MUST에 붙잡히지 않는가 (260929 unreachable → deferred)~~ | **통과 (260930)** | 12-1 MUST unreachable |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -74,7 +75,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - `moveTo`: `useTeleport`는 시작 때 한 번 정해진다. 텔레포트 경로가 마을로 들어가면(a2 07:53 Blood Moor → 로그 캠프, teleportTo failed 3회) 걷기로 바꾸고 걷기 경로로 다시 계산. `getNearestWalkable` 보정(7개 지역만)과는 무관.
   - 상점(`Town.js` MiniShopBot): ItemLog에 같은 아이템을 두 프로필이 같은 초에 Shopped로 기록한 쌍 4개(00:56:13 a2·a5 등) — 같은 게임 상점 공유, 먼저 산 쪽만 실제 구매. d2bs `Shopped undefined`는 그 순간 아이템이 사라져 D2BS가 못 찾은 것(`JSUnit.cpp` 191~194). 기록을 `buy()` 성공 뒤, 인벤토리에 새로 들어온 아이템으로 남기도록 바꿈. 일반 난이도 벨트 출력엔 이름을 buy 전에 잡고 실패면 `(not bought)`.
   - 벨트 물약 `MoveToSlot FAILED`(8개 로그 9회): 실패는 모두 2~3초 걸림 = 커서에서 안 내려가 1.5초 대기 후 커서 아이템을 바닥에 버리는 경로(`Storage.js`)로 추정, ItemLog엔 기록 안 됨. 실패 줄에 칸 점유 아이템·버린 아이템·물약 위치를 찍도록 함(`//260930 temp`), 자리 없어 막던 아이템을 버릴 때도 출력.
-- 로그 정리(260930, CLAUDE.md "로그 규칙"): 진단성 print를 trace로 옮김 — Pather(`[useUnit] timeout`, `[teleportTo failed/skipped]`, `[SafeTele] ... FAILED`, `[WP] retry`, `[goWP] Failed`, `ArreatSummit Gate`, `journeyTo` course), Storage(`[MoveToSlot]` 전부, `[Storage.MoveTo]`), Prototypes `[DBG] drop`, CollMap(Misc 없는 스레드 대비 typeof 가드), Pickit `undefined item`, ToolsThread 물약 전달 실패, Town(`moved from cube`, 일반 난이도 벨트 `Shopped`), Merc `[hire] hiring retry`, AutoSmurf(`Travel course`, `nextAreaIndex`, getQuest(13) 디버그). 새 trace: 게임 경계(default.dbj), `makePortal late portal used / cast again`, `moveTo entered town, walk the rest`. `[AC]`/`[SP]` 임시 로그 삭제(판정 완료; `fenced` 카운터·detour 로그 블록도 삭제). 장비 줄·진행 줄은 사용자 결정으로 print 유지. 잡힌 오류(`Caught Error` + `print(e)`)는 결정 대기 — trace로만 옮기면 화면에서 오류를 알아챌 수 없음.
+- 로그 정리(260930, CLAUDE.md "로그 규칙"): 진단성 print를 trace로 옮김 — Pather(`[useUnit] timeout`, `[teleportTo failed/skipped]`, `[SafeTele] ... FAILED`, `[WP] retry`, `[goWP] Failed`, `ArreatSummit Gate`, `journeyTo` course), Storage(`[MoveToSlot]` 전부, `[Storage.MoveTo]`), Prototypes `[DBG] drop`, CollMap(Misc 없는 스레드 대비 typeof 가드), Pickit `undefined item`, ToolsThread 물약 전달 실패, Town(`moved from cube`, 일반 난이도 벨트 `Shopped`), Merc `[hire] hiring retry`, AutoSmurf(`Travel course`, `nextAreaIndex`, getQuest(13) 디버그). 새 trace: 게임 경계(default.dbj), `makePortal late portal used / cast again`, `moveTo entered town, walk the rest`. `[AC]`/`[SP]` 임시 로그 삭제(판정 완료; `fenced` 카운터·detour 로그 블록도 삭제). 장비 줄·진행 줄은 사용자 결정으로 print 유지. 잡힌 오류는 다음 항목(`Misc.caughtError`)으로 처리됨.
 - 콘솔·오류·종료 정리(260930, CLAUDE.md "로그 규칙"): `Misc.where`/`quitGame`/`caughtError` 추가(Misc.js). AutoSmurf의 quit 21곳 전부 `quitGame`으로(이유 없던 곳: syncBO timeout, Area reversed(playerIn 4곳), Malus failed, Not ready to start Duriel, Radament quest item not found, Qual-Kehk talk failed, Malah scroll not received). changeAct 실패(메뉴 4곳·전환 안 됨·예외)는 조기 종료로 바꿈 — 콘솔 `changeAct N failed`, 단계는 trace. playerIn 관문 유지, 120초 초과는 `Players not in after act change`(각자 — 걸린 쪽이 리더일 수 있어 기다린 쪽이 찍음. `Team didn't join`, `syncBO timeout`도 같은 이유로 각자. `Area reversed`는 전원이 같은 자리라 리더만. 안 온 사람 이름은 넣지 않음, 사용자 결정). `Mephisto failed`·`Diablo not found`는 콘솔만 있던 것을 quit으로. 잡힌 오류 37곳(AutoSmurf 28, Town 8, Pather 1)을 `caughtError`로. `errorReport`의 showConsole+print 제거, trace 추가. 치킨·핑 콘솔 줄 형식 통일(`Life Chicken 955/3072 (지역 x,y)`) + trace. `BOed` print 삭제. 구간 헤더 43곳 trace에도. `Script ended` 콘솔은 리더만·조기 종료 없을 때만. Attack.clear: 보스 지정인데 한 번도 못 보면 trace `boss not found`(동작 그대로, clear는 여전히 true).
 - okCount·teamCount 대기 간격 500 → 1000ms(260930 사용자 요청). 120초 타임아웃은 시간 기준이라 그대로.
 - 참고(1번 관련): 같은 자리에서 `[AC] end casts:0`이 10회 이상 이어진 대기 구간 845개, 합계 약 9000초. 최장은 카오스 생추어리·증오의 억류지 3층·Frozen River 등 팔로워 대기 루프(최장 121초, 초당 약 2회 clear 호출). 설계상 대기 중 방어이며, 버벅거림 여부는 trace로 판단 불가.
@@ -83,7 +84,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | # | 작업 | 상태 | 메모 |
 |---|---|---|---|
 | 1 | ~~NoSkipArea 키와 조건 제거~~ | **완료 (260929)** | 로컬 `[]`로 1막~헬 파밍 한 사이클 문제없음(사용자 확인) → 제거. 제거할 곳: `Config.js` 키, `Attack.js`의 306 스킵·unreachable 즉시 제외·HP 스킵 조건 3곳, `Paladin.js` 해머 게이트 조건. 조건에서 `Config.NoSkipArea.indexOf(me.area) < 0 &&`만 빼면 동작은 같다 |
-| 2 | **임시 로그 정리** | 인게임 검증 후 | `//260926 temp` 표시가 붙은 `Misc.trace("[AC] ...")`, `"[SP] ..."` 줄. `Pather.js`의 redPortal `//260926 temp`는 사용자 코드라 먼저 물어본다 |
+| 2 | **임시 로그 정리** | 일부 완료 | `[AC]`/`[SP]` 삭제 완료(260930). 남은 것: `[MP]`(Merc.js), `usePortal 342`(Pather.js, `//260930 temp`), `[MoveToSlot]` 실패 상세(Storage.js) → 한 사이클 확인 뒤 삭제 후보. `[TK]`(Prototypes.js `me.cancel` 래퍼)·`[OD]`(AutoSmurf `watchDialog`) → 유형 B 크래시 사례 볼 때까지 유지 |
 | 3 | ~~주석 처리된 옛 코드 정리~~ | **완료 (260929)** | JS/dbj/dbl 32개 파일에서 주석 처리된 옛 코드와 `/* */` 옛 코드 블록, 롤백용 머리글을 지움(Attack.js 2500 → 1349줄). 주석을 뺀 코드 토큰이 정리 전과 같음을 확인. nip·Config.js·builds의 꺼 둔 옵션과 설명 주석·날짜 표기·줄 끝 메모는 유지. 이전 코드는 커밋 `fcd2713` |
 | 4 | **소 레벨 치킨 잦음** | 개선 대상 | `followDriver`는 사용자 코드로 교체됨(30 초과 이동, 15~30 clearPath 이동, 근접 clear). 리더 쪽 `clearCowLevel`(팔로워를 기다리지 않고 방마다 이동)은 아직 손대지 않음 |
 | 5 | 부활·소환형(샤먼) 우선 | 보류 | 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류함 |
@@ -91,6 +92,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | 7 | Static 사거리 불일치 | 추후 (사용자) | `Misc.js` `Skill.getRange(42)`는 lvl+4, `Sorceress.js` 스태틱 선시전 루프는 (lvl+4) × 2 / 3 (260929 사용자가 × 2 / 3으로 되돌림) |
 | 8 | 18레벨 이후 `LowManaSkill = [-1, -1]` | 설계 의도 | 마나가 없으면 대체 공격 없이 기다린다. 결함 아님 |
 | 9 | **while + catch 무한 루프** | 보류 (260930 사용자: 기록만) | `AutoSmurf.js`의 `while (목표까지 거리 > N) { try { moveToPreset/moveTo/moveToExit } catch { print } }` 10곳(1197 Arcane, 1277 moveToExit, 1475 WP, 3007 Cube 상자, 3181·6545 저널, 3376 탈무덤 상자, 3557, 3681 Orifice, 4317 빨간 포털)은 탈출 조건이 없다. 경로 계산이 계속 실패하면 같은 자리에서 무한 반복. 줄 번호는 260930 기준 |
+| 10 | 재시도 실패 구간을 quit 대신 "그 구간만 건너뛰기" | 보류 (260930) | Malus(30회), Qual-Kehk(5회), Malah(10회) 등. 뒤 구간이 그 퀘스트에 기대는지 하나씩 봐야 해서 동작 변경으로 따로 검토. leveling 구간(Andy·Tombs)의 quit → return은 하지 않기로 함(Tombs는 return하면 두리엘로 넘어감) |
+| 11 | NPC 대사 끊기 근본 수정(유형 B 크래시) | 보류 | 7절. `Packet.openMenu` 등에서 대사 중이면 정상 종료를 기다린 뒤 닫기. 크래시 사례가 더 모이면 결정 |
+| 12 | 디아 판정 위치 | 사용자 결정: 지금대로 | `Diablo not found`는 봉인 단계(diabloPrep)에서 바로 quit. 예전엔 그 뒤 `Attack.clear(0, 243)`으로 한 번 더 찾았음 |
 
 ## 5. 이번 대화에서 확정된 주요 결정 (요약)
 세부는 `attack_design.md` 12절, `attack_compare.md`를 본다.
@@ -142,6 +146,13 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **이벤트 처리:** default.dbj의 `AutoBuild.levelUpHandler`만 레벨업 때 `applyConfigUpdates`를 한다. 다른 스레드는 `Config.js`의 별도 핸들러로 json만 다시 읽는다.
 - **소수점 마나 비용:** 빌드 공격 스킬의 절반 이상이 소수점이다(Fire Bolt는 모든 레벨 2.5). 계산식은 skills.txt의 mana·lvlmana·manashift·minmana다.
 - **`getPath`:** WalkPathReducer 노드 간격은 5칸 이하다. 그래서 `노드 수 × 5`는 실제 길이와 같거나 크다.
+- **D2BS 유닛 속성:** 읽을 때마다 ID로 유닛을 다시 찾고, 못 찾으면 `undefined`(`JSUnit.cpp` 186~194). `me.area`는 로딩 중 undefined. `me.gameReady`는 방 정보가 없거나 갱신 중이면 false(액트 전환 중 false는 근거 있음, 같은 액트 포털은 근거 없음).
+- **최소 게임 시간:** 게임 안 `Config.MinGameTime` 300초는 정상 종료(default.dbj)에서만 마을에서 대기. 로비 `StarterConfig.MinGameTime` 60초는 리더(D2BotLead)만, 60초보다 짧은 게임일 때. quit은 바로 나감.
+- **경험치 로그:** ToolsThread가 `quit` 메시지를 받을 때 찍음(정상·조기 종료 모두). 치킨은 바로 나가서 안 찍힘.
+- **리더:** a1(`Creating Game`은 리더만 남김). 260930 리더 치킨 8/59게임(팔로워 전원 동시 종료), 사용자: 무시.
+- **상점:** 같은 게임의 상점 목록은 공유. nip이 겹쳐 두 프로필이 같은 아이템을 노릴 수 있음(먼저 산 쪽만 구매).
+- **콘솔 색(D2Bot#):** 4 파랑, 5 초록, 6 노랑, 7 금색, 8 주황, 9 빨강, 10 회색, 생략 시 검정. print 색은 `ÿc0` 흰, `ÿc1` 빨강, `ÿc2` 초록, `ÿc3` 파랑, `ÿc4` 금색, `ÿc5` 회색, `ÿc6` 검정, `ÿc7` 황갈, `ÿc8` 주황, `ÿc9` 노랑, `ÿc:` 짙은 초록, `ÿc;` 보라.
+- **ProcDump:** `-e -h -n 10`. 한 크래시에 덤프가 여러 개 생기면(D2BS exit0 버그로 반복 예외) 첫 파일(접미사 없음)만 보면 된다.
 
 ## 7. 크래시 분석 (260929, Game.exe 1.14d 역어셈블)
 ProcDump(`C:\CrashDumps`)가 원래 예외 지점을 잡는다. WER 덤프의 0x576F0C는 D2BS `exit0` 버그로 생긴 두 번째 크래시라 원인이 아니다.
