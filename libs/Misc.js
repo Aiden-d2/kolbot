@@ -2329,15 +2329,11 @@ MainLoop:
 
 	quitReason: "",	//260930 set by quitGame: this script is on its way out (AutoSmurf prints "Script ended" only without it)
 
-	// early quit: the reason once (a loop may call it again until the game closes), then quit
-	// console false: a common event every profile would print alike -> pass Leader so only the leader prints it
-	quitGame: function (reason, detail, console) {	//260930
+	// early quit: the reason once (a loop may call it again until the game closes), then quit. every profile prints its own	//261001
+	quitGame: function (reason, detail) {	//260930	//261001 console argument removed: every profile prints
 		if (!this.quitReason) {
 			this.quitReason = reason;
-
-			if (console !== false) {
-				D2Bot.printToConsole(reason + " (" + this.where() + ")", 9);
-			}
+			D2Bot.printToConsole(reason + " (" + this.where() + ")", 9);
 
 			this.trace("[Quit] " + reason + (detail ? ": " + detail : ""));
 		}

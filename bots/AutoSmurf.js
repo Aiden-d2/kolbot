@@ -181,7 +181,7 @@ function AutoSmurf() {
 		
 		while (!teamReady) {
 			if (getTickCount() - tick > 2 * 60 * 1000) { // Quit after 2 minutes of waiting.
-				Misc.quitGame("Team didn't join the game within 2 minutes");	//260930 each profile: whoever waited prints (the missing one cannot)
+				Misc.quitGame("Team didn't join the game within 2 minutes");	//260930
 			}
 			
 			delay(1000);
@@ -680,7 +680,7 @@ function AutoSmurf() {
 			delay(500);
 			
 			if (getTickCount() - tick > 30 * 1000) { // Quit after 30s of waiting.
-				Misc.quitGame("syncBO timeout");	//260930 each profile: whoever waited prints
+				Misc.quitGame("syncBO timeout");	//260930
 			}
 		}
 		
@@ -1438,7 +1438,7 @@ function AutoSmurf() {
 			}
 			
 			if (time > 120) {
-				Misc.quitGame("Players not in after act change");	//260909	//260930 each profile: the one stuck (maybe the leader) cannot print
+				Misc.quitGame("Players not in after act change");	//260909	//260930
 			}
 			
 			delay(1000);
@@ -2085,7 +2085,7 @@ function AutoSmurf() {
 						delay(250);
 						
 						if (this.playerIn()) {	//260411
-							Misc.quitGame("Area reversed", "whole party in the previous area", Leader);	//260930
+							Misc.quitGame("Area reversed", "whole party in the previous area");	//260930	//261001 every profile prints
 						}
 					}
 				}
@@ -2668,7 +2668,7 @@ function AutoSmurf() {
 				delay(250);
 				
 				if (this.playerIn()) {	//260411
-					Misc.quitGame("Area reversed", "whole party in the previous area", Leader);	//260930
+					Misc.quitGame("Area reversed", "whole party in the previous area");	//260930	//261001 every profile prints
 				}
 			}
 		}
@@ -2699,7 +2699,7 @@ function AutoSmurf() {
 				delay(250);
 				
 				if (this.playerIn()) {	//260411
-					Misc.quitGame("Area reversed", "whole party in the previous area", Leader);	//260930
+					Misc.quitGame("Area reversed", "whole party in the previous area");	//260930	//261001 every profile prints
 				}
 			}
 		}
@@ -2730,7 +2730,7 @@ function AutoSmurf() {
 				delay(250);
 				
 				if (this.playerIn()) {	//260411
-					Misc.quitGame("Area reversed", "whole party in the previous area", Leader);	//260930
+					Misc.quitGame("Area reversed", "whole party in the previous area");	//260930	//261001 every profile prints
 				}
 			}
 		}
@@ -4312,7 +4312,7 @@ function AutoSmurf() {
 			}
 		} else {
 			Town.goToTown();
-			Misc.quitGame("Mephisto failed", null, Leader);	//260930 was console only
+			Misc.quitGame("Mephisto failed");	//260930 was console only	//261001 every profile prints
 		}
 
 		delay(me.ping * 2 + 500);
@@ -4704,7 +4704,7 @@ function AutoSmurf() {
 				}
 			}
 
-			Misc.quitGame("Diablo not found", null, Leader);	//260930 was console only
+			Misc.quitGame("Diablo not found");	//260930 was console only	//261001 every profile prints
 			return false;
 		};
 
@@ -7622,6 +7622,12 @@ function AutoSmurf() {
 
 		if (Leader) {
 			D2Bot.printToConsole("Script ended");
+		}
+	}
+
+	if (!Leader) {	//261001 a follower leaving first makes the leader quit (PartyThread) before its "Script ended": wait, PartyThread ends this game when the leader leaves
+		while (true) {
+			delay(1000);
 		}
 	}
 
