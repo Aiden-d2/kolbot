@@ -72,6 +72,7 @@ var Attack = {
 		for (i = 0; i < Config.AttackSkill.length; i += 1) {	//260928 array length differs per build
 			if (Config.AttackSkill[i] > -1 && !me.getSkill(Config.AttackSkill[i], 1) && Config.AttackSkill[i] !== 500) {
 				D2Bot.printToConsole("AttackSkill[" + i + "] " + Config.AttackSkill[i] + " not learned (lvl " + me.charlvl + "). Stopping", 9);
+				Misc.trace("AttackSkill[" + i + "] " + Config.AttackSkill[i] + " not learned (lvl " + me.charlvl + "). Stopping");	//261001
 				D2Bot.stop();
 
 				return false;
