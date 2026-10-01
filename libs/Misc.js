@@ -2737,10 +2737,6 @@ var Packet = {
 			return false;
 		}
 
-		if (!talk.keys) {
-			talk.automap = me.automap;
-		}
-
 		sendKey(0x20);
 		talk.keys += 1;
 
@@ -2755,7 +2751,7 @@ var Packet = {
 
 		Misc.trace("[TK] talk skipped " + talk.keys + " npc:" + npc.name);
 
-		if (talk.automap && !me.automap) {
+		if (!me.automap) {
 			me.automap = true;
 		}
 
