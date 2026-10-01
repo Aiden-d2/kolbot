@@ -7,6 +7,7 @@
 ## 1. 현재 상태
 - **코드:** main `4f55291`(261001) 기준. 크래시·로그·포털 작업은 PR #7(`claude/funny-pasteur-4ymxd2`), 회피 재설계·스킬 사거리는 PR #8, Precast.summon은 PR #9, Pather·setPosition·상자는 PR #10·#11(`claude/pather-analysis-refactor-w9td75`, 세부는 `pather_status.md`)로 들어왔다. 각 작업의 게임 확인 항목은 아래 목록과 3절 표(10~14번)에 있다.
 - **게임 밖 흐름(261001, PR #16):** 캐릭터 선택 화면 생성, 복구할 수 없는 로그인 오류에서 정지, 대기 남은 시간 표시, 게임 밖 회색 콘솔 로그(`OOGLog`). 세부는 5절 끝, 게임 확인은 3절 15~17번.
+- **유형 B 크래시 수정(261001, PR #18):** NPC 메뉴를 열 때 대사 중이면 `me.cancel()` 대신 스페이스로 넘긴다(`Packet.skipTalk`/`endTalk`, `Misc.js`). 세부는 7절 끝, 게임 확인은 1절 인게임 검증 8번.
 - **마을 chores(261001):** `Town.fillTome` 골드 게이트, `Town.identify` 물건마다 감정 수단 고르기, 감정 trace. 세부는 3절 끝, 게임 확인은 3절 18~19번.
 - **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
 - **인게임 검증:** 아직 안 됨(문법 검사만). 다음 사이클에서 볼 것:
@@ -17,17 +18,20 @@
   5. 벨트 물약 `[MoveToSlot] ... FAILED slot: dropped: item:`(trace) 값으로 원인 확정
   6. 상점 `Shopped ... (not bought)`(trace)과 ItemLog 중복 기록 사라짐
   7. 용병 고용 이동 중 "D2BS is not responding" 멈춤(17:40형)이 다시 나는지 — 리스너 위치 변경이 이 가설의 대응이다(7절). 멈추면 `-h` 덤프로 메인 스레드가 D2BS 패킷 이벤트 대기 안인지 본다
-- **분석에 필요한 파일:** 프로필별 trace(`_cache/trace/`), d2bs 로그, 매니저 콘솔 로그, 크래시면 `C:\CrashDumps`의 첫 덤프(접미사 없는 파일)와 `procdump_<PID>.log`, 필요하면 `_cache/ItemLog.txt`.
-- **임시 로그 정리 대기:** `[MP]`(용병), `usePortal 342`(빨간 포털), 벨트 물약 상세는 한 사이클 확인 뒤 삭제 후보. `[TK]`/`[OD]`는 NPC 대사 크래시(유형 B) 사례를 볼 때까지 유지.
+  8. 유형 B 수정(261001): trace `[TK] talk skipped <횟수> npc:<이름>`이 찍히는지, `[TK] cancel during talk`(스페이스 20번 초과 뒤 예전 cancel)이 없는지, 대사 뒤 오토맵이 꺼진 채 남지 않는지, 크래시 첫 덤프가 0x661406이 아닌지
+- **분석에 필요한 파일:** 프로필별 trace(`_cache/trace/`), d2bs 로그, 매니저 콘솔 로그, 필요하면 `_cache/ItemLog.txt`.
+- **크래시 수집 방침(261001):** ProcDump는 지금 설정 그대로 둔다. 크래시가 나면 첫 덤프(접미사 없는 파일, `procdump_<PID>.log`의 PID·시각으로 고름)의 예외 주소만 보고 7절 유형으로 분류한다. 깊은 분석은 처음 보는 주소이거나 0x661406(유형 B, 우리 원인)일 때만 한다. 나머지 유형은 게임 내부라 원인을 찾아도 고칠 수 없다(Game.exe 패치는 보류). 유형 B가 한동안 안 나오면 ProcDump를 꺼도 된다.
+- **임시 로그 정리 대기:** `[MP]`(용병), `usePortal 342`(빨간 포털), 벨트 물약 상세는 한 사이클 확인 뒤 삭제 후보. `[TK]` 래퍼(Prototypes.js `me.cancel`)는 유형 B 수정 확인 때까지 유지(스페이스 20번 초과 뒤 cancel을 기록). `[OD]`(`watchDialog`)는 목적(오브젝트 대사 길이 관찰)을 마쳐 삭제 후보.
 - **이 세션 환경:** 원격 브랜치 삭제가 거부된다. 지워야 하면 사용자가 GitHub에서 지운다.
 
 ## 2. 작업 방식 (사용자와 합의한 것)
 **흐름**
-1. 작업을 시작할 때 브랜치를 main 최신 상태로 맞춘다(`git merge origin/main`).
+1. 수정 요청을 받으면 작업 브랜치를 main 최신 상태로 맞춘다(리셋·푸시 포함, 수정 요청에 들어 있는 준비 작업).
 2. 브랜치에서 수정한다.
 3. 커밋 → 푸시한다.
 4. 사용자가 브랜치에서 확인한다.
-5. `main` 병합은 사용자가 요청할 때만 한다. 내가 새로 하려는 커밋·PR·병합은 먼저 묻고 승인받는다(261001).
+5. `main` 병합은 사용자가 요청할 때만 한다. 그 밖에 내가 필요하다고 보는 커밋·PR·병합은 먼저 묻고 승인받는다(261001).
+6. 노트·설명 파일(`docs/claude/*.md`, `CLAUDE.md`)은 대화 중에 쓰지 않고, 사용자가 커밋·PR·병합을 요청할 때 그때까지의 결론으로 몰아서 기록한다(261001). 세부는 CLAUDE.md "git·기록 규칙".
 
 **규칙** (CLAUDE.md에도 있음)
 - **요청 없이 코드를 고치지 않는다.** 분석, 검토, 제안까지만 한다.
@@ -114,7 +118,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | # | 작업 | 상태 | 메모 |
 |---|---|---|---|
 | 1 | ~~NoSkipArea 키와 조건 제거~~ | **완료 (260929)** | 로컬 `[]`로 1막~헬 파밍 한 사이클 문제없음(사용자 확인) → 제거. 제거할 곳: `Config.js` 키, `Attack.js`의 306 스킵·unreachable 즉시 제외·HP 스킵 조건 3곳, `Paladin.js` 해머 게이트 조건. 조건에서 `Config.NoSkipArea.indexOf(me.area) < 0 &&`만 빼면 동작은 같다 |
-| 2 | **임시 로그 정리** | 일부 완료 | `[AC]`/`[SP]` 삭제 완료(260930). 남은 것: `[MP]`(Merc.js), `usePortal 342`(Pather.js, `//260930 temp` — 260926 사용자 redPortal 로그를 대신함), `[MoveToSlot]` 실패 상세(Storage.js) → 한 사이클 확인 뒤 삭제 후보. `Misc.js`의 `[chest] skip` trace(`traceChestSkip`, `//261001 temp`)도 확인 뒤 지운다. `ToolsThread.js`의 미사일 사거리 측정기(Numpad 5, `[MM]`, `//260930 temp`)도 측정이 끝나면 지운다. `[TK]`(Prototypes.js `me.cancel` 래퍼)·`[OD]`(AutoSmurf `watchDialog`) → 유형 B 크래시 사례 볼 때까지 유지 |
+| 2 | **임시 로그 정리** | 일부 완료 | `[AC]`/`[SP]` 삭제 완료(260930). 남은 것: `[MP]`(Merc.js), `usePortal 342`(Pather.js, `//260930 temp` — 260926 사용자 redPortal 로그를 대신함), `[MoveToSlot]` 실패 상세(Storage.js) → 한 사이클 확인 뒤 삭제 후보. `Misc.js`의 `[chest] skip` trace(`traceChestSkip`, `//261001 temp`)도 확인 뒤 지운다. `ToolsThread.js`의 미사일 사거리 측정기(Numpad 5, `[MM]`, `//260930 temp`)도 측정이 끝나면 지운다. `[TK]`(Prototypes.js `me.cancel` 래퍼) → 유형 B 수정 확인 때까지 유지. `[OD]`(AutoSmurf `watchDialog`) → 삭제 후보(261001) |
 | 3 | ~~주석 처리된 옛 코드 정리~~ | **완료 (260929)** | JS/dbj/dbl 32개 파일에서 주석 처리된 옛 코드와 `/* */` 옛 코드 블록, 롤백용 머리글을 지움(Attack.js 2500 → 1349줄). 주석을 뺀 코드 토큰이 정리 전과 같음을 확인. nip·Config.js·builds의 꺼 둔 옵션과 설명 주석·날짜 표기·줄 끝 메모는 유지. 이전 코드는 커밋 `fcd2713` |
 | 4 | **소 레벨 치킨 잦음** | 개선 대상 | `followDriver`는 사용자 코드로 교체됨(30 초과 이동, 15~30 clearPath 이동, 근접 clear). 리더 쪽 `clearCowLevel`(팔로워를 기다리지 않고 방마다 이동)은 아직 손대지 않음 |
 | 5 | 부활·소환형(샤먼) 우선 | 보류 | 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류함 |
@@ -123,7 +127,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | 8 | 18레벨 이후 `LowManaSkill = [-1, -1]` | 설계 의도 | 마나가 없으면 대체 공격 없이 기다린다. 결함 아님 |
 | 9 | **while + catch 무한 루프** | 보류 (260930 사용자: 기록만) | `AutoSmurf.js`의 `while (목표까지 거리 > N) { try { moveToPreset/moveTo/moveToExit } catch { print } }` 10곳(1197 Arcane, 1277 moveToExit, 1475 WP, 3007 Cube 상자, 3181·6545 저널, 3376 탈무덤 상자, 3557, 3681 Orifice, 4317 빨간 포털)은 탈출 조건이 없다. 경로 계산이 계속 실패하면 같은 자리에서 무한 반복. 줄 번호는 260930 기준 |
 | 10 | 재시도 실패 구간을 quit 대신 "그 구간만 건너뛰기" | 보류 (260930) | Malus(30회), Qual-Kehk(5회), Malah(10회) 등. 뒤 구간이 그 퀘스트에 기대는지 하나씩 봐야 해서 동작 변경으로 따로 검토. leveling 구간(Andy·Tombs)의 quit → return은 하지 않기로 함(Tombs는 return하면 두리엘로 넘어감) |
-| 11 | NPC 대사 끊기 근본 수정(유형 B 크래시) | 보류 | 7절. `Packet.openMenu` 등에서 대사 중이면 정상 종료를 기다린 뒤 닫기. 크래시 사례가 더 모이면 결정 |
+| 11 | ~~NPC 대사 끊기 근본 수정(유형 B 크래시)~~ | **완료 (261001, PR #18), 게임 확인 대기** | 7절 끝. 대사 중이면 스페이스로 넘긴다. 처음 넣은 "대사가 끝날 때까지 기다리기"(`b2a396f`)는 NPC 대사가 수 분 걸릴 수 있어 바꿨다. "대사가 보이면 조기 종료"는 콜백이 게임을 나가도 남아 효과가 없다 |
 | 12 | 디아 판정 위치 | 사용자 결정: 지금대로 | `Diablo not found`는 봉인 단계(diabloPrep)에서 바로 quit. 예전엔 그 뒤 `Attack.clear(0, 243)`으로 한 번 더 찾았음 |
 | 13 | `alkor error`가 로그 규칙 밖 | 그대로 둠 (261001 사용자: 발현 없음, 메모만) | `Town.moveToSpot`(`Town.js:2134-2142`, 첫 업로드부터 있던 `//eom` 코드). 알코어 자리(`[5083, 5016]`)로 `Pather.moveTo` 한 번이 90초 넘게 걸리고 알코어가 안 보일 때만 난다(빨리 끝나면 오류 없이 false → `Town.move`가 flash 후 3회 재시도). 알코어 가는 길이 미로형이라 넣은 것으로 사용자 추정. `quit()` 직접 호출이라 `(지역 x,y)`·trace·`quitReason`이 없다. 바꾸면 `Misc.quitGame("alkor error")`. 호출: 도박 `Town.move(NPC.Alkor)`(`Town.js:162`), 피규어린 `Town.move("alkor")`(`AutoSmurf.js:3843, 3863`) |
 | 14 | `Failed to get corpse, stopping.`이 로그 규칙 밖 | 그대로 둠 (261001 사용자: 발생한 적 없음, 메모만) | `Town.getCorpse`(`Town.js:1540-1542`) 30초 넘게 시체를 못 주우면 빨간 콘솔 + `D2Bot.stop()`. trace 없음, `(지역 x,y)` 없음 |
@@ -195,7 +199,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **리더:** a1(`Creating Game`은 리더만 남김). 260930 리더 치킨 8/59게임(팔로워 전원 동시 종료), 사용자: 무시.
 - **상점:** 같은 게임의 상점 목록은 공유. nip이 겹쳐 두 프로필이 같은 아이템을 노릴 수 있음(먼저 산 쪽만 구매).
 - **콘솔 색(D2Bot#):** 4 파랑, 5 초록, 6 노랑, 7 금색, 8 주황, 9 빨강, 10 회색, 생략 시 검정. print 색은 `ÿc0` 흰, `ÿc1` 빨강, `ÿc2` 초록, `ÿc3` 파랑, `ÿc4` 금색, `ÿc5` 회색, `ÿc6` 검정, `ÿc7` 황갈, `ÿc8` 주황, `ÿc9` 노랑, `ÿc:` 짙은 초록, `ÿc;` 보라.
-- **ProcDump:** `-e -h -n 10`. 한 크래시에 덤프가 여러 개 생기면(D2BS exit0 버그로 반복 예외) 첫 파일(접미사 없음)만 보면 된다.
+- **ProcDump:** `-e -h -n 10`. 한 크래시에 덤프가 여러 개 생기면(D2BS exit0 버그로 반복 예외) 첫 파일(접미사 없음)만 보면 된다. 261001 5건은 모두 첫 덤프에 원래 예외가 그대로 있었다. 크래시 프로세스의 procdump 로그는 약 7KB, 몇 초 뒤의 약 1.5KB 로그는 재시작된 새 프로세스다. `-e`는 처리되지 않은 예외만 덤프한다(잡힌 예외는 `-e 1`, 덤프가 많이 생길 수 있어 쓰지 않음).
+- **팔로워 크래시 때 전원 종료:** 크래시 난 프로필이 파티에서 빠지면 나머지 전원(리더 포함)이 `PartyThread`의 `retry > 2`(`threads/PartyThread.js:122-124`)로 약 2초 뒤 나간다. `party has left`는 print만이라 콘솔·trace에는 이유가 안 남는다(로그 규칙대로). 크래시 쪽은 매니저의 `Window has unexpectedly exited` 줄로 구분한다.
 
 ## 7. 크래시 분석 (260929, Game.exe 1.14d 역어셈블)
 ProcDump(`C:\CrashDumps`)가 원래 예외 지점을 잡는다. WER 덤프의 0x576F0C는 D2BS `exit0` 버그로 생긴 두 번째 크래시라 원인이 아니다.
@@ -235,3 +240,29 @@ ProcDump(`C:\CrashDumps`)가 원래 예외 지점을 잡는다. WER 덤프의 0x
   - 막는 방향(보류): 리스너를 0x4E/0x4F가 오는 구간에만 켠다. 그 시점 확인용 `[MP]` 로그를 넣음(260929, 동작 변경 없음): `[MP] 0x4f|0x4e|arrived|menu done at <리스너 켠 뒤 ms> npc:<고용 NPC> dist:<거리|none>`. 0x4E가 "arrived"(도착) 뒤, "menu done" 전에만 찍히면 리스너를 `initNPC` 직전에 켜도 된다.
   - 결과(260930): a1~a8 8건(모두 그레이즈, 빌드의 `MercSkill`이 전부 2막 용병) 모두 이동 중 수신 0건, 도착 뒤 `initNPC` 안에서만 0.25~0.33초 동안 수신(목록 2회씩). 도착→첫 0x4F 최소 47ms(a1). a2·a3·a8은 8:04에 15~21초 걸었는데 필요한 건 마지막 0.3초였다. → 리스너를 `Town.initNPC` 직전으로 옮김(260930, 사용자 승인). `[MP]` 시간 기준은 이동 시작으로 유지.
   - 새는 경로 점검: `addEventListener`~`removeEventListener` 사이에 `return`은 없다. 예외는 `Town.initNPC` 안(`Packet.openMenu` → `Pather.moveToUnit`, `Town.move` → `Pather.moveTo` "Failed to generate path")에서 날 수 있고, 그러면 제거가 건너뛰어진다. 호출부(`AutoSmurf.js:158`, `:7313`)에는 try가 없어 예외는 `Loader`의 catch까지 올라가 AutoSmurf가 끝나고 `default.dbj`가 게임을 나간다. 리스너는 그 스크립트가 끝날 때 같이 사라지므로 남는 시간은 게임 종료까지다. 옮기기 전에는 `Town.move` 예외도 이 경로였다.
+
+**261001 크래시 5건 (260930 18:04 ~ 261001 12:04, 약 98게임·8프로필, 실행 코드는 PR #14 이전)**
+첫 덤프·procdump 로그·trace·d2bs 로그와 Game.exe·D2BS.dll(1.6.4U)을 대조했다. 모두 메인 스레드(게임 루프 0x44efa0)의 접근 위반이다. 첫 덤프 시각이 다른 프로필의 종료보다 약 2초 빠르다(크래시가 먼저, 위 `PartyThread` 동반 종료).
+
+| # | 프로필·시각 | 예외 주소 | 분류 |
+|---|---|---|---|
+| 1 | a1 9/30 22:10:20 (앤야 단계) | 0x661406 | **유형 B 확정** |
+| 2 | a2 9/30 22:21:26 (Pit of Acheron 전투) | 0x5ff28e | SpriteCache 목록 손상 (그리기) |
+| 3 | a6 10/1 03:05:57 (Abaddon → Harrogath 도착 3초 뒤) | 0x66f99f | **유형 D** |
+| 4 | a7 10/1 04:34:23 (Moo Moo Farm) | 0x481617 | 2차 크래시 (해제된 유닛·Act) |
+| 5 | a8 10/1 09:46:07 (Pandemonium → Harrogath 도착 7초 뒤) | 0x66f99f | **유형 D** |
+
+- **1번 (유형 B 확정):** trace 22:09:09 `[TK] cancel during talk npc:Anya at misc.js:2680 < prototypes.js:91 < autosmurf.js:5263`(`Packet.openMenu`의 cancel). 71초 뒤 Arreat Summit 제단 앞(10047,12617)에서 크래시. 덤프: 콜백 `[0x7bf258]`=0x4b6a30, 목록 `[0x7bf250]`=NULL, `[0x7c0c69]`=0, 처리 중 오브젝트 `[0x7bf234]`=546(고대인 제단), 스택 0x4a080b(매 프레임 종료) → 0x4b6a45 → 0x4b1863 → 0x661406. 260929 가설이 `[TK]`+덤프 짝으로 처음 확인됐다. 이날 trace의 `[TK]`는 3건(Kashya `autosmurf.js:2021`, Malah `:5227`, Anya `:5263`), 모두 `Packet.openMenu` 안의 cancel.
+- **2번 (SpriteCache):** EBP 체인 = 그리기 목록 루프(0x4df510) → 유닛 그리기(0x471620) → 0x4f6540 → 렌더러 `[0x7c8cc0]+0x90` → 0x6c87e0 → 0x6001f0 → 0x5ff5b0 → 0x5ff1b0(LRU 목록에서 빼기)에서 항목의 이전 링크 NULL에 쓰기(`[NULL+0x18]`). 캐시 0x89db60은 `SpriteCache.cpp`(Objects/Monsters/Chars/Overlays/Items/Missiles의 DCC·DC6). 캐시 잠금(+0x30)은 메인 스레드가 쥐고 있었다(다른 스레드 경합 아님). 처음에 "D2BS가 스택에 있다"고 한 것은 틀렸다: 0x6001f0의 지역 변수 영역(0x224바이트)에 남은 흔적이었다. 유형 A와 같은 그리기 루프. 임바모드와의 관련은 증거 없음.
+- **3·5번 (유형 D, 두 건이 완전히 같음):** 게임 루프 → 패킷 루프(0x45f7b0, 0x45f8e9 `call eax`) → 서버 패킷 **0x07**(방 추가, 크기 6, 핸들러 0x45cab0, 패킷 표 0x7114d0의 7번) → `AddRoomData`(0x61a070) → 0x61b640 → 0x61b490 → 0x61b390 → 0x66c370 → 0x66c220 → 0x6424a0 → 0x675360 → 0x67e600 → 0x67e0e0 → 0x670750 → 0x66f990에서 `[ebx+0x50]`(0x10, 0x1)을 포인터로 읽음. 덤프에 힙이 없어 `ebx` 구조체는 모른다. 두 건 모두 다른 지역에서 Harrogath로 막 도착해 걷던 중으로, 유형 C(260930 a7, Harrogath 도착 7초 뒤)와 상황이 같다(같은 원인인지는 추정).
+- **4번 (2차 크래시):** 게임 루프(0x44efb0 `GetPlayerUnit` = `[0x7a6a70]`) → 0x481600에 넘긴 내 유닛 0xb52e900과 Act `[0x7a0634]`=0x48e7000이 모두 MEM_FREE. 게임 구조가 해제된 뒤 루프가 옛 포인터를 썼다. procdump 로그에 처리되지 않은 예외 앞에 잡힌 예외 2개가 있고, 그쪽이 원래 원인으로 보인다(추정, 덤프 없음). a7 d2bs 로그에도 흔적 없음(마지막 줄 04:28:12 `=== [COWS] ===`). 유형 C와 같은 진입 함수(0x481600).
+- **결론:** 우리 스크립트가 원인인 것은 1번(유형 B)뿐. 2·3·4·5번은 게임 내부라 스크립트로 고칠 수 없다.
+
+**유형 B 수정 (261001, PR #18)**
+- 대사 입력 처리 표(Game.exe 0x722600, 대사 중에 등록됨): 왼·오른 클릭 → 0x4a17d0, ESC(0x1B)·스페이스(0x20) → 0x4a1770. 0x4a1770은 텍스트 시작 100ms 안의 입력을 버리고, 그 뒤면 0x4a08c0으로 대사를 정상 종료한다(콜백 실행 → 다음 대사나 메뉴, 연쇄가 끝나면 콜백이 스스로 지워짐). `me.cancel()`은 이 표를 거치지 않고 화면을 지워 콜백이 남는다.
+- 클릭(0x4a17d0)은 조건이 있다: 마우스 아래 유닛이 대화 중인 NPC면 무시, 아무것도 없고 `[0x7bf23a]`(기억된 유닛 표시)가 있으면 대사를 끝내지 않음. 마우스 아래 유닛은 게임의 매 프레임 상태라 `sendClick` 좌표가 아니라 실제 커서를 따를 수 있다(미확인). 그래서 클릭(나를 클릭 포함) 대신 키를 쓴다.
+- ESC는 대사가 막 끝난 뒤 눌리면 게임 메뉴가 열려 위험하다. 스페이스는 기본 "화면 정리"라 해가 없다. 다만 허공에 눌리면 오토맵이 꺼진다(사용자 확인) → 대사가 끝난 뒤 꺼져 있으면 다시 켠다(오토맵은 항상 켜져 있어야 함).
+- D2BS(1.6.4U): `sendClick`은 Sleep(100) 뒤 WM_LBUTTONDOWN/UP를 창에 보낸다. `sendKey`는 WM_KEYDOWN/UP. `getIsTalkingNPC`는 게임의 대사 입력 처리 표 등록 여부.
+- 반영: `Packet.openMenu`(`Misc.js`)와 `Unit.openMenu`(`Prototypes.js`, `Config.PacketShopping`이 false일 때만 쓰는 자체 루프, 지금 설정은 true라 실행 안 됨, 설정이 바뀔 경우 대비)에서 대사 중이면 `Packet.skipTalk`(스페이스) → 메뉴가 뜨면 `Packet.endTalk`(trace `[TK] talk skipped <횟수> npc:<이름>`, 오토맵 다시 켜기). 20번 넘으면 예전 `me.cancel()`.
+- 기각: 대사가 끝날 때까지 기다리기(`b2a396f`, NPC 대사가 수 분 걸릴 수 있음), 대사가 보이면 조기 종료(콜백 `[0x7bf258]`의 쓰기는 설정 함수 0x49e7e0뿐이고 호출부는 모두 대사·NPC 대화 코드, 게임 종료 경로에서 지우지 않음 → 같은 프로세스의 다음 게임에서 크래시).
+- 유형 A·C·D·SpriteCache 주소로 분류: 0x6489C6(A), 0x661406(B), 0x6494DC(C), 0x66f99f(D), 0x5ff28e(SpriteCache), 0x481617(해제된 유닛).
