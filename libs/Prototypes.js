@@ -103,7 +103,8 @@ Unit.prototype.openMenu = function (addDelay) {
 		return true;
 	}
 
-	var i, tick;
+	var i, tick,
+		talk = {keys: 0};	//261001
 
 	for (i = 0; i < 5; i += 1) {
 		if (getDistance(me, this) > 4) {
@@ -115,9 +116,16 @@ Unit.prototype.openMenu = function (addDelay) {
 
 		while (getTickCount() - tick < 5000) {
 			if (getUIFlag(0x08)) {
+				Packet.endTalk(talk, this);	//261001
 				delay(Math.max(700 + me.ping, 500 + me.ping * 2 + addDelay * 500));
 
 				return true;
+			}
+
+			if (Packet.skipTalk(talk)) {	//261001 space through the talk instead of me.cancel() (Packet.skipTalk)
+				tick = getTickCount();
+
+				continue;
 			}
 
 			if (getInteractedNPC() && getTickCount() - tick > 1000) {
@@ -133,6 +141,8 @@ Unit.prototype.openMenu = function (addDelay) {
 		delay(me.ping * 2);
 		Packet.flash(me.gid);
 	}
+
+	Packet.endTalk(talk, this);	//261001
 
 	return false;
 };

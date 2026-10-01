@@ -2686,7 +2686,8 @@ var Packet = {
 			return true;
 		}
 
-		var i, tick;
+		var i, tick,
+			talk = {keys: 0};	//261001
 
 		for (i = 0; i < 5; i += 1) {
 			if (getDistance(me, unit) > 4) {
@@ -2698,9 +2699,16 @@ var Packet = {
 
 			while (getTickCount() - tick < 1000) {
 				if (getUIFlag(0x08)) {
+					this.endTalk(talk, unit);	//261001
 					delay(Math.max(100, me.ping * 2));
 
 					return true;
+				}
+
+				if (this.skipTalk(talk)) {	//261001
+					tick = getTickCount();
+
+					continue;
 				}
 
 				if (getInteractedNPC() && getTickCount() - tick > 500) {
@@ -2717,7 +2725,37 @@ var Packet = {
 			this.flash(me.gid);
 		}
 
+		this.endTalk(talk, unit);	//261001
+
 		return false;
+	},
+
+	// Ends an NPC talk the way a player does (space), so the game runs its talk callback and clears it.	//261001
+	// me.cancel() during a talk skips that callback and leaves it set; the next dialog to end then crashes the game (Game.exe 0x661406, handoff 7).
+	skipTalk: function (talk) {	//261001
+		if (!getIsTalkingNPC() || talk.keys >= 20) {
+			return false;
+		}
+
+		sendKey(0x20);
+		talk.keys += 1;
+
+		return true;
+	},
+
+	// A space that lands after the talk ended closes the automap: turn it back on.	//261001
+	endTalk: function (talk, npc) {	//261001
+		if (!talk.keys) {
+			return;
+		}
+
+		Misc.trace("[TK] talk skipped " + talk.keys + " npc:" + npc.name);
+
+		if (!me.automap) {
+			me.automap = true;
+		}
+
+		talk.keys = 0;
 	},
 
 	startTrade: function (unit, mode) {
