@@ -7,6 +7,7 @@
 ## 1. 현재 상태
 - **코드:** main `4f55291`(261001) 기준. 크래시·로그·포털 작업은 PR #7(`claude/funny-pasteur-4ymxd2`), 회피 재설계·스킬 사거리는 PR #8, Precast.summon은 PR #9, Pather·setPosition·상자는 PR #10·#11(`claude/pather-analysis-refactor-w9td75`, 세부는 `pather_status.md`)로 들어왔다. 각 작업의 게임 확인 항목은 아래 목록과 3절 표(10~14번)에 있다.
 - **게임 밖 흐름(261001, PR #16):** 캐릭터 선택 화면 생성, 복구할 수 없는 로그인 오류에서 정지, 대기 남은 시간 표시, 게임 밖 회색 콘솔 로그(`OOGLog`). 세부는 5절 끝, 게임 확인은 3절 15~17번.
+- **마을 chores(261001):** `Town.fillTome` 골드 게이트, `Town.identify` 물건마다 감정 수단 고르기, 감정 trace. 세부는 3절 끝, 게임 확인은 3절 18~19번.
 - **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
 - **인게임 검증:** 아직 안 됨(문법 검사만). 다음 사이클에서 볼 것:
   1. 용병 고용: trace `[MP]`에 `arrived` 뒤로 `0x4f`/`0x4e`가 찍히고 고용되는지
@@ -66,6 +67,8 @@
 | 15 | 게임 밖 trace 줄이 `[OOG loc N]`으로 찍히는가 (261001) | `_cache/trace/` 로그인·계정 생성·키 오류 장면 | 5절 게임 밖 흐름 |
 | 16 | 계정 생성 중 30 팝업 문구가 읽히는가. `(no text)`면 문구 박스 좌표 `(4, 268, 320, 264, 120)`가 틀린 것 (261001) | 콘솔·trace `Create account failed: 계정 "문구"` | 결과를 보고 4절 16번(실패 뒤 대기 시간)을 정한다 |
 | 17 | 캐릭터 생성 버튼을 누른 뒤 뜨는 대기 창의 location 번호 (261001) | `Create character timeout` 줄의 `(loc N)`(타임아웃 날 때만) | 타임아웃 방식이라 몰라도 동작함 |
+| 18 | 레벨 1 첫 시작에서 Akara에게 들르지 않는가(TP 책 없고 골드 400 미만), TP 책이 있고 골드 100 미만일 때도 들르지 않는가 (261001) | 첫 시작 장면(Akara로 걸어가는지, 머리 위 `initNPC: fillTome` 표시) | 3절 끝 마을 chores |
+| 19 | 감정 중 멈춤이 사라졌는가. 남으면 trace `identify failed`(실패, ms)·`identify slow`(2초 이상 걸린 성공)로 원인 구분. `identify stopped`는 스크롤을 못 구해 감정 중단 (261001) | `_cache/trace/` 마을 감정 장면 | 3절 끝 마을 chores |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -98,6 +101,15 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 기각·보류: journeyTo throw, 죽은 코드(`cleared`·`MainLoop:`·`j`/`wp`), PathDebug, `NodeAction.go`의 `prevNode` 주석 규칙, `moveTo`의 `errorReport //260922 temp`.
 - 실수 기록: 결정을 요청으로 보고 코드를 고쳤다가 되돌림(`8c33a7b`). CLAUDE.md 작업 규칙에 "결정은 요청이 아니다" 추가.
 
+**261001 마을 chores: fillTome·identify (사용자 요청으로 코드 반영, `libs/Town.js`)**
+- `fillTome` 헛걸음: TP 책이 없으면 `checkScrolls(518)`가 0이라 5 게이트를 지나고, 골드 검사 없이 `initNPC`로 Akara에게 갔다. 레벨 1(골드 0)은 살 것이 없어 헛걸음. 이동 단계(`AutoSmurf.js` Travel의 `Town.fillTome(518)`)에서도 반복.
+  - 반영: `initNPC` 앞 TP 전용 게이트 — TP 책 없음 + 골드 400 미만, 또는 TP 책 있음 + 골드 100 미만(TP 스크롤 값 100, 사용자 확인)이면 `return false`. 낱장 TP 스크롤을 세고 사던 분기(골드 400 미만·책 없음)는 게이트 때문에 도달할 수 없어 삭제(사용자: 책 없이 낱장 사는 건 의미 없음). 그 분기는 `itemType 22`를 세서 ID 스크롤도 TP로 셌다.
+  - 첫 시작 `doChores(true)`의 다른 단계(gamble·buyKeys·reviveMerc·heal·identify·buyPotions·repair·stash)는 레벨 1(1막, 골드 0)에서 NPC를 방문하지 않음을 코드로 확인.
+- `identify` 감정 멈춤(사용자 관찰: 감정 때 멍때림): 감정 전 `tome = me.findItem(530) || me.findItem(519)`를 한 번만 정하고, 루프에서 `tome`이 있으면 상점 구매(`else`)로 가지 않았다. 인벤토리에 낱장 ID 스크롤 1장이 있으면 첫 물건만 감정, 이후 물건은 없어진 스크롤로 `Misc.identifyItem`(PacketShopping) 패킷을 보내 커서 대기 2초×3 ≈ 6초씩 헛기다리고 미감정으로 남음(다음 방문 때 감정). 낱장이 남는 경로: nip은 ID 스크롤을 줍지 않으므로 시작 아이템(추정)과, 산 스크롤로 감정에 실패한 경우(스크롤 미소모, 그 감정 안에서는 `me.findItem(530)`이 쓰지만 새로 1장을 또 사서 1장이 남음). 멈춤의 원인으로 확정한 것은 아님(코드 추론).
+  - 반영: 감정 전 `tome`·`fillTome(519)` 삭제. 물건마다 고름 — ID 책 충전 있음(0이면 `fillTome(519)` 후 다시) → 인벤토리 낱장 ID 스크롤 → 상점 1장 구매(공간 없으면 TP 책 판매, 기존 그대로) → 없으면 `break MainLoop`. ID 책을 쓸 때의 5 게이트 문제(충전 6·물건 8이면 채우지 않음)도 해소. 현재는 ID 책 안 씀(물건마다 낱장 구매).
+  - trace: `identify failed: 이름 (scroll|tome, Nms)`, `identify slow: 이름 (scroll|tome, Nms)`(성공했지만 2초 이상), `identify stopped: no ID scroll for 이름 (gold N)`. `Misc.identifyItem`은 성공해도 최대 약 12초 걸릴 수 있어 slow로 구분.
+- 그대로 둠: `repair`의 shopItems 방문(노멀 2막 이상 `doChores(true)`면 골드와 무관하게 수리 NPC 방문, `Town.js` repair 앞부분) — 4절 18번.
+
 ## 4. 미결 작업 (사용자 결정 또는 확인 후)
 | # | 작업 | 상태 | 메모 |
 |---|---|---|---|
@@ -118,6 +130,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | 15 | `makeAccount` 대기 창 처리 | 보류 (261001) | 30초 전체 타임아웃이 잡는다. 대기 창에서 취소 클릭·대기는 없음 |
 | 16 | 계정 생성 실패 뒤 대기 시간 | 보류 (261001) | 지금은 실패하면 바로 재시작. 3절 16번 문구를 보고 복구되는 실패(대기 후 재시작)와 안 되는 실패(정지)를 나눈다 |
 | 17 | 로그인 대기 창 무한 대기 | 기각 (261001) | 내장 `login()`(D2BS 엔진) 안이라 손댈 수 없다. JS 교체는 비밀번호를 얻을 방법이 없어 기각, 감시 스레드도 기각. 24 서버 다운 처리도 기각 |
+| 18 | `repair`의 shopItems 방문 골드 검사 | 그대로 둠 (261001 사용자) | 노멀 2막 이상에서 `doChores(true)`면 골드와 관계없이 수리 NPC에 가서 벨트를 훑는다. 살 수 있는지는 도착 뒤 `shopItems`에서 본다 |
 
 ## 5. 이번 대화에서 확정된 주요 결정 (요약)
 세부는 `attack_design.md` 12절, `attack_compare.md`를 본다.
