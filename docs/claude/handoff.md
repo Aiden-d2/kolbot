@@ -108,6 +108,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | 10 | 재시도 실패 구간을 quit 대신 "그 구간만 건너뛰기" | 보류 (260930) | Malus(30회), Qual-Kehk(5회), Malah(10회) 등. 뒤 구간이 그 퀘스트에 기대는지 하나씩 봐야 해서 동작 변경으로 따로 검토. leveling 구간(Andy·Tombs)의 quit → return은 하지 않기로 함(Tombs는 return하면 두리엘로 넘어감) |
 | 11 | NPC 대사 끊기 근본 수정(유형 B 크래시) | 보류 | 7절. `Packet.openMenu` 등에서 대사 중이면 정상 종료를 기다린 뒤 닫기. 크래시 사례가 더 모이면 결정 |
 | 12 | 디아 판정 위치 | 사용자 결정: 지금대로 | `Diablo not found`는 봉인 단계(diabloPrep)에서 바로 quit. 예전엔 그 뒤 `Attack.clear(0, 243)`으로 한 번 더 찾았음 |
+| 13 | `alkor error`가 로그 규칙 밖 | 그대로 둠 (261001 사용자: 발현 없음, 메모만) | `Town.moveToSpot`(`Town.js:2134-2142`, 첫 업로드부터 있던 `//eom` 코드). 알코어 자리(`[5083, 5016]`)로 `Pather.moveTo` 한 번이 90초 넘게 걸리고 알코어가 안 보일 때만 난다(빨리 끝나면 오류 없이 false → `Town.move`가 flash 후 3회 재시도). 알코어 가는 길이 미로형이라 넣은 것으로 사용자 추정. `quit()` 직접 호출이라 `(지역 x,y)`·trace·`quitReason`이 없다. 바꾸면 `Misc.quitGame("alkor error")`. 호출: 도박 `Town.move(NPC.Alkor)`(`Town.js:162`), 피규어린 `Town.move("alkor")`(`AutoSmurf.js:3843, 3863`) |
+| 14 | `Failed to get corpse, stopping.`이 로그 규칙 밖 | 그대로 둠 (261001 사용자: 발생한 적 없음, 메모만) | `Town.getCorpse`(`Town.js:1540-1542`) 30초 넘게 시체를 못 주우면 빨간 콘솔 + `D2Bot.stop()`. trace 없음, `(지역 x,y)` 없음 |
 
 ## 5. 이번 대화에서 확정된 주요 결정 (요약)
 세부는 `attack_design.md` 12절, `attack_compare.md`를 본다.
