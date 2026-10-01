@@ -2686,7 +2686,8 @@ var Packet = {
 			return true;
 		}
 
-		var i, tick;
+		var i, tick,
+			talkTick = 0;	//261001
 
 		for (i = 0; i < 5; i += 1) {
 			if (getDistance(me, unit) > 4) {
@@ -2698,9 +2699,21 @@ var Packet = {
 
 			while (getTickCount() - tick < 1000) {
 				if (getUIFlag(0x08)) {
+					if (talkTick) {	//261001
+						Misc.trace("[TK] talk waited " + (getTickCount() - talkTick) + "ms npc:" + unit.name);
+					}
+
 					delay(Math.max(100, me.ping * 2));
 
 					return true;
+				}
+
+				if (getIsTalkingNPC() && (!talkTick || getTickCount() - talkTick < 10000)) {	//261001 let the talk end on its own: me.cancel() during a talk leaves a stale callback (Game.exe 0x661406 crash, handoff 7)
+					talkTick = talkTick || getTickCount();
+					tick = getTickCount();
+					delay(100);
+
+					continue;
 				}
 
 				if (getInteractedNPC() && getTickCount() - tick > 500) {

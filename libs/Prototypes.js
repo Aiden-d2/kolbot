@@ -103,7 +103,8 @@ Unit.prototype.openMenu = function (addDelay) {
 		return true;
 	}
 
-	var i, tick;
+	var i, tick,
+		talkTick = 0;	//261001
 
 	for (i = 0; i < 5; i += 1) {
 		if (getDistance(me, this) > 4) {
@@ -115,9 +116,21 @@ Unit.prototype.openMenu = function (addDelay) {
 
 		while (getTickCount() - tick < 5000) {
 			if (getUIFlag(0x08)) {
+				if (talkTick) {	//261001
+					Misc.trace("[TK] talk waited " + (getTickCount() - talkTick) + "ms npc:" + this.name);
+				}
+
 				delay(Math.max(700 + me.ping, 500 + me.ping * 2 + addDelay * 500));
 
 				return true;
+			}
+
+			if (getIsTalkingNPC() && (!talkTick || getTickCount() - talkTick < 10000)) {	//261001 let the talk end on its own: me.cancel() during a talk leaves a stale callback (Game.exe 0x661406 crash, handoff 7)
+				talkTick = talkTick || getTickCount();
+				tick = getTickCount();
+				delay(100);
+
+				continue;
 			}
 
 			if (getInteractedNPC() && getTickCount() - tick > 1000) {
