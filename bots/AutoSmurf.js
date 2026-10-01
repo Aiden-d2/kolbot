@@ -7617,18 +7617,8 @@ function AutoSmurf() {
 	
 	print("Script ended");
 
-	if (!Misc.quitReason) {	//260930 reached the end: the one normal-end line in the console (leader only)
+	if (!Misc.quitReason) {	//260930 reached the end	//261001 console line removed: no red/Error line before the exp line = normal end
 		Misc.trace("Script ended");
-
-		if (Leader) {
-			D2Bot.printToConsole("Script ended");
-		}
-	}
-
-	if (!Leader) {	//261001 a follower leaving first makes the leader quit (PartyThread) before its "Script ended": wait, PartyThread ends this game when the leader leaves
-		while (true) {
-			delay(1000);
-		}
 	}
 
 	return true;
