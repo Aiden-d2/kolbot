@@ -57,11 +57,11 @@ var Skill = {
 			return 6;
 		case 151: // Whirlwind
 		case 229: // Molten Boulder
-		case 243: // Shock Wave
-		case 249: // Armageddon
+		case 243: // Shock Wave	//260930 back to 7 (same as Armageddon for D.FGOM)
+		case 249: // Armageddon	//260930 back to 7
 			return 7;
-		case 48: // Nova	//260917
-		case 64: // Frozen Orb	//260917
+		case 48: // Nova	//260917	//260930 back to 9 (10 for a day)
+		case 64: // Frozen Orb	//260917	//260930 back to 9
 		case 92: // Poison Nova
 			return 9;
 		case 15: // Poison Javelin
@@ -75,6 +75,7 @@ var Skill = {
 		case 35: // Lightning Fury
 		case 67: // Teeth
 		case 101: // Holy Bolt
+		case 130: // Howl	//260901	//260930 20 -> 15 (measured 15.0 at skill level 20)
 		case 234: // Fissure
 		case 244: // Volcano
 		case 251: // Fire Blast
@@ -90,7 +91,6 @@ var Skill = {
 		case 31: // Freezing Arrow
 		case 51: // Fire Wall	//260917
 		case 121: // Fist of the Heavens
-		case 130: // Howl	//260901
 		case 140: // Double Throw
 		case 253: // Psychic Hammer
 		case 275: // Dragon Flight
@@ -1420,9 +1420,20 @@ var Misc = {
 		return true;
 	},
 
+	// a chest skipped for a trap or a fire, traced once per chest (does the client objtype carry the trap type?)	//261001 temp: remove after the in-game check
+	chestSkipped: {},
+
+	traceChestSkip: function (unit, reason) {	//261001 temp
+		if (!this.chestSkipped[unit.gid]) {
+			this.chestSkipped[unit.gid] = true;
+			this.trace("[chest] skip " + reason + " name:" + unit.name + " classid:" + unit.classid + " objtype:" + unit.objtype + " dist:" + Math.round(getDistance(me, unit)));
+		}
+	},
+
 	openChests: function (range) {
 		var unit,
 			unitList = [],
+			fireList = [],	//261001 fires near the chests in range, gathered in the same object scan
 			containers = ["chest", "chest3", "armorstand", "weaponrack"];
 
 		if (!range) {
@@ -1435,7 +1446,7 @@ var Misc = {
 				"chest", "loose rock", "hidden stash", "loose boulder", "corpseonstick", "casket", "armorstand", "weaponrack", "barrel", "holeanim", "tomb2",
 				"tomb3", "roguecorpse", "ratnest", "corpse", "goo pile", "largeurn", "urn", "chest3", "jug", "skeleton", "guardcorpse", "sarcophagus", "object2",
 				"cocoon", "basket", "stash", "hollow log", "hungskeleton", "pillar", "skullpile", "skull pile", "jar3", "jar2", "jar1", "bonechest", "woodchestl",
-				"woodchestr", "barrel wilderness", "burialchestr", "burialchestl", "explodingchest", "chestl", "chestr", "groundtomb", "icecavejar1", "icecavejar2",
+				"woodchestr", "barrel wilderness", "burialchestr", "burialchestl", "chestl", "chestr", "groundtomb", "icecavejar1", "icecavejar2",	//261001 "explodingchest" removed (trap)
 				"icecavejar3", "icecavejar4", "deadperson", "deadperson2", "evilurn", "tomb1l", "tomb3l", "groundtombl"
 			];
 		}
@@ -1444,11 +1455,31 @@ var Misc = {
 
 		if (unit) {
 			do {
+				if (unit.name && unit.name.toLowerCase() === "fire" && getDistance(me.x, me.y, unit.x, unit.y) <= range + 4) {	//261001 fire objects (bonfire, fire small/medium/large, brazier) that can reach a chest in range
+					fireList.push({x: unit.x, y: unit.y});
+				}
+
+				// objtype low 7 bits = trap type (lightning, firebolt, poison, nova, fire, trap monsters), bit 7 = locked	//261001
 				if (unit.name && unit.mode === 0 && getDistance(me.x, me.y, unit.x, unit.y) <= range && containers.indexOf(unit.name.toLowerCase()) > -1) {
-					unitList.push(copyUnit(unit));
+					if (unit.objtype & 0x7F) {	//261001 trapped chests skipped
+						this.traceChestSkip(unit, "trap");	//261001 temp
+					} else {
+						unitList.push(copyUnit(unit));
+					}
 				}
 			} while (unit.getNext());
 		}
+
+		// a chest next to a fire (e.g. a burning staked corpse): opening it means standing in the fire	//261001
+		unitList = unitList.filter(function (chest) {
+			if (Attack.checkFire(chest.x, chest.y, fireList)) {
+				Misc.traceChestSkip(chest, "fire");	//261001 temp
+
+				return false;
+			}
+
+			return true;
+		});
 
 		while (unitList.length > 0) {
 			unitList.sort(Sort.units);

@@ -5,7 +5,7 @@
 ---
 
 ## 1. 현재 상태
-- **코드:** 260930 작업까지 모두 main에 반영됨(PR #7, 머지 커밋 `603fee8`). 작업 브랜치 `claude/funny-pasteur-4ymxd2`도 같은 내용.
+- **코드:** main `4f55291`(261001) 기준. 크래시·로그·포털 작업은 PR #7(`claude/funny-pasteur-4ymxd2`), 회피 재설계·스킬 사거리는 PR #8, Precast.summon은 PR #9, Pather·setPosition·상자는 PR #10·#11(`claude/pather-analysis-refactor-w9td75`, 세부는 `pather_status.md`)로 들어왔다. 각 작업의 게임 확인 항목은 아래 목록과 3절 표(10~14번)에 있다.
 - **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
 - **인게임 검증:** 아직 안 됨(문법 검사만). 다음 사이클에서 볼 것:
   1. 용병 고용: trace `[MP]`에 `arrived` 뒤로 `0x4f`/`0x4e`가 찍히고 고용되는지
@@ -57,6 +57,11 @@
 | 7 | 18레벨 이상 캐릭터의 "Going to town" 반복이 사라졌는가 | 드루이드 등 골드 540 이상 캐릭터 | 아래 5절 열쇠 항목 |
 | 8 | ~~박스 호출에서 박스 밖으로 나가지 않는가 (260929 울타리)~~ | **통과 (260930)** | `attack_design.md` 12-1 박스 울타리 |
 | 9 | ~~박스 가장자리 MUST에 붙잡히지 않는가 (260929 unreachable → deferred)~~ | **통과 (260930)** | 12-1 MUST unreachable |
+| 10 | 걷기 회피가 min(사거리, 10)칸 자리로 짧게 물러나는가, 텔레는 사거리만큼. War Cry·Tornado(사거리 5)·D.FGOM(7)도 회피. FONV·D.FGOM 진동 없는가 (260930) | 좁은 지형 소서, B.WCRY, D.WIND, D.FGOM | 12-1 회피 거리. 반경·회피 거리 분리 여부는 이후 재논의 |
+| 11 | Howl 15 사거리에서 헛캐스팅이 없는가 (260930) | B.WCRY | 12-1 스킬 사거리 |
+| 12 | 회피가 물러나는 쪽의 몹 최소 자리로 가고, 회피 반복이 줄었는가 (261001) | FONV·D.FGOM·B.WCRY 회피 장면 | `pather_status.md` 4절 |
+| 13 | Flayer Dungeon·Arcane에서 텔레 이동이 30 간격을 유지하는가 (SafeTele 뒤·실패 뒤 포함, 261001) | trace `[teleportTo failed]`, `path total nodes` | `pather_status.md` 3-1 |
+| 14 | 상자 제외: trace `[chest] skip trap`의 objtype 하위 7비트가 1~8이고, `[chest] skip fire`가 불 옆 상자(1막 CorpseOnStick 등)에서 찍히는가 (261001). 트랩 없는 컨테이너 오판은 게임 코드로 없음 확인 | trace `[chest] skip` | `pather_status.md` 3-8 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -80,11 +85,19 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - okCount·teamCount 대기 간격 500 → 1000ms(260930 사용자 요청). 120초 타임아웃은 시간 기준이라 그대로.
 - 참고(1번 관련): 같은 자리에서 `[AC] end casts:0`이 10회 이상 이어진 대기 구간 845개, 합계 약 9000초. 최장은 카오스 생추어리·증오의 억류지 3층·Frozen River 등 팔로워 대기 루프(최장 121초, 초당 약 2회 clear 호출). 설계상 대기 중 방어이며, 버벅거림 여부는 trace로 판단 불가.
 
+**261001 Pather·setPosition·상자 (작업 브랜치 `claude/pather-analysis-refactor-w9td75`, 사용자 요청으로 코드 반영)**
+- 반영: 7개 지역 텔레 간격 30을 모든 텔레 경로에(`Pather.getTeleDistance`, setPosition 한 번 텔레 한계는 35 그대로), `SafeTele.Count` 삭제(몹 1마리부터 발동), setPosition 회피는 구역(물러나기 → 반대편) 안 몹 수 최소.
+- 기각·유지: SafeTele 0x4 시야 검사(기각), setPosition 자리 기억(탈락), `"killMonsters"` 반환(유지), Warriv 1막 경유(의도).
+- 기각: SafeTele를 clearPath true 이동에서 끄기(`pather_status.md` 3-6).
+- 반영: 상자 제외 — 트랩 전부(`objtype & 0x7F`, `explodingchest`), 불 옆(같은 `getUnit(2)` 루프에서 fire 수집, 반경 4)(`pather_status.md` 3-8).
+- 기각·보류: journeyTo throw, 죽은 코드(`cleared`·`MainLoop:`·`j`/`wp`), PathDebug, `NodeAction.go`의 `prevNode` 주석 규칙, `moveTo`의 `errorReport //260922 temp`.
+- 실수 기록: 결정을 요청으로 보고 코드를 고쳤다가 되돌림(`8c33a7b`). CLAUDE.md 작업 규칙에 "결정은 요청이 아니다" 추가.
+
 ## 4. 미결 작업 (사용자 결정 또는 확인 후)
 | # | 작업 | 상태 | 메모 |
 |---|---|---|---|
 | 1 | ~~NoSkipArea 키와 조건 제거~~ | **완료 (260929)** | 로컬 `[]`로 1막~헬 파밍 한 사이클 문제없음(사용자 확인) → 제거. 제거할 곳: `Config.js` 키, `Attack.js`의 306 스킵·unreachable 즉시 제외·HP 스킵 조건 3곳, `Paladin.js` 해머 게이트 조건. 조건에서 `Config.NoSkipArea.indexOf(me.area) < 0 &&`만 빼면 동작은 같다 |
-| 2 | **임시 로그 정리** | 일부 완료 | `[AC]`/`[SP]` 삭제 완료(260930). 남은 것: `[MP]`(Merc.js), `usePortal 342`(Pather.js, `//260930 temp`), `[MoveToSlot]` 실패 상세(Storage.js) → 한 사이클 확인 뒤 삭제 후보. `[TK]`(Prototypes.js `me.cancel` 래퍼)·`[OD]`(AutoSmurf `watchDialog`) → 유형 B 크래시 사례 볼 때까지 유지 |
+| 2 | **임시 로그 정리** | 일부 완료 | `[AC]`/`[SP]` 삭제 완료(260930). 남은 것: `[MP]`(Merc.js), `usePortal 342`(Pather.js, `//260930 temp` — 260926 사용자 redPortal 로그를 대신함), `[MoveToSlot]` 실패 상세(Storage.js) → 한 사이클 확인 뒤 삭제 후보. `Misc.js`의 `[chest] skip` trace(`traceChestSkip`, `//261001 temp`)도 확인 뒤 지운다. `ToolsThread.js`의 미사일 사거리 측정기(Numpad 5, `[MM]`, `//260930 temp`)도 측정이 끝나면 지운다. `[TK]`(Prototypes.js `me.cancel` 래퍼)·`[OD]`(AutoSmurf `watchDialog`) → 유형 B 크래시 사례 볼 때까지 유지 |
 | 3 | ~~주석 처리된 옛 코드 정리~~ | **완료 (260929)** | JS/dbj/dbl 32개 파일에서 주석 처리된 옛 코드와 `/* */` 옛 코드 블록, 롤백용 머리글을 지움(Attack.js 2500 → 1349줄). 주석을 뺀 코드 토큰이 정리 전과 같음을 확인. nip·Config.js·builds의 꺼 둔 옵션과 설명 주석·날짜 표기·줄 끝 메모는 유지. 이전 코드는 커밋 `fcd2713` |
 | 4 | **소 레벨 치킨 잦음** | 개선 대상 | `followDriver`는 사용자 코드로 교체됨(30 초과 이동, 15~30 clearPath 이동, 근접 clear). 리더 쪽 `clearCowLevel`(팔로워를 기다리지 않고 방마다 이동)은 아직 손대지 않음 |
 | 5 | 부활·소환형(샤먼) 우선 | 보류 | 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류함 |

@@ -439,9 +439,11 @@ var Precast = new function () {
 		}
 
 		while (me.getMinionCount(minion) < count) {
-			rv = true;
+			if (!Skill.cast(skillId, 0)) {	//260930 cast refused (low mana etc.): skip, the next doPrecast refills (was waiting here until mana came back)
+				break;
+			}
 
-			Skill.cast(skillId, 0);
+			rv = true;
 			delay(200);
 		}
 

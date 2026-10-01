@@ -96,7 +96,7 @@ var ClassAttack = {
 			case 229: // Molten Boulder	//260814
 			case 240: // Twister
 			case 245: // Tornado
-					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x405, 1)) {	//260826
+					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x405)) {	//260826	//260930 minDist 1 is the default now
 						return 0;
 					}
 

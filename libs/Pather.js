@@ -135,10 +135,15 @@ var Pather = {
 	teleport: true,
 	walkDistance: 5,
 	teleDistance: 35,	//260829
-	maxTeleDistance: 45,	//260826
+	narrowAreas: [62, 63, 64, 88, 89, 91, 74],	//261001 teleport step 30 and node adjustment (Maggot Lair, Flayer Dungeon, Arcane)
 	cancelFlags: [0x01, 0x02, 0x04, 0x08, 0x14, 0x16, 0x0c, 0x0f, 0x17, 0x19, 0x1A],
 	wpAreas: [1, 3, 4, 5, 6, 27, 29, 32, 35, 40, 48, 42, 57, 43, 44, 52, 74, 46, 75, 76, 77, 78, 79, 80, 81, 83, 101, 103, 106, 107, 109, 111, 112, 113, 115, 123, 117, 118, 129],
 	recursion: true,
+
+	// teleport step for the current area (narrowAreas 30, else teleDistance). Every teleport path in moveTo and the SafeTele ring use it	//261001
+	getTeleDistance: function () {
+		return this.narrowAreas.indexOf(me.area) > -1 ? 30 : this.teleDistance;
+	},
 
 	useTeleport: function () {
 		return this.teleport && !me.getState(139) && !me.getState(140) && !me.inTown && ((me.classid === 1 && me.getSkill(54, 1)) || me.getStat(97, 54));
@@ -164,13 +169,13 @@ var Pather = {
 			
 			baseline = Attack.getMonsterCount(targetNode.x, targetNode.y, Config.SafeTele.Range, monList, fireList);
 
-			if (baseline < Config.SafeTele.Count) return targetNode;
+			if (baseline === 0) return targetNode;	//261001 SafeTele.Count removed: 1 monster is enough
 
 			angle = Math.atan2(targetNode.y - me.y, targetNode.x - me.x);
 
 			safeNode = false;
 
-			for (dist = Pather.teleDistance; dist >= Config.SafeTele.Min; dist -= Config.SafeTele.Step) {
+			for (dist = Pather.getTeleDistance(); dist >= Config.SafeTele.Min; dist -= Config.SafeTele.Step) {
 				step = Config.SafeTele.Step / dist * 180 / Math.PI;
 
 				for (i = 0; ; i += 1) {	//260524
@@ -263,7 +268,7 @@ var Pather = {
 		useTeleport = this.useTeleport();
 
 		Misc.trace("moveTo getPath -> " + x + "," + y + " tele:" + useTeleport);
-		path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? ([62, 63, 64, 88, 89, 91, 74].indexOf(me.area) > -1 ? 30 : this.teleDistance) : this.walkDistance);	//260716	//260823	//260921
+		path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.getTeleDistance() : this.walkDistance);	//260716	//260823	//260921	//261001 getTeleDistance
 
 		if (!path) {
 			throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y);	//260509
@@ -337,7 +342,7 @@ var Pather = {
 					}
 					
 					if (this.teleportTo(checkedNode.x, checkedNode.y)) {
-						path = getPath(me.area, x, y, me.x, me.y, 1, this.teleDistance);	//260613
+						path = getPath(me.area, x, y, me.x, me.y, 1, this.getTeleDistance());	//260613	//261001 narrowAreas 30 after a SafeTele hop too
 						
 						if (!path) { throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y); }	//260509
 						
@@ -359,7 +364,7 @@ var Pather = {
 			*/
 			if (getDistance(me, node) > 2) {
 				// Make life in Maggot Lair easier + flayer
-				if ([62, 63, 64, 88, 89, 91, 74].indexOf(me.area) > -1) {	//260716	//260823	//260921
+				if (this.narrowAreas.indexOf(me.area) > -1) {	//260716	//260823	//260921	//261001 narrowAreas
 					adjustedNode = this.getNearestWalkable(node.x, node.y, 10, 2, 0x1 | 0x4 | 0x800 | 0x1000);	//260823
 					
 					if (adjustedNode) {
@@ -415,7 +420,7 @@ var Pather = {
 					}
 
 					// Reduce node distance in new path
-					path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? rand(25, 35) : rand(4, 8));	//260508
+					path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? rand(25, this.getTeleDistance()) : rand(4, 8));	//260508	//261001 narrowAreas 25-30
 					fail += 1;
 
 					if (!path) {
@@ -456,12 +461,6 @@ var Pather = {
 		y - the y coord to teleport to
 	*/
 	teleportTo: function (x, y, maxRange) {
-		if (Math.floor(getDistance(me.x, me.y, x, y)) > this.maxTeleDistance) {	//260826
-			Misc.trace("[teleportTo skipped] dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);	//260930 print -> trace (diagnostic)
-			
-			return false;
-		}
-		
 		var i, tick, casting;
 
 		if (maxRange === undefined) {

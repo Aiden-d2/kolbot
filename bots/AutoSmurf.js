@@ -1984,7 +1984,7 @@ function AutoSmurf() {
 			Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true, true);
 			
 			try {
-				Attack.clear(0, getLocaleString(3111)); // Blood Raven //260929
+				Attack.clear(10, getLocaleString(3111)); // Blood Raven //260929
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.blood", e);	//260930
 			}
@@ -5781,7 +5781,7 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 
-		Attack.clear(0, getLocaleString(2875));	//260929
+		Attack.clear(15, getLocaleString(2875));	//260929
 		
 		Pather.moveToPreset(me.area, 2, 580, myX, myY);	//260929
 		
@@ -6549,7 +6549,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		try {
-			Attack.clear(0, 250);	//Summoner //260926
+			Attack.clear(10, 250);	//Summoner //260926
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.farmingSummoner", e);	//260930
 		}

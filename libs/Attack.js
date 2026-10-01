@@ -486,14 +486,15 @@ var Attack = {
 
 	/*
 		Attack.setPosition(unit, distance, coll, minDist)	//260926
-		Candidates are ring spots that keep unit in range and in sight (rings every Dodge.Step, arc spacing Dodge.Step).
+		Candidates are ring spots that keep unit in range and in sight (arc spacing 5; approach rings every 5).	//260930
 		  approach (out of range or no LOS): front straight > front detour (moveTo) > back straight > back detour.
-		           Outer ring first, then small offset; fire tiles excluded; threat only breaks ties	//260928
+		           Outer ring first, then small offset; fire tiles excluded	//260930 no threat tie-break (safety is the next tick's dodge)
 		           sweep target only: the spot must be in sight from me (0x4), and a detour is taken only if
 		           my walking path to the target <= straight distance * DetourPath (the old clear's Angle/Detour gate)	//260928
-		  dodge (in range, Dodge on, skill range >= Dodge.Range, 1+ monster within Dodge.Range): back straight away first
-		           (outer ring first), taking the first spot with at least 1 monster fewer than where I stand;
-		           if the backing-away half has none, go through to the far side	//260927
+		  dodge (in range, Dodge on, skill range >= Dodge.MinSkillRange, 1+ monster closer than R = min(skill range, Dodge.Range)):	//260930
+		           one ring at R (teleport: at the skill range), back straight away first,
+		           taking the spot with the fewest monsters (closer than R) in the backing-away half, 1+ fewer than where I stand	//261001
+		           (ties: straighter back first); if that half has none, the fewest on the far side	//260927
 		  box call (Attack.tick.box): only spots inside the box, for approach and dodge alike	//260929
 		Returns false only when an approach fails. Attack.tick.fail says why: "unreachable" | "moveFailed"
 	*/
@@ -502,16 +503,16 @@ var Attack = {
 			return false;
 		}
 
-		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 3;
+		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 1;	//260930 3 -> 1 (a dodge that stops 3 short lands inside the threat radius again)
 
-		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier,
+		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, threatRange, count,	//260930	//261001 count
 			detourOk, detourPath,	//260928
 			fence = this.tick.box,	//260929
 			pathOk = false,
 			list = [],
 			baseline = 0,
 			moveNeeded = getDistance(me, unit) > distance || checkCollision(me, unit, coll),
-			scoring = Config.Dodge.Enabled && distance >= Config.Dodge.Range && me.hp * 100 / me.hpmax <= Config.Dodge.HP && unit.classid !== 243,	//260915
+			scoring = Config.Dodge.Enabled && distance >= Config.Dodge.MinSkillRange && unit.classid !== 243,	//260915	//260930 HP condition removed
 			angle = Math.atan2(me.y - unit.y, me.x - unit.x);
 
 		if (!moveNeeded && !scoring) {
@@ -521,27 +522,33 @@ var Attack = {
 		useTele = Pather.useTeleport();
 		fireList = this.getFireList();
 
-		if (scoring) {
+		if (!moveNeeded) {	//260930 threat is a dodge matter only (approach no longer counts monsters)
+			threatRange = Math.min(distance, Config.Dodge.Range);	//260930 radius and dodge distance in one value
 			monList = this.tick.monList || this.buildMonsterList();
-			baseline = this.getMonsterCount(me.x, me.y, Config.Dodge.Range, monList, fireList);
+			baseline = this.getMonsterCount(me.x, me.y, threatRange, monList, fireList);
 
-			if (baseline === 0 && !moveNeeded) {
+			if (baseline === 0) {	//260930 Dodge.Count removed
 				return true;
 			}
 		}
 
-		// rings every Dodge.Step inward; reduced rings below 5 are dropped, the skill-range ring is always kept	//260927
-		radii = [distance];
+		if (moveNeeded) {
+			// approach: rings every 5 inward; reduced rings below 5 are dropped, the skill-range ring is always kept	//260927
+			radii = [distance];
 
-		for (r = distance - Config.Dodge.Step; r >= 5; r -= Config.Dodge.Step) {
-			radii.push(r);
+			for (r = distance - 5; r >= 5; r -= 5) {	//260930 Dodge.Step -> 5
+				radii.push(r);
+			}
+		} else {
+			// dodge: one ring at R (narrow ground: backing off to the skill range took too long). Teleport lands at once, so the skill range	//260930
+			radii = [useTele ? distance : threatRange];
 		}
 
 		choice = null;
 		pathCand = null;
 		pathOk = false;
 
-		// candidates with lo < |offset| <= hi on every ring (arc spacing Dodge.Step)
+		// candidates with lo < |offset| <= hi on every ring (arc spacing 5)	//260930
 		function build(lo, hi) {
 			var out = [];
 
@@ -552,7 +559,7 @@ var Attack = {
 					continue;
 				}
 
-				step = Config.Dodge.Step / r * 180 / Math.PI;
+				step = 5 / r * 180 / Math.PI;	//260930 Dodge.Step -> 5
 
 				for (k = 0; ; k += 1) {
 					offset = k === 0 ? 0 : (k % 2 ? Math.ceil(k / 2) : -Math.ceil(k / 2)) * step;
@@ -597,32 +604,16 @@ var Attack = {
 					continue;
 				}
 
-				// a dodge is a single short hop
-				if (useTele && !moveNeeded && getDistance(me.x, me.y, c.x, c.y) > Pather.maxTeleDistance) {
-					list.splice(i, 1);
-
-					continue;
-				}
-
-				c.threat = scoring ? this.getMonsterCount(c.x, c.y, Config.Dodge.Range, monList, fireList) : 0;
 			}
 
-			// Order decides which spot, threat only decides whether a spot is allowed	//260927
-			// approach: outer ring first, then straight ahead; threat breaks ties	//260928
-			// dodge: back straight away first (outer ring = away from the target, then small offset); a spot must beat the current one by 1+
-			// 260928: approach is outer ring first, then offset (the agreed order, same as dodge; the old code also looked on the skill-range ring first)
-			list.sort(moveNeeded ? function (a, b) {
-				return (b.r - a.r) || (a.offset - b.offset) || (a.threat - b.threat);
-			} : function (a, b) {
+			// approach: order decides the spot (outer ring first, then straight ahead)	//260927
+			// dodge: one ring, the spot with the fewest monsters in this half (ties: back straight away first); it must beat the current one by 1+	//261001 fewest instead of the first better
+			list.sort(function (a, b) {
 				return (b.r - a.r) || (a.offset - b.offset);
 			});
 
 			for (i = 0; i < list.length; i += 1) {
 				c = list[i];
-
-				if (!moveNeeded && c.threat >= baseline) {
-					continue;	// not safer than where I stand
-				}
 
 				if (useTele ? !Pather.checkSpot(c.x, c.y, 0x1, false) : (getCollision(me.area, c.x, c.y) & 0x1)) {
 					continue;
@@ -645,6 +636,23 @@ var Attack = {
 					// a walk around is only for a spot in sight (0x1 in the way); behind a wall (0x4) it is not a spot for a sweep target	//260928
 					if (moveNeeded && !pathCand && (this.tick.must || !CollMap.checkColl(me, {x: c.x, y: c.y}, 0x4))) {
 						pathCand = c;	// reachable only by walking around. Checked once below
+					}
+
+					continue;
+				}
+
+				if (!moveNeeded) {	//261001 dodge: keep the fewest (a dodge that only drops 3 -> 2 dodges again next tick)
+					count = this.getMonsterCount(c.x, c.y, threatRange, monList, fireList);	//260930 after the cheap checks, counts closer than R
+
+					if (count >= baseline) {
+						continue;	// not safer than where I stand, or than the best spot so far
+					}
+
+					choice = c;
+					baseline = count;
+
+					if (count === 0) {
+						break;
 					}
 
 					continue;
@@ -676,7 +684,7 @@ var Attack = {
 			try {
 				if (!useTele) {
 					moved = Pather.walkTo(choice.x, choice.y, minDist);
-				} else if (getDistance(me.x, me.y, choice.x, choice.y) <= Pather.maxTeleDistance) {
+				} else if (getDistance(me.x, me.y, choice.x, choice.y) <= Pather.teleDistance) {	//260930 maxTeleDistance removed
 					moved = Pather.teleportTo(choice.x, choice.y);
 				} else {
 					moved = Pather.moveTo(choice.x, choice.y, 1);	// several hops
@@ -778,7 +786,7 @@ var Attack = {
 			count = 0;
 		
 		for (i = 0; i < list.length; i += 1) {
-			if (getDistance(x, y, list[i].x, list[i].y) <= range) {
+			if (getDistance(x, y, list[i].x, list[i].y) < range) {	//260930 <= -> < (closer than range; dodge and SafeTele alike)
 				count += 1;
 			}
 		}

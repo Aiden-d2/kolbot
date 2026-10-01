@@ -20,10 +20,10 @@ var AutoBuildTemplate = {
 	BuildGoal: {
 		Stats: [
 			{stat: 0, target: 60},				// Strength
-			{stat: 1, target: 175, per: 2},		// Energy
-			{stat: 3, target: 185},				// Vitality
+			{stat: 1, target: 180, per: 2},		// Energy
+			{stat: 3, target: 180},				// Vitality
 			{stat: 2, target: 35},				// Dexterity
-			{stat: 1, target: 245, per: 2},		// Energy
+			{stat: 1, target: 245, per: 3},		// Energy
 			{stat: 3, target: 245},				// Vitality
 		],
 		
