@@ -566,6 +566,11 @@ function main() {
 					Misc.trace("[Quit] Life Chicken " + me.hp + "/" + me.hpmax);	//260930
 					print("[Chicken] Life (" + me.hp + "/" + me.hpmax + ") area:" + me.area + " (" + me.x + "," + me.y + ")");	//eom 260415
 					D2Bot.updateChickens();
+
+					if (Config.LogExperience) {	//261001 the chickened profile also leaves its exp line
+						Experience.log();
+					}
+
 					this.exit();
 
 					break;
@@ -583,6 +588,11 @@ function main() {
 					D2Bot.printToConsole("Mana Chicken " + me.mp + "/" + me.mpmax + " (" + Misc.where() + ")", 9);	//260930
 					Misc.trace("[Quit] Mana Chicken " + me.mp + "/" + me.mpmax);	//260930
 					D2Bot.updateChickens();
+
+					if (Config.LogExperience) {	//261001 the chickened profile also leaves its exp line
+						Experience.log();
+					}
+
 					this.exit();
 
 					break;
@@ -598,6 +608,11 @@ function main() {
 							D2Bot.printToConsole("Iron Golem Chicken (" + Misc.where() + ")", 9);	//260930
 							Misc.trace("[Quit] Iron Golem Chicken");	//260930
 							D2Bot.updateChickens();
+
+							if (Config.LogExperience) {	//261001 the chickened profile also leaves its exp line
+								Experience.log();
+							}
+
 							this.exit();
 
 							break;
@@ -614,6 +629,11 @@ function main() {
 							D2Bot.printToConsole("Merc Chicken (" + Misc.where() + ")", 9);	//260930
 							Misc.trace("[Quit] Merc Chicken");	//260930
 							D2Bot.updateChickens();
+
+							if (Config.LogExperience) {	//261001 the chickened profile also leaves its exp line
+								Experience.log();
+							}
+
 							this.exit();
 
 							break;
