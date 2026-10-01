@@ -6,6 +6,7 @@
 
 ## 1. 현재 상태
 - **코드:** main `4f55291`(261001) 기준. 크래시·로그·포털 작업은 PR #7(`claude/funny-pasteur-4ymxd2`), 회피 재설계·스킬 사거리는 PR #8, Precast.summon은 PR #9, Pather·setPosition·상자는 PR #10·#11(`claude/pather-analysis-refactor-w9td75`, 세부는 `pather_status.md`)로 들어왔다. 각 작업의 게임 확인 항목은 아래 목록과 3절 표(10~14번)에 있다.
+- **게임 밖 흐름(261001, PR #16):** 캐릭터 선택 화면 생성, 복구할 수 없는 로그인 오류에서 정지, 대기 남은 시간 표시, 게임 밖 회색 콘솔 로그(`OOGLog`). 세부는 5절 끝, 게임 확인은 3절 15~17번.
 - **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
 - **인게임 검증:** 아직 안 됨(문법 검사만). 다음 사이클에서 볼 것:
   1. 용병 고용: trace `[MP]`에 `arrived` 뒤로 `0x4f`/`0x4e`가 찍히고 고용되는지
@@ -25,11 +26,11 @@
 2. 브랜치에서 수정한다.
 3. 커밋 → 푸시한다.
 4. 사용자가 브랜치에서 확인한다.
-5. 사용자가 요청하면 PR을 만들고, 요청하면 병합한다.
+5. `main` 병합은 사용자가 요청할 때만 한다. 내가 새로 하려는 커밋·PR·병합은 먼저 묻고 승인받는다(261001).
 
 **규칙** (CLAUDE.md에도 있음)
 - **요청 없이 코드를 고치지 않는다.** 분석, 검토, 제안까지만 한다.
-- main은 절대 직접 덮어쓰지 않는다.
+- `main` 병합은 요청이 있을 때만 한다(261001, "main은 덮어쓰지 않는다" 조항은 삭제됨).
 - 지운다(260929부터, 주석으로 남기지 않음). 이전 코드는 git 기록으로 찾는다. 주석 일괄 정리 직전 커밋은 `fcd2713`. 수정 줄에는 `//YYMMDD` 표기를 한다.
 - `AutoSmurf.js`, `Reload.js`, `nips/*.nip`은 LF다. 사용자의 로컬 파일은 CRLF일 수 있다.
 
@@ -62,6 +63,9 @@
 | 12 | 회피가 물러나는 쪽의 몹 최소 자리로 가고, 회피 반복이 줄었는가 (261001) | FONV·D.FGOM·B.WCRY 회피 장면 | `pather_status.md` 4절 |
 | 13 | Flayer Dungeon·Arcane에서 텔레 이동이 30 간격을 유지하는가 (SafeTele 뒤·실패 뒤 포함, 261001) | trace `[teleportTo failed]`, `path total nodes` | `pather_status.md` 3-1 |
 | 14 | 상자 제외: trace `[chest] skip trap`의 objtype 하위 7비트가 1~8이고, `[chest] skip fire`가 불 옆 상자(1막 CorpseOnStick 등)에서 찍히는가 (261001). 트랩 없는 컨테이너 오판은 게임 코드로 없음 확인 | trace `[chest] skip` | `pather_status.md` 3-8 |
+| 15 | 게임 밖 trace 줄이 `[OOG loc N]`으로 찍히는가 (261001) | `_cache/trace/` 로그인·계정 생성·키 오류 장면 | 5절 게임 밖 흐름 |
+| 16 | 계정 생성 중 30 팝업 문구가 읽히는가. `(no text)`면 문구 박스 좌표 `(4, 268, 320, 264, 120)`가 틀린 것 (261001) | 콘솔·trace `Create account failed: 계정 "문구"` | 결과를 보고 4절 16번(실패 뒤 대기 시간)을 정한다 |
+| 17 | 캐릭터 생성 버튼을 누른 뒤 뜨는 대기 창의 location 번호 (261001) | `Create character timeout` 줄의 `(loc N)`(타임아웃 날 때만) | 타임아웃 방식이라 몰라도 동작함 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -110,6 +114,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | 11 | NPC 대사 끊기 근본 수정(유형 B 크래시) | 보류 | 7절. `Packet.openMenu` 등에서 대사 중이면 정상 종료를 기다린 뒤 닫기. 크래시 사례가 더 모이면 결정 |
 | 12 | 디아 판정 위치 | 사용자 결정: 지금대로 | `Diablo not found`는 봉인 단계(diabloPrep)에서 바로 quit. 예전엔 그 뒤 `Attack.clear(0, 243)`으로 한 번 더 찾았음 |
 | 13 | `alkor error`가 로그 규칙 밖 | 그대로 둠 (261001 사용자: 발현 없음, 메모만) | `Town.moveToSpot`(`Town.js:2134-2142`, 첫 업로드부터 있던 `//eom` 코드). 알코어 자리(`[5083, 5016]`)로 `Pather.moveTo` 한 번이 90초 넘게 걸리고 알코어가 안 보일 때만 난다(빨리 끝나면 오류 없이 false → `Town.move`가 flash 후 3회 재시도). 알코어 가는 길이 미로형이라 넣은 것으로 사용자 추정. `quit()` 직접 호출이라 `(지역 x,y)`·trace·`quitReason`이 없다. 바꾸면 `Misc.quitGame("alkor error")`. 호출: 도박 `Town.move(NPC.Alkor)`(`Town.js:162`), 피규어린 `Town.move("alkor")`(`AutoSmurf.js:3843, 3863`) |
+| 15 | `makeAccount` 대기 창 처리 | 보류 (261001) | 30초 전체 타임아웃이 잡는다. 대기 창에서 취소 클릭·대기는 없음 |
+| 16 | 계정 생성 실패 뒤 대기 시간 | 보류 (261001) | 지금은 실패하면 바로 재시작. 3절 16번 문구를 보고 복구되는 실패(대기 후 재시작)와 안 되는 실패(정지)를 나눈다 |
+| 17 | 로그인 대기 창 무한 대기 | 기각 (261001) | 내장 `login()`(D2BS 엔진) 안이라 손댈 수 없다. JS 교체는 비밀번호를 얻을 방법이 없어 기각, 감시 스레드도 기각. 24 서버 다운 처리도 기각 |
 | 14 | `Failed to get corpse, stopping.`이 로그 규칙 밖 | 그대로 둠 (261001 사용자: 발생한 적 없음, 메모만) | `Town.getCorpse`(`Town.js:1540-1542`) 30초 넘게 시체를 못 주우면 빨간 콘솔 + `D2Bot.stop()`. trace 없음, `(지역 x,y)` 없음 |
 
 ## 5. 이번 대화에서 확정된 주요 결정 (요약)
@@ -155,6 +162,13 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 규칙: **기본은 pop 없음.** 순수 이동으로 **몬스터에게 다가갈 때만**(바로 붙지 않게) pop을 쓴다. 텔레도 걷기와 똑같이 적용한다. 위치 선정·재집결(clear 뒤 재이동, `myX`/`myY` 자리, 오프셋으로 설 자리를 정한 이동)은 pop 없음.
 - 현재 pop=true: Blood Raven 묘지(`moveTo`), Treehead 나무 첫 이동(738), Rakanishu 스톤 첫 이동(737, cain·trist). clear 뒤 재이동(나무·스톤·trist·Countess 580)은 pop을 뺐다.
 - 뒤에 붙은 기본값 인자(오프셋 0, clearPath false, pop false)는 쓰지 않는다.
+
+**게임 밖 흐름 (261001, PR #16)** — Lead·Follow 공통
+- 캐릭터 선택 화면(12): `login()`이 실패하고 목록(`findCharacter`, 24칸)에 프로필 캐릭터가 없으면 `AutoCreate.character`로 생성한다(12도 받음). 슬롯 가득 참 → 정지. 이름 중복 뒤에도 없으면 → 정지. `makeCharacter`가 처리하지 않는 화면에 1분 → 취소 후 재시도(대기·횟수 제한 없음). 계정·캐릭터 정보 없음 → 정지.
+- 로그인: 재시도(`loginRetry` 2회) 소진 → 정지. 비밀번호 틀림 → 정지(예전엔 무한 대기). 나쁜 CDKey(다른 제품용·Disabled·Disabled LoD·22 잘못된 키·42 렐름 차단)는 키 교체 켜짐이면 기존대로 교체 재시작, 꺼짐이면 정지(`badKey`).
+- 대기값: `RetryKeyDelay` 30초, `RealmDownDelay` 5분. 키 사용 중 1분·연결 불가·R/D Blocker 동작·Starter의 16/21/25 처리는 그대로.
+- 남은 시간 표시: 계정 생성 전 대기(`timeoutDelay`), `makeAccount`(30초), `makeCharacter`(1분, 멈춘 화면에서만), `locationTimeout`(화면 이름은 `OOGLog.names`). 끝난 뒤 덮어쓰지 않는다.
+- 로그: 게임 밖 콘솔은 모두 회색, 형식 `사건: 대상 - 처리 (loc N)`(CLAUDE.md). `OOGLog.print`/`OOGLog.stop`(`tools/OOG.js` 끝)이 같은 줄을 trace에 남긴다. `Misc.trace`는 게임 밖이면 `[OOG loc N]`. 10·30 화면 문구는 `ControlAction.readText`로 읽는다.
 
 ## 6. 알아 두면 좋은 사실 (확인됨)
 - **D2BS `me.mp`:** 실제 마나를 내림한 정수다(`JSUnit.cpp:262`, stat 8 `>> 8`).
