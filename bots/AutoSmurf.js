@@ -1131,7 +1131,15 @@ function AutoSmurf() {
 				case 128: // The Worldstone Keep Level 1
 				case 129: // The Worldstone Keep Level 2
 					try{
-						Pather.moveToExit(areaIDs[nextAreaIndex], true);
+						for (i = 0; i < 3; i += 1) {	//261002 retry like default: moveToExit can return false without throwing
+							Pather.moveToExit(areaIDs[nextAreaIndex], true);
+
+							if (me.area === areaIDs[nextAreaIndex]) {
+								break;
+							}
+
+							delay(me.ping * 2 + 500);
+						}
 					} catch (e) {
 						Misc.caughtError("AutoSmurf.travel", e);	//260930
 
@@ -1162,6 +1170,10 @@ function AutoSmurf() {
 						this.clickWP();
 
 						return true;
+					}
+
+					if (me.area !== areaIDs[nextAreaIndex]) {	//261002 outside the try: the catch above waits for a 129 portal
+						throw new Error("Travel failed: area " + areaIDs[nextAreaIndex]);
 					}
 
 					break;
