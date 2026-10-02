@@ -1686,7 +1686,7 @@ MainLoop:
 			}
 
 			if (this.wpAreas.indexOf(me.area) > -1 && !getWaypoint(this.wpAreas.indexOf(me.area))) {
-				this.goWP(me.area);
+				this.getWP(me.area);	//261002 goWP -> getWP: activate waypoints passed on the way (goWP only walks to them)
 			}
 
 			if (me.inTown && this.wpAreas.indexOf(target.course[0]) > -1 && getWaypoint(this.wpAreas.indexOf(target.course[0]))) {

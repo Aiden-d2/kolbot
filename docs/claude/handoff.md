@@ -17,6 +17,7 @@
 - **오프셋 정리(261002, 사용자 결정):** 트리스트람 경로 순회에서 지점을 건너뛰고 마지막 지점으로 가 포탈을 타던 증상의 원인은 `myX`/`myY` 오프셋을 더한 목표에 경로가 없는 것(`getPath` 빈 배열 → `moveTo`가 움직이지 않고 false, `trist()`는 반환값을 안 봄). 좌표+오프셋 이동을 "오프셋 제거" 또는 "원래 좌표 도착 뒤 `me.x + myX` 흩어지기"로 나눔, 오프셋 8방향, 케인 대기 반복문 변경. 세부는 5절 "오프셋(myX/myY) 정리", 게임 확인은 3절 23~25번.
 - **퀘스트 아이템 판정·autoEquip 칸 순서(261002, 사용자 요청):** `NTIP.Evaluate`가 `GetScore`와 같은 퀘스트 검사(`NTIP_QuestItems` → 결과 0, reason `quest`), 목록에서 피규린 546 제거, `Pickit.checkItem` 골드 부족 규칙의 퀘스트 제외를 같은 목록으로. `Equip.autoEquip`은 티어가 낮은 칸부터 교체. 세부는 4절 21·22, 게임 확인은 3절 26번.
 - **`Equip.autoEquip` 칸 반복 수정(261002, 사용자 요청):** 교체 조건을 만족한 칸에서 장착이 실패해도 `break`해 다음 칸을 검사하지 않던 결함. 장착에 성공했을 때만 빠져나가게 바꿈(`Misc.js` autoEquip). 결과가 달라지는 건 실패 이유가 칸마다 다른 경우(그 칸 장비의 힘·민첩 보너스, `Equip.canEquip`)뿐이라 실질적으로 바바리안 쌍수 무기 `[4, 5]`. 반지는 요구치가 없어 해당 없음, `Grant`는 모두 한 칸.
+- **웨이 누락 복구·travel 실패 처리(261002, 사용자 요청):** trace 261002 a1 Pz-28~32의 `Pather.useWaypoint: Failed to go to waypoint`(118 두 번, 117 세 번). 원인은 travel(9) 실패를 성공으로 넘긴 것과, 웨이가 없을 때의 복구가 동작하지 않은 것. 반영 3가지: `getWP`(웨이 접근 + 클릭, 활성화 여부 반환), `useWaypoint` 복구와 `journeyTo`가 `getWP` 사용, travel case 115~129 재시도 + catch 밖 throw. `goWP`와 그 호출부는 원본 그대로. 세부는 `pather_status.md` "웨이 누락 복구", 게임 확인은 3절 27번. 엑트5 진입 조건 확장(118 외 웨이도 검사)은 사용자 결정으로 보류(4절 23번).
 - **마을 chores(261001):** `Town.fillTome` 골드 게이트, `Town.identify` 물건마다 감정 수단 고르기, 감정 trace. 세부는 3절 끝, 게임 확인은 3절 18~19번.
 - **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
 - **인게임 검증:** 아직 안 됨(문법 검사만). 다음 사이클에서 볼 것:
@@ -90,6 +91,7 @@
 | 24 | 8방향 흩어지기: 웨이포인트·재집결 뒤 8명이 겹치지 않고 서는가, 흩어지기 이동(`me.x + myX`)에 `path total nodes: 0`이 잦은지 (261002) | 재집결 장면, trace | 5절 오프셋 정리 |
 | 25 | 케인 스톤 대기(포탈 열릴 때까지)에서 각자 자리로 돌아오고, 몹이 없으면 제자리를 지키는가. 카우 팔로워가 쫓아갈 거리 밖에서 멈춰 서는 증상이 사라졌는가 (261002) | 케인 퀘스트, 카우 레벨 팔로워 trace | 5절 오프셋 정리 |
 | 26 | 트라빈컬에서 리더가 Khalim's Will 착용 뒤 바닥의 Khalim's Flail을 주우려 하지 않고 바로 오브로 가는가. 피규린(546)은 지금처럼 주워지는가. 반지 교체가 티어 낮은 칸부터 되는가 (261002) | 트라빈컬, 3막 피규린, 반지 교체 로그 `Equipped [N]` | 4절 21·22 |
+| 27 | 웨이가 없는 곳으로 `useWaypoint`를 부르면 걸어가서 웨이를 찍고 계속하는가(오류로 끝나지 않음). `journeyTo`가 지나가는 구역의 웨이를 찍는가. travel(9)·(10) 출구 실패가 `Travel failed: area N` 오류로 드러나는가 (261002) | trace `[getWP] ...` 줄(실패 때만), 콘솔 `Failed to go to waypoint`·`Travel failed` | `pather_status.md` 웨이 누락 복구 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -156,6 +158,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | 20 | 스킬 사거리 열린 질문 | 측정 대기 | `skill_range.md` 5절: Howl 레벨 스케일링, 충돌 판정식, Armageddon 효과 범위 (War Cry는 261002 측정 완료: 미사일 64개 원형, 5.4~6.3) |
 | 21 | ~~퀘스트 아이템 줍기 판정 정리 (261002)~~ | **반영 (261002, 사용자 요청)** | 증상: 트라빈컬에서 리더가 Khalim's Will(174) 착용 뒤 `equipFlail`의 `Pickit.pickItems`가 바닥의 Khalim's Flail(173, 방 인원수만큼 떨어짐)을 3회 주우려다 실패하고 오브로 감. 경로: S.SFFW.nip 티어 규칙 `[type] == mace` 등에 걸림(퀘스트 제외가 `NTIP.GetScore`에만 있고 `NTIP.EvaluateItem`엔 없음, 173 종류가 mace라는 전제는 데이터 미확인) → `canPick`은 173 보유만 봄. 결정: ① `NTIP.Evaluate` 맨 앞에 `GetScore`와 같은 퀘스트 검사(`NTIP_QuestItems` → 0) ② `NTIP_QuestItems`에서 546(피규린) 제거(피규린은 `X.nip:156`으로 줍는 유일한 퀘스트 아이템) ③ `Pickit.js:73` 골드 부족 규칙의 `classid !== 90`을 `NTIP_QuestItems.indexOf(classid) === -1`로 ④ `canPick`은 그대로. NPC가 주는 퀘스트 아이템(86·550·551·644·646)은 목록에 넣지 않음(바닥에 안 떨어짐). 기각: `GetScore`/`autoEquip`에 힘·민첩 보너스 빼기 추가(`Equip.canEquip`·`Grant.canEquip`이 이미 칸별로 뺌) |
 | 22 | ~~`autoEquip` 교체 칸 선택 (261002)~~ | **반영 (261002, 사용자 요청)** | 칸이 둘인 장비(반지 `[6, 7]`, 바바리안 쌍수 무기 `[4, 5]`)에서 교체 조건을 처음 만족하는 칸을 골라 가장 낮은 칸을 고르지 않던 것. 칸 반복 전에 `bodyLoc`을 지금 장비 티어 오름차순으로 정렬(`getEquippedItem`은 현재 착용 상태를 읽음, 빈 칸 −1이 먼저). `Grant`는 모두 한 칸이라 그대로 |
+| 23 | 엑트5 travel(9) 진입 조건 확장 | 보류 (261002 사용자) | `AutoSmurf.js` 엑트5 진입의 `Leader && !getWaypoint(37)`은 118 웨이만 본다. 118만 있고 115·117이 비어도 travel(9)가 다시 돌지 않는다. 지금은 빠진 웨이를 쓰는 시점에 `getWP`가 찍어서 오류는 안 난다 |
 
 ## 5. 이번 대화에서 확정된 주요 결정 (요약)
 세부는 `attack_design.md` 12절, `attack_compare.md`를 본다.

@@ -77,7 +77,7 @@ getTeleDistance: function () {
 |---|---|---|
 | `if (!cleared) { cleared = true; }`, `cleared` 선언, "Don't go berserk" 주석 | `:406`, `:227` | 없음. 안의 `//Attack.clear(5)`가 260929 정리 때 지워져 빈 블록(`fcd2713:libs/Pather.js:407`) |
 | `teleportTo`의 `MainLoop:` 레이블 | `:464` | 없음. `break MainLoop`/`continue MainLoop`가 없다. 원본 kolbot에서 남은 것 |
-| `goWP`·`getWP`의 `j`, `wp` 선언 | `:1560`, `:1604` | 없음. 선언 줄 외 사용 0 |
+| `goWP`의 `j`, `wp` 선언 | `goWP` 첫 줄 | 없음. 선언 줄 외 사용 0 (`getWP`는 261002에 다시 짜서 해당 없음) |
 | `NodeAction.go`의 `/* ... arg.prevNode ... */`(260903)와 `prevNode` 갱신·전달 | `:13`, `:383`, `:377` | 사용자가 꺼 둔 규칙인지 확인 필요 |
 | `PathDebug.coordsInPath` | `:121` | 없음. 호출 0곳 |
 | `moveTo` 좌표 없음 분기의 `Misc.errorReport(... //260922 temp)` | `:238` | temp 표시. 뒤 throw가 Loader에서 다시 보고될 수 있음 |
@@ -261,3 +261,25 @@ getTeleDistance: function () {
 ## getPath 빈 배열 (261002)
 - 목표에 닿을 수 없으면 `getPath`는 `false`가 아니라 빈 배열을 돌려준다(D2BS 소스, `handoff.md` 6절). `moveTo`의 `if (!path) throw`(`:273`)는 빈 배열을 통과시켜 `while (path.length > 0)`을 한 번도 안 돌고 `:455`에서 false. 거리와 무관하게 한 걸음도 안 움직인다.
 - 트리스트람 경로 건너뛰기의 원인이었다. 대응은 Pather가 아니라 AutoSmurf 호출부의 오프셋 정리로 했다(`handoff.md` 5절 오프셋 정리). `moveTo` 안에서 대체 좌표를 쓰는 안은 setPosition 등 다른 이동의 판단을 우회해 기각.
+
+## 웨이 누락 복구 (261002, 사용자 요청)
+증상: trace 261002 a1. Pz-28·29는 `useWaypoint(118)`, Pz-30~32는 INFERNAL의 `useWaypoint(117)`에서 `Failed to go to waypoint`로 게임 종료.
+
+경로:
+1. Pz-28 travel(9): 113에서 `moveToExit(115)` 도중 `townCheck`로 마을에 다녀옴(trace 17:40:12~33). 돌아온 뒤 115로 못 넘어감. `useUnit` trace도 예외도 없어 `moveToExit`가 false를 돌려준 것으로 추정(도착 10298,5008이 목표 10296,5002에서 6.3, `moveTo`는 5 이하만 true).
+2. travel case 115~129는 반환값을 안 봐서 그대로 진행. `clickWP()`는 `me.area`(113) 웨이만 다시 찍고, 117·118도 113에 출구가 없어 false. travel이 "성공"으로 끝남.
+3. `syncBO` "act5+ BO" → `syncWP(118)` → `useWaypoint(118)`. 웨이가 없으면 `goWP(118)`로 복구하는데 `goWP`는 접근만 하고 항상 false라 throw.
+4. 118은 Pz-30에 생겼지만(경위 미확인, Pz-29 오류 뒤 1분 39초 trace 없음) 엑트5 진입 조건이 118만 봐서 115·117은 계속 비어 INFERNAL이 매 게임 실패.
+
+반영:
+- `goWP`는 **일부러 웨이를 안 찍는 함수**다(사용자). 파티 이동 때 `goWP(me.area, true)`로 접근 → 싱크(`okCount`) → `clickWP()` 순서라 여기서 찍으면 싱크가 깨진다. 원본 그대로 둔다.
+- `getWP`: `goWP(area, clearPath)`로 접근한 뒤 웨이를 클릭(메뉴가 열리면 닫음, 최대 5회)하고 `getWaypoint` 결과를 돌려준다. 실패 trace `[getWP] waypoint unit not found`/`waypoint menu not opened`. 원래 `getWP`도 클릭 코드가 빠져 있었다(남은 `j`, `wp` 선언이 흔적, 이 저장소 첫 커밋부터).
+- `useWaypoint`의 웨이 누락 복구와 `journeyTo`의 지나가는 구역 웨이 처리를 `goWP` → `getWP`. `journeyTo`는 복구 경로처럼 혼자 이동할 때만 돌고(호출부: `goWP`·`getWP`의 다른 구역 이동, `clickWP(78)`, `Misc.openChestsInArea`), 싱크 4곳은 `goWP(me.area, true)`라 `journeyTo`를 안 탄다.
+- `getWP`의 다른 호출부는 `MapHelper`(D2BotMap 수동 모드 숫자패드 2) 하나. 웨이 찍기가 목적이었던 것으로 본다(사용자).
+- travel case 115/117/118/120/128/129: 기존 try 안에서 `moveToExit` 3회 재시도(`me.area` 확인, `default` case와 같은 방식), 그래도 못 넘어가면 try/catch **밖**에서 `throw new Error("Travel failed: area N")`. 안에서 던지면 기존 catch가 129 포털을 무한 대기한다.
+
+그대로 남은 것:
+- travel case 115~129의 catch(`usePortal(129)` 무한 대기)는 travel(9)에서 예외가 나면 멈춘다. 손대지 않음.
+- 엑트5 진입 조건 확장은 보류(`handoff.md` 4절 23번).
+
+실수 기록: 처음에 `goWP`에 클릭을 넣었다(`e7b919c`). 싱크 구조를 보고도 "클릭이 겹칠 뿐"이라고 판단했다. 사용자 지적 뒤 `goWP`를 원본으로 돌리고 `getWP`로 옮김(`4dcb5a5`).
