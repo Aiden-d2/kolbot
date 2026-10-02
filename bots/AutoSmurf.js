@@ -12,7 +12,7 @@
 
 function AutoSmurf() {
 // -------- Normal Difficulty -------------
-	var tristLvl = 15,
+	var tristLvl = 16,
 		teleLvl = 18,
 		tombsLvl = 25,
 		diaLvl = 37,
@@ -2296,15 +2296,14 @@ function AutoSmurf() {
 
 	this.trist = function () {
 		var i,
-			path = [25172, 5089,
-						25168, 5189,
-						25047, 5178,
-						25050, 5050, //261002
-						//25054, 5099, //261002
-						25099, 5050,
-						25119, 5099,
-						25123, 5140,
-						25086, 5138];
+			path = [25168, 5189,	//261002
+					25132, 5181,
+					25124, 5139,
+					25105, 5075,
+					25052, 5055,
+					25086, 5141,
+					25053, 5189,
+					25125, 5190];
 		
 		print("ÿc4=== [TRIST] ===");	Misc.trace("=== [TRIST] ===");	//260930
 		
@@ -2327,6 +2326,7 @@ function AutoSmurf() {
 			if (Pather.usePortal(38)) {
 				break;
 			}
+			
 			delay(1000);
 		}
 
@@ -7261,7 +7261,7 @@ function AutoSmurf() {
 				this.outer();
 			}
 			
-			if (!this.partyLevel(tristLvl)) {	//!me.getQuest(3, 1) || 
+			if (!me.getQuest(3, 1)) {	//261002
 				this.smith(); // area lv9
 			}
 			
