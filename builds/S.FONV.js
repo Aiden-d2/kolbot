@@ -27,7 +27,7 @@ var AutoBuildTemplate = {
 		],
 		
 		Skills: [
-			{id: 58, target: 1, from: 43},		// Energy Shield
+			{id: 58, target: 1, from: 46},		// Energy Shield
 			{id: 59, target: 1},				// Blizzard
 			{id: 55, target: 1},				// Glacial Spike
 			{id: 50, target: 1},				// Shiver Armor
@@ -39,10 +39,10 @@ var AutoBuildTemplate = {
 			{id: 37, target: 1},				// Warmth
 			{id: 64, target: 20},				// Frozen Orb
 			{id: 65, target: 16},   			// Cold Mastery
-			{id: 63, target: 1},				// Lightning Mastery
-			{id: 48, target: 20, from: 30},		// Nova
-			{id: 63, target: 20},				// Lightning Mastery
-			{id: 39, target: 20, from: 50},		// Ice Bolt
+			{id: 63, target: 1, from: 46},		// Lightning Mastery
+			{id: 48, target: 20, from: 46},		// Nova
+			{id: 63, target: 20, from: 46},		// Lightning Mastery
+			{id: 39, target: 20, from: 46},		// Ice Bolt
 		]
 	},
 
