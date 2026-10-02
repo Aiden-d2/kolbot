@@ -14,6 +14,7 @@
 - **nip 헬름 정리(261002, 사용자 지시):** X.nip의 `[Helm]` 섹션 삭제(머리글·tier 1·tier 11~20·crown 주석, `[Sell]`의 주석 줄은 유지). 빌드 nip 13종의 `[Helm & Circlet]` → `[Helm]`, tier 11~30 줄 앞부분 `[name] >= 418 && [name] <= 421 &&` → `([type] == helm || ([name] >= 418 && [name] <= 421)) &&`, 그 줄의 `[fhr]` → `[frw]`, X의 tier 1 줄을 같은 조건으로 각 빌드 헬름 섹션 맨 앞에 추가. 빌드별 스킬 점수식·warhat·sallet·tiara 줄은 그대로. V·Y·T·Z.nip은 손대지 않음. nip 파서는 조건을 `eval`하므로 괄호가 그대로 쓰인다(`tools/NTItemParser.dbl` 126줄, A.TRAP 무기 줄에도 같은 꼴).
 - **바알 루프 드루이드 자리(261002):** `AutoSmurf.js` 바알 웨이브 처리의 드루이드 `Pather.moveTo(15092, 5013)` → `5018`.
 - **사용자 수정(261002):** 모든 빌드의 회피 켜기를 18 → 25레벨로(새 `25:` 블록). `SafeTele.Min` 15 → 10(`Pather.js` safeCheckNode의 후보 거리 하한). `AutoSmurf.travel`의 진단 trace·print 3줄 주석 처리(로그 정리). `farmingCountess` 시작 좌표 조정.
+- **오프셋 정리(261002, 사용자 결정):** 트리스트람 경로 순회에서 지점을 건너뛰고 마지막 지점으로 가 포탈을 타던 증상의 원인은 `myX`/`myY` 오프셋을 더한 목표에 경로가 없는 것(`getPath` 빈 배열 → `moveTo`가 움직이지 않고 false, `trist()`는 반환값을 안 봄). 좌표+오프셋 이동을 "오프셋 제거" 또는 "원래 좌표 도착 뒤 `me.x + myX` 흩어지기"로 나눔, 오프셋 8방향, 케인 대기 반복문 변경. 세부는 5절 "오프셋(myX/myY) 정리", 게임 확인은 3절 23~25번.
 - **마을 chores(261001):** `Town.fillTome` 골드 게이트, `Town.identify` 물건마다 감정 수단 고르기, 감정 trace. 세부는 3절 끝, 게임 확인은 3절 18~19번.
 - **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
 - **인게임 검증:** 아직 안 됨(문법 검사만). 다음 사이클에서 볼 것:
@@ -83,6 +84,9 @@
 | 20 | War Cry(B.WCRY)·Shock Wave(D.FGOM 46+)가 몹이 붙어도 물러나지 않고 바로 시전하는가, 버벅임이 사라졌는가 (261002) | B.WCRY, D.FGOM 전투 | 12-1 회피 없는 스킬 |
 | 21 | 쇼크웨이브가 붙은 몹에게 5칸 앞 커서로 나가 미사일 사이 빈틈 없이 맞히는가. Armageddon이 20칸 안 몹에서 바로 나가는가 (261002) | D.FGOM 46+ | 12-1 쇼크웨이브 시전 좌표 |
 | 22 | 변신이 풀린 뒤 인간 상태 허리케인·아마게돈이 안 나가고, 변신이 막히지 않는가. 디아블로 봉인·바알 웨이브 대기에서 곰으로 변신한 뒤 아마게돈을 쓰는가 (261002) | D.FGOM 46+, 디아·바알 대기 | 12-1 변신 빌드 쿨타임 |
+| 23 | 트리스트람 순회에서 지점을 건너뛰지 않는가. 전에 건너뛰던 프로필: 현재 경로 a4·a8(`25053,5189`), 이전 경로 a1·a4·a5·a8(y 5050 지점) (261002) | trace에서 Tristram `moveTo getPath -> 경로점` 다음 줄 `path total nodes: 0`이 없는지 | 5절 오프셋 정리 |
+| 24 | 8방향 흩어지기: 웨이포인트·재집결 뒤 8명이 겹치지 않고 서는가, 흩어지기 이동(`me.x + myX`)에 `path total nodes: 0`이 잦은지 (261002) | 재집결 장면, trace | 5절 오프셋 정리 |
+| 25 | 케인 스톤 대기(포탈 열릴 때까지)에서 각자 자리로 돌아오고, 몹이 없으면 제자리를 지키는가. 카우 팔로워가 쫓아갈 거리 밖에서 멈춰 서는 증상이 사라졌는가 (261002) | 케인 퀘스트, 카우 레벨 팔로워 trace | 5절 오프셋 정리 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -192,6 +196,16 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 현재 pop=true: Blood Raven 묘지(`moveTo`), Treehead 나무 첫 이동(738), Rakanishu 스톤 첫 이동(737, cain·trist). clear 뒤 재이동(나무·스톤·trist·Countess 580)은 pop을 뺐다.
 - 뒤에 붙은 기본값 인자(오프셋 0, clearPath false, pop false)는 쓰지 않는다.
 
+**오프셋(myX/myY) 정리 (261002, 사용자 결정·요청으로 반영)**
+- 원인(trace a1~a8 확인): 좌표+오프셋 목표가 내 위치와 이어지지 않는 구역이면 `getPath`가 빈 배열을 돌려주고, `moveTo`는 한 걸음도 안 움직이고 false를 돌려준다(6절 getPath). 트리스트람 a4·a8 `25058,5184`(=`25053,5189` + (5,−5)), 이전 경로 a1·a5 `25045,5045`·a4·a8 `25055,5045` 등. 같은 지점을 다른 오프셋 프로필은 매번 정상 이동.
+- 경위: 예전엔 "검증된 좌표로 이동 → `me.x + myX`로 흩어지기" 두 단계였고, 이를 한 번의 `좌표 + myX` 이동으로 합치면서 흩어질 자리를 확인하지 않게 됐다. 오프셋은 플레이어끼리 몸으로 막히는 것을 피하려는 것(사용자).
+- 기준: **바로 뒤에 `okCount` 대기가 있으면** 원래 좌표로 간 뒤 `Pather.moveTo(me.x + myX, me.y + myY);`로 흩어진다. **바로 뒤에 다시 움직이면**(경로 순회, 반복 이동, 포탈 타기, 스톤 열기) 오프셋만 뺀다. 흩어지기가 실패해도 원래 좌표에 선다(예전 두 단계와 같음).
+- 오프셋만 제거: trist 경로(2341), 디아블로 `followPath`, 메피 해자 `17515,8061`(2곳), smith 반복 이동, tombs 상자 반복 이동, 레드포탈 3종(Abaddon·POA·Infernal: 반복 이동 뒤 바로 포탈, 오프셋 자리에 경로가 없으면 180초 동안 제자리였음), 카우 `followDriver` 5곳(드라이버에 몰려도 일단 제거, 사용자), 스톤 737 첫 이동·trist 마지막 이동.
+- 도착 뒤 흩어지기: andy·farmingAndy 포탈 앞, smith 마지막, 트라빈컬(+109·−95 고정 오프셋 유지), 메피 다리 `17566,8069`(2곳), 디아블로 별 중앙(2곳), 에인션트(2곳), 3막 마을 `5148,5066`, farmingCountess 580, farmingNihlathak 462.
+- 케인 스톤 대기(열쇠 없는 캐릭터): 흩어지기 → 자리 저장(`spot`) → `while (!getPortal(38)) { clear(20); moveTo(spot); }`. 반복문 안의 `moveToPreset(737 + 오프셋)`은 제거. 몹이 없으면 clear가 이동 없이 끝나고 `moveTo(spot)`은 2칸 안이라 바로 끝남 → 제자리.
+- 오프셋 값: 8방향 5칸, 프로필 번호(`Team.Profiles` 순서) 기준 `1 2 3 / 8 · 4 / 7 6 5`(1번 좌상부터 시계방향, x 오른쪽·y 아래가 +). a1 (−5,−5), a2 (0,−5), a3 (5,−5), a4 (5,0), a5 (5,5), a6 (0,5), a7 (−5,5), a8 (−5,0). `myPos`(`% 4`)는 알코르 보상 대기 지연용으로 그대로 둔다.
+- 그대로: `me.x + myX` 흩어지기 34곳(값만 8방향), Pather·Attack. 기각: Pather `moveTo` 안의 대체 좌표(setPosition 등 다른 이동까지 바뀜), `getNearestWalkable`로 대체 칸 찾기(걸을 수 있는지만 보고 닿을 수 있는지는 못 봄, 벽 건너편 칸 오판), 좌표만 고치기(좌표가 바뀌면 다시 생김).
+
 **게임 밖 흐름 (261001, PR #16)** — Lead·Follow 공통
 - 캐릭터 선택 화면(12): `login()`이 실패하고 목록(`findCharacter`, 24칸)에 프로필 캐릭터가 없으면 `AutoCreate.character`로 생성한다(12도 받음). 슬롯 가득 참 → 정지. 이름 중복 뒤에도 없으면 → 정지. `makeCharacter`가 처리하지 않는 화면에 1분 → 취소 후 재시도(대기·횟수 제한 없음). 계정·캐릭터 정보 없음 → 정지.
 - 로그인: 재시도(`loginRetry` 2회) 소진 → 정지. 비밀번호 틀림 → 정지(예전엔 무한 대기). 나쁜 CDKey(다른 제품용·Disabled·Disabled LoD·22 잘못된 키·42 렐름 차단)는 키 교체 켜짐이면 기존대로 교체 재시작, 꺼짐이면 정지(`badKey`).
@@ -205,6 +219,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **이벤트 처리:** default.dbj의 `AutoBuild.levelUpHandler`만 레벨업 때 `applyConfigUpdates`를 한다. 다른 스레드는 `Config.js`의 별도 핸들러로 json만 다시 읽는다.
 - **소수점 마나 비용:** 빌드 공격 스킬의 절반 이상이 소수점이다(Fire Bolt는 모든 레벨 2.5). 계산식은 skills.txt의 mana·lvlmana·manashift·minmana다.
 - **`getPath`:** WalkPathReducer 노드 간격은 5칸 이하다. 그래서 `노드 수 × 5`는 실제 길이와 같거나 크다.
+- **D2BS `getPath`(261002, noah-/d2bs 소스):** kolbot은 `getPath(area, 목표x, 목표y, 내x, 내y, ...)`로 불러 엔진 안에서는 목표가 출발점이다(`JSGame.cpp` `my_getPath`). 출발·도착 칸이 막혔으면 `MutatePoint`가 ±2칸에서 주변까지 빈 칸으로 옮기고(`WalkPathReducer.h`), A*는 출발 칸 자체를 검사하지 않는다(그래서 물체 칸 목표도 경로가 나온다). 열린 칸이 바닥나면(목표 구역이 내 위치와 이어지지 않거나 레벨 맵 밖, `ActMap`은 맵 데이터 없는 칸을 Avoid로 봄) **빈 배열**을 돌려준다. kolbot `moveTo`의 `if (!path)`는 빈 배열을 거르지 못해, 반복문을 안 돌고 false로 끝난다(trace `path total nodes: 0`).
 - **D2BS 유닛 속성:** 읽을 때마다 ID로 유닛을 다시 찾고, 못 찾으면 `undefined`(`JSUnit.cpp` 186~194). `me.area`는 로딩 중 undefined. `me.gameReady`는 방 정보가 없거나 갱신 중이면 false(액트 전환 중 false는 근거 있음, 같은 액트 포털은 근거 없음).
 - **최소 게임 시간:** 게임 안 `Config.MinGameTime` 300초는 정상 종료(default.dbj)에서만 마을에서 대기. 로비 `StarterConfig.MinGameTime` 60초는 리더(D2BotLead)만, 60초보다 짧은 게임일 때. quit은 바로 나감.
 - **경험치 로그:** ToolsThread가 `quit` 메시지를 받을 때 찍음(정상·조기 종료 모두). 치킨도 나가기 전에 찍음(261001).
