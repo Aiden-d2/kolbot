@@ -1151,7 +1151,7 @@ ModeLoop:
 							me.cancel();
 							me.overhead("Trying to get the waypoint");
 
-							if (this.goWP(targetArea)) {
+							if (this.getWP(targetArea)) {	//261002 goWP -> getWP: activate the missing waypoint
 								return true;
 							}
 
@@ -1597,17 +1597,31 @@ MainLoop:
 				}
 			}
 		}
+		
+		return false;
+	},
 
-		// click the waypoint to activate it; reaching it alone does not	//261002
-		if (me.area !== area || this.wpAreas.indexOf(area) < 0) {	//261002
+	/*
+		Pather.getWP(area);
+		area - the id of area to get the waypoint in
+		clearPath - clear path
+	*/
+	getWP: function (area, clearPath) {	//261002 goWP + click the waypoint, returns whether it is activated
+		var i, wp,
+			wpIndex = this.wpAreas.indexOf(area);
+
+		this.goWP(area, clearPath);
+
+		if (me.area !== area || wpIndex < 0) {
 			return false;
 		}
 
-		for (j = 0; j < 5 && !getWaypoint(this.wpAreas.indexOf(area)); j += 1) {	//261002
+		for (i = 0; i < 5 && !getWaypoint(wpIndex); i += 1) {
 			wp = getUnit(2, "waypoint");
 
 			if (!wp || wp.area !== me.area) {
-				Misc.trace("[goWP] waypoint unit not found. area:" + me.area);
+				Misc.trace("[getWP] waypoint unit not found. area:" + me.area);
+
 				break;
 			}
 
@@ -1623,37 +1637,13 @@ MainLoop:
 				delay(me.ping + 200);
 				me.cancel();
 			} else {
-				Misc.trace("[goWP] waypoint menu not opened. try:" + j + " area:" + me.area);
+				Misc.trace("[getWP] waypoint menu not opened. try:" + i + " area:" + me.area);
 				Packet.flash(me.gid);
 				delay(me.ping * 2 + 200);
 			}
 		}
 
-		return !!getWaypoint(this.wpAreas.indexOf(area));	//261002 was always false: useWaypoint threw even after reaching the waypoint
-	},
-
-	/*
-		Pather.getWP(area);
-		area - the id of area to get the waypoint in
-		clearPath - clear path
-	*/
-	getWP: function (area, clearPath) {
-		var i, j, wp, preset,
-			wpIDs = [119, 145, 156, 157, 237, 238, 288, 323, 324, 398, 402, 429, 494, 496, 511, 539];
-
-		if (area !== me.area) {
-			this.journeyTo(area);
-		}
-
-		for (i = 0; i < wpIDs.length; i += 1) {
-			preset = getPresetUnit(area, 2, wpIDs[i]);
-
-			if (preset) {
-				this.moveToUnit(preset, 0, 0, clearPath);
-			}
-		}
-
-		return false;
+		return !!getWaypoint(wpIndex);
 	},
 
 	/*
