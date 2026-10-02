@@ -70,7 +70,7 @@ var Pickit = {
 
 		// If total gold is less than 10k pick up anything worth 10 gold per
 		// square to sell in town.
-		if (result.result === 0 && Town.ignoredItemTypes.indexOf(unit.itemType) === -1 && me.gold < Config.LowGold && unit.itemType !== 39 && unit.itemType !== 74 && unit.classid !== 90) {
+		if (result.result === 0 && Town.ignoredItemTypes.indexOf(unit.itemType) === -1 && me.gold < Config.LowGold && unit.itemType !== 39 && unit.itemType !== 74 && NTIP_QuestItems.indexOf(unit.classid) === -1) {	//261002 quest items: same list as NTIP (was classid !== 90 only)
 			if (me.charlvl < 10 && unit.getItemCost(1) / (unit.sizex * unit.sizey) >= 10) {
 				return {
 					result: 4,
