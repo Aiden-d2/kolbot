@@ -57,8 +57,7 @@ var Skill = {
 			return 6;
 		case 151: // Whirlwind
 		case 229: // Molten Boulder
-		case 243: // Shock Wave	//260930 back to 7 (same as Armageddon for D.FGOM)
-		case 249: // Armageddon	//260930 back to 7
+		case 243: // Shock Wave	//260930 back to 7	//261002 measured reach 12~13; a close target is cast at 5 (Wereform.js)
 			return 7;
 		case 48: // Nova	//260917	//260930 back to 9 (10 for a day)
 		case 64: // Frozen Orb	//260917	//260930 back to 9
@@ -91,6 +90,7 @@ var Skill = {
 		case 31: // Freezing Arrow
 		case 51: // Fire Wall	//260917
 		case 121: // Fist of the Heavens
+		case 249: // Armageddon	//261002 7 -> 20: cast once a monster is within 20, hit or not
 		case 140: // Double Throw
 		case 253: // Psychic Hammer
 		case 275: // Dragon Flight
@@ -249,6 +249,13 @@ var Skill = {
 
 		if (!item && !me.getSkill(skillId, 1)) {
 			return false;
+		}
+
+		// Wereform build: Armageddon only in were form. Cast as human, its delay keeps the shift from being cast	//261002
+		if (skillId === 249 && Config.Wereform && !me.getState(139) && !me.getState(140)) {
+			if (me.getState(121) || !Misc.shapeShift(Config.Wereform)) {	// the shift is a timed skill too: under the delay it fails 3 x 2s
+				return false;
+			}
 		}
 
 		if (!this.wereFormCheck(skillId)) {

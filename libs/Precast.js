@@ -292,7 +292,7 @@ var Precast = new function () {
 				break;
 			}
 
-			if (me.getSkill(250, 0) && (!me.getState(144) || force) && !me.getState(139) && !me.getState(140)) { //260620
+			if (!Config.Wereform && me.getSkill(250, 0) && (!me.getState(144) || force) && !me.getState(139) && !me.getState(140)) { //260620	//261002 not in a Wereform build: cast as human, its delay keeps the shift from being cast
 				Skill.cast(250, 0); // Hurricane
 			}
 

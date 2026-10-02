@@ -1,4 +1,4 @@
-# 인수인계 메모 (261001)
+# 인수인계 메모 (261002)
 
 새 대화는 이 문서부터 읽는다. 이어서 CLAUDE.md(작업 규칙, **로그 규칙**)와 분석 노트를 필요한 만큼 읽는다.
 
@@ -8,6 +8,7 @@
 - **코드:** main `4f55291`(261001) 기준. 크래시·로그·포털 작업은 PR #7(`claude/funny-pasteur-4ymxd2`), 회피 재설계·스킬 사거리는 PR #8, Precast.summon은 PR #9, Pather·setPosition·상자는 PR #10·#11(`claude/pather-analysis-refactor-w9td75`, 세부는 `pather_status.md`)로 들어왔다. 각 작업의 게임 확인 항목은 아래 목록과 3절 표(10~14번)에 있다.
 - **게임 밖 흐름(261001, PR #16):** 캐릭터 선택 화면 생성, 복구할 수 없는 로그인 오류에서 정지, 대기 남은 시간 표시, 게임 밖 회색 콘솔 로그(`OOGLog`). 세부는 5절 끝, 게임 확인은 3절 15~17번.
 - **유형 B 크래시 수정(261001, PR #18):** NPC 메뉴를 열 때 대사 중이면 `me.cancel()` 대신 스페이스로 넘긴다(`Packet.skipTalk`/`endTalk`, `Misc.js`). 세부는 7절 끝, 게임 확인은 1절 인게임 검증 8번.
+- **회피 없는 스킬·변신 쿨타임(261002):** War Cry·Shock Wave·Armageddon은 사거리 밖일 때만 접근(회피 없음), 쇼크웨이브는 5칸보다 가까운 몹에 5칸 커서로 시전, Armageddon 사거리 20, 변신 빌드에서 허리케인 선시전 안 함, `Skill.cast`의 아마게돈 변신 가드. 세부는 `attack_design.md` 12-1(쇼크웨이브 시전 좌표, 회피 없는 스킬, 변신 빌드 쿨타임), 게임 확인은 3절 20~22번.
 - **마을 chores(261001):** `Town.fillTome` 골드 게이트, `Town.identify` 물건마다 감정 수단 고르기, 감정 trace. 세부는 3절 끝, 게임 확인은 3절 18~19번.
 - **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
 - **인게임 검증:** 아직 안 됨(문법 검사만). 다음 사이클에서 볼 것:
@@ -63,7 +64,7 @@
 | 7 | 18레벨 이상 캐릭터의 "Going to town" 반복이 사라졌는가 | 드루이드 등 골드 540 이상 캐릭터 | 아래 5절 열쇠 항목 |
 | 8 | ~~박스 호출에서 박스 밖으로 나가지 않는가 (260929 울타리)~~ | **통과 (260930)** | `attack_design.md` 12-1 박스 울타리 |
 | 9 | ~~박스 가장자리 MUST에 붙잡히지 않는가 (260929 unreachable → deferred)~~ | **통과 (260930)** | 12-1 MUST unreachable |
-| 10 | 걷기 회피가 min(사거리, 10)칸 자리로 짧게 물러나는가, 텔레는 사거리만큼. War Cry·Tornado(사거리 5)·D.FGOM(7)도 회피. FONV·D.FGOM 진동 없는가 (260930) | 좁은 지형 소서, B.WCRY, D.WIND, D.FGOM | 12-1 회피 거리. 반경·회피 거리 분리 여부는 이후 재논의 |
+| 10 | 걷기 회피가 min(사거리, 10)칸 자리로 짧게 물러나는가, 텔레는 사거리만큼. Tornado(사거리 5)도 회피(War Cry·D.FGOM은 261002부터 회피 없음). FONV 진동 없는가 (260930) | 좁은 지형 소서, B.WCRY, D.WIND, D.FGOM | 12-1 회피 거리. 반경·회피 거리 분리 여부는 이후 재논의 |
 | 11 | Howl 15 사거리에서 헛캐스팅이 없는가 (260930) | B.WCRY | 12-1 스킬 사거리 |
 | 12 | 회피가 물러나는 쪽의 몹 최소 자리로 가고, 회피 반복이 줄었는가 (261001) | FONV·D.FGOM·B.WCRY 회피 장면 | `pather_status.md` 4절 |
 | 13 | Flayer Dungeon·Arcane에서 텔레 이동이 30 간격을 유지하는가 (SafeTele 뒤·실패 뒤 포함, 261001) | trace `[teleportTo failed]`, `path total nodes` | `pather_status.md` 3-1 |
@@ -73,6 +74,9 @@
 | 17 | 캐릭터 생성 버튼을 누른 뒤 뜨는 대기 창의 location 번호 (261001) | `Create character timeout` 줄의 `(loc N)`(타임아웃 날 때만) | 타임아웃 방식이라 몰라도 동작함 |
 | 18 | 레벨 1 첫 시작에서 Akara에게 들르지 않는가(TP 책 없고 골드 400 미만), TP 책이 있고 골드 100 미만일 때도 들르지 않는가 (261001) | 첫 시작 장면(Akara로 걸어가는지, 머리 위 `initNPC: fillTome` 표시) | 3절 끝 마을 chores |
 | 19 | 감정 중 멈춤이 사라졌는가. 남으면 trace `identify failed`(실패, ms)·`identify slow`(2초 이상 걸린 성공)로 원인 구분. `identify stopped`는 스크롤을 못 구해 감정 중단 (261001) | `_cache/trace/` 마을 감정 장면 | 3절 끝 마을 chores |
+| 20 | War Cry(B.WCRY)·Shock Wave(D.FGOM 46+)가 몹이 붙어도 물러나지 않고 바로 시전하는가, 버벅임이 사라졌는가 (261002) | B.WCRY, D.FGOM 전투 | 12-1 회피 없는 스킬 |
+| 21 | 쇼크웨이브가 붙은 몹에게 5칸 앞 커서로 나가 미사일 사이 빈틈 없이 맞히는가. Armageddon이 20칸 안 몹에서 바로 나가는가 (261002) | D.FGOM 46+ | 12-1 쇼크웨이브 시전 좌표 |
+| 22 | 변신이 풀린 뒤 인간 상태 허리케인·아마게돈이 안 나가고, 변신이 막히지 않는가. 디아블로 봉인·바알 웨이브 대기에서 곰으로 변신한 뒤 아마게돈을 쓰는가 (261002) | D.FGOM 46+, 디아·바알 대기 | 12-1 변신 빌드 쿨타임 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
@@ -118,7 +122,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | # | 작업 | 상태 | 메모 |
 |---|---|---|---|
 | 1 | ~~NoSkipArea 키와 조건 제거~~ | **완료 (260929)** | 로컬 `[]`로 1막~헬 파밍 한 사이클 문제없음(사용자 확인) → 제거. 제거할 곳: `Config.js` 키, `Attack.js`의 306 스킵·unreachable 즉시 제외·HP 스킵 조건 3곳, `Paladin.js` 해머 게이트 조건. 조건에서 `Config.NoSkipArea.indexOf(me.area) < 0 &&`만 빼면 동작은 같다 |
-| 2 | **임시 로그 정리** | 일부 완료 | `[AC]`/`[SP]` 삭제 완료(260930). 남은 것: `[MP]`(Merc.js), `usePortal 342`(Pather.js, `//260930 temp` — 260926 사용자 redPortal 로그를 대신함), `[MoveToSlot]` 실패 상세(Storage.js) → 한 사이클 확인 뒤 삭제 후보. `Misc.js`의 `[chest] skip` trace(`traceChestSkip`, `//261001 temp`)도 확인 뒤 지운다. `ToolsThread.js`의 미사일 사거리 측정기(Numpad 5, `[MM]`, `//260930 temp`)도 측정이 끝나면 지운다. `[TK]`(Prototypes.js `me.cancel` 래퍼) → 유형 B 수정 확인 때까지 유지. `[OD]`(AutoSmurf `watchDialog`) → 삭제 후보(261001) |
+| 2 | **임시 로그 정리** | 일부 완료 | `[AC]`/`[SP]` 삭제 완료(260930). 남은 것: `[MP]`(Merc.js), `usePortal 342`(Pather.js, `//260930 temp` — 260926 사용자 redPortal 로그를 대신함), `[MoveToSlot]` 실패 상세(Storage.js) → 한 사이클 확인 뒤 삭제 후보. `Misc.js`의 `[chest] skip` trace(`traceChestSkip`, `//261001 temp`)도 확인 뒤 지운다. `ToolsThread.js`의 미사일 사거리 측정기(Numpad 5, `[MM]`, `//260930 temp`)도 측정이 끝나면 지운다(261002 미사일별 끝 좌표·퍼짐 출력과 쇼크웨이브 자동 측정 Numpad 6 `[MS]`는 사용자 로컬에만 있고 저장소에는 없음). `[TK]`(Prototypes.js `me.cancel` 래퍼) → 유형 B 수정 확인 때까지 유지. `[OD]`(AutoSmurf `watchDialog`) → 삭제 후보(261001) |
 | 3 | ~~주석 처리된 옛 코드 정리~~ | **완료 (260929)** | JS/dbj/dbl 32개 파일에서 주석 처리된 옛 코드와 `/* */` 옛 코드 블록, 롤백용 머리글을 지움(Attack.js 2500 → 1349줄). 주석을 뺀 코드 토큰이 정리 전과 같음을 확인. nip·Config.js·builds의 꺼 둔 옵션과 설명 주석·날짜 표기·줄 끝 메모는 유지. 이전 코드는 커밋 `fcd2713` |
 | 4 | **소 레벨 치킨 잦음** | 개선 대상 | `followDriver`는 사용자 코드로 교체됨(30 초과 이동, 15~30 clearPath 이동, 근접 clear). 리더 쪽 `clearCowLevel`(팔로워를 기다리지 않고 방마다 이동)은 아직 손대지 않음 |
 | 5 | 부활·소환형(샤먼) 우선 | 보류 | 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류함 |
@@ -200,6 +204,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **상점:** 같은 게임의 상점 목록은 공유. nip이 겹쳐 두 프로필이 같은 아이템을 노릴 수 있음(먼저 산 쪽만 구매).
 - **콘솔 색(D2Bot#):** 4 파랑, 5 초록, 6 노랑, 7 금색, 8 주황, 9 빨강, 10 회색, 생략 시 검정. print 색은 `ÿc0` 흰, `ÿc1` 빨강, `ÿc2` 초록, `ÿc3` 파랑, `ÿc4` 금색, `ÿc5` 회색, `ÿc6` 검정, `ÿc7` 황갈, `ÿc8` 주황, `ÿc9` 노랑, `ÿc:` 짙은 초록, `ÿc;` 보라.
 - **ProcDump:** `-e -h -n 10`. 한 크래시에 덤프가 여러 개 생기면(D2BS exit0 버그로 반복 예외) 첫 파일(접미사 없음)만 보면 된다. 261001 5건은 모두 첫 덤프에 원래 예외가 그대로 있었다. 크래시 프로세스의 procdump 로그는 약 7KB, 몇 초 뒤의 약 1.5KB 로그는 재시작된 새 프로세스다. `-e`는 처리되지 않은 예외만 덤프한다(잡힌 예외는 `-e 1`, 덤프가 많이 생길 수 있어 쓰지 않음).
+- **탈라샤 무덤 회피 토글(`AutoSmurf.js` 3693·3704, 사용자 260812):** 포탈로 파티가 모인 직후 회피가 붙은 몹 사이로 자리를 잡다 치킨이 나서, 오리피스 박스를 먼저 정리한 뒤 회피를 켠다. 박스 울타리로는 막히지 않음. 유지(261002). 되돌릴 때 무조건 `true`라 18레벨 전에 오면 회피가 일찍 켜짐(실제 발생 여부 모름).
+- **미사일·몹 데이터(261002):** blizzhackers/d2data `missiles.json`·`monstats2.json`. Shock Wave 미사일 511: Vel 20, Range 14(프레임), Size 1, 관통(CollideKill 없음), NextHit 1·NextDelay 4. 몹 충돌 크기 2×2 366종, 3×3 197종.
 - **팔로워 크래시 때 전원 종료:** 크래시 난 프로필이 파티에서 빠지면 나머지 전원(리더 포함)이 `PartyThread`의 `retry > 2`(`threads/PartyThread.js:122-124`)로 약 2초 뒤 나간다. `party has left`는 print만이라 콘솔·trace에는 이유가 안 남는다(로그 규칙대로). 크래시 쪽은 매니저의 `Window has unexpectedly exited` 줄로 구분한다.
 
 ## 7. 크래시 분석 (260929, Game.exe 1.14d 역어셈블)
