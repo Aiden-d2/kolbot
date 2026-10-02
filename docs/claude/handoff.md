@@ -15,6 +15,7 @@
 - **바알 루프 드루이드 자리(261002):** `AutoSmurf.js` 바알 웨이브 처리의 드루이드 `Pather.moveTo(15092, 5013)` → `5018`.
 - **사용자 수정(261002):** 모든 빌드의 회피 켜기를 18 → 25레벨로(새 `25:` 블록). `SafeTele.Min` 15 → 10(`Pather.js` safeCheckNode의 후보 거리 하한). `AutoSmurf.travel`의 진단 trace·print 3줄 주석 처리(로그 정리). `farmingCountess` 시작 좌표 조정.
 - **오프셋 정리(261002, 사용자 결정):** 트리스트람 경로 순회에서 지점을 건너뛰고 마지막 지점으로 가 포탈을 타던 증상의 원인은 `myX`/`myY` 오프셋을 더한 목표에 경로가 없는 것(`getPath` 빈 배열 → `moveTo`가 움직이지 않고 false, `trist()`는 반환값을 안 봄). 좌표+오프셋 이동을 "오프셋 제거" 또는 "원래 좌표 도착 뒤 `me.x + myX` 흩어지기"로 나눔, 오프셋 8방향, 케인 대기 반복문 변경. 세부는 5절 "오프셋(myX/myY) 정리", 게임 확인은 3절 23~25번.
+- **`Equip.autoEquip` 칸 반복 수정(261002, 사용자 요청):** 교체 조건을 만족한 칸에서 장착이 실패해도 `break`해 다음 칸을 검사하지 않던 결함. 장착에 성공했을 때만 빠져나가게 바꿈(`Misc.js` autoEquip). 결과가 달라지는 건 실패 이유가 칸마다 다른 경우(그 칸 장비의 힘·민첩 보너스, `Equip.canEquip`)뿐이라 실질적으로 바바리안 쌍수 무기 `[4, 5]`. 반지는 요구치가 없어 해당 없음, `Grant`는 모두 한 칸.
 - **마을 chores(261001):** `Town.fillTome` 골드 게이트, `Town.identify` 물건마다 감정 수단 고르기, 감정 trace. 세부는 3절 끝, 게임 확인은 3절 18~19번.
 - **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
 - **인게임 검증:** 아직 안 됨(문법 검사만). 다음 사이클에서 볼 것:
@@ -151,6 +152,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 | 18 | `repair`의 shopItems 방문 골드 검사 | 그대로 둠 (261001 사용자) | 노멀 2막 이상에서 `doChores(true)`면 골드와 관계없이 수리 NPC에 가서 벨트를 훑는다. 살 수 있는지는 도착 뒤 `shopItems`에서 본다 |
 | 19 | `Wereform.js` 쇼크웨이브 경로의 인간 상태 + 121 멈춤 | 그대로 둠 (261002) | 121 중이면 timed가 아니라 untimed(쇼크웨이브)로 가는데 그 앞의 `shapeShift`가 121에 막혀 2초 × 3 헛시도 뒤 인간 상태로 쇼크웨이브 시도(곰 전용이라 거부될 것으로 추정). 허리케인 차단·아마게돈 가드로 원인 대부분이 없어져 고치지 않음 |
 | 20 | 스킬 사거리 열린 질문 | 측정 대기 | `skill_range.md` 5절: Howl 레벨 스케일링, 충돌 판정식, Armageddon 효과 범위 (War Cry는 261002 측정 완료: 미사일 64개 원형, 5.4~6.3) |
+| 21 | 퀘스트 아이템 줍기 판정 정리 (261002) | **결정됨, 수정 요청 대기** | 증상: 트라빈컬에서 리더가 Khalim's Will(174) 착용 뒤 `equipFlail`의 `Pickit.pickItems`가 바닥의 Khalim's Flail(173, 방 인원수만큼 떨어짐)을 3회 주우려다 실패하고 오브로 감. 경로: S.SFFW.nip 티어 규칙 `[type] == mace` 등에 걸림(퀘스트 제외가 `NTIP.GetScore`에만 있고 `NTIP.EvaluateItem`엔 없음, 173 종류가 mace라는 전제는 데이터 미확인) → `canPick`은 173 보유만 봄. 결정: ① `NTIP.Evaluate` 맨 앞에 `GetScore`와 같은 퀘스트 검사(`NTIP_QuestItems` → 0) ② `NTIP_QuestItems`에서 546(피규린) 제거(피규린은 `X.nip:156`으로 줍는 유일한 퀘스트 아이템) ③ `Pickit.js:73` 골드 부족 규칙의 `classid !== 90`을 `NTIP_QuestItems.indexOf(classid) === -1`로 ④ `canPick`은 그대로. NPC가 주는 퀘스트 아이템(86·550·551·644·646)은 목록에 넣지 않음(바닥에 안 떨어짐). 기각: `GetScore`/`autoEquip`에 힘·민첩 보너스 빼기 추가(`Equip.canEquip`·`Grant.canEquip`이 이미 칸별로 뺌) |
+| 22 | `autoEquip` 교체 칸 선택 (261002) | 검토 중 | 칸이 둘인 장비(반지 `[6, 7]`, 바바리안 쌍수 무기 `[4, 5]`)에서 교체 조건을 처음 만족하는 칸을 고르고 가장 낮은 칸을 고르지 않음. 빠진 장비는 인벤토리로 가 다음 `autoEquip`에서 맞춰짐(인벤토리 가득이면 버림) |
 
 ## 5. 이번 대화에서 확정된 주요 결정 (요약)
 세부는 `attack_design.md` 12절, `attack_compare.md`를 본다.

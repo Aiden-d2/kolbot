@@ -882,11 +882,13 @@ var Equip = {
 							Misc.itemLogger("Equipped", items[0], result.line);	//260815
 							
 							this.updateTier(bodyLoc[j]);
+							
+							Misc.cursorCheck();
+							
+							break;	//261002 leave only when equipped
 						}
 
-						Misc.cursorCheck();
-
-						break;
+						Misc.cursorCheck();	//261002 failed (e.g. str/dex with this slot's bonus removed): check the next slot (barbarian dual wield [4, 5])
 					}
 				}
 			}
