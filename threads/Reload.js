@@ -9,8 +9,8 @@ function main () {
 		scripts = [
 			"threads/AutoBuildThread.js",
 			"threads/PartyThread.js",
-			"threads/ToolsThread.js",
 			"threads/TownChicken.js",
+			"threads/ToolsThread.js",
 			"default.dbj"
 		];
 

@@ -113,8 +113,13 @@ function main() {
 
 	this.togglePause = function () {
 		var i,	script,
-			scripts = ["default.dbj", "threads/TownChicken.js", "threads/PartyThread.js", "threads/AutoBuildThread.js"];
-
+			scripts = [
+				"threads/AutoBuildThread.js",
+				"threads/PartyThread.js",
+				"threads/TownChicken.js",
+				"default.dbj"
+			];
+		
 		for (i = 0; i < scripts.length; i += 1) {
 			script = getScript(scripts[i]);
 
