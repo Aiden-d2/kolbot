@@ -25,10 +25,9 @@ function AutoSmurf() {
 // -------- Other Settings ----------------
 		Leader = false,
 		Boer = false,
-		myPos = Team.Profiles.slice().reverse().indexOf(me.profile) % 4,
-		myOffset = [[-5, -5], [0, -5], [5, -5], [5, 0], [5, 5], [0, 5], [-5, 5], [-5, 0]][Math.max(0, Team.Profiles.indexOf(me.profile)) % 8],	//261002 8 directions around the spot: profile 1 top-left, clockwise (myPos stays for the Alkor wait)
-		myX = myOffset[0],	//261002
-		myY = myOffset[1],	//261002
+		myPos = Team.Profiles.indexOf(me.profile),	//261002 profile number - 1 (0~7), shared by the offset and the Alkor wait
+		myX = [-5, 0, 5, 5, 5, 0, -5, -5][myPos % 8],	//261002 8 directions around the spot: 1 2 3 / 8 . 4 / 7 6 5 (profile 1 top-left, clockwise)
+		myY = [-5, -5, -5, 0, 5, 5, 5, 0][myPos % 8],	//261002
 		
 		imReady,
 		readyCount = 0,
@@ -3866,7 +3865,7 @@ function AutoSmurf() {
 			}
 			
 			if (!leaderFigurine) {	//260922
-				delay(myPos * 15000 + 1);	//260916
+				delay(((Team.Profiles.length - 1 - myPos) % 4) * 15000 + 1);	//260916	//261002 reversed order so the leader goes last
 			}
 			
 			Town.move("alkor");

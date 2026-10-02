@@ -855,6 +855,8 @@ var Equip = {
 			bodyLoc = this.getBodyLoc(items[0]);
 
 			if (tier > 0 && tier < 100 && bodyLoc) {
+				bodyLoc.sort(function (a, b) { return Equip.getEquippedItem(a).tier - Equip.getEquippedItem(b).tier; });	//261002 lowest tier slot first (rings, barbarian dual wield)
+				
 				for (j = 0; j < bodyLoc.length; j += 1) {
 					this.updateTier(bodyLoc[j], true);
 					
@@ -882,11 +884,13 @@ var Equip = {
 							Misc.itemLogger("Equipped", items[0], result.line);	//260815
 							
 							this.updateTier(bodyLoc[j]);
+							
+							Misc.cursorCheck();
+							
+							break;	//261002 leave only when equipped
 						}
 
-						Misc.cursorCheck();
-
-						break;
+						Misc.cursorCheck();	//261002 failed (e.g. str/dex with this slot's bonus removed): check the next slot (barbarian dual wield [4, 5])
 					}
 				}
 			}

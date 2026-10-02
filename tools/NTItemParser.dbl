@@ -23,7 +23,7 @@ include("tools/NTItemAlias.dbl");
 var NTIP = {},
 	NTIP_CheckList = [],
 	stringArray = [],
-	NTIP_QuestItems = [87,88,89,90,91,92,173,174,521,524,525,545,546,547,548,549,552,553,554,555],	//260729
+	NTIP_QuestItems = [87,88,89,90,91,92,173,174,521,524,525,545,547,548,549,552,553,554,555],	//260729	//261002 546 (Jade Figurine) out: it is picked by its nip rule (X.nip)
 	NTIP_Lists = {	//260803
 		common: [], tier: [], merc: [], qty: []
 	};
@@ -410,6 +410,18 @@ NTIP.EvaluateItem = function (item, list) {	//260804
 NTIP.Evaluate = function (item) {	//260807
 	// gate function — evaluates split lists in priority order
 	var result;
+
+	//quest item pre-check, same as GetScore	//261002
+	if (NTIP_QuestItems.indexOf(item.classid) > -1) {
+		return {
+			result: 0,
+			tier: 0,
+			merc: 0,
+			qty: null,
+			reason: "quest",
+			line: null
+		};
+	}
 
 	//list1 - common
 	result = NTIP.EvaluateItem(item, NTIP_Lists.common);
