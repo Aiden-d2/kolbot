@@ -1151,7 +1151,7 @@ ModeLoop:
 							me.cancel();
 							me.overhead("Trying to get the waypoint");
 
-							if (this.goWP(targetArea)) {
+							if (this.getWP(targetArea)) {	//261002 goWP -> getWP: activate the missing waypoint
 								return true;
 							}
 
@@ -1606,23 +1606,44 @@ MainLoop:
 		area - the id of area to get the waypoint in
 		clearPath - clear path
 	*/
-	getWP: function (area, clearPath) {
-		var i, j, wp, preset,
-			wpIDs = [119, 145, 156, 157, 237, 238, 288, 323, 324, 398, 402, 429, 494, 496, 511, 539];
+	getWP: function (area, clearPath) {	//261002 goWP + click the waypoint, returns whether it is activated
+		var i, wp,
+			wpIndex = this.wpAreas.indexOf(area);
 
-		if (area !== me.area) {
-			this.journeyTo(area);
+		this.goWP(area, clearPath);
+
+		if (me.area !== area || wpIndex < 0) {
+			return false;
 		}
 
-		for (i = 0; i < wpIDs.length; i += 1) {
-			preset = getPresetUnit(area, 2, wpIDs[i]);
+		for (i = 0; i < 5 && !getWaypoint(wpIndex); i += 1) {
+			wp = getUnit(2, "waypoint");
 
-			if (preset) {
-				this.moveToUnit(preset, 0, 0, clearPath);
+			if (!wp || wp.area !== me.area) {
+				Misc.trace("[getWP] waypoint unit not found. area:" + me.area);
+
+				break;
+			}
+
+			if (getDistance(me, wp) > 5) {
+				this.moveToUnit(wp);
+			}
+
+			Misc.click(0, 0, wp);
+
+			if (Misc.poll(function () {
+				return getUIFlag(0x14);
+			}, Math.max(1000, me.ping * 2 + 500), 50)) {
+				delay(me.ping + 200);
+				me.cancel();
+			} else {
+				Misc.trace("[getWP] waypoint menu not opened. try:" + i + " area:" + me.area);
+				Packet.flash(me.gid);
+				delay(me.ping * 2 + 200);
 			}
 		}
 
-		return false;
+		return !!getWaypoint(wpIndex);
 	},
 
 	/*
@@ -1665,7 +1686,7 @@ MainLoop:
 			}
 
 			if (this.wpAreas.indexOf(me.area) > -1 && !getWaypoint(this.wpAreas.indexOf(me.area))) {
-				this.goWP(me.area);
+				this.getWP(me.area);	//261002 goWP -> getWP: activate waypoints passed on the way (goWP only walks to them)
 			}
 
 			if (me.inTown && this.wpAreas.indexOf(target.course[0]) > -1 && getWaypoint(this.wpAreas.indexOf(target.course[0]))) {
