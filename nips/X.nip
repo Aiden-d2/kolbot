@@ -15,26 +15,6 @@
 
 
 //============================================================================================================================================================================================
-// [Helm] 40Fresi 30resi // 40life 10/15ener
-//============================================================================================================================================================================================
-
-[type] == helm && [quality] >= normal && [flag] != ethereal # # [tier] == 1
-
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
-[type] == helm && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
-
-//[name] == crown && [quality] == set && [flag] != ethereal # [lightresist] == 30 # [qty] == 1
-
-
-//============================================================================================================================================================================================
 // [Armor] 40mana 30resi // 60/100life
 //============================================================================================================================================================================================
 
