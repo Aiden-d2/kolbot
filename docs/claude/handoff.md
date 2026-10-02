@@ -317,4 +317,11 @@ ProcDump(`C:\CrashDumps`)가 원래 예외 지점을 잡는다. WER 덤프의 0x
 - D2BS(1.6.4U): `sendClick`은 Sleep(100) 뒤 WM_LBUTTONDOWN/UP를 창에 보낸다. `sendKey`는 WM_KEYDOWN/UP. `getIsTalkingNPC`는 게임의 대사 입력 처리 표 등록 여부.
 - 반영: `Packet.openMenu`(`Misc.js`)와 `Unit.openMenu`(`Prototypes.js`, `Config.PacketShopping`이 false일 때만 쓰는 자체 루프, 지금 설정은 true라 실행 안 됨, 설정이 바뀔 경우 대비)에서 대사 중이면 `Packet.skipTalk`(스페이스) → 메뉴가 뜨면 `Packet.endTalk`(trace `[TK] talk skipped <횟수> npc:<이름>`, 오토맵 다시 켜기). 20번 넘으면 예전 `me.cancel()`.
 - 기각: 대사가 끝날 때까지 기다리기(`b2a396f`, NPC 대사가 수 분 걸릴 수 있음), 대사가 보이면 조기 종료(콜백 `[0x7bf258]`의 쓰기는 설정 함수 0x49e7e0뿐이고 호출부는 모두 대사·NPC 대화 코드, 게임 종료 경로에서 지우지 않음 → 같은 프로세스의 다음 게임에서 크래시).
-- 유형 A·C·D·SpriteCache 주소로 분류: 0x6489C6(A), 0x661406(B), 0x6494DC(C), 0x66f99f(D), 0x5ff28e(SpriteCache), 0x481617(해제된 유닛).
+- 유형 A·C·D·SpriteCache 주소로 분류: 0x6489C6(A), 0x661406(B), 0x6494DC(C), 0x66f99f(D), 0x5ff28e(SpriteCache), 0x481617(해제된 유닛), 0x2F11BC9(해제된 내 유닛, D2BS 상태 확인에서 발견, 아래 7번).
+
+**261003 크래시 7번 (a7 PID 23184, 261003 00:48:15, Pz-57 `[BAAL]` 왕좌 웨이브 대기 중, 261003 분석)**
+- trace 마지막 줄 00:47:53 `[Throne Of Destruction 15094,5039] moveTo end`, `[Quit]`·치킨 없음. 콘솔 `Crash: no entry Throne Of Destruction - wait 5s (loc 9)`.
+- 첫 덤프 `Game.exe_261003_004815.dmp`: 0xC0000005 at **0x2F11BC9**(D2BS+0x1bc9), `0x878f070` 읽기, 스레드 0x226c(D2BS 스크립트 스레드). D2BS 게임 상태 확인 함수가 `GetPlayerUnit()`(0x463dd0) 결과의 `+0x70`을 읽는 줄이다. 게임 전역 `[0x7a6a70]`=0x878f000(내 유닛)은 그대로인데 그 메모리를 읽을 수 없었다. procdump 로그상 이 앞에 잡힌 예외는 없다(4번과 다름). 나머지 스크립트 스레드도 같은 줄에서 차례로 튕겼다.
+- 메인 스레드: 게임 루프 → 패킷 루프 → 서버 패킷 0xA3(크기 0x18, 핸들러 0x45d5e0) → 0x4c6a11 → 0x4f1e94 → 0x4cd804 → 0x4667db → 0x466183 → 0x465f2c → 0x681e16 → 0x407f36 → 0x409d3e → 0x68402e → 힙 해제(`NtFreeVirtualMemory` MEM_DECOMMIT 0x9160000~0x9184000, 내 유닛 주소는 범위 밖). 게임 종료 경로 아님.
+- WER 덤프 `Game.exe.23184.dmp`(머리 예외 0x576F0C, exit0 버그)에는 Game.exe 스레드 0x49f8(첫 덤프 때는 `select()` 대기)이 메모리 풀 잠금 0x74f244(0x200 블록 풀)에 들어가다 ntdll 0x77966627에서 `[0x14]` 쓰기로 튕긴 예외도 있다. 첫 덤프에서 이 잠금은 다른 풀 잠금과 같이 전부 0이었으므로 첫 크래시 뒤의 2차 크래시다.
+- 내 유닛 메모리가 왜 사라졌는지, 패킷 0xA3과 관련이 있는지는 모른다(덤프에 힙 없음). 4번(메인 스레드가 해제된 내 유닛·Act 사용)과 같은 계열로 본다(추정). 게임 내부, 스크립트로 고칠 수 없음.
