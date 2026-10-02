@@ -152,8 +152,8 @@ var ClassAttack = {
 			
 				// Allow short-distance walking for melee skills
 
-				if (untimedSkill === 42) {	//260917 static exception
-					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {
+				if (untimedSkill === 42 || untimedSkill === 43) {	//261003 static/telek exception
+					if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[1]), 0x4)) {	//261003
 						return 0;
 					}
 				} else {
