@@ -14,7 +14,7 @@
   - Frozen Orb 구슬(`frozenorb` 260): Vel 10 × Range 30 × 3/64 = **14.06** (260930 노트의 14.1)
   - Shock Wave(`shockwave` 511): Vel 20 × Range 14 × 3/64 = **13.1**. 측정 12.0~12.7(측정기가 주기적으로 좌표를 봐서 마지막 구간을 놓쳐 조금 작게 나옴, 추정)
   - Nova(`nova` 90): Vel 24, Accel −1000, Range 13 → 24+23+…+12 = 234 × 3/64 = **11.0**. 측정 11.3
-  - War Cry(`warcry` 235): Vel 12, Accel −600, Range 16 → Σ(12 − 0.6k, k=0..15) = 120 × 3/64 = **약 5.6** (계산만, 측정 안 함)
+  - War Cry(`warcry` 235): Vel 12, Accel −600, Range 16 → Σ(12 − 0.6k, k=0..15) = 120 × 3/64 = **약 5.6**. 261002 측정 5.4~6.3으로 맞음(감속 공식 확인)
   - Howl(`howl` 148): Vel 12, Accel −1000, Range 12 → 78 × 3/64 = 3.7인데 측정은 15.0(스킬 레벨 20). 레벨에 따라 수명·속도가 바뀌는 것으로 보임(추정, 미확인)
 
 ### 관련 미사일 데이터 (missiles.json)
@@ -48,6 +48,15 @@
 | Shock Wave | 12.4 | 261002 재측정 12.0~12.6(정상 4회), 수명 13~14프레임 |
 | Frozen Orb 구슬 | 14.1 | 계산값(측정 불가) |
 | Armageddon | – | 측정 없음 |
+| War Cry | 5.4~6.3 | 261002 측정: 미사일 64개(classid 235) 원형, 수명 641ms(약 16프레임 = 데이터 Range 16), 계산 약 5.6과 맞음 |
+
+### 2-3. 261002 워크라이 측정 (Numpad 5)
+- 미사일 **64개**(classid 235, owner 나), 모두 내 자리에서 출발(spawn 0.0), **360° 원형**으로 고르게 퍼짐(이웃 각도 약 5.6°).
+- 도달 거리 5.4~6.3(최대 6.3, 정수 좌표 반올림 오차 포함, 추정). 수명 641ms ≈ 16프레임.
+- 이웃 간격: 반지름 6에서 2·6·sin(2.8°) ≈ 0.6칸 → 빈틈 없음. 커서 위치와 무관하게 내 주변 약 5.5~6칸을 모두 맞힌다.
+- 감속 공식 확인: Vel 12, Accel −600(프레임마다 −0.6), Range 16 → 약 5.6. 측정과 맞는다.
+- 사거리 5(`Misc.js`)는 최소 도달 5.4 안쪽이라 5칸 안 몹은 확실히 맞는다. 261002 게이트(사거리 밖일 때만 접근, 회피 없음)와 맞는다.
+- 측정 당시 측정기는 부채꼴 요약만 있어 `fan 351° (-179 ~ 172) width at end 12.5 along avg -0.0`과 미사일별 angle/side/along이 임의 방향 기준으로 찍혔다(무의미). 원형 출력은 3-1에 추가.
 
 ### 2-2. 261002 쇼크웨이브 퍼짐 측정 (Numpad 6 자동 측정)
 - 한 번 시전에 미사일 **5개**(classid 511, owner 나), 모두 내 자리에서 출발(spawn 0.0).
@@ -79,12 +88,14 @@
 
 `threads/ToolsThread.js`. 사용: Pause로 봇을 멈춘 뒤 키를 누른다. 로컬 파일을 저장소 버전으로 덮어쓰면 사라지니 여기 남긴다.
 
-### 3-1. Numpad 5 개정 (미사일별 끝 좌표·퍼짐 출력) — `this.runMeter` 전체 교체
-트인 곳을 향해 스킬을 손으로 한 번 쓴다. 종류별 한 줄(`max` 최대 거리, `life` 수명, `spawn` 생성 거리, `owner`)에 더해 같은 종류가 2개 이상이면 미사일별 `end/dist/angle/side/along`과 `spread: fan … width at end …`를 출력한다. 시전 방향은 끝점 방향의 평균.
+### 3-1. Numpad 5 개정 (미사일별 끝 좌표·퍼짐·원형 출력) — `this.runMeter` 전체 교체
+트인 곳을 향해 스킬을 손으로 한 번 쓴다. 종류별 한 줄(`max` 최대 거리, `life` 수명, `spawn` 생성 거리, `owner`)에 더해 같은 종류가 2개 이상이면:
+- **원형**(미사일이 덮는 각도 > 180°, 예: War Cry): `ring: N missiles, coverage, radius 최소 ~ 최대 (avg), widest gap 각도 = 칸 at 최소 반지름` 한 줄만. 원형에는 평균 방향이 의미가 없어서 부채꼴 요약을 하지 않는다(261002 War Cry를 부채꼴로 계산해 `fan 351°`가 나온 일 뒤에 추가).
+- **부채꼴**(그 밖): 미사일별 `end/dist/angle/side/along`과 `spread: fan … width at end …`. 시전 방향은 끝점 방향의 평균.
 
 ```js
 	this.runMeter = function () {	//260930 temp
-		var m, t, gid, cls, line, alive, i, k, dx, dy, dir, sx, sy, rel, side, along, minA, maxA, minS, maxS, sumA, used,
+		var m, t, gid, cls, line, alive, i, k, dx, dy, dir, sx, sy, rel, side, along, minA, maxA, minS, maxS, sumA, used, abs, gapA, minD, maxD, sumD,
 			now = getTickCount(),
 			seen = {},
 			byClass = {},
@@ -161,6 +172,45 @@
 				// 261002 spread: cast direction = mean of the end directions, angle and side offset of each missile against it
 				if (t.n < 2) {
 					continue;
+				}
+
+				// 261002 ring (War Cry): angular coverage = 360 - the widest empty arc between neighbour missiles. Over 180 is a ring, not a fan:
+				// radius and widest gap instead of the fan (a mean direction means nothing for a ring)
+				abs = [];
+				minD = 999;
+				maxD = 0;
+				sumD = 0;
+
+				for (i = 0; i < t.list.length; i += 1) {
+					k = t.list[i];
+					dx = k.lx - k.cx;
+					dy = k.ly - k.cy;
+
+					if (Math.sqrt(dx * dx + dy * dy) >= 1) {
+						abs.push(Math.atan2(dy, dx) * 180 / Math.PI);
+						minD = Math.min(minD, Math.sqrt(dx * dx + dy * dy));
+						maxD = Math.max(maxD, Math.sqrt(dx * dx + dy * dy));
+						sumD += Math.sqrt(dx * dx + dy * dy);
+					}
+				}
+
+				if (abs.length > 1) {
+					abs.sort(function (a, b) {
+						return a - b;
+					});
+
+					gapA = 360 - (abs[abs.length - 1] - abs[0]);	// wrap-around arc
+
+					for (i = 1; i < abs.length; i += 1) {
+						gapA = Math.max(gapA, abs[i] - abs[i - 1]);
+					}
+
+					if (360 - gapA > 180) {
+						out("[MM]   ring: " + abs.length + " missiles, coverage " + (360 - gapA).toFixed(0) + " deg, radius " + minD.toFixed(1) + " ~ " + maxD.toFixed(1) +
+							" (avg " + (sumD / abs.length).toFixed(1) + "), widest gap " + gapA.toFixed(1) + " deg = " + (2 * minD * Math.sin(gapA * Math.PI / 360)).toFixed(1) + " tiles at " + minD.toFixed(1));
+
+						continue;
+					}
 				}
 
 				sx = 0;
@@ -444,7 +494,7 @@
 |---|---|---|
 | 근접 계열(Bash, Zeal, Smite, Blessed Hammer, Maul, Fury 등) | 3 | 기존 |
 | Battle Cry | 4 | 기존 |
-| War Cry (154) | 5 | 기존. 계산 도달 약 5.6. 261002부터 사거리 밖이거나 막혔을 때만 접근(회피 없음, `Barbarian.js`) |
+| War Cry (154) | 5 | 기존. 측정 도달 5.4~6.3(미사일 64개 원형), 계산 약 5.6. 261002부터 사거리 밖이거나 막혔을 때만 접근(회피 없음, `Barbarian.js`) |
 | Twister, Tornado | 5 | 기존. Tornado는 몹 방향 2~3칸 앞·좌우 ±1에 시전(`Druid.js` 104-112) |
 | Charged Bolt, Frost Nova | 6 | 기존 |
 | Whirlwind, Molten Boulder | 7 | 기존 |
@@ -472,7 +522,7 @@
 ---
 
 ## 5. 열린 질문
-- War Cry 실제 도달 거리와 미사일 수: 데이터상 미사일(`warcry` 235)이 있으니 Numpad 5 측정기로 잴 수 있다(261002 대화 중 "투사체가 없을 것"이라 한 건 틀림).
+- ~~War Cry 실제 도달 거리와 미사일 수~~ → 261002 측정 완료(2-3). 대화 중 "투사체가 없을 것"이라 한 건 틀렸다(미사일 64개 원형).
 - Howl의 레벨별 수명·속도: 측정 15.0이 계산 3.7보다 훨씬 큼. 레벨 스케일링 칸 확인 필요.
 - 미사일·몹 충돌의 실제 판정식(빈틈 기준 3칸은 크기 어림).
 - Armageddon 효과 범위(시전 좌표 무관 여부).
