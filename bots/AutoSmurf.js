@@ -1069,7 +1069,7 @@ function AutoSmurf() {
 
 		nextAreaIndex = areaIDs.indexOf(target.course[0]) + 1; // Index of next area
 		
-		Misc.trace("Travel course: " + target.course);	//260930 print -> trace (diagnostic)
+		//Misc.trace("Travel course: " + target.course);	//260930 print -> trace (diagnostic)
 		me.overhead("Travel course: " + target.course);
 
 		if (nextAreaIndex < areaIDs.length) { // If next area index is invalid, return true.
@@ -1078,10 +1078,10 @@ function AutoSmurf() {
 			}
 
 			for (nextAreaIndex; nextAreaIndex < areaIDs.length; nextAreaIndex += 1) {
-				Misc.trace("nextAreaIndex: " + nextAreaIndex);	//260930 print -> trace (diagnostic)
+				//Misc.trace("nextAreaIndex: " + nextAreaIndex);	//260930 print -> trace (diagnostic)
 				me.overhead("nextAreaIndex: " + nextAreaIndex);
 				
-				print("Next location name: " + Pather.getAreaName(areaIDs[nextAreaIndex]));	//260922
+				//print("Next location name: " + Pather.getAreaName(areaIDs[nextAreaIndex]));	//260922
 				me.overhead("Next location name: " + Pather.getAreaName(areaIDs[nextAreaIndex]));	//260922
 
 				switch (areaIDs[nextAreaIndex]) { // Special actions for traveling to some areas
@@ -5758,13 +5758,11 @@ function AutoSmurf() {
 			poi = getPresetUnit(me.area, 2, 580);
 
 			switch (poi.roomx * 5 + poi.x) {
-			case 12565:
-				//Pather.moveTo(12555, 11043);
-				Pather.moveTo(12555, 11012);	//261001
+			case 12565:	//Notrh: 12552,11012 + 12578,11043
+				Pather.moveTo(12555, 11015);	//261002
 				break;
-			case 12526:
-				//Pather.moveTo(12548, 11060);
-				Pather.moveTo(12517, 11060);	//261001
+			case 12526:	//West: 12517,11057 + 12548,11083
+				Pather.moveTo(12520, 11060);	//261002
 				break;
 			}
 			

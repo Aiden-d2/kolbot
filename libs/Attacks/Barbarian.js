@@ -71,9 +71,12 @@ var ClassAttack = {
 
 			return 1;
 		case 154:	// 260613
+			// approach only when out of range or blocked, so it never dodges (dodging backs off from the monsters it should stun)	//261002
+			if (getDistance(me, unit) > Skill.getRange(attackSkill) || checkCollision(me, unit, 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4)) {	//260826	//260930 minDist 1 is the default now
 					return 0;
 				}
+			}
 
 			if (!unit.dead) {
 				Skill.cast(attackSkill, Skill.getHand(attackSkill), unit);

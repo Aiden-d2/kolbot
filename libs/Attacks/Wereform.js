@@ -11,10 +11,6 @@ var ClassAttack = {
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-			if (Config.AttackSkill[0] === 249) {	//260620
-				Misc.shapeShift(Config.Wereform);
-			}
-			
 				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
 					return 0;
 				}
@@ -78,7 +74,7 @@ var ClassAttack = {
 
 	// Returns: 0 - fail, 1 - success, 2 - no valid attack skills
 	doCast: function (unit, timedSkill, untimedSkill) {
-		var i;
+		var i, angle, tx, ty;	//261002
 
 		// No valid skills can be found
 		if (timedSkill < 0 && untimedSkill < 0) {
@@ -94,9 +90,12 @@ var ClassAttack = {
 
 			Misc.shapeShift(Config.Wereform);
 
+			// Armageddon: approach only when out of range or blocked, so it never dodges	//261002
+			if (timedSkill !== 249 || getDistance(me, unit) > Skill.getRange(timedSkill) || checkCollision(me, unit, 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {	//260826	//260930 minDist 1 is the default now
 					return 0;
 				}
+			}
 
 			if (!unit.dead) {
 				Skill.cast(timedSkill, Skill.getHand(timedSkill), unit);
@@ -114,12 +113,30 @@ var ClassAttack = {
 
 			Misc.shapeShift(Config.Wereform);
 
+			// Shock Wave: approach only when out of range or blocked, so it never dodges	//261002
+			if (untimedSkill !== 243 || getDistance(me, unit) > Skill.getRange(untimedSkill) || checkCollision(me, unit, 0x4)) {
 				if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4)) {	//260826	//260930 minDist 1 is the default now
 					return 0;
 				}
+			}
 
 			if (!unit.dead) {
-				Skill.cast(untimedSkill, Skill.getHand(untimedSkill), unit);
+				// Shock Wave aims its 5 missiles at the cursor and 1, 2 tiles to each side of it: a cursor closer than 5 spreads them too far apart	//261002
+				// to leave no gap (measured), so a close target is cast at 5 tiles in its direction
+				if (untimedSkill === 243 && getDistance(me, unit) < 5) {
+					angle = Math.atan2(unit.y - me.y, unit.x - me.x);
+					tx = Math.round(me.x + Math.cos(angle) * 5);
+					ty = Math.round(me.y + Math.sin(angle) * 5);
+
+					if (!Attack.validSpot(tx, ty)) {
+						tx = unit.x;
+						ty = unit.y;
+					}
+
+					Skill.cast(untimedSkill, Skill.getHand(untimedSkill), tx, ty);
+				} else {
+					Skill.cast(untimedSkill, Skill.getHand(untimedSkill), unit);
+				}
 			}
 
 			return 1;

@@ -111,7 +111,6 @@ var AutoBuildTemplate = {
 
 	18:	{
 			Update: function () {
-				Config.Dodge.Enabled = true;
 				Config.MakeRoom =  true;
 				Config.TownCheck = true;
 				Config.TownHP = 40;
@@ -136,6 +135,12 @@ var AutoBuildTemplate = {
 					Config.Recipes.push([Recipe.Caster.Amulet]);
 					Config.Recipes.push([Recipe.Caster.Ring]);
 				}
+			}
+		},
+
+	25:	{
+			Update: function () {
+				Config.Dodge.Enabled = true;	//261002 18 -> 25
 			}
 		},
 

@@ -121,7 +121,6 @@ var AutoBuildTemplate = {
 
 	18:	{
 			Update: function () {
-				Config.Dodge.Enabled = true;
 				Config.MakeRoom =  true;
 				Config.TownCheck = true;
 				Config.TownHP = 40;
@@ -150,6 +149,12 @@ var AutoBuildTemplate = {
 				}
 				
 				Config.AttackSkill = [-1, 245, -1, 245, -1, -1, -1];  // Tornado
+			}
+		},
+
+	25:	{
+			Update: function () {
+				Config.Dodge.Enabled = true;	//261002 18 -> 25
 			}
 		},
 

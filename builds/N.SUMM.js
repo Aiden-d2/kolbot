@@ -138,7 +138,6 @@ var AutoBuildTemplate = {
 
 	18:	{
 			Update: function () {
-				Config.Dodge.Enabled = true;
 				Config.MakeRoom =  true;
 				Config.TownCheck = true;
 				Config.TownHP = 40;
@@ -167,6 +166,12 @@ var AutoBuildTemplate = {
 				
 				Config.Curse[0] = 87;
 				Config.Curse[1] = 87;
+			}
+		},
+
+	25:	{
+			Update: function () {
+				Config.Dodge.Enabled = true;	//261002 18 -> 25
 			}
 		},
 

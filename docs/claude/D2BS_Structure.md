@@ -1063,7 +1063,7 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | `ScanShrines` `UseWells` | `Pather.NodeAction`, `Misc.scanShrines` |
 | `NoSkipArea` `DetourPath` | `Attack.clear` / `setPosition`, `Paladin.getHammerPosition` |
 | `SafeTele{Enabled Range Angle Step Min Skip}` (261001 Count 삭제) | `Pather.moveTo`의 `safeCheckNode` |
-| `Dodge{Enabled Range MinSkillRange}` | `Attack.setPosition`. `Enabled`는 `AutoSmurf.duriel` 안에서 잠시 끄고 다시 켬 (260930 HP·Step·Max·Count 삭제) |
+| `Dodge{Enabled Range MinSkillRange}` | `Attack.setPosition`. `Enabled`는 `AutoSmurf.duriel` 안(탈라샤 무덤 오리피스 박스 정리 동안)에서 잠시 끄고 다시 켬. 포탈 집결 직후 붙은 몹부터 정리하려는 것 (260930 HP·Step·Max·Count 삭제). 261002: War Cry·Shock Wave·Armageddon은 직업 파일 게이트로 회피 없음 |
 | `Gear` `Tiered` `TieredGear` `TierGoal` `TierNow` | `NTIP.EvaluateItem` / `GetScore`, `Equip` 계열, `AutoSmurf.preparation`(`Tiered`) |
 | `TierMerc` `MercStat` | `NTIP` merc 게이트·`GetScore`, `Grant`, `ToolsThread` |
 | `MercSkill` | `AutoSmurf` → `Merc.hire` |
