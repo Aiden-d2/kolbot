@@ -133,7 +133,6 @@ var AutoBuildTemplate = {
 
 	18:	{
 			Update: function () {
-				Config.Dodge.Enabled = true;
 				Config.MakeRoom =  true;
 				Config.TownCheck = true;
 				Config.TownHP = 40;
@@ -165,6 +164,12 @@ var AutoBuildTemplate = {
 				
 				Config.Traps = [271, 271, 271, 271, 271];
 				Config.BossTraps = [271, 271, 271, 271, 271];
+			}
+		},
+
+	25:	{
+			Update: function () {
+				Config.Dodge.Enabled = true;	//261002 18 -> 25
 			}
 		},
 

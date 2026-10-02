@@ -79,7 +79,7 @@ var Config = {
 		Range: 10,	//260930 9 -> 10: monsters closer than 10 (was within 9)
 		Angle: 60,
 		Step: 5,
-		Min: 15,
+		Min: 10,
 		Skip: [62, 63, 64, 120, 132]
 	},
 

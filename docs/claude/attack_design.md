@@ -223,7 +223,7 @@ setPosition(unit, distance, coll, minDist = 1)   (260930 3 → 1. 1을 넘기던
 
 | 이름 | 값 | 위치 | 의미 |
 |---|---|---|---|
-| `Config.Dodge.Enabled` | false (빌드 10종이 18레벨에서 true) | Config.js | 회피 사용 |
+| `Config.Dodge.Enabled` | false (261002부터 빌드 13종 모두 25레벨에서 true, 전에는 18레벨) | Config.js | 회피 사용 |
 | `Config.Dodge.Range` | **10** | Config.js | R = min(사거리, Range): R 미만 몹을 셈(발동·후보), 걷기 회피 거리 (260930) |
 | `Config.Dodge.MinSkillRange` | 5 | Config.js | 사거리가 이 값 이상인 스킬만 회피 (260930 새로 추가) |
 | ~~`Dodge.HP`, `Dodge.Step`, `Dodge.Max`, `Dodge.Count`~~ | | | 260930 삭제 (HP 조건 없음, 간격은 상수 5, Max는 Range로 통합, 발동은 R 미만 몹 1마리 이상) |
