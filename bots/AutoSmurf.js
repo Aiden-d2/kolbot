@@ -5613,7 +5613,7 @@ function AutoSmurf() {
 					Pather.moveTo(15092, 5028);
 					Precast.doPrecast(true);
 				} else if (me.classid === 5) {	//dru
-					Pather.moveTo(15092, 5013);	//261001
+					Pather.moveTo(15092, 5018);	//261001	//261002 5013 -> 5018
 				} else {
 					Pather.moveTo(15092, 5040);
 				}

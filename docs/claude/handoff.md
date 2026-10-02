@@ -11,6 +11,8 @@
 - **회피 없는 스킬·변신 쿨타임(261002):** War Cry·Shock Wave·Armageddon은 사거리 밖일 때만 접근(회피 없음), 쇼크웨이브는 5칸보다 가까운 몹에 5칸 커서로 시전, Armageddon 사거리 20, 변신 빌드에서 허리케인 선시전 안 함, `Skill.cast`의 아마게돈 변신 가드. 세부는 `attack_design.md` 12-1(쇼크웨이브 시전 좌표, 회피 없는 스킬, 변신 빌드 쿨타임), 게임 확인은 3절 20~22번.
 - **콘솔 색(261002):** `Misc.quitGame`의 조기 종료 이유를 빨강 → 기본색(검정). 치킨·사망·핑 퇴장·멈춤은 빨강 유지(핑은 발생한 적 없어 그대로). CLAUDE.md 로그 규칙 갱신.
 - **스킬 사거리 노트 분리(261002):** 사거리 관련 정보(공식, 미사일 데이터, 260930·261002 측정, 측정기 코드, 현재 값과 근거)는 `skill_range.md`에 모두 둔다.
+- **nip 헬름 정리(261002, 사용자 지시):** X.nip의 `[Helm]` 섹션 삭제(머리글·tier 1·tier 11~20·crown 주석, `[Sell]`의 주석 줄은 유지). 빌드 nip 13종의 `[Helm & Circlet]` → `[Helm]`, tier 11~30 줄 앞부분 `[name] >= 418 && [name] <= 421 &&` → `([type] == helm || ([name] >= 418 && [name] <= 421)) &&`, 그 줄의 `[fhr]` → `[frw]`, X의 tier 1 줄을 같은 조건으로 각 빌드 헬름 섹션 맨 앞에 추가. 빌드별 스킬 점수식·warhat·sallet·tiara 줄은 그대로. V·Y·T·Z.nip은 손대지 않음. nip 파서는 조건을 `eval`하므로 괄호가 그대로 쓰인다(`tools/NTItemParser.dbl` 126줄, A.TRAP 무기 줄에도 같은 꼴).
+- **바알 루프 드루이드 자리(261002):** `AutoSmurf.js` 바알 웨이브 처리의 드루이드 `Pather.moveTo(15092, 5013)` → `5018`.
 - **사용자 수정(261002):** 모든 빌드의 회피 켜기를 18 → 25레벨로(새 `25:` 블록). `SafeTele.Min` 15 → 10(`Pather.js` safeCheckNode의 후보 거리 하한). `AutoSmurf.travel`의 진단 trace·print 3줄 주석 처리(로그 정리). `farmingCountess` 시작 좌표 조정.
 - **마을 chores(261001):** `Town.fillTome` 골드 게이트, `Town.identify` 물건마다 감정 수단 고르기, 감정 trace. 세부는 3절 끝, 게임 확인은 3절 18~19번.
 - **이번 작업(260929~260930)의 내용:** 7절에 있다. 크래시 분석(유형 A·B·C), 용병 리스너 위치, 포털·유닛·텔레포트 대기 방식, 조기 종료 이유(`Misc.quitGame`)·잡힌 오류(`Misc.caughtError`), 콘솔/print/trace 역할 분리.
