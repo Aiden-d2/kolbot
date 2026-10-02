@@ -1597,8 +1597,39 @@ MainLoop:
 				}
 			}
 		}
-		
-		return false;
+
+		// click the waypoint to activate it; reaching it alone does not	//261002
+		if (me.area !== area || this.wpAreas.indexOf(area) < 0) {	//261002
+			return false;
+		}
+
+		for (j = 0; j < 5 && !getWaypoint(this.wpAreas.indexOf(area)); j += 1) {	//261002
+			wp = getUnit(2, "waypoint");
+
+			if (!wp || wp.area !== me.area) {
+				Misc.trace("[goWP] waypoint unit not found. area:" + me.area);
+				break;
+			}
+
+			if (getDistance(me, wp) > 5) {
+				this.moveToUnit(wp);
+			}
+
+			Misc.click(0, 0, wp);
+
+			if (Misc.poll(function () {
+				return getUIFlag(0x14);
+			}, Math.max(1000, me.ping * 2 + 500), 50)) {
+				delay(me.ping + 200);
+				me.cancel();
+			} else {
+				Misc.trace("[goWP] waypoint menu not opened. try:" + j + " area:" + me.area);
+				Packet.flash(me.gid);
+				delay(me.ping * 2 + 200);
+			}
+		}
+
+		return !!getWaypoint(this.wpAreas.indexOf(area));	//261002 was always false: useWaypoint threw even after reaching the waypoint
 	},
 
 	/*
