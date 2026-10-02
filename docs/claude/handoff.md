@@ -5,7 +5,7 @@
 ---
 
 ## 1. 현재 상태
-- **코드:** main `4716005`(261001, 사용자 업로드) 기준. 크래시·로그·포털 작업은 PR #7(`claude/funny-pasteur-4ymxd2`), 회피 재설계·스킬 사거리는 PR #8, Precast.summon은 PR #9, Pather·setPosition·상자는 PR #10·#11(`claude/pather-analysis-refactor-w9td75`, 세부는 `pather_status.md`)로 들어왔다. 각 작업의 게임 확인 항목은 아래 목록과 3절 표(10~14번)에 있다.
+- **코드:** main `4f55291`(261001) 기준. 크래시·로그·포털 작업은 PR #7(`claude/funny-pasteur-4ymxd2`), 회피 재설계·스킬 사거리는 PR #8, Precast.summon은 PR #9, Pather·setPosition·상자는 PR #10·#11(`claude/pather-analysis-refactor-w9td75`, 세부는 `pather_status.md`)로 들어왔다. 각 작업의 게임 확인 항목은 아래 목록과 3절 표(10~14번)에 있다.
 - **게임 밖 흐름(261001, PR #16):** 캐릭터 선택 화면 생성, 복구할 수 없는 로그인 오류에서 정지, 대기 남은 시간 표시, 게임 밖 회색 콘솔 로그(`OOGLog`). 세부는 5절 끝, 게임 확인은 3절 15~17번.
 - **유형 B 크래시 수정(261001, PR #18):** NPC 메뉴를 열 때 대사 중이면 `me.cancel()` 대신 스페이스로 넘긴다(`Packet.skipTalk`/`endTalk`, `Misc.js`). 세부는 7절 끝, 게임 확인은 1절 인게임 검증 8번.
 - **마을 chores(261001):** `Town.fillTome` 골드 게이트, `Town.identify` 물건마다 감정 수단 고르기, 감정 trace. 세부는 3절 끝, 게임 확인은 3절 18~19번.
@@ -20,7 +20,6 @@
   7. 용병 고용 이동 중 "D2BS is not responding" 멈춤(17:40형)이 다시 나는지 — 리스너 위치 변경이 이 가설의 대응이다(7절). 멈추면 `-h` 덤프로 메인 스레드가 D2BS 패킷 이벤트 대기 안인지 본다
   8. 유형 B 수정(261001): trace `[TK] talk skipped <횟수> npc:<이름>`이 찍히는지, `[TK] cancel during talk`(스페이스 20번 초과 뒤 예전 cancel)이 없는지, 대사 뒤 오토맵이 꺼진 채 남지 않는지, 크래시 첫 덤프가 0x661406이 아닌지
      - 결과(261001 a2 trace): `[TK] talk skipped 1`이 4건(Akara 13:59:55·14:25:36, Kashya 14:15:53, Charsi 14:29:01), 모두 스페이스 한 번에 넘어감. `[TK] cancel during talk` 0건. 같은 날 크래시(7절 6번)는 0x6494DC라 유형 B 아님. 오토맵 상태는 trace로 알 수 없어 미확인.
-- **사용자 직접 업로드(261001, main `e557706`·`4716005`):** `AutoSmurf.js`만. 서머너 퀘스트 판정에 `getQuest(13, 1)` 추가(호출 조건 `(!13,1 && !13,0) || !WP 17`, trace `summoner quest 13,0 / 13,1`), 바알 단계 드루 대기 자리 `15092,5018 → 15092,5013`, 카운테스 단계 상자(`poi`, 프리셋 580) 두 자리의 이동 좌표 변경. 그중 두 곳은 옛 줄 `//Pather.moveTo(...)`를 주석으로 남겼다(지우기 규칙과 다름, 사용자 판단 대기).
 - **분석에 필요한 파일:** 프로필별 trace(`_cache/trace/`), d2bs 로그, 매니저 콘솔 로그, 필요하면 `_cache/ItemLog.txt`.
 - **크래시 수집 방침(261001):** ProcDump는 지금 설정 그대로 둔다. 크래시가 나면 첫 덤프(접미사 없는 파일, `procdump_<PID>.log`의 PID·시각으로 고름)의 예외 주소만 보고 7절 유형으로 분류한다. 깊은 분석은 처음 보는 주소이거나 0x661406(유형 B, 우리 원인)일 때만 한다. 나머지 유형은 게임 내부라 원인을 찾아도 고칠 수 없다(Game.exe 패치는 보류). 유형 B가 한동안 안 나오면 ProcDump를 꺼도 된다.
 - **임시 로그 정리 대기:** `[MP]`(용병), `usePortal 342`(빨간 포털), 벨트 물약 상세는 한 사이클 확인 뒤 삭제 후보. `[TK]` 래퍼(Prototypes.js `me.cancel`)는 유형 B 수정 확인 때까지 유지(스페이스 20번 초과 뒤 cancel을 기록). `[OD]`(`watchDialog`)는 목적(오브젝트 대사 길이 관찰)을 마쳐 삭제 후보.
