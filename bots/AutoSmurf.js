@@ -2461,7 +2461,7 @@ function AutoSmurf() {
 			}
 			
 			if (getUnit(1, 402)) {
-				Attack.clear(15);	//260921
+				Attack.clear(25);	//261002
 			} else {
 				print("Smith failed: getUnit");
 				return false;
