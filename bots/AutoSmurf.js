@@ -2139,7 +2139,7 @@ function AutoSmurf() {
 					
 					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
 					
-					Attack.clear(25);	//260921
+					Attack.clear(20);	//261002
 					
 					Pather.moveToPreset(me.area, 1, 738, 5, 5, true); //move to tree	//260929
 					
@@ -2205,7 +2205,7 @@ function AutoSmurf() {
 
 			Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true);	//260822	//261002 no offset
 			
-			Attack.clear(25);	//260921
+			Attack.clear(20);	//261002
 			
 			Pather.moveToPreset(me.area, 1, 737, 0, 0, true);	//260822	//260929	//261002 no offset
 			
@@ -2333,7 +2333,7 @@ function AutoSmurf() {
 
 		Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true);	//260822	//261002 no offset
 		
-		Attack.clear(25);	//260921
+		Attack.clear(20);	//261002
 		
 		Pather.moveToPreset(me.area, 1, 737, 0, 0, true); //260719	//260822	//260929	//261002 no offset
 
@@ -2478,7 +2478,7 @@ function AutoSmurf() {
 			}
 			
 			if (getUnit(1, 402)) {
-				Attack.clear(25);	//261002
+				Attack.clear(20);	//261002
 			} else {
 				print("Smith failed: getUnit");
 				return false;
@@ -2793,7 +2793,7 @@ function AutoSmurf() {
 
 		Pather.moveTo(20047, 4898, 10, true);
 
-		Attack.clear(20);	//260921
+		Attack.clear(20);	//261002
 		
 		Pather.moveTo(20047, 4898, 10, true);
 		
@@ -2915,7 +2915,7 @@ function AutoSmurf() {
 			}
 			
 			try {
-				Attack.clear(25, 156);	// Andariel //260929
+				Attack.clear(20, 156);	// Andariel //261002
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.andy", e);	//260930
 			}
@@ -3020,7 +3020,7 @@ function AutoSmurf() {
 			}
 		}
 
-		Attack.clear(25);
+		Attack.clear(20);	//261002
 		
 		while (!me.findItem(549)) {
 			this.getQuestItem(549, 354);
@@ -4810,7 +4810,7 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 
-		Attack.clear(25);
+		Attack.clear(20);	//261002
 
 		this.initLayout();
 
@@ -4931,7 +4931,7 @@ function AutoSmurf() {
 		}
 		
 		try {
-			Attack.clear(25, getLocaleString(22435));	// Shenk the Overseer //260929
+			Attack.clear(20, getLocaleString(22435));	// Shenk the Overseer //261002
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.shenk", e);	//260930
 		}
@@ -5138,7 +5138,7 @@ function AutoSmurf() {
 			
 			Pather.teleport = false;	//260920
 			
-			Attack.clear(25);
+			Attack.clear(20);	//261002
 			
 			Pather.teleport = true;	//260920
 			
@@ -5935,7 +5935,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		try {
-			Attack.clear(25, 156);	// Andariel //260929
+			Attack.clear(20, 156);	// Andariel //261002
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.farmingAndy", e);	//260930
 		}
@@ -6077,7 +6077,7 @@ function AutoSmurf() {
 							return false;
 						}
 					} else {
-						if (!Attack.clear(25)) {
+						if (!Attack.clear(20)) {	//261002
 							return false;
 						}
 					}
@@ -6097,7 +6097,7 @@ function AutoSmurf() {
 							return false;
 						}
 					} else {
-						if (!Attack.clear(25)) {
+						if (!Attack.clear(20)) {	//261002
 							return false;
 						}
 					}
