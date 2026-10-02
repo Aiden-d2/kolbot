@@ -50,7 +50,7 @@ var Build = {
 			return "S.SFFW";	//build type
 			
 		case profiles[1]:
-			return "S.COLD";
+			return "S.FONV";
 		
 		case profiles[2]:
 			return "A.TRAP";
