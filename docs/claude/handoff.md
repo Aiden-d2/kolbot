@@ -203,7 +203,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 오프셋만 제거: trist 경로(2341), 디아블로 `followPath`, 메피 해자 `17515,8061`(2곳), smith 반복 이동, tombs 상자 반복 이동, 레드포탈 3종(Abaddon·POA·Infernal: 반복 이동 뒤 바로 포탈, 오프셋 자리에 경로가 없으면 180초 동안 제자리였음), 카우 `followDriver` 5곳(드라이버에 몰려도 일단 제거, 사용자), 스톤 737 첫 이동·trist 마지막 이동.
 - 도착 뒤 흩어지기: andy·farmingAndy 포탈 앞, smith 마지막, 트라빈컬(+109·−95 고정 오프셋 유지), 메피 다리 `17566,8069`(2곳), 디아블로 별 중앙(2곳), 에인션트(2곳), 3막 마을 `5148,5066`, farmingCountess 580, farmingNihlathak 462.
 - 케인 스톤 대기(열쇠 없는 캐릭터): 흩어지기 → 자리 저장(`spot`) → `while (!getPortal(38)) { clear(20); moveTo(spot); }`. 반복문 안의 `moveToPreset(737 + 오프셋)`은 제거. 몹이 없으면 clear가 이동 없이 끝나고 `moveTo(spot)`은 2칸 안이라 바로 끝남 → 제자리.
-- 오프셋 값: 8방향 5칸, 프로필 번호(`Team.Profiles` 순서) 기준 `1 2 3 / 8 · 4 / 7 6 5`(1번 좌상부터 시계방향, x 오른쪽·y 아래가 +). a1 (−5,−5), a2 (0,−5), a3 (5,−5), a4 (5,0), a5 (5,5), a6 (0,5), a7 (−5,5), a8 (−5,0). `myPos`(`% 4`)는 알코르 보상 대기 지연용으로 그대로 둔다.
+- 오프셋 값: 8방향 5칸, 프로필 번호(`Team.Profiles` 순서) 기준 `1 2 3 / 8 · 4 / 7 6 5`(1번 좌상부터 시계방향, x 오른쪽·y 아래가 +). a1 (−5,−5), a2 (0,−5), a3 (5,−5), a4 (5,0), a5 (5,5), a6 (0,5), a7 (−5,5), a8 (−5,0). 순번은 `myPos = Team.Profiles.indexOf(me.profile)`(0~7) 하나로 합쳤다: `myX`·`myY`는 `myPos % 8`로 표에서 고르고, 알코르 보상 대기는 `((Team.Profiles.length - 1 - myPos) % 4) * 15000`(뒤집은 순번, 리더 a1이 마지막 — 예전 `reverse().indexOf % 4`와 같은 순서: a4·a8 0초, a3·a7 15초, a2·a6 30초, a1·a5 45초). 프로필 이름이 목록에 없을 때의 방어는 두지 않는다(그 경우 `Build.getBuildType`부터 실패).
 - 그대로: `me.x + myX` 흩어지기 34곳(값만 8방향), Pather·Attack. 기각: Pather `moveTo` 안의 대체 좌표(setPosition 등 다른 이동까지 바뀜), `getNearestWalkable`로 대체 칸 찾기(걸을 수 있는지만 보고 닿을 수 있는지는 못 봄, 벽 건너편 칸 오판), 좌표만 고치기(좌표가 바뀌면 다시 생김).
 
 **게임 밖 흐름 (261001, PR #16)** — Lead·Follow 공통
