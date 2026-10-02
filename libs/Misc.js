@@ -2340,7 +2340,7 @@ MainLoop:
 	quitGame: function (reason, detail) {	//260930	//261001 console argument removed: every profile prints
 		if (!this.quitReason) {
 			this.quitReason = reason;
-			D2Bot.printToConsole(reason + " (" + this.where() + ")", 9);
+			D2Bot.printToConsole(reason + " (" + this.where() + ")");	//261002 red -> default color: red is left to chicken / death
 
 			this.trace("[Quit] " + reason + (detail ? ": " + detail : ""));
 		}

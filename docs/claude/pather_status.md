@@ -252,3 +252,8 @@ getTeleDistance: function () {
 - `NodeAction`: killMonsters(108은 20, 그 외 25) → popChests(15) → getShrines → useWells 순서.
 - `useWaypoint`: 루트 골레인(40)에서 Warriv가 50 안이면 1막 경유 — 의도(2막 시작점에서 WP가 멂).
 - 원본 kolbot과 같은 동작: `moveTo` 반환은 마지막 처리 노드와의 거리 ≤5, `moveToUnit`은 PresetUnit이면 `pop`을 안 넘김, `plotCourse`의 `visitedNodes.indexOf`는 키가 아닌 값을 찾음(트리 구조라 실제 문제 없음).
+
+## SafeTele.Min 15 → 10 (261002, 사용자 수정)
+- 쓰는 곳은 `Pather.moveTo`의 `safeCheckNode` 하나(`Pather.js:178`, 링 거리 하한). 링: 35(좁은 지역 30)부터 5씩 → 15였다가 **10 링 하나 추가**. 10 링 후보는 각도 간격 5/10 rad ≈ 29°라 0°, ±29°, ±57° 5개.
+- 바깥 링에서 몹 0 자리를 못 찾았을 때만 내려오고, 더 적을 때만 바꾸므로(`mc < baseline`) 10칸 자리는 바깥 링보다 몹이 확실히 적을 때만 고른다. 목표 방향 ±60° 안이라 최소 약 5칸 전진, 최근 5자리 5칸 안 제외로 맴돌지 않음, 착지 검사 `checkSpot(0x1)` 같음.
+- 감수: 몹이 많은 곳에서 짧은 텔레포트가 늘 수 있다(횟수·마나). 빈도는 게임 확인.

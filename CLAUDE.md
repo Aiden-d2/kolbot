@@ -33,12 +33,12 @@
 
 ## 로그 규칙 (260930 합의)
 - **콘솔** (`D2Bot.printToConsole`, 매니저 화면) = **직접 보고 알아채야 하는 것**. 형식 `내용 (지역 x,y)`, 말머리 없이 색으로 구분.
-  - 조기 종료 이유·치킨·핑 퇴장 = **빨강(9)** — `Misc.quitGame(이유, trace용 상세)`. 모든 조기 종료(quit)는 이 함수로 한다. 공통 사건이어도 각 프로필이 찍는다(동시에 여러 줄 감수, 261001 리더만 찍기 폐지). 목표: 누가 나가든 나간 사유가 콘솔에 한 줄 이상 남는다. 따라 나가는 `PartyThread`의 `party has left`는 print만.
+  - 조기 종료 이유 = **기본색(검정)** — `Misc.quitGame(이유, trace용 상세)` (261002 빨강 → 기본색: 치킨·사망과 구분). 치킨·사망(`You died in last game`)·핑 퇴장 = **빨강(9)**. 모든 조기 종료(quit)는 이 함수로 한다. 공통 사건이어도 각 프로필이 찍는다(동시에 여러 줄 감수, 261001 리더만 찍기 폐지). 목표: 누가 나가든 나간 사유가 콘솔에 한 줄 이상 남는다. 따라 나가는 `PartyThread`의 `party has left`는 print만.
   - 멈춤(`D2Bot.stop`) = 빨강 콘솔 + trace. 위치와 무관한 것(AttackSkill 미습득)은 `(지역 x,y)` 없이.
   - **게임 바깥**(클라이언트 시작~게임 입장 전: Starter `D2Bot*.dbj`, `tools/OOG.js`, `tools/AutoCreate.js`) 콘솔은 **모두 회색(10)** 이다. 멈춤·조기 종료도 회색. 예외: 게임 뒤 플레이 시간 요약은 기존 색 (261001).
     - 형식 `사건: 대상 - 처리 (loc N)`. 영어, 마침표 없음, `CDKey` 표기, 처리는 `stop`/`restart`/`retry`/`wait 30s`/`wait 5m`/`switch key`/`skip`/`create`. trace는 일이 생길 때만, 위치는 `[OOG loc N]`.
   - 오류 = **회색(10)** — 치명 오류 `Misc.errorReport`, 잡힌 오류 `Misc.caughtError(구간, e)`(trace는 매번, 콘솔은 게임당 자리별 1회).
-  - 정상 종료 = 콘솔에 찍지 않는다(261001). 경험치 줄 앞에 빨간 줄·`Error in` 줄이 없으면 정상 종료다. `Script ended`는 print·trace만(trace는 조기 종료가 없었을 때만).
+  - 정상 종료 = 콘솔에 찍지 않는다(261001). 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상 종료다. `Script ended`는 print·trace만(trace는 조기 종료가 없었을 때만).
   - 진행 요약(구간 헤더 `=== X ===`, `!!! BOOK/POTION/SCROLL !!!`, `[Hired]`, 룬워드, 경험치 로그)은 기존대로. 경험치 로그는 치킨 포함 모든 종료에서 남는다(261001 치킨 추가).
 - **`print`** (d2bs 로그, 게임 화면 콘솔) = **게임 진행 기록**만: 구간 시작, 구간 결과(`X failed: 이유`), 용병 결과, 장비(`equipped/granted`), 이동·버프 진행, 시작 설정 표시 등. 오류 관련 줄은 넣지 않는다.
 - **`Misc.trace`** (`_cache/trace/trace-<프로필>-<날짜>.txt`, 모든 줄에 지역·좌표) = **분석·검증·오류 상세**: 타임아웃, 재시도, 실패 상세, 판정·측정, 콘솔로 가는 줄 전부(`[Quit]`, `[Error]`), 구간 헤더, 게임 경계(`=== game <이름> ===`), `Script ended`, `boss not found`.
@@ -51,4 +51,5 @@
 - 이전 코드와 현재 코드의 동작 대조표(모의 실행 결과): `docs/claude/attack_compare.md`
 - clear / setPosition 흐름 해설(공부용, 줄 번호 기준): `docs/claude/attack_flow.md`
 - Pather 현황(SafeTele·setPosition 대조, 결함·정리 후보): `docs/claude/pather_status.md`
+- **스킬 사거리**(계산 공식, 미사일 데이터, 측정 결과, 측정기 코드, 현재 값과 근거): `docs/claude/skill_range.md`. 사거리 관련 정보는 빠짐없이 여기에 기록한다 (261002)
   작업 전 반드시 먼저 읽는다. 결론이 바뀐 노트는 커밋 요청 때 함께 갱신한다 (261001).
