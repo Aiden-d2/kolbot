@@ -3601,7 +3601,7 @@ function AutoSmurf() {
 			
 			if (book) {
 				clickItem(1, book);
-				print("ÿc4=== [BOOK] ===");	Misc.trace("=== [BOOK] ===");	//260930
+				print("ÿc8!!! [BOOK] !!!");	Misc.trace("!!! [BOOK] !!!");	//261002
 				D2Bot.printToConsole("!!! BOOK !!!", 8);
 			}
 			
@@ -3896,6 +3896,7 @@ function AutoSmurf() {
 			
 			if (potion) {
 				clickItem(1, potion);
+				print("ÿc8!!! [POTION] !!!");	Misc.trace("!!! [POTION] !!!");	//261002
 				D2Bot.printToConsole("!!! POTION !!!", 8);
 			}
 			
@@ -5253,6 +5254,7 @@ function AutoSmurf() {
 		
 		if (scroll) {
 			clickItem(1, scroll);
+			print("ÿc8!!! [SCROLL] !!!");	Misc.trace("!!! [SCROLL] !!!");	//261002
 			D2Bot.printToConsole("!!! SCROLL !!!", 8);
 		}
 		
