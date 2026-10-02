@@ -90,8 +90,8 @@ var Skill = {
 		case 31: // Freezing Arrow
 		case 51: // Fire Wall	//260917
 		case 121: // Fist of the Heavens
-		case 249: // Armageddon	//261002 7 -> 20: cast once a monster is within 20, hit or not
 		case 140: // Double Throw
+		case 249: // Armageddon	//261002 7 -> 20: cast once a monster is within 20, hit or not
 		case 253: // Psychic Hammer
 		case 275: // Dragon Flight
 			return 20;
