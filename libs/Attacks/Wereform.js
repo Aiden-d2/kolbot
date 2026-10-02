@@ -20,7 +20,7 @@ var ClassAttack = {
 			return 1;
 		}
 
-		var index, checkSkill, result,
+		var index, checkSkill, result, baseRange,
 			mercRevive = 0,
 			timedSkill = -1,
 			untimedSkill = -1;
@@ -63,7 +63,10 @@ var ClassAttack = {
 			untimedSkill = Config.LowManaSkill[1];
 		}
 
-		result = this.doCast(unit, timedSkill, untimedSkill);
+		// base range: the shorter of the two picked skills, so both stand at one distance and a long one does not back off between casts of a short one	//261003
+		baseRange = Math.min(timedSkill > -1 ? Skill.getRange(timedSkill) : 99, untimedSkill > -1 ? Skill.getRange(untimedSkill) : 99);
+
+		result = this.doCast(unit, timedSkill, untimedSkill, baseRange);	//261003
 
 		return result;
 	},
@@ -73,7 +76,7 @@ var ClassAttack = {
 	},
 
 	// Returns: 0 - fail, 1 - success, 2 - no valid attack skills
-	doCast: function (unit, timedSkill, untimedSkill) {
+	doCast: function (unit, timedSkill, untimedSkill, baseRange) {	//261003
 		var i, angle, tx, ty;	//261002
 
 		// No valid skills can be found
@@ -92,7 +95,7 @@ var ClassAttack = {
 
 			// Armageddon: approach only when out of range or blocked, so it never dodges	//261002
 			if (timedSkill !== 249 || getDistance(me, unit) > Skill.getRange(timedSkill) || checkCollision(me, unit, 0x4)) {
-				if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {	//260826	//260930 minDist 1 is the default now
+				if (!Attack.setPosition(unit, timedSkill === 249 ? Skill.getRange(timedSkill) : baseRange, 0x4)) {	//260826	//260930 minDist 1 is the default now	//261003 base range (Armageddon keeps its own)
 					return 0;
 				}
 			}
@@ -115,7 +118,7 @@ var ClassAttack = {
 
 			// Shock Wave: approach only when out of range or blocked, so it never dodges	//261002
 			if (untimedSkill !== 243 || getDistance(me, unit) > Skill.getRange(untimedSkill) || checkCollision(me, unit, 0x4)) {
-				if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4)) {	//260826	//260930 minDist 1 is the default now
+				if (!Attack.setPosition(unit, untimedSkill === 243 ? Skill.getRange(untimedSkill) : baseRange, 0x4)) {	//260826	//260930 minDist 1 is the default now	//261003 base range (Shock Wave keeps its own)
 					return 0;
 				}
 			}

@@ -508,7 +508,7 @@
 | 활 스킬, Fire Wall, Fist of the Heavens, Double Throw, Psychic Hammer, Dragon Flight | 20 | 기존 (Fire Wall 260917) |
 | Armageddon (249) | 20 | 261002 7→20. 사용자: 맞든 안 맞든 20 안에 몹이 보이면 바로 시전. 게이트(회피 없음, `Wereform.js`). 효과가 시전 좌표와 무관하게 내 주변에 난다는 건 추정(미확인) |
 | Summoner(500) | 25 | 260723 |
-| Static Field (42) | 스킬 레벨 + 4 | 260915. 선시전 루프(`Sorceress.js:59`)는 floor((레벨+4)×2/3), 사거리 밖일 때만 접근(회피 없음) |
+| Static Field (42) | 스킬 레벨 + 4 | 260915. 선시전 루프(`Sorceress.js:59`)는 floor((레벨+4)×2/3), 사거리 밖일 때만 접근(회피 없음). S.SFFW 언타임드(46레벨~) 스태틱 레벨 모의: 46→8, 48→14, 50→16, 52→17(`handoff.md` 5절) |
 | Leap / Arctic Blast | 표 × 3/2 − 1 | 260513 |
 | Bone Spear/Spirit | 15 | PvP 40 |
 | Fire Ball, Lightning, Chain Lightning, Glacial Spike, Meteor, Blizzard, Mind Blast | 20 | PvP 40 |
@@ -519,6 +519,7 @@
 - 회피를 원하지 않는 스킬은 직업 파일에서 "사거리 밖이거나 막혔을 때만 `setPosition`"을 부르는 게이트로 막는다(스태틱 선시전, Howl 선공격, 261002 War Cry·Shock Wave·Armageddon). `Dodge.Enabled = false`와 해당 스킬 동작은 같지만 범위가 다르다(다른 스킬 전부, 탈라샤 무덤 토글이 `true`로 되돌림).
 - `MinSkillRange`를 `>`로 바꾸는 안은 기각: 정확히 5인 스킬(War Cry, Twister, Tornado, Static Field 레벨 1, Leap 레벨 1) 전부 회피가 꺼진다.
 - 빌드의 회피 켜기: 261002부터 모든 빌드 25레벨(전에는 18레벨).
+- 기준 거리(261003): 소서·어쌔신·아마존·드루이드·웨어폼·네크로는 그 몹에게 고른 timed·untimed 중 짧은 사거리로 두 스킬 모두 자리를 잡는다. 그래서 진동을 막으려고 두 스킬의 사거리 값을 서로 맞출 필요가 없다(위 표의 "진동 방지" 값들은 그때 사정). 값은 실제 도달 거리에 가깝기만 하면 된다.
 
 ---
 
