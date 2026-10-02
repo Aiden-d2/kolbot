@@ -20,7 +20,7 @@ function AutoSmurf() {
 // -------- Nightmare Difficulty ----------
 		diaLvlnm = 67,
 		baalLvlnm = 71,
-		mercLvl = me.charlvl > baalLvlnm - 2,
+		mercLvl = me.charlvl >= baalLvlnm - 2,
 
 // -------- Other Settings ----------------
 		Leader = false,
