@@ -26,7 +26,7 @@ var ClassAttack = {
 			return 1;
 		}
 
-		var index, staticRange, checkSkill, result,
+		var index, staticRange, checkSkill, result, baseRange,
 			mercRevive = 0,
 			timedSkill = -1,
 			untimedSkill = -1;
@@ -109,7 +109,10 @@ var ClassAttack = {
 			untimedSkill = Config.LowManaSkill[1];
 		}
 
-		result = this.doCast(unit, timedSkill, untimedSkill);
+		// base range: the shorter of the two picked skills, so both stand at one distance and a long one does not back off between casts of a short one	//261003
+		baseRange = Math.min(timedSkill > -1 ? Skill.getRange(timedSkill) : 99, untimedSkill > -1 ? Skill.getRange(untimedSkill) : 99);
+
+		result = this.doCast(unit, timedSkill, untimedSkill, baseRange);	//261003
 
 		return result;
 	},
@@ -119,7 +122,7 @@ var ClassAttack = {
 	},
 
 	// Returns: 0 - fail, 1 - success, 2 - no valid attack skills
-	doCast: function (unit, timedSkill, untimedSkill) {
+	doCast: function (unit, timedSkill, untimedSkill, baseRange) {	//261003
 		var i;
 
 		// No valid skills can be found
@@ -134,7 +137,7 @@ var ClassAttack = {
 
 				// Allow short-distance walking for melee skills
 
-				if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x4)) {	//260826
+				if (!Attack.setPosition(unit, baseRange, 0x4)) {	//260826	//261003 base range
 					return 0;
 				}
 
@@ -152,14 +155,8 @@ var ClassAttack = {
 			
 				// Allow short-distance walking for melee skills
 
-				if (untimedSkill === 42 || untimedSkill === 43) {	//261003 static/telek exception
-					if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[1]), 0x4)) {	//261003
-						return 0;
-					}
-				} else {
-					if (!Attack.setPosition(unit, Skill.getRange(untimedSkill), 0x4)) {	//260826
-						return 0;
-					}
+				if (!Attack.setPosition(unit, baseRange, 0x4)) {	//260826	//261003 base range (static/telek exception removed)
+					return 0;
 				}
 
 			if (!unit.dead) {
