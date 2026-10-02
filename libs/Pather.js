@@ -30,7 +30,7 @@ var NodeAction = {
 	// Kill monsters while pathing
 	killMonsters: function (arg) {	//260927
 		if (arg.clearPath !== false) {
-			if (me.area === 108) {
+			if (me.area === 108 || me.area === 125 || me.area === 126 || me.area === 127) {
 				Attack.clear(20);
 			} else {
 				if (!Attack.clear(25)) {
