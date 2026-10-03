@@ -1,4 +1,4 @@
-# 인수인계 메모 (261002)
+# 인수인계 메모 (261003)
 
 새 대화는 이 문서부터 읽는다. 이어서 CLAUDE.md(작업 규칙, **로그 규칙**)와 분석 노트를 필요한 만큼 읽는다.
 
@@ -14,6 +14,7 @@
 - **nip 헬름 정리(261002, 사용자 지시):** X.nip의 `[Helm]` 섹션 삭제(머리글·tier 1·tier 11~20·crown 주석, `[Sell]`의 주석 줄은 유지). 빌드 nip 13종의 `[Helm & Circlet]` → `[Helm]`, tier 11~30 줄 앞부분 `[name] >= 418 && [name] <= 421 &&` → `([type] == helm || ([name] >= 418 && [name] <= 421)) &&`, 그 줄의 `[fhr]` → `[frw]`, X의 tier 1 줄을 같은 조건으로 각 빌드 헬름 섹션 맨 앞에 추가. 빌드별 스킬 점수식·warhat·sallet·tiara 줄은 그대로. V·Y·T·Z.nip은 손대지 않음. nip 파서는 조건을 `eval`하므로 괄호가 그대로 쓰인다(`tools/NTItemParser.dbl` 126줄, A.TRAP 무기 줄에도 같은 꼴).
 - **바알 루프 드루이드 자리(261002):** `AutoSmurf.js` 바알 웨이브 처리의 드루이드 `Pather.moveTo(15092, 5013)` → `5018`.
 - **직업 공격 기준 거리(261003, 사용자 요청):** 소서·어쌔신·아마존·드루이드·웨어폼·네크로의 `doAttack`이 그 몹에게 고른 `timedSkill`·`untimedSkill` 중 짧은 사거리(`baseRange`)를 구해 `doCast`에 넘기고, 두 스킬 모두 그 거리로 `setPosition`한다. 소서의 42·43 예외 분기(사용자 261003 업로드)는 지움. 세부는 5절 끝, `attack_design.md` 12-1, 게임 확인은 3절 28번.
+- **회피 반경·SafeTele 순서(261003, 사용자 요청):** 프로즌오브가 시전마다 텔레포트하던 원인은 회피 반경 R = min(사거리, 10)이 오브 사거리 9와 같아 공격 대상 자신이 늘 R 안에 세진 것. 반영: `getMonsterCount` `<` → `<=`, `Dodge.MinSkillRange` 5 → 9, 감지·발동 반경 = min(사거리, 10) − 2(걷기·텔레 공통, 물러나는 링은 그대로: 걷기 min(사거리, 10), 텔레 사거리), War Cry·Shock Wave 접근 전용 가드 제거(사거리 9 미만이라 회피 자체가 없음). Armageddon·Static 반복 시전·네크 저주·어쌔신 덫 가드는 유지. `SafeTele.Range` 10(이제 10 이하), `SafeTele.Angle` 60 → 75, `safeCheckNode` 후보를 모두 만든 뒤 원래 타겟노드에 가까운 순(동점은 먼 링)으로 검사. 세부는 `attack_design.md` 12-1 회피 반경(261003), `pather_status.md` SafeTele 후보 순서(261003), 게임 확인은 3절 29·30번.
 - **사용자 수정(261002):** 모든 빌드의 회피 켜기를 18 → 25레벨로(새 `25:` 블록). `SafeTele.Min` 15 → 10(`Pather.js` safeCheckNode의 후보 거리 하한). `AutoSmurf.travel`의 진단 trace·print 3줄 주석 처리(로그 정리). `farmingCountess` 시작 좌표 조정.
 - **오프셋 정리(261002, 사용자 결정):** 트리스트람 경로 순회에서 지점을 건너뛰고 마지막 지점으로 가 포탈을 타던 증상의 원인은 `myX`/`myY` 오프셋을 더한 목표에 경로가 없는 것(`getPath` 빈 배열 → `moveTo`가 움직이지 않고 false, `trist()`는 반환값을 안 봄). 좌표+오프셋 이동을 "오프셋 제거" 또는 "원래 좌표 도착 뒤 `me.x + myX` 흩어지기"로 나눔, 오프셋 8방향, 케인 대기 반복문 변경. 세부는 5절 "오프셋(myX/myY) 정리", 게임 확인은 3절 23~25번.
 - **퀘스트 아이템 판정·autoEquip 칸 순서(261002, 사용자 요청):** `NTIP.Evaluate`가 `GetScore`와 같은 퀘스트 검사(`NTIP_QuestItems` → 결과 0, reason `quest`), 목록에서 피규린 546 제거, `Pickit.checkItem` 골드 부족 규칙의 퀘스트 제외를 같은 목록으로. `Equip.autoEquip`은 티어가 낮은 칸부터 교체. 세부는 4절 21·22, 게임 확인은 3절 26번.
@@ -75,7 +76,7 @@
 | 7 | 18레벨 이상 캐릭터의 "Going to town" 반복이 사라졌는가 | 드루이드 등 골드 540 이상 캐릭터 | 아래 5절 열쇠 항목 |
 | 8 | ~~박스 호출에서 박스 밖으로 나가지 않는가 (260929 울타리)~~ | **통과 (260930)** | `attack_design.md` 12-1 박스 울타리 |
 | 9 | ~~박스 가장자리 MUST에 붙잡히지 않는가 (260929 unreachable → deferred)~~ | **통과 (260930)** | 12-1 MUST unreachable |
-| 10 | 걷기 회피가 min(사거리, 10)칸 자리로 짧게 물러나는가, 텔레는 사거리만큼. Tornado(사거리 5)도 회피(War Cry·D.FGOM은 261002부터 회피 없음). FONV 진동 없는가 (260930) | 좁은 지형 소서, B.WCRY, D.WIND, D.FGOM | 12-1 회피 거리. 반경·회피 거리 분리 여부는 이후 재논의 |
+| 10 | 걷기 회피가 min(사거리, 10)칸 자리로 짧게 물러나는가, 텔레는 사거리만큼 (260930). 261003: 반경·회피 거리 분리(감지 R − 2), 사거리 9 미만(Tornado 등)은 회피 없음, FONV 진동은 29번으로 | 좁은 지형 소서 | 12-1 회피 거리, 회피 반경(261003) |
 | 11 | Howl 15 사거리에서 헛캐스팅이 없는가 (260930) | B.WCRY | 12-1 스킬 사거리 |
 | 12 | 회피가 물러나는 쪽의 몹 최소 자리로 가고, 회피 반복이 줄었는가 (261001) | FONV·D.FGOM·B.WCRY 회피 장면 | `pather_status.md` 4절 |
 | 13 | Flayer Dungeon·Arcane에서 텔레 이동이 30 간격을 유지하는가 (SafeTele 뒤·실패 뒤 포함, 261001) | trace `[teleportTo failed]`, `path total nodes` | `pather_status.md` 3-1 |
@@ -94,6 +95,8 @@
 | 26 | 트라빈컬에서 리더가 Khalim's Will 착용 뒤 바닥의 Khalim's Flail을 주우려 하지 않고 바로 오브로 가는가. 피규린(546)은 지금처럼 주워지는가. 반지 교체가 티어 낮은 칸부터 되는가 (261002) | 트라빈컬, 3막 피규린, 반지 교체 로그 `Equipped [N]` | 4절 21·22 |
 | 27 | 웨이가 없는 곳으로 `useWaypoint`를 부르면 걸어가서 웨이를 찍고 계속하는가(오류로 끝나지 않음). `journeyTo`가 지나가는 구역의 웨이를 찍는가. travel(9)·(10) 출구 실패가 `Travel failed: area N` 오류로 드러나는가 (261002) | trace `[getWP] ...` 줄(실패 때만), 콘솔 `Failed to go to waypoint`·`Travel failed` | `pather_status.md` 웨이 누락 복구 |
 | 28 | 기준 거리(261003): S.FONV에서 번개 면역 몹에 오브(9)와 텔레키네시스가 9에서 번갈아 나가고 물러났다 붙기를 반복하지 않는가. S.SFFW 46레벨 이후 스태틱이 맞는가(스태틱 사거리에 맞춰 붙음, 50레벨 전후로 20) | S.FONV·S.SFFW 회피 장면 | 5절 끝 기준 거리 |
+| 29 | 회피 반경 R − 2(261003): S.FONV 프로즌오브가 시전마다 텔레포트하지 않고, 몹이 7칸 안에 들어올 때만 물러나는가. 파이어월 등 사거리 10 이상은 8칸 안일 때만 회피하는가. D.WIND Tornado·D.FGOM Molten Boulder(25~45레벨)는 회피 없이 시전하는데 치킨이 눈에 띄게 늘지 않는가(늘면 Molten Boulder 9 또는 회피 대상 포함을 다시 논의) | S.FONV·S.SFFW·D.WIND·D.FGOM 전투, 치킨 빈도 | `attack_design.md` 12-1 회피 반경(261003) |
+| 30 | SafeTele 순서(261003): 몹이 있는 노드에서 진행 방향에 가까운 자리로 옮기는가, 옆으로 크게 벗어나거나 되돌아가는 텔레포트가 없는가 | 텔레 이동 장면 | `pather_status.md` SafeTele 후보 순서(261003) |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
 
