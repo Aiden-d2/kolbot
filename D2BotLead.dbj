@@ -214,15 +214,10 @@ function joinWaitMissing() {
 }
 
 // wait in the lobby until every follower is on the join screen, no time limit. false = left the lobby	//261003
+// console and status bar only after 5s: followers leaving with the leader arrive within it	//261003
 function teamWait(location) {
-	var status,
-		missing = joinWaitMissing();
-
-	if (!missing.length) {
-		return true;
-	}
-
-	OOGLog.print("Team wait: " + missing.join(", ") + " - wait");
+	var missing, status, printed,
+		tick = getTickCount();
 
 	while (getLocation() === location) {
 		missing = joinWaitMissing();
@@ -231,10 +226,18 @@ function teamWait(location) {
 			return true;
 		}
 
-		if (status !== missing.join(" ")) {
-			status = missing.join(" ");
+		if (getTickCount() - tick >= 5000) {	//261003
+			if (!printed) {
+				OOGLog.print("Team wait: " + missing.join(", ") + " - wait");
 
-			D2Bot.updateStatus("Team wait: " + status);
+				printed = true;
+			}
+
+			if (status !== missing.join(" ")) {
+				status = missing.join(" ");
+
+				D2Bot.updateStatus("Team wait: " + status);
+			}
 		}
 
 		delay(500);
