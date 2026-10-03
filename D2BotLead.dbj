@@ -89,6 +89,7 @@ var gameInfo, gameStart, ingame, chatActionsDone, pingQuit,
 	loginRetry = 0,
 	lastGameStatus = "ready",
 	isUp = "no",
+	joinWait = {},	//261003 follower profile -> tick of its last game request (sent while on the join screen)
 	chanInfo = {
 		joinChannel: "",
 		firstMsg: "",
@@ -122,9 +123,10 @@ function ReceiveCopyData(mode, msg) {
 
 		break;
 	case 3: // Game request
-		if (gameInfo) {
-			obj = JSON.parse(msg);
+		obj = JSON.parse(msg);	//261003 parsed before the gameInfo check
+		joinWait[obj.profile] = getTickCount();	//261003 a follower on the join screen sends this about every 1s
 
+		if (gameInfo) {
 			if (me.gameReady) {
 				D2Bot.joinMe(obj.profile, me.gamename.toLowerCase(), "", me.gamepassword.toLowerCase(), isUp);
 			} else {
@@ -202,6 +204,43 @@ function badKey(text) {
 	} else {
 		OOGLog.stop(text);
 	}
+}
+
+// followers whose last game request is older than 3s: not on the join screen (realm down, restart, stopped, still in game...)	//261003
+function joinWaitMissing() {
+	return Team.Profiles.filter(function (profile) {
+		return profile !== me.profile && !(joinWait[profile] && getTickCount() - joinWait[profile] <= 3000);
+	});
+}
+
+// wait in the lobby until every follower is on the join screen, no time limit. false = left the lobby	//261003
+function teamWait(location) {
+	var status,
+		missing = joinWaitMissing();
+
+	if (!missing.length) {
+		return true;
+	}
+
+	OOGLog.print("Team wait: " + missing.join(", ") + " - wait");
+
+	while (getLocation() === location) {
+		missing = joinWaitMissing();
+
+		if (!missing.length) {
+			return true;
+		}
+
+		if (status !== missing.join(" ")) {
+			status = missing.join(" ");
+
+			D2Bot.updateStatus("Team wait: " + status);
+		}
+
+		delay(500);
+	}
+
+	return false;
 }
 
 function ScriptMsgEvent(msg) {
@@ -466,6 +505,10 @@ MainSwitch:
 
 		if (!ingame) {	//eom lobby wait
 			ControlAction.timeoutDelay("LobbyWaitDelay", StarterConfig.LobbyWaitDelay * 1e3);
+		}
+
+		if (!teamWait(location)) {	//261003 create only when every follower waits to join
+			break;
 		}
 		
 		if (!ControlAction.click(6, 533, 469, 120, 20)) { // Create
