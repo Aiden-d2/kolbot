@@ -245,6 +245,7 @@ var Pickit = {
 			this.type = unit.itemType;
 			this.classid = unit.classid;
 			this.name = unit.name ? unit.name.replace(/ÿc[0-9!"+<:;.*]/g, "") : "";	//eom 260415
+			//this.color = Pickit.itemColor(unit);	//261003 not read: the original's print color prefix (messages are me.overhead now)
 			this.gold = unit.getStat(14);
 			this.useTk = Config.UseTelekinesis && me.classid === 1 && me.getSkill(43, 1) && (this.type === 4 || this.type === 22 || (this.type > 75 && this.type < 82)) &&
 						getDistance(me, unit) > 5 && getDistance(me, unit) < 20 && !checkCollision(me, unit, 0x4);
@@ -395,6 +396,42 @@ MainLoop:
 		var qualNames = ["", "lowquality", "normal", "superior", "magic", "set", "rare", "unique", "crafted"];
 
 		return qualNames[quality];
+	},
+
+	itemColor: function (unit, type) {
+		if (type === undefined) {
+			type = true;
+		}
+
+		if (type) {
+			switch (unit.itemType) {
+			case 4: // gold
+				return "ÿc4";
+			case 74: // runes
+				return "ÿc8";
+			case 76: // healing potions
+				return "ÿc1";
+			case 77: // mana potions
+				return "ÿc3";
+			case 78: // juvs
+				return "ÿc;";
+			}
+		}
+
+		switch (unit.quality) {
+		case 4: // magic
+			return "ÿc3";
+		case 5: // set
+			return "ÿc2";
+		case 6: // rare
+			return "ÿc9";
+		case 7: // unique
+			return "ÿc4";
+		case 8: // crafted
+			return "ÿc8";
+		}
+
+		return "ÿc0";
 	},
 
 	canPick: function (unit) {
