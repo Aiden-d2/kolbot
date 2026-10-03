@@ -426,7 +426,7 @@ var Attack = {
 		}
 
 		if (castTotal > 0) {
-			Pickit.pickItems(range > 0 ? range : undefined, orgx, orgy);	//261003 around me and around org (the cleared area; a boss call's org is where it fell)
+			Pickit.pickItems(range > 0 ? range : undefined, orgx, orgy);	//261003 ground scan around org (the cleared area; a boss call's org is where it fell), drops near me from the gid list
 			ClassAttack.afterAttack();
 		}
 
