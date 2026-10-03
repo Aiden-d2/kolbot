@@ -2,9 +2,9 @@
 	Base Stats
 	----------
  	[0]Strength: 10		+50
- 	[1]Energy: 35		+210
+ 	[1]Energy: 35		+65
  	[2]Dexterity: 25	+10
- 	[3]Vitality: 10		+235
+ 	[3]Vitality: 10		+380
 
 	Skills				Levelreq			SkillID
 	------------		--------			-------
@@ -19,12 +19,11 @@ var AutoBuildTemplate = {
 
 	BuildGoal: {
 		Stats: [
-			{stat: 0, target: 60},				// Strength
-			{stat: 1, target: 180, per: 2},		// Energy
-			{stat: 3, target: 180},				// Vitality
-			{stat: 2, target: 35},				// Dexterity
-			{stat: 1, target: 245, per: 3},		// Energy
-			{stat: 3, target: 245},				// Vitality
+			{stat: 0, target: 60},			// Strength
+			{stat: 1, target: 100, per: 2},	// Energy
+			{stat: 3, target: 260},			// Vitality
+			{stat: 2, target: 35},			// Dexterity
+			{stat: 3, target: "max"},		// Vitality
 		],
 		
 		Skills: [
