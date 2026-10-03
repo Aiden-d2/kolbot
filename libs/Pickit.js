@@ -8,7 +8,6 @@ if (!isIncluded("tools/NTItemParser.dbl")) { include("tools/NTItemParser.dbl"); 
 if (!isIncluded("libs/Storage.js")) { include("libs/Storage.js"); };
 
 var Pickit = {
-	gidList: [],
 	beltSize: 1,
 	ignoreLog: [4, 5, 6, 22, 41, 76, 77, 78, 79, 80, 81], // Ignored item types for item logging
 
@@ -246,7 +245,6 @@ var Pickit = {
 			this.type = unit.itemType;
 			this.classid = unit.classid;
 			this.name = unit.name ? unit.name.replace(/ÿc[0-9!"+<:;.*]/g, "") : "";	//eom 260415
-			this.color = Pickit.itemColor(unit);
 			this.gold = unit.getStat(14);
 			this.useTk = Config.UseTelekinesis && me.classid === 1 && me.getSkill(43, 1) && (this.type === 4 || this.type === 22 || (this.type > 75 && this.type < 82)) &&
 						getDistance(me, unit) > 5 && getDistance(me, unit) < 20 && !checkCollision(me, unit, 0x4);
@@ -397,42 +395,6 @@ MainLoop:
 		var qualNames = ["", "lowquality", "normal", "superior", "magic", "set", "rare", "unique", "crafted"];
 
 		return qualNames[quality];
-	},
-
-	itemColor: function (unit, type) {
-		if (type === undefined) {
-			type = true;
-		}
-
-		if (type) {
-			switch (unit.itemType) {
-			case 4: // gold
-				return "ÿc4";
-			case 74: // runes
-				return "ÿc8";
-			case 76: // healing potions
-				return "ÿc1";
-			case 77: // mana potions
-				return "ÿc3";
-			case 78: // juvs
-				return "ÿc;";
-			}
-		}
-
-		switch (unit.quality) {
-		case 4: // magic
-			return "ÿc3";
-		case 5: // set
-			return "ÿc2";
-		case 6: // rare
-			return "ÿc9";
-		case 7: // unique
-			return "ÿc4";
-		case 8: // crafted
-			return "ÿc8";
-		}
-
-		return "ÿc0";
 	},
 
 	canPick: function (unit) {
@@ -619,19 +581,6 @@ MainLoop:
 
 	// Just sort by distance for general item pickup
 	sortItems: function (unitA, unitB) {
-		return getDistance(me, unitA) - getDistance(me, unitB);
-	},
-
-	// Prioritize runes and unique items for fast pick
-	sortFastPickItems: function (unitA, unitB) {
-		if (unitA.itemType === 74 || unitA.quality === 7) {
-			return -1;
-		}
-
-		if (unitB.itemType === 74 || unitB.quality === 7) {
-			return 1;
-		}
-
 		return getDistance(me, unitA) - getDistance(me, unitB);
 	}
 };
