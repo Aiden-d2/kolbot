@@ -1996,7 +1996,7 @@ function AutoSmurf() {
 			Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true, true);
 			
 			try {
-				Attack.clear(10, getLocaleString(3111)); // Blood Raven //260929
+				Attack.clear(0, getLocaleString(3111)); // Blood Raven //260929	//261003 10 -> 0: her minions die with her, so the end pickit (range 0 -> 25) gets their drops
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.blood", e);	//260930
 			}
@@ -2915,7 +2915,7 @@ function AutoSmurf() {
 			}
 			
 			try {
-				Attack.clear(20, 156);	// Andariel //261002
+				Attack.clear(25, 156);	// Andariel //261002	//261003 20 -> 25
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.andy", e);	//260930
 			}
@@ -3217,7 +3217,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		try {
-			Attack.clear(10, 250);	//Summoner //260929
+			Attack.clear(0, 250);	//Summoner //260929	//261003 10 -> 0: the mages near me are danger targets anyway; the box clear and okCount(10) follow
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.summoner", e);	//260930
 		}
@@ -3587,7 +3587,7 @@ function AutoSmurf() {
 			delay(me.ping * 2 + 200);
 			
 			try {
-				Attack.clear(15, 229); // Radament //260929
+				Attack.clear(20, 229); // Radament //260929	//261003 15 -> 20
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.radament", e);	//260930
 			}
@@ -4400,7 +4400,7 @@ function AutoSmurf() {
 			delay(me.ping * 2 + 200);
 			
 			try {
-				Attack.clear(20, 256);	// Izual //260929
+				Attack.clear(25, 256);	// Izual //260929	//261003 20 -> 25
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.izual", e);	//260930
 			}
@@ -4942,7 +4942,7 @@ function AutoSmurf() {
 		}
 		
 		try {
-			Attack.clear(20, getLocaleString(22435));	// Shenk the Overseer //261002
+			Attack.clear(25, getLocaleString(22435));	// Shenk the Overseer //261002	//261003 20 -> 25
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.shenk", e);	//260930
 		}
@@ -5820,7 +5820,7 @@ function AutoSmurf() {
 
 		Pather.teleport = false;
 
-		Attack.clear(15, getLocaleString(2875));	//260929
+		Attack.clear(20, getLocaleString(2875));	//260929	//261003 15 -> 20 (Countess)
 		
 		Pather.moveToPreset(me.area, 2, 580);	//260929	//261002 no offset, spread on arrival
 		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
@@ -5946,7 +5946,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		try {
-			Attack.clear(20, 156);	// Andariel //261002
+			Attack.clear(25, 156);	// Andariel //261002	//261003 20 -> 25
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.farmingAndy", e);	//260930
 		}
@@ -6590,7 +6590,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		try {
-			Attack.clear(10, 250);	//Summoner //260926
+			Attack.clear(0, 250);	//Summoner //260926	//261003 10 -> 0: the mages near me are danger targets anyway; the box clear and okCount(10) follow
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.farmingSummoner", e);	//260930
 		}
@@ -7015,7 +7015,7 @@ function AutoSmurf() {
 		}
 		
 		try {
-			Attack.clear(20, 526); // Nihlathak //260929
+			Attack.clear(25, 526); // Nihlathak //260929	//261003 20 -> 25
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.farmingNihlathak", e);	//260930
 		}

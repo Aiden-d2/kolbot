@@ -147,7 +147,7 @@ var Pickit = {
 
 		if (item) {
 			do {
-				if ((item.mode === 3 || item.mode === 5) && getDistance(ref ? ref : me, item) <= range) {	//260501
+				if ((item.mode === 3 || item.mode === 5) && (getDistance(me, item) <= range || (ref && getDistance(ref, item) <= range))) {	//260501	//261003 with orgx/orgy: around me or around the given point (was the point only)
 					pickList.push(copyUnit(item));
 				}
 			} while (item.getNext());
