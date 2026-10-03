@@ -9,6 +9,7 @@ if (!isIncluded("libs/Storage.js")) { include("libs/Storage.js"); };
 
 var Pickit = {
 	gidList: {},	//261003 gid -> {gid, x, y, area}: every item event with where I was (itemEvent). pickItems adds the field ones near me
+	gidAlive: false,	//261003 itemEvent traced its first call this game
 	beltSize: 1,
 	ignoreLog: [4, 5, 6, 22, 41, 76, 77, 78, 79, 80, 81], // Ignored item types for item logging
 
@@ -124,13 +125,20 @@ var Pickit = {
 
 	// itemaction listener (default.dbj): record every gid, no filter (pickItems checks the item itself)	//261003
 	itemEvent: function (gid, mode, code, global) {
+		if (!Pickit.gidAlive) {	//261003 check: the listener runs at all (once per game)
+			Pickit.gidAlive = true;
+			Misc.trace("itemaction alive: gid " + gid);
+		}
+
 		if (gid > 0 && !Pickit.gidList[gid]) {
 			Pickit.gidList[gid] = {gid: gid, x: me.x, y: me.y, area: me.area};
 		}
 	},
 
 	pickItems: function (range, orgx, orgy) {	//260501
-		var status, item, canFit, gid, entry,
+		var status, item, canFit, gid, entry, why, desc,
+			pruned = 0, added = 0, left = 0,	//261003 gid list counts for the trace
+			gidOnly = {},	//261003 gids added by the gid list only (the ground scan missed them): traced with the result
 			ref = null,
 			useGid = !me.inTown,	//261003 the gid list is for field drops: in town it is neither used nor pruned
 			seen = {},	//261003 gids already in pickList
@@ -157,6 +165,7 @@ var Pickit = {
 			for (gid in this.gidList) {
 				if (this.gidList.hasOwnProperty(gid) && (this.gidList[gid].area !== me.area || getDistance(me, this.gidList[gid].x, this.gidList[gid].y) > 40)) {
 					delete this.gidList[gid];
+					pruned += 1;	//261003
 				}
 			}
 		}
@@ -195,7 +204,19 @@ var Pickit = {
 				if (getDistance(me, item) <= range) {
 					pickList.push(copyUnit(item));
 					seen[entry.gid] = true;
+					gidOnly[entry.gid] = true;	//261003
+					added += 1;	//261003
 				}
+			}
+
+			if (added > 0) {	//261003 check: only a call the gid list added to
+				for (gid in this.gidList) {
+					if (this.gidList.hasOwnProperty(gid)) {
+						left += 1;
+					}
+				}
+
+				Misc.trace("gid list: pruned " + pruned + ", added " + added + ", left " + left);
 			}
 		}
 
@@ -205,12 +226,15 @@ var Pickit = {
 			}
 
 			pickList.sort(this.sortItems);
+			why = "gone";	//261003 result for the gid trace
+			desc = gidOnly[pickList[0].gid] ? "gid pick: " + (pickList[0].name ? pickList[0].name.replace(/ÿc[0-9!"+<:;.*]/g, "") : pickList[0].classid) + " d" + Math.round(getDistance(me, pickList[0])) : "";	//261003 before picking: name, distance from me
 
 			// Check if the item unit is still valid and if it's on ground or being dropped
 			if (copyUnit(pickList[0]).x !== undefined && (pickList[0].mode === 3 || pickList[0].mode === 5) &&
 					(Pather.useTeleport() || me.inTown || !checkCollision(me, pickList[0], 0x1))) { // Don't pick items behind walls/obstacles when walking
 				// Check if the item should be picked
 				status = this.checkItem(pickList[0]);
+				why = !status.result ? "unwanted" : "can't pick";	//261003
 
 				if (status.result && this.canPick(pickList[0])) {	// && Item.autoEquipCheck(pickList[0])) {
 					// Override canFit for scrolls, potions and gold
@@ -220,6 +244,10 @@ var Pickit = {
 					if (!canFit) {
 						// Check if any of the current inventory items can be stashed or need to be identified and eventually sold to make room
 						if (this.canMakeRoom()) {
+							if (desc) {	//261003
+								Misc.trace(desc + " -> no room, town");
+							}
+
 							me.overhead("Trying to make room for " + pickList[0].name);	//eom
 
 							// Go to town and do town chores
@@ -237,13 +265,22 @@ var Pickit = {
 						}
 
 						me.overhead("Not enough room for " + pickList[0].name);	//eom
+						why = "no room";	//261003
 					}
 
 					// Item can fit - pick it up
 					if (canFit) {
 						this.pickItem(pickList[0], status);	//260805
+						item = getUnit(4, -1, -1, pickList[0].gid);
+						why = !item || (item.mode !== 3 && item.mode !== 5) ? "picked" : "not picked";	//261003 off the ground = picked
 					}
 				}
+			} else if (copyUnit(pickList[0]).x !== undefined && (pickList[0].mode === 3 || pickList[0].mode === 5)) {
+				why = "wall";	//261003
+			}
+
+			if (desc) {
+				Misc.trace(desc + " -> " + why);	//261003 check: a drop the gid list added, and what became of it
 			}
 
 			if (useGid) {
