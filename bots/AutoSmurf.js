@@ -4511,18 +4511,7 @@ function AutoSmurf() {
 				boss = getUnit(1, name);
 				
 				if (boss) {
-					// 261003 sweep first (no must target, so no leash): a must target past leashRange pulled ranged followers into the seal spawn
-					if (!Attack.clear(35)) {
-						return false;
-					}
-
-					boss = getUnit(1, name);
-
-					if (boss && Attack.checkMonster(boss)) {	//261003 then chase the boss only if it is still alive and in sight (out of sight the must call could not find it either)
-						return Attack.clear(35, name);	//260927 boss is a must target, the 35 sweep comes with it
-					}
-
-					return true;
+					return Attack.clear(35, name);	//260927 boss is a must target, the 35 sweep comes with it	//261003 the clear(35) before it removed: clear's stage 1 sweeps first (no leash)
 				}
 
 				delay(Math.max(me.ping * 2, 200));

@@ -47,7 +47,8 @@ var Attack = {
 		Attack.clear(range, must)	//260926
 		range - sweep radius around the call position. 0 = no area sweep
 		must  - optional. classid | name | [classid or name, ...] | {x1, x2, y1, y2}	//260929 box passed as is (no "box" wrapper); a box forces range 0
-		        with a must id/name and range > 0, the sweep area follows the must target
+		        with a must id/name and range > 0: stage 1 sweeps range around the call position (no leash, the sweep area stays put),	//261003
+		        then picks up there and stage 2 follows the must target (sweep area moves with it, leash on)	//261003
 		        must targets are never skipped; the call ends when they are dead
 		        while a must target is alive, monsters within dangerRange of me are handled too
 	*/
@@ -79,7 +80,7 @@ var Attack = {
 			}
 		}
 
-		var i, unit, gid, entry, target, result, attackSkill, mustAlive, nearest, nearestLive, dist, lostEntry,
+		var i, unit, gid, entry, target, result, attackSkill, mustAlive, nearest, nearestLive, dist, lostEntry, sweepLeft,	//261003 sweepLeft
 			mustSeen = false,
 			orgx = me.x,
 			orgy = me.y,
@@ -92,6 +93,9 @@ var Attack = {
 		if (spec && spec.box && range > 0) {
 			range = 0;
 		}
+
+		// stage 1: with a must id and a range, the area around the call position is swept first (sweep area fixed, no leash)	//261003
+		var sweepFirst = range > 0 && !!spec && !!spec.ids;
 
 		if (!this.gidSkip || (this.gidSkipPos && (this.gidSkipPos.area !== me.area || getDistance(me, this.gidSkipPos.x, this.gidSkipPos.y) > 40))) {	//260902
 			this.gidSkip = {};
@@ -178,7 +182,7 @@ var Attack = {
 				mustAlive = false;
 
 				// the sweep area moves with the must target (nearest one; last seen spot if out of sight). Once they are dead it stays where they fell	//260927
-				if (range > 0 && spec && spec.ids) {
+				if (!sweepFirst && range > 0 && spec && spec.ids) {	//261003 stage 2 only
 					lostEntry = null;
 
 					for (gid in entries) {
@@ -257,6 +261,29 @@ var Attack = {
 					}
 				}
 
+				// stage 1 over: only must targets left (in sight or lost). Pick up around the call position, then stage 2 follows them	//261003
+				if (sweepFirst && mustAlive) {
+					sweepLeft = false;
+
+					for (gid in entries) {
+						if (entries.hasOwnProperty(gid) && !entries[gid].must) {
+							sweepLeft = true;
+
+							break;
+						}
+					}
+
+					if (!sweepLeft) {
+						sweepFirst = false;
+
+						if (castTotal > 0) {
+							Pickit.pickItems(range, orgx, orgy);
+						}
+
+						continue;
+					}
+				}
+
 				// 3. nothing visible left: a lost must target is searched at its last known position
 				if (!nearest) {
 					lostEntry = null;
@@ -298,7 +325,7 @@ var Attack = {
 				// deferred must targets (no usable skill last time) go to the back: picked only when nothing else is left	//260928
 				target = nearestLive || nearest;
 
-				if (!target.must) {	//260929 no "nothing within dangerRange" condition: clearing around me first only let the boss drift away, the way there is not cleared anyway
+				if (!sweepFirst && !target.must) {	//261003 stage 2 only	//260929 no "nothing within dangerRange" condition: clearing around me first only let the boss drift away, the way there is not cleared anyway
 					for (gid in entries) {
 						if (entries.hasOwnProperty(gid) && entries[gid].must && !entries[gid].lost && !entries[gid].deferred && getDistance(me, entries[gid].unit) >= this.leashRange) {	//260928 !deferred
 							target = entries[gid];
