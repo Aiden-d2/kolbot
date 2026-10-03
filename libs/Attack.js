@@ -261,12 +261,12 @@ var Attack = {
 					}
 				}
 
-				// stage 1 over: only must targets left (in sight or lost). Pick up around the call position, then stage 2 follows them	//261003
+				// stage 1 over: nothing left in range (sweep targets, or a must target last seen within range of the call position). Pick up there, then stage 2 follows the must targets	//261003
 				if (sweepFirst && mustAlive) {
 					sweepLeft = false;
 
 					for (gid in entries) {
-						if (entries.hasOwnProperty(gid) && !entries[gid].must) {
+						if (entries.hasOwnProperty(gid) && (!entries[gid].must || getDistance(entries[gid].lastPos.x, entries[gid].lastPos.y, orgx, orgy) <= range)) {	//261003 a must target in range is a stage 1 target too
 							sweepLeft = true;
 
 							break;
