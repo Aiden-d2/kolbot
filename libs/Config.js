@@ -80,7 +80,7 @@ var Config = {
 		Angle: 75,	//261003 60 -> 75 (candidates are checked nearest to the original node first, so wide ones come last)
 		Step: 5,
 		Min: 10,
-		Skip: [62, 63, 64, 120, 132]
+		Skip: [120, 132]	//261003 62-64 removed (Maggot Lair: a failed safe-node teleport falls back to the adjusted node). 120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
 	},
 
 	Dodge: {
