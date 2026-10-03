@@ -8,7 +8,7 @@ if (!isIncluded("tools/NTItemParser.dbl")) { include("tools/NTItemParser.dbl"); 
 if (!isIncluded("libs/Storage.js")) { include("libs/Storage.js"); };
 
 var Pickit = {
-	gidList: [],
+	gidList: {},	//261003 gid -> {gid, x, y, area}: every item event with where I was (itemEvent). pickItems adds the field ones near me
 	beltSize: 1,
 	ignoreLog: [4, 5, 6, 22, 41, 76, 77, 78, 79, 80, 81], // Ignored item types for item logging
 
@@ -122,9 +122,18 @@ var Pickit = {
 		return result;
 	},
 
+	// itemaction listener (default.dbj): record every gid, no filter (pickItems checks the item itself)	//261003
+	itemEvent: function (gid, mode, code, global) {
+		if (gid > 0 && !Pickit.gidList[gid]) {
+			Pickit.gidList[gid] = {gid: gid, x: me.x, y: me.y, area: me.area};
+		}
+	},
+
 	pickItems: function (range, orgx, orgy) {	//260501
-		var status, item, canFit,
+		var status, item, canFit, gid, entry,
 			ref = null,
+			useGid = !me.inTown,	//261003 the gid list is for field drops: in town it is neither used nor pruned
+			seen = {},	//261003 gids already in pickList
 			pickList = [];
 
 		if (range === undefined) {	//260501
@@ -143,14 +152,51 @@ var Pickit = {
 			delay(40);
 		}
 
+		// drop entries from another area or recorded more than 40 away (gone from sight, or left behind)	//261003
+		if (useGid) {
+			for (gid in this.gidList) {
+				if (this.gidList.hasOwnProperty(gid) && (this.gidList[gid].area !== me.area || getDistance(me, this.gidList[gid].x, this.gidList[gid].y) > 40)) {
+					delete this.gidList[gid];
+				}
+			}
+		}
+
 		item = getUnit(4);
 
 		if (item) {
 			do {
-				if ((item.mode === 3 || item.mode === 5) && (getDistance(me, item) <= range || (ref && getDistance(ref, item) <= range))) {	//260501	//261003 with orgx/orgy: around me or around the given point (was the point only)
+				if ((item.mode === 3 || item.mode === 5) && getDistance(ref ? ref : me, item) <= range) {	//260501	//261003 back to the point only (the gid list covers my side)
 					pickList.push(copyUnit(item));
+					seen[item.gid] = true;
 				}
 			} while (item.getNext());
+		}
+
+		// add the recorded drops within range of me. Not found or out of range: kept for a later call	//261003
+		if (useGid) {
+			for (gid in this.gidList) {
+				if (!this.gidList.hasOwnProperty(gid) || seen[this.gidList[gid].gid]) {
+					continue;
+				}
+
+				entry = this.gidList[gid];
+				item = getUnit(4, -1, -1, entry.gid);
+
+				if (!item) {
+					continue;
+				}
+
+				if (item.mode !== 3 && item.mode !== 5) {
+					delete this.gidList[gid];	// picked up by someone, or not a ground item
+
+					continue;
+				}
+
+				if (getDistance(me, item) <= range) {
+					pickList.push(copyUnit(item));
+					seen[entry.gid] = true;
+				}
+			}
 		}
 
 		while (pickList.length > 0) {
@@ -198,6 +244,10 @@ var Pickit = {
 						this.pickItem(pickList[0], status);	//260805
 					}
 				}
+			}
+
+			if (useGid) {
+				delete this.gidList[pickList[0].gid];	//261003 handled (picked or not): no retry from the list. Within range the ground scan still sees it
 			}
 
 			pickList.shift();

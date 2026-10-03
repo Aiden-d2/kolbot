@@ -51,6 +51,7 @@ function main() {
 	Storage.Init();
 	Runewords.init();
 	Cubing.init();
+	addEventListener("itemaction", Pickit.itemEvent);	//261003 gid list for Pickit.pickItems (field drops near me)
 
 	me.maxgametime = Config.MaxGameTime * 1000;
 	stats = DataFile.getStats();
