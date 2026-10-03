@@ -116,11 +116,9 @@ var ClassAttack = {
 
 			Misc.shapeShift(Config.Wereform);
 
-			// Shock Wave: approach only when out of range or blocked, so it never dodges	//261002
-			if (untimedSkill !== 243 || getDistance(me, unit) > Skill.getRange(untimedSkill) || checkCollision(me, unit, 0x4)) {
-				if (!Attack.setPosition(unit, untimedSkill === 243 ? Skill.getRange(untimedSkill) : baseRange, 0x4)) {	//260826	//260930 minDist 1 is the default now	//261003 base range (Shock Wave keeps its own)
-					return 0;
-				}
+			// Shock Wave: approach-only guard removed: range 7 is below Dodge.MinSkillRange 9, so setPosition never dodges it	//261003
+			if (!Attack.setPosition(unit, untimedSkill === 243 ? Skill.getRange(untimedSkill) : baseRange, 0x4)) {	//260826	//260930 minDist 1 is the default now	//261003 base range (Shock Wave keeps its own)
+				return 0;
 			}
 
 			if (!unit.dead) {

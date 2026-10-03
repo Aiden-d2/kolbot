@@ -468,7 +468,7 @@ setPosition(unit, distance, coll, minDist) → bool   ★ 위치 선정 단일 �
           SWEEP 대상은 내 위치에서 0x4 로 보이는 자리만, 걷기 우회는 경로 ≤ 직선 × DetourPath 일 때만
           MUST 대상(tick.must)은 조건 없이 이동
     회피  사거리 안 && Dodge.Enabled && distance ≥ Dodge.MinSkillRange (classid 243 제외)
-          && R = min(사거리, Dodge.Range) 미만 몹 1마리 이상: 링 하나(걷기 R, 텔레 사거리)에서
+          && R − 2 이하 몹 1마리 이상 (R = min(사거리, Dodge.Range), 261003 MinSkillRange 9·감지 R − 2·이하): 링 하나(걷기 R, 텔레 사거리)에서
           현재 위치보다 1 이상 적은 자리 중 몹 수 최소로 (동점은 곧게 물러나는 쪽, 261001)
     false 는 접근 실패뿐. 이유는 tick.fail = "unreachable" | "moveFailed"
 checkFire(x, y, fireList)       → bool   불장판 좌표 배제
@@ -496,8 +496,8 @@ moveTo(x, y, retry, clearPath, pop) → bool | "killMonsters"
     텔레 경로 노드 간격: getTeleDistance() = narrowAreas(62/63/64/88/89/91/74) 30, 그 외 teleDistance (261001 첫 경로·SafeTele 뒤·실패 재계산 모두)
     TownCheck 이면 노드마다 Misc.townCheck()
     텔레 && SafeTele.Skip 지역 아님: 노드마다 safeCheckNode 로 재배치
-      Attack.getMonsterCount 가 SafeTele.Range 미만 몬스터를 1마리 이상 세면 (261001 Count 삭제)
-      getTeleDistance() 부터 Min 까지 Step 씩 줄이며 대체 노드 탐색 (최근 5개 제외)
+      Attack.getMonsterCount 가 SafeTele.Range 이하 몬스터를 1마리 이상 세면 (261001 Count 삭제, 261003 미만 → 이하)
+      getTeleDistance() 부터 Min 까지 Step 씩, 노드 방향 ±Angle(75) 후보를 모두 만들고 원래 노드에 가까운 순(동점 먼 링)으로 검사 (최근 5개 제외, 261003 순서)
     노드 도착마다 NodeAction.go({clearPath, prevNode, node}).
       killMonsters 가 "killMonsters" 를 돌려주면 moveTo 도 그 값을 반환
 teleportTo(x, y, maxRange)      → bool  최대 10회 시전(회차당 me.attacking 기준 최대 2초), 기본 maxRange 5

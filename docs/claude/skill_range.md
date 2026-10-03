@@ -495,12 +495,12 @@
 |---|---|---|
 | 근접 계열(Bash, Zeal, Smite, Blessed Hammer, Maul, Fury 등) | 3 | 기존 |
 | Battle Cry | 4 | 기존 |
-| War Cry (154) | 5 | 기존. 측정 반지름 약 5.8(표시 5.4~6.3, 미사일 64개 원형), 계산 약 5.6. 261002부터 사거리 밖이거나 막혔을 때만 접근(회피 없음, `Barbarian.js`) |
+| War Cry (154) | 5 | 기존. 측정 반지름 약 5.8(표시 5.4~6.3, 미사일 64개 원형), 계산 약 5.6. 261002부터 사거리 밖이거나 막혔을 때만 접근(회피 없음, `Barbarian.js`). 261003 가드 제거, 사거리 9 미만이라 회피 없음 |
 | Twister, Tornado | 5 | 기존. Tornado는 몹 방향 2~3칸 앞·좌우 ±1에 시전(`Druid.js` 104-112) |
 | Charged Bolt, Frost Nova | 6 | 기존 |
-| Whirlwind, Molten Boulder | 7 | 기존 |
-| Shock Wave (243) | 7 | 260930 7→10→7(Armageddon과 같은 값, D.FGOM 진동 방지). 261002 그대로 7, 게이트(회피 없음), 5칸보다 가까우면 5칸 커서(`Wereform.js`) |
-| Nova (48), Frozen Orb (64), Poison Nova | 9 | 260917 9, 260930 하루 10 뒤 9로(FONV 진동 방지로 FO·Nova 같은 값). 측정 Nova 11.3, FO 구슬 14.1 |
+| Whirlwind, Molten Boulder | 7 | 기존. Molten Boulder 데이터(261003): `moltenboulder` Vel 8 × Range 50 × 3/64 = **18.75**, Size 2, CollideKill 1. 볼더가 느려 9칸에서는 빗나갈 우려로 7 유지(사용자 261003). 261003부터 회피 없음(사거리 9 미만), 치킨이 늘면 9 또는 회피 대상 포함 재논의 |
+| Shock Wave (243) | 7 | 260930 7→10→7(Armageddon과 같은 값, D.FGOM 진동 방지). 261002 그대로 7, 게이트(회피 없음), 5칸보다 가까우면 5칸 커서(`Wereform.js`). 261003 가드 제거, 사거리 9 미만이라 회피 없음 |
+| Nova (48), Frozen Orb (64), Poison Nova | 9 | 260917 9, 260930 하루 10 뒤 9로(FONV 진동 방지로 FO·Nova 같은 값). 측정 Nova 11.3, FO 구슬 14.1. FO 파편 계산(261003, 구슬 위치에서): `frozenorbbolt` 18 × 25 × 3/64 ≈ 21.1, `frozenorbnova` 24 × 25 × 3/64 ≈ 28.1(맞는 범위는 미측정) |
 | Poison/Plague Javelin, Charge, Firestorm | 10 | 기존 |
 | Inner Sight, Slow Missiles | 13 | 기존 |
 | Howl (130) | 15 | 260901, 260930 20→15(측정 15.0, 스킬 레벨 20). B.WCRY `LowManaSkill = [130]` 삭제(War Cry 5 ↔ Howl 진동 방지) |
@@ -515,9 +515,9 @@
 | 그 밖 | (함수 끝 기본값) | |
 
 ### 사거리와 회피의 관계
-- `setPosition(unit, 사거리, coll)`: 사거리 밖이거나 막혔으면 접근, 사거리 안이고 `Dodge.Enabled`이고 사거리 ≥ `Dodge.MinSkillRange`(5)면 회피 판정(반경 R = min(사거리, 10) 미만 몹 1마리 이상이면 물러남).
-- 회피를 원하지 않는 스킬은 직업 파일에서 "사거리 밖이거나 막혔을 때만 `setPosition`"을 부르는 게이트로 막는다(스태틱 선시전, Howl 선공격, 261002 War Cry·Shock Wave·Armageddon). `Dodge.Enabled = false`와 해당 스킬 동작은 같지만 범위가 다르다(다른 스킬 전부, 탈라샤 무덤 토글이 `true`로 되돌림).
-- `MinSkillRange`를 `>`로 바꾸는 안은 기각: 정확히 5인 스킬(War Cry, Twister, Tornado, Static Field 레벨 1, Leap 레벨 1) 전부 회피가 꺼진다.
+- `setPosition(unit, 사거리, coll)`: 사거리 밖이거나 막혔으면 접근, 사거리 안이고 `Dodge.Enabled`이고 사거리 ≥ `Dodge.MinSkillRange`(261003 9)면 회피 판정(R = min(사거리, 10), 261003부터 R − 2 이하 몹 1마리 이상이면 물러남. 걷기는 R, 텔레는 사거리 링으로).
+- 회피를 원하지 않는 스킬은 직업 파일에서 "사거리 밖이거나 막혔을 때만 `setPosition`"을 부르는 게이트로 막는다(스태틱 선시전, Howl 선공격, 261002 War Cry·Shock Wave·Armageddon. 261003 War Cry·Shock Wave는 사거리 9 미만이라 가드 제거). `Dodge.Enabled = false`와 해당 스킬 동작은 같지만 범위가 다르다(다른 스킬 전부, 탈라샤 무덤 토글이 `true`로 되돌림).
+- `MinSkillRange`를 `>`로 바꾸는 안은 기각: 정확히 5인 스킬(War Cry, Twister, Tornado, Static Field 레벨 1, Leap 레벨 1) 전부 회피가 꺼진다. (261003 문턱 9로 바뀌어 사거리 9 미만은 모두 회피 없음, 사용자 결정)
 - 빌드의 회피 켜기: 261002부터 모든 빌드 25레벨(전에는 18레벨).
 - 기준 거리(261003): 소서·어쌔신·아마존·드루이드·웨어폼·네크로는 그 몹에게 고른 timed·untimed 중 짧은 사거리로 두 스킬 모두 자리를 잡는다. 그래서 진동을 막으려고 두 스킬의 사거리 값을 서로 맞출 필요가 없다(위 표의 "진동 방지" 값들은 그때 사정). 값은 실제 도달 거리에 가깝기만 하면 된다.
 

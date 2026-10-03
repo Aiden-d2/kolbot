@@ -76,8 +76,8 @@ var Config = {
 	
 	SafeTele: {	//eom 260525
 		Enabled: true,
-		Range: 10,	//260930 9 -> 10: monsters closer than 10 (was within 9)
-		Angle: 60,
+		Range: 10,	//260930 9 -> 10	//261003 monsters within 10 (closer than 10 + exactly 10)
+		Angle: 75,	//261003 60 -> 75 (candidates are checked nearest to the original node first, so wide ones come last)
 		Step: 5,
 		Min: 10,
 		Skip: [62, 63, 64, 120, 132]
@@ -85,8 +85,8 @@ var Config = {
 
 	Dodge: {
 		Enabled: false,
-		Range: 10,	//260930 R = min(skill range, Range): monsters closer than R are counted, and a walking dodge backs off to R from the target (teleport: the skill range)
-		MinSkillRange: 5	//260930 skills with at least this range dodge
+		Range: 10,	//260930 R = min(skill range, Range): a walking dodge backs off to R from the target (teleport: the skill range)	//261003 monsters within R - 2 are counted and trigger it
+		MinSkillRange: 9	//260930 skills with at least this range dodge	//261003 5 -> 9
 	},
 	
 	//Gear

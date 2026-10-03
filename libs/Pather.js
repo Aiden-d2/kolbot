@@ -162,8 +162,12 @@ var Pather = {
 			return false;
 		}
 		
+		// candidates: rings from the tele step down to SafeTele.Min (every Step), arc spacing Step, up to SafeTele.Angle each side	//261003
+		// all are built first and checked nearest to the original node first (ties: the farther ring); 0 monsters is taken at once,
+		// otherwise the fewest (ties: the one checked first)
 		function safeCheckNode(targetNode, monList, fireList, excludedNodes) {	//260807	//260823 order change
-			var i, v, dist, angle, rad, tx, ty, mc, baseline, safeNode, offset, skip, step;	//260627
+			var i, v, dist, angle, rad, tx, ty, mc, baseline, safeNode, offset, skip, step,	//260627
+				list = [];	//261003
 
 			if (!Config.SafeTele.Enabled) return targetNode;
 			
@@ -187,39 +191,46 @@ var Pather = {
 					rad = angle + offset * Math.PI / 180;
 					tx = Math.round(me.x + Math.cos(rad) * dist);
 					ty = Math.round(me.y + Math.sin(rad) * dist);
-					
-					skip = false;
-					
-					for (v = 0; v < excludedNodes.length; v += 1) {
-						if (getDistance(tx, ty, excludedNodes[v].x, excludedNodes[v].y) < 5) {
-							skip = true;
-							break;
-						}
-					}
-					
-					if (skip) {
-						continue;
-					}
-					
-					//260823 match the landing check used by GIP (Attack.js:636) and gate before the monster scan
-					if (!Pather.checkSpot(tx, ty, 0x1, false)) {
-						continue;
-					}
-					
-					mc = Attack.getMonsterCount(tx, ty, Config.SafeTele.Range, monList, fireList);	//260807
 
-					if (mc < baseline) {	//260823
-						baseline = mc;
-						safeNode = {x: tx, y: ty, monCount: mc};
-						
-						if (mc === 0) {
-							break;
-						}
+					// d: squared distance to the original node (order only), n: build order (stable ties)	//261003
+					list.push({x: tx, y: ty, r: dist, d: (tx - targetNode.x) * (tx - targetNode.x) + (ty - targetNode.y) * (ty - targetNode.y), n: list.length});
+				}
+			}
+
+			list.sort(function (a, b) {	//261003 nearest to the original node first, then the farther ring
+				return (a.d - b.d) || (b.r - a.r) || (a.n - b.n);
+			});
+
+			for (i = 0; i < list.length; i += 1) {	//261003 one pass over the sorted candidates
+				tx = list[i].x;
+				ty = list[i].y;
+				skip = false;
+				
+				for (v = 0; v < excludedNodes.length; v += 1) {
+					if (getDistance(tx, ty, excludedNodes[v].x, excludedNodes[v].y) < 5) {
+						skip = true;
+						break;
 					}
 				}
+				
+				if (skip) {
+					continue;
+				}
+				
+				//260823 match the landing check used by GIP (Attack.js:636) and gate before the monster scan
+				if (!Pather.checkSpot(tx, ty, 0x1, false)) {
+					continue;
+				}
+				
+				mc = Attack.getMonsterCount(tx, ty, Config.SafeTele.Range, monList, fireList);	//260807
 
-				if (safeNode && safeNode.monCount === 0) {
-					break;
+				if (mc < baseline) {	//260823
+					baseline = mc;
+					safeNode = {x: tx, y: ty, monCount: mc};
+					
+					if (mc === 0) {
+						break;
+					}
 				}
 			}
 

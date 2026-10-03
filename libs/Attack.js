@@ -492,9 +492,9 @@ var Attack = {
 		           Outer ring first, then small offset; fire tiles excluded	//260930 no threat tie-break (safety is the next tick's dodge)
 		           sweep target only: the spot must be in sight from me (0x4), and a detour is taken only if
 		           my walking path to the target <= straight distance * DetourPath (the old clear's Angle/Detour gate)	//260928
-		  dodge (in range, Dodge on, skill range >= Dodge.MinSkillRange, 1+ monster closer than R = min(skill range, Dodge.Range)):	//260930
+		  dodge (in range, Dodge on, skill range >= Dodge.MinSkillRange 9, 1+ monster within R - 2, R = min(skill range, Dodge.Range 10)):	//260930	//261003 R - 2, within
 		           one ring at R (teleport: at the skill range), back straight away first,
-		           taking the spot with the fewest monsters (closer than R) in the backing-away half, 1+ fewer than where I stand	//261001
+		           taking the spot with the fewest monsters (within R - 2) in the backing-away half, 1+ fewer than where I stand	//261001	//261003 R - 2
 		           (ties: straighter back first); if that half has none, the fewest on the far side	//260927
 		  box call (Attack.tick.box): only spots inside the box, for approach and dodge alike	//260929
 		Returns false only when an approach fails. Attack.tick.fail says why: "unreachable" | "moveFailed"
@@ -506,7 +506,7 @@ var Attack = {
 
 		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 1;	//260930 3 -> 1 (a dodge that stops 3 short lands inside the threat radius again)
 
-		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, threatRange, count,	//260930	//261001 count
+		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, dodgeRange, threatRange, count,	//260930	//261001 count	//261003 dodgeRange
 			detourOk, detourPath,	//260928
 			fence = this.tick.box,	//260929
 			pathOk = false,
@@ -524,7 +524,8 @@ var Attack = {
 		fireList = this.getFireList();
 
 		if (!moveNeeded) {	//260930 threat is a dodge matter only (approach no longer counts monsters)
-			threatRange = Math.min(distance, Config.Dodge.Range);	//260930 radius and dodge distance in one value
+			dodgeRange = Math.min(distance, Config.Dodge.Range);	//260930	//261003 dodge distance only (walking ring)
+			threatRange = dodgeRange - 2;	//261003 count radius and trigger: R - 2, so the target at the ring (R, rounding +-0.7) is not counted
 			monList = this.tick.monList || this.buildMonsterList();
 			baseline = this.getMonsterCount(me.x, me.y, threatRange, monList, fireList);
 
@@ -542,7 +543,7 @@ var Attack = {
 			}
 		} else {
 			// dodge: one ring at R (narrow ground: backing off to the skill range took too long). Teleport lands at once, so the skill range	//260930
-			radii = [useTele ? distance : threatRange];
+			radii = [useTele ? distance : dodgeRange];	//261003 dodgeRange
 		}
 
 		choice = null;
@@ -643,7 +644,7 @@ var Attack = {
 				}
 
 				if (!moveNeeded) {	//261001 dodge: keep the fewest (a dodge that only drops 3 -> 2 dodges again next tick)
-					count = this.getMonsterCount(c.x, c.y, threatRange, monList, fireList);	//260930 after the cheap checks, counts closer than R
+					count = this.getMonsterCount(c.x, c.y, threatRange, monList, fireList);	//260930 after the cheap checks	//261003 counts within R - 2
 
 					if (count >= baseline) {
 						continue;	// not safer than where I stand, or than the best spot so far
@@ -787,7 +788,7 @@ var Attack = {
 			count = 0;
 		
 		for (i = 0; i < list.length; i += 1) {
-			if (getDistance(x, y, list[i].x, list[i].y) < range) {	//260930 <= -> < (closer than range; dodge and SafeTele alike)
+			if (getDistance(x, y, list[i].x, list[i].y) <= range) {	//260930	//261003 < -> <= (within range; dodge and SafeTele alike)
 				count += 1;
 			}
 		}
