@@ -504,7 +504,7 @@ var Attack = {
 			return false;
 		}
 
-		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 1;	//260930 3 -> 1 (a dodge that stops 3 short lands inside the threat radius again)
+		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 1.5;	//260930 3 -> 1 (a dodge that stops 3 short lands inside the threat radius again)	//261003 1 -> 1.5: the 8 tiles around the spot count as arrived (diagonal 1.41); a dodge stays outside R - 2 (2 would sit on it)
 
 		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, dodgeRange, threatRange, count,	//260930	//261001 count	//261003 dodgeRange
 			detourOk, detourPath,	//260928
