@@ -8,7 +8,6 @@ if (!isIncluded("tools/NTItemParser.dbl")) { include("tools/NTItemParser.dbl"); 
 if (!isIncluded("libs/Storage.js")) { include("libs/Storage.js"); };
 
 var Pickit = {
-	gidList: [],
 	beltSize: 1,
 	ignoreLog: [4, 5, 6, 22, 41, 76, 77, 78, 79, 80, 81], // Ignored item types for item logging
 
@@ -246,7 +245,7 @@ var Pickit = {
 			this.type = unit.itemType;
 			this.classid = unit.classid;
 			this.name = unit.name ? unit.name.replace(/ÿc[0-9!"+<:;.*]/g, "") : "";	//eom 260415
-			this.color = Pickit.itemColor(unit);
+			//this.color = Pickit.itemColor(unit);	//261003 not read: the original's print color prefix (messages are me.overhead now)
 			this.gold = unit.getStat(14);
 			this.useTk = Config.UseTelekinesis && me.classid === 1 && me.getSkill(43, 1) && (this.type === 4 || this.type === 22 || (this.type > 75 && this.type < 82)) &&
 						getDistance(me, unit) > 5 && getDistance(me, unit) < 20 && !checkCollision(me, unit, 0x4);
@@ -619,19 +618,6 @@ MainLoop:
 
 	// Just sort by distance for general item pickup
 	sortItems: function (unitA, unitB) {
-		return getDistance(me, unitA) - getDistance(me, unitB);
-	},
-
-	// Prioritize runes and unique items for fast pick
-	sortFastPickItems: function (unitA, unitB) {
-		if (unitA.itemType === 74 || unitA.quality === 7) {
-			return -1;
-		}
-
-		if (unitB.itemType === 74 || unitB.quality === 7) {
-			return 1;
-		}
-
 		return getDistance(me, unitA) - getDistance(me, unitB);
 	}
 };
