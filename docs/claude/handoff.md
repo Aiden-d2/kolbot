@@ -1,4 +1,4 @@
-# 인수인계 메모 (261003)
+# 인수인계 메모 (261004)
 
 새 대화는 이 문서부터 읽는다. 이어서 CLAUDE.md(작업 규칙, **로그 규칙**)와 분석 노트를 필요한 만큼 읽는다.
 
@@ -40,11 +40,33 @@
   5. 벨트 물약 `[MoveToSlot] ... FAILED slot: dropped: item:`(trace) 값으로 원인 확정
   6. 상점 `Shopped ... (not bought)`(trace)과 ItemLog 중복 기록 사라짐
   7. 용병 고용 이동 중 "D2BS is not responding" 멈춤(17:40형)이 다시 나는지 — 리스너 위치 변경이 이 가설의 대응이다(7절). 멈추면 `-h` 덤프로 메인 스레드가 D2BS 패킷 이벤트 대기 안인지 본다
+     - 결과(사용자 261004): 리스너 위치 변경 뒤 용병 고용 24회 넘게 재발 없음 → 확인 완료. 원래 드문 현상이라 원인 제거의 증명은 아니다. 다시 나면 `crash_analysis.md` 0절 조건대로 ProcDump를 켠다
   8. 유형 B 수정(261001): trace `[TK] talk skipped <횟수> npc:<이름>`이 찍히는지, `[TK] cancel during talk`(스페이스 20번 초과 뒤 예전 cancel)이 없는지, 대사 뒤 오토맵이 꺼진 채 남지 않는지, 크래시 첫 덤프가 0x661406이 아닌지
      - 결과(261001 a2 trace): `[TK] talk skipped 1`이 4건(Akara 13:59:55·14:25:36, Kashya 14:15:53, Charsi 14:29:01), 모두 스페이스 한 번에 넘어감. `[TK] cancel during talk` 0건. 같은 날 크래시(7절 6번)는 0x6494DC라 유형 B 아님. 오토맵 상태는 trace로 알 수 없어 미확인.
+     - 결과(261004): PR #18 뒤 덤프로 본 크래시 4건(6번 C, 7번 D2BS, 8번 A, 9번 C) 중 유형 B 0건. 261004 trace의 `[TK]`는 모두 `talk skipped 1` → 확인 완료
+  9. `Town.goToTown: Failed to take TP` 원인 확인(261004 진단 로그, 동작 변경 없음). 다시 나면 그 프로필 trace에서 아래 줄을 찾아 tick(ms)을 비교한다
+     - 사건: a1(리더) 10/4 02:18:41 Pz-25 `[HEART]`, Sewers Level 2. 상자 도착(2:18:19) 3초 뒤 마을 왕복(2:18:22~34) → 하수도 복귀 → `heart` 끝의 `Town.goToTown()`(try 없음)에서 실패. 콘솔에 `=== HEART ===`가 없는 것도 이와 맞는다. `makePortal`은 성공했다("Failed to make TP"와 `cast again`이 없음). trace 두 개를 통틀어 1건이다
+     - 시간 근거(추정): 복귀 뒤 오류까지 몇 초뿐이다. `usePortal`은 포털이 보이면 시도마다 약 1.2초(14번에 약 17초), 안 보이면 약 0.26초라 대부분 "못 찾음"으로 보인다
+     - 후보:
+       - H1 타운치킨이 메인을 멈춘 채 왕복했다. 소서 18레벨부터 `TownHP 40`이다. 메인이 `goToTown`/`usePortal` 안에서 멈췄다면 깨어난 뒤 지역이 그대로 93이라 왕복을 모른다
+       - H2 포털은 보였지만 재사용 제한(포털 이용 뒤 1~2초, 새로 연 포털도 같음, 사용자 확인)으로 못 탔다
+       - H3 포털이 목록에서 안 보였다(닫힘, 착각)
+       - H4 `makePortal`이 새로 열지 않고 돌아올 때 탄 포털을 돌려줬다. 시도 0번은 예전에 trace가 없었다
+     - 로그(모두 `//261004 temp`):
+       - `visitTown start by:<스크립트> tick:` / `visitTown back tick:`(`Town.visitTown`) → H1, 복귀 시각
+       - `goToTown take TP failed start tick: made:<gid 좌표 mode>`(`Town.goToTown`, 실패 때만) → H1 순서, H4
+       - `usePortal failed ... tick:<시작>-<끝> tries:<시도:gid sent/click/none@ms> portals:<gid/classid/주인/지역/좌표/mode/거리>`(`Pather.usePortal`, 내 포털(`owner === me.name`)일 때만, 팔로워의 남의 포털 대기 루프는 제외) → H2·H3
+       - `makePortal existing portal used try:0 gid:`(`Pather.makePortal`, 조건 `i > 0` → 시도 0번 포함) → H4
+     - 판정:
+       - goToTown 시작 < visitTown start < back < 실패 순서면 H1
+       - back 뒤 2초 안에 시도가 끝났고 포털이 보였으면 H2
+       - 시도 대부분이 none이면 H3
+       - existing 줄이 있으면 H4
+     - 이번 건이 H1인지는 a1 d2bs 로그의 `Going to town`(타운치킨 print, 2:18:19~22)으로도 확인할 수 있다(미확인)
+     - 원인이 확정되기 전에는 수정하지 않는다(사용자 261004). H2로 확정되면 "복귀 직후 1~2초 기다린 뒤 타기"가 후보다
 - **분석에 필요한 파일:** 프로필별 trace(`_cache/trace/`), d2bs 로그, 매니저 콘솔 로그, 필요하면 `_cache/ItemLog.txt`.
-- **크래시 수집 방침(261001):** ProcDump는 지금 설정 그대로 둔다. 크래시가 나면 첫 덤프(접미사 없는 파일, `procdump_<PID>.log`의 PID·시각으로 고름)의 예외 주소만 보고 7절 유형으로 분류한다. 깊은 분석은 처음 보는 주소이거나 0x661406(유형 B, 우리 원인)일 때만 한다. 나머지 유형은 게임 내부라 원인을 찾아도 고칠 수 없다(Game.exe 패치는 보류). 유형 B가 한동안 안 나오면 ProcDump를 꺼도 된다.
-- **임시 로그 정리 대기:** `[MP]`(용병), `usePortal 342`(빨간 포털), 벨트 물약 상세는 한 사이클 확인 뒤 삭제 후보. `[TK]` 래퍼(Prototypes.js `me.cancel`)는 유형 B 수정 확인 때까지 유지(스페이스 20번 초과 뒤 cancel을 기록). `[OD]`(`watchDialog`)는 목적(오브젝트 대사 길이 관찰)을 마쳐 삭제 후보.
+- **크래시 수집 방침(사용자 결정 261004):** ProcDump를 끄고 크래시마다 하던 분석을 그만둔다(유형 B 0건, 남은 유형은 게임 내부라 고칠 수 없음, 사이클당 1~2건). 다시 켜는 조건, 수집 설정(PowerShell), 모을 파일, 분석 스크립트(`crash_dmpinfo.py`), 주소별 분류표는 `crash_analysis.md`에 있다. 그 절차대로 다시 분석한다.
+- **임시 로그 정리 대기:** `[MP]`(용병), `usePortal 342`(빨간 포털), 벨트 물약 상세는 한 사이클 확인 뒤 삭제 후보. `[TK]` 래퍼(Prototypes.js `me.cancel`)는 유형 B 수정 확인 때까지 유지(스페이스 20번 초과 뒤 cancel을 기록). 261004 유형 B 수정 확인 완료(1절 8번)라 삭제 후보, 지울지는 미정. `[OD]`(`watchDialog`)는 목적(오브젝트 대사 길이 관찰)을 마쳐 삭제 후보.
 - **이 세션 환경:** 원격 브랜치 삭제가 거부된다. 지워야 하면 사용자가 GitHub에서 지운다.
 
 ## 2. 작업 방식 (사용자와 합의한 것)
@@ -272,6 +294,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **팔로워 크래시 때 전원 종료:** 크래시 난 프로필이 파티에서 빠지면 나머지 전원(리더 포함)이 `PartyThread`의 `retry > 2`(`threads/PartyThread.js:122-124`)로 약 2초 뒤 나간다. `party has left`는 print만이라 콘솔·trace에는 이유가 안 남는다(로그 규칙대로). 크래시 쪽은 매니저의 `Window has unexpectedly exited` 줄로 구분한다.
 
 ## 7. 크래시 분석 (260929, Game.exe 1.14d 역어셈블)
+다시 분석할 때의 절차(수집 설정, 모을 파일, 분석 스크립트, 주소별 분류표)는 `crash_analysis.md`에 있다(261004).
 ProcDump(`C:\CrashDumps`)가 원래 예외 지점을 잡는다. WER 덤프의 0x576F0C는 D2BS `exit0` 버그로 생긴 두 번째 크래시라 원인이 아니다.
 
 **유형 A: 그리기 중 유닛 경로 NULL (Game.exe 0x6489C6), 2건 (a1 10:11, a5 10:58)**
@@ -346,3 +369,20 @@ ProcDump(`C:\CrashDumps`)가 원래 예외 지점을 잡는다. WER 덤프의 0x
 - 메인 스레드: 게임 루프 → 패킷 루프 → 서버 패킷 0xA3(크기 0x18, 핸들러 0x45d5e0) → 0x4c6a11 → 0x4f1e94 → 0x4cd804 → 0x4667db → 0x466183 → 0x465f2c → 0x681e16 → 0x407f36 → 0x409d3e → 0x68402e → 힙 해제(`NtFreeVirtualMemory` MEM_DECOMMIT 0x9160000~0x9184000, 내 유닛 주소는 범위 밖). 게임 종료 경로 아님.
 - WER 덤프 `Game.exe.23184.dmp`(머리 예외 0x576F0C, exit0 버그)에는 Game.exe 스레드 0x49f8(첫 덤프 때는 `select()` 대기)이 메모리 풀 잠금 0x74f244(0x200 블록 풀)에 들어가다 ntdll 0x77966627에서 `[0x14]` 쓰기로 튕긴 예외도 있다. 첫 덤프에서 이 잠금은 다른 풀 잠금과 같이 전부 0이었으므로 첫 크래시 뒤의 2차 크래시다.
 - 내 유닛 메모리가 왜 사라졌는지, 패킷 0xA3과 관련이 있는지는 모른다(덤프에 힙 없음). 4번(메인 스레드가 해제된 내 유닛·Act 사용)과 같은 계열로 본다(추정). 게임 내부, 스크립트로 고칠 수 없음.
+
+**261004 크래시 8·9번 (5사이클째 실행, 55런 × 8프로필 중 2건, 261004 분석)**
+| # | 프로필·시각 | 첫 덤프 | 예외 주소 | 분류 |
+|---|---|---|---|---|
+| 8 | a1 (PID 24300) 10/4 01:10:06, Lut Gholein | `Game.exe_261004_011006.dmp` | 0x6489C6, NULL+8 읽기 | **유형 A** |
+| 9 | a3 (PID 21236) 10/4 02:41:24, Harrogath | `Game.exe_261004_024124.dmp` | 0x6494DC, NULL 읽기 | **유형 C** |
+- 두 건 모두 procdump 로그에 첫 `Unhandled` 앞의 잡힌 예외가 없다. 메인 스레드이고, 약 2초 동안 처리되지 않은 예외가 10번 났다(exit0 반복).
+- **8번 (유형 A):**
+  - EBP 체인: 게임 루프 0x44f291 → 0x44cafd → 0x476cf8 → 0x4df5f4(그리기 목록 루프 0x4df510) → 0x471667(0x471620) → 0x471537(0x471450) → 0x620693(0x620650) → 0x6489c0. 0x6489c0은 `[arg+8]`을 읽는 함수인데 arg가 NULL이었다.
+  - 그리던 유닛 0x5ff5f00은 내 유닛(`[0x7a6a70]`=0x9d2eb00)이 아니다. 힙이 없어 종류는 모른다.
+  - trace: Tal Rasha 무덤 #1에서 마을로 와 doChores 중이었다. 마지막 줄은 01:10:04 `[Lut Gholein 5124,5071] moveTo end`(stash 쪽 이동), 2초 뒤 크래시.
+- **9번 (유형 C):**
+  - ESI=0, EAX=0, ECX=0x13CA, EDX=0x13D9이고, EBP 체인이 6번과 같다.
+  - 좌표 (5066,5081)이 trace 마지막 줄 02:41:24 `[Harrogath 5066,5081] moveTo end` → `getPath -> 5070,5085`의 a3 자기 위치와 정확히 같다. 6번은 a2 위치와 약 6칸 차이였다. 그래서 크래시 난 유닛이 그 프로필 자신일 가능성이 높아졌다(추정, 힙 없음).
+  - 상황: doChores 뒤 48초 대기 → Qual-Kehk 쪽 이동 중. 유형 C·D의 기존 Harrogath 사례와 비슷하다.
+- 함께 받은 `procdump_13272.log`는 10/3 22:11:46의 다른 크래시 로그다. 덤프는 받지 않아 미분류.
+- 결론: 두 건 모두 게임 내부 원인이라 스크립트로 고칠 수 없다. 이후 방침은 1절 "크래시 수집 방침(261004)".
