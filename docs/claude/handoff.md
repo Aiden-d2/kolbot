@@ -149,6 +149,7 @@
 | 39 | 에인션트(261004): 리더가 118 출구 앞에서 포탈을 열고(`boss portal: opened`) 전원 120으로 들어가는가. 루프 회차마다 `ancients loop: 39,0 X`. 제단·전투가 정상인가. 120에서 타운비짓이 안 일어나는가(거부되면 `visitTown refused: Arreat Summit`) | 에인션트 장면 | 1절 보스 보호 줄 |
 | 40 | 라다먼트 북(261004): `radament book visible: true` → okCount → `radament book read: 9,5 false`인가. 북을 잃은 경우 N+1 `radament atma: 9,0 true 9,1 false`, N+2 `radament book visible: false`(D2MOO: 초기화한 게임은 퀘스트 꺼짐, 1.14d에서 맞는지 확인), N+3 획득 | trace | 1절 보스 보호 줄, 6절 퀘스트 줄 |
 | 41 | okCount 타임아웃(261004): `[Quit] Party desynced 1/2: okCount N teamCount N teamOk X`로 개수가 남는가. 원인 불명 타임아웃이 나면 개수가 넘쳤는지(호출 횟수 불일치) 모자랐는지 본다 | trace | 1절 보스 보호 줄 |
+| 42 | 레벨 25 미만에서 ID 스크롤 살 골드가 없을 때 미감정 물건을 팔고 넘어가는가 (261004) | trace `identify: no gold for ID scroll, sold unid 이름 (gold N)` | 3절 끝 마을 chores |
 | 35 | 리더 팀 대기(261003): 팔로워 7명이 모두 조인 대기 화면일 때만 방을 만드는가(정상이면 대기 줄 없음). 팔로워가 realm down 등으로 빠지면 5초 뒤 콘솔 `Team wait: ...` 한 줄과 상태바 표시 뒤 로비에서 기다리다 돌아오면 바로 만드는가. 로비에서 오래 기다려도 리더 연결이 끊기지 않는가 | 리더 콘솔·상태바, 팔로워 realm down 장면 | 1절 리더 팀 대기 줄 |
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다.
@@ -189,6 +190,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - `identify` 감정 멈춤(사용자 관찰: 감정 때 멍때림): 감정 전 `tome = me.findItem(530) || me.findItem(519)`를 한 번만 정하고, 루프에서 `tome`이 있으면 상점 구매(`else`)로 가지 않았다. 인벤토리에 낱장 ID 스크롤 1장이 있으면 첫 물건만 감정, 이후 물건은 없어진 스크롤로 `Misc.identifyItem`(PacketShopping) 패킷을 보내 커서 대기 2초×3 ≈ 6초씩 헛기다리고 미감정으로 남음(다음 방문 때 감정). 낱장이 남는 경로: nip은 ID 스크롤을 줍지 않으므로 시작 아이템(추정)과, 산 스크롤로 감정에 실패한 경우(스크롤 미소모, 그 감정 안에서는 `me.findItem(530)`이 쓰지만 새로 1장을 또 사서 1장이 남음). 멈춤의 원인으로 확정한 것은 아님(코드 추론).
   - 반영: 감정 전 `tome`·`fillTome(519)` 삭제. 물건마다 고름 — ID 책 충전 있음(0이면 `fillTome(519)` 후 다시) → 인벤토리 낱장 ID 스크롤 → 상점 1장 구매(공간 없으면 TP 책 판매, 기존 그대로) → 없으면 `break MainLoop`. ID 책을 쓸 때의 5 게이트 문제(충전 6·물건 8이면 채우지 않음)도 해소. 현재는 ID 책 안 씀(물건마다 낱장 구매).
   - trace: `identify failed: 이름 (scroll|tome, Nms)`, `identify slow: 이름 (scroll|tome, Nms)`(성공했지만 2초 이상), `identify stopped: no ID scroll for 이름 (gold N)`. `Misc.identifyItem`은 성공해도 최대 약 12초 걸릴 수 있어 slow로 구분.
+- 261004 `identify` 골드 부족 판매 (사용자 요청으로 코드 반영): ID 스크롤 살 골드가 없으면 `break MainLoop`로 감정을 끝내 미감정(-1) 물건이 인벤토리에 남았다(`clearInventory`는 결과 0·4만, `stash`는 1~3만 처리).
+  - 반영: `if (!scroll)`에서 레벨 25 미만(기존 결과 4 분기와 같은 `< 25`)이고 상점 ID 스크롤(530)이 있으며 `me.gold < getItemCost(0)`이면 미감정으로 팔고 다음 물건으로(`continue`). 그 밖(25 이상, 상점에 스크롤 없음, 자리 없음)은 기존대로 `identify stopped` 후 중단. 판 돈으로 다음 물건부터는 스크롤을 사서 감정할 수 있다. 유니크·세트 제외 조건은 넣지 않음.
 - 그대로 둠: `repair`의 shopItems 방문(노멀 2막 이상 `doChores(true)`면 골드와 무관하게 수리 NPC 방문, `Town.js` repair 앞부분) — 4절 18번.
 
 ## 4. 미결 작업 (사용자 결정 또는 확인 후)
