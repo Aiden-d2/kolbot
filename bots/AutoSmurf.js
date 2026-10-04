@@ -1028,7 +1028,7 @@ function AutoSmurf() {
 
 	// Right after the boss clear: sync once the boss is dead (the dead wait as corpses, so they get the quest too), the dead revive and get their corpse, then sync again	//261004
 	this.bossEnd = function (range) {	//261004
-		var i, area, x, y;
+		var i, area, x, y, corpse;
 
 		if (guardChicken === null) { // guard not on (farming)
 			return true;
@@ -1083,9 +1083,21 @@ function AutoSmurf() {
 
 			Pather.moveTo(x, y);
 
-			if (!Town.getCorpse(true) || getUnit(0, me.name, 17)) {
-				Misc.quitGame("Failed to get corpse");
+			for (i = 0; i < 5 && !getUnit(0, me.name, 17); i += 1) { // same retry as getCorpse when naked
+				delay(500);
+			}
 
+			corpse = getUnit(0, me.name, 17);
+
+			if (!corpse) { // getCorpse would return true without picking	//261004
+				Misc.quitGame("Failed to get corpse", "not seen");
+			} else if (getDistance(me.x, me.y, corpse.x, corpse.y) > 20) { // getCorpse skips it and returns true	//261004
+				Misc.quitGame("Failed to get corpse", "far " + Math.round(getDistance(me.x, me.y, corpse.x, corpse.y)));
+			} else if (!Town.getCorpse(true)) {
+				Misc.quitGame("Failed to get corpse", me.dead ? "died" : "timeout");	//261004 reasons split
+			}
+
+			if (Misc.quitReason) {
 				while (true) {
 					delay(1000);
 				}
