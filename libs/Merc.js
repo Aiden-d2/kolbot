@@ -525,6 +525,7 @@ var Merc = {
 			if (hiredMerc && hiredMerc.getSkill(skillId, 1)) {
 				foundMerc = true;
 				D2Bot.printToConsole("[Hired] Level " + target.level + " " + skill, 5);	//260911
+				print("[Hired] Level " + target.level + " " + skill);	//261004
 				DataFile.updateStats("Merc", skill);
 				break;
 			}
