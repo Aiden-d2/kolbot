@@ -2187,6 +2187,8 @@ MainLoop:
 		}
 
 		if (me.area === 120) {	//261004 a TP on Arreat Summit resets the Ancients and takes away the leader's portal in front of it
+			Misc.trace("visitTown refused: Arreat Summit");
+
 			return false;
 		}
 
