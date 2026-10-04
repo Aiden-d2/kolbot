@@ -1469,7 +1469,7 @@ MainLoop:
 		return false;
 	},
 
-	getCorpse: function () {
+	getCorpse: function (quitOnFail) {	//261004 quitOnFail: return false instead of stopping the profile (AutoSmurf.bossEnd)
 		var i, corpse, gid, coord,
 			corpseList = [],
 			timer = getTickCount();
@@ -1516,6 +1516,10 @@ MainLoop:
 			}
 
 			if (getTickCount() - timer > 30000) {
+				if (quitOnFail) {	//261004
+					return false;
+				}
+
 				D2Bot.printToConsole("Failed to get corpse, stopping.", 9);
 				D2Bot.stop();
 			}
@@ -2180,6 +2184,10 @@ MainLoop:
 			this.stash();
 
 			return true;
+		}
+
+		if (me.area === 120) {	//261004 a TP on Arreat Summit resets the Ancients and takes away the leader's portal in front of it
+			return false;
 		}
 
 		var preArea = me.area,

@@ -51,7 +51,8 @@ function AutoSmurf() {
 		okCount = 0,
 		teamOk = false,
 		teamCount = 0,
-		
+		guardChicken = null,	//261004 bossGuard: LifeChicken saved while the boss guard is on (null = guard off)
+
 		syncBO = false,
 		syncWP = false,
 		
@@ -434,8 +435,8 @@ function AutoSmurf() {
 				Messaging.sendToList(Team.Profiles, "teamOk");
 			}
 			
-			if (getTickCount() - tick > 120 * 1000 && !me.dead) { // Quit after 120s of waiting.
-				Misc.quitGame("Party desynced 1");	//260930
+			if (getTickCount() - tick > 120 * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)
+				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "okCount " + okCount + " teamCount " + teamCount + " teamOk " + teamOk);	//260930	//261004 counts in the trace
 			}
 		}
 
@@ -458,8 +459,8 @@ function AutoSmurf() {
 
 			delay(1000);	//260930 was 500
 			
-			if (getTickCount() - tick > 120 * 1000 && !me.dead) { // Quit after 120s of waiting.
-				Misc.quitGame("Party desynced 2");	//260930
+			if (getTickCount() - tick > 120 * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)
+				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 2", "okCount " + okCount + " teamCount " + teamCount + " teamOk " + teamOk);	//260930	//261004 counts in the trace
 			}
 		}
 		
@@ -980,7 +981,128 @@ function AutoSmurf() {
 
 		return true;
 	};
-	
+
+	// Boss guard (questing): nobody leaves on a chicken before the boss is dead, so the team gets the quest together (a profile that left first missed the kill and the next game desynced)	//261004
+	// pct 0: chicken off now (Summoner). pct > 0: chicken off once the boss is at pct% HP or lower (Ancients: only when one is left)
+	this.bossGuard = function (pct) {	//261004
+		var self = this;
+
+		guardChicken = Config.LifeChicken;
+
+		if (!pct) {
+			this.setLifeChicken(0);
+
+			return true;
+		}
+
+		// Attack.clear hands every scanned boss unit here
+		Attack.onBossLow = function (unit) {
+			var i, u,
+				alive = 0;
+
+			if (unit.hp * 100 / 128 > pct) {
+				return;
+			}
+
+			if ([540, 541, 542].indexOf(unit.classid) > -1) { // Ancients: the quest ends with the last one
+				for (i = 540; i <= 542; i += 1) {
+					u = getUnit(1, i);
+
+					if (u && u.mode !== 0 && u.mode !== 12) {
+						alive += 1;
+					}
+				}
+
+				if (alive > 1) {
+					return;
+				}
+			}
+
+			Attack.onBossLow = null;
+			Misc.trace("bossGuard chicken off: " + unit.name + " " + Math.round(unit.hp * 100 / 128) + "%");
+			self.setLifeChicken(0);
+		};
+
+		return true;
+	};
+
+	// Right after the boss clear: sync once the boss is dead (the dead wait as corpses, so they get the quest too), the dead revive and get their corpse, then sync again	//261004
+	this.bossEnd = function (range) {	//261004
+		var i, area, x, y;
+
+		if (guardChicken === null) { // guard not on (farming)
+			return true;
+		}
+
+		Attack.onBossLow = null;
+
+		this.okCount(range);
+
+		if (me.dead) {
+			area = me.area; // where I died = where the corpse is
+			x = me.x;
+			y = me.y;
+
+			Misc.trace("bossEnd revive");
+
+			for (i = 0; i < 10 && !me.inTown; i += 1) {
+				if (me.mode === 17) {
+					me.revive();
+				}
+
+				delay(1000);
+			}
+
+			if (!me.inTown) {
+				Misc.quitGame("Revive failed");
+
+				while (true) {
+					delay(1000);
+				}
+			}
+
+			this.setLifeChicken(guardChicken); // alive again, in town
+
+			Town.move("portalspot");
+
+			if (!Pather.usePortal(area === 120 ? 118 : area, null)) { // Ancients: the leader's portal is in front of the summit
+				Misc.quitGame("Corpse portal not found");
+
+				while (true) {
+					delay(1000);
+				}
+			}
+
+			if (Leader) {
+				Pather.makePortal(); // my own portal closed when I took it back
+			}
+
+			if (me.area !== area) {
+				Pather.moveToExit(area, true);
+			}
+
+			Pather.moveTo(x, y);
+
+			if (!Town.getCorpse(true) || getUnit(0, me.name, 17)) {
+				Misc.quitGame("Failed to get corpse");
+
+				while (true) {
+					delay(1000);
+				}
+			}
+
+			Misc.trace("bossEnd corpse picked");
+		} else if (Config.LifeChicken !== guardChicken) {
+			this.setLifeChicken(guardChicken);
+		}
+
+		guardChicken = null;
+
+		this.okCount(range); // the team waits here, clearing around, for the one getting the corpse
+
+		return true;
+	};
+
 //PATHING
 	this.travel = function (goal) { // 1->10, a custom waypoint getter function
 		var i, homeTown, nextAreaIndex, target, destination, unit,
@@ -2891,6 +3013,10 @@ function AutoSmurf() {
 			
 				Pather.moveTo(22548, 9582, 5, true);
 				//Pather.moveTo(22548, 9568, 5, true);	//260929
+
+				if (Leader) {	//261004 the portal from buffCount is back at the start of the room: open one here for the corpse run (bossEnd)
+					Pather.makePortal();
+				}
 			} else {
 				if (Leader) {
 					this.travel(2);
@@ -2914,11 +3040,15 @@ function AutoSmurf() {
 				Pather.teleport = false;
 			}
 			
+			this.bossGuard(15);	//261004
+
 			try {
 				Attack.clear(25, 156);	// Andariel //261002	//261003 20 -> 25
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.andy", e);	//260930
 			}
+
+			this.bossEnd();	//261004
 			
 			delay(me.ping * 2 + 2000); // Wait for minions to die.
 
@@ -3149,8 +3279,7 @@ function AutoSmurf() {
 	};
 
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
-		var journal, i,
-			chicken = Config.LifeChicken;
+		var journal, i;	//261004 chicken -> bossGuard
 
 		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===");	//260930
 		
@@ -3212,7 +3341,7 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		this.setLifeChicken(0);	//260922
+		this.bossGuard(0);	//260922	//261004 setLifeChicken(0) -> bossGuard: chicken off from the arrival
 
 		Pather.teleport = false;
 		
@@ -3222,6 +3351,8 @@ function AutoSmurf() {
 			Misc.caughtError("AutoSmurf.summoner", e);	//260930
 		}
 		
+		this.bossEnd(10);	//261004 sync on the kill, the dead get their corpse, chicken back
+		
 		journal = getPresetUnit(74, 2, 357);
 		
 		Attack.clear(0, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13});	//260926	//260929
@@ -3229,16 +3360,6 @@ function AutoSmurf() {
 		Pather.moveToPreset(74, 2, 357, 3, 3);
 
 		this.okCount(10);	//260921
-		
-		if (me.dead) {	//260923
-			Misc.quitGame("I'm dead");	//260930
-
-			while (true) {
-				delay(1000);
-			}
-		}
-
-		this.setLifeChicken(chicken);	//260922
 		
 		journal = getUnit(2, 357);
 		
@@ -3506,7 +3627,29 @@ function AutoSmurf() {
 			Town.goToTown(2);
 		}
 		
-		if (!me.getQuest(9, 1)) {
+		// Book lost (killed, 9,5 book reward pending, no book): Atma turns 9,1 into 9,0, the next game I make resets quest 9 (no book in that game),	//261004
+		// the game after drops the book again for everyone who has 9,5 and no book. Only the game maker gets the reset, so only the leader talks
+		if (Leader && me.getQuest(9, 1) && me.getQuest(9, 5) && !me.findItem(552)) {	//261004
+			Town.move(NPC.Atma);
+			atma = getUnit(1, NPC.Atma);
+
+			if (atma && atma.openMenu()) {
+				me.cancel();
+			}
+
+			sendPacket(1, 0x40); // fresh quest state
+			delay(me.ping * 2 + 500);
+			Misc.trace("radament atma 9,0 " + me.getQuest(9, 0) + " 9,1 " + me.getQuest(9, 1) + " 9,5 " + me.getQuest(9, 5));
+			Misc.quitGame("Radament book reset");
+
+			while (true) {
+				delay(1000);
+			}
+		}
+
+		Misc.trace("radament gate 9,0 " + me.getQuest(9, 0) + " 9,1 " + me.getQuest(9, 1) + " 9,5 " + me.getQuest(9, 5) + " book " + !!me.findItem(552));	//261004
+
+		if ((!me.getQuest(9, 1) && !me.getQuest(9, 0)) || (me.getQuest(9, 5) && !me.findItem(552))) {	//261004 not killed yet, or killed but the book was lost (was !9,1)
 			if (Leader) {
                 if (getWaypoint(10)) {
 					Town.move("waypoint");
@@ -3584,6 +3727,8 @@ function AutoSmurf() {
 				tpReady = false;
 			}
 
+			this.bossGuard(85);	//261004
+
 			delay(me.ping * 2 + 200);
 			
 			try {
@@ -3591,22 +3736,28 @@ function AutoSmurf() {
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.radament", e);	//260930
 			}
-			
-			for (i = 0 ; i < 30 ; i += 1) {	//260921
-				if (i > 15) {	//260929
-					Misc.quitGame("Radament quest item not found");	//260930
-				}
-				
-				this.getQuestItem(552);
-				
-				if (me.findItem(552)) {
-					break;
-				}
-				
-				Attack.clear(15);
-				
-				delay(1000);
+
+			this.bossEnd();	//261004
+
+			// Look for the book once (a seen Radament always dies, the book does not show up later). Pick up only after everyone saw one:	//261004 was 16 tries with clears
+			// if anyone misses it, nobody picks one up and the whole team keeps 9,5 with no book, which the Atma reset above recovers
+			for (i = 0; i < 50 && !me.findItem(552) && !getUnit(4, 552); i += 1) {
+				delay(40);
 			}
+
+			Misc.trace("radament book visible " + !!(me.findItem(552) || getUnit(4, 552)) + " 9,5 " + me.getQuest(9, 5));	//261004
+
+			if (!me.findItem(552) && !getUnit(4, 552)) {
+				Misc.quitGame("Radament quest item not found");	//260930
+
+				while (true) {	//261004
+					delay(1000);
+				}
+			}
+
+			this.okCount();	//261004 everyone saw a book
+
+			this.getQuestItem(552);
 			
 			book = me.findItem(552);
 			
@@ -3615,6 +3766,10 @@ function AutoSmurf() {
 				print("ÿc8!!! [BOOK] !!!");	Misc.trace("!!! [BOOK] !!!");	//261002
 				D2Bot.printToConsole("!!! BOOK !!!", 8);
 			}
+
+			sendPacket(1, 0x40);	//261004 fresh quest state for the trace
+			delay(me.ping * 2 + 500);
+			Misc.trace("radament book read 9,5 " + me.getQuest(9, 5));	//261004 false = read
 			
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
@@ -4287,11 +4442,15 @@ function AutoSmurf() {
 		if (!takeRedPortal) {
 			Pather.teleport = false;
 			
+			this.bossGuard(15);	//261004
+
 			try {
 				Attack.clear(0, 242);	// Mephisto //260926
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.mephisto", e);	//260930
 			}
+
+			this.bossEnd();	//261004
 			
 			Pather.moveTo(17515, 8061, 3, true);	//260822	//261002 no offset
 			Attack.clear(35);
@@ -4399,11 +4558,15 @@ function AutoSmurf() {
 			
 			delay(me.ping * 2 + 200);
 			
+			this.bossGuard(15);	//261004
+
 			try {
 				Attack.clear(25, 256);	// Izual //260929	//261003 20 -> 25
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.izual", e);	//260930
 			}
+
+			this.bossEnd();	//261004
 			
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
@@ -4853,13 +5016,23 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
+		if (Leader) {	//261004 the first portal is back at the entrance: open one at the star for the corpse run (bossEnd)
+			Pather.makePortal();
+		}
+
 		this.diabloPrep();
 		
+		if (!me.getQuest(26, 0)) {	//261004 questing only (Diablo not killed yet), farming leaves on a chicken as before
+			this.bossGuard(15);
+		}
+
 		try {
 			Attack.clear(0, 243); // Diablo //260926
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.diablo", e);	//260930
 		}
+
+		this.bossEnd();	//261004 does nothing when the guard is off
 		
 		runDiablo = 1;
 		
@@ -4930,11 +5103,15 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
+		this.bossGuard(15);	//261004
+
 		try {
 			Attack.clear(25, getLocaleString(22435));	// Shenk the Overseer //261002	//261003 20 -> 25
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.shenk", e);	//260930
 		}
+
+		this.bossEnd();	//261004
 		
 		if (Leader) {
 			if (!Pather.getPortal(null, null)) {
@@ -5314,17 +5491,20 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Pather.useWaypoint(118);
-			Pather.moveToExit(120, true);
+			Pather.moveToExit(120, false);	//261004 portal in front of the summit: the altar closes every TP on the summit (the corpse run needs this one)
 			Pather.makePortal();
+			Pather.moveToExit(120, true);
 		} else {
 			if (me.act !== 5 || !me.inTown) {
 				Town.goToTown(5);
 			}
 			
 			Town.move("portalspot");
-			while(!Pather.usePortal(120, null)) {
+			while(!Pather.usePortal(118, null)) {	//261004 was 120
 				delay(1000);
 			}
+
+			Pather.moveToExit(120, true);	//261004
 		}
 
 		delay(me.ping * 2 + 1000);
@@ -5336,6 +5516,8 @@ function AutoSmurf() {
 		
 		this.okCount();
 		
+		this.bossGuard(15);	//261004 chicken off when the last Ancient is at 15%
+
 		while (!me.getQuest(39,0)) {
 			var altar = getUnit(2, 546);
 		
@@ -5373,7 +5555,11 @@ function AutoSmurf() {
 			this.okCount();
 			
 			me.cancel();
+			sendPacket(1, 0x40);	//261004 fresh quest state for the loop check: the dead sent theirs before the kill
+			delay(me.ping * 2 + 500);
 		}
+
+		this.bossEnd();	//261004
 
 		if (Leader) {
 			D2Bot.printToConsole("=== ANCIENTS ===", 7);
@@ -5725,11 +5911,21 @@ function AutoSmurf() {
 		
 		Pather.moveTo(15134, 5923);
 		
+		if (Leader) {	//261004 a portal in the Worldstone Chamber for the corpse run (bossEnd); the one after the kill reuses it
+			Pather.makePortal();
+		}
+
+		if (!me.getQuest(40, 0)) {	//261004 questing only (Baal not killed yet), farming leaves on a chicken as before
+			this.bossGuard(15);
+		}
+
 		try {
 			Attack.clear(0, 544);	//260723 //260926
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.baal", e);	//260930
 		}
+
+		this.bossEnd();	//261004 does nothing when the guard is off
 		
 		runBaal = 1;
 
@@ -7358,7 +7554,7 @@ function AutoSmurf() {
 				this.cubeStaff();
 			}
 
-			if (!me.getQuest(9, 1) && !me.getQuest(9, 0)) {	// Haven't finished Radament's Lair.
+			if ((!me.getQuest(9, 1) && !me.getQuest(9, 0)) || (me.getQuest(9, 5) && !me.findItem(552))) {	// Haven't finished Radament's Lair.	//261004 or the book was lost
 				Messaging.sendToList(Team.Profiles, "radament");				
 				this.radament();
 			}

@@ -79,7 +79,7 @@ function main() {
 	Cubing.init();
 
 	while (true) {
-		if (!me.dead && !me.inTown && (townCheck ||
+		if (!me.dead && !me.inTown && me.area !== 120 && (townCheck ||	//261004 no TP on Arreat Summit (Town.visitTown refuses it, this would toggle pause every tick)
 			(Config.TownHP > 0 && me.hp < Math.floor(me.hpmax * Config.TownHP / 100)) ||
 			(Config.TownMP > 0 && me.mp < Math.floor(me.mpmax * Config.TownMP / 100)))) {
 			this.togglePause();

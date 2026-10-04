@@ -9,6 +9,7 @@ var Attack = {
 	infinity: false,
 	ids: [58, 59, 60, 61, 62, 101, 102, 103, 104, 105, 278, 279, 280, 281, 282, 298, 299, 300, 645, 646, 647, 662, 663, 664, 667, 668, 669, 670, 675, 676],	//260806
 	elements: ["physical", "fire", "lightning", "magic", "cold", "poison", "none"],	//260816
+	onBossLow: null,	//261004 set by AutoSmurf.bossGuard: clear hands it each scanned boss unit (HP check for the boss guard)
 
 	// Initialize attacks
 	init: function () {
@@ -145,6 +146,10 @@ var Attack = {
 						}
 
 						this.tick.monList.push(copyUnit(unit));
+
+						if (this.onBossLow && spec && spec.ids && this.mustMatch(spec, unit)) {	//261004 AutoSmurf.bossGuard: the boss HP check, every tick
+							this.onBossLow(unit);
+						}
 
 						if (entries[unit.gid] || dropped[unit.gid]) {
 							continue;
