@@ -91,7 +91,7 @@ var AutoBuildTemplate = {
 					Config.MPBuffer = 0;
 					Config.RejuvBuffer = 2;
 					
-					Config.MercSkill = "Blessed Aim";
+					Config.MercSkill = "Prayer";
 				}
 				
 				if (me.profile === Team.Leader) {
