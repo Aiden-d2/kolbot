@@ -2943,10 +2943,10 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 
 		Pather.moveTo(20047, 4898, 10, true);
-
-		Attack.clear(20);	//261002
 		
-		Pather.moveTo(20047, 4898, 10, true);
+		Attack.clear(30);	//261004
+		
+		Pather.moveTo(20007, 4898, 10, true);	//261004
 		
 		this.clearToExit(33, 34, 0);
 		this.okCount();	//260922
