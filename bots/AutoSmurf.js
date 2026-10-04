@@ -990,6 +990,7 @@ function AutoSmurf() {
 		guardChicken = Config.LifeChicken;
 
 		if (!pct) {
+			Misc.trace("bossGuard chicken off: pct 0 (now)");	//261004
 			this.setLifeChicken(0);
 
 			return true;
@@ -1019,7 +1020,7 @@ function AutoSmurf() {
 			}
 
 			Attack.onBossLow = null;
-			Misc.trace("bossGuard chicken off: " + unit.name + " " + Math.round(unit.hp * 100 / 128) + "%");
+			Misc.trace("bossGuard chicken off: pct " + pct + ", " + unit.name + " " + Math.round(unit.hp * 100 / 128) + "%");	//261004 call value + boss HP
 			self.setLifeChicken(0);
 		};
 
@@ -1062,6 +1063,7 @@ function AutoSmurf() {
 			}
 
 			this.setLifeChicken(guardChicken); // alive again, in town
+			Misc.trace("bossEnd chicken back: " + guardChicken + " (revived)");	//261004
 
 			Town.move("portalspot");
 
@@ -1106,6 +1108,9 @@ function AutoSmurf() {
 			Misc.trace("bossEnd corpse picked");
 		} else if (Config.LifeChicken !== guardChicken) {
 			this.setLifeChicken(guardChicken);
+			Misc.trace("bossEnd chicken back: " + guardChicken);	//261004
+		} else {
+			Misc.trace("bossEnd chicken stayed: " + guardChicken + " (boss never at pct)");	//261004
 		}
 
 		guardChicken = null;
