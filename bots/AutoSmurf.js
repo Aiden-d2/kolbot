@@ -5130,7 +5130,7 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		this.bossGuard(15);	//261004
+		this.bossGuard(85);	//261004
 
 		try {
 			Attack.clear(25, getLocaleString(22435));	// Shenk the Overseer //261002	//261003 20 -> 25
