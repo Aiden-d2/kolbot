@@ -436,7 +436,7 @@ var Attack = {
 						target.hpMark = target.unit.hp;
 						target.markCast = target.casts;
 					} else if (target.casts - target.markCast >= 5) {	//260928
-						if ((target.hpMark - target.unit.hp) / 128 < 0.2) {
+						if ((target.hpMark - target.unit.hp) / 128 < 0.1) {	//261004
 							this.gidSkip[target.gid] = (this.gidSkip[target.gid] || 0) + 1;	//260621
 							this.gidSkipPos = {x: me.x, y: me.y, area: me.area};
 							drop(target, "hp");
