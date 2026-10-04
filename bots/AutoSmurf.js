@@ -2261,7 +2261,6 @@ function AutoSmurf() {
 				Pather.useWaypoint(1);
 				this.okCount();	//260922
 				Town.doChores();
-				
 			}
 			
 			if (Leader && me.diff !== 0) { //
@@ -2317,18 +2316,18 @@ function AutoSmurf() {
 					}
 				}
 				
-				if (Leader) {	//261004
-					if (me.findItem(524)) {
-						Town.move("akara");
-						akara = getUnit(1, "akara");
-						if (akara && akara.openMenu()) {
-							me.cancel();
-						}
+				if (me.findItem(524)) {
+					Town.move("akara");
+					akara = getUnit(1, "akara");
+					if (akara && akara.openMenu()) {
+						me.cancel();
 					}
-					
-					if (!me.findItem(525)) {
-						Misc.quitGame("Inifuss not found");
-					}
+				}
+				
+				delay (me.ping * 2 + 200);	//261004
+				
+				if (Leader && !me.findItem(525)) {	//261004
+					Misc.quitGame("Inifuss not found");
 				}
 			}
 			
