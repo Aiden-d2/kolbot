@@ -1269,8 +1269,8 @@ ModeLoop:
 
 			portal = newPortal();	//260930 a late portal from the last cast: use it instead of casting again
 
-			if (portal && i > 0) {
-				Misc.trace("makePortal late portal used try:" + i);	//260930
+			if (portal) {	//261004 was i > 0: try 0 = a portal of mine that was already there (no cast)
+				Misc.trace("makePortal " + (i > 0 ? "late" : "existing") + " portal used try:" + i + " gid:" + portal.gid);	//260930	//261004 temp existing, gid
 			}
 
 			if (!portal) {
@@ -1336,11 +1336,15 @@ ModeLoop:
 
 		me.cancel();
 
-		var i, tick, portal, redPortal, loadMs,
-			preArea = me.area;
+		var i, tick, portal, redPortal, loadMs, result, list, p,
+			preArea = me.area,
+			startTick = getTickCount(),	//261004 temp
+			tries = [];	//261004 temp
 
 		for (i = 0; i < 14; i += 1) {	//260809
 			if (me.dead) {
+				tries.push(i + ":dead");	//261004 temp
+
 				break;
 			}
 
@@ -1350,6 +1354,7 @@ ModeLoop:
 
 			portal = unit ? copyUnit(unit) : this.getPortal(targetArea, owner);
 			redPortal = !!portal && portal.classid === 342;	//260926
+			tries.push(i + ":" + (portal ? portal.gid + (portal.area === me.area ? (i < 10 || redPortal ? " sent" : " click") : " area" + portal.area) : "none") + "@" + (getTickCount() - startTick));	//261004 temp
 
 			if (portal) {
 				if (portal.area === me.area) {
@@ -1422,7 +1427,22 @@ ModeLoop:
 			delay(me.ping * 2 + 200);	//260808
 		}
 		
-		return targetArea ? me.area === targetArea : me.area !== preArea;
+		result = targetArea ? me.area === targetArea : me.area !== preArea;
+
+		if (!result && owner === me.name) {	//261004 temp: my own portal only (followers poll others' portals in loops). per try (gid sent/click/none @ms) and every portal in sight (gid/classid/owner/area/x,y/mode/dist)
+			list = [];
+			p = getUnit(2, "portal");
+
+			if (p) {
+				do {
+					list.push(p.gid + "/" + p.classid + "/" + p.getParent() + "/" + p.area + "/" + p.x + "," + p.y + "/m" + p.mode + "/d" + Math.round(getDistance(me, p)));
+				} while (p.getNext());
+			}
+
+			Misc.trace("usePortal failed target:" + targetArea + " owner:" + owner + " unit:" + (unit ? unit.gid : "-") + " pre:" + preArea + " tick:" + startTick + "-" + getTickCount() + " tries:" + tries.join(" ") + " portals:" + (list.join(" ") || "none"));
+		}
+
+		return result;
 	},
 
 	/*

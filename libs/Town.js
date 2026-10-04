@@ -2133,14 +2133,21 @@ MainLoop:
 	},
 
 	goToTown: function (act) {	//eom
-		var towns = [1, 40, 75, 103, 109];
+		var portal, made,	//261004 temp
+			towns = [1, 40, 75, 103, 109],
+			startTick = getTickCount();	//261004 temp
 
 		if (!me.inTown) {
-			if (!Pather.makePortal()) {
+			portal = Pather.makePortal();	//261004 temp kept to trace it
+
+			if (!portal) {
 				throw new Error("Town.goToTown: Failed to make TP");
 			}
 
+			made = typeof portal === "object" ? portal.gid + " " + portal.x + "," + portal.y + " m" + portal.mode : String(portal);	//261004 temp read now, the unit may be gone later
+
 			if (!Pather.usePortal(null, me.name)) {
+				Misc.trace("goToTown take TP failed start tick:" + startTick + " made:" + made);	//261004 temp
 				throw new Error("Town.goToTown: Failed to take TP");
 			}
 		}
@@ -2178,6 +2185,8 @@ MainLoop:
 		var preArea = me.area,
 			preAct = me.act;
 
+		Misc.trace("visitTown start by:" + getScript(true).name + " tick:" + getTickCount());	//261004 temp who goes (default.dbj / TownChicken) and when
+
 		try { // not an essential function -> handle thrown errors
 			this.goToTown();
 		} catch (e) {
@@ -2195,6 +2204,8 @@ MainLoop:
 		if (!Pather.usePortal(preArea, me.name)) { // this part is essential
 			throw new Error("Town.visitTown: Failed to go back from town");
 		}
+
+		Misc.trace("visitTown back tick:" + getTickCount());	//261004 temp portal reuse is blocked for 1-2s after this
 
 		return true;
 	}
