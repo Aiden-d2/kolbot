@@ -2324,8 +2324,6 @@ function AutoSmurf() {
 						if (akara && akara.openMenu()) {
 							me.cancel();
 						}
-					} else {
-						Misc.quitGame("Inifuss not found");
 					}
 					
 					if (!me.findItem(525)) {
