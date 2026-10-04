@@ -1044,7 +1044,7 @@ function AutoSmurf() {
 			x = me.x;
 			y = me.y;
 
-			Misc.trace("bossEnd revive");
+			Misc.trace("bossEnd revive: start");	//261004
 
 			for (i = 0; i < 10 && !me.inTown; i += 1) {
 				if (me.mode === 17) {
@@ -1055,28 +1055,31 @@ function AutoSmurf() {
 			}
 
 			if (!me.inTown) {
-				Misc.quitGame("Revive failed");
+				Misc.quitGame("Revive failed", i + "s");	//261004 detail
 
 				while (true) {
 					delay(1000);
 				}
 			}
 
+			Misc.trace("bossEnd revived: " + i + "s");	//261004
 			this.setLifeChicken(guardChicken); // alive again, in town
 			Misc.trace("bossEnd chicken back: " + guardChicken + " (revived)");	//261004
 
 			Town.move("portalspot");
 
 			if (!Pather.usePortal(area === 120 ? 118 : area, null)) { // Ancients: the leader's portal is in front of the summit
-				Misc.quitGame("Corpse portal not found");
+				Misc.quitGame("Corpse portal not found", "area " + (area === 120 ? 118 : area));	//261004 detail
 
 				while (true) {
 					delay(1000);
 				}
 			}
 
+			Misc.trace("bossEnd portal: " + Pather.getAreaName(me.area));	//261004
+
 			if (Leader) {
-				Pather.makePortal(); // my own portal closed when I took it back
+				Misc.trace("bossEnd reopen portal: " + (Pather.makePortal() ? "opened" : "failed"));	//261004 my own portal closed when I took it back
 			}
 
 			if (me.area !== area) {
@@ -1095,8 +1098,12 @@ function AutoSmurf() {
 				Misc.quitGame("Failed to get corpse", "not seen");
 			} else if (getDistance(me.x, me.y, corpse.x, corpse.y) > 20) { // getCorpse skips it and returns true	//261004
 				Misc.quitGame("Failed to get corpse", "far " + Math.round(getDistance(me.x, me.y, corpse.x, corpse.y)));
-			} else if (!Town.getCorpse(true)) {
-				Misc.quitGame("Failed to get corpse", me.dead ? "died" : "timeout");	//261004 reasons split
+			} else {
+				Misc.trace("bossEnd corpse: at " + Math.round(getDistance(me.x, me.y, corpse.x, corpse.y)));	//261004
+
+				if (!Town.getCorpse(true)) {
+					Misc.quitGame("Failed to get corpse", me.dead ? "died" : "timeout");	//261004 reasons split
+				}
 			}
 
 			if (Misc.quitReason) {
@@ -1105,7 +1112,7 @@ function AutoSmurf() {
 				}
 			}
 
-			Misc.trace("bossEnd corpse picked");
+			Misc.trace("bossEnd corpse: picked");	//261004
 		} else if (Config.LifeChicken !== guardChicken) {
 			this.setLifeChicken(guardChicken);
 			Misc.trace("bossEnd chicken back: " + guardChicken);	//261004
@@ -3032,7 +3039,7 @@ function AutoSmurf() {
 				//Pather.moveTo(22548, 9568, 5, true);	//260929
 
 				if (Leader) {	//261004 the portal from buffCount is back at the start of the room: open one here for the corpse run (bossEnd)
-					Pather.makePortal();
+					Misc.trace("boss portal: " + (Pather.makePortal() ? "opened" : "failed"));
 				}
 			} else {
 				if (Leader) {
@@ -3656,7 +3663,7 @@ function AutoSmurf() {
 
 			sendPacket(1, 0x40); // fresh quest state
 			delay(me.ping * 2 + 500);
-			Misc.trace("radament atma 9,0 " + me.getQuest(9, 0) + " 9,1 " + me.getQuest(9, 1) + " 9,5 " + me.getQuest(9, 5));
+			Misc.trace("radament atma: 9,0 " + me.getQuest(9, 0) + " 9,1 " + me.getQuest(9, 1) + " 9,5 " + me.getQuest(9, 5));
 			Misc.quitGame("Radament book reset");
 
 			while (true) {
@@ -3664,7 +3671,7 @@ function AutoSmurf() {
 			}
 		}
 
-		Misc.trace("radament gate 9,0 " + me.getQuest(9, 0) + " 9,1 " + me.getQuest(9, 1) + " 9,5 " + me.getQuest(9, 5) + " book " + !!me.findItem(552));	//261004
+		Misc.trace("radament gate: 9,0 " + me.getQuest(9, 0) + " 9,1 " + me.getQuest(9, 1) + " 9,5 " + me.getQuest(9, 5) + " book " + !!me.findItem(552));	//261004
 
 		if ((!me.getQuest(9, 1) && !me.getQuest(9, 0)) || (me.getQuest(9, 5) && !me.findItem(552))) {	//261004 not killed yet, or killed but the book was lost (was !9,1)
 			if (Leader) {
@@ -3762,7 +3769,7 @@ function AutoSmurf() {
 				delay(40);
 			}
 
-			Misc.trace("radament book visible " + !!(me.findItem(552) || getUnit(4, 552)) + " 9,5 " + me.getQuest(9, 5));	//261004
+			Misc.trace("radament book visible: " + !!(me.findItem(552) || getUnit(4, 552)) + " 9,5 " + me.getQuest(9, 5));	//261004
 
 			if (!me.findItem(552) && !getUnit(4, 552)) {
 				Misc.quitGame("Radament quest item not found");	//260930
@@ -3786,7 +3793,7 @@ function AutoSmurf() {
 
 			sendPacket(1, 0x40);	//261004 fresh quest state for the trace
 			delay(me.ping * 2 + 500);
-			Misc.trace("radament book read 9,5 " + me.getQuest(9, 5));	//261004 false = read
+			Misc.trace("radament book read: 9,5 " + me.getQuest(9, 5));	//261004 false = read
 			
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
@@ -5034,7 +5041,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		if (Leader) {	//261004 the first portal is back at the entrance: open one at the star for the corpse run (bossEnd)
-			Pather.makePortal();
+			Misc.trace("boss portal: " + (Pather.makePortal() ? "opened" : "failed"));
 		}
 
 		this.diabloPrep();
@@ -5509,7 +5516,7 @@ function AutoSmurf() {
 		if (Leader) {
 			Pather.useWaypoint(118);
 			Pather.moveToExit(120, false);	//261004 portal in front of the summit: the altar closes every TP on the summit (the corpse run needs this one)
-			Pather.makePortal();
+			Misc.trace("boss portal: " + (Pather.makePortal() ? "opened" : "failed"));	//261004
 			Pather.moveToExit(120, true);
 		} else {
 			if (me.act !== 5 || !me.inTown) {
@@ -5574,6 +5581,7 @@ function AutoSmurf() {
 			me.cancel();
 			sendPacket(1, 0x40);	//261004 fresh quest state for the loop check: the dead sent theirs before the kill
 			delay(me.ping * 2 + 500);
+			Misc.trace("ancients loop: 39,0 " + me.getQuest(39, 0));	//261004
 		}
 
 		this.bossEnd();	//261004
@@ -5929,7 +5937,7 @@ function AutoSmurf() {
 		Pather.moveTo(15134, 5923);
 		
 		if (Leader) {	//261004 a portal in the Worldstone Chamber for the corpse run (bossEnd); the one after the kill reuses it
-			Pather.makePortal();
+			Misc.trace("boss portal: " + (Pather.makePortal() ? "opened" : "failed"));
 		}
 
 		if (!me.getQuest(40, 0)) {	//261004 questing only (Baal not killed yet), farming leaves on a chicken as before

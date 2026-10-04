@@ -145,9 +145,9 @@
 | 34 | ~~gid 줍기(261003)~~ **취소: 원복(261003)**. 리스너가 재귀 오류로 메인 스크립트를 죽여 gid 코드 전부 삭제 | - | 1절 gid 줍기 도입 → 원복 줄 |
 | 36 | 보스 호출 2단계 clear(261003): Andariel·Izual·Shenk·Nihlathak(25), Radament·Countess(20), 디아 봉인 보스(35)에서 호출 위치 주변 몹을 먼저 정리하고, range 안에 들어온 보스는 그 자리에서 잡는가. 보스가 range 밖이면 정리·줍기 뒤 보스를 쫓아가 잡는가. 보스가 살아 있는 중에 1단계 끝 줍기가 끼어들어 위험해지지 않는가 | 해당 보스 장면, 원거리 프로필 | 1절 보스 호출 2단계 clear 줄 |
 | 37 | 보스 보호(261004): trace `bossGuard chicken off: pct N, <보스> <HP>%`가 보스 HP 15%(라다먼트 85%) 근처에서 한 번 찍히는가(써모너는 도착 때 `pct 0 (now)`). 킬 뒤 trace `bossEnd chicken back: <원래 값>`(죽었던 쪽은 `(revived)`, 기준에 안 닿았으면 `bossEnd chicken stayed`)이 찍히는가. 에인션트는 마지막 한 마리에서만 찍히는가. 파밍 디아·바알에서는 안 찍히는가 | trace, d2bs 로그 | 1절 보스 보호 줄 |
-| 38 | 시체 회수(261004): 보호 중 죽은 프로필이 `bossEnd revive` → `bossEnd corpse picked`로 이어지는가. `me.revive()`로 마을에 오는가, 포탈 위치에서 시체까지 걸어가 줍는가, 회수 동안 나머지가 okCount에서 기다리는가(120초 안). 리더가 죽었을 때 돌아와 포탈을 다시 여는가 | 해당 장면 trace, 콘솔 퇴장 사유 | 1절 보스 보호 줄 |
-| 39 | 에인션트(261004): 리더가 118 출구 앞에서 포탈을 열고 전원 120으로 들어가는가. 제단·전투가 정상인가. 120에서 타운비짓이 안 일어나는가 | 에인션트 장면 | 1절 보스 보호 줄 |
-| 40 | 라다먼트 북(261004): `radament book visible true` → okCount → `radament book read 9,5 false`인가. 북을 잃은 경우 N+1 `radament atma 9,0 true 9,1 false`, N+2 `radament book visible false`(D2MOO: 초기화한 게임은 퀘스트 꺼짐, 1.14d에서 맞는지 확인), N+3 획득 | trace | 1절 보스 보호 줄, 6절 퀘스트 줄 |
+| 38 | 시체 회수(261004): 보호 중 죽은 프로필이 `bossEnd revive: start` → `bossEnd revived: Ns` → `bossEnd portal: <지역>`(리더는 `bossEnd reopen portal`) → `bossEnd corpse: at N` → `bossEnd corpse: picked`로 이어지는가. `me.revive()`로 마을에 오는가, 포탈 위치에서 시체까지 걸어가 줍는가, 회수 동안 나머지가 okCount에서 기다리는가(120초 안). 리더가 죽었을 때 돌아와 포탈을 다시 여는가 | 해당 장면 trace, 콘솔 퇴장 사유 | 1절 보스 보호 줄 |
+| 39 | 에인션트(261004): 리더가 118 출구 앞에서 포탈을 열고(`boss portal: opened`) 전원 120으로 들어가는가. 루프 회차마다 `ancients loop: 39,0 X`. 제단·전투가 정상인가. 120에서 타운비짓이 안 일어나는가(거부되면 `visitTown refused: Arreat Summit`) | 에인션트 장면 | 1절 보스 보호 줄 |
+| 40 | 라다먼트 북(261004): `radament book visible: true` → okCount → `radament book read: 9,5 false`인가. 북을 잃은 경우 N+1 `radament atma: 9,0 true 9,1 false`, N+2 `radament book visible: false`(D2MOO: 초기화한 게임은 퀘스트 꺼짐, 1.14d에서 맞는지 확인), N+3 획득 | trace | 1절 보스 보호 줄, 6절 퀘스트 줄 |
 | 41 | okCount 타임아웃(261004): `[Quit] Party desynced 1/2: okCount N teamCount N teamOk X`로 개수가 남는가. 원인 불명 타임아웃이 나면 개수가 넘쳤는지(호출 횟수 불일치) 모자랐는지 본다 | trace | 1절 보스 보호 줄 |
 | 35 | 리더 팀 대기(261003): 팔로워 7명이 모두 조인 대기 화면일 때만 방을 만드는가(정상이면 대기 줄 없음). 팔로워가 realm down 등으로 빠지면 5초 뒤 콘솔 `Team wait: ...` 한 줄과 상태바 표시 뒤 로비에서 기다리다 돌아오면 바로 만드는가. 로비에서 오래 기다려도 리더 연결이 끊기지 않는가 | 리더 콘솔·상태바, 팔로워 realm down 장면 | 1절 리더 팀 대기 줄 |
 
