@@ -3344,7 +3344,7 @@ function AutoSmurf() {
 
 			while (getDistance(me.x, me.y, journal.roomx * 5 + journal.x + 8, journal.roomy * 5 + journal.y + 8) > 10) {	//260411
 				try {
-					Pather.moveToPreset(74, 2, 357, 4, 4);	//260929
+					Pather.moveToPreset(74, 2, 357, 8, 8);	//261004
 				} catch (e) {
 					Misc.caughtError("AutoSmurf.summoner", e);	//260930
 				}
@@ -3354,8 +3354,6 @@ function AutoSmurf() {
 			
 			me.overhead("tpReady");
 			Messaging.sendToList(Team.Profiles, "tpReady");
-			
-			Pather.moveTo(me.x - 11, me.y - 11);
 		} else {
 			Town.move("portalspot");
 			
