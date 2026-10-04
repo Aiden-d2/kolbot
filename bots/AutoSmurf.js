@@ -2317,11 +2317,19 @@ function AutoSmurf() {
 					}
 				}
 				
-				if (me.findItem(524)) {
-					Town.move("akara");
-					akara = getUnit(1, "akara");
-					if (akara && akara.openMenu()) {
-						me.cancel();
+				if (Leader) {	//261004
+					if (me.findItem(524)) {
+						Town.move("akara");
+						akara = getUnit(1, "akara");
+						if (akara && akara.openMenu()) {
+							me.cancel();
+						}
+					} else {
+						Misc.quitGame("Inifuss not found");
+					}
+					
+					if (!me.findItem(525)) {
+						Misc.quitGame("Inifuss not found");
 					}
 				}
 			}
@@ -2355,7 +2363,7 @@ function AutoSmurf() {
 			
 			Pather.moveToPreset(me.area, 1, 737, 0, 0, true);	//260822	//260929	//261002 no offset
 			
-			if (!me.getQuest(4, 4) && me.findItem(525)) {		 //redportal already open
+			if (!me.getQuest(4, 4) && me.findItem(525)) {	//redportal already open
 				stoneA = getUnit(2, 17);
 				stoneB = getUnit(2, 18);
 				stoneC = getUnit(2, 19);
