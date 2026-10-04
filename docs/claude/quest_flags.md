@@ -582,7 +582,7 @@
 | `bots/AutoSmurf.js:127`, `:3849` | `getQuest(14, 1)` | 14번 bit1은 쓰는 코드가 없어 항상 거짓이다. 함께 묶인 14,3·14,4가 실제 판정을 한다 |
 | `bots/AutoSmurf.js:137` | `getQuest(26, 1)` | 26번 bit1은 쓰는 코드가 없어 항상 거짓이다. 26,0이 실제 판정을 한다 |
 | `bots/AutoSmurf.js:2213` | `!getQuest(4, 1)` "not rescues Cain" | bit1은 Akara 보상을 받으면 꺼진다. 구출하고 보상까지 받은 캐릭터도 참이 된다. 앞선 흐름에서 4,0을 거르는지는 이 점검에서 확인하지 않았다 |
-| `bots/AutoSmurf.js:4489` | `getQuest(22, 12)` | bit12는 클라이언트가 퀘스트 로그를 닫았다고 보고했을 때 켜진다. 메피스토 처치를 판정하는 비트가 아니다 |
+| `bots/AutoSmurf.js:4489` | `getQuest(22, 12)` (레드포탈 이용 조건) | bit12는 클라이언트가 퀘스트 로그를 닫았다고 보고했을 때 켜진다. 게임의 레드포탈 조건은 22번 **bit0 또는 bit13**이다(MOO `ObjMode.cpp:3104` `HellGatePortal`) |
 | `bots/AutoSmurf.js:4022` 주석 | `getQuest(20, 6)` = 옥 조각상 관련 | MOO 기준 bit6은 조각상을 주울 때 켜진다. 주석의 "Cain에게 묻기"와는 다르다 |
 
 ## 근거 및 범위
