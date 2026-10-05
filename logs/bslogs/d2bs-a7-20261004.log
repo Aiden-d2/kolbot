@@ -1,0 +1,1571 @@
+[10/04/26 14:54:19] D2BS 2316: ÿc2D2BSÿc0 :: Switched to profile a7
+[10/04/26 14:54:19] D2BS 2316: D2BS Engine startup complete. 1.6.4U
+[10/04/26 14:54:19] D2BS 2316: Ã¿c2D2BSÃ¿c0 :: Started Console
+[10/04/26 14:54:19] D2BS 2316: a7
+[10/04/26 14:54:20] D2BS 2316: ÿc2D2BSÿc0 :: Engine startup complete!
+[10/04/26 14:54:20] D2BS 2316: ÿc2D2BSÿc0 :: Starting D2BotFollow.dbj
+[10/04/26 14:54:20] D2BS 2316: ÿc2D2BSÿc0 :: D2BotFollow.dbj running.
+[10/04/26 14:54:21] D2BS 2316: Heartbeat loaded
+[10/04/26 14:54:21] D2BS 2316: Recieved Game Info
+[10/04/26 14:54:22] D2BS 2316: Error: Bad account or password 10
+[10/04/26 14:55:44] D2BS 2316: control not found 6 335 412 location 16
+[10/04/26 14:55:45] D2BS 2316: D2BS Shutdown complete.
+[10/04/26 14:55:45] D2BS 14068: D2BS Engine startup complete. 1.6.4U
+[10/04/26 14:55:45] D2BS 14068: a7
+[10/04/26 14:55:45] D2BS 14068: ÿc2D2BSÿc0 :: Switched to profile a7
+[10/04/26 14:55:45] D2BS 14068: ÿc2D2BSÿc0 :: Engine startup complete!
+[10/04/26 14:55:45] D2BS 14068: ÿc2D2BSÿc0 :: Starting D2BotFollow.dbj
+[10/04/26 14:55:45] D2BS 14068: ÿc2D2BSÿc0 :: D2BotFollow.dbj running.
+[10/04/26 14:55:45] D2BS 14068: Ã¿c2D2BSÃ¿c0 :: Started Console
+[10/04/26 14:55:48] D2BS 14068: Heartbeat loaded
+[10/04/26 14:55:48] D2BS 14068: Recieved Game Info
+[10/04/26 14:55:48] D2BS 14068: Error: Unhandled login location 34
+[10/04/26 14:58:18] D2BS 14068: joining game pz-1
+[10/04/26 14:58:19] D2BS 14068: [Strict Warning] Code(162) File(c:\users\administrator\desktop\261004 autosmurf\d2bs\kolbot\libs\pather.js:2046) reference to undefined property areas[area]
+Line: (null)
+[10/04/26 14:58:19] D2BS 14068: [ÿc9Strict Warningÿc0 (162)] File(kolbot\libs\pather.js:2046) reference to undefined property areas[area]
+[10/04/26 14:58:19] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 14:58:19] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 14:58:20] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 14:58:20] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 14:58:20] D2BS 14068: equipped: [Head] -1
+[10/04/26 14:58:20] D2BS 14068: equipped: [Neck] -1
+[10/04/26 14:58:20] D2BS 14068: equipped: [Body] -1
+[10/04/26 14:58:20] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 14:58:20] D2BS 14068: equipped: [ArmL] -1
+[10/04/26 14:58:20] D2BS 14068: equipped: [RingR] -1
+[10/04/26 14:58:20] D2BS 14068: equipped: [RingL] -1
+[10/04/26 14:58:20] D2BS 14068: equipped: [Belt] -1
+[10/04/26 14:58:20] D2BS 14068: equipped: [Boots] -1
+[10/04/26 14:58:20] D2BS 14068: equipped: [Mitts] -1
+[10/04/26 14:58:20] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 14:58:31] D2BS 14068: syncBO failed: lower level
+[10/04/26 14:58:31] D2BS 14068: ÿc4=== [DEN] ===
+[10/04/26 15:00:20] D2BS 14068: going to nearest WP
+[10/04/26 15:05:33] D2BS 14068: ÿc4=== [BLOOD] ===
+[10/04/26 15:10:19] D2BS 14068: going to nearest WP
+[10/04/26 15:10:46] D2BS 14068: party has left: fowo-xe
+[10/04/26 15:10:46] D2BS 14068: party has left: fowo-xe
+[10/04/26 15:10:46] D2BS 14068: party has left: fowo-xe
+[10/04/26 15:10:46] D2BS 14068:  [12:27] +172.49% / [Level 6] 5.82%
+[10/04/26 15:10:46] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 15:10:47] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 15:10:47] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 15:10:47] D2BS 14068: Script default.dbj ended
+[10/04/26 15:11:00] D2BS 14068: joining game pz-2
+[10/04/26 15:11:02] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 15:11:02] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 15:11:02] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 15:11:02] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 15:11:02] D2BS 14068: equipped: [Head] -1
+[10/04/26 15:11:02] D2BS 14068: equipped: [Neck] -1
+[10/04/26 15:11:02] D2BS 14068: equipped: [Body] 1
+[10/04/26 15:11:02] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 15:11:02] D2BS 14068: equipped: [ArmL] -1
+[10/04/26 15:11:02] D2BS 14068: equipped: [RingR] -1
+[10/04/26 15:11:02] D2BS 14068: equipped: [RingL] -1
+[10/04/26 15:11:02] D2BS 14068: equipped: [Belt] 1
+[10/04/26 15:11:02] D2BS 14068: equipped: [Boots] -1
+[10/04/26 15:11:02] D2BS 14068: equipped: [Mitts] -1
+[10/04/26 15:11:03] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 15:11:53] D2BS 14068: syncBO failed: lower level
+[10/04/26 15:13:11] D2BS 14068: going to nearest WP
+[10/04/26 15:13:31] D2BS 14068: party has left: fowo-xb
+[10/04/26 15:13:31] D2BS 14068: party has left: fowo-xb
+[10/04/26 15:13:31] D2BS 14068:  [02:29] +39.59% / [Level 6] 51.08%
+[10/04/26 15:13:32] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 15:13:32] D2BS 14068: party has left: fowo-xb
+[10/04/26 15:13:32] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 15:13:32] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 15:13:32] D2BS 14068: Script default.dbj ended
+[10/04/26 15:13:45] D2BS 14068: joining game pz-3
+[10/04/26 15:13:47] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 15:13:47] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 15:13:47] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 15:13:47] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 15:13:47] D2BS 14068: equipped: [Head] -1
+[10/04/26 15:13:47] D2BS 14068: equipped: [Neck] -1
+[10/04/26 15:13:47] D2BS 14068: equipped: [Body] 1
+[10/04/26 15:13:47] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 15:13:47] D2BS 14068: equipped: [ArmL] -1
+[10/04/26 15:13:47] D2BS 14068: equipped: [RingR] -1
+[10/04/26 15:13:47] D2BS 14068: equipped: [RingL] -1
+[10/04/26 15:13:47] D2BS 14068: equipped: [Belt] 1
+[10/04/26 15:13:47] D2BS 14068: equipped: [Boots] -1
+[10/04/26 15:13:47] D2BS 14068: equipped: [Mitts] -1
+[10/04/26 15:13:48] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 15:14:27] D2BS 14068: syncBO failed: lower level
+[10/04/26 15:15:48] D2BS 14068: going to nearest WP
+[10/04/26 15:18:34] D2BS 14068: ÿc4=== [CAIN] ===
+[10/04/26 15:18:52] D2BS 14068: syncBO failed: lower level
+[10/04/26 15:24:44] D2BS 14068: going to nearest WP
+[10/04/26 15:25:27] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 15:43:43] D2BS 14068: party has left: fowo-xa
+[10/04/26 15:43:43] D2BS 14068:  [29:57] +280.86% / [Level 10] 9.21%
+[10/04/26 15:43:43] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 15:43:43] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 15:43:43] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 15:43:43] D2BS 14068: Script default.dbj ended
+[10/04/26 15:43:56] D2BS 14068: joining game pz-4
+[10/04/26 15:43:58] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 15:43:58] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 15:43:58] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 15:43:58] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 15:43:58] D2BS 14068: equipped: [Head] 1
+[10/04/26 15:43:58] D2BS 14068: equipped: [Neck] -1
+[10/04/26 15:43:58] D2BS 14068: equipped: [Body] 1
+[10/04/26 15:43:58] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 15:43:58] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 15:43:58] D2BS 14068: equipped: [RingR] -1
+[10/04/26 15:43:58] D2BS 14068: equipped: [RingL] -1
+[10/04/26 15:43:58] D2BS 14068: equipped: [Belt] 1
+[10/04/26 15:43:59] D2BS 14068: equipped: [Boots] 1
+[10/04/26 15:43:59] D2BS 14068: equipped: [Mitts] -1
+[10/04/26 15:43:59] D2BS 14068: updateStat
+[10/04/26 15:43:59] D2BS 14068: granted: [Head] -1
+[10/04/26 15:43:59] D2BS 14068: granted: [Body] -1
+[10/04/26 15:43:59] D2BS 14068: granted: [ArmR] -1
+[10/04/26 15:43:59] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 15:44:10] D2BS 14068: party has left: fowo-xa
+[10/04/26 15:44:10] D2BS 14068: no exp [00:12]
+[10/04/26 15:44:10] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 15:44:10] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 15:44:10] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 15:44:10] D2BS 14068: Script default.dbj ended
+[10/04/26 15:45:05] D2BS 14068: joining game pz-5
+[10/04/26 15:45:07] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 15:45:07] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 15:45:07] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 15:45:07] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 15:45:08] D2BS 14068: equipped: [Head] 1
+[10/04/26 15:45:08] D2BS 14068: equipped: [Neck] -1
+[10/04/26 15:45:08] D2BS 14068: equipped: [Body] 1
+[10/04/26 15:45:08] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 15:45:08] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 15:45:08] D2BS 14068: equipped: [RingR] -1
+[10/04/26 15:45:08] D2BS 14068: equipped: [RingL] -1
+[10/04/26 15:45:08] D2BS 14068: equipped: [Belt] 1
+[10/04/26 15:45:08] D2BS 14068: equipped: [Boots] 1
+[10/04/26 15:45:08] D2BS 14068: equipped: [Mitts] -1
+[10/04/26 15:45:08] D2BS 14068: updateStat
+[10/04/26 15:45:08] D2BS 14068: granted: [Head] -1
+[10/04/26 15:45:08] D2BS 14068: granted: [Body] -1
+[10/04/26 15:45:08] D2BS 14068: granted: [ArmR] -1
+[10/04/26 15:45:08] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 15:45:50] D2BS 14068: syncBO failed: lower level
+[10/04/26 15:45:50] D2BS 14068: ÿc4=== [CAIN] ===
+[10/04/26 15:45:50] D2BS 14068: syncBO failed: lower level
+[10/04/26 15:48:10] D2BS 14068: ÿc4=== [TRIST] ===
+[10/04/26 15:51:32] D2BS 14068: ÿc4=== [OUTER] ===
+[10/04/26 15:52:30] D2BS 14068: going to nearest WP
+[10/04/26 15:59:26] D2BS 14068: going to nearest WP
+[10/04/26 15:59:44] D2BS 14068: party has left: fowo-xd
+[10/04/26 15:59:44] D2BS 14068:  [14:37] +208.61% / [Level 12] 70.50%
+[10/04/26 15:59:44] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 15:59:44] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 15:59:44] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 15:59:44] D2BS 14068: Script default.dbj ended
+[10/04/26 15:59:56] D2BS 14068: joining game pz-6
+[10/04/26 15:59:58] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 15:59:58] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 15:59:59] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 15:59:59] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 15:59:59] D2BS 14068: equipped: [Head] 1
+[10/04/26 15:59:59] D2BS 14068: equipped: [Neck] -1
+[10/04/26 15:59:59] D2BS 14068: equipped: [Body] 1
+[10/04/26 15:59:59] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 15:59:59] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 15:59:59] D2BS 14068: equipped: [RingR] -1
+[10/04/26 15:59:59] D2BS 14068: equipped: [RingL] -1
+[10/04/26 15:59:59] D2BS 14068: equipped: [Belt] 1
+[10/04/26 15:59:59] D2BS 14068: equipped: [Boots] 1
+[10/04/26 15:59:59] D2BS 14068: equipped: [Mitts] -1
+[10/04/26 15:59:59] D2BS 14068: updateStat
+[10/04/26 15:59:59] D2BS 14068: granted: [Head] -1
+[10/04/26 15:59:59] D2BS 14068: granted: [Body] -1
+[10/04/26 15:59:59] D2BS 14068: granted: [ArmR] -1
+[10/04/26 15:59:59] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 16:00:36] D2BS 14068: syncBO failed: lower level
+[10/04/26 16:00:36] D2BS 14068: ÿc4=== [TRIST] ===
+[10/04/26 16:03:46] D2BS 14068: ÿc4=== [OUTER] ===
+[10/04/26 16:09:20] D2BS 14068: party has left: fowo-xf
+[10/04/26 16:09:20] D2BS 14068:  [09:22] +103.39% / [Level 13] 79.79%
+[10/04/26 16:09:20] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 16:09:20] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 16:09:20] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 16:09:20] D2BS 14068: Script default.dbj ended
+[10/04/26 16:09:33] D2BS 14068: joining game pz-7
+[10/04/26 16:09:34] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 16:09:34] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 16:09:35] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 16:09:35] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 16:09:35] D2BS 14068: equipped: [Head] 1
+[10/04/26 16:09:35] D2BS 14068: equipped: [Neck] -1
+[10/04/26 16:09:35] D2BS 14068: equipped: [Body] 1
+[10/04/26 16:09:35] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 16:09:35] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 16:09:35] D2BS 14068: equipped: [RingR] -1
+[10/04/26 16:09:35] D2BS 14068: equipped: [RingL] -1
+[10/04/26 16:09:35] D2BS 14068: equipped: [Belt] 1
+[10/04/26 16:09:35] D2BS 14068: equipped: [Boots] 1
+[10/04/26 16:09:35] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 16:09:35] D2BS 14068: updateStat
+[10/04/26 16:09:35] D2BS 14068: granted: [Head] -1
+[10/04/26 16:09:35] D2BS 14068: granted: [Body] -1
+[10/04/26 16:09:35] D2BS 14068: granted: [ArmR] -1
+[10/04/26 16:09:35] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 16:10:08] D2BS 14068: syncBO failed: lower level
+[10/04/26 16:10:08] D2BS 14068: ÿc4=== [TRIST] ===
+[10/04/26 16:12:49] D2BS 14068: ÿc4=== [OUTER] ===
+[10/04/26 16:15:38] D2BS 14068: going to nearest WP
+[10/04/26 16:17:07] D2BS 14068: ÿc4=== [SMITH] ===
+[10/04/26 16:20:41] D2BS 14068: ÿc4=== [MALUS] ===
+[10/04/26 16:20:58] D2BS 14068: ÿc4=== [JAIL] ===
+[10/04/26 16:21:48] D2BS 14068: going to nearest WP
+[10/04/26 16:23:09] D2BS 14068: ÿc4=== [INNER] ===
+[10/04/26 16:27:16] D2BS 14068: going to nearest WP
+[10/04/26 16:27:33] D2BS 14068: ÿc4=== [CATHEDRAL] ===
+[10/04/26 16:28:01] D2BS 14068: party has left: fowo-xa
+[10/04/26 16:28:01] D2BS 14068:  [18:27] +153.26% / [Level 15] 60.33%
+[10/04/26 16:28:01] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 16:28:01] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 16:28:01] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 16:28:01] D2BS 14068: Script default.dbj ended
+[10/04/26 16:28:14] D2BS 14068: joining game pz-8
+[10/04/26 16:28:15] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 16:28:15] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 16:28:16] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 16:28:16] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 16:28:16] D2BS 14068: equipped: [Head] 1
+[10/04/26 16:28:16] D2BS 14068: equipped: [Neck] -1
+[10/04/26 16:28:16] D2BS 14068: equipped: [Body] 1
+[10/04/26 16:28:16] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 16:28:16] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 16:28:16] D2BS 14068: equipped: [RingR] -1
+[10/04/26 16:28:16] D2BS 14068: equipped: [RingL] -1
+[10/04/26 16:28:16] D2BS 14068: equipped: [Belt] 1
+[10/04/26 16:28:16] D2BS 14068: equipped: [Boots] 1
+[10/04/26 16:28:16] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 16:28:16] D2BS 14068: updateStat
+[10/04/26 16:28:16] D2BS 14068: granted: [Head] -1
+[10/04/26 16:28:16] D2BS 14068: granted: [Body] -1
+[10/04/26 16:28:16] D2BS 14068: granted: [ArmR] -1
+[10/04/26 16:28:16] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 16:28:24] D2BS 14068: party has left: fowo-xa
+[10/04/26 16:28:24] D2BS 14068: no exp [00:08]
+[10/04/26 16:28:24] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 16:28:24] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 16:28:24] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 16:28:24] D2BS 14068: Script default.dbj ended
+[10/04/26 16:29:22] D2BS 14068: joining game pz-9
+[10/04/26 16:29:23] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 16:29:23] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 16:29:24] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 16:29:24] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 16:29:24] D2BS 14068: equipped: [Head] 1
+[10/04/26 16:29:24] D2BS 14068: equipped: [Neck] -1
+[10/04/26 16:29:24] D2BS 14068: equipped: [Body] 1
+[10/04/26 16:29:24] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 16:29:24] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 16:29:24] D2BS 14068: equipped: [RingR] -1
+[10/04/26 16:29:24] D2BS 14068: equipped: [RingL] -1
+[10/04/26 16:29:24] D2BS 14068: equipped: [Belt] 1
+[10/04/26 16:29:24] D2BS 14068: equipped: [Boots] 1
+[10/04/26 16:29:24] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 16:29:24] D2BS 14068: updateStat
+[10/04/26 16:29:24] D2BS 14068: granted: [Head] -1
+[10/04/26 16:29:24] D2BS 14068: granted: [Body] -1
+[10/04/26 16:29:24] D2BS 14068: granted: [ArmR] -1
+[10/04/26 16:29:24] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 16:30:05] D2BS 14068: syncBO failed: lower level
+[10/04/26 16:30:05] D2BS 14068: ÿc4=== [TRIST] ===
+[10/04/26 16:32:29] D2BS 14068: ÿc4=== [CATHEDRAL] ===
+[10/04/26 16:35:09] D2BS 14068: going to nearest WP
+[10/04/26 16:37:09] D2BS 14068: ÿc4=== [ANDY] ===
+[10/04/26 16:42:21] D2BS 14068: party has left: fowo-xd
+[10/04/26 16:42:22] D2BS 14068:  [12:58] +91.05% / [Level 16] 59.31%
+[10/04/26 16:42:22] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 16:42:22] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 16:42:22] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 16:42:22] D2BS 14068: Script default.dbj ended
+[10/04/26 16:42:34] D2BS 14068: joining game pz-10
+[10/04/26 16:42:36] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 16:42:36] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 16:42:36] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 16:42:36] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 16:42:36] D2BS 14068: equipped: [Head] 1
+[10/04/26 16:42:36] D2BS 14068: equipped: [Neck] -1
+[10/04/26 16:42:36] D2BS 14068: equipped: [Body] 1
+[10/04/26 16:42:36] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 16:42:36] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 16:42:36] D2BS 14068: equipped: [RingR] -1
+[10/04/26 16:42:36] D2BS 14068: equipped: [RingL] -1
+[10/04/26 16:42:36] D2BS 14068: equipped: [Belt] 1
+[10/04/26 16:42:36] D2BS 14068: equipped: [Boots] 1
+[10/04/26 16:42:36] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 16:42:36] D2BS 14068: updateStat
+[10/04/26 16:42:36] D2BS 14068: granted: [Head] -1
+[10/04/26 16:42:36] D2BS 14068: granted: [Body] -1
+[10/04/26 16:42:36] D2BS 14068: granted: [ArmR] -1
+[10/04/26 16:42:36] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 16:43:11] D2BS 14068: syncBO failed: lower level
+[10/04/26 16:43:11] D2BS 14068: ÿc4=== [CATHEDRAL] ===
+[10/04/26 16:45:54] D2BS 14068: going to nearest WP
+[10/04/26 16:47:04] D2BS 14068: ÿc4=== [ANDY] ===
+[10/04/26 16:50:35] D2BS 14068: party has left: fowo-xf
+[10/04/26 16:50:35] D2BS 14068:  [07:59] +41.73% / [Level 17] 9.18%
+[10/04/26 16:50:35] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 16:50:35] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 16:50:35] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 16:50:35] D2BS 14068: Script default.dbj ended
+[10/04/26 16:50:48] D2BS 14068: joining game pz-11
+[10/04/26 16:50:50] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 16:50:50] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 16:50:50] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 16:50:50] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 16:50:50] D2BS 14068: equipped: [Head] 1
+[10/04/26 16:50:50] D2BS 14068: equipped: [Neck] -1
+[10/04/26 16:50:50] D2BS 14068: equipped: [Body] 1
+[10/04/26 16:50:50] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 16:50:50] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 16:50:50] D2BS 14068: equipped: [RingR] -1
+[10/04/26 16:50:50] D2BS 14068: equipped: [RingL] -1
+[10/04/26 16:50:50] D2BS 14068: equipped: [Belt] 1
+[10/04/26 16:50:50] D2BS 14068: equipped: [Boots] 1
+[10/04/26 16:50:50] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 16:50:50] D2BS 14068: updateStat
+[10/04/26 16:50:50] D2BS 14068: granted: [Head] -1
+[10/04/26 16:50:50] D2BS 14068: granted: [Body] -1
+[10/04/26 16:50:50] D2BS 14068: granted: [ArmR] -1
+[10/04/26 16:50:50] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 16:51:25] D2BS 14068: syncBO failed: lower level
+[10/04/26 16:51:25] D2BS 14068: ÿc4=== [CATHEDRAL] ===
+[10/04/26 16:52:59] D2BS 14068: party has left: fowo-xh
+[10/04/26 16:52:59] D2BS 14068:  [02:10] +15.51% / [Level 17] 24.93%
+[10/04/26 16:52:59] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 16:52:59] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 16:52:59] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 16:52:59] D2BS 14068: Script default.dbj ended
+[10/04/26 16:53:14] D2BS 14068: joining game pz-12
+[10/04/26 16:53:16] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 16:53:16] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 16:53:16] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 16:53:16] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 16:53:16] D2BS 14068: equipped: [Head] 1
+[10/04/26 16:53:16] D2BS 14068: equipped: [Neck] -1
+[10/04/26 16:53:16] D2BS 14068: equipped: [Body] 1
+[10/04/26 16:53:16] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 16:53:16] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 16:53:16] D2BS 14068: equipped: [RingR] -1
+[10/04/26 16:53:16] D2BS 14068: equipped: [RingL] -1
+[10/04/26 16:53:16] D2BS 14068: equipped: [Belt] 1
+[10/04/26 16:53:16] D2BS 14068: equipped: [Boots] 1
+[10/04/26 16:53:16] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 16:53:16] D2BS 14068: updateStat
+[10/04/26 16:53:16] D2BS 14068: granted: [Head] -1
+[10/04/26 16:53:16] D2BS 14068: granted: [Body] -1
+[10/04/26 16:53:16] D2BS 14068: granted: [ArmR] -1
+[10/04/26 16:53:16] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 16:53:47] D2BS 14068: syncBO failed: lower level
+[10/04/26 16:53:47] D2BS 14068: ÿc4=== [CATHEDRAL] ===
+[10/04/26 16:56:18] D2BS 14068: going to nearest WP
+[10/04/26 16:56:58] D2BS 14068: ÿc4=== [ANDY] ===
+[10/04/26 17:01:05] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 17:01:15] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 17:01:30] D2BS 14068: party has left: fowo-xa
+[10/04/26 17:01:30] D2BS 14068:  [08:14] +29.01% / [Level 17] 55.51%
+[10/04/26 17:01:30] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:01:30] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:01:30] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:01:30] D2BS 14068: Script default.dbj ended
+[10/04/26 17:01:43] D2BS 14068: joining game pz-13
+[10/04/26 17:01:45] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:01:45] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:01:45] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:01:45] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:01:45] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:01:45] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:01:45] D2BS 14068: equipped: [Body] 1
+[10/04/26 17:01:45] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:01:45] D2BS 14068: equipped: [ArmL] 11
+[10/04/26 17:01:45] D2BS 14068: equipped: [RingR] -1
+[10/04/26 17:01:45] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:01:45] D2BS 14068: equipped: [Belt] 1
+[10/04/26 17:01:45] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:01:45] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:01:45] D2BS 14068: updateStat
+[10/04/26 17:01:45] D2BS 14068: granted: [Head] -1
+[10/04/26 17:01:45] D2BS 14068: granted: [Body] -1
+[10/04/26 17:01:45] D2BS 14068: granted: [ArmR] -1
+[10/04/26 17:01:45] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:01:50] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:02:19] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:02:19] D2BS 14068: ÿc4=== [CATHEDRAL] ===
+[10/04/26 17:03:32] D2BS 14068: party has left: fowo-xa
+[10/04/26 17:03:32] D2BS 14068:  [01:48] +11.36% / [Level 17] 66.87%
+[10/04/26 17:03:32] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:03:32] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:03:32] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:03:32] D2BS 14068: Script default.dbj ended
+[10/04/26 17:03:45] D2BS 14068: joining game pz-14
+[10/04/26 17:03:47] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:03:47] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:03:47] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:03:47] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:03:47] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:03:47] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:03:47] D2BS 14068: equipped: [Body] 1
+[10/04/26 17:03:47] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:03:47] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:03:47] D2BS 14068: equipped: [RingR] -1
+[10/04/26 17:03:47] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:03:47] D2BS 14068: equipped: [Belt] 1
+[10/04/26 17:03:47] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:03:47] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:03:47] D2BS 14068: updateStat
+[10/04/26 17:03:47] D2BS 14068: granted: [Head] -1
+[10/04/26 17:03:47] D2BS 14068: granted: [Body] -1
+[10/04/26 17:03:47] D2BS 14068: granted: [ArmR] -1
+[10/04/26 17:03:47] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:04:16] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:04:16] D2BS 14068: ÿc4=== [CATHEDRAL] ===
+[10/04/26 17:06:45] D2BS 14068: going to nearest WP
+[10/04/26 17:08:09] D2BS 14068: ÿc4=== [ANDY] ===
+[10/04/26 17:11:34] D2BS 14068: Going to town
+[10/04/26 17:11:48] D2BS 14068: equipped: [RingR] 11
+[10/04/26 17:13:10] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 17:13:28] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 17:13:41] D2BS 14068: party has left: fowo-xa
+[10/04/26 17:13:41] D2BS 14068:  [09:54] +32.84% / [Level 18] 6.33%
+[10/04/26 17:13:41] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:13:41] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:13:41] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:13:41] D2BS 14068: Script default.dbj ended
+[10/04/26 17:13:54] D2BS 14068: joining game pz-15
+[10/04/26 17:13:56] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:13:56] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:13:56] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:13:56] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:13:56] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:13:56] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:13:56] D2BS 14068: equipped: [Body] 1
+[10/04/26 17:13:56] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:13:56] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:13:56] D2BS 14068: equipped: [RingR] 11
+[10/04/26 17:13:56] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:13:56] D2BS 14068: equipped: [Belt] 1
+[10/04/26 17:13:56] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:13:56] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:13:56] D2BS 14068: updateStat
+[10/04/26 17:13:56] D2BS 14068: granted: [Head] -1
+[10/04/26 17:13:56] D2BS 14068: granted: [Body] -1
+[10/04/26 17:13:56] D2BS 14068: granted: [ArmR] -1
+[10/04/26 17:13:56] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:14:42] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:14:42] D2BS 14068: ÿc4=== [CATHEDRAL] ===
+[10/04/26 17:16:32] D2BS 14068: going to nearest WP
+[10/04/26 17:18:58] D2BS 14068: ÿc4=== [ANDY] ===
+[10/04/26 17:19:08] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:19:09] D2BS 14068: ÿc4=== [CUBE] ===
+[10/04/26 17:19:56] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:24:48] D2BS 14068: ÿc4=== [AMULET] ===
+[10/04/26 17:25:11] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:30:23] D2BS 14068: party has left: fowo-xb
+[10/04/26 17:30:23] D2BS 14068:  [16:27] +80.18% / [Level 18] 86.51%
+[10/04/26 17:30:23] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:30:23] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:30:23] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:30:23] D2BS 14068: Script default.dbj ended
+[10/04/26 17:30:35] D2BS 14068: joining game pz-16
+[10/04/26 17:30:37] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:30:37] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:30:37] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:30:37] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:30:37] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:30:37] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:30:37] D2BS 14068: equipped: [Body] 1
+[10/04/26 17:30:37] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:30:37] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:30:37] D2BS 14068: equipped: [RingR] 11
+[10/04/26 17:30:37] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:30:37] D2BS 14068: equipped: [Belt] 1
+[10/04/26 17:30:37] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:30:37] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:30:37] D2BS 14068: updateStat
+[10/04/26 17:30:37] D2BS 14068: granted: [Head] -1
+[10/04/26 17:30:37] D2BS 14068: granted: [Body] -1
+[10/04/26 17:30:37] D2BS 14068: granted: [ArmR] -1
+[10/04/26 17:30:37] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:31:42] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:31:55] D2BS 14068: ÿc4=== [AMULET] ===
+[10/04/26 17:31:55] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:34:19] D2BS 14068: ÿc4=== [SUMMONER] ===
+[10/04/26 17:34:38] D2BS 14068: equipped: [Body] 12
+[10/04/26 17:34:40] D2BS 14068: equipped: [Belt] 2
+[10/04/26 17:34:40] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:36:05] D2BS 14068: party has left: fowo-xa
+[10/04/26 17:36:05] D2BS 14068:  [05:29] +20.40% / [Level 19] 9.61%
+[10/04/26 17:36:05] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:36:05] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:36:06] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:36:06] D2BS 14068: Script default.dbj ended
+[10/04/26 17:36:19] D2BS 14068: joining game pz-17
+[10/04/26 17:36:20] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:36:20] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:36:21] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:36:21] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:36:21] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:36:21] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:36:21] D2BS 14068: equipped: [Body] 12
+[10/04/26 17:36:21] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:36:21] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:36:21] D2BS 14068: equipped: [RingR] 11
+[10/04/26 17:36:21] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:36:21] D2BS 14068: equipped: [Belt] 2
+[10/04/26 17:36:21] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:36:21] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:36:21] D2BS 14068: updateStat
+[10/04/26 17:36:21] D2BS 14068: granted: [Head] -1
+[10/04/26 17:36:21] D2BS 14068: granted: [Body] -1
+[10/04/26 17:36:21] D2BS 14068: granted: [ArmR] -1
+[10/04/26 17:36:21] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:36:59] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:37:00] D2BS 14068: ÿc4=== [SUMMONER] ===
+[10/04/26 17:37:00] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:37:36] D2BS 14068: party has left: fowo-xa
+[10/04/26 17:37:36] D2BS 14068: no exp [01:16]
+[10/04/26 17:37:36] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:37:36] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:37:36] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:37:36] D2BS 14068: Script default.dbj ended
+[10/04/26 17:37:49] D2BS 14068: joining game pz-18
+[10/04/26 17:37:52] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:37:52] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:37:52] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:37:52] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:37:52] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:37:52] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:37:52] D2BS 14068: equipped: [Body] 12
+[10/04/26 17:37:52] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:37:52] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:37:52] D2BS 14068: equipped: [RingR] 11
+[10/04/26 17:37:52] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:37:52] D2BS 14068: equipped: [Belt] 2
+[10/04/26 17:37:52] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:37:52] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:37:52] D2BS 14068: updateStat
+[10/04/26 17:37:52] D2BS 14068: granted: [Head] -1
+[10/04/26 17:37:52] D2BS 14068: granted: [Body] -1
+[10/04/26 17:37:52] D2BS 14068: granted: [ArmR] -1
+[10/04/26 17:37:52] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:38:25] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:38:25] D2BS 14068: ÿc4=== [SUMMONER] ===
+[10/04/26 17:38:25] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:40:00] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 17:40:01] D2BS 14068: party has left: fowo-xa
+[10/04/26 17:40:01] D2BS 14068: no exp [02:10]
+[10/04/26 17:40:01] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:40:01] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:40:03] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:40:03] D2BS 14068: Script default.dbj ended
+[10/04/26 17:40:16] D2BS 14068: joining game pz-19
+[10/04/26 17:40:18] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:40:18] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:40:18] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:40:18] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:40:18] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:40:18] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:40:18] D2BS 14068: equipped: [Body] 12
+[10/04/26 17:40:18] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:40:18] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:40:18] D2BS 14068: equipped: [RingR] 11
+[10/04/26 17:40:18] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:40:18] D2BS 14068: equipped: [Belt] 2
+[10/04/26 17:40:18] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:40:18] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:40:19] D2BS 14068: updateStat
+[10/04/26 17:40:19] D2BS 14068: granted: [Head] -1
+[10/04/26 17:40:19] D2BS 14068: granted: [Body] -1
+[10/04/26 17:40:19] D2BS 14068: granted: [ArmR] -1
+[10/04/26 17:40:19] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:40:59] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:40:59] D2BS 14068: ÿc4=== [SUMMONER] ===
+[10/04/26 17:40:59] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:41:03] D2BS 14068: party has left: fowo-xa
+[10/04/26 17:41:03] D2BS 14068: no exp [00:45]
+[10/04/26 17:41:03] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:41:03] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:41:03] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:41:03] D2BS 14068: Script default.dbj ended
+[10/04/26 17:41:25] D2BS 14068: joining game pz-20
+[10/04/26 17:41:27] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:41:27] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:41:27] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:41:27] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:41:27] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:41:27] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:41:27] D2BS 14068: equipped: [Body] 12
+[10/04/26 17:41:27] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:41:27] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:41:27] D2BS 14068: equipped: [RingR] 11
+[10/04/26 17:41:27] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:41:27] D2BS 14068: equipped: [Belt] 2
+[10/04/26 17:41:27] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:41:27] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:41:27] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:41:56] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:41:56] D2BS 14068: ÿc4=== [SUMMONER] ===
+[10/04/26 17:41:56] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:42:35] D2BS 14068: party has left: fowo-xa
+[10/04/26 17:42:35] D2BS 14068: no exp [01:09]
+[10/04/26 17:42:35] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:42:35] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:42:35] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:42:35] D2BS 14068: Script default.dbj ended
+[10/04/26 17:50:55] D2BS 14068: joining game pz-21
+[10/04/26 17:50:57] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:50:57] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:50:57] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:50:57] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:50:57] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:50:57] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:50:57] D2BS 14068: equipped: [Body] 12
+[10/04/26 17:50:57] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:50:57] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:50:57] D2BS 14068: equipped: [RingR] 11
+[10/04/26 17:50:57] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:50:57] D2BS 14068: equipped: [Belt] 2
+[10/04/26 17:50:57] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:50:57] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:50:57] D2BS 14068: updateStat
+[10/04/26 17:50:57] D2BS 14068: granted: [Head] -1
+[10/04/26 17:50:57] D2BS 14068: granted: [Body] -1
+[10/04/26 17:50:57] D2BS 14068: granted: [ArmR] -1
+[10/04/26 17:50:57] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:51:34] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:51:34] D2BS 14068: ÿc4=== [SUMMONER] ===
+[10/04/26 17:51:34] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:52:25] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 17:52:59] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 17:53:29] D2BS 14068: going to nearest WP
+[10/04/26 17:53:40] D2BS 14068: ÿc4=== [TOMBS] ===
+[10/04/26 17:55:46] D2BS 14068: party has left: fowo-xd
+[10/04/26 17:55:46] D2BS 14068:  [04:49] +33.00% / [Level 19] 43.07%
+[10/04/26 17:55:46] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 17:55:46] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 17:55:46] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 17:55:46] D2BS 14068: Script default.dbj ended
+[10/04/26 17:55:57] D2BS 14068: joining game pz-22
+[10/04/26 17:55:58] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 17:55:58] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 17:55:59] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 17:55:59] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 17:55:59] D2BS 14068: equipped: [Head] 1
+[10/04/26 17:55:59] D2BS 14068: equipped: [Neck] -1
+[10/04/26 17:55:59] D2BS 14068: equipped: [Body] 12
+[10/04/26 17:55:59] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 17:55:59] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 17:55:59] D2BS 14068: equipped: [RingR] 11
+[10/04/26 17:55:59] D2BS 14068: equipped: [RingL] -1
+[10/04/26 17:55:59] D2BS 14068: equipped: [Belt] 2
+[10/04/26 17:55:59] D2BS 14068: equipped: [Boots] 1
+[10/04/26 17:55:59] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 17:55:59] D2BS 14068: updateStat
+[10/04/26 17:55:59] D2BS 14068: granted: [Head] -1
+[10/04/26 17:55:59] D2BS 14068: granted: [Body] -1
+[10/04/26 17:55:59] D2BS 14068: granted: [ArmR] -1
+[10/04/26 17:55:59] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 17:56:45] D2BS 14068: syncBO failed: lower level
+[10/04/26 17:56:46] D2BS 14068: ÿc4=== [TOMBS] ===
+[10/04/26 18:07:11] D2BS 14068: party has left: fowo-xa
+[10/04/26 18:07:11] D2BS 14068:  [11:12] +127.79% / [Level 20] 82.24%
+[10/04/26 18:07:11] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 18:07:11] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 18:07:11] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 18:07:11] D2BS 14068: Script default.dbj ended
+[10/04/26 18:07:24] D2BS 14068: joining game pz-23
+[10/04/26 18:07:26] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 18:07:26] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 18:07:26] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 18:07:26] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 18:07:26] D2BS 14068: equipped: [Head] 1
+[10/04/26 18:07:26] D2BS 14068: equipped: [Neck] -1
+[10/04/26 18:07:26] D2BS 14068: equipped: [Body] 12
+[10/04/26 18:07:26] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 18:07:26] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 18:07:26] D2BS 14068: equipped: [RingR] 11
+[10/04/26 18:07:26] D2BS 14068: equipped: [RingL] -1
+[10/04/26 18:07:26] D2BS 14068: equipped: [Belt] 2
+[10/04/26 18:07:26] D2BS 14068: equipped: [Boots] 1
+[10/04/26 18:07:26] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 18:07:26] D2BS 14068: updateStat
+[10/04/26 18:07:26] D2BS 14068: granted: [Head] -1
+[10/04/26 18:07:26] D2BS 14068: granted: [Body] -1
+[10/04/26 18:07:26] D2BS 14068: granted: [ArmR] -1
+[10/04/26 18:07:26] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 18:08:10] D2BS 14068: syncBO failed: lower level
+[10/04/26 18:08:11] D2BS 14068: ÿc4=== [TOMBS] ===
+[10/04/26 18:13:00] D2BS 14068: party has left: fowo-xa
+[10/04/26 18:13:00] D2BS 14068:  [05:35] +78.83% / [Level 21] 65.46%
+[10/04/26 18:13:00] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 18:13:00] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 18:13:00] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 18:13:00] D2BS 14068: Script default.dbj ended
+[10/04/26 18:13:12] D2BS 14068: joining game pz-24
+[10/04/26 18:13:14] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 18:13:14] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 18:13:14] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 18:13:14] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 18:13:14] D2BS 14068: equipped: [Head] 1
+[10/04/26 18:13:14] D2BS 14068: equipped: [Neck] -1
+[10/04/26 18:13:14] D2BS 14068: equipped: [Body] 12
+[10/04/26 18:13:14] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 18:13:14] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 18:13:14] D2BS 14068: equipped: [RingR] 11
+[10/04/26 18:13:14] D2BS 14068: equipped: [RingL] -1
+[10/04/26 18:13:14] D2BS 14068: equipped: [Belt] 2
+[10/04/26 18:13:14] D2BS 14068: equipped: [Boots] 1
+[10/04/26 18:13:14] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 18:13:14] D2BS 14068: updateStat
+[10/04/26 18:13:14] D2BS 14068: granted: [Head] -1
+[10/04/26 18:13:14] D2BS 14068: granted: [Body] -1
+[10/04/26 18:13:14] D2BS 14068: granted: [ArmR] -1
+[10/04/26 18:13:14] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 18:13:56] D2BS 14068: syncBO failed: lower level
+[10/04/26 18:13:56] D2BS 14068: ÿc4=== [TOMBS] ===
+[10/04/26 18:26:55] D2BS 14068: Not ready to start Duriel
+[10/04/26 18:26:56] D2BS 14068: party has left: fowo-xa
+[10/04/26 18:26:56] D2BS 14068:  [13:43] +104.95% / [Level 23] 2.84%
+[10/04/26 18:26:56] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 18:26:56] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 18:26:57] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 18:26:57] D2BS 14068: Script default.dbj ended
+[10/04/26 18:27:09] D2BS 14068: joining game pz-25
+[10/04/26 18:27:11] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 18:27:11] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 18:27:11] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 18:27:11] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 18:27:11] D2BS 14068: equipped: [Head] 1
+[10/04/26 18:27:11] D2BS 14068: equipped: [Neck] -1
+[10/04/26 18:27:11] D2BS 14068: equipped: [Body] 12
+[10/04/26 18:27:11] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 18:27:11] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 18:27:11] D2BS 14068: equipped: [RingR] 11
+[10/04/26 18:27:11] D2BS 14068: equipped: [RingL] -1
+[10/04/26 18:27:11] D2BS 14068: equipped: [Belt] 2
+[10/04/26 18:27:11] D2BS 14068: equipped: [Boots] 1
+[10/04/26 18:27:11] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 18:27:11] D2BS 14068: updateStat
+[10/04/26 18:27:11] D2BS 14068: granted: [Head] -1
+[10/04/26 18:27:11] D2BS 14068: granted: [Body] -1
+[10/04/26 18:27:11] D2BS 14068: granted: [ArmR] -1
+[10/04/26 18:27:11] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 18:27:51] D2BS 14068: syncBO failed: lower level
+[10/04/26 18:27:51] D2BS 14068: ÿc4=== [TOMBS] ===
+[10/04/26 18:42:30] D2BS 14068: party has left: fowo-xa
+[10/04/26 18:42:30] D2BS 14068:  [15:19] +97.42% / [Level 24] 19.69%
+[10/04/26 18:42:30] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 18:42:30] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 18:42:30] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 18:42:30] D2BS 14068: Script default.dbj ended
+[10/04/26 18:42:43] D2BS 14068: joining game pz-26
+[10/04/26 18:42:44] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 18:42:44] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 18:42:45] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 18:42:45] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 18:42:45] D2BS 14068: equipped: [Head] 1
+[10/04/26 18:42:45] D2BS 14068: equipped: [Neck] -1
+[10/04/26 18:42:45] D2BS 14068: equipped: [Body] 12
+[10/04/26 18:42:45] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 18:42:45] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 18:42:45] D2BS 14068: equipped: [RingR] 11
+[10/04/26 18:42:45] D2BS 14068: equipped: [RingL] -1
+[10/04/26 18:42:45] D2BS 14068: equipped: [Belt] 2
+[10/04/26 18:42:45] D2BS 14068: equipped: [Boots] 1
+[10/04/26 18:42:45] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 18:42:45] D2BS 14068: updateStat
+[10/04/26 18:42:45] D2BS 14068: granted: [Head] -1
+[10/04/26 18:42:45] D2BS 14068: granted: [Body] -1
+[10/04/26 18:42:45] D2BS 14068: granted: [ArmR] -1
+[10/04/26 18:42:45] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 18:43:24] D2BS 14068: syncBO failed: lower level
+[10/04/26 18:43:24] D2BS 14068: ÿc4=== [TOMBS] ===
+[10/04/26 18:56:18] D2BS 14068: party has left: fowo-xa
+[10/04/26 18:56:18] D2BS 14068:  [13:34] +72.08% / [Level 24] 91.77%
+[10/04/26 18:56:18] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 18:56:18] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 18:56:18] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 18:56:18] D2BS 14068: Not ready to start Duriel
+[10/04/26 18:56:18] D2BS 14068: Script default.dbj ended
+[10/04/26 18:56:31] D2BS 14068: joining game pz-27
+[10/04/26 18:56:32] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 18:56:32] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 18:56:33] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 18:56:33] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 18:56:33] D2BS 14068: equipped: [Head] 1
+[10/04/26 18:56:33] D2BS 14068: equipped: [Neck] -1
+[10/04/26 18:56:33] D2BS 14068: equipped: [Body] 12
+[10/04/26 18:56:33] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 18:56:33] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 18:56:33] D2BS 14068: equipped: [RingR] 11
+[10/04/26 18:56:33] D2BS 14068: equipped: [RingL] -1
+[10/04/26 18:56:33] D2BS 14068: equipped: [Belt] 2
+[10/04/26 18:56:33] D2BS 14068: equipped: [Boots] 1
+[10/04/26 18:56:33] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 18:56:33] D2BS 14068: updateStat
+[10/04/26 18:56:33] D2BS 14068: granted: [Head] -1
+[10/04/26 18:56:33] D2BS 14068: granted: [Body] -1
+[10/04/26 18:56:33] D2BS 14068: granted: [ArmR] -1
+[10/04/26 18:56:33] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 18:57:17] D2BS 14068: ÿc4=== [TOMBS] ===
+[10/04/26 19:07:42] D2BS 14068: ÿc4=== [RADAMENT] ===
+[10/04/26 19:09:18] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 19:09:25] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 19:09:34] D2BS 14068: ÿc8!!! [BOOK] !!!
+[10/04/26 19:09:39] D2BS 14068: ÿc4=== [DURIEL] ===
+[10/04/26 19:14:05] D2BS 14068: party has left: fowo-xa
+[10/04/26 19:14:05] D2BS 14068:  [17:33] +40.54% / [Level 25] 33.96%
+[10/04/26 19:14:05] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 19:14:05] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 19:14:05] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 19:14:05] D2BS 14068: Script default.dbj ended
+[10/04/26 19:14:19] D2BS 14068: joining game pz-28
+[10/04/26 19:14:21] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 19:14:21] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 19:14:21] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 19:14:21] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 19:14:21] D2BS 14068: equipped: [Head] 1
+[10/04/26 19:14:21] D2BS 14068: equipped: [Neck] -1
+[10/04/26 19:14:21] D2BS 14068: equipped: [Body] 12
+[10/04/26 19:14:21] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 19:14:21] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 19:14:21] D2BS 14068: equipped: [RingR] 11
+[10/04/26 19:14:21] D2BS 14068: equipped: [RingL] -1
+[10/04/26 19:14:21] D2BS 14068: equipped: [Belt] 2
+[10/04/26 19:14:21] D2BS 14068: equipped: [Boots] 1
+[10/04/26 19:14:21] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 19:14:21] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 19:18:20] D2BS 14068: party has left: fowo-xa
+[10/04/26 19:18:20] D2BS 14068: no exp [03:59]
+[10/04/26 19:18:20] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 19:18:20] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 19:18:20] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 19:18:20] D2BS 14068: Script default.dbj ended
+[10/04/26 19:18:34] D2BS 14068: joining game pz-29
+[10/04/26 19:18:35] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 19:18:35] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 19:18:35] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 19:18:35] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 19:18:35] D2BS 14068: equipped: [Head] 1
+[10/04/26 19:18:35] D2BS 14068: equipped: [Neck] -1
+[10/04/26 19:18:35] D2BS 14068: equipped: [Body] 12
+[10/04/26 19:18:35] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 19:18:35] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 19:18:35] D2BS 14068: equipped: [RingR] 11
+[10/04/26 19:18:35] D2BS 14068: equipped: [RingL] -1
+[10/04/26 19:18:35] D2BS 14068: equipped: [Belt] 2
+[10/04/26 19:18:35] D2BS 14068: equipped: [Boots] 1
+[10/04/26 19:18:35] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 19:18:36] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 19:19:56] D2BS 14068: ÿc4=== [TRAVINCAL] ===
+[10/04/26 19:21:43] D2BS 14068: party has left: fowo-xa
+[10/04/26 19:21:43] D2BS 14068:  [03:08] +11.14% / [Level 25] 45.10%
+[10/04/26 19:21:43] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 19:21:43] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 19:21:43] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 19:21:43] D2BS 14068: Script default.dbj ended
+[10/04/26 19:21:54] D2BS 14068: joining game pz-30
+[10/04/26 19:21:55] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 19:21:55] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 19:21:56] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 19:21:56] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 19:21:56] D2BS 14068: equipped: [Head] 1
+[10/04/26 19:21:56] D2BS 14068: equipped: [Neck] -1
+[10/04/26 19:21:56] D2BS 14068: equipped: [Body] 12
+[10/04/26 19:21:56] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 19:21:56] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 19:21:56] D2BS 14068: equipped: [RingR] 11
+[10/04/26 19:21:56] D2BS 14068: equipped: [RingL] -1
+[10/04/26 19:21:56] D2BS 14068: equipped: [Belt] 2
+[10/04/26 19:21:56] D2BS 14068: equipped: [Boots] 1
+[10/04/26 19:21:56] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 19:21:56] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 19:22:28] D2BS 14068: ÿc4=== [TRAVINCAL] ===
+[10/04/26 19:23:16] D2BS 14068: ÿc4=== [FIGURINE] ===
+[10/04/26 19:24:11] D2BS 14068: ÿc8!!! [POTION] !!!
+[10/04/26 19:25:19] D2BS 14068: ÿc4=== [MEPHISTO] ===
+[10/04/26 19:26:00] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 19:26:07] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 19:26:43] D2BS 14068: ÿc4=== [IZUAL] ===
+[10/04/26 19:28:02] D2BS 14068: act4 BO
+[10/04/26 19:28:37] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 19:28:50] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 19:29:03] D2BS 14068: ÿc4=== [DIABLO] ===
+[10/04/26 19:29:30] D2BS 14068: act4+ WP
+[10/04/26 19:29:45] D2BS 14068: act4+ BO
+[10/04/26 19:34:13] D2BS 14068: party has left: fowo-xa
+[10/04/26 19:34:13] D2BS 14068:  [12:17] +57.34% / [Level 26] 13.42%
+[10/04/26 19:34:13] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 19:34:13] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 19:34:13] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 19:34:13] D2BS 14068: Script default.dbj ended
+[10/04/26 19:34:24] D2BS 14068: joining game pz-31
+[10/04/26 19:34:25] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 19:34:25] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 19:34:25] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 19:34:25] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 19:34:25] D2BS 14068: equipped: [Head] 1
+[10/04/26 19:34:25] D2BS 14068: equipped: [Neck] -1
+[10/04/26 19:34:25] D2BS 14068: equipped: [Body] 12
+[10/04/26 19:34:25] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 19:34:25] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 19:34:25] D2BS 14068: equipped: [RingR] 11
+[10/04/26 19:34:25] D2BS 14068: equipped: [RingL] -1
+[10/04/26 19:34:25] D2BS 14068: equipped: [Belt] 2
+[10/04/26 19:34:25] D2BS 14068: equipped: [Boots] 1
+[10/04/26 19:34:25] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 19:34:26] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 19:34:38] D2BS 14068: equipped: [Belt] 3
+[10/04/26 19:34:59] D2BS 14068: act4+ BO
+[10/04/26 19:35:12] D2BS 14068: ÿc4=== [DIABLO] ===
+[10/04/26 19:41:56] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 19:42:05] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 19:42:24] D2BS 14068: act5 BO
+[10/04/26 19:42:56] D2BS 14068: ÿc4=== [SHENK] ===
+[10/04/26 19:45:47] D2BS 14068: act5 BO
+[10/04/26 19:46:22] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 19:46:33] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 19:46:41] D2BS 14068: ÿc4=== [BARBS] ===
+[10/04/26 19:47:01] D2BS 14068: act5+ WP
+[10/04/26 19:47:14] D2BS 14068: act5+ BO
+[10/04/26 19:48:06] D2BS 14068: party has left: fowo-xa
+[10/04/26 19:48:07] D2BS 14068:  [13:42] +72.47% / [Level 26] 85.89%
+[10/04/26 19:48:07] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 19:48:07] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 19:48:07] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 19:48:07] D2BS 14068: Script default.dbj ended
+[10/04/26 19:48:20] D2BS 14068: joining game pz-32
+[10/04/26 19:48:21] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 19:48:21] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 19:48:21] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 19:48:21] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 19:48:21] D2BS 14068: equipped: [Head] 1
+[10/04/26 19:48:21] D2BS 14068: equipped: [Neck] -1
+[10/04/26 19:48:21] D2BS 14068: equipped: [Body] 12
+[10/04/26 19:48:21] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 19:48:21] D2BS 14068: equipped: [ArmL] 14
+[10/04/26 19:48:21] D2BS 14068: equipped: [RingR] 11
+[10/04/26 19:48:21] D2BS 14068: equipped: [RingL] -1
+[10/04/26 19:48:21] D2BS 14068: equipped: [Belt] 3
+[10/04/26 19:48:21] D2BS 14068: equipped: [Boots] 1
+[10/04/26 19:48:21] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 19:48:22] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 19:48:49] D2BS 14068: act5+ BO
+[10/04/26 19:49:02] D2BS 14068: ÿc4=== [BARBS] ===
+[10/04/26 19:49:35] D2BS 14068: ÿc4=== [ANYA] ===
+[10/04/26 19:50:02] D2BS 14068: act5+ BO
+[10/04/26 19:52:09] D2BS 14068: ÿc8!!! [SCROLL] !!!
+[10/04/26 19:52:28] D2BS 14068: ÿc4=== [ANCIENTS] ===
+[10/04/26 19:52:30] D2BS 14068: equipped: [ArmL] 15
+[10/04/26 19:52:52] D2BS 14068: act5+ BO
+[10/04/26 19:54:12] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 19:54:24] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 19:54:45] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 19:54:53] D2BS 14068: equipped: [Belt] 11
+[10/04/26 19:58:29] D2BS 14068: Not ready to kill Baal
+[10/04/26 19:58:29] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 20:01:26] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 20:04:51] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 20:07:45] D2BS 14068: ÿc4=== [DIABLO] ===
+[10/04/26 20:12:07] D2BS 14068: party has left: fowo-xh
+[10/04/26 20:12:07] D2BS 14068:  [23:46] +314.75% / [Level 30] 52.90%
+[10/04/26 20:12:07] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 20:12:08] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 20:12:08] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 20:12:08] D2BS 14068: Script default.dbj ended
+[10/04/26 20:12:20] D2BS 14068: joining game pz-33
+[10/04/26 20:12:22] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 20:12:22] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 20:12:22] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 20:12:22] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 20:12:22] D2BS 14068: equipped: [Head] 1
+[10/04/26 20:12:22] D2BS 14068: equipped: [Neck] -1
+[10/04/26 20:12:22] D2BS 14068: equipped: [Body] 12
+[10/04/26 20:12:22] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 20:12:22] D2BS 14068: equipped: [ArmL] 15
+[10/04/26 20:12:22] D2BS 14068: equipped: [RingR] 11
+[10/04/26 20:12:22] D2BS 14068: equipped: [RingL] -1
+[10/04/26 20:12:22] D2BS 14068: equipped: [Belt] 11
+[10/04/26 20:12:22] D2BS 14068: equipped: [Boots] 1
+[10/04/26 20:12:22] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 20:12:22] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 20:13:11] D2BS 14068: act5+ BO
+[10/04/26 20:13:25] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 20:15:48] D2BS 14068: Not ready to kill Baal
+[10/04/26 20:15:48] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 20:18:29] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 20:18:38] D2BS 14068: act5+ BO
+[10/04/26 20:21:43] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 20:24:53] D2BS 14068: ÿc4=== [DIABLO] ===
+[10/04/26 20:29:39] D2BS 14068: party has left: fowo-xf
+[10/04/26 20:29:39] D2BS 14068:  [17:18] +229.44% / [Level 33] 17.16%
+[10/04/26 20:29:39] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 20:29:40] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 20:29:40] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 20:29:40] D2BS 14068: Script default.dbj ended
+[10/04/26 20:29:53] D2BS 14068: joining game pz-34
+[10/04/26 20:29:55] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 20:29:55] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 20:29:55] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 20:29:55] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 20:29:55] D2BS 14068: equipped: [Head] 1
+[10/04/26 20:29:55] D2BS 14068: equipped: [Neck] -1
+[10/04/26 20:29:55] D2BS 14068: equipped: [Body] 12
+[10/04/26 20:29:55] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 20:29:55] D2BS 14068: equipped: [ArmL] 15
+[10/04/26 20:29:55] D2BS 14068: equipped: [RingR] 11
+[10/04/26 20:29:55] D2BS 14068: equipped: [RingL] -1
+[10/04/26 20:29:55] D2BS 14068: equipped: [Belt] 11
+[10/04/26 20:29:55] D2BS 14068: equipped: [Boots] 1
+[10/04/26 20:29:55] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 20:29:56] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 20:30:36] D2BS 14068: act5+ BO
+[10/04/26 20:30:49] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 20:33:06] D2BS 14068: Not ready to kill Baal
+[10/04/26 20:33:06] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 20:35:32] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 20:38:26] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 20:41:18] D2BS 14068: ÿc4=== [DIABLO] ===
+[10/04/26 20:41:53] D2BS 14068: act4+ BO
+[10/04/26 20:46:27] D2BS 14068: Script ended
+[10/04/26 20:46:27] D2BS 14068:  [16:32] +194.71% / [Level 35] 33.24%
+[10/04/26 20:46:27] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 20:46:27] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 20:46:28] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 20:46:43] D2BS 14068: joining game pz-35
+[10/04/26 20:46:45] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 20:46:45] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 20:46:45] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 20:46:45] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 20:46:45] D2BS 14068: equipped: [Head] 1
+[10/04/26 20:46:45] D2BS 14068: equipped: [Neck] -1
+[10/04/26 20:46:45] D2BS 14068: equipped: [Body] 12
+[10/04/26 20:46:45] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 20:46:45] D2BS 14068: equipped: [ArmL] 15
+[10/04/26 20:46:45] D2BS 14068: equipped: [RingR] 11
+[10/04/26 20:46:45] D2BS 14068: equipped: [RingL] -1
+[10/04/26 20:46:45] D2BS 14068: equipped: [Belt] 11
+[10/04/26 20:46:45] D2BS 14068: equipped: [Boots] 1
+[10/04/26 20:46:45] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 20:46:45] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 20:47:22] D2BS 14068: act5+ BO
+[10/04/26 20:47:35] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 20:49:53] D2BS 14068: Not ready to kill Baal
+[10/04/26 20:49:53] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 20:52:16] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 20:55:06] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 20:57:43] D2BS 14068: ÿc4=== [DIABLO] ===
+[10/04/26 21:02:22] D2BS 14068: party has left: fowo-xf
+[10/04/26 21:02:22] D2BS 14068:  [15:38] +179.82% / [Level 37] 31.89%
+[10/04/26 21:02:22] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 21:02:22] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 21:02:22] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 21:02:23] D2BS 14068: Script default.dbj ended
+[10/04/26 21:02:36] D2BS 14068: joining game pz-36
+[10/04/26 21:02:38] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 21:02:38] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 21:02:38] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 21:02:38] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 21:02:38] D2BS 14068: equipped: [Head] 1
+[10/04/26 21:02:38] D2BS 14068: equipped: [Neck] -1
+[10/04/26 21:02:38] D2BS 14068: equipped: [Body] 12
+[10/04/26 21:02:38] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 21:02:39] D2BS 14068: equipped: [ArmL] 15
+[10/04/26 21:02:39] D2BS 14068: equipped: [RingR] 11
+[10/04/26 21:02:39] D2BS 14068: equipped: [RingL] -1
+[10/04/26 21:02:39] D2BS 14068: equipped: [Belt] 11
+[10/04/26 21:02:39] D2BS 14068: equipped: [Boots] 1
+[10/04/26 21:02:39] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 21:02:39] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 21:03:17] D2BS 14068: act5+ BO
+[10/04/26 21:03:30] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 21:05:29] D2BS 14068: Not ready to kill Baal
+[10/04/26 21:05:29] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 21:07:59] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 21:10:47] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 21:13:11] D2BS 14068: Script ended
+[10/04/26 21:13:11] D2BS 14068:  [10:33] +141.58% / [Level 38] 79.10%
+[10/04/26 21:13:11] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 21:13:11] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 21:13:11] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 21:13:25] D2BS 14068: joining game pz-37
+[10/04/26 21:13:26] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 21:13:26] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 21:13:26] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 21:13:26] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 21:13:26] D2BS 14068: equipped: [Head] 1
+[10/04/26 21:13:26] D2BS 14068: equipped: [Neck] -1
+[10/04/26 21:13:26] D2BS 14068: equipped: [Body] 12
+[10/04/26 21:13:27] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 21:13:27] D2BS 14068: equipped: [ArmL] 15
+[10/04/26 21:13:27] D2BS 14068: equipped: [RingR] 11
+[10/04/26 21:13:27] D2BS 14068: equipped: [RingL] -1
+[10/04/26 21:13:27] D2BS 14068: equipped: [Belt] 11
+[10/04/26 21:13:27] D2BS 14068: equipped: [Boots] 1
+[10/04/26 21:13:27] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 21:13:27] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 21:13:38] D2BS 14068: ÿc4[Runeword] ÿc0Ancients' Pledge Kite Shield
+[10/04/26 21:14:02] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 21:14:10] D2BS 14068: act5+ BO
+[10/04/26 21:14:24] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 21:16:42] D2BS 14068: Not ready to kill Baal
+[10/04/26 21:16:42] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 21:19:11] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 21:21:09] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 21:23:37] D2BS 14068: party has left: fowo-xa
+[10/04/26 21:23:37] D2BS 14068:  [10:11] +114.24% / [Level 39] 95.06%
+[10/04/26 21:23:37] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 21:23:38] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 21:23:38] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 21:23:38] D2BS 14068: Script default.dbj ended
+[10/04/26 21:23:50] D2BS 14068: joining game pz-38
+[10/04/26 21:23:52] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 21:23:52] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 21:23:52] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 21:23:52] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 21:23:52] D2BS 14068: equipped: [Head] 1
+[10/04/26 21:23:52] D2BS 14068: equipped: [Neck] -1
+[10/04/26 21:23:52] D2BS 14068: equipped: [Body] 12
+[10/04/26 21:23:52] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 21:23:52] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 21:23:52] D2BS 14068: equipped: [RingR] 11
+[10/04/26 21:23:52] D2BS 14068: equipped: [RingL] -1
+[10/04/26 21:23:52] D2BS 14068: equipped: [Belt] 11
+[10/04/26 21:23:52] D2BS 14068: equipped: [Boots] 1
+[10/04/26 21:23:52] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 21:23:53] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 21:24:23] D2BS 14068: act5+ BO
+[10/04/26 21:24:37] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 21:26:45] D2BS 14068: Not ready to kill Baal
+[10/04/26 21:26:45] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 21:28:54] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 21:31:46] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 21:34:19] D2BS 14068: party has left: fowo-xa
+[10/04/26 21:34:19] D2BS 14068:  [10:26] +113.38% / [Level 41] 17.49%
+[10/04/26 21:34:19] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 21:34:19] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 21:34:19] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 21:34:19] D2BS 14068: Script default.dbj ended
+[10/04/26 21:34:31] D2BS 14068: joining game pz-39
+[10/04/26 21:34:33] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 21:34:33] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 21:34:33] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 21:34:33] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 21:34:33] D2BS 14068: equipped: [Head] 1
+[10/04/26 21:34:33] D2BS 14068: equipped: [Neck] -1
+[10/04/26 21:34:33] D2BS 14068: equipped: [Body] 12
+[10/04/26 21:34:33] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 21:34:33] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 21:34:33] D2BS 14068: equipped: [RingR] 11
+[10/04/26 21:34:33] D2BS 14068: equipped: [RingL] -1
+[10/04/26 21:34:33] D2BS 14068: equipped: [Belt] 11
+[10/04/26 21:34:33] D2BS 14068: equipped: [Boots] 1
+[10/04/26 21:34:33] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 21:34:33] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 21:35:02] D2BS 14068: act5+ BO
+[10/04/26 21:35:16] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 21:37:22] D2BS 14068: Not ready to kill Baal
+[10/04/26 21:37:22] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 21:39:40] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 21:42:28] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 21:45:00] D2BS 14068: Script ended
+[10/04/26 21:45:00] D2BS 14068: party has left: fowo-xa
+[10/04/26 21:45:00] D2BS 14068:  [10:27] +95.37% / [Level 42] 19.67%
+[10/04/26 21:45:00] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 21:45:00] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 21:45:00] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 21:45:14] D2BS 14068: joining game pz-40
+[10/04/26 21:45:16] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 21:45:16] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 21:45:16] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 21:45:16] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 21:45:16] D2BS 14068: equipped: [Head] 1
+[10/04/26 21:45:16] D2BS 14068: equipped: [Neck] -1
+[10/04/26 21:45:16] D2BS 14068: equipped: [Body] 12
+[10/04/26 21:45:16] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 21:45:16] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 21:45:16] D2BS 14068: equipped: [RingR] 11
+[10/04/26 21:45:16] D2BS 14068: equipped: [RingL] -1
+[10/04/26 21:45:16] D2BS 14068: equipped: [Belt] 11
+[10/04/26 21:45:16] D2BS 14068: equipped: [Boots] 1
+[10/04/26 21:45:16] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 21:45:17] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 21:45:46] D2BS 14068: act5+ BO
+[10/04/26 21:45:59] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 21:47:56] D2BS 14068: Not ready to kill Baal
+[10/04/26 21:47:56] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 21:50:25] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 21:52:31] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 21:55:14] D2BS 14068: party has left: fowo-xh
+[10/04/26 21:55:14] D2BS 14068:  [09:58] +90.84% / [Level 43] 17.14%
+[10/04/26 21:55:14] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 21:55:14] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 21:55:14] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 21:55:14] D2BS 14068: Script default.dbj ended
+[10/04/26 21:55:26] D2BS 14068: joining game pz-41
+[10/04/26 21:55:28] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 21:55:28] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 21:55:28] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 21:55:28] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 21:55:28] D2BS 14068: equipped: [Head] 1
+[10/04/26 21:55:28] D2BS 14068: equipped: [Neck] -1
+[10/04/26 21:55:28] D2BS 14068: equipped: [Body] 12
+[10/04/26 21:55:28] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 21:55:28] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 21:55:28] D2BS 14068: equipped: [RingR] 11
+[10/04/26 21:55:28] D2BS 14068: equipped: [RingL] -1
+[10/04/26 21:55:28] D2BS 14068: equipped: [Belt] 11
+[10/04/26 21:55:28] D2BS 14068: equipped: [Boots] 1
+[10/04/26 21:55:28] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 21:55:28] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 21:55:57] D2BS 14068: act5+ BO
+[10/04/26 21:56:11] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 21:58:08] D2BS 14068: Not ready to kill Baal
+[10/04/26 21:58:08] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 22:00:09] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 22:02:17] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 22:04:08] D2BS 14068: party has left: fowo-xa
+[10/04/26 22:04:08] D2BS 14068:  [08:40] +79.18% / [Level 43] 96.32%
+[10/04/26 22:04:08] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 22:04:08] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 22:04:08] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 22:04:08] D2BS 14068: Script default.dbj ended
+[10/04/26 22:04:20] D2BS 14068: joining game pz-42
+[10/04/26 22:04:21] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 22:04:21] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 22:04:22] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 22:04:22] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 22:04:22] D2BS 14068: equipped: [Head] 1
+[10/04/26 22:04:22] D2BS 14068: equipped: [Neck] -1
+[10/04/26 22:04:22] D2BS 14068: equipped: [Body] 12
+[10/04/26 22:04:22] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 22:04:22] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 22:04:22] D2BS 14068: equipped: [RingR] 11
+[10/04/26 22:04:22] D2BS 14068: equipped: [RingL] -1
+[10/04/26 22:04:22] D2BS 14068: equipped: [Belt] 11
+[10/04/26 22:04:22] D2BS 14068: equipped: [Boots] 1
+[10/04/26 22:04:22] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 22:04:22] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 22:04:55] D2BS 14068: act5+ BO
+[10/04/26 22:05:08] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 22:07:11] D2BS 14068: Not ready to kill Baal
+[10/04/26 22:07:11] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 22:09:48] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 22:09:56] D2BS 14068: equipped: [Head] 12
+[10/04/26 22:12:14] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 22:14:24] D2BS 14068: party has left: fowo-xa
+[10/04/26 22:14:24] D2BS 14068:  [10:03] +66.22% / [Level 44] 62.84%
+[10/04/26 22:14:24] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 22:14:24] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 22:14:24] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 22:14:24] D2BS 14068: Script default.dbj ended
+[10/04/26 22:14:37] D2BS 14068: joining game pz-43
+[10/04/26 22:14:39] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 22:14:39] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 22:14:39] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 22:14:39] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 22:14:39] D2BS 14068: equipped: [Head] 12
+[10/04/26 22:14:39] D2BS 14068: equipped: [Neck] -1
+[10/04/26 22:14:39] D2BS 14068: equipped: [Body] 12
+[10/04/26 22:14:39] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 22:14:39] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 22:14:39] D2BS 14068: equipped: [RingR] 11
+[10/04/26 22:14:39] D2BS 14068: equipped: [RingL] -1
+[10/04/26 22:14:39] D2BS 14068: equipped: [Belt] 11
+[10/04/26 22:14:39] D2BS 14068: equipped: [Boots] 1
+[10/04/26 22:14:39] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 22:14:39] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 22:15:07] D2BS 14068: act5+ BO
+[10/04/26 22:15:21] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 22:17:21] D2BS 14068: Not ready to kill Baal
+[10/04/26 22:17:21] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 22:19:32] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 22:22:07] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 22:25:17] D2BS 14068: Script ended
+[10/04/26 22:25:17] D2BS 14068:  [10:39] +70.03% / [Level 45] 35.95%
+[10/04/26 22:25:17] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 22:25:17] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 22:25:17] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 22:25:30] D2BS 14068: joining game pz-44
+[10/04/26 22:25:32] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 22:25:32] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 22:25:32] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 22:25:32] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 22:25:32] D2BS 14068: equipped: [Head] 12
+[10/04/26 22:25:32] D2BS 14068: equipped: [Neck] -1
+[10/04/26 22:25:32] D2BS 14068: equipped: [Body] 12
+[10/04/26 22:25:32] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 22:25:32] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 22:25:32] D2BS 14068: equipped: [RingR] 11
+[10/04/26 22:25:32] D2BS 14068: equipped: [RingL] -1
+[10/04/26 22:25:32] D2BS 14068: equipped: [Belt] 11
+[10/04/26 22:25:32] D2BS 14068: equipped: [Boots] 1
+[10/04/26 22:25:32] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 22:25:32] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 22:26:02] D2BS 14068: act5+ BO
+[10/04/26 22:26:16] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 22:28:17] D2BS 14068: Not ready to kill Baal
+[10/04/26 22:28:17] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 22:28:21] D2BS 14068: equipped: [Belt] 13
+[10/04/26 22:30:26] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 22:32:55] D2BS 14068: ÿc4=== [INFERNAL] ===
+[10/04/26 22:35:28] D2BS 14068: party has left: fowo-xa
+[10/04/26 22:35:28] D2BS 14068:  [09:57] +63.51% / [Level 45] 99.46%
+[10/04/26 22:35:28] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 22:35:29] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 22:35:29] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 22:35:29] D2BS 14068: Script default.dbj ended
+[10/04/26 22:35:43] D2BS 14068: joining game pz-45
+[10/04/26 22:35:44] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 22:35:44] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 22:35:44] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 22:35:44] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 22:35:44] D2BS 14068: equipped: [Head] 12
+[10/04/26 22:35:45] D2BS 14068: equipped: [Neck] -1
+[10/04/26 22:35:45] D2BS 14068: equipped: [Body] 12
+[10/04/26 22:35:45] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 22:35:45] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 22:35:45] D2BS 14068: equipped: [RingR] 11
+[10/04/26 22:35:45] D2BS 14068: equipped: [RingL] -1
+[10/04/26 22:35:45] D2BS 14068: equipped: [Belt] 13
+[10/04/26 22:35:45] D2BS 14068: equipped: [Boots] 1
+[10/04/26 22:35:45] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 22:35:45] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 22:36:17] D2BS 14068: act5+ BO
+[10/04/26 22:36:31] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 22:38:55] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 22:39:15] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 22:39:22] D2BS 14068: ÿc4=== [COWS] ===
+[10/04/26 22:48:27] D2BS 14068: party has left: fowo-xa
+[10/04/26 22:48:27] D2BS 14068:  [12:43] +56.99% / [Level 46] 56.49%
+[10/04/26 22:48:27] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 22:48:27] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 22:48:27] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 22:48:27] D2BS 14068: Script default.dbj ended
+[10/04/26 22:48:41] D2BS 14068: joining game pz-46
+[10/04/26 22:48:43] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 22:48:43] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 22:48:43] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 22:48:43] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 22:48:43] D2BS 14068: equipped: [Head] 12
+[10/04/26 22:48:43] D2BS 14068: equipped: [Neck] -1
+[10/04/26 22:48:43] D2BS 14068: equipped: [Body] 12
+[10/04/26 22:48:43] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 22:48:43] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 22:48:43] D2BS 14068: equipped: [RingR] 11
+[10/04/26 22:48:43] D2BS 14068: equipped: [RingL] -1
+[10/04/26 22:48:43] D2BS 14068: equipped: [Belt] 13
+[10/04/26 22:48:43] D2BS 14068: equipped: [Boots] 1
+[10/04/26 22:48:43] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 22:48:43] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 22:48:46] D2BS 14068: MiniShopBot: true
+[10/04/26 22:49:45] D2BS 14068: act0 BO
+[10/04/26 22:50:18] D2BS 14068: ÿc4=== [DEN] ===
+[10/04/26 22:53:31] D2BS 14068: ÿc4=== [CAIN] ===
+[10/04/26 22:56:39] D2BS 14068: ÿc4=== [ANDY] ===
+[10/04/26 22:56:40] D2BS 14068: equipped: [RingL] 11
+[10/04/26 22:59:12] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 22:59:25] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 22:59:56] D2BS 14068: act1 WP
+[10/04/26 23:00:14] D2BS 14068: act2 BO
+[10/04/26 23:00:26] D2BS 14068: ÿc4=== [AMULET] ===
+[10/04/26 23:02:04] D2BS 14068: ÿc4=== [SUMMONER] ===
+[10/04/26 23:03:34] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 23:03:43] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 23:03:55] D2BS 14068: going to nearest WP
+[10/04/26 23:04:58] D2BS 14068: ÿc4=== [RADAMENT] ===
+[10/04/26 23:05:16] D2BS 14068: act2 BO
+[10/04/26 23:06:44] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 23:06:55] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 23:07:04] D2BS 14068: ÿc8!!! [BOOK] !!!
+[10/04/26 23:07:10] D2BS 14068: ÿc4=== [DURIEL] ===
+[10/04/26 23:12:38] D2BS 14068: act3 BO
+[10/04/26 23:14:37] D2BS 14068: ÿc4=== [TRAVINCAL] ===
+[10/04/26 23:16:14] D2BS 14068: party has left: fowo-xa
+[10/04/26 23:16:14] D2BS 14068:  [27:31] +74.87% / [Level 47] 34.95%
+[10/04/26 23:16:14] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 23:16:14] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 23:16:14] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 23:16:14] D2BS 14068: Script default.dbj ended
+[10/04/26 23:16:25] D2BS 14068: joining game pz-47
+[10/04/26 23:16:27] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 23:16:27] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 23:16:27] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 23:16:27] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 23:16:27] D2BS 14068: equipped: [Head] 12
+[10/04/26 23:16:27] D2BS 14068: equipped: [Neck] -1
+[10/04/26 23:16:27] D2BS 14068: equipped: [Body] 12
+[10/04/26 23:16:27] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 23:16:27] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 23:16:27] D2BS 14068: equipped: [RingR] 11
+[10/04/26 23:16:27] D2BS 14068: equipped: [RingL] 11
+[10/04/26 23:16:27] D2BS 14068: equipped: [Belt] 13
+[10/04/26 23:16:27] D2BS 14068: equipped: [Boots] 1
+[10/04/26 23:16:27] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 23:16:28] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 23:16:30] D2BS 14068: MiniShopBot: true
+[10/04/26 23:16:59] D2BS 14068: act3 BO
+[10/04/26 23:17:17] D2BS 14068: ÿc4=== [TRAVINCAL] ===
+[10/04/26 23:18:24] D2BS 14068: party has left: fowo-xa
+[10/04/26 23:18:24] D2BS 14068:  [01:57] +26.75% / [Level 47] 61.70%
+[10/04/26 23:18:24] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 23:18:24] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 23:18:24] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 23:18:24] D2BS 14068: Script default.dbj ended
+[10/04/26 23:18:37] D2BS 14068: joining game pz-48
+[10/04/26 23:18:38] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 23:18:38] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 23:18:38] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 23:18:38] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 23:18:38] D2BS 14068: equipped: [Head] 12
+[10/04/26 23:18:38] D2BS 14068: equipped: [Neck] -1
+[10/04/26 23:18:38] D2BS 14068: equipped: [Body] 12
+[10/04/26 23:18:38] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 23:18:38] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 23:18:38] D2BS 14068: equipped: [RingR] 11
+[10/04/26 23:18:38] D2BS 14068: equipped: [RingL] 11
+[10/04/26 23:18:38] D2BS 14068: equipped: [Belt] 13
+[10/04/26 23:18:38] D2BS 14068: equipped: [Boots] 1
+[10/04/26 23:18:38] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 23:18:38] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 23:18:40] D2BS 14068: MiniShopBot: true
+[10/04/26 23:19:09] D2BS 14068: act3 BO
+[10/04/26 23:19:29] D2BS 14068: ÿc4=== [TRAVINCAL] ===
+[10/04/26 23:20:29] D2BS 14068: party has left: fowo-xa
+[10/04/26 23:20:29] D2BS 14068:  [01:51] +25.48% / [Level 47] 87.17%
+[10/04/26 23:20:29] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 23:20:30] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 23:20:30] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 23:20:30] D2BS 14068: Script default.dbj ended
+[10/04/26 23:20:44] D2BS 14068: joining game pz-49
+[10/04/26 23:20:45] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 23:20:45] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 23:20:45] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 23:20:45] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 23:20:45] D2BS 14068: equipped: [Head] 12
+[10/04/26 23:20:45] D2BS 14068: equipped: [Neck] -1
+[10/04/26 23:20:45] D2BS 14068: equipped: [Body] 12
+[10/04/26 23:20:45] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 23:20:45] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 23:20:45] D2BS 14068: equipped: [RingR] 11
+[10/04/26 23:20:45] D2BS 14068: equipped: [RingL] 11
+[10/04/26 23:20:45] D2BS 14068: equipped: [Belt] 13
+[10/04/26 23:20:45] D2BS 14068: equipped: [Boots] 1
+[10/04/26 23:20:45] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 23:20:46] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 23:20:48] D2BS 14068: MiniShopBot: true
+[10/04/26 23:21:19] D2BS 14068: act3 BO
+[10/04/26 23:21:35] D2BS 14068: ÿc4=== [TRAVINCAL] ===
+[10/04/26 23:22:40] D2BS 14068: party has left: fowo-xa
+[10/04/26 23:22:40] D2BS 14068:  [01:55] +23.90% / [Level 48] 12.13%
+[10/04/26 23:22:40] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 23:22:40] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 23:22:40] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 23:22:40] D2BS 14068: Script default.dbj ended
+[10/04/26 23:22:53] D2BS 14068: joining game pz-50
+[10/04/26 23:22:55] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 23:22:55] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 23:22:55] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 23:22:55] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 23:22:55] D2BS 14068: equipped: [Head] 12
+[10/04/26 23:22:55] D2BS 14068: equipped: [Neck] -1
+[10/04/26 23:22:55] D2BS 14068: equipped: [Body] 12
+[10/04/26 23:22:55] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 23:22:55] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 23:22:55] D2BS 14068: equipped: [RingR] 11
+[10/04/26 23:22:55] D2BS 14068: equipped: [RingL] 11
+[10/04/26 23:22:55] D2BS 14068: equipped: [Belt] 13
+[10/04/26 23:22:55] D2BS 14068: equipped: [Boots] 1
+[10/04/26 23:22:55] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 23:22:55] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 23:22:57] D2BS 14068: MiniShopBot: true
+[10/04/26 23:23:37] D2BS 14068: act3 BO
+[10/04/26 23:23:52] D2BS 14068: ÿc4=== [TRAVINCAL] ===
+[10/04/26 23:24:43] D2BS 14068: party has left: fowo-xa
+[10/04/26 23:24:43] D2BS 14068:  [01:49] +23.68% / [Level 48] 35.81%
+[10/04/26 23:24:43] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 23:24:44] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 23:24:44] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 23:24:44] D2BS 14068: Script default.dbj ended
+[10/04/26 23:24:56] D2BS 14068: joining game pz-51
+[10/04/26 23:24:57] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 23:24:57] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 23:24:58] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 23:24:58] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 23:24:58] D2BS 14068: equipped: [Head] 12
+[10/04/26 23:24:58] D2BS 14068: equipped: [Neck] -1
+[10/04/26 23:24:58] D2BS 14068: equipped: [Body] 12
+[10/04/26 23:24:58] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 23:24:58] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 23:24:58] D2BS 14068: equipped: [RingR] 11
+[10/04/26 23:24:58] D2BS 14068: equipped: [RingL] 11
+[10/04/26 23:24:58] D2BS 14068: equipped: [Belt] 13
+[10/04/26 23:24:58] D2BS 14068: equipped: [Boots] 1
+[10/04/26 23:24:58] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 23:24:58] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 23:25:01] D2BS 14068: MiniShopBot: true
+[10/04/26 23:25:30] D2BS 14068: act3 BO
+[10/04/26 23:25:47] D2BS 14068: ÿc4=== [TRAVINCAL] ===
+[10/04/26 23:26:41] D2BS 14068: ÿc4=== [FIGURINE] ===
+[10/04/26 23:27:36] D2BS 14068: ÿc8!!! [POTION] !!!
+[10/04/26 23:29:03] D2BS 14068: ÿc4=== [MEPHISTO] ===
+[10/04/26 23:29:52] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 23:30:03] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 23:30:42] D2BS 14068: ÿc4=== [IZUAL] ===
+[10/04/26 23:32:39] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 23:32:54] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 23:33:06] D2BS 14068: ÿc4=== [DIABLO] ===
+[10/04/26 23:38:41] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 23:39:06] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 23:39:22] D2BS 14068: ÿc4=== [SHENK] ===
+[10/04/26 23:42:14] D2BS 14068: act4+ WP
+[10/04/26 23:42:27] D2BS 14068: act5 BO
+[10/04/26 23:43:00] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 23:43:27] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 23:43:35] D2BS 14068: ÿc4=== [ANYA] ===
+[10/04/26 23:45:41] D2BS 14068: ÿc8!!! [SCROLL] !!!
+[10/04/26 23:45:58] D2BS 14068: ÿc4=== [ANCIENTS] ===
+[10/04/26 23:46:56] D2BS 14068: Config.LifeChicken: 0
+[10/04/26 23:47:07] D2BS 14068: Config.LifeChicken: 20
+[10/04/26 23:47:26] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 23:50:08] D2BS 14068: Not ready to kill Baal
+[10/04/26 23:50:08] D2BS 14068: ÿc4=== [ABADDON] ===
+[10/04/26 23:53:01] D2BS 14068: ÿc4=== [POA] ===
+[10/04/26 23:54:55] D2BS 14068: party has left: fowo-xa
+[10/04/26 23:54:55] D2BS 14068:  [29:58] +429.50% / [Level 54] 2.26%
+[10/04/26 23:54:56] D2BS 14068: Script threads\autobuildthread.js ended
+[10/04/26 23:54:56] D2BS 14068: Script threads\partythread.js ended
+[10/04/26 23:54:56] D2BS 14068: Script threads\townchicken.js ended
+[10/04/26 23:54:56] D2BS 14068: Script default.dbj ended
+[10/04/26 23:55:10] D2BS 14068: joining game pz-52
+[10/04/26 23:55:11] D2BS 14068: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/04/26 23:55:11] D2BS 14068: ÿc2D2BSÿc0 :: default.dbj running.
+[10/04/26 23:55:11] D2BS 14068: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [N.SUMM.nip]
+[10/04/26 23:55:11] D2BS 14068: Loaded ÿc9[N.SUMM.js]
+[10/04/26 23:55:11] D2BS 14068: equipped: [Head] 12
+[10/04/26 23:55:11] D2BS 14068: equipped: [Neck] -1
+[10/04/26 23:55:11] D2BS 14068: equipped: [Body] 12
+[10/04/26 23:55:11] D2BS 14068: equipped: [ArmR] 11
+[10/04/26 23:55:11] D2BS 14068: equipped: [ArmL] 26
+[10/04/26 23:55:11] D2BS 14068: equipped: [RingR] 11
+[10/04/26 23:55:11] D2BS 14068: equipped: [RingL] 11
+[10/04/26 23:55:11] D2BS 14068: equipped: [Belt] 13
+[10/04/26 23:55:11] D2BS 14068: equipped: [Boots] 1
+[10/04/26 23:55:11] D2BS 14068: equipped: [Mitts] 1
+[10/04/26 23:55:12] D2BS 14068: Loaded ÿc9[AutoSmurf.js]
+[10/04/26 23:55:14] D2BS 14068: MiniShopBot: true
+[10/04/26 23:55:41] D2BS 14068: act5+ WP
+[10/04/26 23:55:58] D2BS 14068: act5+ BO
+[10/04/26 23:56:12] D2BS 14068: ÿc4=== [BAAL] ===
+[10/04/26 23:58:12] D2BS 14068: Not ready to kill Baal
+[10/04/26 23:58:12] D2BS 14068: ÿc4=== [ABADDON] ===
