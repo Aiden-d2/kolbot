@@ -2177,30 +2177,32 @@ function AutoSmurf() {
 			Precast.doPrecast(true);
 		}
 		
-		me.overhead("Getting waypoint...");
-		
-		if (me.inTown) {
-			Pather.useWaypoint(3);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		if (!getWaypoint(2)) {	//261006
+			me.overhead("Getting waypoint...");
+			
+			if (me.inTown) {
+				Pather.useWaypoint(3);
+				Pather.moveTo(me.x + myX, me.y + myY);	//260822
+				this.okCount();	//260922
+				Precast.doPrecast(true);
+			}
+
+			this.clearToExit(3, 4, 0);
 			this.okCount();	//260922
 			Precast.doPrecast(true);
+
+			Pather.goWP(me.area, true);
+			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+
+			this.okCount();
+			
+			this.clickWP();
+			
+			Pather.useWaypoint(1);
+			this.okCount();	//260922
 		}
-
-		this.clearToExit(3, 4, 0);
-		this.okCount();	//260922
-		Precast.doPrecast(true);
-
-		Pather.goWP(me.area, true);
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
-
-		this.okCount();
 		
-		this.clickWP();
-		
-		Pather.useWaypoint(1);
-		this.okCount();	//260922
-		
-		if (me.getQuest(2, 1)) {
+		if (!me.getQuest(2, 0)) {	//261006
 			while (!kashya || !kashya.openMenu()) { // Try more than once to interact with Kashya.
 				Packet.flash(me.gid);
 
