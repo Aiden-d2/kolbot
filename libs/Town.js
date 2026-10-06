@@ -76,40 +76,26 @@ var Town = {
 		}
 
 		if (shopItems) {
-			Misc.trace("gamble");
 			this.gamble();
 			if (Config.UseKeys) {	//260928 top up keys on regular visits only (never a reason to go to town)
-				Misc.trace("buyKeys");
 				this.buyKeys();
 			}
-			Misc.trace("reviveMerc");
 			this.reviveMerc();
 		
-			Misc.trace("Equip1");
 			Equip.autoEquip();
-			Misc.trace("Grant1");
 			Grant.autoEquip();
 			
-			Misc.trace("Cubing");
 			Cubing.doCubing();
-			Misc.trace("Runewords");
 			Runewords.makeRunewords();
 		}
 		
-		Misc.trace("clearBelt");
 		this.clearBelt();
-		Misc.trace("heal");
 		this.heal();
-		Misc.trace("identify");
 		this.identify();
-		Misc.trace("clearInventory");
 		this.clearInventory();
-		Misc.trace("fillTome");
 		this.fillTome(518);
 		
-		Misc.trace("buyPotions");
 		this.buyPotions(shopItems);
-		Misc.trace("repair");
 		this.repair(shopItems);
 		
 		var i,
@@ -126,18 +112,13 @@ var Town = {
 
 		me.cancel();
 
-		Misc.trace("pickItems");
 		Pickit.pickItems();
 		
-		Misc.trace("Equip2");
 		Equip.autoEquip();
-		Misc.trace("Grant2");
 		Grant.autoEquip();
 		
-		Misc.trace("stash");
 		this.stash();
 		
-		Misc.trace("doChores end");
 		return true;
 	},
 
@@ -800,7 +781,7 @@ CursorLoop:
 			return true;
 		}
 		
-		var i, item, result, name, classid, gids, bought,
+		var i, item, result, classid, gids, bought,	//261006 name removed (its trace is gone)
 			items = [],
 			npc = getInteractedNPC();
 
@@ -833,7 +814,6 @@ CursorLoop:
 				try {
 					if (Storage.Inventory.CanFit(items[i]) && me.getStat(14) + me.getStat(15) >= items[i].getItemCost(0)) {
 						// log only what really came in: a teammate in the same game can buy the same item first (same nip), then this buy fails	//260930 was logged before buy()
-						name = items[i].name;
 						classid = items[i].classid;
 						gids = (me.getItems() || []).map(function (it) { return it.gid; });
 						bought = items[i].buy() ? (me.getItems() || []).filter(function (it) { return gids.indexOf(it.gid) === -1 && it.classid === classid; })[0] : null;
@@ -847,7 +827,6 @@ CursorLoop:
 						}
 						
 						if (me.diff === 0 && items[i].itemType === 19) {	//260712 norm belt shopping, buy only one
-							Misc.trace("Shopped " + name + " " + result.result + " " + result.tier + " " + result.line + (bought ? "" : " (not bought)"));	//260805	//260930 name taken before buy()	//260930 print -> trace (diagnostic)
 							return true;
 						}
 						
@@ -2146,21 +2125,21 @@ MainLoop:
 	},
 
 	goToTown: function (act) {	//eom
-		var portal, made,	//261004 temp
+		var portal, made,	//261004
 			towns = [1, 40, 75, 103, 109],
-			startTick = getTickCount();	//261004 temp
+			startTick = getTickCount();	//261004
 
 		if (!me.inTown) {
-			portal = Pather.makePortal();	//261004 temp kept to trace it
+			portal = Pather.makePortal();	//261004 kept to trace it
 
 			if (!portal) {
 				throw new Error("Town.goToTown: Failed to make TP");
 			}
 
-			made = typeof portal === "object" ? portal.gid + " " + portal.x + "," + portal.y + " m" + portal.mode : String(portal);	//261004 temp read now, the unit may be gone later
+			made = typeof portal === "object" ? portal.gid + " " + portal.x + "," + portal.y + " m" + portal.mode : String(portal);	//261004 read now, the unit may be gone later
 
 			if (!Pather.usePortal(null, me.name)) {
-				Misc.trace("goToTown take TP failed start tick:" + startTick + " made:" + made);	//261004 temp
+				Misc.trace("goToTown take TP failed start tick:" + startTick + " made:" + made);	//261004	//261006 kept: failure record
 				throw new Error("Town.goToTown: Failed to take TP");
 			}
 		}
@@ -2204,7 +2183,7 @@ MainLoop:
 		var preArea = me.area,
 			preAct = me.act;
 
-		Misc.trace("visitTown start by:" + getScript(true).name + " tick:" + getTickCount());	//261004 temp who goes (default.dbj / TownChicken) and when
+		Misc.trace("visitTown start by:" + getScript(true).name + " tick:" + getTickCount());	//261004 who goes (default.dbj / TownChicken) and when
 
 		try { // not an essential function -> handle thrown errors
 			this.goToTown();
@@ -2224,7 +2203,7 @@ MainLoop:
 			throw new Error("Town.visitTown: Failed to go back from town");
 		}
 
-		Misc.trace("visitTown back tick:" + getTickCount());	//261004 temp portal reuse is blocked for 1-2s after this
+		Misc.trace("visitTown back tick:" + getTickCount());	//261004 portal reuse is blocked for 1-2s after this
 
 		return true;
 	}

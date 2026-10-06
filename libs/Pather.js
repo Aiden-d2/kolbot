@@ -278,14 +278,15 @@ var Pather = {
 
 		useTeleport = this.useTeleport();
 
-		Misc.trace("moveTo getPath -> " + x + "," + y + " tele:" + useTeleport);
 		path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.getTeleDistance() : this.walkDistance);	//260716	//260823	//260921	//261001 getTeleDistance
 
 		if (!path) {
 			throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y);	//260509
 		}
 		
-		Misc.trace("path total nodes: " + path.length);
+		if (!path.length) {	//261006 empty path (target not reachable from here): moveTo ends without moving
+			Misc.trace("moveTo no path -> " + x + "," + y + " tele:" + useTeleport);
+		}
 
 		path.reverse();
 
@@ -461,8 +462,6 @@ var Pather = {
 
 		PathDebug.removeHooks();
 
-		Misc.trace("moveTo end");
-		
 		return getDistance(me, node.x, node.y) <= 5;
 	},
 
@@ -1270,7 +1269,7 @@ ModeLoop:
 			portal = newPortal();	//260930 a late portal from the last cast: use it instead of casting again
 
 			if (portal) {	//261004 was i > 0: try 0 = a portal of mine that was already there (no cast)
-				Misc.trace("makePortal " + (i > 0 ? "late" : "existing") + " portal used try:" + i + " gid:" + portal.gid);	//260930	//261004 temp existing, gid
+				Misc.trace("makePortal " + (i > 0 ? "late" : "existing") + " portal used try:" + i + " gid:" + portal.gid);	//260930	//261004 existing, gid
 			}
 
 			if (!portal) {
@@ -1336,14 +1335,14 @@ ModeLoop:
 
 		me.cancel();
 
-		var i, tick, portal, redPortal, loadMs, result, list, p,
+		var i, tick, portal, redPortal, result, list, p,
 			preArea = me.area,
-			startTick = getTickCount(),	//261004 temp
-			tries = [];	//261004 temp
+			startTick = getTickCount(),	//261004
+			tries = [];	//261004
 
 		for (i = 0; i < 14; i += 1) {	//260809
 			if (me.dead) {
-				tries.push(i + ":dead");	//261004 temp
+				tries.push(i + ":dead");	//261004
 
 				break;
 			}
@@ -1354,7 +1353,7 @@ ModeLoop:
 
 			portal = unit ? copyUnit(unit) : this.getPortal(targetArea, owner);
 			redPortal = !!portal && portal.classid === 342;	//260926
-			tries.push(i + ":" + (portal ? portal.gid + (portal.area === me.area ? (i < 10 || redPortal ? " sent" : " click") : " area" + portal.area) : "none") + "@" + (getTickCount() - startTick));	//261004 temp
+			tries.push(i + ":" + (portal ? portal.gid + (portal.area === me.area ? (i < 10 || redPortal ? " sent" : " click") : " area" + portal.area) : "none") + "@" + (getTickCount() - startTick));	//261004
 
 			if (portal) {
 				if (portal.area === me.area) {
@@ -1363,10 +1362,6 @@ ModeLoop:
 					}
 
 					if (i < 10 || redPortal) {	//260926
-						if (redPortal) {	//260926 temp
-							Misc.trace("usePortal 342 send i:" + i + " area:" + me.area);
-						}
-						
 						sendPacket(1, 0x13, 4, 0x2, 4, portal.gid);
 						delay(Math.max(me.ping * 2, 200));	//260816
 					} else {
@@ -1395,17 +1390,9 @@ ModeLoop:
 
 				// a request that took moved within about 1s (red portal 47/47 on 260930); sending again sooner only doubles a slow request	//260930 was a flat 3s (red) / ping*2+300 (others)
 				// while an area loads (gameReady false, act change) keep waiting and never send again. me.area is undefined while loading
-				loadMs = -1;
-
 				while (getTickCount() - tick < (redPortal ? 1500 : Math.max(1000, me.ping * 2 + 300)) || !me.gameReady) {
-					if (!me.gameReady && loadMs < 0) {
-						loadMs = getTickCount() - tick;
-					}
-
 					if (me.gameReady && me.area && me.area !== preArea) {
-						if (redPortal) {
-							Misc.trace("usePortal 342 changed area:" + me.area + " ms:" + (getTickCount() - tick) + " loading at:" + loadMs);	//260930 temp
-						}
+						Misc.trace("usePortal ok: " + this.getAreaName(preArea) + " -> " + this.getAreaName(me.area) + " tries:" + (i + 1) + " ms:" + (getTickCount() - startTick));	//261006 entry time (who joined late)
 
 						delay(me.ping * 2 + 300);	//260830
 
@@ -1415,9 +1402,6 @@ ModeLoop:
 					delay(10);
 				}
 
-				if (redPortal) {
-					Misc.trace("usePortal 342 timeout loading at:" + loadMs);	//260930 temp
-				}
 			}
 			
 			if (i % 3 === 2 && !redPortal) {	//260926
@@ -1429,7 +1413,7 @@ ModeLoop:
 		
 		result = targetArea ? me.area === targetArea : me.area !== preArea;
 
-		if (!result && owner === me.name) {	//261004 temp: my own portal only (followers poll others' portals in loops). per try (gid sent/click/none @ms) and every portal in sight (gid/classid/owner/area/x,y/mode/dist)
+		if (!result && owner === me.name) {	//261004 my own portal only (followers poll others' portals in loops). per try (gid sent/click/none @ms) and every portal in sight (gid/classid/owner/area/x,y/mode/dist)	//261006 kept: failure record
 			list = [];
 			p = getUnit(2, "portal");
 

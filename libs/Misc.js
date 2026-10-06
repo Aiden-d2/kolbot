@@ -1431,16 +1431,6 @@ var Misc = {
 		return true;
 	},
 
-	// a chest skipped for a trap or a fire, traced once per chest (does the client objtype carry the trap type?)	//261001 temp: remove after the in-game check
-	chestSkipped: {},
-
-	traceChestSkip: function (unit, reason) {	//261001 temp
-		if (!this.chestSkipped[unit.gid]) {
-			this.chestSkipped[unit.gid] = true;
-			this.trace("[chest] skip " + reason + " name:" + unit.name + " classid:" + unit.classid + " objtype:" + unit.objtype + " dist:" + Math.round(getDistance(me, unit)));
-		}
-	},
-
 	openChests: function (range) {
 		var unit,
 			unitList = [],
@@ -1472,9 +1462,7 @@ var Misc = {
 
 				// objtype low 7 bits = trap type (lightning, firebolt, poison, nova, fire, trap monsters), bit 7 = locked	//261001
 				if (unit.name && unit.mode === 0 && getDistance(me.x, me.y, unit.x, unit.y) <= range && containers.indexOf(unit.name.toLowerCase()) > -1) {
-					if (unit.objtype & 0x7F) {	//261001 trapped chests skipped
-						this.traceChestSkip(unit, "trap");	//261001 temp
-					} else {
+					if (!(unit.objtype & 0x7F)) {	//261001 trapped chests skipped	//261006 trace removed (in-game check done)
 						unitList.push(copyUnit(unit));
 					}
 				}
@@ -1483,13 +1471,7 @@ var Misc = {
 
 		// a chest next to a fire (e.g. a burning staked corpse): opening it means standing in the fire	//261001
 		unitList = unitList.filter(function (chest) {
-			if (Attack.checkFire(chest.x, chest.y, fireList)) {
-				Misc.traceChestSkip(chest, "fire");	//261001 temp
-
-				return false;
-			}
-
-			return true;
+			return !Attack.checkFire(chest.x, chest.y, fireList);	//261006 trace removed (in-game check done)
 		});
 
 		while (unitList.length > 0) {
@@ -2760,7 +2742,9 @@ var Packet = {
 			return;
 		}
 
-		Misc.trace("[TK] talk skipped " + talk.keys + " npc:" + npc.name);
+		if (talk.keys >= 20) {	//261006 only when every space was used and the talk may still be on
+			Misc.trace("[TK] talk skipped " + talk.keys + " npc:" + npc.name);
+		}
 
 		if (!me.automap) {
 			me.automap = true;

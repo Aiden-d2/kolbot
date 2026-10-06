@@ -52,6 +52,8 @@ function AutoSmurf() {
 		teamOk = false,
 		teamCount = 0,
 		guardChicken = null,	//261004 bossGuard: LifeChicken saved while the boss guard is on (null = guard off)
+		guardSeen = null,	//261006 bossGuard: boss units seen while the guard is on (gid -> name, first/last HP and ms), traced at bossEnd
+		guardStart = 0,	//261006 bossGuard: when the guard went on (ms in that trace line)
 
 		syncBO = false,
 		syncWP = false,
@@ -471,29 +473,6 @@ function AutoSmurf() {
 		teamOk = false;
 	};
 
-	// Log only (no behavior change): waits exactly like delay(wait) and records whether an object dialog showed and when it ended.	//260929 temp
-	// For the Game.exe 0x661406 crash (stale NPC talk callback run when a dialog ends), see docs/claude/handoff.md 7.
-	this.watchDialog = function (wait) {	//260929 temp
-		var talking,
-			tick = getTickCount(),
-			shown = -1,
-			gone = -1;
-		
-		while (getTickCount() - tick < wait) {
-			talking = getIsTalkingNPC();
-			
-			if (talking && shown < 0) {
-				shown = getTickCount() - tick;
-			} else if (!talking && shown >= 0 && gone < 0) {
-				gone = getTickCount() - tick;
-			}
-			
-			delay(10);
-		}
-		
-		Misc.trace("[OD] " + (shown < 0 ? "no dialog" : "dialog at " + shown + "ms " + (gone < 0 ? "still up" : "gone at " + gone + "ms")) + " wait:" + wait);
-	};
-
 	this.buffCount = function(act) { // Goes to Town, buys three Antidote potions from Akara, drinks them, and returns to Catacombs Level 4.
 		var i, akara, lysander, potions, dote, thaw;
 
@@ -650,6 +629,11 @@ function AutoSmurf() {
 			return false;
 		}
 		
+		var syncTick = getTickCount(),	//261006 step times (s since the start) for who joined late
+			steps = [];
+
+		Misc.trace("syncBO start");	//261006
+		
 		if (Leader) {
 			if (!me.getState(32)) {
 				while (BOCount < Team.Size - 1) {
@@ -688,9 +672,11 @@ function AutoSmurf() {
 		BOing = false;
 		BOCount = 0;
 		BOReady = false;
+		steps.push("ready " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006 BOing/BOed and BOReady handshake done
 		
 		if (BOed) {
 			BOed = false;
+			Misc.trace("syncBO end: " + steps.join(", ") + " (BOed)");	//261006
 			return false;
 		}
 		
@@ -814,9 +800,11 @@ function AutoSmurf() {
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
 		}
 		
+		steps.push("at " + Pather.getAreaName(me.area) + " " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		this.okCount();
+		steps.push("okCount " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006
 
 		if (destination === 2) {
 			while (me.area !== home) {
@@ -828,6 +816,7 @@ function AutoSmurf() {
 		}
 		
 		delay(me.ping * 2 + 1000);
+		Misc.trace("syncBO end: " + steps.join(", ") + ", home " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006
 		
 		return true;
 	};
@@ -849,6 +838,10 @@ function AutoSmurf() {
 		print(msg);
 		me.overhead(msg);
 
+		var syncTick = getTickCount();	//261006
+
+		Misc.trace("syncWP start: " + msg);	//261006
+
 		if (Leader) {
 			Pather.useWaypoint(destination);
 			delay(me.ping * 2 + 200);
@@ -864,6 +857,8 @@ function AutoSmurf() {
 			}
 		}
 		
+		var portalSec = ((getTickCount() - syncTick) / 1000).toFixed(1);	//261006
+
 		this.okCount();
 		
 		this.clickWP();
@@ -875,6 +870,7 @@ function AutoSmurf() {
 		}
 		
 		delay(me.ping * 2 + 200);
+		Misc.trace("syncWP end: there " + portalSec + "s, end " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006
 		
 		return true;
 	};
@@ -985,23 +981,35 @@ function AutoSmurf() {
 	// Boss guard (questing): nobody leaves on a chicken before the boss is dead, so the team gets the quest together (a profile that left first missed the kill and the next game desynced)	//261004
 	// pct 0: chicken off now (Summoner). pct > 0: chicken off once the boss is at pct% HP or lower (Ancients: only when one is left)
 	this.bossGuard = function (pct) {	//261004
-		var self = this;
+		var self = this,
+			fired = false;	//261006 the chicken went off: keep watching for the trace only (was onBossLow = null)
 
 		guardChicken = Config.LifeChicken;
+		guardSeen = {};	//261006
+		guardStart = getTickCount();	//261006
 
 		if (!pct) {
 			Misc.trace("bossGuard chicken off: pct 0 (now)");	//261004
 			this.setLifeChicken(0);
 
-			return true;
+			fired = true;	//261006 pct 0 also watches the boss (seen / last seen alive in the bossEnd trace)
 		}
 
 		// Attack.clear hands every scanned boss unit here
 		Attack.onBossLow = function (unit) {
 			var i, u,
-				alive = 0;
+				alive = 0,
+				hp = Math.round(unit.hp * 100 / 128),	//261006
+				seen = guardSeen[unit.gid];	//261006
 
-			if (unit.hp * 100 / 128 > pct) {
+			if (!seen) {	//261006 first and last scan of each boss unit
+				seen = guardSeen[unit.gid] = {name: unit.name, hp0: hp, t0: getTickCount() - guardStart};
+			}
+
+			seen.hp1 = hp;
+			seen.t1 = getTickCount() - guardStart;
+
+			if (fired || unit.hp * 100 / 128 > pct) {	//261006 fired
 				return;
 			}
 
@@ -1019,12 +1027,28 @@ function AutoSmurf() {
 				}
 			}
 
-			Attack.onBossLow = null;
+			fired = true;	//261006 was Attack.onBossLow = null
 			Misc.trace("bossGuard chicken off: pct " + pct + ", " + unit.name + " " + Math.round(unit.hp * 100 / 128) + "%");	//261004 call value + boss HP
 			self.setLifeChicken(0);
 		};
 
 		return true;
+	};
+
+	// what the guard saw: each boss unit's first and last scan (HP% and seconds after the guard went on). The last scan of a dead boss is about when it died (within one clear tick)	//261006
+	this.traceGuardSeen = function () {
+		var gid, seen,
+			list = [];
+
+		for (gid in guardSeen) {
+			if (guardSeen.hasOwnProperty(gid)) {
+				seen = guardSeen[gid];
+				list.push(seen.name + " " + seen.hp0 + "%@" + (seen.t0 / 1000).toFixed(1) + "s-" + seen.hp1 + "%@" + (seen.t1 / 1000).toFixed(1) + "s");
+			}
+		}
+
+		Misc.trace("bossGuard seen: " + (list.join(", ") || "none") + " (end@" + ((getTickCount() - guardStart) / 1000).toFixed(1) + "s)");
+		guardSeen = null;
 	};
 
 	// Right after the boss clear: sync once the boss is dead (the dead wait as corpses, so they get the quest too), the dead revive and get their corpse, then sync again	//261004
@@ -1036,6 +1060,7 @@ function AutoSmurf() {
 		}
 
 		Attack.onBossLow = null;
+		this.traceGuardSeen();	//261006
 
 		this.okCount(range);
 
@@ -3398,7 +3423,7 @@ function AutoSmurf() {
 			if (journal) {
 				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
+				delay(me.ping * 2 + 1000);	//261006 watchDialog log removed	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			}
 		}
 
@@ -3447,9 +3472,6 @@ function AutoSmurf() {
 		if (Leader) {
 			D2Bot.printToConsole("=== SUMMONER ===", 7);
 		}
-		
-		Misc.trace("summoner quest 13,0 " + me.getQuest(13, 0));	//261001
-		Misc.trace("summoner quest 13,1 " + me.getQuest(13, 1));	//261001
 		
 		doneChores = false;
 		
@@ -4146,7 +4168,7 @@ function AutoSmurf() {
 			target = getUnit(2, 193);
 
 			Misc.openChest(target);
-			this.watchDialog(300);	//260929 temp was delay
+			delay(300);	//261006 watchDialog log removed
 
 			target = getUnit(4, 548);
 			Pickit.pickItem(target);
@@ -5361,7 +5383,7 @@ function AutoSmurf() {
 							Pather.moveToUnit(anya);
 						}
 						anya.interact();
-						this.watchDialog(me.ping * 2 + 200);	//260929 temp was delay
+						delay(me.ping * 2 + 200);	//261006 watchDialog log removed
 						me.cancel();
 					}
 
@@ -5405,7 +5427,7 @@ function AutoSmurf() {
 					}
 					
 					anya.interact();
-					this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
+					delay(me.ping * 2 + 1000);	//261006 watchDialog log removed
 					me.cancel();
 				}
 			} else {
@@ -5552,7 +5574,7 @@ function AutoSmurf() {
 				while (altar.mode !== 2) {
 					Pather.moveToUnit(altar);
 					altar.interact();
-					this.watchDialog(me.ping * 2 + 2000);	//260929 temp was delay
+					delay(me.ping * 2 + 2000);	//261006 watchDialog log removed
 					me.cancel();
 				}
 			}
@@ -5563,13 +5585,13 @@ function AutoSmurf() {
 			
 			Attack.clear(0, [540, 541, 542]);	//260928 all three as must targets, nearest first
 			
-			this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
+			delay(me.ping * 2 + 1000);	//261006 watchDialog log removed
 			me.cancel();
 			sendPacket(1, 0x40); //fresh Quest state.
 			
 			if (!me.getQuest(39,0)) {	//260719
 				
-				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay
+				delay(me.ping * 2 + 1000);	//261006 watchDialog log removed
 				me.cancel();
 				sendPacket(1, 0x40); //fresh Quest state.
 			}
@@ -6826,7 +6848,7 @@ function AutoSmurf() {
 			if (journal) {
 				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
-				this.watchDialog(me.ping * 2 + 1000);	//260929 temp was delay	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
+				delay(me.ping * 2 + 1000);	//261006 watchDialog log removed	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			}
 		}
 		
@@ -7421,6 +7443,7 @@ function AutoSmurf() {
 				
 			case "tpReady":
 				tpReady = true;
+				Misc.trace("tpReady received");	//261006 with "usePortal ok" next: how long the portal took
 				me.overhead("tpReady");
 				break;
 			case "earlyReturn":

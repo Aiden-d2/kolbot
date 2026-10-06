@@ -343,7 +343,10 @@ Loop:
 			return true;
 		}
 
+		var invOpen = "-";	//261006 inventory panel state at the place click (FAILED line)
+
 		if (target.toCursor()) {
+			invOpen = getUIFlag(0x01) ? "open" : "closed";	//261006
 			clickItem(0, col, row, this.location);
 
 			tick = getTickCount();
@@ -370,14 +373,12 @@ Loop:
 		
 		var rv = (!!target && target.mode === 0 && target.location === this.location && target.x === col && target.y === row);	//260827
 
-		if (rv) {	//260827
-			Misc.trace("[MoveToSlot] " + item.fname);	//260922	//260930 print -> trace (diagnostic)
-		} else {
+		if (!rv) {	//260827	//261006 success line removed
 			Storage.Reload();	//260930 temp: what the slot holds now, what was dropped from the cursor, where the item ended up
 
 			var occupant = this.buffer[row][col] > 0 ? this.itemList[this.buffer[row][col] - 1] : null;
 
-			Misc.trace("[MoveToSlot] " + item.fname + " FAILED slot:" + (occupant ? occupant.fname : "empty") + " dropped:" + dropped + " item:" + (target ? "loc " + target.location + " mode " + target.mode + " at " + target.x + "," + target.y : "gone"));	//260922	//260930 temp detail	//260930 print -> trace (diagnostic)
+			Misc.trace("[MoveToSlot] " + item.fname + " FAILED slot:" + (occupant ? occupant.fname : "empty") + " dropped:" + dropped + " item:" + (target ? "loc " + target.location + " mode " + target.mode + " at " + target.x + "," + target.y : "gone") + " inv:" + invOpen);	//260922	//260930 temp detail	//260930 print -> trace (diagnostic)
 		}
 
 		return rv	//260827

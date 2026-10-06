@@ -164,8 +164,37 @@ function main() {
 	};
 
 	this.exit = function () {
+		var tick = getTickCount();	//261006
+
 		this.stopDefault();
+		Misc.trace("[Quit] stopDefault " + (getTickCount() - tick) + "ms");	//261006 time spent before quit() (deaths right after a chicken)
 		quit();
+	};
+
+	// what was around at a chicken: my mode (teleport, attack, walk...) and the nearest live monsters (name, distance, spectype bits)	//261006
+	this.nearMonsters = function () {
+		var unit, list = [];
+
+		try {
+			unit = getUnit(1);
+
+			if (unit) {
+				do {
+					if (unit.hp > 0 && unit.mode !== 0 && unit.mode !== 12 && unit.getStat(172) !== 2 && getDistance(me, unit) <= 30) {
+						list.push({name: unit.name, d: Math.round(getDistance(me, unit)), s: unit.spectype});
+					}
+				} while (unit.getNext());
+			}
+		} catch (e) {
+		}
+
+		list.sort(function (a, b) {
+			return a.d - b.d;
+		});
+
+		return " | mode:" + me.mode + " near:" + (list.slice(0, 5).map(function (m) {
+			return m.name + " d" + m.d + " s" + m.s;
+		}).join(", ") || "none") + (list.length > 5 ? " (+" + (list.length - 5) + ")" : "");
 	};
 
 	this.drinkPotion = function (type) {
@@ -568,7 +597,7 @@ function main() {
 
 				if (Config.LifeChicken > 0 && me.hp <= Math.floor(me.hpmax * Config.LifeChicken / 100)) {
 					D2Bot.printToConsole("Life Chicken " + me.hp + "/" + me.hpmax + " (" + Misc.where() + ")", 9);	//260930
-					Misc.trace("[Quit] Life Chicken " + me.hp + "/" + me.hpmax);	//260930
+					Misc.trace("[Quit] Life Chicken " + me.hp + "/" + me.hpmax + this.nearMonsters());	//260930	//261006 mode and monsters around
 					print("[Chicken] Life (" + me.hp + "/" + me.hpmax + ") area:" + me.area + " (" + me.x + "," + me.y + ")");	//eom 260415
 					D2Bot.updateChickens();
 
