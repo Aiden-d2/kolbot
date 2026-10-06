@@ -59,7 +59,7 @@ var Build = {
 			return "P.CONC";
 			
 		case profiles[4]:
-			return "P.CONV";
+			return "S.FONV";
 			
 		case profiles[5]:
 			return "D.FGOM";
