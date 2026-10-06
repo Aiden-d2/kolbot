@@ -40557,3 +40557,3008 @@
 10/5 22:27:29 [Chaos Sanctuary 7708,5314] moveTo end
 10/5 22:27:29 [Chaos Sanctuary 7708,5314] moveTo getPath -> 7660,5275 tele:false
 10/5 22:27:29 [Chaos Sanctuary 7708,5314] path total nodes: 31
+10/5 22:27:52 [Chaos Sanctuary 7662,5276] moveTo end
+10/5 22:27:52 [Chaos Sanctuary 7662,5276] moveTo getPath -> 7660,5315 tele:false
+10/5 22:27:52 [Chaos Sanctuary 7662,5276] path total nodes: 22
+10/5 22:27:55 [Chaos Sanctuary 7663,5314] moveTo end
+10/5 22:28:6 [Chaos Sanctuary 7662,5315] moveTo getPath -> 7680,5295 tele:false
+10/5 22:28:6 [Chaos Sanctuary 7662,5315] path total nodes: 10
+10/5 22:28:9 [Chaos Sanctuary 7680,5294] moveTo end
+10/5 22:28:16 [Chaos Sanctuary 7701,5290] moveTo getPath -> 7697,5285 tele:false
+10/5 22:28:16 [Chaos Sanctuary 7701,5290] path total nodes: 5
+10/5 22:28:16 [Chaos Sanctuary 7698,5286] moveTo end
+10/5 22:28:16 [Chaos Sanctuary 7698,5286] moveTo getPath -> 7791,5297 tele:0
+10/5 22:28:16 [Chaos Sanctuary 7698,5286] path total nodes: 29
+10/5 22:28:22 [Chaos Sanctuary 7789,5296] moveTo end
+10/5 22:28:36 [Chaos Sanctuary 7795,5295] moveTo getPath -> 7780,5290 tele:false
+10/5 22:28:36 [Chaos Sanctuary 7795,5295] path total nodes: 8
+10/5 22:28:37 [Chaos Sanctuary 7792,5293] moveTo end
+10/5 22:28:37 [Chaos Sanctuary 7792,5293] moveTo getPath -> 7780,5290 tele:false
+10/5 22:28:37 [Chaos Sanctuary 7792,5293] path total nodes: 9
+10/5 22:28:38 [Chaos Sanctuary 7783,5290] moveTo end
+10/5 22:28:52 [The Pandemonium Fortress 5049,5044] === game Pz-180 ===
+10/5 22:28:55 [The Pandemonium Fortress 5049,5044] moveTo getPath -> 5046,5025 tele:false
+10/5 22:28:55 [The Pandemonium Fortress 5049,5044] path total nodes: 8
+10/5 22:28:58 [The Pandemonium Fortress 5045,5026] moveTo end
+10/5 22:28:58 [The Pandemonium Fortress 5045,5026] moveTo getPath -> 5044,5019 tele:false
+10/5 22:28:58 [The Pandemonium Fortress 5045,5026] path total nodes: 5
+10/5 22:28:59 [The Pandemonium Fortress 5044,5023] moveTo end
+10/5 22:28:59 [The Pandemonium Fortress 5044,5023] moveTo getPath -> 5044,5019 tele:false
+10/5 22:28:59 [The Pandemonium Fortress 5044,5023] path total nodes: 2
+10/5 22:28:59 [The Pandemonium Fortress 5044,5021] moveTo end
+10/5 22:29:0 [Harrogath 5113,5068] gamble
+10/5 22:29:0 [Harrogath 5113,5068] reviveMerc
+10/5 22:29:0 [Harrogath 5113,5068] Equip1
+10/5 22:29:0 [Harrogath 5113,5068] Grant1
+10/5 22:29:0 [Harrogath 5113,5068] Cubing
+10/5 22:29:1 [Harrogath 5113,5068] Runewords
+10/5 22:29:1 [Harrogath 5113,5068] clearBelt
+10/5 22:29:1 [Harrogath 5113,5068] heal
+10/5 22:29:1 [Harrogath 5113,5068] identify
+10/5 22:29:1 [Harrogath 5113,5068] moveTo getPath -> 5080,5030 tele:false
+10/5 22:29:1 [Harrogath 5113,5068] path total nodes: 22
+10/5 22:29:1 [Harrogath 5112,5063] moveTo end
+10/5 22:29:1 [Harrogath 5112,5063] moveTo getPath -> 5079,5030 tele:false
+10/5 22:29:1 [Harrogath 5112,5063] path total nodes: 28
+10/5 22:29:6 [Harrogath 5077,5028] moveTo end
+10/5 22:29:8 [Harrogath 5077,5028] clearInventory
+10/5 22:29:8 [Harrogath 5077,5028] fillTome
+10/5 22:29:8 [Harrogath 5077,5028] buyPotions
+10/5 22:29:9 [Harrogath 5077,5028] repair
+10/5 22:29:9 [Harrogath 5077,5028] moveTo getPath -> 5141,5045 tele:false
+10/5 22:29:9 [Harrogath 5077,5028] path total nodes: 27
+10/5 22:29:15 [Harrogath 5140,5046] moveTo end
+10/5 22:29:17 [Harrogath 5140,5046] pickItems
+10/5 22:29:17 [Harrogath 5140,5046] Equip2
+10/5 22:29:17 [Harrogath 5140,5046] Grant2
+10/5 22:29:17 [Harrogath 5140,5046] stash
+10/5 22:29:17 [Harrogath 5140,5046] doChores end
+10/5 22:29:18 [Harrogath 5140,5046] moveTo getPath -> 5119,5063 tele:false
+10/5 22:29:18 [Harrogath 5140,5046] path total nodes: 10
+10/5 22:29:19 [Harrogath 5120,5062] moveTo end
+10/5 22:29:19 [Harrogath 5120,5062] moveTo getPath -> 5114,5069 tele:false
+10/5 22:29:19 [Harrogath 5119,5063] path total nodes: 4
+10/5 22:29:20 [Harrogath 5115,5068] moveTo end
+10/5 22:29:20 [Harrogath 5114,5069] moveTo getPath -> 5119,5074 tele:false
+10/5 22:29:20 [Harrogath 5114,5069] path total nodes: 4
+10/5 22:29:21 [Harrogath 5119,5074] moveTo end
+10/5 22:29:32 [Harrogath 5119,5074] moveTo getPath -> 5114,5069 tele:false
+10/5 22:29:32 [Harrogath 5119,5074] path total nodes: 4
+10/5 22:29:33 [Harrogath 5116,5069] moveTo end
+10/5 22:29:33 [Harrogath 5116,5069] moveTo getPath -> 5114,5069 tele:false
+10/5 22:29:33 [Harrogath 5116,5069] path total nodes: 3
+10/5 22:29:33 [Harrogath 5115,5069] moveTo end
+10/5 22:29:34 [Ancient's Way 10023,10596] moveTo getPath -> 10028,10601 tele:0
+10/5 22:29:34 [Ancient's Way 10023,10596] path total nodes: 4
+10/5 22:29:35 [Ancient's Way 10026,10599] moveTo end
+10/5 22:29:43 [Harrogath 5116,5071] === [BAAL] ===
+10/5 22:29:53 [Harrogath 5095,5014] === [COUNTESS] ===
+10/5 22:29:53 [Harrogath 5095,5014] clearBelt
+10/5 22:29:53 [Harrogath 5095,5014] heal
+10/5 22:29:53 [Harrogath 5095,5014] identify
+10/5 22:29:53 [Harrogath 5095,5014] clearInventory
+10/5 22:29:53 [Harrogath 5095,5014] fillTome
+10/5 22:29:53 [Harrogath 5095,5014] buyPotions
+10/5 22:29:53 [Harrogath 5095,5014] repair
+10/5 22:29:53 [Harrogath 5095,5014] pickItems
+10/5 22:29:53 [Harrogath 5095,5014] Equip2
+10/5 22:29:53 [Harrogath 5095,5014] Grant2
+10/5 22:29:53 [Harrogath 5095,5014] stash
+10/5 22:29:53 [Harrogath 5095,5014] doChores end
+10/5 22:29:56 [Harrogath 5095,5014] moveTo getPath -> 5110,5061 tele:false
+10/5 22:29:56 [Harrogath 5095,5014] path total nodes: 20
+10/5 22:29:59 [Harrogath 5109,5057] moveTo end
+10/5 22:29:59 [Harrogath 5109,5057] moveTo getPath -> 5114,5069 tele:false
+10/5 22:29:59 [Harrogath 5110,5058] path total nodes: 5
+10/5 22:30:0 [Harrogath 5114,5064] moveTo end
+10/5 22:30:0 [Harrogath 5114,5064] moveTo getPath -> 5114,5069 tele:false
+10/5 22:30:0 [Harrogath 5114,5064] path total nodes: 2
+10/5 22:30:0 [Harrogath 5116,5070] moveTo end
+10/5 22:30:1 [Rogue Encampment 5718,4493] moveTo getPath -> 5747,4555 tele:false
+10/5 22:30:1 [Rogue Encampment 5718,4493] path total nodes: 28
+10/5 22:30:5 [Rogue Encampment 5747,4553] moveTo end
+10/5 22:30:36 [Rogue Encampment 5747,4555] moveTo getPath -> 5753,4558 tele:false
+10/5 22:30:36 [Rogue Encampment 5747,4555] path total nodes: 7
+10/5 22:30:37 [Rogue Encampment 5753,4558] moveTo end
+10/5 22:30:48 [Tower Cellar Level 5 12535,11078] moveTo getPath -> 12526,11070 tele:false
+10/5 22:30:48 [Tower Cellar Level 5 12535,11078] path total nodes: 5
+10/5 22:30:49 [Tower Cellar Level 5 12529,11071] moveTo end
+10/5 22:30:49 [Tower Cellar Level 5 12529,11071] moveTo getPath -> 12534,11076 tele:false
+10/5 22:30:49 [Tower Cellar Level 5 12528,11071] path total nodes: 5
+10/5 22:30:49 [Tower Cellar Level 5 12532,11074] moveTo end
+10/5 22:30:57 [Tower Cellar Level 5 12534,11076] moveTo getPath -> 12517,11060 tele:false
+10/5 22:30:57 [Tower Cellar Level 5 12534,11076] path total nodes: 9
+10/5 22:30:59 [Tower Cellar Level 5 12519,11062] moveTo end
+10/5 22:30:59 [Tower Cellar Level 5 12519,11062] moveTo getPath -> 12517,11060 tele:false
+10/5 22:30:59 [Tower Cellar Level 5 12519,11062] path total nodes: 3
+10/5 22:30:59 [Tower Cellar Level 5 12517,11060] moveTo end
+10/5 22:31:0 [Rogue Encampment 5752,4561] === [PIT] ===
+10/5 22:31:0 [Rogue Encampment 5752,4561] clearBelt
+10/5 22:31:0 [Rogue Encampment 5752,4561] heal
+10/5 22:31:0 [Rogue Encampment 5753,4562] identify
+10/5 22:31:0 [Rogue Encampment 5753,4562] clearInventory
+10/5 22:31:0 [Rogue Encampment 5754,4562] fillTome
+10/5 22:31:0 [Rogue Encampment 5754,4562] buyPotions
+10/5 22:31:0 [Rogue Encampment 5754,4562] repair
+10/5 22:31:0 [Rogue Encampment 5754,4562] pickItems
+10/5 22:31:1 [Rogue Encampment 5758,4563] Equip2
+10/5 22:31:1 [Rogue Encampment 5758,4563] Grant2
+10/5 22:31:1 [Rogue Encampment 5758,4563] stash
+10/5 22:31:1 [Rogue Encampment 5758,4563] doChores end
+10/5 22:31:1 [Rogue Encampment 5758,4563] moveTo getPath -> 5747,4555 tele:false
+10/5 22:31:1 [Rogue Encampment 5758,4563] path total nodes: 10
+10/5 22:31:2 [Rogue Encampment 5747,4555] moveTo end
+10/5 22:31:32 [Pit Level 2 7530,14397] moveTo getPath -> 7548,14429 tele:false
+10/5 22:31:32 [Pit Level 2 7530,14397] path total nodes: 13
+10/5 22:31:37 [Pit Level 2 7540,14415] moveTo getPath -> 7545,14408 tele:false
+10/5 22:31:37 [Pit Level 2 7540,14415] path total nodes: 8
+10/5 22:31:38 [Pit Level 2 7542,14408] moveTo end
+10/5 22:32:5 [Pit Level 2 7549,14430] moveTo end
+10/5 22:32:5 [Pit Level 2 7549,14430] moveTo getPath -> 7558,14465 tele:false
+10/5 22:32:5 [Pit Level 2 7549,14430] path total nodes: 17
+10/5 22:32:11 [Pit Level 2 7558,14465] moveTo end
+10/5 22:32:11 [Pit Level 2 7558,14465] moveTo getPath -> 7585,14445 tele:false
+10/5 22:32:11 [Pit Level 2 7558,14465] path total nodes: 13
+10/5 22:32:14 [Pit Level 2 7584,14447] moveTo end
+10/5 22:32:14 [Pit Level 2 7584,14447] moveTo getPath -> 7575,14401 tele:false
+10/5 22:32:14 [Pit Level 2 7584,14447] path total nodes: 21
+10/5 22:32:27 [Pit Level 2 7572,14400] moveTo end
+10/5 22:32:27 [Pit Level 2 7572,14400] moveTo getPath -> 7607,14420 tele:false
+10/5 22:32:27 [Pit Level 2 7573,14401] path total nodes: 15
+10/5 22:32:31 [Pit Level 2 7605,14420] moveTo end
+10/5 22:32:31 [Pit Level 2 7605,14420] moveTo getPath -> 7600,14431 tele:false
+10/5 22:32:31 [Pit Level 2 7605,14420] path total nodes: 8
+10/5 22:32:32 [Pit Level 2 7602,14429] moveTo end
+10/5 22:32:36 [Rogue Encampment 5758,4561] === [ANDY] ===
+10/5 22:32:36 [Rogue Encampment 5758,4561] clearBelt
+10/5 22:32:36 [Rogue Encampment 5758,4561] heal
+10/5 22:32:36 [Rogue Encampment 5758,4561] identify
+10/5 22:32:36 [Rogue Encampment 5758,4561] moveTo getPath -> 5793,4507 tele:false
+10/5 22:32:36 [Rogue Encampment 5758,4561] path total nodes: 31
+10/5 22:32:40 [Rogue Encampment 5793,4507] moveTo end
+10/5 22:32:40 [Rogue Encampment 5793,4507] moveTo getPath -> 5789,4505 tele:false
+10/5 22:32:40 [Rogue Encampment 5793,4507] path total nodes: 5
+10/5 22:32:41 [Rogue Encampment 5790,4506] moveTo end
+10/5 22:32:42 [Rogue Encampment 5790,4506] clearInventory
+10/5 22:32:42 [Rogue Encampment 5790,4506] fillTome
+10/5 22:32:42 [Rogue Encampment 5790,4506] buyPotions
+10/5 22:32:42 [Rogue Encampment 5790,4506] repair
+10/5 22:32:43 [Rogue Encampment 5790,4506] pickItems
+10/5 22:32:43 [Rogue Encampment 5790,4506] Equip2
+10/5 22:32:43 [Rogue Encampment 5790,4506] Grant2
+10/5 22:32:43 [Rogue Encampment 5790,4506] stash
+10/5 22:32:43 [Rogue Encampment 5790,4506] doChores end
+10/5 22:32:49 [Rogue Encampment 5790,4506] moveTo getPath -> 5747,4555 tele:false
+10/5 22:32:49 [Rogue Encampment 5790,4506] path total nodes: 24
+10/5 22:32:53 [Rogue Encampment 5749,4555] moveTo end
+10/5 22:33:26 [Catacombs Level 4 22550,9541] moveTo getPath -> 22562,9549 tele:false
+10/5 22:33:26 [Catacombs Level 4 22550,9541] path total nodes: 7
+10/5 22:33:27 [Catacombs Level 4 22561,9548] moveTo end
+10/5 22:33:29 [Catacombs Level 4 22562,9549] moveTo getPath -> 22549,9520 tele:false
+10/5 22:33:29 [Catacombs Level 4 22562,9549] path total nodes: 11
+10/5 22:33:31 [Catacombs Level 4 22550,9521] moveTo end
+10/5 22:33:31 [Catacombs Level 4 22550,9521] moveTo getPath -> 22555,9526 tele:false
+10/5 22:33:31 [Catacombs Level 4 22550,9521] path total nodes: 4
+10/5 22:33:33 [Catacombs Level 4 22553,9526] moveTo end
+10/5 22:33:34 [Catacombs Level 4 22555,9526] moveTo getPath -> 22553,9526 tele:false
+10/5 22:33:34 [Catacombs Level 4 22555,9526] path total nodes: 3
+10/5 22:33:34 [Catacombs Level 4 22555,9526] moveTo end
+10/5 22:33:36 [Catacombs Level 4 22555,9526] moveTo getPath -> 22551,9520 tele:false
+10/5 22:33:37 [Catacombs Level 4 22555,9526] path total nodes: 7
+10/5 22:33:37 [Catacombs Level 4 22553,9522] moveTo end
+10/5 22:33:37 [Catacombs Level 4 22553,9522] moveTo getPath -> 22551,9520 tele:false
+10/5 22:33:37 [Catacombs Level 4 22553,9522] path total nodes: 3
+10/5 22:33:37 [Catacombs Level 4 22551,9520] moveTo end
+10/5 22:33:38 [Rogue Encampment 5758,4561] === [MEPHISTO] ===
+10/5 22:33:38 [Rogue Encampment 5758,4561] clearBelt
+10/5 22:33:38 [Rogue Encampment 5758,4561] heal
+10/5 22:33:38 [Rogue Encampment 5759,4562] identify
+10/5 22:33:38 [Rogue Encampment 5759,4562] moveTo getPath -> 5793,4507 tele:false
+10/5 22:33:38 [Rogue Encampment 5759,4562] path total nodes: 29
+10/5 22:33:43 [Rogue Encampment 5793,4509] moveTo end
+10/5 22:33:44 [Rogue Encampment 5793,4507] clearInventory
+10/5 22:33:44 [Rogue Encampment 5793,4507] fillTome
+10/5 22:33:44 [Rogue Encampment 5793,4507] buyPotions
+10/5 22:33:44 [Rogue Encampment 5793,4507] repair
+10/5 22:33:45 [Rogue Encampment 5793,4507] pickItems
+10/5 22:33:45 [Rogue Encampment 5793,4507] Equip2
+10/5 22:33:45 [Rogue Encampment 5793,4507] Grant2
+10/5 22:33:45 [Rogue Encampment 5793,4507] stash
+10/5 22:33:45 [Rogue Encampment 5793,4507] doChores end
+10/5 22:33:45 [Rogue Encampment 5793,4507] moveTo getPath -> 5726,4497 tele:false
+10/5 22:33:45 [Rogue Encampment 5793,4507] path total nodes: 30
+10/5 22:33:49 [Rogue Encampment 5727,4498] moveTo end
+10/5 22:33:49 [Rogue Encampment 5727,4498] moveTo getPath -> 5719,4494 tele:false
+10/5 22:33:49 [Rogue Encampment 5727,4498] path total nodes: 9
+10/5 22:33:50 [Rogue Encampment 5719,4494] moveTo end
+10/5 22:33:51 [Kurast Docktown 5158,5048] moveTo getPath -> 5150,5063 tele:false
+10/5 22:33:51 [Kurast Docktown 5158,5048] path total nodes: 12
+10/5 22:33:53 [Kurast Docktown 5151,5062] moveTo end
+10/5 22:34:9 [Kurast Docktown 5151,5061] moveTo getPath -> 5158,5068 tele:false
+10/5 22:34:9 [Kurast Docktown 5151,5061] path total nodes: 4
+10/5 22:34:10 [Kurast Docktown 5155,5064] moveTo end
+10/5 22:34:10 [Kurast Docktown 5155,5064] moveTo getPath -> 5158,5068 tele:false
+10/5 22:34:10 [Kurast Docktown 5155,5064] path total nodes: 3
+10/5 22:34:10 [Kurast Docktown 5159,5067] moveTo end
+10/5 22:34:17 [Durance Of Hate Level 3 17554,8069] moveTo getPath -> 17515,8061 tele:false
+10/5 22:34:17 [Durance Of Hate Level 3 17554,8069] path total nodes: 19
+10/5 22:34:19 [Durance Of Hate Level 3 17528,8063] moveTo getPath -> 17514,8065 tele:false
+10/5 22:34:19 [Durance Of Hate Level 3 17528,8063] path total nodes: 8
+10/5 22:34:20 [Durance Of Hate Level 3 17517,8064] moveTo end
+10/5 22:34:21 [Durance Of Hate Level 3 17514,8065] moveTo getPath -> 17515,8069 tele:false
+10/5 22:34:21 [Durance Of Hate Level 3 17514,8065] path total nodes: 4
+10/5 22:34:21 [Durance Of Hate Level 3 17516,8068] moveTo end
+10/5 22:34:22 [Durance Of Hate Level 3 17517,8064] moveTo end
+10/5 22:34:22 [Durance Of Hate Level 3 17517,8064] moveTo getPath -> 17566,8069 tele:false
+10/5 22:34:22 [Durance Of Hate Level 3 17517,8064] path total nodes: 19
+10/5 22:34:27 [Durance Of Hate Level 3 17565,8067] moveTo end
+10/5 22:34:27 [Durance Of Hate Level 3 17565,8067] moveTo getPath -> 17570,8072 tele:false
+10/5 22:34:27 [Durance Of Hate Level 3 17565,8067] path total nodes: 4
+10/5 22:34:27 [Durance Of Hate Level 3 17569,8071] moveTo end
+10/5 22:34:43 [Durance Of Hate Level 3 17570,8072] moveTo getPath -> 17602,8069 tele:false
+10/5 22:34:43 [Durance Of Hate Level 3 17570,8072] path total nodes: 14
+10/5 22:34:46 [Durance Of Hate Level 3 17601,8069] moveTo end
+10/5 22:34:46 [Durance Of Hate Level 3 17601,8069] usePortal 342 send i:0 area:102
+10/5 22:34:46 [The Pandemonium Fortress 5048,5043] usePortal 342 changed area:103 ms:484 loading at:453
+10/5 22:34:56 [The Pandemonium Fortress 5048,5043] === [DIABLO] ===
+10/5 22:34:57 [The Pandemonium Fortress 5048,5043] moveTo getPath -> 5045,5042 tele:false
+10/5 22:34:57 [The Pandemonium Fortress 5048,5043] path total nodes: 4
+10/5 22:34:57 [The Pandemonium Fortress 5044,5040] moveTo end
+10/5 22:34:58 [The Pandemonium Fortress 5041,5042] moveTo getPath -> 5044,5040 tele:false
+10/5 22:34:58 [The Pandemonium Fortress 5041,5042] path total nodes: 4
+10/5 22:34:58 [The Pandemonium Fortress 5044,5040] moveTo end
+10/5 22:35:29 [Chaos Sanctuary 7787,5234] moveTo getPath -> 7815,5230 tele:false
+10/5 22:35:29 [Chaos Sanctuary 7787,5234] path total nodes: 12
+10/5 22:35:45 [Chaos Sanctuary 7814,5229] moveTo end
+10/5 22:35:45 [Chaos Sanctuary 7814,5229] moveTo getPath -> 7775,5230 tele:false
+10/5 22:35:45 [Chaos Sanctuary 7815,5230] path total nodes: 12
+10/5 22:35:48 [Chaos Sanctuary 7777,5230] moveTo end
+10/5 22:35:48 [Chaos Sanctuary 7777,5230] moveTo getPath -> 7775,5190 tele:false
+10/5 22:35:48 [Chaos Sanctuary 7777,5230] path total nodes: 14
+10/5 22:36:20 [Chaos Sanctuary 7773,5188] moveTo end
+10/5 22:36:20 [Chaos Sanctuary 7773,5188] moveTo getPath -> 7815,5190 tele:false
+10/5 22:36:20 [Chaos Sanctuary 7773,5188] path total nodes: 14
+10/5 22:36:23 [Chaos Sanctuary 7813,5191] moveTo end
+10/5 22:36:23 [Chaos Sanctuary 7813,5191] moveTo getPath -> 7815,5150 tele:false
+10/5 22:36:23 [Chaos Sanctuary 7813,5191] path total nodes: 13
+10/5 22:36:33 [Chaos Sanctuary 7816,5152] moveTo end
+10/5 22:36:33 [Chaos Sanctuary 7816,5152] moveTo getPath -> 7785,5155 tele:false
+10/5 22:36:33 [Chaos Sanctuary 7816,5152] path total nodes: 13
+10/5 22:36:42 [Chaos Sanctuary 7784,5156] moveTo end
+10/5 22:38:57 [The Pandemonium Fortress 5047,5044] === game Pz-181 ===
+10/5 22:39:1 [The Pandemonium Fortress 5047,5044] moveTo getPath -> 5046,5025 tele:false
+10/5 22:39:1 [The Pandemonium Fortress 5047,5044] path total nodes: 8
+10/5 22:39:3 [The Pandemonium Fortress 5046,5027] moveTo end
+10/5 22:39:3 [The Pandemonium Fortress 5046,5027] moveTo getPath -> 5044,5019 tele:false
+10/5 22:39:3 [The Pandemonium Fortress 5046,5027] path total nodes: 6
+10/5 22:39:3 [The Pandemonium Fortress 5044,5021] moveTo end
+10/5 22:39:3 [The Pandemonium Fortress 5044,5021] moveTo getPath -> 5044,5019 tele:false
+10/5 22:39:3 [The Pandemonium Fortress 5043,5020] path total nodes: 2
+10/5 22:39:4 [The Pandemonium Fortress 5044,5019] moveTo end
+10/5 22:39:5 [Harrogath 5113,5068] gamble
+10/5 22:39:5 [Harrogath 5113,5068] reviveMerc
+10/5 22:39:5 [Harrogath 5113,5068] Equip1
+10/5 22:39:5 [Harrogath 5114,5069] Grant1
+10/5 22:39:5 [Harrogath 5114,5069] Cubing
+10/5 22:39:5 [Harrogath 5115,5070] Runewords
+10/5 22:39:5 [Harrogath 5115,5070] clearBelt
+10/5 22:39:5 [Harrogath 5115,5070] heal
+10/5 22:39:5 [Harrogath 5115,5070] identify
+10/5 22:39:5 [Harrogath 5115,5070] moveTo getPath -> 5082,5030 tele:false
+10/5 22:39:5 [Harrogath 5115,5070] path total nodes: 28
+10/5 22:39:10 [Harrogath 5097,5025] moveTo end
+10/5 22:39:10 [Harrogath 5097,5025] moveTo getPath -> 5078,5032 tele:false
+10/5 22:39:10 [Harrogath 5097,5025] path total nodes: 11
+10/5 22:39:12 [Harrogath 5081,5033] moveTo end
+10/5 22:39:15 [Harrogath 5081,5033] clearInventory
+10/5 22:39:15 [Harrogath 5081,5033] fillTome
+10/5 22:39:15 [Harrogath 5081,5033] buyPotions
+10/5 22:39:16 [Harrogath 5081,5033] repair
+10/5 22:39:16 [Harrogath 5081,5033] moveTo getPath -> 5143,5042 tele:false
+10/5 22:39:16 [Harrogath 5081,5033] path total nodes: 25
+10/5 22:39:20 [Harrogath 5141,5042] moveTo end
+10/5 22:39:20 [Harrogath 5141,5042] moveTo getPath -> 5143,5042 tele:false
+10/5 22:39:20 [Harrogath 5141,5042] path total nodes: 3
+10/5 22:39:21 [Harrogath 5141,5042] moveTo end
+10/5 22:39:23 [Harrogath 5141,5042] pickItems
+10/5 22:39:23 [Harrogath 5141,5042] Equip2
+10/5 22:39:23 [Harrogath 5141,5042] Grant2
+10/5 22:39:23 [Harrogath 5141,5042] stash
+10/5 22:39:23 [Harrogath 5141,5042] doChores end
+10/5 22:39:23 [Harrogath 5141,5042] moveTo getPath -> 5118,5062 tele:false
+10/5 22:39:23 [Harrogath 5141,5042] path total nodes: 14
+10/5 22:39:25 [Harrogath 5118,5062] moveTo end
+10/5 22:39:25 [Harrogath 5118,5062] moveTo getPath -> 5114,5069 tele:false
+10/5 22:39:25 [Harrogath 5118,5062] path total nodes: 5
+10/5 22:39:26 [Harrogath 5116,5069] moveTo end
+10/5 22:39:26 [Harrogath 5116,5069] moveTo getPath -> 5114,5069 tele:false
+10/5 22:39:26 [Harrogath 5115,5069] path total nodes: 2
+10/5 22:39:26 [Harrogath 5114,5069] moveTo end
+10/5 22:39:27 [Harrogath 5114,5069] moveTo getPath -> 5119,5074 tele:false
+10/5 22:39:27 [Harrogath 5114,5069] path total nodes: 4
+10/5 22:39:27 [Harrogath 5119,5074] moveTo end
+10/5 22:39:35 [Harrogath 5119,5074] moveTo getPath -> 5114,5069 tele:false
+10/5 22:39:35 [Harrogath 5119,5074] path total nodes: 4
+10/5 22:39:36 [Harrogath 5114,5071] moveTo end
+10/5 22:39:36 [Harrogath 5113,5072] moveTo getPath -> 5114,5069 tele:false
+10/5 22:39:36 [Harrogath 5113,5072] path total nodes: 4
+10/5 22:39:37 [Harrogath 5116,5070] moveTo end
+10/5 22:39:38 [Ancient's Way 10023,10680] moveTo getPath -> 10028,10685 tele:0
+10/5 22:39:38 [Ancient's Way 10023,10680] path total nodes: 4
+10/5 22:39:39 [Ancient's Way 10027,10683] moveTo end
+10/5 22:39:39 [Ancient's Way 10028,10685] moveTo getPath -> 10027,10683 tele:0
+10/5 22:39:39 [Ancient's Way 10028,10685] path total nodes: 3
+10/5 22:39:39 [Ancient's Way 10028,10685] moveTo end
+10/5 22:39:45 [Ancient's Way 10028,10685] moveTo getPath -> 10024,10679 tele:0
+10/5 22:39:45 [Ancient's Way 10028,10685] path total nodes: 7
+10/5 22:39:46 [Ancient's Way 10024,10681] moveTo end
+10/5 22:39:46 [Ancient's Way 10024,10681] moveTo getPath -> 10024,10679 tele:0
+10/5 22:39:46 [Ancient's Way 10024,10681] path total nodes: 2
+10/5 22:39:46 [Ancient's Way 10024,10681] moveTo end
+10/5 22:39:48 [Harrogath 5116,5069] === [BAAL] ===
+10/5 22:40:1 [Harrogath 5097,5019] === [COUNTESS] ===
+10/5 22:40:1 [Harrogath 5097,5019] clearBelt
+10/5 22:40:1 [Harrogath 5097,5019] heal
+10/5 22:40:1 [Harrogath 5097,5019] identify
+10/5 22:40:1 [Harrogath 5097,5019] clearInventory
+10/5 22:40:1 [Harrogath 5097,5019] fillTome
+10/5 22:40:1 [Harrogath 5097,5019] buyPotions
+10/5 22:40:1 [Harrogath 5097,5019] repair
+10/5 22:40:1 [Harrogath 5097,5019] pickItems
+10/5 22:40:1 [Harrogath 5097,5019] Equip2
+10/5 22:40:1 [Harrogath 5097,5019] Grant2
+10/5 22:40:1 [Harrogath 5097,5019] stash
+10/5 22:40:1 [Harrogath 5097,5019] doChores end
+10/5 22:40:4 [Harrogath 5097,5019] moveTo getPath -> 5110,5061 tele:false
+10/5 22:40:4 [Harrogath 5097,5019] path total nodes: 19
+10/5 22:40:11 [Harrogath 5109,5057] moveTo end
+10/5 22:40:11 [Harrogath 5109,5057] moveTo getPath -> 5114,5069 tele:false
+10/5 22:40:12 [Harrogath 5109,5057] path total nodes: 5
+10/5 22:40:12 [Harrogath 5114,5065] moveTo end
+10/5 22:40:12 [Harrogath 5114,5065] moveTo getPath -> 5114,5069 tele:false
+10/5 22:40:12 [Harrogath 5114,5065] path total nodes: 2
+10/5 22:40:12 [Harrogath 5114,5068] moveTo end
+10/5 22:40:14 [Rogue Encampment 5218,5768] moveTo getPath -> 5207,5820 tele:false
+10/5 22:40:14 [Rogue Encampment 5218,5768] path total nodes: 20
+10/5 22:40:17 [Rogue Encampment 5209,5820] moveTo end
+10/5 22:40:17 [Rogue Encampment 5206,5823] moveTo getPath -> 5208,5821 tele:false
+10/5 22:40:17 [Rogue Encampment 5205,5824] path total nodes: 3
+10/5 22:40:17 [Rogue Encampment 5208,5821] moveTo end
+10/5 22:40:51 [Tower Cellar Level 5 12574,11029] moveTo getPath -> 12558,11030 tele:false
+10/5 22:40:51 [Tower Cellar Level 5 12574,11029] path total nodes: 7
+10/5 22:40:53 [Tower Cellar Level 5 12558,11028] moveTo end
+10/5 22:40:53 [Tower Cellar Level 5 12558,11028] moveTo getPath -> 12565,11020 tele:false
+10/5 22:40:53 [Tower Cellar Level 5 12558,11028] path total nodes: 6
+10/5 22:40:54 [Tower Cellar Level 5 12562,11021] moveTo end
+10/5 22:40:54 [Tower Cellar Level 5 12562,11021] moveTo getPath -> 12567,11026 tele:false
+10/5 22:40:54 [Tower Cellar Level 5 12562,11021] path total nodes: 4
+10/5 22:40:54 [Tower Cellar Level 5 12565,11023] moveTo end
+10/5 22:40:57 [Tower Cellar Level 5 12565,11024] moveTo getPath -> 12552,11015 tele:false
+10/5 22:40:57 [Tower Cellar Level 5 12565,11024] path total nodes: 10
+10/5 22:40:59 [Tower Cellar Level 5 12555,11016] moveTo end
+10/5 22:40:59 [Tower Cellar Level 5 12555,11016] moveTo getPath -> 12552,11015 tele:false
+10/5 22:40:59 [Tower Cellar Level 5 12555,11016] path total nodes: 4
+10/5 22:40:59 [Tower Cellar Level 5 12553,11014] moveTo end
+10/5 22:41:0 [Rogue Encampment 5216,5824] === [PIT] ===
+10/5 22:41:0 [Rogue Encampment 5216,5824] clearBelt
+10/5 22:41:0 [Rogue Encampment 5216,5824] heal
+10/5 22:41:0 [Rogue Encampment 5216,5824] identify
+10/5 22:41:0 [Rogue Encampment 5216,5824] clearInventory
+10/5 22:41:0 [Rogue Encampment 5216,5824] fillTome
+10/5 22:41:0 [Rogue Encampment 5216,5824] buyPotions
+10/5 22:41:0 [Rogue Encampment 5216,5824] moveTo getPath -> 5253,5761 tele:false
+10/5 22:41:0 [Rogue Encampment 5216,5824] path total nodes: 31
+10/5 22:41:2 [Rogue Encampment 5227,5809] moveTo end
+10/5 22:41:2 [Rogue Encampment 5227,5809] moveTo getPath -> 5252,5764 tele:false
+10/5 22:41:2 [Rogue Encampment 5227,5809] path total nodes: 24
+10/5 22:41:7 [Rogue Encampment 5254,5764] moveTo end
+10/5 22:41:7 [Rogue Encampment 5254,5762] moveTo getPath -> 5251,5766 tele:false
+10/5 22:41:7 [Rogue Encampment 5254,5762] path total nodes: 3
+10/5 22:41:8 [Rogue Encampment 5251,5764] moveTo end
+10/5 22:41:8 [Rogue Encampment 5251,5764] moveTo getPath -> 5251,5766 tele:false
+10/5 22:41:8 [Rogue Encampment 5251,5764] path total nodes: 3
+10/5 22:41:8 [Rogue Encampment 5251,5764] moveTo end
+10/5 22:41:9 [Rogue Encampment 5251,5764] repair
+10/5 22:41:10 [Rogue Encampment 5251,5764] pickItems
+10/5 22:41:10 [Rogue Encampment 5251,5764] Equip2
+10/5 22:41:10 [Rogue Encampment 5251,5764] Grant2
+10/5 22:41:10 [Rogue Encampment 5251,5764] stash
+10/5 22:41:10 [Rogue Encampment 5251,5764] doChores end
+10/5 22:41:10 [Rogue Encampment 5251,5764] moveTo getPath -> 5207,5820 tele:false
+10/5 22:41:10 [Rogue Encampment 5251,5764] path total nodes: 28
+10/5 22:41:15 [Rogue Encampment 5207,5818] moveTo end
+10/5 22:41:15 [Rogue Encampment 5207,5818] moveTo getPath -> 5213,5817 tele:false
+10/5 22:41:16 [Rogue Encampment 5207,5818] path total nodes: 4
+10/5 22:41:16 [Rogue Encampment 5213,5817] moveTo end
+10/5 22:41:22 [Pit Level 2 7535,14412] moveTo getPath -> 7528,14395 tele:false
+10/5 22:41:22 [Pit Level 2 7535,14412] path total nodes: 8
+10/5 22:41:23 [Pit Level 2 7528,14397] moveTo end
+10/5 22:41:26 [Pit Level 2 7528,14397] moveTo getPath -> 7548,14429 tele:false
+10/5 22:41:26 [Pit Level 2 7528,14397] path total nodes: 13
+10/5 22:41:50 [Pit Level 2 7593,14432] moveTo getPath -> 7583,14441 tele:false
+10/5 22:41:50 [Pit Level 2 7593,14432] path total nodes: 7
+10/5 22:41:52 [Pit Level 2 7584,14440] moveTo end
+10/5 22:41:55 [Pit Level 2 7548,14429] moveTo end
+10/5 22:41:55 [Pit Level 2 7548,14429] moveTo getPath -> 7558,14465 tele:false
+10/5 22:41:55 [Pit Level 2 7548,14429] path total nodes: 13
+10/5 22:41:57 [Pit Level 2 7557,14464] moveTo end
+10/5 22:41:57 [Pit Level 2 7557,14464] moveTo getPath -> 7585,14445 tele:false
+10/5 22:41:57 [Pit Level 2 7557,14464] path total nodes: 13
+10/5 22:41:59 [Pit Level 2 7583,14446] moveTo end
+10/5 22:41:59 [Pit Level 2 7583,14446] moveTo getPath -> 7575,14401 tele:false
+10/5 22:41:59 [Pit Level 2 7583,14446] path total nodes: 19
+10/5 22:42:2 [Pit Level 2 7573,14404] moveTo end
+10/5 22:42:3 [Pit Level 2 7573,14404] moveTo getPath -> 7607,14420 tele:false
+10/5 22:42:3 [Pit Level 2 7573,14404] path total nodes: 15
+10/5 22:42:5 [Pit Level 2 7605,14420] moveTo end
+10/5 22:42:5 [Pit Level 2 7605,14420] moveTo getPath -> 7600,14431 tele:false
+10/5 22:42:5 [Pit Level 2 7605,14420] path total nodes: 8
+10/5 22:42:6 [Pit Level 2 7599,14429] moveTo end
+10/5 22:42:6 [Pit Level 2 7599,14432] moveTo getPath -> 7599,14429 tele:false
+10/5 22:42:6 [Pit Level 2 7599,14432] path total nodes: 2
+10/5 22:42:6 [Pit Level 2 7600,14433] moveTo end
+10/5 22:42:7 [Pit Level 2 7603,14432] moveTo getPath -> 7599,14429 tele:false
+10/5 22:42:7 [Pit Level 2 7603,14432] path total nodes: 3
+10/5 22:42:8 [Pit Level 2 7599,14431] moveTo end
+10/5 22:42:13 [Rogue Encampment 5212,5824] === [ANDY] ===
+10/5 22:42:13 [Rogue Encampment 5212,5824] clearBelt
+10/5 22:42:13 [Rogue Encampment 5212,5824] heal
+10/5 22:42:13 [Rogue Encampment 5212,5824] identify
+10/5 22:42:13 [Rogue Encampment 5212,5824] clearInventory
+10/5 22:42:13 [Rogue Encampment 5212,5824] fillTome
+10/5 22:42:13 [Rogue Encampment 5212,5824] buyPotions
+10/5 22:42:13 [Rogue Encampment 5212,5824] moveTo getPath -> 5250,5769 tele:false
+10/5 22:42:13 [Rogue Encampment 5212,5824] path total nodes: 31
+10/5 22:42:18 [Rogue Encampment 5251,5770] moveTo end
+10/5 22:42:18 [Rogue Encampment 5251,5770] moveTo getPath -> 5249,5770 tele:false
+10/5 22:42:18 [Rogue Encampment 5251,5770] path total nodes: 3
+10/5 22:42:18 [Rogue Encampment 5251,5770] moveTo end
+10/5 22:42:20 [Rogue Encampment 5251,5770] repair
+10/5 22:42:20 [Rogue Encampment 5251,5770] pickItems
+10/5 22:42:20 [Rogue Encampment 5251,5770] Equip2
+10/5 22:42:20 [Rogue Encampment 5251,5770] Grant2
+10/5 22:42:20 [Rogue Encampment 5251,5770] stash
+10/5 22:42:20 [Rogue Encampment 5251,5770] doChores end
+10/5 22:42:20 [Rogue Encampment 5251,5770] moveTo getPath -> 5207,5820 tele:false
+10/5 22:42:20 [Rogue Encampment 5251,5770] path total nodes: 27
+10/5 22:42:25 [Rogue Encampment 5207,5819] moveTo end
+10/5 22:42:47 [Rogue Encampment 5209,5817] moveTo getPath -> 5213,5822 tele:false
+10/5 22:42:47 [Rogue Encampment 5209,5817] path total nodes: 4
+10/5 22:42:47 [Rogue Encampment 5212,5821] moveTo end
+10/5 22:42:57 [Catacombs Level 4 22545,9542] moveTo getPath -> 22553,9537 tele:false
+10/5 22:42:57 [Catacombs Level 4 22545,9542] path total nodes: 7
+10/5 22:42:58 [Catacombs Level 4 22551,9538] moveTo end
+10/5 22:43:0 [Catacombs Level 4 22553,9537] moveTo getPath -> 22549,9520 tele:false
+10/5 22:43:0 [Catacombs Level 4 22553,9537] path total nodes: 8
+10/5 22:43:2 [Catacombs Level 4 22548,9522] moveTo end
+10/5 22:43:2 [Catacombs Level 4 22548,9522] moveTo getPath -> 22553,9527 tele:false
+10/5 22:43:2 [Catacombs Level 4 22548,9522] path total nodes: 4
+10/5 22:43:3 [Catacombs Level 4 22552,9525] moveTo end
+10/5 22:43:7 [Catacombs Level 4 22552,9526] moveTo getPath -> 22547,9520 tele:false
+10/5 22:43:7 [Catacombs Level 4 22552,9526] path total nodes: 5
+10/5 22:43:7 [Catacombs Level 4 22549,9523] moveTo end
+10/5 22:43:7 [Catacombs Level 4 22549,9523] moveTo getPath -> 22547,9520 tele:false
+10/5 22:43:7 [Catacombs Level 4 22549,9522] path total nodes: 3
+10/5 22:43:7 [Catacombs Level 4 22547,9520] moveTo end
+10/5 22:43:8 [Rogue Encampment 5215,5822] === [MEPHISTO] ===
+10/5 22:43:8 [Rogue Encampment 5215,5822] clearBelt
+10/5 22:43:8 [Rogue Encampment 5215,5822] heal
+10/5 22:43:8 [Rogue Encampment 5215,5822] identify
+10/5 22:43:8 [Rogue Encampment 5215,5822] moveTo getPath -> 5249,5769 tele:false
+10/5 22:43:8 [Rogue Encampment 5215,5822] path total nodes: 28
+10/5 22:43:12 [Rogue Encampment 5250,5771] moveTo end
+10/5 22:43:12 [Rogue Encampment 5250,5771] moveTo getPath -> 5251,5765 tele:false
+10/5 22:43:12 [Rogue Encampment 5250,5771] path total nodes: 4
+10/5 22:43:14 [Rogue Encampment 5253,5767] moveTo end
+10/5 22:43:16 [Rogue Encampment 5253,5767] clearInventory
+10/5 22:43:16 [Rogue Encampment 5253,5767] fillTome
+10/5 22:43:16 [Rogue Encampment 5253,5767] buyPotions
+10/5 22:43:16 [Rogue Encampment 5253,5767] repair
+10/5 22:43:17 [Rogue Encampment 5253,5767] pickItems
+10/5 22:43:17 [Rogue Encampment 5253,5767] Equip2
+10/5 22:43:17 [Rogue Encampment 5253,5767] Grant2
+10/5 22:43:17 [Rogue Encampment 5253,5767] stash
+10/5 22:43:17 [Rogue Encampment 5253,5767] doChores end
+10/5 22:43:17 [Rogue Encampment 5253,5767] moveTo getPath -> 5226,5766 tele:false
+10/5 22:43:17 [Rogue Encampment 5253,5767] path total nodes: 12
+10/5 22:43:19 [Rogue Encampment 5227,5767] moveTo end
+10/5 22:43:19 [Rogue Encampment 5227,5767] moveTo getPath -> 5219,5769 tele:false
+10/5 22:43:19 [Rogue Encampment 5227,5767] path total nodes: 5
+10/5 22:43:19 [Rogue Encampment 5221,5769] moveTo end
+10/5 22:43:19 [Rogue Encampment 5221,5769] moveTo getPath -> 5219,5769 tele:false
+10/5 22:43:19 [Rogue Encampment 5221,5769] path total nodes: 3
+10/5 22:43:19 [Rogue Encampment 5216,5769] moveTo end
+10/5 22:43:21 [Kurast Docktown 5158,5048] moveTo getPath -> 5150,5063 tele:false
+10/5 22:43:21 [Kurast Docktown 5158,5048] path total nodes: 12
+10/5 22:43:22 [Kurast Docktown 5150,5063] moveTo end
+10/5 22:43:42 [Kurast Docktown 5150,5063] moveTo getPath -> 5158,5068 tele:false
+10/5 22:43:42 [Kurast Docktown 5150,5063] path total nodes: 5
+10/5 22:43:43 [Kurast Docktown 5155,5063] moveTo end
+10/5 22:43:43 [Kurast Docktown 5155,5063] moveTo getPath -> 5158,5068 tele:false
+10/5 22:43:43 [Kurast Docktown 5155,5063] path total nodes: 4
+10/5 22:43:44 [Kurast Docktown 5158,5068] moveTo end
+10/5 22:43:50 [Durance Of Hate Level 3 17556,8064] moveTo getPath -> 17515,8061 tele:false
+10/5 22:43:50 [Durance Of Hate Level 3 17556,8064] path total nodes: 14
+10/5 22:43:50 [Durance Of Hate Level 3 17554,8064] moveTo getPath -> 17562,8073 tele:false
+10/5 22:43:50 [Durance Of Hate Level 3 17554,8064] path total nodes: 7
+10/5 22:43:52 [Durance Of Hate Level 3 17560,8074] moveTo end
+10/5 22:43:57 [Durance Of Hate Level 3 17515,8063] moveTo end
+10/5 22:44:0 [Durance Of Hate Level 3 17531,8084] moveTo getPath -> 17566,8069 tele:false
+10/5 22:44:0 [Durance Of Hate Level 3 17531,8084] path total nodes: 16
+10/5 22:44:3 [Durance Of Hate Level 3 17563,8069] moveTo end
+10/5 22:44:3 [Durance Of Hate Level 3 17563,8069] moveTo getPath -> 17568,8074 tele:false
+10/5 22:44:3 [Durance Of Hate Level 3 17564,8069] path total nodes: 4
+10/5 22:44:3 [Durance Of Hate Level 3 17567,8073] moveTo end
+10/5 22:44:17 [Durance Of Hate Level 3 17568,8074] moveTo getPath -> 17602,8069 tele:false
+10/5 22:44:17 [Durance Of Hate Level 3 17568,8074] path total nodes: 15
+10/5 22:44:20 [Durance Of Hate Level 3 17600,8069] moveTo end
+10/5 22:44:20 [Durance Of Hate Level 3 17600,8069] usePortal 342 send i:0 area:102
+10/5 22:44:20 [The Pandemonium Fortress 5048,5043] usePortal 342 changed area:103 ms:0 loading at:-1
+10/5 22:44:26 [The Pandemonium Fortress 5048,5043] === [DIABLO] ===
+10/5 22:44:27 [The Pandemonium Fortress 5048,5043] moveTo getPath -> 5045,5042 tele:false
+10/5 22:44:27 [The Pandemonium Fortress 5048,5043] path total nodes: 4
+10/5 22:44:28 [The Pandemonium Fortress 5046,5042] moveTo end
+10/5 22:45:3 [Chaos Sanctuary 7781,5257] moveTo getPath -> 7775,5230 tele:false
+10/5 22:45:3 [Chaos Sanctuary 7781,5257] path total nodes: 13
+10/5 22:45:15 [Chaos Sanctuary 7778,5228] moveTo end
+10/5 22:45:15 [Chaos Sanctuary 7778,5228] moveTo getPath -> 7815,5230 tele:false
+10/5 22:45:15 [Chaos Sanctuary 7778,5228] path total nodes: 13
+10/5 22:45:34 [Chaos Sanctuary 7813,5229] moveTo end
+10/5 22:45:34 [Chaos Sanctuary 7813,5230] moveTo getPath -> 7815,5190 tele:false
+10/5 22:45:34 [Chaos Sanctuary 7813,5230] path total nodes: 13
+10/5 22:45:37 [Chaos Sanctuary 7815,5194] moveTo end
+10/5 22:45:37 [Chaos Sanctuary 7815,5194] moveTo getPath -> 7775,5190 tele:false
+10/5 22:45:37 [Chaos Sanctuary 7815,5194] path total nodes: 17
+10/5 22:45:48 [Chaos Sanctuary 7775,5183] moveTo end
+10/5 22:45:48 [Chaos Sanctuary 7775,5183] moveTo getPath -> 7775,5150 tele:false
+10/5 22:45:48 [Chaos Sanctuary 7775,5183] path total nodes: 9
+10/5 22:45:59 [Chaos Sanctuary 7775,5151] moveTo end
+10/5 22:45:59 [Chaos Sanctuary 7775,5151] moveTo getPath -> 7805,5155 tele:false
+10/5 22:45:59 [Chaos Sanctuary 7775,5150] path total nodes: 11
+10/5 22:46:1 [Chaos Sanctuary 7803,5157] moveTo end
+10/5 22:46:6 [Chaos Sanctuary 7803,5157] moveTo getPath -> 7775,5160 tele:false
+10/5 22:46:6 [Chaos Sanctuary 7803,5157] path total nodes: 11
+10/5 22:46:8 [Chaos Sanctuary 7778,5158] moveTo end
+10/5 22:46:23 [Chaos Sanctuary 7769,5200] moveTo getPath -> 7790,5290 tele:false
+10/5 22:46:23 [Chaos Sanctuary 7769,5200] path total nodes: 46
+10/5 22:46:36 [Chaos Sanctuary 7779,5289] moveTo end
+10/5 22:46:36 [Chaos Sanctuary 7779,5289] moveTo getPath -> 7784,5294 tele:false
+10/5 22:46:36 [Chaos Sanctuary 7779,5289] path total nodes: 4
+10/5 22:46:38 [Chaos Sanctuary 7784,5291] moveTo end
+10/5 22:46:40 [Chaos Sanctuary 7782,5307] moveTo getPath -> 7784,5291 tele:false
+10/5 22:46:40 [Chaos Sanctuary 7782,5307] path total nodes: 9
+10/5 22:46:41 [Chaos Sanctuary 7785,5294] moveTo end
+10/5 22:46:50 [Chaos Sanctuary 7768,5301] moveTo getPath -> 7773,5306 tele:false
+10/5 22:46:50 [Chaos Sanctuary 7768,5301] path total nodes: 4
+10/5 22:46:51 [Chaos Sanctuary 7772,5305] moveTo end
+10/5 22:46:51 [Chaos Sanctuary 7772,5306] moveTo getPath -> 7785,5292 tele:false
+10/5 22:46:51 [Chaos Sanctuary 7772,5306] path total nodes: 18
+10/5 22:46:52 [Chaos Sanctuary 7785,5295] moveTo end
+10/5 22:46:59 [Chaos Sanctuary 7774,5305] moveTo getPath -> 7785,5292 tele:false
+10/5 22:46:59 [Chaos Sanctuary 7774,5305] path total nodes: 13
+10/5 22:47:0 [Chaos Sanctuary 7786,5294] moveTo end
+10/5 22:47:1 [Chaos Sanctuary 7786,5294] moveTo getPath -> 7785,5292 tele:false
+10/5 22:47:1 [Chaos Sanctuary 7786,5294] path total nodes: 3
+10/5 22:47:2 [Chaos Sanctuary 7786,5294] moveTo end
+10/5 22:47:3 [Chaos Sanctuary 7786,5294] moveTo getPath -> 7785,5292 tele:false
+10/5 22:47:3 [Chaos Sanctuary 7786,5294] path total nodes: 3
+10/5 22:47:3 [Chaos Sanctuary 7786,5294] moveTo end
+10/5 22:47:4 [Chaos Sanctuary 7786,5294] moveTo getPath -> 7825,5295 tele:false
+10/5 22:47:4 [Chaos Sanctuary 7786,5294] path total nodes: 18
+10/5 22:47:21 [Chaos Sanctuary 7825,5295] moveTo end
+10/5 22:47:21 [Chaos Sanctuary 7825,5295] moveTo getPath -> 7855,5310 tele:false
+10/5 22:47:21 [Chaos Sanctuary 7825,5295] path total nodes: 16
+10/5 22:47:30 [Chaos Sanctuary 7855,5308] moveTo end
+10/5 22:47:30 [Chaos Sanctuary 7855,5308] moveTo getPath -> 7855,5275 tele:false
+10/5 22:47:30 [Chaos Sanctuary 7855,5309] path total nodes: 10
+10/5 22:47:44 [Chaos Sanctuary 7855,5275] moveTo end
+10/5 22:47:44 [Chaos Sanctuary 7855,5275] moveTo getPath -> 7930,5275 tele:false
+10/5 22:47:44 [Chaos Sanctuary 7855,5275] path total nodes: 21
+10/5 22:48:2 [Chaos Sanctuary 7925,5282] moveTo getPath -> 7929,5293 tele:false
+10/5 22:48:2 [Chaos Sanctuary 7925,5282] path total nodes: 6
+10/5 22:48:3 [Chaos Sanctuary 7927,5292] moveTo end
+10/5 22:48:13 [Chaos Sanctuary 7932,5277] moveTo end
+10/5 22:48:13 [Chaos Sanctuary 7932,5277] moveTo getPath -> 7920,5315 tele:false
+10/5 22:48:13 [Chaos Sanctuary 7932,5277] path total nodes: 13
+10/5 22:48:18 [Chaos Sanctuary 7923,5316] moveTo end
+10/5 22:48:23 [Chaos Sanctuary 7923,5316] moveTo getPath -> 7935,5295 tele:false
+10/5 22:48:23 [Chaos Sanctuary 7923,5316] path total nodes: 11
+10/5 22:48:38 [Chaos Sanctuary 7935,5293] moveTo end
+10/5 22:48:39 [Chaos Sanctuary 7935,5294] boss not found: Infector of Souls
+10/5 22:48:39 [Chaos Sanctuary 7935,5294] moveTo getPath -> 7790,5290 tele:false
+10/5 22:48:39 [Chaos Sanctuary 7935,5294] path total nodes: 50
+10/5 22:48:50 [Chaos Sanctuary 7792,5290] moveTo end
+10/5 22:48:50 [Chaos Sanctuary 7792,5290] moveTo getPath -> 7797,5295 tele:false
+10/5 22:48:50 [Chaos Sanctuary 7792,5290] path total nodes: 4
+10/5 22:48:50 [Chaos Sanctuary 7796,5294] moveTo end
+10/5 22:48:54 [Chaos Sanctuary 7785,5306] moveTo getPath -> 7797,5295 tele:false
+10/5 22:48:54 [Chaos Sanctuary 7785,5306] path total nodes: 8
+10/5 22:48:55 [Chaos Sanctuary 7796,5296] moveTo end
+10/5 22:48:56 [Chaos Sanctuary 7797,5295] moveTo getPath -> 7755,5290 tele:false
+10/5 22:48:56 [Chaos Sanctuary 7797,5295] path total nodes: 17
+10/5 22:49:5 [Chaos Sanctuary 7754,5291] moveTo end
+10/5 22:49:5 [Chaos Sanctuary 7754,5291] moveTo getPath -> 7720,5275 tele:false
+10/5 22:49:5 [Chaos Sanctuary 7754,5291] path total nodes: 22
+10/5 22:49:14 [Chaos Sanctuary 7719,5278] moveTo end
+10/5 22:49:14 [Chaos Sanctuary 7719,5278] moveTo getPath -> 7710,5315 tele:false
+10/5 22:49:14 [Chaos Sanctuary 7719,5278] path total nodes: 16
+10/5 22:49:17 [Chaos Sanctuary 7711,5312] moveTo end
+10/5 22:49:17 [Chaos Sanctuary 7711,5312] moveTo getPath -> 7660,5315 tele:false
+10/5 22:49:17 [Chaos Sanctuary 7711,5313] path total nodes: 17
+10/5 22:49:26 [Chaos Sanctuary 7661,5317] moveTo end
+10/5 22:49:26 [Chaos Sanctuary 7661,5317] moveTo getPath -> 7655,5280 tele:false
+10/5 22:49:26 [Chaos Sanctuary 7661,5317] path total nodes: 13
+10/5 22:49:37 [Chaos Sanctuary 7650,5269] moveTo end
+10/5 22:49:41 [Chaos Sanctuary 7650,5269] moveTo getPath -> 7675,5315 tele:false
+10/5 22:49:41 [Chaos Sanctuary 7650,5269] path total nodes: 20
+10/5 22:49:53 [Chaos Sanctuary 7676,5316] moveTo end
+10/5 22:49:54 [Chaos Sanctuary 7676,5316] boss not found: Grand Vizier of Chaos
+10/5 22:49:54 [Chaos Sanctuary 7676,5316] moveTo getPath -> 7791,5297 tele:0
+10/5 22:49:54 [Chaos Sanctuary 7676,5316] path total nodes: 39
+10/5 22:50:2 [Chaos Sanctuary 7790,5298] moveTo end
+10/5 22:50:11 [Chaos Sanctuary 7795,5295] moveTo getPath -> 7780,5290 tele:false
+10/5 22:50:11 [Chaos Sanctuary 7795,5295] path total nodes: 8
+10/5 22:50:13 [Chaos Sanctuary 7782,5290] moveTo end
+10/5 22:50:13 [Chaos Sanctuary 7782,5290] moveTo getPath -> 7780,5290 tele:false
+10/5 22:50:13 [Chaos Sanctuary 7782,5290] path total nodes: 3
+10/5 22:50:13 [Chaos Sanctuary 7782,5290] moveTo end
+10/5 22:50:14 [The Pandemonium Fortress 5048,5045] Script ended
+10/5 22:50:29 [The Pandemonium Fortress 5049,5044] === game Pz-182 ===
+10/5 22:50:31 [The Pandemonium Fortress 5049,5044] moveTo getPath -> 5046,5025 tele:false
+10/5 22:50:31 [The Pandemonium Fortress 5049,5044] path total nodes: 8
+10/5 22:50:33 [The Pandemonium Fortress 5046,5030] moveTo end
+10/5 22:50:33 [The Pandemonium Fortress 5046,5030] moveTo getPath -> 5044,5019 tele:false
+10/5 22:50:33 [The Pandemonium Fortress 5046,5030] path total nodes: 7
+10/5 22:50:34 [The Pandemonium Fortress 5045,5020] moveTo end
+10/5 22:50:35 [Harrogath 5113,5068] gamble
+10/5 22:50:35 [Harrogath 5113,5068] reviveMerc
+10/5 22:50:35 [Harrogath 5113,5068] Equip1
+10/5 22:50:35 [Harrogath 5113,5068] Grant1
+10/5 22:50:35 [Harrogath 5113,5068] Cubing
+10/5 22:50:35 [Harrogath 5113,5068] Runewords
+10/5 22:50:35 [Harrogath 5113,5068] clearBelt
+10/5 22:50:35 [Harrogath 5113,5068] heal
+10/5 22:50:35 [Harrogath 5113,5068] identify
+10/5 22:50:35 [Harrogath 5113,5068] moveTo getPath -> 5082,5030 tele:false
+10/5 22:50:35 [Harrogath 5113,5068] path total nodes: 26
+10/5 22:50:39 [Harrogath 5083,5029] moveTo end
+10/5 22:50:39 [Harrogath 5082,5030] moveTo getPath -> 5078,5027 tele:false
+10/5 22:50:39 [Harrogath 5082,5030] path total nodes: 3
+10/5 22:50:40 [Harrogath 5077,5028] moveTo end
+10/5 22:50:43 [Harrogath 5077,5028] clearInventory
+10/5 22:50:43 [Harrogath 5077,5028] fillTome
+10/5 22:50:43 [Harrogath 5077,5028] buyPotions
+10/5 22:50:45 [Harrogath 5077,5028] repair
+10/5 22:50:45 [Harrogath 5077,5028] moveTo getPath -> 5141,5045 tele:false
+10/5 22:50:45 [Harrogath 5077,5028] path total nodes: 27
+10/5 22:50:51 [Harrogath 5141,5045] moveTo end
+10/5 22:50:51 [Harrogath 5141,5045] moveTo getPath -> 5144,5037 tele:false
+10/5 22:50:51 [Harrogath 5141,5045] path total nodes: 8
+10/5 22:50:51 [Harrogath 5143,5038] moveTo end
+10/5 22:50:54 [Harrogath 5143,5038] pickItems
+10/5 22:50:54 [Harrogath 5143,5038] Equip2
+10/5 22:50:54 [Harrogath 5143,5038] Grant2
+10/5 22:50:54 [Harrogath 5143,5038] stash
+10/5 22:50:54 [Harrogath 5143,5038] moveTo getPath -> 5129,5061 tele:false
+10/5 22:50:54 [Harrogath 5143,5038] path total nodes: 13
+10/5 22:50:55 [Harrogath 5129,5061] moveTo end
+10/5 22:50:57 [Harrogath 5125,5058] doChores end
+10/5 22:50:57 [Harrogath 5125,5058] moveTo getPath -> 5119,5063 tele:false
+10/5 22:50:57 [Harrogath 5125,5058] path total nodes: 5
+10/5 22:50:57 [Harrogath 5120,5062] moveTo end
+10/5 22:50:57 [Harrogath 5120,5062] moveTo getPath -> 5114,5069 tele:false
+10/5 22:50:57 [Harrogath 5120,5062] path total nodes: 4
+10/5 22:50:58 [Harrogath 5116,5069] moveTo end
+10/5 22:50:58 [Harrogath 5116,5069] moveTo getPath -> 5114,5069 tele:false
+10/5 22:50:58 [Harrogath 5116,5069] path total nodes: 3
+10/5 22:50:58 [Harrogath 5113,5070] moveTo end
+10/5 22:50:59 [Harrogath 5111,5072] moveTo getPath -> 5116,5077 tele:false
+10/5 22:50:59 [Harrogath 5111,5072] path total nodes: 4
+10/5 22:50:59 [Harrogath 5116,5077] moveTo end
+10/5 22:51:11 [Harrogath 5116,5077] moveTo getPath -> 5114,5069 tele:false
+10/5 22:51:11 [Harrogath 5116,5077] path total nodes: 6
+10/5 22:51:11 [Harrogath 5114,5069] moveTo end
+10/5 22:51:12 [Ancient's Way 10263,10751] moveTo getPath -> 10268,10756 tele:0
+10/5 22:51:12 [Ancient's Way 10263,10751] path total nodes: 4
+10/5 22:51:13 [Ancient's Way 10266,10754] moveTo end
+10/5 22:51:23 [Harrogath 5116,5071] === [BAAL] ===
+10/5 22:52:18 [Throne Of Destruction 15094,5028] moveTo getPath -> 15088,5030 tele:0
+10/5 22:52:18 [Throne Of Destruction 15094,5028] path total nodes: 5
+10/5 22:52:19 [Throne Of Destruction 15089,5030] moveTo end
+10/5 22:52:36 [Throne Of Destruction 15092,5036] moveTo getPath -> 15095,5030 tele:0
+10/5 22:52:36 [Throne Of Destruction 15092,5036] path total nodes: 6
+10/5 22:52:36 [Throne Of Destruction 15093,5032] moveTo end
+10/5 22:52:51 [Throne Of Destruction 15097,5022] moveTo getPath -> 15116,5002 tele:0
+10/5 22:52:51 [Throne Of Destruction 15097,5022] path total nodes: 11
+10/5 22:52:53 [Throne Of Destruction 15115,5003] moveTo end
+10/5 22:52:59 [Throne Of Destruction 15116,5002] moveTo getPath -> 15093,5030 tele:0
+10/5 22:52:59 [Throne Of Destruction 15116,5002] path total nodes: 15
+10/5 22:53:2 [Throne Of Destruction 15094,5028] moveTo end
+10/5 22:53:19 [Throne Of Destruction 15077,5030] moveTo getPath -> 15087,5030 tele:0
+10/5 22:53:19 [Throne Of Destruction 15077,5030] path total nodes: 5
+10/5 22:53:19 [Throne Of Destruction 15085,5030] moveTo end
+10/5 22:53:19 [Throne Of Destruction 15087,5030] moveTo getPath -> 15094,5030 tele:0
+10/5 22:53:19 [Throne Of Destruction 15087,5030] path total nodes: 4
+10/5 22:53:20 [Throne Of Destruction 15093,5031] moveTo end
+10/5 22:53:25 [Throne Of Destruction 15093,5069] moveTo getPath -> 15089,5030 tele:0
+10/5 22:53:25 [Throne Of Destruction 15093,5069] path total nodes: 17
+10/5 22:53:28 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:39 [Throne Of Destruction 15092,5023] moveTo getPath -> 15090,5030 tele:0
+10/5 22:53:39 [Throne Of Destruction 15092,5023] path total nodes: 5
+10/5 22:53:40 [Throne Of Destruction 15093,5029] moveTo end
+10/5 22:53:41 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:41 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:41 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:41 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:41 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:41 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:42 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:42 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:42 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:42 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:42 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:42 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:42 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:42 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:43 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:43 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:43 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:43 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:43 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:43 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:44 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:44 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:44 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:44 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:44 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:44 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:45 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:45 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:45 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:45 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:45 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:45 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:46 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:46 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:46 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:46 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:46 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:46 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:47 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:47 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:47 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:47 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:47 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:47 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:48 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:48 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:48 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:48 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:48 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:49 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:49 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:49 [Throne Of Destruction 15090,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 22:53:49 [Throne Of Destruction 15090,5031] path total nodes: 4
+10/5 22:53:49 [Throne Of Destruction 15090,5031] moveTo end
+10/5 22:53:49 [Throne Of Destruction 15090,5031] moveTo getPath -> 15090,5005 tele:0
+10/5 22:53:49 [Throne Of Destruction 15090,5031] path total nodes: 16
+10/5 22:53:51 [Throne Of Destruction 15089,5009] moveTo end
+10/5 22:53:51 [Throne Of Destruction 15089,5009] moveTo getPath -> 15090,5005 tele:0
+10/5 22:53:51 [Throne Of Destruction 15089,5009] path total nodes: 3
+10/5 22:53:51 [Throne Of Destruction 15088,5006] moveTo end
+10/5 22:53:56 [The Worldstone Chamber 15171,5888] moveTo getPath -> 15134,5923 tele:0
+10/5 22:53:56 [The Worldstone Chamber 15171,5888] path total nodes: 29
+10/5 22:54:2 [The Worldstone Chamber 15134,5927] moveTo end
+10/5 22:54:28 [The Worldstone Chamber 15134,5897] moveTo getPath -> 15132,5923 tele:0
+10/5 22:54:28 [The Worldstone Chamber 15134,5897] path total nodes: 11
+10/5 22:54:31 [The Worldstone Chamber 15132,5921] moveTo end
+10/5 22:54:31 [The Worldstone Chamber 15132,5921] moveTo getPath -> 15132,5923 tele:0
+10/5 22:54:31 [The Worldstone Chamber 15132,5921] path total nodes: 2
+10/5 22:54:31 [The Worldstone Chamber 15133,5922] moveTo end
+10/5 22:54:32 [Harrogath 5100,5020] === [COUNTESS] ===
+10/5 22:54:32 [Harrogath 5100,5020] clearBelt
+10/5 22:54:32 [Harrogath 5100,5020] heal
+10/5 22:54:32 [Harrogath 5100,5020] moveTo getPath -> 5075,5030 tele:false
+10/5 22:54:32 [Harrogath 5100,5020] path total nodes: 13
+10/5 22:54:34 [Harrogath 5076,5030] moveTo end
+10/5 22:54:36 [Harrogath 5078,5031] identify
+10/5 22:54:36 [Harrogath 5078,5031] clearInventory
+10/5 22:54:36 [Harrogath 5078,5031] fillTome
+10/5 22:54:36 [Harrogath 5078,5031] buyPotions
+10/5 22:54:38 [Harrogath 5078,5031] repair
+10/5 22:54:38 [Harrogath 5078,5031] pickItems
+10/5 22:54:38 [Harrogath 5078,5031] Equip2
+10/5 22:54:38 [Harrogath 5078,5031] Grant2
+10/5 22:54:38 [Harrogath 5078,5031] stash
+10/5 22:54:38 [Harrogath 5078,5031] doChores end
+10/5 22:54:38 [Harrogath 5078,5031] moveTo getPath -> 5110,5061 tele:false
+10/5 22:54:38 [Harrogath 5078,5031] path total nodes: 28
+10/5 22:54:42 [Harrogath 5110,5058] moveTo end
+10/5 22:54:42 [Harrogath 5110,5058] moveTo getPath -> 5114,5069 tele:false
+10/5 22:54:42 [Harrogath 5110,5058] path total nodes: 5
+10/5 22:54:42 [Harrogath 5115,5064] moveTo end
+10/5 22:54:42 [Harrogath 5115,5064] moveTo getPath -> 5114,5069 tele:false
+10/5 22:54:42 [Harrogath 5115,5064] path total nodes: 4
+10/5 22:54:43 [Harrogath 5114,5069] moveTo end
+10/5 22:54:44 [Rogue Encampment 5499,4687] moveTo getPath -> 5487,4740 tele:false
+10/5 22:54:44 [Rogue Encampment 5499,4687] path total nodes: 20
+10/5 22:54:48 [Rogue Encampment 5489,4741] moveTo end
+10/5 22:54:48 [Rogue Encampment 5489,4744] moveTo getPath -> 5489,4741 tele:false
+10/5 22:54:48 [Rogue Encampment 5489,4744] path total nodes: 2
+10/5 22:54:49 [Rogue Encampment 5489,4742] moveTo end
+10/5 22:55:32 [Tower Cellar Level 5 12539,11053] moveTo getPath -> 12544,11052 tele:false
+10/5 22:55:32 [Tower Cellar Level 5 12539,11053] path total nodes: 5
+10/5 22:55:33 [Tower Cellar Level 5 12542,11052] moveTo end
+10/5 22:55:34 [Tower Cellar Level 5 12543,11052] moveTo getPath -> 12526,11070 tele:false
+10/5 22:55:34 [Tower Cellar Level 5 12543,11052] path total nodes: 11
+10/5 22:55:35 [Tower Cellar Level 5 12529,11070] moveTo end
+10/5 22:55:35 [Tower Cellar Level 5 12529,11070] moveTo getPath -> 12534,11075 tele:false
+10/5 22:55:35 [Tower Cellar Level 5 12529,11070] path total nodes: 4
+10/5 22:55:36 [Tower Cellar Level 5 12532,11074] moveTo end
+10/5 22:55:36 [Tower Cellar Level 5 12534,11075] moveTo getPath -> 12532,11074 tele:false
+10/5 22:55:36 [Tower Cellar Level 5 12534,11075] path total nodes: 3
+10/5 22:55:36 [Tower Cellar Level 5 12534,11075] moveTo end
+10/5 22:55:37 [Tower Cellar Level 5 12534,11075] moveTo getPath -> 12532,11074 tele:false
+10/5 22:55:37 [Tower Cellar Level 5 12534,11075] path total nodes: 3
+10/5 22:55:37 [Tower Cellar Level 5 12534,11075] moveTo end
+10/5 22:55:38 [Tower Cellar Level 5 12534,11075] moveTo getPath -> 12532,11074 tele:false
+10/5 22:55:39 [Tower Cellar Level 5 12534,11075] path total nodes: 3
+10/5 22:55:39 [Tower Cellar Level 5 12534,11075] moveTo end
+10/5 22:55:40 [Tower Cellar Level 5 12534,11075] moveTo getPath -> 12532,11074 tele:false
+10/5 22:55:40 [Tower Cellar Level 5 12534,11075] path total nodes: 3
+10/5 22:55:40 [Tower Cellar Level 5 12534,11075] moveTo end
+10/5 22:55:41 [Tower Cellar Level 5 12534,11075] moveTo getPath -> 12532,11074 tele:false
+10/5 22:55:41 [Tower Cellar Level 5 12534,11075] path total nodes: 3
+10/5 22:55:41 [Tower Cellar Level 5 12534,11075] moveTo end
+10/5 22:55:42 [Tower Cellar Level 5 12534,11075] moveTo getPath -> 12532,11074 tele:false
+10/5 22:55:42 [Tower Cellar Level 5 12534,11075] path total nodes: 3
+10/5 22:55:42 [Tower Cellar Level 5 12534,11075] moveTo end
+10/5 22:55:43 [Tower Cellar Level 5 12534,11075] moveTo getPath -> 12532,11074 tele:false
+10/5 22:55:43 [Tower Cellar Level 5 12534,11075] path total nodes: 3
+10/5 22:55:44 [Tower Cellar Level 5 12534,11075] moveTo end
+10/5 22:55:47 [Tower Cellar Level 5 12534,11075] moveTo getPath -> 12517,11060 tele:false
+10/5 22:55:47 [Tower Cellar Level 5 12534,11075] path total nodes: 8
+10/5 22:55:49 [Tower Cellar Level 5 12521,11060] moveTo end
+10/5 22:55:49 [Tower Cellar Level 5 12520,11059] moveTo getPath -> 12517,11060 tele:false
+10/5 22:55:49 [Tower Cellar Level 5 12520,11059] path total nodes: 4
+10/5 22:55:49 [Tower Cellar Level 5 12518,11059] moveTo end
+10/5 22:55:50 [Rogue Encampment 5496,4748] === [PIT] ===
+10/5 22:55:50 [Rogue Encampment 5496,4748] clearBelt
+10/5 22:55:50 [Rogue Encampment 5496,4748] heal
+10/5 22:55:50 [Rogue Encampment 5496,4748] identify
+10/5 22:55:50 [Rogue Encampment 5496,4748] clearInventory
+10/5 22:55:50 [Rogue Encampment 5496,4748] fillTome
+10/5 22:55:50 [Rogue Encampment 5496,4748] buyPotions
+10/5 22:55:50 [Rogue Encampment 5496,4748] repair
+10/5 22:55:50 [Rogue Encampment 5496,4748] pickItems
+10/5 22:55:50 [Rogue Encampment 5496,4748] Equip2
+10/5 22:55:50 [Rogue Encampment 5496,4748] Grant2
+10/5 22:55:50 [Rogue Encampment 5496,4748] stash
+10/5 22:55:50 [Rogue Encampment 5496,4748] doChores end
+10/5 22:55:52 [Rogue Encampment 5496,4748] moveTo getPath -> 5487,4740 tele:false
+10/5 22:55:52 [Rogue Encampment 5496,4748] path total nodes: 6
+10/5 22:55:53 [Rogue Encampment 5488,4741] moveTo end
+10/5 22:56:15 [Rogue Encampment 5487,4740] moveTo getPath -> 5493,4743 tele:false
+10/5 22:56:15 [Rogue Encampment 5487,4740] path total nodes: 7
+10/5 22:56:16 [Rogue Encampment 5492,4743] moveTo end
+10/5 22:56:20 [Pit Level 2 7527,14396] moveTo getPath -> 7548,14429 tele:false
+10/5 22:56:20 [Pit Level 2 7527,14396] path total nodes: 13
+10/5 22:56:38 [Pit Level 2 7550,14453] moveTo getPath -> 7550,14446 tele:false
+10/5 22:56:38 [Pit Level 2 7550,14453] path total nodes: 3
+10/5 22:56:39 [Pit Level 2 7550,14450] moveTo end
+10/5 22:56:39 [Pit Level 2 7550,14446] moveTo getPath -> 7549,14433 tele:false
+10/5 22:56:39 [Pit Level 2 7550,14446] path total nodes: 8
+10/5 22:56:40 [Pit Level 2 7549,14437] moveTo end
+10/5 22:56:49 [Pit Level 2 7556,14451] moveTo getPath -> 7551,14447 tele:false
+10/5 22:56:49 [Pit Level 2 7556,14451] path total nodes: 4
+10/5 22:56:49 [Pit Level 2 7553,14449] moveTo end
+10/5 22:56:50 [Pit Level 2 7551,14447] moveTo end
+10/5 22:56:50 [Pit Level 2 7551,14447] moveTo getPath -> 7558,14465 tele:false
+10/5 22:56:50 [Pit Level 2 7551,14447] path total nodes: 10
+10/5 22:56:51 [Pit Level 2 7557,14464] moveTo end
+10/5 22:56:51 [Pit Level 2 7557,14464] moveTo getPath -> 7585,14445 tele:false
+10/5 22:56:51 [Pit Level 2 7557,14464] path total nodes: 13
+10/5 22:56:58 [Pit Level 2 7582,14445] moveTo end
+10/5 22:56:58 [Pit Level 2 7582,14445] moveTo getPath -> 7575,14401 tele:false
+10/5 22:56:58 [Pit Level 2 7582,14445] path total nodes: 19
+10/5 22:57:2 [Pit Level 2 7575,14405] moveTo end
+10/5 22:57:2 [Pit Level 2 7575,14405] moveTo getPath -> 7607,14420 tele:false
+10/5 22:57:2 [Pit Level 2 7575,14405] path total nodes: 15
+10/5 22:57:5 [Pit Level 2 7605,14419] moveTo end
+10/5 22:57:5 [Pit Level 2 7605,14419] moveTo getPath -> 7600,14431 tele:false
+10/5 22:57:5 [Pit Level 2 7605,14419] path total nodes: 8
+10/5 22:57:7 [Pit Level 2 7600,14429] moveTo end
+10/5 22:57:15 [Rogue Encampment 5492,4746] === [ANDY] ===
+10/5 22:57:15 [Rogue Encampment 5492,4746] clearBelt
+10/5 22:57:15 [Rogue Encampment 5492,4746] heal
+10/5 22:57:15 [Rogue Encampment 5492,4746] identify
+10/5 22:57:15 [Rogue Encampment 5492,4746] moveTo getPath -> 5533,4691 tele:false
+10/5 22:57:15 [Rogue Encampment 5492,4746] path total nodes: 28
+10/5 22:57:21 [Rogue Encampment 5534,4692] moveTo end
+10/5 22:57:21 [Rogue Encampment 5534,4692] moveTo getPath -> 5530,4690 tele:false
+10/5 22:57:21 [Rogue Encampment 5534,4692] path total nodes: 5
+10/5 22:57:21 [Rogue Encampment 5531,4689] moveTo end
+10/5 22:57:23 [Rogue Encampment 5529,4687] clearInventory
+10/5 22:57:23 [Rogue Encampment 5529,4687] fillTome
+10/5 22:57:23 [Rogue Encampment 5529,4687] buyPotions
+10/5 22:57:23 [Rogue Encampment 5529,4687] repair
+10/5 22:57:23 [Rogue Encampment 5529,4687] pickItems
+10/5 22:57:23 [Rogue Encampment 5529,4687] Equip2
+10/5 22:57:23 [Rogue Encampment 5529,4687] Grant2
+10/5 22:57:23 [Rogue Encampment 5529,4687] stash
+10/5 22:57:23 [Rogue Encampment 5529,4687] doChores end
+10/5 22:57:34 [Rogue Encampment 5529,4687] moveTo getPath -> 5487,4740 tele:false
+10/5 22:57:34 [Rogue Encampment 5529,4687] path total nodes: 29
+10/5 22:57:39 [Rogue Encampment 5489,4740] moveTo end
+10/5 22:57:59 [Catacombs Level 4 22545,9545] moveTo getPath -> 22547,9537 tele:false
+10/5 22:57:59 [Catacombs Level 4 22545,9545] path total nodes: 6
+10/5 22:58:0 [Catacombs Level 4 22547,9538] moveTo end
+10/5 22:58:2 [Catacombs Level 4 22547,9537] moveTo getPath -> 22549,9520 tele:false
+10/5 22:58:2 [Catacombs Level 4 22547,9537] path total nodes: 8
+10/5 22:58:3 [Catacombs Level 4 22549,9523] moveTo end
+10/5 22:58:3 [Catacombs Level 4 22549,9523] moveTo getPath -> 22554,9528 tele:false
+10/5 22:58:3 [Catacombs Level 4 22549,9522] path total nodes: 5
+10/5 22:58:4 [Catacombs Level 4 22553,9526] moveTo end
+10/5 22:58:7 [Catacombs Level 4 22554,9528] moveTo getPath -> 22547,9520 tele:false
+10/5 22:58:7 [Catacombs Level 4 22554,9528] path total nodes: 5
+10/5 22:58:7 [Catacombs Level 4 22549,9522] moveTo end
+10/5 22:58:7 [Catacombs Level 4 22549,9522] moveTo getPath -> 22547,9520 tele:false
+10/5 22:58:7 [Catacombs Level 4 22549,9522] path total nodes: 3
+10/5 22:58:8 [Catacombs Level 4 22549,9522] moveTo end
+10/5 22:58:8 [Rogue Encampment 5492,4733] === [MEPHISTO] ===
+10/5 22:58:8 [Rogue Encampment 5492,4733] clearBelt
+10/5 22:58:8 [Rogue Encampment 5493,4734] heal
+10/5 22:58:8 [Rogue Encampment 5493,4734] moveTo getPath -> 5529,4690 tele:false
+10/5 22:58:8 [Rogue Encampment 5493,4734] path total nodes: 25
+10/5 22:58:10 [Rogue Encampment 5502,4725] moveTo end
+10/5 22:58:10 [Rogue Encampment 5502,4725] moveTo getPath -> 5531,4689 tele:false
+10/5 22:58:10 [Rogue Encampment 5502,4725] path total nodes: 19
+10/5 22:58:13 [Rogue Encampment 5531,4690] moveTo end
+10/5 22:58:14 [Rogue Encampment 5531,4690] identify
+10/5 22:58:14 [Rogue Encampment 5531,4690] clearInventory
+10/5 22:58:14 [Rogue Encampment 5531,4690] fillTome
+10/5 22:58:14 [Rogue Encampment 5531,4690] buyPotions
+10/5 22:58:15 [Rogue Encampment 5531,4690] repair
+10/5 22:58:16 [Rogue Encampment 5531,4690] pickItems
+10/5 22:58:16 [Rogue Encampment 5531,4690] Equip2
+10/5 22:58:16 [Rogue Encampment 5531,4690] Grant2
+10/5 22:58:16 [Rogue Encampment 5531,4690] stash
+10/5 22:58:16 [Rogue Encampment 5531,4690] doChores end
+10/5 22:58:16 [Rogue Encampment 5531,4690] moveTo getPath -> 5506,4686 tele:false
+10/5 22:58:16 [Rogue Encampment 5531,4690] path total nodes: 13
+10/5 22:58:17 [Rogue Encampment 5506,4686] moveTo end
+10/5 22:58:17 [Rogue Encampment 5506,4686] moveTo getPath -> 5499,4689 tele:false
+10/5 22:58:17 [Rogue Encampment 5506,4686] path total nodes: 5
+10/5 22:58:18 [Rogue Encampment 5500,4689] moveTo end
+10/5 22:58:19 [Kurast Docktown 5158,5048] moveTo getPath -> 5150,5063 tele:false
+10/5 22:58:19 [Kurast Docktown 5158,5048] path total nodes: 12
+10/5 22:58:21 [Kurast Docktown 5150,5061] moveTo end
+10/5 22:58:38 [Kurast Docktown 5148,5065] moveTo getPath -> 5158,5068 tele:false
+10/5 22:58:38 [Kurast Docktown 5148,5065] path total nodes: 6
+10/5 22:58:39 [Kurast Docktown 5158,5068] moveTo end
+10/5 22:58:48 [Durance Of Hate Level 3 17543,8065] moveTo getPath -> 17515,8061 tele:false
+10/5 22:58:48 [Durance Of Hate Level 3 17543,8065] path total nodes: 12
+10/5 22:59:3 [Durance Of Hate Level 3 17514,8079] moveTo getPath -> 17514,8067 tele:false
+10/5 22:59:3 [Durance Of Hate Level 3 17514,8079] path total nodes: 4
+10/5 22:59:4 [Durance Of Hate Level 3 17513,8070] moveTo end
+10/5 22:59:4 [Durance Of Hate Level 3 17513,8069] moveTo getPath -> 17516,8065 tele:false
+10/5 22:59:4 [Durance Of Hate Level 3 17513,8069] path total nodes: 5
+10/5 22:59:4 [Durance Of Hate Level 3 17515,8068] moveTo end
+10/5 22:59:5 [Durance Of Hate Level 3 17518,8063] moveTo end
+10/5 22:59:9 [Durance Of Hate Level 3 17517,8093] moveTo getPath -> 17566,8069 tele:false
+10/5 22:59:9 [Durance Of Hate Level 3 17517,8093] path total nodes: 21
+10/5 22:59:13 [Durance Of Hate Level 3 17563,8069] moveTo end
+10/5 22:59:13 [Durance Of Hate Level 3 17563,8069] moveTo getPath -> 17568,8074 tele:false
+10/5 22:59:13 [Durance Of Hate Level 3 17564,8069] path total nodes: 4
+10/5 22:59:14 [Durance Of Hate Level 3 17567,8073] moveTo end
+10/5 22:59:17 [Durance Of Hate Level 3 17568,8074] moveTo getPath -> 17602,8069 tele:false
+10/5 22:59:17 [Durance Of Hate Level 3 17568,8074] path total nodes: 15
+10/5 22:59:21 [Durance Of Hate Level 3 17600,8069] moveTo end
+10/5 22:59:21 [Durance Of Hate Level 3 17600,8069] usePortal 342 send i:0 area:102
+10/5 22:59:21 [The Pandemonium Fortress 5048,5043] usePortal 342 changed area:103 ms:0 loading at:-1
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] === [DIABLO] ===
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] gamble
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] reviveMerc
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] Equip1
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] Grant1
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] Cubing
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] Runewords
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] clearBelt
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] heal
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] identify
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] moveTo getPath -> 5083,5056 tele:false
+10/5 22:59:28 [The Pandemonium Fortress 5048,5043] path total nodes: 17
+10/5 22:59:31 [The Pandemonium Fortress 5083,5057] moveTo end
+10/5 22:59:31 [The Pandemonium Fortress 5083,5057] moveTo getPath -> 5084,5052 tele:false
+10/5 22:59:31 [The Pandemonium Fortress 5083,5057] path total nodes: 4
+10/5 22:59:31 [The Pandemonium Fortress 5083,5053] moveTo end
+10/5 22:59:33 [The Pandemonium Fortress 5083,5053] clearInventory
+10/5 22:59:33 [The Pandemonium Fortress 5083,5053] fillTome
+10/5 22:59:33 [The Pandemonium Fortress 5083,5053] buyPotions
+10/5 22:59:35 [The Pandemonium Fortress 5083,5053] repair
+10/5 22:59:35 [The Pandemonium Fortress 5083,5053] moveTo getPath -> 5082,5028 tele:false
+10/5 22:59:35 [The Pandemonium Fortress 5083,5053] path total nodes: 9
+10/5 22:59:36 [The Pandemonium Fortress 5082,5028] moveTo end
+10/5 22:59:36 [The Pandemonium Fortress 5082,5028] moveTo getPath -> 5083,5025 tele:false
+10/5 22:59:36 [The Pandemonium Fortress 5082,5028] path total nodes: 4
+10/5 22:59:36 [The Pandemonium Fortress 5082,5026] moveTo end
+10/5 22:59:41 [The Pandemonium Fortress 5082,5027] pickItems
+10/5 22:59:41 [The Pandemonium Fortress 5082,5027] Equip2
+10/5 22:59:41 [The Pandemonium Fortress 5082,5027] Grant2
+10/5 22:59:41 [The Pandemonium Fortress 5082,5027] stash
+10/5 22:59:41 [The Pandemonium Fortress 5082,5027] doChores end
+10/5 22:59:48 [The Pandemonium Fortress 5082,5027] moveTo getPath -> 5045,5042 tele:false
+10/5 22:59:48 [The Pandemonium Fortress 5082,5027] path total nodes: 18
+10/5 22:59:53 [The Pandemonium Fortress 5046,5041] moveTo end
+10/5 23:0:39 [Chaos Sanctuary 7807,5237] moveTo getPath -> 7782,5249 tele:false
+10/5 23:0:39 [Chaos Sanctuary 7807,5237] path total nodes: 13
+10/5 23:0:41 [Chaos Sanctuary 7784,5248] moveTo end
+10/5 23:0:41 [Chaos Sanctuary 7782,5249] moveTo getPath -> 7778,5257 tele:false
+10/5 23:0:41 [Chaos Sanctuary 7782,5249] path total nodes: 7
+10/5 23:0:41 [Chaos Sanctuary 7780,5254] moveTo end
+10/5 23:0:41 [Chaos Sanctuary 7779,5255] moveTo getPath -> 7815,5230 tele:false
+10/5 23:0:41 [Chaos Sanctuary 7779,5255] path total nodes: 19
+10/5 23:0:49 [Chaos Sanctuary 7813,5231] moveTo end
+10/5 23:0:49 [Chaos Sanctuary 7813,5231] moveTo getPath -> 7775,5230 tele:false
+10/5 23:0:49 [Chaos Sanctuary 7813,5231] path total nodes: 12
+10/5 23:0:52 [Chaos Sanctuary 7777,5230] moveTo end
+10/5 23:0:52 [Chaos Sanctuary 7777,5230] moveTo getPath -> 7775,5190 tele:false
+10/5 23:0:52 [Chaos Sanctuary 7776,5230] path total nodes: 14
+10/5 23:0:59 [Chaos Sanctuary 7777,5192] moveTo end
+10/5 23:0:59 [Chaos Sanctuary 7777,5192] moveTo getPath -> 7815,5190 tele:false
+10/5 23:1:0 [Chaos Sanctuary 7776,5191] path total nodes: 13
+10/5 23:1:7 [Chaos Sanctuary 7816,5190] moveTo end
+10/5 23:1:7 [Chaos Sanctuary 7816,5190] moveTo getPath -> 7815,5150 tele:false
+10/5 23:1:7 [Chaos Sanctuary 7816,5190] path total nodes: 13
+10/5 23:1:9 [Chaos Sanctuary 7815,5151] moveTo end
+10/5 23:1:9 [Chaos Sanctuary 7815,5151] moveTo getPath -> 7785,5155 tele:false
+10/5 23:1:9 [Chaos Sanctuary 7815,5151] path total nodes: 13
+10/5 23:1:11 [Chaos Sanctuary 7788,5154] moveTo end
+10/5 23:1:17 [Chaos Sanctuary 7788,5155] moveTo getPath -> 7815,5160 tele:false
+10/5 23:1:17 [Chaos Sanctuary 7788,5155] path total nodes: 12
+10/5 23:1:19 [Chaos Sanctuary 7813,5159] moveTo end
+10/5 23:1:19 [Chaos Sanctuary 7813,5159] moveTo getPath -> 7815,5195 tele:false
+10/5 23:1:19 [Chaos Sanctuary 7813,5159] path total nodes: 13
+10/5 23:1:21 [Chaos Sanctuary 7815,5191] moveTo end
+10/5 23:1:21 [Chaos Sanctuary 7815,5191] moveTo getPath -> 7775,5200 tele:false
+10/5 23:1:21 [Chaos Sanctuary 7815,5191] path total nodes: 18
+10/5 23:1:24 [Chaos Sanctuary 7776,5199] moveTo end
+10/5 23:1:35 [Chaos Sanctuary 7769,5218] moveTo getPath -> 7779,5210 tele:false
+10/5 23:1:35 [Chaos Sanctuary 7769,5218] path total nodes: 7
+10/5 23:1:36 [Chaos Sanctuary 7777,5211] moveTo end
+10/5 23:1:37 [Chaos Sanctuary 7778,5210] moveTo getPath -> 7790,5290 tele:false
+10/5 23:1:37 [Chaos Sanctuary 7778,5210] path total nodes: 34
+10/5 23:1:51 [Chaos Sanctuary 7787,5288] moveTo end
+10/5 23:1:51 [Chaos Sanctuary 7787,5288] moveTo getPath -> 7792,5293 tele:false
+10/5 23:1:51 [Chaos Sanctuary 7788,5289] path total nodes: 3
+10/5 23:1:51 [Chaos Sanctuary 7791,5292] moveTo end
+10/5 23:2:1 [Chaos Sanctuary 7803,5303] moveTo getPath -> 7792,5293 tele:false
+10/5 23:2:1 [Chaos Sanctuary 7803,5303] path total nodes: 6
+10/5 23:2:2 [Chaos Sanctuary 7794,5294] moveTo end
+10/5 23:2:3 [Chaos Sanctuary 7792,5293] moveTo getPath -> 7825,5295 tele:false
+10/5 23:2:3 [Chaos Sanctuary 7792,5293] path total nodes: 18
+10/5 23:2:35 [Chaos Sanctuary 7806,5328] visitTown start by:threads\townchicken.js tick:1479265984
+10/5 23:2:35 [Chaos Sanctuary 7806,5328] moveTo getPath -> 7803,5312 tele:0
+10/5 23:2:35 [Chaos Sanctuary 7806,5328] path total nodes: 9
+10/5 23:2:37 [Chaos Sanctuary 7804,5313] moveTo end
+10/5 23:2:38 [The Pandemonium Fortress 5052,5053] clearBelt
+10/5 23:2:38 [The Pandemonium Fortress 5052,5053] heal
+10/5 23:2:38 [The Pandemonium Fortress 5052,5053] moveTo getPath -> 5084,5052 tele:false
+10/5 23:2:38 [The Pandemonium Fortress 5052,5053] path total nodes: 20
+10/5 23:2:40 [The Pandemonium Fortress 5082,5052] moveTo end
+10/5 23:2:40 [The Pandemonium Fortress 5082,5052] moveTo getPath -> 5089,5056 tele:false
+10/5 23:2:40 [The Pandemonium Fortress 5082,5052] path total nodes: 5
+10/5 23:2:41 [The Pandemonium Fortress 5089,5056] moveTo end
+10/5 23:2:41 [The Pandemonium Fortress 5089,5056] identify
+10/5 23:2:43 [The Pandemonium Fortress 5089,5056] clearInventory
+10/5 23:2:43 [The Pandemonium Fortress 5089,5056] fillTome
+10/5 23:2:43 [The Pandemonium Fortress 5089,5056] buyPotions
+10/5 23:2:45 [The Pandemonium Fortress 5089,5056] repair
+10/5 23:2:45 [The Pandemonium Fortress 5089,5056] pickItems
+10/5 23:2:45 [The Pandemonium Fortress 5089,5056] Equip2
+10/5 23:2:45 [The Pandemonium Fortress 5089,5056] Grant2
+10/5 23:2:45 [The Pandemonium Fortress 5089,5056] stash
+10/5 23:2:45 [The Pandemonium Fortress 5089,5056] doChores end
+10/5 23:2:45 [The Pandemonium Fortress 5089,5056] moveTo getPath -> 5045,5042 tele:false
+10/5 23:2:45 [The Pandemonium Fortress 5089,5056] path total nodes: 22
+10/5 23:2:48 [The Pandemonium Fortress 5045,5042] moveTo end
+10/5 23:2:48 [The Pandemonium Fortress 5045,5042] moveTo getPath -> 5048,5049 tele:false
+10/5 23:2:48 [The Pandemonium Fortress 5045,5042] path total nodes: 5
+10/5 23:2:49 [The Pandemonium Fortress 5047,5048] moveTo end
+10/5 23:2:49 [Chaos Sanctuary 7808,5317] visitTown back tick:1479280093
+10/5 23:3:22 [Chaos Sanctuary 7796,5326] visitTown start by:threads\townchicken.js tick:1479312421
+10/5 23:3:22 [The Pandemonium Fortress 5051,5052] clearBelt
+10/5 23:3:22 [The Pandemonium Fortress 5051,5052] heal
+10/5 23:3:22 [The Pandemonium Fortress 5051,5052] moveTo getPath -> 5089,5056 tele:false
+10/5 23:3:22 [The Pandemonium Fortress 5051,5052] path total nodes: 18
+10/5 23:3:25 [The Pandemonium Fortress 5089,5056] moveTo end
+10/5 23:3:25 [The Pandemonium Fortress 5089,5056] moveTo getPath -> 5085,5052 tele:false
+10/5 23:3:25 [The Pandemonium Fortress 5089,5056] path total nodes: 3
+10/5 23:3:26 [The Pandemonium Fortress 5087,5052] moveTo end
+10/5 23:3:26 [The Pandemonium Fortress 5087,5052] identify
+10/5 23:3:26 [The Pandemonium Fortress 5087,5052] clearInventory
+10/5 23:3:26 [The Pandemonium Fortress 5087,5052] fillTome
+10/5 23:3:26 [The Pandemonium Fortress 5087,5052] buyPotions
+10/5 23:3:28 [The Pandemonium Fortress 5087,5052] repair
+10/5 23:3:28 [The Pandemonium Fortress 5087,5052] pickItems
+10/5 23:3:28 [The Pandemonium Fortress 5087,5052] Equip2
+10/5 23:3:28 [The Pandemonium Fortress 5087,5052] Grant2
+10/5 23:3:28 [The Pandemonium Fortress 5087,5052] stash
+10/5 23:3:28 [The Pandemonium Fortress 5087,5052] doChores end
+10/5 23:3:29 [The Pandemonium Fortress 5087,5052] moveTo getPath -> 5045,5042 tele:false
+10/5 23:3:29 [The Pandemonium Fortress 5087,5052] path total nodes: 21
+10/5 23:3:31 [The Pandemonium Fortress 5046,5042] moveTo end
+10/5 23:3:31 [The Pandemonium Fortress 5046,5042] moveTo getPath -> 5048,5049 tele:false
+10/5 23:3:31 [The Pandemonium Fortress 5046,5042] path total nodes: 6
+10/5 23:3:32 [The Pandemonium Fortress 5048,5048] moveTo end
+10/5 23:3:32 [Chaos Sanctuary 7804,5329] visitTown back tick:1479323109
+10/5 23:3:55 [Chaos Sanctuary 7789,5316] moveTo getPath -> 7799,5322 tele:false
+10/5 23:3:55 [Chaos Sanctuary 7789,5316] path total nodes: 10
+10/5 23:3:56 [Chaos Sanctuary 7797,5321] moveTo end
+10/5 23:3:56 [Chaos Sanctuary 7797,5321] moveTo getPath -> 7799,5325 tele:false
+10/5 23:3:56 [Chaos Sanctuary 7797,5321] path total nodes: 5
+10/5 23:3:57 [Chaos Sanctuary 7798,5323] moveTo end
+10/5 23:4:0 [Chaos Sanctuary 7824,5295] moveTo end
+10/5 23:4:0 [Chaos Sanctuary 7824,5295] moveTo getPath -> 7855,5310 tele:false
+10/5 23:4:0 [Chaos Sanctuary 7825,5295] path total nodes: 18
+10/5 23:4:2 [Chaos Sanctuary 7853,5309] moveTo end
+10/5 23:4:2 [Chaos Sanctuary 7853,5309] moveTo getPath -> 7855,5275 tele:false
+10/5 23:4:2 [Chaos Sanctuary 7854,5309] path total nodes: 11
+10/5 23:4:4 [Chaos Sanctuary 7855,5276] moveTo end
+10/5 23:4:4 [Chaos Sanctuary 7855,5276] moveTo getPath -> 7930,5275 tele:false
+10/5 23:4:4 [Chaos Sanctuary 7855,5276] path total nodes: 22
+10/5 23:4:9 [Chaos Sanctuary 7929,5276] moveTo end
+10/5 23:4:9 [Chaos Sanctuary 7929,5276] moveTo getPath -> 7920,5315 tele:false
+10/5 23:4:9 [Chaos Sanctuary 7930,5275] path total nodes: 17
+10/5 23:4:12 [Chaos Sanctuary 7922,5317] moveTo end
+10/5 23:4:15 [Chaos Sanctuary 7922,5317] moveTo getPath -> 7935,5295 tele:false
+10/5 23:4:15 [Chaos Sanctuary 7922,5317] path total nodes: 12
+10/5 23:4:17 [Chaos Sanctuary 7932,5297] moveTo end
+10/5 23:4:52 [Chaos Sanctuary 7879,5310] visitTown start by:threads\townchicken.js tick:1479403203
+10/5 23:4:52 [Chaos Sanctuary 7879,5311] moveTo getPath -> 7878,5300 tele:0
+10/5 23:4:52 [Chaos Sanctuary 7879,5311] path total nodes: 6
+10/5 23:4:54 [Chaos Sanctuary 7879,5302] moveTo end
+10/5 23:4:54 [Chaos Sanctuary 7879,5302] moveTo getPath -> 7878,5300 tele:0
+10/5 23:4:54 [Chaos Sanctuary 7879,5302] path total nodes: 3
+10/5 23:4:54 [Chaos Sanctuary 7879,5301] moveTo end
+10/5 23:4:55 [The Pandemonium Fortress 5050,5051] clearBelt
+10/5 23:4:55 [The Pandemonium Fortress 5050,5051] heal
+10/5 23:4:55 [The Pandemonium Fortress 5050,5051] moveTo getPath -> 5084,5052 tele:false
+10/5 23:4:55 [The Pandemonium Fortress 5051,5052] path total nodes: 21
+10/5 23:4:58 [The Pandemonium Fortress 5084,5052] moveTo end
+10/5 23:4:58 [The Pandemonium Fortress 5084,5052] moveTo getPath -> 5087,5055 tele:false
+10/5 23:4:58 [The Pandemonium Fortress 5084,5052] path total nodes: 3
+10/5 23:4:58 [The Pandemonium Fortress 5086,5057] moveTo end
+10/5 23:4:58 [The Pandemonium Fortress 5086,5057] identify
+10/5 23:5:0 [The Pandemonium Fortress 5086,5057] clearInventory
+10/5 23:5:0 [The Pandemonium Fortress 5086,5057] fillTome
+10/5 23:5:0 [The Pandemonium Fortress 5086,5057] buyPotions
+10/5 23:5:2 [The Pandemonium Fortress 5086,5057] repair
+10/5 23:5:2 [The Pandemonium Fortress 5086,5057] pickItems
+10/5 23:5:2 [The Pandemonium Fortress 5086,5057] Equip2
+10/5 23:5:2 [The Pandemonium Fortress 5086,5057] Grant2
+10/5 23:5:2 [The Pandemonium Fortress 5086,5057] stash
+10/5 23:5:2 [The Pandemonium Fortress 5086,5057] doChores end
+10/5 23:5:2 [The Pandemonium Fortress 5086,5057] moveTo getPath -> 5045,5042 tele:false
+10/5 23:5:2 [The Pandemonium Fortress 5086,5057] path total nodes: 17
+10/5 23:5:5 [The Pandemonium Fortress 5046,5042] moveTo end
+10/5 23:5:5 [The Pandemonium Fortress 5046,5042] moveTo getPath -> 5048,5049 tele:false
+10/5 23:5:5 [The Pandemonium Fortress 5046,5042] path total nodes: 6
+10/5 23:5:6 [The Pandemonium Fortress 5048,5049] moveTo end
+10/5 23:5:7 [Chaos Sanctuary 7881,5304] visitTown back tick:1479417531
+10/5 23:5:7 [Chaos Sanctuary 7882,5305] moveTo getPath -> 7790,5290 tele:false
+10/5 23:5:7 [Chaos Sanctuary 7882,5305] path total nodes: 33
+10/5 23:5:16 [Chaos Sanctuary 7791,5292] moveTo end
+10/5 23:5:16 [Chaos Sanctuary 7791,5292] moveTo getPath -> 7796,5297 tele:false
+10/5 23:5:16 [Chaos Sanctuary 7791,5292] path total nodes: 4
+10/5 23:5:17 [Chaos Sanctuary 7794,5295] moveTo end
+10/5 23:5:17 [Chaos Sanctuary 7796,5297] moveTo getPath -> 7794,5295 tele:false
+10/5 23:5:17 [Chaos Sanctuary 7796,5297] path total nodes: 3
+10/5 23:5:17 [Chaos Sanctuary 7796,5297] moveTo end
+10/5 23:5:19 [Chaos Sanctuary 7796,5297] moveTo getPath -> 7755,5290 tele:false
+10/5 23:5:19 [Chaos Sanctuary 7796,5297] path total nodes: 20
+10/5 23:5:23 [Chaos Sanctuary 7758,5290] moveTo end
+10/5 23:5:23 [Chaos Sanctuary 7758,5290] moveTo getPath -> 7720,5275 tele:false
+10/5 23:5:23 [Chaos Sanctuary 7758,5290] path total nodes: 21
+10/5 23:5:35 [Chaos Sanctuary 7708,5268] moveTo end
+10/5 23:5:35 [Chaos Sanctuary 7708,5268] moveTo getPath -> 7710,5315 tele:false
+10/5 23:5:35 [Chaos Sanctuary 7708,5268] path total nodes: 21
+10/5 23:5:39 [Chaos Sanctuary 7710,5312] moveTo end
+10/5 23:5:39 [Chaos Sanctuary 7710,5312] moveTo getPath -> 7660,5315 tele:false
+10/5 23:5:39 [Chaos Sanctuary 7710,5312] path total nodes: 18
+10/5 23:5:53 [Chaos Sanctuary 7662,5312] moveTo end
+10/5 23:5:53 [Chaos Sanctuary 7662,5312] moveTo getPath -> 7655,5280 tele:false
+10/5 23:5:53 [Chaos Sanctuary 7662,5312] path total nodes: 12
+10/5 23:5:59 [Chaos Sanctuary 7651,5280] moveTo getPath -> 7662,5295 tele:false
+10/5 23:5:59 [Chaos Sanctuary 7651,5280] path total nodes: 7
+10/5 23:6:1 [Chaos Sanctuary 7658,5291] moveTo end
+10/5 23:6:2 [Chaos Sanctuary 7658,5281] moveTo end
+10/5 23:6:7 [Chaos Sanctuary 7657,5280] moveTo getPath -> 7675,5315 tele:false
+10/5 23:6:7 [Chaos Sanctuary 7657,5280] path total nodes: 14
+10/5 23:6:10 [Chaos Sanctuary 7673,5313] moveTo end
+10/5 23:6:14 [Chaos Sanctuary 7677,5319] moveTo getPath -> 7791,5297 tele:0
+10/5 23:6:14 [Chaos Sanctuary 7677,5319] path total nodes: 38
+10/5 23:6:22 [Chaos Sanctuary 7788,5297] moveTo end
+10/5 23:6:33 [Chaos Sanctuary 7795,5296] moveTo getPath -> 7800,5307 tele:false
+10/5 23:6:33 [Chaos Sanctuary 7795,5296] path total nodes: 8
+10/5 23:6:34 [Chaos Sanctuary 7799,5305] moveTo end
+10/5 23:6:34 [Chaos Sanctuary 7799,5306] moveTo getPath -> 7779,5288 tele:false
+10/5 23:6:34 [Chaos Sanctuary 7800,5306] path total nodes: 11
+10/5 23:6:50 [The Pandemonium Fortress 5049,5042] === game Pz-183 ===
+10/5 23:6:53 [The Pandemonium Fortress 5049,5042] moveTo getPath -> 5046,5025 tele:false
+10/5 23:6:53 [The Pandemonium Fortress 5049,5042] path total nodes: 6
+10/5 23:6:54 [The Pandemonium Fortress 5046,5031] moveTo end
+10/5 23:6:54 [The Pandemonium Fortress 5046,5031] moveTo getPath -> 5044,5019 tele:false
+10/5 23:6:54 [The Pandemonium Fortress 5046,5030] path total nodes: 7
+10/5 23:6:55 [The Pandemonium Fortress 5044,5021] moveTo end
+10/5 23:6:55 [The Pandemonium Fortress 5044,5021] moveTo getPath -> 5044,5019 tele:false
+10/5 23:6:55 [The Pandemonium Fortress 5044,5021] path total nodes: 2
+10/5 23:6:55 [The Pandemonium Fortress 5044,5021] moveTo end
+10/5 23:6:56 [Harrogath 5113,5068] gamble
+10/5 23:6:56 [Harrogath 5113,5068] reviveMerc
+10/5 23:6:56 [Harrogath 5113,5068] Equip1
+10/5 23:6:56 [Harrogath 5114,5069] Grant1
+10/5 23:6:56 [Harrogath 5114,5069] Cubing
+10/5 23:6:56 [Harrogath 5114,5069] Runewords
+10/5 23:6:56 [Harrogath 5114,5069] clearBelt
+10/5 23:6:56 [Harrogath 5114,5069] heal
+10/5 23:6:56 [Harrogath 5114,5069] identify
+10/5 23:6:56 [Harrogath 5115,5070] clearInventory
+10/5 23:6:56 [Harrogath 5115,5070] fillTome
+10/5 23:6:56 [Harrogath 5115,5070] buyPotions
+10/5 23:6:56 [Harrogath 5115,5070] moveTo getPath -> 5082,5030 tele:false
+10/5 23:6:57 [Harrogath 5115,5070] path total nodes: 28
+10/5 23:7:1 [Harrogath 5084,5030] moveTo end
+10/5 23:7:1 [Harrogath 5084,5030] moveTo getPath -> 5079,5026 tele:false
+10/5 23:7:1 [Harrogath 5084,5030] path total nodes: 4
+10/5 23:7:1 [Harrogath 5079,5028] moveTo end
+10/5 23:7:3 [Harrogath 5079,5028] repair
+10/5 23:7:3 [Harrogath 5079,5028] moveTo getPath -> 5144,5037 tele:false
+10/5 23:7:3 [Harrogath 5079,5028] path total nodes: 25
+10/5 23:7:4 [Harrogath 5084,5028] moveTo end
+10/5 23:7:4 [Harrogath 5084,5028] moveTo getPath -> 5144,5037 tele:false
+10/5 23:7:4 [Harrogath 5084,5028] path total nodes: 26
+10/5 23:7:8 [Harrogath 5145,5034] moveTo end
+10/5 23:7:11 [Harrogath 5145,5034] pickItems
+10/5 23:7:11 [Harrogath 5145,5034] Equip2
+10/5 23:7:11 [Harrogath 5145,5034] Grant2
+10/5 23:7:11 [Harrogath 5145,5034] stash
+10/5 23:7:11 [Harrogath 5145,5034] doChores end
+10/5 23:7:11 [Harrogath 5145,5034] moveTo getPath -> 5118,5062 tele:false
+10/5 23:7:11 [Harrogath 5145,5034] path total nodes: 15
+10/5 23:7:13 [Harrogath 5118,5062] moveTo end
+10/5 23:7:13 [Harrogath 5118,5062] moveTo getPath -> 5114,5069 tele:false
+10/5 23:7:13 [Harrogath 5118,5062] path total nodes: 5
+10/5 23:7:13 [Harrogath 5115,5068] moveTo end
+10/5 23:7:14 [Harrogath 5114,5069] moveTo getPath -> 5119,5074 tele:false
+10/5 23:7:14 [Harrogath 5114,5069] path total nodes: 4
+10/5 23:7:14 [Harrogath 5119,5074] moveTo end
+10/5 23:7:31 [Harrogath 5119,5074] moveTo getPath -> 5114,5069 tele:false
+10/5 23:7:31 [Harrogath 5119,5074] path total nodes: 4
+10/5 23:7:32 [Harrogath 5116,5069] moveTo end
+10/5 23:7:33 [Ancient's Way 10377,10722] moveTo getPath -> 10382,10727 tele:0
+10/5 23:7:33 [Ancient's Way 10377,10722] path total nodes: 4
+10/5 23:7:33 [Ancient's Way 10381,10726] moveTo end
+10/5 23:7:41 [Ancient's Way 10382,10727] moveTo getPath -> 10374,10719 tele:0
+10/5 23:7:41 [Ancient's Way 10382,10727] path total nodes: 5
+10/5 23:7:42 [Ancient's Way 10377,10721] moveTo end
+10/5 23:7:42 [Ancient's Way 10377,10721] moveTo getPath -> 10374,10719 tele:0
+10/5 23:7:42 [Ancient's Way 10377,10721] path total nodes: 4
+10/5 23:7:42 [Ancient's Way 10374,10719] moveTo end
+10/5 23:7:44 [Harrogath 5114,5071] === [BAAL] ===
+10/5 23:9:7 [Throne Of Destruction 15082,5032] moveTo getPath -> 15087,5029 tele:0
+10/5 23:9:7 [Throne Of Destruction 15082,5032] path total nodes: 5
+10/5 23:9:8 [Throne Of Destruction 15085,5030] moveTo end
+10/5 23:9:8 [Throne Of Destruction 15085,5030] moveTo getPath -> 15079,5011 tele:0
+10/5 23:9:8 [Throne Of Destruction 15085,5030] path total nodes: 8
+10/5 23:9:9 [Throne Of Destruction 15078,5012] moveTo end
+10/5 23:9:10 [Throne Of Destruction 15078,5011] moveTo getPath -> 15096,5030 tele:0
+10/5 23:9:10 [Throne Of Destruction 15078,5011] path total nodes: 11
+10/5 23:9:11 [Throne Of Destruction 15095,5029] moveTo end
+10/5 23:9:27 [Throne Of Destruction 15105,5034] moveTo getPath -> 15094,5029 tele:0
+10/5 23:9:27 [Throne Of Destruction 15105,5034] path total nodes: 7
+10/5 23:9:27 [Throne Of Destruction 15105,5034] visitTown start by:threads\townchicken.js tick:1479678296
+10/5 23:9:28 [Harrogath 5101,5015] clearBelt
+10/5 23:9:28 [Harrogath 5101,5015] heal
+10/5 23:9:28 [Harrogath 5101,5015] moveTo getPath -> 5068,5018 tele:false
+10/5 23:9:28 [Harrogath 5101,5015] path total nodes: 19
+10/5 23:9:31 [Harrogath 5069,5018] moveTo end
+10/5 23:9:31 [Harrogath 5068,5018] moveTo getPath -> 5070,5021 tele:false
+10/5 23:9:31 [Harrogath 5068,5018] path total nodes: 4
+10/5 23:9:32 [Harrogath 5069,5020] moveTo end
+10/5 23:9:32 [Harrogath 5069,5020] identify
+10/5 23:9:32 [Harrogath 5069,5020] clearInventory
+10/5 23:9:32 [Harrogath 5069,5020] fillTome
+10/5 23:9:32 [Harrogath 5069,5020] buyPotions
+10/5 23:9:33 [Harrogath 5069,5020] repair
+10/5 23:9:34 [Harrogath 5069,5020] pickItems
+10/5 23:9:34 [Harrogath 5069,5020] Equip2
+10/5 23:9:34 [Harrogath 5069,5020] Grant2
+10/5 23:9:34 [Harrogath 5069,5020] stash
+10/5 23:9:34 [Harrogath 5069,5020] doChores end
+10/5 23:9:34 [Harrogath 5069,5020] moveTo getPath -> 5098,5019 tele:false
+10/5 23:9:34 [Harrogath 5069,5020] path total nodes: 19
+10/5 23:9:37 [Harrogath 5097,5019] moveTo end
+10/5 23:9:37 [Harrogath 5097,5019] moveTo getPath -> 5098,5012 tele:false
+10/5 23:9:37 [Harrogath 5097,5019] path total nodes: 5
+10/5 23:9:37 [Harrogath 5098,5012] moveTo end
+10/5 23:9:38 [Throne Of Destruction 15107,5037] visitTown back tick:1479688703
+10/5 23:9:40 [Throne Of Destruction 15097,5031] moveTo end
+10/5 23:9:40 [Throne Of Destruction 15096,5030] moveTo getPath -> 15116,5002 tele:0
+10/5 23:9:40 [Throne Of Destruction 15096,5030] path total nodes: 12
+10/5 23:9:43 [Throne Of Destruction 15114,5004] moveTo end
+10/5 23:9:49 [Throne Of Destruction 15116,5002] moveTo getPath -> 15087,5030 tele:0
+10/5 23:9:49 [Throne Of Destruction 15116,5002] path total nodes: 16
+10/5 23:9:53 [Throne Of Destruction 15089,5028] moveTo end
+10/5 23:10:13 [Throne Of Destruction 15082,5025] moveTo getPath -> 15088,5030 tele:0
+10/5 23:10:13 [Throne Of Destruction 15082,5025] path total nodes: 5
+10/5 23:10:14 [Throne Of Destruction 15085,5028] moveTo end
+10/5 23:10:14 [Throne Of Destruction 15088,5031] moveTo getPath -> 15092,5030 tele:0
+10/5 23:10:14 [Throne Of Destruction 15088,5031] path total nodes: 4
+10/5 23:10:14 [Throne Of Destruction 15089,5031] moveTo end
+10/5 23:10:31 [Throne Of Destruction 15103,5027] moveTo getPath -> 15096,5028 tele:0
+10/5 23:10:31 [Throne Of Destruction 15103,5027] path total nodes: 5
+10/5 23:10:31 [Throne Of Destruction 15098,5028] moveTo end
+10/5 23:10:31 [Throne Of Destruction 15096,5028] moveTo getPath -> 15094,5030 tele:0
+10/5 23:10:31 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:32 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:32 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:32 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:32 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:33 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:33 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:33 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:33 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:33 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:33 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:34 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:34 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:34 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:34 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:34 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:34 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:35 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:35 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:35 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:35 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:35 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:36 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:36 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:36 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:36 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:36 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:36 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:37 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:37 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:37 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:37 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:38 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:38 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:38 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:38 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:38 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:38 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:39 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:39 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:39 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:39 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:39 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:39 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:40 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:40 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:40 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:40 [Throne Of Destruction 15096,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:10:40 [Throne Of Destruction 15096,5028] path total nodes: 3
+10/5 23:10:41 [Throne Of Destruction 15096,5028] moveTo end
+10/5 23:10:41 [Throne Of Destruction 15096,5028] moveTo getPath -> 15090,5005 tele:0
+10/5 23:10:41 [Throne Of Destruction 15096,5028] path total nodes: 13
+10/5 23:10:42 [Throne Of Destruction 15094,5022] moveTo end
+10/5 23:10:42 [Throne Of Destruction 15094,5022] moveTo getPath -> 15090,5005 tele:0
+10/5 23:10:42 [Throne Of Destruction 15094,5022] path total nodes: 10
+10/5 23:10:45 [Throne Of Destruction 15089,5009] moveTo end
+10/5 23:10:47 [The Worldstone Chamber 15173,5886] moveTo getPath -> 15134,5923 tele:0
+10/5 23:10:47 [The Worldstone Chamber 15173,5886] path total nodes: 31
+10/5 23:10:55 [The Worldstone Chamber 15134,5926] moveTo end
+10/5 23:11:23 [Harrogath 5099,5018] === [COUNTESS] ===
+10/5 23:11:23 [Harrogath 5099,5018] clearBelt
+10/5 23:11:23 [Harrogath 5099,5018] heal
+10/5 23:11:23 [Harrogath 5099,5018] moveTo getPath -> 5070,5022 tele:false
+10/5 23:11:23 [Harrogath 5099,5018] path total nodes: 14
+10/5 23:11:25 [Harrogath 5072,5022] moveTo end
+10/5 23:11:25 [Harrogath 5072,5022] identify
+10/5 23:11:27 [Harrogath 5072,5022] clearInventory
+10/5 23:11:30 [Harrogath 5072,5022] fillTome
+10/5 23:11:30 [Harrogath 5072,5022] buyPotions
+10/5 23:11:30 [Harrogath 5072,5022] repair
+10/5 23:11:31 [Harrogath 5072,5022] pickItems
+10/5 23:11:31 [Harrogath 5072,5022] Equip2
+10/5 23:11:31 [Harrogath 5072,5022] Grant2
+10/5 23:11:31 [Harrogath 5072,5022] stash
+10/5 23:11:31 [Harrogath 5072,5022] doChores end
+10/5 23:11:34 [Harrogath 5072,5022] moveTo getPath -> 5110,5061 tele:false
+10/5 23:11:34 [Harrogath 5072,5022] path total nodes: 27
+10/5 23:11:40 [Harrogath 5110,5057] moveTo end
+10/5 23:11:40 [Harrogath 5110,5057] moveTo getPath -> 5114,5069 tele:false
+10/5 23:11:40 [Harrogath 5110,5057] path total nodes: 5
+10/5 23:11:41 [Harrogath 5114,5065] moveTo end
+10/5 23:11:41 [Harrogath 5114,5065] moveTo getPath -> 5114,5069 tele:false
+10/5 23:11:41 [Harrogath 5114,5065] path total nodes: 2
+10/5 23:11:41 [Harrogath 5114,5067] moveTo end
+10/5 23:11:42 [Rogue Encampment 5638,5493] moveTo getPath -> 5667,5555 tele:false
+10/5 23:11:42 [Rogue Encampment 5638,5493] path total nodes: 28
+10/5 23:11:46 [Rogue Encampment 5667,5553] moveTo end
+10/5 23:12:14 [Rogue Encampment 5667,5553] moveTo getPath -> 5673,5558 tele:false
+10/5 23:12:14 [Rogue Encampment 5667,5553] path total nodes: 5
+10/5 23:12:14 [Rogue Encampment 5673,5558] moveTo end
+10/5 23:12:23 [Tower Cellar Level 5 12570,11021] moveTo getPath -> 12561,11017 tele:false
+10/5 23:12:23 [Tower Cellar Level 5 12570,11021] path total nodes: 7
+10/5 23:12:24 [Tower Cellar Level 5 12561,11021] moveTo end
+10/5 23:12:24 [Tower Cellar Level 5 12562,11020] moveTo getPath -> 12565,11020 tele:false
+10/5 23:12:24 [Tower Cellar Level 5 12562,11020] path total nodes: 4
+10/5 23:12:24 [Tower Cellar Level 5 12562,11018] moveTo end
+10/5 23:12:24 [Tower Cellar Level 5 12562,11018] moveTo getPath -> 12567,11023 tele:false
+10/5 23:12:24 [Tower Cellar Level 5 12562,11018] path total nodes: 5
+10/5 23:12:26 [Tower Cellar Level 5 12567,11021] moveTo end
+10/5 23:12:26 [Tower Cellar Level 5 12567,11023] moveTo getPath -> 12567,11021 tele:false
+10/5 23:12:26 [Tower Cellar Level 5 12567,11023] path total nodes: 2
+10/5 23:12:27 [Tower Cellar Level 5 12567,11023] moveTo end
+10/5 23:12:28 [Tower Cellar Level 5 12567,11023] moveTo getPath -> 12567,11021 tele:false
+10/5 23:12:28 [Tower Cellar Level 5 12567,11023] path total nodes: 2
+10/5 23:12:28 [Tower Cellar Level 5 12567,11023] moveTo end
+10/5 23:12:29 [Tower Cellar Level 5 12567,11023] moveTo getPath -> 12567,11021 tele:false
+10/5 23:12:29 [Tower Cellar Level 5 12567,11023] path total nodes: 2
+10/5 23:12:29 [Tower Cellar Level 5 12567,11023] moveTo end
+10/5 23:12:32 [Tower Cellar Level 5 12567,11023] moveTo getPath -> 12552,11015 tele:false
+10/5 23:12:32 [Tower Cellar Level 5 12567,11023] path total nodes: 13
+10/5 23:12:33 [Tower Cellar Level 5 12554,11018] moveTo end
+10/5 23:12:33 [Tower Cellar Level 5 12554,11018] moveTo getPath -> 12552,11015 tele:false
+10/5 23:12:33 [Tower Cellar Level 5 12553,11017] path total nodes: 3
+10/5 23:12:33 [Tower Cellar Level 5 12553,11016] moveTo end
+10/5 23:12:34 [Rogue Encampment 5676,5561] === [PIT] ===
+10/5 23:12:34 [Rogue Encampment 5676,5561] clearBelt
+10/5 23:12:34 [Rogue Encampment 5676,5561] heal
+10/5 23:12:34 [Rogue Encampment 5676,5561] identify
+10/5 23:12:34 [Rogue Encampment 5676,5561] clearInventory
+10/5 23:12:35 [Rogue Encampment 5676,5561] fillTome
+10/5 23:12:35 [Rogue Encampment 5676,5561] buyPotions
+10/5 23:12:35 [Rogue Encampment 5676,5561] repair
+10/5 23:12:35 [Rogue Encampment 5676,5561] pickItems
+10/5 23:12:35 [Rogue Encampment 5676,5561] Equip2
+10/5 23:12:35 [Rogue Encampment 5676,5561] Grant2
+10/5 23:12:35 [Rogue Encampment 5676,5561] stash
+10/5 23:12:35 [Rogue Encampment 5676,5561] doChores end
+10/5 23:12:35 [Rogue Encampment 5676,5561] moveTo getPath -> 5667,5555 tele:false
+10/5 23:12:35 [Rogue Encampment 5676,5561] path total nodes: 9
+10/5 23:12:37 [Rogue Encampment 5668,5556] moveTo end
+10/5 23:13:5 [Pit Level 2 7526,14393] moveTo getPath -> 7548,14429 tele:false
+10/5 23:13:5 [Pit Level 2 7526,14393] path total nodes: 14
+10/5 23:13:40 [Pit Level 2 7548,14431] moveTo end
+10/5 23:13:40 [Pit Level 2 7548,14431] moveTo getPath -> 7558,14465 tele:false
+10/5 23:13:40 [Pit Level 2 7548,14431] path total nodes: 13
+10/5 23:13:43 [Pit Level 2 7556,14463] moveTo end
+10/5 23:13:43 [Pit Level 2 7556,14463] moveTo getPath -> 7585,14445 tele:false
+10/5 23:13:43 [Pit Level 2 7556,14463] path total nodes: 13
+10/5 23:13:46 [Pit Level 2 7583,14447] moveTo end
+10/5 23:13:46 [Pit Level 2 7583,14447] moveTo getPath -> 7575,14401 tele:false
+10/5 23:13:46 [Pit Level 2 7584,14446] path total nodes: 21
+10/5 23:13:50 [Pit Level 2 7575,14404] moveTo end
+10/5 23:13:50 [Pit Level 2 7575,14404] moveTo getPath -> 7607,14420 tele:false
+10/5 23:13:50 [Pit Level 2 7575,14404] path total nodes: 15
+10/5 23:13:54 [Pit Level 2 7605,14419] moveTo end
+10/5 23:13:54 [Pit Level 2 7605,14419] moveTo getPath -> 7600,14431 tele:false
+10/5 23:13:54 [Pit Level 2 7605,14419] path total nodes: 8
+10/5 23:13:56 [Pit Level 2 7602,14431] moveTo end
+10/5 23:13:59 [Pit Level 2 7602,14431] moveTo getPath -> 7603,14425 tele:false
+10/5 23:13:59 [Pit Level 2 7602,14431] path total nodes: 4
+10/5 23:14:0 [Pit Level 2 7603,14428] moveTo end
+10/5 23:14:0 [Pit Level 2 7603,14428] moveTo getPath -> 7603,14425 tele:false
+10/5 23:14:0 [Pit Level 2 7603,14428] path total nodes: 4
+10/5 23:14:0 [Pit Level 2 7602,14426] moveTo end
+10/5 23:14:1 [Rogue Encampment 5674,5557] === [ANDY] ===
+10/5 23:14:1 [Rogue Encampment 5674,5557] clearBelt
+10/5 23:14:1 [Rogue Encampment 5674,5557] heal
+10/5 23:14:1 [Rogue Encampment 5674,5557] identify
+10/5 23:14:1 [Rogue Encampment 5674,5557] clearInventory
+10/5 23:14:1 [Rogue Encampment 5674,5557] fillTome
+10/5 23:14:1 [Rogue Encampment 5674,5557] buyPotions
+10/5 23:14:1 [Rogue Encampment 5674,5557] moveTo getPath -> 5715,5505 tele:false
+10/5 23:14:1 [Rogue Encampment 5675,5558] path total nodes: 32
+10/5 23:14:6 [Rogue Encampment 5714,5506] moveTo end
+10/5 23:14:6 [Rogue Encampment 5714,5506] moveTo getPath -> 5712,5508 tele:false
+10/5 23:14:6 [Rogue Encampment 5714,5506] path total nodes: 3
+10/5 23:14:6 [Rogue Encampment 5714,5510] moveTo end
+10/5 23:14:7 [Rogue Encampment 5714,5512] moveTo getPath -> 5712,5508 tele:false
+10/5 23:14:7 [Rogue Encampment 5714,5512] path total nodes: 5
+10/5 23:14:8 [Rogue Encampment 5712,5510] moveTo end
+10/5 23:14:8 [Rogue Encampment 5712,5510] moveTo getPath -> 5712,5508 tele:false
+10/5 23:14:8 [Rogue Encampment 5712,5510] path total nodes: 2
+10/5 23:14:8 [Rogue Encampment 5711,5509] moveTo end
+10/5 23:14:10 [Rogue Encampment 5711,5509] repair
+10/5 23:14:10 [Rogue Encampment 5711,5509] pickItems
+10/5 23:14:10 [Rogue Encampment 5711,5509] Equip2
+10/5 23:14:10 [Rogue Encampment 5711,5509] Grant2
+10/5 23:14:10 [Rogue Encampment 5711,5509] stash
+10/5 23:14:10 [Rogue Encampment 5711,5509] doChores end
+10/5 23:14:10 [Rogue Encampment 5711,5509] moveTo getPath -> 5667,5555 tele:false
+10/5 23:14:10 [Rogue Encampment 5711,5509] path total nodes: 23
+10/5 23:14:16 [Rogue Encampment 5665,5555] moveTo end
+10/5 23:14:38 [Rogue Encampment 5665,5555] moveTo getPath -> 5673,5552 tele:false
+10/5 23:14:38 [Rogue Encampment 5665,5555] path total nodes: 6
+10/5 23:14:38 [Rogue Encampment 5672,5552] moveTo end
+10/5 23:14:50 [Catacombs Level 4 22557,9557] moveTo getPath -> 22547,9544 tele:false
+10/5 23:14:50 [Catacombs Level 4 22557,9557] path total nodes: 7
+10/5 23:14:51 [Catacombs Level 4 22548,9546] moveTo end
+10/5 23:14:53 [Catacombs Level 4 22547,9545] moveTo getPath -> 22549,9520 tele:false
+10/5 23:14:53 [Catacombs Level 4 22547,9545] path total nodes: 10
+10/5 23:14:56 [Catacombs Level 4 22546,9521] moveTo end
+10/5 23:14:56 [Catacombs Level 4 22546,9521] moveTo getPath -> 22551,9526 tele:false
+10/5 23:14:56 [Catacombs Level 4 22547,9521] path total nodes: 4
+10/5 23:14:56 [Catacombs Level 4 22550,9524] moveTo end
+10/5 23:14:58 [Catacombs Level 4 22551,9526] moveTo getPath -> 22547,9520 tele:false
+10/5 23:14:58 [Catacombs Level 4 22551,9526] path total nodes: 7
+10/5 23:14:58 [Catacombs Level 4 22549,9522] moveTo end
+10/5 23:14:58 [Catacombs Level 4 22549,9522] moveTo getPath -> 22547,9520 tele:false
+10/5 23:14:58 [Catacombs Level 4 22548,9522] path total nodes: 3
+10/5 23:14:59 [Catacombs Level 4 22547,9520] moveTo end
+10/5 23:14:59 [Rogue Encampment 5676,5555] === [MEPHISTO] ===
+10/5 23:14:59 [Rogue Encampment 5676,5555] clearBelt
+10/5 23:14:59 [Rogue Encampment 5676,5555] heal
+10/5 23:14:59 [Rogue Encampment 5676,5555] identify
+10/5 23:14:59 [Rogue Encampment 5676,5555] clearInventory
+10/5 23:14:59 [Rogue Encampment 5676,5555] fillTome
+10/5 23:14:59 [Rogue Encampment 5676,5555] buyPotions
+10/5 23:14:59 [Rogue Encampment 5676,5555] moveTo getPath -> 5712,5508 tele:false
+10/5 23:14:59 [Rogue Encampment 5677,5556] path total nodes: 26
+10/5 23:15:3 [Rogue Encampment 5712,5508] moveTo end
+10/5 23:15:3 [Rogue Encampment 5712,5508] moveTo getPath -> 5715,5504 tele:false
+10/5 23:15:3 [Rogue Encampment 5712,5508] path total nodes: 5
+10/5 23:15:4 [Rogue Encampment 5715,5506] moveTo end
+10/5 23:15:5 [Rogue Encampment 5715,5506] repair
+10/5 23:15:6 [Rogue Encampment 5715,5506] pickItems
+10/5 23:15:6 [Rogue Encampment 5715,5506] Equip2
+10/5 23:15:6 [Rogue Encampment 5715,5506] Grant2
+10/5 23:15:6 [Rogue Encampment 5715,5506] stash
+10/5 23:15:6 [Rogue Encampment 5715,5506] doChores end
+10/5 23:15:6 [Rogue Encampment 5715,5506] moveTo getPath -> 5646,5497 tele:false
+10/5 23:15:6 [Rogue Encampment 5715,5506] path total nodes: 34
+10/5 23:15:11 [Rogue Encampment 5646,5498] moveTo end
+10/5 23:15:11 [Rogue Encampment 5646,5498] moveTo getPath -> 5639,5494 tele:false
+10/5 23:15:11 [Rogue Encampment 5646,5498] path total nodes: 8
+10/5 23:15:11 [Rogue Encampment 5639,5494] moveTo end
+10/5 23:15:13 [Kurast Docktown 5158,5048] moveTo getPath -> 5150,5063 tele:false
+10/5 23:15:13 [Kurast Docktown 5158,5048] path total nodes: 12
+10/5 23:15:14 [Kurast Docktown 5152,5063] moveTo end
+10/5 23:15:38 [Kurast Docktown 5148,5067] moveTo getPath -> 5158,5068 tele:false
+10/5 23:15:38 [Kurast Docktown 5148,5067] path total nodes: 5
+10/5 23:15:39 [Kurast Docktown 5155,5069] moveTo end
+10/5 23:15:39 [Kurast Docktown 5155,5069] moveTo getPath -> 5158,5068 tele:false
+10/5 23:15:39 [Kurast Docktown 5155,5069] path total nodes: 4
+10/5 23:15:40 [Kurast Docktown 5158,5068] moveTo end
+10/5 23:15:47 [Durance Of Hate Level 3 17557,8065] moveTo getPath -> 17515,8061 tele:false
+10/5 23:15:47 [Durance Of Hate Level 3 17557,8065] path total nodes: 16
+10/5 23:15:51 [Durance Of Hate Level 3 17534,8074] moveTo getPath -> 17533,8067 tele:false
+10/5 23:15:51 [Durance Of Hate Level 3 17534,8074] path total nodes: 5
+10/5 23:15:51 [Durance Of Hate Level 3 17533,8069] moveTo end
+10/5 23:16:1 [Durance Of Hate Level 3 17529,8061] moveTo getPath -> 17528,8085 tele:false
+10/5 23:16:1 [Durance Of Hate Level 3 17529,8061] path total nodes: 9
+10/5 23:16:3 [Durance Of Hate Level 3 17527,8081] moveTo end
+10/5 23:16:10 [Durance Of Hate Level 3 17515,8062] moveTo end
+10/5 23:16:10 [Durance Of Hate Level 3 17515,8061] moveTo getPath -> 17566,8069 tele:false
+10/5 23:16:10 [Durance Of Hate Level 3 17515,8061] path total nodes: 19
+10/5 23:16:14 [Durance Of Hate Level 3 17564,8067] moveTo end
+10/5 23:16:14 [Durance Of Hate Level 3 17564,8067] moveTo getPath -> 17569,8072 tele:false
+10/5 23:16:14 [Durance Of Hate Level 3 17564,8067] path total nodes: 4
+10/5 23:16:14 [Durance Of Hate Level 3 17568,8071] moveTo end
+10/5 23:16:17 [Durance Of Hate Level 3 17569,8072] moveTo getPath -> 17602,8069 tele:false
+10/5 23:16:17 [Durance Of Hate Level 3 17569,8072] path total nodes: 14
+10/5 23:16:25 [Durance Of Hate Level 3 17600,8069] moveTo end
+10/5 23:16:25 [Durance Of Hate Level 3 17600,8069] usePortal 342 send i:0 area:102
+10/5 23:16:25 [The Pandemonium Fortress 5048,5043] usePortal 342 changed area:103 ms:437 loading at:375
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] === [DIABLO] ===
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] gamble
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] reviveMerc
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] Equip1
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] Grant1
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] Cubing
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] Runewords
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] clearBelt
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] heal
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] identify
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] moveTo getPath -> 5083,5057 tele:false
+10/5 23:16:32 [The Pandemonium Fortress 5048,5043] path total nodes: 16
+10/5 23:16:35 [The Pandemonium Fortress 5082,5056] moveTo end
+10/5 23:16:38 [The Pandemonium Fortress 5082,5056] clearInventory
+10/5 23:16:38 [The Pandemonium Fortress 5082,5056] fillTome
+10/5 23:16:38 [The Pandemonium Fortress 5082,5056] buyPotions
+10/5 23:16:40 [The Pandemonium Fortress 5082,5056] repair
+10/5 23:16:40 [The Pandemonium Fortress 5082,5056] moveTo getPath -> 5087,5031 tele:false
+10/5 23:16:40 [The Pandemonium Fortress 5082,5056] path total nodes: 10
+10/5 23:16:41 [The Pandemonium Fortress 5086,5035] moveTo end
+10/5 23:16:41 [The Pandemonium Fortress 5086,5035] moveTo getPath -> 5087,5031 tele:false
+10/5 23:16:41 [The Pandemonium Fortress 5086,5035] path total nodes: 4
+10/5 23:16:41 [The Pandemonium Fortress 5084,5030] moveTo end
+10/5 23:16:44 [The Pandemonium Fortress 5090,5028] pickItems
+10/5 23:16:44 [The Pandemonium Fortress 5090,5028] Equip2
+10/5 23:16:44 [The Pandemonium Fortress 5090,5028] Grant2
+10/5 23:16:44 [The Pandemonium Fortress 5090,5028] stash
+10/5 23:16:44 [The Pandemonium Fortress 5090,5028] doChores end
+10/5 23:16:45 [The Pandemonium Fortress 5090,5028] moveTo getPath -> 5045,5042 tele:false
+10/5 23:16:45 [The Pandemonium Fortress 5090,5028] path total nodes: 21
+10/5 23:16:48 [The Pandemonium Fortress 5045,5041] moveTo end
+10/5 23:16:49 [The Pandemonium Fortress 5046,5044] moveTo getPath -> 5044,5042 tele:false
+10/5 23:16:49 [The Pandemonium Fortress 5046,5044] path total nodes: 3
+10/5 23:16:49 [The Pandemonium Fortress 5044,5042] moveTo end
+10/5 23:17:21 [The Pandemonium Fortress 5044,5042] moveTo getPath -> 5049,5043 tele:false
+10/5 23:17:21 [The Pandemonium Fortress 5044,5042] path total nodes: 4
+10/5 23:17:22 [The Pandemonium Fortress 5047,5043] moveTo end
+10/5 23:17:22 [The Pandemonium Fortress 5047,5043] moveTo getPath -> 5049,5043 tele:false
+10/5 23:17:22 [The Pandemonium Fortress 5047,5043] path total nodes: 3
+10/5 23:17:22 [The Pandemonium Fortress 5047,5043] moveTo end
+10/5 23:17:26 [Chaos Sanctuary 7814,5246] moveTo getPath -> 7775,5230 tele:false
+10/5 23:17:26 [Chaos Sanctuary 7814,5246] path total nodes: 23
+10/5 23:17:30 [Chaos Sanctuary 7775,5230] moveTo end
+10/5 23:17:30 [Chaos Sanctuary 7775,5230] moveTo getPath -> 7815,5230 tele:false
+10/5 23:17:30 [Chaos Sanctuary 7775,5230] path total nodes: 12
+10/5 23:17:37 [Chaos Sanctuary 7816,5228] moveTo end
+10/5 23:17:37 [Chaos Sanctuary 7816,5228] moveTo getPath -> 7815,5190 tele:false
+10/5 23:17:37 [Chaos Sanctuary 7816,5228] path total nodes: 12
+10/5 23:17:40 [Chaos Sanctuary 7816,5192] moveTo end
+10/5 23:17:40 [Chaos Sanctuary 7816,5192] moveTo getPath -> 7775,5190 tele:false
+10/5 23:17:40 [Chaos Sanctuary 7816,5191] path total nodes: 14
+10/5 23:17:43 [Chaos Sanctuary 7777,5189] moveTo end
+10/5 23:17:43 [Chaos Sanctuary 7777,5189] moveTo getPath -> 7775,5150 tele:false
+10/5 23:17:43 [Chaos Sanctuary 7777,5189] path total nodes: 13
+10/5 23:17:45 [Chaos Sanctuary 7775,5152] moveTo end
+10/5 23:17:45 [Chaos Sanctuary 7775,5152] moveTo getPath -> 7805,5155 tele:false
+10/5 23:17:45 [Chaos Sanctuary 7775,5152] path total nodes: 13
+10/5 23:17:48 [Chaos Sanctuary 7802,5154] moveTo end
+10/5 23:17:51 [Chaos Sanctuary 7802,5154] moveTo getPath -> 7775,5160 tele:false
+10/5 23:17:51 [Chaos Sanctuary 7802,5154] path total nodes: 12
+10/5 23:17:53 [Chaos Sanctuary 7778,5158] moveTo end
+10/5 23:18:7 [Chaos Sanctuary 7791,5201] moveTo getPath -> 7790,5290 tele:false
+10/5 23:18:7 [Chaos Sanctuary 7791,5201] path total nodes: 41
+10/5 23:18:13 [Chaos Sanctuary 7791,5288] moveTo end
+10/5 23:18:13 [Chaos Sanctuary 7791,5288] moveTo getPath -> 7796,5293 tele:false
+10/5 23:18:13 [Chaos Sanctuary 7791,5288] path total nodes: 4
+10/5 23:18:14 [Chaos Sanctuary 7795,5292] moveTo end
+10/5 23:18:17 [Chaos Sanctuary 7786,5288] moveTo getPath -> 7795,5292 tele:false
+10/5 23:18:17 [Chaos Sanctuary 7786,5288] path total nodes: 7
+10/5 23:18:18 [Chaos Sanctuary 7793,5291] moveTo end
+10/5 23:18:37 [Chaos Sanctuary 7794,5291] moveTo getPath -> 7825,5295 tele:false
+10/5 23:18:37 [Chaos Sanctuary 7794,5291] path total nodes: 17
+10/5 23:18:39 [Chaos Sanctuary 7815,5287] moveTo getPath -> 7829,5291 tele:false
+10/5 23:18:39 [Chaos Sanctuary 7815,5287] path total nodes: 9
+10/5 23:18:40 [Chaos Sanctuary 7828,5291] moveTo end
+10/5 23:18:40 [Chaos Sanctuary 7826,5294] moveTo end
+10/5 23:18:40 [Chaos Sanctuary 7826,5294] moveTo getPath -> 7855,5310 tele:false
+10/5 23:18:40 [Chaos Sanctuary 7826,5294] path total nodes: 16
+10/5 23:18:59 [Chaos Sanctuary 7855,5310] moveTo end
+10/5 23:18:59 [Chaos Sanctuary 7855,5310] moveTo getPath -> 7855,5275 tele:false
+10/5 23:18:59 [Chaos Sanctuary 7855,5310] path total nodes: 10
+10/5 23:19:3 [Chaos Sanctuary 7855,5278] moveTo end
+10/5 23:19:3 [Chaos Sanctuary 7855,5278] moveTo getPath -> 7930,5275 tele:false
+10/5 23:19:3 [Chaos Sanctuary 7855,5278] path total nodes: 25
+10/5 23:19:28 [Chaos Sanctuary 7930,5275] moveTo end
+10/5 23:19:28 [Chaos Sanctuary 7930,5275] moveTo getPath -> 7920,5315 tele:false
+10/5 23:19:28 [Chaos Sanctuary 7930,5275] path total nodes: 14
+10/5 23:19:42 [Chaos Sanctuary 7922,5312] moveTo end
+10/5 23:19:50 [Chaos Sanctuary 7922,5313] moveTo getPath -> 7935,5295 tele:false
+10/5 23:19:50 [Chaos Sanctuary 7922,5313] path total nodes: 11
+10/5 23:19:51 [Chaos Sanctuary 7933,5297] moveTo end
+10/5 23:20:5 [Chaos Sanctuary 7909,5282] moveTo getPath -> 7914,5272 tele:false
+10/5 23:20:5 [Chaos Sanctuary 7909,5282] path total nodes: 8
+10/5 23:20:6 [Chaos Sanctuary 7911,5272] moveTo end
+10/5 23:20:6 [Chaos Sanctuary 7912,5270] moveTo getPath -> 7916,5272 tele:false
+10/5 23:20:6 [Chaos Sanctuary 7912,5270] path total nodes: 4
+10/5 23:20:8 [Chaos Sanctuary 7912,5272] moveTo end
+10/5 23:20:8 [Chaos Sanctuary 7912,5272] moveTo getPath -> 7917,5272 tele:false
+10/5 23:20:8 [Chaos Sanctuary 7912,5272] path total nodes: 4
+10/5 23:20:9 [Chaos Sanctuary 7915,5271] moveTo end
+10/5 23:20:9 [Chaos Sanctuary 7915,5271] moveTo getPath -> 7790,5290 tele:false
+10/5 23:20:9 [Chaos Sanctuary 7915,5271] path total nodes: 47
+10/5 23:20:19 [Chaos Sanctuary 7787,5290] moveTo end
+10/5 23:20:19 [Chaos Sanctuary 7788,5290] moveTo getPath -> 7793,5295 tele:false
+10/5 23:20:19 [Chaos Sanctuary 7788,5290] path total nodes: 4
+10/5 23:20:20 [Chaos Sanctuary 7791,5292] moveTo end
+10/5 23:20:26 [Chaos Sanctuary 7777,5285] moveTo getPath -> 7791,5292 tele:false
+10/5 23:20:26 [Chaos Sanctuary 7777,5285] path total nodes: 11
+10/5 23:20:27 [Chaos Sanctuary 7789,5291] moveTo end
+10/5 23:20:29 [Chaos Sanctuary 7790,5291] moveTo getPath -> 7755,5290 tele:false
+10/5 23:20:29 [Chaos Sanctuary 7790,5291] path total nodes: 17
+10/5 23:20:31 [Chaos Sanctuary 7758,5290] moveTo end
+10/5 23:20:31 [Chaos Sanctuary 7757,5290] moveTo getPath -> 7720,5275 tele:false
+10/5 23:20:31 [Chaos Sanctuary 7757,5290] path total nodes: 21
+10/5 23:20:33 [Chaos Sanctuary 7749,5279] moveTo getPath -> 7767,5294 tele:false
+10/5 23:20:33 [Chaos Sanctuary 7749,5279] path total nodes: 10
+10/5 23:20:35 [Chaos Sanctuary 7766,5293] moveTo end
+10/5 23:20:51 [Chaos Sanctuary 7720,5275] moveTo end
+10/5 23:20:51 [Chaos Sanctuary 7720,5275] moveTo getPath -> 7710,5315 tele:false
+10/5 23:20:51 [Chaos Sanctuary 7720,5275] path total nodes: 17
+10/5 23:20:54 [Chaos Sanctuary 7710,5312] moveTo end
+10/5 23:20:54 [Chaos Sanctuary 7710,5312] moveTo getPath -> 7660,5275 tele:false
+10/5 23:20:54 [Chaos Sanctuary 7710,5312] path total nodes: 31
+10/5 23:21:7 [Chaos Sanctuary 7659,5273] moveTo end
+10/5 23:21:7 [Chaos Sanctuary 7659,5273] moveTo getPath -> 7660,5315 tele:false
+10/5 23:21:7 [Chaos Sanctuary 7659,5273] path total nodes: 21
+10/5 23:21:16 [Chaos Sanctuary 7660,5312] moveTo end
+10/5 23:21:21 [Chaos Sanctuary 7660,5312] moveTo getPath -> 7680,5295 tele:false
+10/5 23:21:21 [Chaos Sanctuary 7660,5312] path total nodes: 11
+10/5 23:21:25 [Chaos Sanctuary 7682,5295] moveTo end
+10/5 23:21:31 [Chaos Sanctuary 7701,5294] moveTo getPath -> 7700,5290 tele:false
+10/5 23:21:31 [Chaos Sanctuary 7701,5294] path total nodes: 4
+10/5 23:21:31 [Chaos Sanctuary 7701,5293] moveTo end
+10/5 23:21:31 [Chaos Sanctuary 7700,5291] moveTo getPath -> 7791,5297 tele:0
+10/5 23:21:31 [Chaos Sanctuary 7700,5291] path total nodes: 33
+10/5 23:21:37 [Chaos Sanctuary 7789,5296] moveTo end
+10/5 23:21:52 [Chaos Sanctuary 7795,5295] moveTo getPath -> 7780,5290 tele:false
+10/5 23:21:52 [Chaos Sanctuary 7795,5295] path total nodes: 8
+10/5 23:22:8 [The Pandemonium Fortress 5049,5044] === game Pz-184 ===
+10/5 23:22:12 [The Pandemonium Fortress 5049,5044] moveTo getPath -> 5046,5025 tele:false
+10/5 23:22:12 [The Pandemonium Fortress 5049,5044] path total nodes: 8
+10/5 23:22:14 [The Pandemonium Fortress 5045,5030] moveTo end
+10/5 23:22:14 [The Pandemonium Fortress 5045,5030] moveTo getPath -> 5044,5019 tele:false
+10/5 23:22:14 [The Pandemonium Fortress 5046,5029] path total nodes: 7
+10/5 23:22:15 [The Pandemonium Fortress 5045,5020] moveTo end
+10/5 23:22:16 [Harrogath 5113,5068] gamble
+10/5 23:22:16 [Harrogath 5113,5068] reviveMerc
+10/5 23:22:16 [Harrogath 5113,5068] Equip1
+10/5 23:22:16 [Harrogath 5113,5068] Grant1
+10/5 23:22:16 [Harrogath 5113,5068] Cubing
+10/5 23:22:16 [Harrogath 5114,5069] Runewords
+10/5 23:22:16 [Harrogath 5114,5069] clearBelt
+10/5 23:22:16 [Harrogath 5114,5069] heal
+10/5 23:22:16 [Harrogath 5114,5069] identify
+10/5 23:22:16 [Harrogath 5114,5069] moveTo getPath -> 5082,5029 tele:false
+10/5 23:22:16 [Harrogath 5114,5069] path total nodes: 30
+10/5 23:22:20 [Harrogath 5083,5031] moveTo end
+10/5 23:22:20 [Harrogath 5083,5031] moveTo getPath -> 5079,5026 tele:false
+10/5 23:22:20 [Harrogath 5083,5031] path total nodes: 3
+10/5 23:22:21 [Harrogath 5080,5031] moveTo end
+10/5 23:22:22 [Harrogath 5080,5031] moveTo getPath -> 5079,5026 tele:false
+10/5 23:22:22 [Harrogath 5080,5031] path total nodes: 4
+10/5 23:22:23 [Harrogath 5079,5024] moveTo end
+10/5 23:22:23 [Harrogath 5079,5024] moveTo getPath -> 5079,5026 tele:false
+10/5 23:22:23 [Harrogath 5079,5024] path total nodes: 5
+10/5 23:22:24 [Harrogath 5077,5026] moveTo end
+10/5 23:22:28 [Harrogath 5077,5026] clearInventory
+10/5 23:22:28 [Harrogath 5077,5026] fillTome
+10/5 23:22:28 [Harrogath 5077,5026] buyPotions
+10/5 23:22:30 [Harrogath 5077,5026] repair
+10/5 23:22:30 [Harrogath 5077,5026] moveTo getPath -> 5141,5045 tele:false
+10/5 23:22:30 [Harrogath 5077,5026] path total nodes: 28
+10/5 23:22:34 [Harrogath 5141,5045] moveTo end
+10/5 23:22:34 [Harrogath 5141,5045] moveTo getPath -> 5144,5037 tele:false
+10/5 23:22:34 [Harrogath 5141,5045] path total nodes: 8
+10/5 23:22:35 [Harrogath 5144,5039] moveTo end
+10/5 23:22:35 [Harrogath 5144,5039] moveTo getPath -> 5144,5037 tele:false
+10/5 23:22:35 [Harrogath 5145,5038] path total nodes: 2
+10/5 23:22:35 [Harrogath 5146,5037] moveTo end
+10/5 23:22:37 [Harrogath 5147,5036] pickItems
+10/5 23:22:37 [Harrogath 5147,5036] moveTo getPath -> 5145,5041 tele:false
+10/5 23:22:37 [Harrogath 5147,5036] path total nodes: 4
+10/5 23:22:37 [Harrogath 5145,5041] moveTo end
+10/5 23:22:38 [Harrogath 5145,5041] Equip2
+10/5 23:22:38 [Harrogath 5145,5041] Grant2
+10/5 23:22:38 [Harrogath 5145,5041] stash
+10/5 23:22:38 [Harrogath 5145,5041] moveTo getPath -> 5129,5061 tele:false
+10/5 23:22:38 [Harrogath 5145,5041] path total nodes: 13
+10/5 23:22:39 [Harrogath 5129,5061] moveTo end
+10/5 23:22:41 [Harrogath 5126,5058] doChores end
+10/5 23:22:41 [Harrogath 5126,5058] [MoveToSlot] Rejuvenation Potion
+10/5 23:22:41 [Harrogath 5126,5058] moveTo getPath -> 5119,5063 tele:false
+10/5 23:22:41 [Harrogath 5126,5058] path total nodes: 6
+10/5 23:22:42 [Harrogath 5119,5062] moveTo end
+10/5 23:22:42 [Harrogath 5119,5062] moveTo getPath -> 5114,5069 tele:false
+10/5 23:22:42 [Harrogath 5119,5062] path total nodes: 5
+10/5 23:22:43 [Harrogath 5114,5069] moveTo end
+10/5 23:22:43 [Harrogath 5114,5069] moveTo getPath -> 5119,5074 tele:false
+10/5 23:22:43 [Harrogath 5114,5069] path total nodes: 4
+10/5 23:22:44 [Harrogath 5119,5074] moveTo end
+10/5 23:22:48 [Harrogath 5119,5074] moveTo getPath -> 5114,5069 tele:false
+10/5 23:22:48 [Harrogath 5119,5074] path total nodes: 4
+10/5 23:22:48 [Harrogath 5114,5069] moveTo end
+10/5 23:22:50 [Ancient's Way 10025,10758] moveTo getPath -> 10030,10763 tele:0
+10/5 23:22:50 [Ancient's Way 10025,10758] path total nodes: 4
+10/5 23:22:50 [Ancient's Way 10029,10762] moveTo end
+10/5 23:22:59 [Ancient's Way 10030,10763] moveTo getPath -> 10024,10759 tele:0
+10/5 23:22:59 [Ancient's Way 10030,10763] path total nodes: 7
+10/5 23:23:0 [Ancient's Way 10026,10759] moveTo end
+10/5 23:23:0 [Ancient's Way 10026,10759] moveTo getPath -> 10024,10759 tele:0
+10/5 23:23:0 [Ancient's Way 10026,10759] path total nodes: 3
+10/5 23:23:0 [Ancient's Way 10026,10759] moveTo end
+10/5 23:23:2 [Harrogath 5114,5071] === [BAAL] ===
+10/5 23:24:17 [Throne Of Destruction 15074,5072] moveTo getPath -> 15095,5030 tele:0
+10/5 23:24:17 [Throne Of Destruction 15074,5072] path total nodes: 21
+10/5 23:24:20 [Throne Of Destruction 15094,5031] moveTo end
+10/5 23:24:28 [Throne Of Destruction 15089,5081] moveTo getPath -> 15097,5041 tele:0
+10/5 23:24:28 [Throne Of Destruction 15089,5081] path total nodes: 17
+10/5 23:24:31 [Throne Of Destruction 15097,5043] moveTo end
+10/5 23:24:31 [Throne Of Destruction 15097,5041] moveTo getPath -> 15078,5040 tele:0
+10/5 23:24:31 [Throne Of Destruction 15097,5041] path total nodes: 8
+10/5 23:24:32 [Throne Of Destruction 15080,5040] moveTo end
+10/5 23:24:32 [Throne Of Destruction 15079,5040] moveTo getPath -> 15116,5002 tele:0
+10/5 23:24:32 [Throne Of Destruction 15079,5040] path total nodes: 17
+10/5 23:24:36 [Throne Of Destruction 15113,5003] moveTo end
+10/5 23:24:39 [Throne Of Destruction 15114,5002] moveTo getPath -> 15087,5030 tele:0
+10/5 23:24:39 [Throne Of Destruction 15114,5002] path total nodes: 16
+10/5 23:24:43 [Throne Of Destruction 15088,5029] moveTo end
+10/5 23:25:3 [Throne Of Destruction 15083,5026] moveTo getPath -> 15087,5027 tele:0
+10/5 23:25:3 [Throne Of Destruction 15083,5026] path total nodes: 4
+10/5 23:25:3 [Throne Of Destruction 15084,5027] moveTo end
+10/5 23:25:3 [Throne Of Destruction 15088,5029] moveTo getPath -> 15092,5030 tele:0
+10/5 23:25:4 [Throne Of Destruction 15088,5029] path total nodes: 4
+10/5 23:25:4 [Throne Of Destruction 15090,5029] moveTo end
+10/5 23:25:25 [Throne Of Destruction 15101,5024] moveTo getPath -> 15096,5028 tele:0
+10/5 23:25:25 [Throne Of Destruction 15101,5024] path total nodes: 5
+10/5 23:25:25 [Throne Of Destruction 15099,5026] moveTo end
+10/5 23:25:25 [Throne Of Destruction 15098,5027] moveTo getPath -> 15090,5030 tele:0
+10/5 23:25:25 [Throne Of Destruction 15098,5027] path total nodes: 5
+10/5 23:25:26 [Throne Of Destruction 15093,5029] moveTo end
+10/5 23:25:35 [Throne Of Destruction 15092,5029] moveTo getPath -> 15090,5005 tele:0
+10/5 23:25:35 [Throne Of Destruction 15092,5029] path total nodes: 11
+10/5 23:25:37 [Throne Of Destruction 15088,5010] moveTo end
+10/5 23:25:37 [Throne Of Destruction 15088,5010] moveTo getPath -> 15090,5005 tele:0
+10/5 23:25:37 [Throne Of Destruction 15088,5010] path total nodes: 2
+10/5 23:25:37 [Throne Of Destruction 15087,5008] moveTo end
+10/5 23:25:45 [The Worldstone Chamber 15179,5889] moveTo getPath -> 15172,5889 tele:0
+10/5 23:25:45 [The Worldstone Chamber 15179,5889] path total nodes: 4
+10/5 23:25:46 [The Worldstone Chamber 15175,5888] moveTo end
+10/5 23:25:48 [The Worldstone Chamber 15175,5888] moveTo getPath -> 15134,5923 tele:0
+10/5 23:25:48 [The Worldstone Chamber 15175,5888] path total nodes: 37
+10/5 23:25:55 [The Worldstone Chamber 15134,5929] moveTo end
+10/5 23:26:17 [The Worldstone Chamber 15137,5918] moveTo getPath -> 15131,5922 tele:0
+10/5 23:26:17 [The Worldstone Chamber 15137,5918] path total nodes: 5
+10/5 23:26:18 [The Worldstone Chamber 15134,5920] moveTo end
+10/5 23:26:18 [The Worldstone Chamber 15134,5920] moveTo getPath -> 15131,5922 tele:0
+10/5 23:26:18 [The Worldstone Chamber 15134,5920] path total nodes: 4
+10/5 23:26:18 [The Worldstone Chamber 15133,5920] moveTo end
+10/5 23:26:19 [Harrogath 5097,5019] === [COUNTESS] ===
+10/5 23:26:19 [Harrogath 5097,5019] clearBelt
+10/5 23:26:19 [Harrogath 5098,5020] heal
+10/5 23:26:19 [Harrogath 5098,5020] moveTo getPath -> 5073,5028 tele:false
+10/5 23:26:19 [Harrogath 5098,5020] path total nodes: 11
+10/5 23:26:21 [Harrogath 5073,5030] moveTo end
+10/5 23:26:21 [Harrogath 5073,5030] moveTo getPath -> 5073,5028 tele:false
+10/5 23:26:21 [Harrogath 5073,5030] path total nodes: 2
+10/5 23:26:21 [Harrogath 5073,5030] moveTo end
+10/5 23:26:21 [Harrogath 5073,5030] identify
+10/5 23:26:23 [Harrogath 5073,5030] clearInventory
+10/5 23:26:23 [Harrogath 5073,5030] fillTome
+10/5 23:26:23 [Harrogath 5073,5030] buyPotions
+10/5 23:26:24 [Harrogath 5073,5030] repair
+10/5 23:26:25 [Harrogath 5073,5030] pickItems
+10/5 23:26:25 [Harrogath 5073,5030] Equip2
+10/5 23:26:25 [Harrogath 5073,5030] Grant2
+10/5 23:26:25 [Harrogath 5073,5030] stash
+10/5 23:26:25 [Harrogath 5073,5030] doChores end
+10/5 23:26:25 [Harrogath 5073,5030] moveTo getPath -> 5110,5061 tele:false
+10/5 23:26:25 [Harrogath 5073,5030] path total nodes: 31
+10/5 23:26:29 [Harrogath 5110,5058] moveTo end
+10/5 23:26:29 [Harrogath 5110,5058] moveTo getPath -> 5114,5069 tele:false
+10/5 23:26:29 [Harrogath 5110,5058] path total nodes: 5
+10/5 23:26:29 [Harrogath 5113,5064] moveTo end
+10/5 23:26:29 [Harrogath 5114,5065] moveTo getPath -> 5114,5069 tele:false
+10/5 23:26:29 [Harrogath 5114,5065] path total nodes: 2
+10/5 23:26:30 [Harrogath 5112,5069] moveTo end
+10/5 23:26:31 [Rogue Encampment 4419,5609] moveTo getPath -> 4407,5660 tele:false
+10/5 23:26:31 [Rogue Encampment 4419,5609] path total nodes: 19
+10/5 23:26:34 [Rogue Encampment 4408,5659] moveTo end
+10/5 23:27:0 [Rogue Encampment 4408,5658] moveTo getPath -> 4413,5663 tele:false
+10/5 23:27:0 [Rogue Encampment 4408,5658] path total nodes: 4
+10/5 23:27:0 [Rogue Encampment 4412,5662] moveTo end
+10/5 23:27:15 [Tower Cellar Level 5 12547,11047] moveTo getPath -> 12526,11070 tele:false
+10/5 23:27:15 [Tower Cellar Level 5 12547,11047] path total nodes: 12
+10/5 23:27:17 [Tower Cellar Level 5 12526,11067] moveTo end
+10/5 23:27:17 [Tower Cellar Level 5 12526,11067] moveTo getPath -> 12531,11072 tele:false
+10/5 23:27:17 [Tower Cellar Level 5 12526,11067] path total nodes: 4
+10/5 23:27:17 [Tower Cellar Level 5 12530,11070] moveTo end
+10/5 23:27:18 [Tower Cellar Level 5 12531,11072] moveTo getPath -> 12530,11070 tele:false
+10/5 23:27:18 [Tower Cellar Level 5 12531,11072] path total nodes: 3
+10/5 23:27:18 [Tower Cellar Level 5 12531,11072] moveTo end
+10/5 23:27:19 [Tower Cellar Level 5 12531,11072] moveTo getPath -> 12530,11070 tele:false
+10/5 23:27:19 [Tower Cellar Level 5 12531,11072] path total nodes: 3
+10/5 23:27:20 [Tower Cellar Level 5 12531,11072] moveTo end
+10/5 23:27:21 [Tower Cellar Level 5 12531,11072] moveTo getPath -> 12530,11070 tele:false
+10/5 23:27:21 [Tower Cellar Level 5 12531,11072] path total nodes: 3
+10/5 23:27:21 [Tower Cellar Level 5 12531,11072] moveTo end
+10/5 23:27:22 [Tower Cellar Level 5 12531,11072] moveTo getPath -> 12530,11070 tele:false
+10/5 23:27:22 [Tower Cellar Level 5 12531,11072] path total nodes: 3
+10/5 23:27:22 [Tower Cellar Level 5 12531,11072] moveTo end
+10/5 23:27:23 [Tower Cellar Level 5 12531,11072] moveTo getPath -> 12530,11070 tele:false
+10/5 23:27:23 [Tower Cellar Level 5 12531,11072] path total nodes: 3
+10/5 23:27:23 [Tower Cellar Level 5 12531,11072] moveTo end
+10/5 23:27:24 [Tower Cellar Level 5 12531,11072] moveTo getPath -> 12530,11070 tele:false
+10/5 23:27:24 [Tower Cellar Level 5 12531,11072] path total nodes: 3
+10/5 23:27:24 [Tower Cellar Level 5 12531,11072] moveTo end
+10/5 23:27:27 [Tower Cellar Level 5 12531,11072] moveTo getPath -> 12524,11060 tele:false
+10/5 23:27:27 [Tower Cellar Level 5 12531,11072] path total nodes: 7
+10/5 23:27:28 [Tower Cellar Level 5 12525,11062] moveTo end
+10/5 23:27:28 [Tower Cellar Level 5 12525,11062] moveTo getPath -> 12524,11060 tele:false
+10/5 23:27:28 [Tower Cellar Level 5 12525,11062] path total nodes: 3
+10/5 23:27:29 [Tower Cellar Level 5 12524,11060] moveTo end
+10/5 23:27:29 [Rogue Encampment 4415,5663] === [PIT] ===
+10/5 23:27:29 [Rogue Encampment 4415,5663] clearBelt
+10/5 23:27:29 [Rogue Encampment 4415,5663] heal
+10/5 23:27:29 [Rogue Encampment 4415,5663] moveTo getPath -> 4453,5601 tele:false
+10/5 23:27:29 [Rogue Encampment 4415,5663] path total nodes: 31
+10/5 23:27:35 [Rogue Encampment 4452,5603] moveTo end
+10/5 23:27:35 [Rogue Encampment 4452,5603] moveTo getPath -> 4457,5605 tele:false
+10/5 23:27:35 [Rogue Encampment 4452,5603] path total nodes: 4
+10/5 23:27:36 [Rogue Encampment 4456,5604] moveTo end
+10/5 23:27:36 [Rogue Encampment 4456,5604] identify
+10/5 23:27:36 [Rogue Encampment 4456,5604] clearInventory
+10/5 23:27:36 [Rogue Encampment 4456,5604] fillTome
+10/5 23:27:36 [Rogue Encampment 4456,5604] buyPotions
+10/5 23:27:36 [Rogue Encampment 4456,5604] repair
+10/5 23:27:36 [Rogue Encampment 4456,5604] pickItems
+10/5 23:27:36 [Rogue Encampment 4456,5604] Equip2
+10/5 23:27:36 [Rogue Encampment 4456,5604] Grant2
+10/5 23:27:36 [Rogue Encampment 4456,5604] stash
+10/5 23:27:36 [Rogue Encampment 4456,5604] doChores end
+10/5 23:27:55 [Rogue Encampment 4456,5604] moveTo getPath -> 4407,5660 tele:false
+10/5 23:27:55 [Rogue Encampment 4456,5604] path total nodes: 32
+10/5 23:27:59 [Rogue Encampment 4408,5659] moveTo end
+10/5 23:28:12 [Rogue Encampment 4408,5659] moveTo getPath -> 4413,5663 tele:false
+10/5 23:28:12 [Rogue Encampment 4408,5659] path total nodes: 4
+10/5 23:28:13 [Rogue Encampment 4412,5664] moveTo end
+10/5 23:28:19 [Pit Level 2 7538,14411] moveTo getPath -> 7527,14396 tele:false
+10/5 23:28:19 [Pit Level 2 7538,14411] path total nodes: 9
+10/5 23:28:21 [Pit Level 2 7528,14398] moveTo end
+10/5 23:28:23 [Pit Level 2 7527,14397] moveTo getPath -> 7548,14429 tele:false
+10/5 23:28:23 [Pit Level 2 7527,14397] path total nodes: 16
+10/5 23:28:40 [Pit Level 2 7548,14443] moveTo getPath -> 7550,14437 tele:false
+10/5 23:28:40 [Pit Level 2 7548,14443] path total nodes: 6
+10/5 23:28:40 [Pit Level 2 7548,14439] moveTo end
+10/5 23:28:41 [Pit Level 2 7548,14438] moveTo getPath -> 7542,14422 tele:false
+10/5 23:28:41 [Pit Level 2 7548,14438] path total nodes: 9
+10/5 23:28:42 [Pit Level 2 7541,14426] moveTo end
+10/5 23:28:49 [Pit Level 2 7548,14433] moveTo end
+10/5 23:28:49 [Pit Level 2 7548,14433] moveTo getPath -> 7558,14465 tele:false
+10/5 23:28:49 [Pit Level 2 7548,14433] path total nodes: 12
+10/5 23:29:2 [Pit Level 2 7556,14463] moveTo end
+10/5 23:29:2 [Pit Level 2 7556,14463] moveTo getPath -> 7585,14445 tele:false
+10/5 23:29:2 [Pit Level 2 7556,14463] path total nodes: 16
+10/5 23:29:6 [Pit Level 2 7582,14444] moveTo end
+10/5 23:29:6 [Pit Level 2 7582,14444] moveTo getPath -> 7575,14401 tele:false
+10/5 23:29:6 [Pit Level 2 7582,14444] path total nodes: 19
+10/5 23:29:10 [Pit Level 2 7575,14405] moveTo end
+10/5 23:29:10 [Pit Level 2 7575,14405] moveTo getPath -> 7607,14420 tele:false
+10/5 23:29:10 [Pit Level 2 7575,14405] path total nodes: 15
+10/5 23:29:17 [Pit Level 2 7608,14421] moveTo end
+10/5 23:29:17 [Pit Level 2 7608,14421] moveTo getPath -> 7600,14431 tele:false
+10/5 23:29:17 [Pit Level 2 7608,14421] path total nodes: 8
+10/5 23:29:18 [Pit Level 2 7602,14428] moveTo end
+10/5 23:29:18 [Pit Level 2 7601,14431] moveTo getPath -> 7602,14428 tele:false
+10/5 23:29:18 [Pit Level 2 7601,14431] path total nodes: 4
+10/5 23:29:19 [Pit Level 2 7601,14431] moveTo end
+10/5 23:29:25 [Rogue Encampment 4415,5665] === [ANDY] ===
+10/5 23:29:25 [Rogue Encampment 4415,5665] clearBelt
+10/5 23:29:25 [Rogue Encampment 4415,5665] heal
+10/5 23:29:25 [Rogue Encampment 4415,5665] identify
+10/5 23:29:25 [Rogue Encampment 4415,5665] clearInventory
+10/5 23:29:25 [Rogue Encampment 4416,5666] fillTome
+10/5 23:29:25 [Rogue Encampment 4416,5666] buyPotions
+10/5 23:29:25 [Rogue Encampment 4416,5666] moveTo getPath -> 4457,5605 tele:false
+10/5 23:29:25 [Rogue Encampment 4416,5666] path total nodes: 33
+10/5 23:29:30 [Rogue Encampment 4457,5605] moveTo end
+10/5 23:29:30 [Rogue Encampment 4457,5605] moveTo getPath -> 4453,5601 tele:false
+10/5 23:29:30 [Rogue Encampment 4457,5605] path total nodes: 3
+10/5 23:29:31 [Rogue Encampment 4455,5603] moveTo end
+10/5 23:29:31 [Rogue Encampment 4455,5605] moveTo getPath -> 4453,5601 tele:false
+10/5 23:29:31 [Rogue Encampment 4455,5605] path total nodes: 5
+10/5 23:29:31 [Rogue Encampment 4452,5603] moveTo end
+10/5 23:29:31 [Rogue Encampment 4452,5603] moveTo getPath -> 4453,5601 tele:false
+10/5 23:29:31 [Rogue Encampment 4452,5603] path total nodes: 2
+10/5 23:29:32 [Rogue Encampment 4452,5602] moveTo end
+10/5 23:29:33 [Rogue Encampment 4452,5602] repair
+10/5 23:29:33 [Rogue Encampment 4452,5602] pickItems
+10/5 23:29:33 [Rogue Encampment 4452,5602] Equip2
+10/5 23:29:33 [Rogue Encampment 4452,5602] Grant2
+10/5 23:29:33 [Rogue Encampment 4452,5602] stash
+10/5 23:29:33 [Rogue Encampment 4452,5602] doChores end
+10/5 23:29:33 [Rogue Encampment 4452,5602] moveTo getPath -> 4407,5660 tele:false
+10/5 23:29:34 [Rogue Encampment 4452,5602] path total nodes: 29
+10/5 23:29:38 [Rogue Encampment 4407,5660] moveTo end
+10/5 23:30:5 [Rogue Encampment 4407,5660] moveTo getPath -> 4413,5663 tele:false
+10/5 23:30:5 [Rogue Encampment 4407,5660] path total nodes: 7
+10/5 23:30:5 [Rogue Encampment 4413,5662] moveTo end
+10/5 23:30:12 [Catacombs Level 4 22556,9521] moveTo getPath -> 22552,9533 tele:false
+10/5 23:30:12 [Catacombs Level 4 22556,9521] path total nodes: 9
+10/5 23:30:13 [Catacombs Level 4 22549,9532] moveTo end
+10/5 23:30:14 [Catacombs Level 4 22552,9533] moveTo getPath -> 22536,9543 tele:false
+10/5 23:30:14 [Catacombs Level 4 22552,9533] path total nodes: 9
+10/5 23:30:15 [Catacombs Level 4 22538,9542] moveTo end
+10/5 23:30:18 [Catacombs Level 4 22536,9543] moveTo getPath -> 22549,9520 tele:false
+10/5 23:30:18 [Catacombs Level 4 22536,9543] path total nodes: 15
+10/5 23:30:19 [Catacombs Level 4 22549,9522] moveTo end
+10/5 23:30:19 [Catacombs Level 4 22549,9522] moveTo getPath -> 22554,9527 tele:false
+10/5 23:30:19 [Catacombs Level 4 22549,9522] path total nodes: 4
+10/5 23:30:20 [Catacombs Level 4 22553,9526] moveTo end
+10/5 23:30:22 [Catacombs Level 4 22554,9527] moveTo getPath -> 22551,9520 tele:false
+10/5 23:30:22 [Catacombs Level 4 22554,9527] path total nodes: 5
+10/5 23:30:22 [Catacombs Level 4 22553,9523] moveTo end
+10/5 23:30:22 [Catacombs Level 4 22553,9523] moveTo getPath -> 22551,9520 tele:false
+10/5 23:30:22 [Catacombs Level 4 22553,9523] path total nodes: 4
+10/5 23:30:23 [Catacombs Level 4 22553,9523] moveTo end
+10/5 23:30:23 [Rogue Encampment 4418,5666] === [MEPHISTO] ===
+10/5 23:30:23 [Rogue Encampment 4418,5666] clearBelt
+10/5 23:30:23 [Rogue Encampment 4418,5666] heal
+10/5 23:30:23 [Rogue Encampment 4418,5666] identify
+10/5 23:30:23 [Rogue Encampment 4418,5666] clearInventory
+10/5 23:30:23 [Rogue Encampment 4418,5666] fillTome
+10/5 23:30:23 [Rogue Encampment 4418,5666] buyPotions
+10/5 23:30:23 [Rogue Encampment 4418,5666] repair
+10/5 23:30:23 [Rogue Encampment 4418,5666] pickItems
+10/5 23:30:24 [Rogue Encampment 4418,5668] Equip2
+10/5 23:30:24 [Rogue Encampment 4418,5668] Grant2
+10/5 23:30:24 [Rogue Encampment 4418,5668] stash
+10/5 23:30:24 [Rogue Encampment 4418,5668] doChores end
+10/5 23:30:35 [Rogue Encampment 4418,5668] moveTo getPath -> 4414,5615 tele:false
+10/5 23:30:35 [Rogue Encampment 4418,5668] path total nodes: 22
+10/5 23:30:38 [Rogue Encampment 4414,5615] moveTo end
+10/5 23:30:38 [Rogue Encampment 4414,5615] moveTo getPath -> 4419,5609 tele:false
+10/5 23:30:38 [Rogue Encampment 4414,5615] path total nodes: 5
+10/5 23:30:38 [Rogue Encampment 4418,5610] moveTo end
+10/5 23:30:40 [Kurast Docktown 5158,5048] moveTo getPath -> 5150,5063 tele:false
+10/5 23:30:40 [Kurast Docktown 5158,5048] path total nodes: 12
+10/5 23:30:42 [Kurast Docktown 5152,5063] moveTo end
+10/5 23:30:42 [Kurast Docktown 5150,5063] moveTo getPath -> 5152,5063 tele:false
+10/5 23:30:42 [Kurast Docktown 5150,5063] path total nodes: 3
+10/5 23:30:42 [Kurast Docktown 5150,5063] moveTo end
+10/5 23:30:54 [Kurast Docktown 5150,5063] moveTo getPath -> 5158,5068 tele:false
+10/5 23:30:54 [Kurast Docktown 5150,5063] path total nodes: 5
+10/5 23:30:55 [Kurast Docktown 5158,5068] moveTo end
+10/5 23:31:2 [Durance Of Hate Level 3 17553,8069] moveTo getPath -> 17515,8061 tele:false
+10/5 23:31:2 [Durance Of Hate Level 3 17553,8069] path total nodes: 16
+10/5 23:31:11 [Durance Of Hate Level 3 17518,8061] moveTo end
+10/5 23:31:11 [Durance Of Hate Level 3 17518,8061] moveTo getPath -> 17566,8069 tele:false
+10/5 23:31:11 [Durance Of Hate Level 3 17518,8061] path total nodes: 17
+10/5 23:31:16 [Durance Of Hate Level 3 17564,8069] moveTo end
+10/5 23:31:16 [Durance Of Hate Level 3 17564,8069] moveTo getPath -> 17569,8074 tele:false
+10/5 23:31:16 [Durance Of Hate Level 3 17564,8069] path total nodes: 4
+10/5 23:31:17 [Durance Of Hate Level 3 17567,8072] moveTo end
+10/5 23:31:20 [Durance Of Hate Level 3 17569,8074] moveTo getPath -> 17602,8069 tele:false
+10/5 23:31:20 [Durance Of Hate Level 3 17569,8074] path total nodes: 15
+10/5 23:31:23 [Durance Of Hate Level 3 17599,8069] moveTo end
+10/5 23:31:23 [Durance Of Hate Level 3 17599,8069] usePortal 342 send i:0 area:102
+10/5 23:31:24 [The Pandemonium Fortress 5048,5043] usePortal 342 changed area:103 ms:750 loading at:687
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] === [DIABLO] ===
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] gamble
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] reviveMerc
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] Equip1
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] Grant1
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] Cubing
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] Runewords
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] clearBelt
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] heal
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] identify
+10/5 23:31:31 [The Pandemonium Fortress 5048,5043] clearInventory
+10/5 23:31:32 [The Pandemonium Fortress 5048,5043] fillTome
+10/5 23:31:32 [The Pandemonium Fortress 5048,5043] buyPotions
+10/5 23:31:32 [The Pandemonium Fortress 5048,5043] moveTo getPath -> 5087,5051 tele:false
+10/5 23:31:32 [The Pandemonium Fortress 5048,5043] path total nodes: 22
+10/5 23:31:34 [The Pandemonium Fortress 5086,5050] moveTo end
+10/5 23:31:34 [The Pandemonium Fortress 5086,5050] moveTo getPath -> 5088,5051 tele:false
+10/5 23:31:34 [The Pandemonium Fortress 5086,5050] path total nodes: 3
+10/5 23:31:34 [The Pandemonium Fortress 5087,5052] moveTo end
+10/5 23:31:36 [The Pandemonium Fortress 5090,5053] repair
+10/5 23:31:36 [The Pandemonium Fortress 5090,5053] moveTo getPath -> 5087,5027 tele:false
+10/5 23:31:36 [The Pandemonium Fortress 5090,5053] path total nodes: 10
+10/5 23:31:38 [The Pandemonium Fortress 5087,5032] moveTo end
+10/5 23:31:38 [The Pandemonium Fortress 5087,5032] moveTo getPath -> 5089,5025 tele:false
+10/5 23:31:38 [The Pandemonium Fortress 5087,5032] path total nodes: 6
+10/5 23:31:38 [The Pandemonium Fortress 5088,5026] moveTo end
+10/5 23:31:41 [The Pandemonium Fortress 5088,5026] pickItems
+10/5 23:31:41 [The Pandemonium Fortress 5088,5026] Equip2
+10/5 23:31:41 [The Pandemonium Fortress 5088,5026] Grant2
+10/5 23:31:41 [The Pandemonium Fortress 5088,5026] stash
+10/5 23:31:41 [The Pandemonium Fortress 5088,5026] doChores end
+10/5 23:31:45 [The Pandemonium Fortress 5088,5026] moveTo getPath -> 5045,5042 tele:false
+10/5 23:31:45 [The Pandemonium Fortress 5088,5026] path total nodes: 20
+10/5 23:31:48 [The Pandemonium Fortress 5046,5042] moveTo end
+10/5 23:32:29 [The Pandemonium Fortress 5046,5042] moveTo getPath -> 5049,5049 tele:false
+10/5 23:32:29 [The Pandemonium Fortress 5046,5042] path total nodes: 5
+10/5 23:32:30 [The Pandemonium Fortress 5050,5044] moveTo end
+10/5 23:32:30 [The Pandemonium Fortress 5050,5044] moveTo getPath -> 5049,5049 tele:false
+10/5 23:32:30 [The Pandemonium Fortress 5050,5044] path total nodes: 4
+10/5 23:32:31 [The Pandemonium Fortress 5049,5049] moveTo end
+10/5 23:32:40 [Chaos Sanctuary 7781,5243] moveTo getPath -> 7775,5230 tele:false
+10/5 23:32:40 [Chaos Sanctuary 7781,5243] path total nodes: 7
+10/5 23:32:51 [Chaos Sanctuary 7773,5228] moveTo end
+10/5 23:32:51 [Chaos Sanctuary 7773,5228] moveTo getPath -> 7815,5230 tele:false
+10/5 23:32:51 [Chaos Sanctuary 7773,5228] path total nodes: 14
+10/5 23:32:58 [Chaos Sanctuary 7812,5228] moveTo end
+10/5 23:32:58 [Chaos Sanctuary 7812,5228] moveTo getPath -> 7815,5190 tele:false
+10/5 23:32:58 [Chaos Sanctuary 7812,5228] path total nodes: 14
+10/5 23:33:5 [Chaos Sanctuary 7811,5190] moveTo end
+10/5 23:33:5 [Chaos Sanctuary 7811,5190] moveTo getPath -> 7775,5190 tele:false
+10/5 23:33:5 [Chaos Sanctuary 7811,5190] path total nodes: 11
+10/5 23:33:18 [Chaos Sanctuary 7778,5171] moveTo end
+10/5 23:33:18 [Chaos Sanctuary 7778,5171] moveTo getPath -> 7775,5150 tele:false
+10/5 23:33:18 [Chaos Sanctuary 7778,5171] path total nodes: 9
+10/5 23:33:22 [Chaos Sanctuary 7774,5153] moveTo end
+10/5 23:33:22 [Chaos Sanctuary 7774,5152] moveTo getPath -> 7805,5155 tele:false
+10/5 23:33:22 [Chaos Sanctuary 7774,5152] path total nodes: 13
+10/5 23:33:25 [Chaos Sanctuary 7797,5159] moveTo getPath -> 7806,5153 tele:false
+10/5 23:33:25 [Chaos Sanctuary 7797,5159] path total nodes: 7
+10/5 23:33:26 [Chaos Sanctuary 7805,5154] moveTo end
+10/5 23:33:26 [Chaos Sanctuary 7805,5154] moveTo end
+10/5 23:33:43 [Chaos Sanctuary 7804,5154] moveTo getPath -> 7775,5160 tele:false
+10/5 23:33:43 [Chaos Sanctuary 7804,5154] path total nodes: 13
+10/5 23:33:45 [Chaos Sanctuary 7778,5158] moveTo end
+10/5 23:33:56 [Chaos Sanctuary 7775,5188] moveTo getPath -> 7790,5290 tele:false
+10/5 23:33:56 [Chaos Sanctuary 7775,5188] path total nodes: 48
+10/5 23:34:2 [Chaos Sanctuary 7792,5251] moveTo getPath -> 7789,5267 tele:false
+10/5 23:34:2 [Chaos Sanctuary 7792,5251] path total nodes: 9
+10/5 23:34:3 [Chaos Sanctuary 7790,5265] moveTo end
+10/5 23:34:5 [Chaos Sanctuary 7790,5288] moveTo end
+10/5 23:34:5 [Chaos Sanctuary 7790,5288] moveTo getPath -> 7795,5293 tele:false
+10/5 23:34:5 [Chaos Sanctuary 7790,5288] path total nodes: 4
+10/5 23:34:6 [Chaos Sanctuary 7794,5292] moveTo end
+10/5 23:34:11 [Chaos Sanctuary 7795,5293] moveTo getPath -> 7825,5295 tele:false
+10/5 23:34:11 [Chaos Sanctuary 7795,5293] path total nodes: 17
+10/5 23:34:21 [Chaos Sanctuary 7826,5294] moveTo end
+10/5 23:34:21 [Chaos Sanctuary 7826,5294] moveTo getPath -> 7855,5310 tele:false
+10/5 23:34:21 [Chaos Sanctuary 7826,5294] path total nodes: 16
+10/5 23:34:26 [Chaos Sanctuary 7852,5308] moveTo end
+10/5 23:34:26 [Chaos Sanctuary 7852,5308] moveTo getPath -> 7855,5275 tele:false
+10/5 23:34:26 [Chaos Sanctuary 7853,5308] path total nodes: 11
+10/5 23:34:34 [Chaos Sanctuary 7855,5274] moveTo end
+10/5 23:34:34 [Chaos Sanctuary 7855,5274] moveTo getPath -> 7930,5275 tele:false
+10/5 23:34:34 [Chaos Sanctuary 7855,5274] path total nodes: 22
+10/5 23:34:49 [Chaos Sanctuary 7928,5275] moveTo end
+10/5 23:34:49 [Chaos Sanctuary 7928,5275] moveTo getPath -> 7920,5315 tele:false
+10/5 23:34:49 [Chaos Sanctuary 7928,5275] path total nodes: 16
+10/5 23:35:2 [Chaos Sanctuary 7919,5317] moveTo end
+10/5 23:35:6 [Chaos Sanctuary 7919,5316] moveTo getPath -> 7935,5295 tele:false
+10/5 23:35:6 [Chaos Sanctuary 7919,5316] path total nodes: 13
+10/5 23:35:9 [Chaos Sanctuary 7933,5295] moveTo end
+10/5 23:35:21 [Chaos Sanctuary 7919,5270] moveTo getPath -> 7790,5290 tele:false
+10/5 23:35:21 [Chaos Sanctuary 7919,5270] path total nodes: 45
+10/5 23:35:29 [Chaos Sanctuary 7792,5289] moveTo end
+10/5 23:35:29 [Chaos Sanctuary 7792,5289] moveTo getPath -> 7797,5294 tele:false
+10/5 23:35:29 [Chaos Sanctuary 7791,5290] path total nodes: 4
+10/5 23:35:30 [Chaos Sanctuary 7795,5293] moveTo end
+10/5 23:35:30 [Chaos Sanctuary 7797,5294] moveTo getPath -> 7795,5293 tele:false
+10/5 23:35:30 [Chaos Sanctuary 7797,5294] path total nodes: 3
+10/5 23:35:31 [Chaos Sanctuary 7797,5294] moveTo end
+10/5 23:35:32 [Chaos Sanctuary 7797,5294] moveTo getPath -> 7795,5293 tele:false
+10/5 23:35:32 [Chaos Sanctuary 7797,5294] path total nodes: 3
+10/5 23:35:32 [Chaos Sanctuary 7797,5294] moveTo end
+10/5 23:35:33 [Chaos Sanctuary 7797,5294] moveTo getPath -> 7795,5293 tele:false
+10/5 23:35:33 [Chaos Sanctuary 7797,5294] path total nodes: 3
+10/5 23:35:33 [Chaos Sanctuary 7797,5294] moveTo end
+10/5 23:35:36 [Chaos Sanctuary 7797,5294] moveTo getPath -> 7755,5290 tele:false
+10/5 23:35:36 [Chaos Sanctuary 7797,5294] path total nodes: 19
+10/5 23:35:39 [Chaos Sanctuary 7757,5289] moveTo end
+10/5 23:35:39 [Chaos Sanctuary 7757,5289] moveTo getPath -> 7720,5275 tele:false
+10/5 23:35:39 [Chaos Sanctuary 7756,5289] path total nodes: 21
+10/5 23:35:50 [Chaos Sanctuary 7724,5298] moveTo getPath -> 7715,5298 tele:false
+10/5 23:35:50 [Chaos Sanctuary 7724,5298] path total nodes: 4
+10/5 23:35:50 [Chaos Sanctuary 7718,5298] moveTo end
+10/5 23:35:54 [Chaos Sanctuary 7722,5278] moveTo end
+10/5 23:35:54 [Chaos Sanctuary 7722,5278] moveTo getPath -> 7710,5315 tele:false
+10/5 23:35:54 [Chaos Sanctuary 7722,5278] path total nodes: 17
+10/5 23:36:7 [Chaos Sanctuary 7709,5313] moveTo end
+10/5 23:36:7 [Chaos Sanctuary 7709,5313] moveTo getPath -> 7660,5275 tele:false
+10/5 23:36:7 [Chaos Sanctuary 7709,5313] path total nodes: 29
+10/5 23:36:29 [Chaos Sanctuary 7658,5272] moveTo end
+10/5 23:36:29 [Chaos Sanctuary 7658,5272] moveTo getPath -> 7660,5315 tele:false
+10/5 23:36:29 [Chaos Sanctuary 7659,5273] path total nodes: 17
+10/5 23:36:37 [Chaos Sanctuary 7659,5318] moveTo end
+10/5 23:36:41 [Chaos Sanctuary 7659,5316] moveTo getPath -> 7680,5295 tele:false
+10/5 23:36:41 [Chaos Sanctuary 7659,5316] path total nodes: 12
+10/5 23:36:44 [Chaos Sanctuary 7678,5298] moveTo end
+10/5 23:36:52 [Chaos Sanctuary 7683,5287] moveTo getPath -> 7673,5294 tele:false
+10/5 23:36:52 [Chaos Sanctuary 7683,5287] path total nodes: 8
+10/5 23:36:53 [Chaos Sanctuary 7674,5291] moveTo end
+10/5 23:36:53 [Chaos Sanctuary 7674,5291] moveTo getPath -> 7681,5273 tele:false
+10/5 23:36:53 [Chaos Sanctuary 7674,5291] path total nodes: 7
+10/5 23:36:54 [Chaos Sanctuary 7680,5274] moveTo end
+10/5 23:36:54 [Chaos Sanctuary 7680,5273] moveTo getPath -> 7791,5297 tele:0
+10/5 23:36:54 [Chaos Sanctuary 7680,5273] path total nodes: 37
+10/5 23:37:3 [Chaos Sanctuary 7789,5297] moveTo end
+10/5 23:37:12 [Chaos Sanctuary 7795,5295] moveTo getPath -> 7777,5287 tele:false
+10/5 23:37:12 [Chaos Sanctuary 7795,5295] path total nodes: 14
+10/5 23:37:28 [The Pandemonium Fortress 5049,5042] === game Pz-185 ===
+10/5 23:37:31 [The Pandemonium Fortress 5049,5042] moveTo getPath -> 5046,5025 tele:false
+10/5 23:37:31 [The Pandemonium Fortress 5049,5042] path total nodes: 6
+10/5 23:37:32 [The Pandemonium Fortress 5046,5030] moveTo end
+10/5 23:37:32 [The Pandemonium Fortress 5046,5030] moveTo getPath -> 5044,5019 tele:false
+10/5 23:37:32 [The Pandemonium Fortress 5046,5030] path total nodes: 7
+10/5 23:37:33 [The Pandemonium Fortress 5044,5020] moveTo end
+10/5 23:37:34 [Harrogath 5116,5071] gamble
+10/5 23:37:34 [Harrogath 5116,5071] reviveMerc
+10/5 23:37:34 [Harrogath 5116,5071] Equip1
+10/5 23:37:34 [Harrogath 5116,5071] Grant1
+10/5 23:37:34 [Harrogath 5116,5071] Cubing
+10/5 23:37:34 [Harrogath 5116,5071] Runewords
+10/5 23:37:34 [Harrogath 5116,5071] clearBelt
+10/5 23:37:34 [Harrogath 5116,5071] heal
+10/5 23:37:34 [Harrogath 5116,5071] identify
+10/5 23:37:34 [Harrogath 5116,5071] moveTo getPath -> 5082,5030 tele:false
+10/5 23:37:34 [Harrogath 5116,5071] path total nodes: 28
+10/5 23:37:35 [Harrogath 5115,5066] moveTo end
+10/5 23:37:35 [Harrogath 5115,5066] moveTo getPath -> 5081,5030 tele:false
+10/5 23:37:35 [Harrogath 5115,5066] path total nodes: 23
+10/5 23:37:39 [Harrogath 5081,5030] moveTo end
+10/5 23:37:42 [Harrogath 5081,5030] clearInventory
+10/5 23:37:42 [Harrogath 5081,5030] fillTome
+10/5 23:37:42 [Harrogath 5081,5030] buyPotions
+10/5 23:37:44 [Harrogath 5081,5030] repair
+10/5 23:37:44 [Harrogath 5081,5030] moveTo getPath -> 5144,5037 tele:false
+10/5 23:37:44 [Harrogath 5081,5030] path total nodes: 28
+10/5 23:37:48 [Harrogath 5144,5037] moveTo end
+10/5 23:37:48 [Harrogath 5144,5037] moveTo getPath -> 5142,5044 tele:false
+10/5 23:37:48 [Harrogath 5144,5037] path total nodes: 5
+10/5 23:37:48 [Harrogath 5143,5043] moveTo end
+10/5 23:37:51 [Harrogath 5143,5043] pickItems
+10/5 23:37:51 [Harrogath 5143,5043] Equip2
+10/5 23:37:51 [Harrogath 5143,5043] Grant2
+10/5 23:37:53 [Harrogath 5143,5043] stash
+10/5 23:37:53 [Harrogath 5143,5043] doChores end
+10/5 23:37:53 [Harrogath 5143,5043] moveTo getPath -> 5119,5063 tele:false
+10/5 23:37:53 [Harrogath 5143,5043] path total nodes: 11
+10/5 23:37:54 [Harrogath 5119,5063] moveTo end
+10/5 23:37:54 [Harrogath 5119,5063] moveTo getPath -> 5114,5069 tele:false
+10/5 23:37:54 [Harrogath 5119,5063] path total nodes: 4
+10/5 23:37:55 [Harrogath 5114,5069] moveTo end
+10/5 23:37:55 [Harrogath 5114,5069] moveTo getPath -> 5119,5074 tele:false
+10/5 23:37:55 [Harrogath 5114,5069] path total nodes: 4
+10/5 23:37:56 [Harrogath 5119,5074] moveTo end
+10/5 23:38:21 [Harrogath 5119,5074] moveTo getPath -> 5114,5069 tele:false
+10/5 23:38:21 [Harrogath 5119,5074] path total nodes: 4
+10/5 23:38:22 [Harrogath 5114,5069] moveTo end
+10/5 23:38:23 [Ancient's Way 10023,10520] moveTo getPath -> 10028,10525 tele:0
+10/5 23:38:23 [Ancient's Way 10023,10520] path total nodes: 4
+10/5 23:38:23 [Ancient's Way 10027,10524] moveTo end
+10/5 23:38:32 [Ancient's Way 10028,10525] moveTo getPath -> 10024,10519 tele:0
+10/5 23:38:32 [Ancient's Way 10028,10525] path total nodes: 7
+10/5 23:38:33 [Ancient's Way 10026,10522] moveTo end
+10/5 23:38:33 [Ancient's Way 10026,10522] moveTo getPath -> 10024,10519 tele:0
+10/5 23:38:33 [Ancient's Way 10025,10521] path total nodes: 4
+10/5 23:38:33 [Ancient's Way 10025,10521] moveTo end
+10/5 23:38:35 [Harrogath 5116,5069] === [BAAL] ===
+10/5 23:39:24 [Throne Of Destruction 15095,5022] moveTo getPath -> 15092,5030 tele:0
+10/5 23:39:24 [Throne Of Destruction 15095,5022] path total nodes: 7
+10/5 23:39:24 [Throne Of Destruction 15092,5029] moveTo end
+10/5 23:39:50 [Throne Of Destruction 15092,5073] moveTo getPath -> 15093,5030 tele:0
+10/5 23:39:50 [Throne Of Destruction 15092,5073] path total nodes: 14
+10/5 23:39:53 [Throne Of Destruction 15092,5033] moveTo end
+10/5 23:40:4 [Throne Of Destruction 15088,5025] moveTo getPath -> 15116,5002 tele:0
+10/5 23:40:4 [Throne Of Destruction 15088,5025] path total nodes: 15
+10/5 23:40:9 [Throne Of Destruction 15115,5003] moveTo end
+10/5 23:40:12 [Throne Of Destruction 15115,5003] moveTo getPath -> 15090,5030 tele:0
+10/5 23:40:12 [Throne Of Destruction 15115,5003] path total nodes: 14
+10/5 23:40:16 [Throne Of Destruction 15091,5030] moveTo end
+10/5 23:40:35 [Throne Of Destruction 15074,5050] moveTo getPath -> 15090,5030 tele:0
+10/5 23:40:35 [Throne Of Destruction 15074,5050] path total nodes: 10
+10/5 23:40:37 [Throne Of Destruction 15089,5031] moveTo end
+10/5 23:40:57 [Throne Of Destruction 15092,5018] moveTo getPath -> 15088,5030 tele:0
+10/5 23:40:57 [Throne Of Destruction 15092,5018] path total nodes: 6
+10/5 23:40:58 [Throne Of Destruction 15089,5027] moveTo end
+10/5 23:40:58 [Throne Of Destruction 15088,5030] moveTo getPath -> 15092,5028 tele:0
+10/5 23:40:58 [Throne Of Destruction 15088,5030] path total nodes: 4
+10/5 23:40:58 [Throne Of Destruction 15089,5029] moveTo end
+10/5 23:40:59 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:40:59 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:40:59 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:40:59 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:40:59 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:0 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:0 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:0 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:0 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:1 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:1 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:1 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:1 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:1 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:1 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:2 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:2 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:2 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:2 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:2 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:3 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:3 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:3 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:3 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:4 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:4 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:4 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:4 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:4 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:4 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:5 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:5 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:5 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:5 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:5 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:5 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:6 [Throne Of Destruction 15090,5028] moveTo getPath -> 15092,5028 tele:0
+10/5 23:41:6 [Throne Of Destruction 15090,5028] path total nodes: 3
+10/5 23:41:6 [Throne Of Destruction 15090,5028] moveTo end
+10/5 23:41:6 [Throne Of Destruction 15090,5028] moveTo getPath -> 15090,5005 tele:0
+10/5 23:41:6 [Throne Of Destruction 15090,5028] path total nodes: 15
+10/5 23:41:8 [Throne Of Destruction 15090,5007] moveTo end
+10/5 23:41:8 [Throne Of Destruction 15090,5007] moveTo getPath -> 15090,5005 tele:0
+10/5 23:41:8 [Throne Of Destruction 15090,5007] path total nodes: 3
+10/5 23:41:8 [Throne Of Destruction 15090,5007] moveTo end
+10/5 23:41:13 [The Worldstone Chamber 15174,5889] moveTo getPath -> 15134,5923 tele:0
+10/5 23:41:13 [The Worldstone Chamber 15174,5889] path total nodes: 36
+10/5 23:41:19 [The Worldstone Chamber 15134,5926] moveTo end
+10/5 23:41:45 [The Worldstone Chamber 15152,5957] moveTo getPath -> 15132,5923 tele:0
+10/5 23:41:45 [The Worldstone Chamber 15152,5957] path total nodes: 18
+10/5 23:41:48 [The Worldstone Chamber 15133,5925] moveTo end
+10/5 23:41:48 [The Worldstone Chamber 15133,5925] moveTo getPath -> 15132,5923 tele:0
+10/5 23:41:48 [The Worldstone Chamber 15133,5925] path total nodes: 3
+10/5 23:41:49 [The Worldstone Chamber 15133,5924] moveTo end
+10/5 23:41:49 [Harrogath 5100,5022] === [COUNTESS] ===
+10/5 23:41:49 [Harrogath 5100,5022] clearBelt
+10/5 23:41:49 [Harrogath 5100,5022] heal
+10/5 23:41:49 [Harrogath 5100,5022] identify
+10/5 23:41:49 [Harrogath 5100,5022] clearInventory
+10/5 23:41:50 [Harrogath 5101,5023] fillTome
+10/5 23:41:50 [Harrogath 5101,5023] buyPotions
+10/5 23:41:50 [Harrogath 5101,5023] repair
+10/5 23:41:50 [Harrogath 5101,5023] pickItems
+10/5 23:41:50 [Harrogath 5101,5023] Equip2
+10/5 23:41:50 [Harrogath 5101,5023] Grant2
+10/5 23:41:50 [Harrogath 5101,5023] stash
+10/5 23:41:50 [Harrogath 5101,5023] doChores end
+10/5 23:42:3 [Harrogath 5101,5023] moveTo getPath -> 5110,5061 tele:false
+10/5 23:42:3 [Harrogath 5101,5023] path total nodes: 17
+10/5 23:42:5 [Harrogath 5109,5057] moveTo end
+10/5 23:42:5 [Harrogath 5109,5057] moveTo getPath -> 5114,5069 tele:false
+10/5 23:42:5 [Harrogath 5109,5057] path total nodes: 5
+10/5 23:42:6 [Harrogath 5114,5065] moveTo end
+10/5 23:42:6 [Harrogath 5114,5065] moveTo getPath -> 5114,5069 tele:false
+10/5 23:42:6 [Harrogath 5114,5065] path total nodes: 2
+10/5 23:42:6 [Harrogath 5114,5067] moveTo end
+10/5 23:42:7 [Rogue Encampment 4418,4528] moveTo getPath -> 4407,4580 tele:false
+10/5 23:42:7 [Rogue Encampment 4418,4528] path total nodes: 20
+10/5 23:42:10 [Rogue Encampment 4407,4580] moveTo end
+10/5 23:42:38 [Rogue Encampment 4407,4580] moveTo getPath -> 4413,4583 tele:false
+10/5 23:42:38 [Rogue Encampment 4407,4580] path total nodes: 7
+10/5 23:42:39 [Rogue Encampment 4412,4583] moveTo end
+10/5 23:42:56 [Tower Cellar Level 5 12598,11031] moveTo getPath -> 12591,11038 tele:false
+10/5 23:42:56 [Tower Cellar Level 5 12598,11031] path total nodes: 4
+10/5 23:42:56 [Tower Cellar Level 5 12592,11037] moveTo end
+10/5 23:42:57 [Tower Cellar Level 5 12591,11038] moveTo getPath -> 12565,11020 tele:false
+10/5 23:42:57 [Tower Cellar Level 5 12591,11038] path total nodes: 15
+10/5 23:43:0 [Tower Cellar Level 5 12567,11023] moveTo end
+10/5 23:43:0 [Tower Cellar Level 5 12566,11023] moveTo getPath -> 12571,11028 tele:false
+10/5 23:43:0 [Tower Cellar Level 5 12566,11023] path total nodes: 4
+10/5 23:43:0 [Tower Cellar Level 5 12569,11026] moveTo end
+10/5 23:43:0 [Tower Cellar Level 5 12571,11028] moveTo getPath -> 12569,11026 tele:false
+10/5 23:43:0 [Tower Cellar Level 5 12571,11028] path total nodes: 3
+10/5 23:43:1 [Tower Cellar Level 5 12571,11028] moveTo end
+10/5 23:43:3 [Tower Cellar Level 5 12571,11028] moveTo getPath -> 12552,11015 tele:false
+10/5 23:43:3 [Tower Cellar Level 5 12571,11028] path total nodes: 12
+10/5 23:43:5 [Tower Cellar Level 5 12554,11017] moveTo end
+10/5 23:43:5 [Tower Cellar Level 5 12554,11017] moveTo getPath -> 12552,11015 tele:false
+10/5 23:43:5 [Tower Cellar Level 5 12554,11017] path total nodes: 3
+10/5 23:43:5 [Tower Cellar Level 5 12552,11015] moveTo end
+10/5 23:43:6 [Rogue Encampment 4413,4586] === [PIT] ===
+10/5 23:43:6 [Rogue Encampment 4413,4586] clearBelt
+10/5 23:43:6 [Rogue Encampment 4413,4586] heal
+10/5 23:43:6 [Rogue Encampment 4413,4586] moveTo getPath -> 4451,4530 tele:false
+10/5 23:43:6 [Rogue Encampment 4413,4586] path total nodes: 28
+10/5 23:43:12 [Rogue Encampment 4450,4530] moveTo end
+10/5 23:43:12 [Rogue Encampment 4450,4530] moveTo getPath -> 4455,4527 tele:false
+10/5 23:43:12 [Rogue Encampment 4450,4530] path total nodes: 5
+10/5 23:43:13 [Rogue Encampment 4455,4525] moveTo end
+10/5 23:43:13 [Rogue Encampment 4455,4525] identify
+10/5 23:43:13 [Rogue Encampment 4455,4525] clearInventory
+10/5 23:43:13 [Rogue Encampment 4455,4525] fillTome
+10/5 23:43:13 [Rogue Encampment 4455,4525] buyPotions
+10/5 23:43:14 [Rogue Encampment 4455,4525] repair
+10/5 23:43:15 [Rogue Encampment 4455,4525] pickItems
+10/5 23:43:15 [Rogue Encampment 4455,4525] Equip2
+10/5 23:43:15 [Rogue Encampment 4455,4525] Grant2
+10/5 23:43:15 [Rogue Encampment 4455,4525] stash
+10/5 23:43:15 [Rogue Encampment 4455,4525] doChores end
+10/5 23:43:15 [Rogue Encampment 4455,4525] moveTo getPath -> 4407,4580 tele:false
+10/5 23:43:15 [Rogue Encampment 4455,4525] path total nodes: 32
+10/5 23:43:22 [Rogue Encampment 4409,4580] moveTo end
+10/5 23:43:41 [Pit Level 2 7527,14397] moveTo getPath -> 7548,14429 tele:false
+10/5 23:43:41 [Pit Level 2 7527,14397] path total nodes: 16
+10/5 23:43:48 [Pit Level 2 7548,14427] moveTo end
+10/5 23:43:48 [Pit Level 2 7548,14427] moveTo getPath -> 7558,14465 tele:false
+10/5 23:43:49 [Pit Level 2 7548,14427] path total nodes: 14
+10/5 23:44:1 [Pit Level 2 7556,14463] moveTo end
+10/5 23:44:1 [Pit Level 2 7556,14463] moveTo getPath -> 7585,14445 tele:false
+10/5 23:44:1 [Pit Level 2 7556,14463] path total nodes: 13
+10/5 23:44:4 [Pit Level 2 7579,14451] moveTo getPath -> 7584,14445 tele:false
+10/5 23:44:4 [Pit Level 2 7579,14451] path total nodes: 5
+10/5 23:44:5 [Pit Level 2 7582,14448] moveTo end
+10/5 23:44:5 [Pit Level 2 7584,14447] moveTo getPath -> 7580,14450 tele:false
+10/5 23:44:5 [Pit Level 2 7584,14447] path total nodes: 3
+10/5 23:44:5 [Pit Level 2 7583,14448] moveTo end
+10/5 23:44:16 [Pit Level 2 7585,14435] moveTo end
+10/5 23:44:16 [Pit Level 2 7585,14435] moveTo getPath -> 7575,14401 tele:false
+10/5 23:44:16 [Pit Level 2 7585,14435] path total nodes: 16
+10/5 23:44:19 [Pit Level 2 7575,14405] moveTo end
+10/5 23:44:19 [Pit Level 2 7575,14405] moveTo getPath -> 7607,14420 tele:false
+10/5 23:44:19 [Pit Level 2 7575,14405] path total nodes: 15
+10/5 23:44:26 [Pit Level 2 7604,14418] moveTo end
+10/5 23:44:26 [Pit Level 2 7604,14418] moveTo getPath -> 7600,14431 tele:false
+10/5 23:44:26 [Pit Level 2 7604,14418] path total nodes: 9
+10/5 23:44:27 [Pit Level 2 7599,14428] moveTo end
+10/5 23:44:28 [Pit Level 2 7601,14430] moveTo getPath -> 7599,14428 tele:false
+10/5 23:44:28 [Pit Level 2 7601,14430] path total nodes: 3
+10/5 23:44:28 [Pit Level 2 7601,14430] moveTo end
+10/5 23:44:31 [Pit Level 2 7601,14430] moveTo getPath -> 7600,14424 tele:false
+10/5 23:44:31 [Pit Level 2 7601,14430] path total nodes: 4
+10/5 23:44:31 [Pit Level 2 7601,14427] moveTo end
+10/5 23:44:31 [Pit Level 2 7601,14427] moveTo getPath -> 7600,14424 tele:false
+10/5 23:44:31 [Pit Level 2 7601,14427] path total nodes: 4
+10/5 23:44:32 [Pit Level 2 7602,14426] moveTo end
+10/5 23:44:32 [Rogue Encampment 4416,4584] === [ANDY] ===
+10/5 23:44:32 [Rogue Encampment 4416,4584] clearBelt
+10/5 23:44:32 [Rogue Encampment 4416,4584] heal
+10/5 23:44:32 [Rogue Encampment 4416,4584] identify
+10/5 23:44:32 [Rogue Encampment 4416,4584] clearInventory
+10/5 23:44:32 [Rogue Encampment 4416,4584] fillTome
+10/5 23:44:32 [Rogue Encampment 4416,4584] buyPotions
+10/5 23:44:32 [Rogue Encampment 4416,4584] repair
+10/5 23:44:32 [Rogue Encampment 4416,4584] pickItems
+10/5 23:44:33 [Rogue Encampment 4418,4588] Equip2
+10/5 23:44:33 [Rogue Encampment 4418,4588] Grant2
+10/5 23:44:33 [Rogue Encampment 4418,4588] stash
+10/5 23:44:33 [Rogue Encampment 4418,4588] doChores end
+10/5 23:44:34 [Rogue Encampment 4418,4588] moveTo getPath -> 4407,4580 tele:false
+10/5 23:44:34 [Rogue Encampment 4418,4588] path total nodes: 10
+10/5 23:44:36 [Rogue Encampment 4407,4579] moveTo end
+10/5 23:44:36 [Rogue Encampment 4405,4581] moveTo getPath -> 4407,4579 tele:false
+10/5 23:44:36 [Rogue Encampment 4405,4581] path total nodes: 3
+10/5 23:44:37 [Rogue Encampment 4407,4579] moveTo end
+10/5 23:44:57 [Rogue Encampment 4405,4578] moveTo getPath -> 4413,4583 tele:false
+10/5 23:44:58 [Rogue Encampment 4405,4578] path total nodes: 5
+10/5 23:44:59 [Rogue Encampment 4412,4583] moveTo end
+10/5 23:45:5 [Catacombs Level 4 22547,9546] moveTo getPath -> 22548,9530 tele:false
+10/5 23:45:5 [Catacombs Level 4 22547,9546] path total nodes: 7
+10/5 23:45:7 [Catacombs Level 4 22546,9532] moveTo end
+10/5 23:45:9 [Catacombs Level 4 22546,9530] moveTo getPath -> 22549,9520 tele:false
+10/5 23:45:9 [Catacombs Level 4 22546,9530] path total nodes: 8
+10/5 23:45:10 [Catacombs Level 4 22547,9520] moveTo end
+10/5 23:45:10 [Catacombs Level 4 22547,9520] moveTo getPath -> 22552,9525 tele:false
+10/5 23:45:10 [Catacombs Level 4 22547,9520] path total nodes: 4
+10/5 23:45:10 [Catacombs Level 4 22551,9524] moveTo end
+10/5 23:45:12 [Catacombs Level 4 22552,9525] moveTo getPath -> 22551,9520 tele:false
+10/5 23:45:12 [Catacombs Level 4 22552,9525] path total nodes: 4
+10/5 23:45:13 [Catacombs Level 4 22551,9523] moveTo end
+10/5 23:45:13 [Catacombs Level 4 22551,9523] moveTo getPath -> 22551,9520 tele:false
+10/5 23:45:13 [Catacombs Level 4 22551,9523] path total nodes: 2
+10/5 23:45:13 [Catacombs Level 4 22551,9522] moveTo end
+10/5 23:45:13 [Rogue Encampment 4417,4587] === [MEPHISTO] ===
+10/5 23:45:13 [Rogue Encampment 4417,4587] clearBelt
+10/5 23:45:13 [Rogue Encampment 4417,4587] heal
+10/5 23:45:13 [Rogue Encampment 4417,4587] identify
+10/5 23:45:13 [Rogue Encampment 4418,4588] clearInventory
+10/5 23:45:13 [Rogue Encampment 4418,4588] fillTome
+10/5 23:45:13 [Rogue Encampment 4418,4588] buyPotions
+10/5 23:45:13 [Rogue Encampment 4418,4588] repair
+10/5 23:45:13 [Rogue Encampment 4418,4588] pickItems
+10/5 23:45:13 [Rogue Encampment 4418,4588] Equip2
+10/5 23:45:13 [Rogue Encampment 4418,4588] Grant2
+10/5 23:45:14 [Rogue Encampment 4418,4588] stash
+10/5 23:45:14 [Rogue Encampment 4418,4588] doChores end
+10/5 23:45:16 [Rogue Encampment 4418,4588] moveTo getPath -> 4414,4535 tele:false
+10/5 23:45:16 [Rogue Encampment 4418,4588] path total nodes: 22
+10/5 23:45:20 [Rogue Encampment 4414,4536] moveTo end
+10/5 23:45:20 [Rogue Encampment 4414,4535] moveTo getPath -> 4419,4529 tele:false
+10/5 23:45:20 [Rogue Encampment 4414,4535] path total nodes: 5
+10/5 23:45:21 [Rogue Encampment 4419,4529] moveTo end
+10/5 23:45:22 [Kurast Docktown 5158,5048] moveTo getPath -> 5150,5063 tele:false
+10/5 23:45:22 [Kurast Docktown 5158,5048] path total nodes: 12
+10/5 23:45:24 [Kurast Docktown 5149,5062] moveTo end
+10/5 23:45:49 [Kurast Docktown 5149,5062] moveTo getPath -> 5158,5068 tele:false
+10/5 23:45:49 [Kurast Docktown 5149,5062] path total nodes: 6
+10/5 23:45:50 [Kurast Docktown 5151,5064] moveTo end
+10/5 23:45:50 [Kurast Docktown 5151,5064] moveTo getPath -> 5158,5068 tele:false
+10/5 23:45:50 [Kurast Docktown 5151,5064] path total nodes: 5
+10/5 23:45:51 [Kurast Docktown 5159,5068] moveTo end
+10/5 23:45:57 [Durance Of Hate Level 3 17555,8068] moveTo getPath -> 17515,8061 tele:false
+10/5 23:45:57 [Durance Of Hate Level 3 17555,8068] path total nodes: 17
+10/5 23:46:0 [Durance Of Hate Level 3 17517,8061] moveTo end
+10/5 23:46:0 [Durance Of Hate Level 3 17517,8061] moveTo getPath -> 17566,8069 tele:false
+10/5 23:46:0 [Durance Of Hate Level 3 17517,8061] path total nodes: 18
+10/5 23:46:4 [Durance Of Hate Level 3 17564,8069] moveTo end
+10/5 23:46:4 [Durance Of Hate Level 3 17564,8069] moveTo getPath -> 17569,8074 tele:false
+10/5 23:46:4 [Durance Of Hate Level 3 17564,8069] path total nodes: 4
+10/5 23:46:4 [Durance Of Hate Level 3 17568,8073] moveTo end
+10/5 23:46:8 [Durance Of Hate Level 3 17569,8074] moveTo getPath -> 17602,8069 tele:false
+10/5 23:46:8 [Durance Of Hate Level 3 17569,8074] path total nodes: 14
+10/5 23:46:10 [Durance Of Hate Level 3 17601,8069] moveTo end
+10/5 23:46:10 [Durance Of Hate Level 3 17601,8069] usePortal 342 send i:0 area:102
+10/5 23:46:11 [The Pandemonium Fortress 5048,5043] usePortal 342 changed area:103 ms:391 loading at:344
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] === [DIABLO] ===
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] gamble
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] reviveMerc
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] Equip1
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] Grant1
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] Cubing
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] Runewords
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] clearBelt
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] heal
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] identify
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] moveTo getPath -> 5085,5055 tele:false
+10/5 23:46:21 [The Pandemonium Fortress 5048,5043] path total nodes: 20
+10/5 23:46:24 [The Pandemonium Fortress 5086,5054] moveTo end
+10/5 23:46:24 [The Pandemonium Fortress 5086,5054] moveTo getPath -> 5088,5051 tele:false
+10/5 23:46:24 [The Pandemonium Fortress 5086,5054] path total nodes: 4
+10/5 23:46:25 [The Pandemonium Fortress 5087,5052] moveTo end
+10/5 23:46:26 [The Pandemonium Fortress 5087,5052] clearInventory
+10/5 23:46:26 [The Pandemonium Fortress 5087,5052] fillTome
+10/5 23:46:26 [The Pandemonium Fortress 5087,5052] buyPotions
+10/5 23:46:28 [The Pandemonium Fortress 5087,5052] repair
+10/5 23:46:28 [The Pandemonium Fortress 5087,5052] moveTo getPath -> 5083,5033 tele:false
+10/5 23:46:28 [The Pandemonium Fortress 5087,5052] path total nodes: 9
+10/5 23:46:29 [The Pandemonium Fortress 5084,5034] moveTo end
+10/5 23:46:32 [The Pandemonium Fortress 5084,5034] pickItems
+10/5 23:46:32 [The Pandemonium Fortress 5084,5034] Equip2
+10/5 23:46:32 [The Pandemonium Fortress 5084,5034] Grant2
+10/5 23:46:32 [The Pandemonium Fortress 5084,5034] stash
+10/5 23:46:32 [The Pandemonium Fortress 5084,5034] doChores end
+10/5 23:46:38 [The Pandemonium Fortress 5084,5034] moveTo getPath -> 5045,5042 tele:false
+10/5 23:46:38 [The Pandemonium Fortress 5084,5034] path total nodes: 19
+10/5 23:46:40 [The Pandemonium Fortress 5045,5042] moveTo end
+10/5 23:47:12 [Chaos Sanctuary 7794,5249] moveTo getPath -> 7775,5230 tele:false
+10/5 23:47:12 [Chaos Sanctuary 7794,5249] path total nodes: 8
+10/5 23:47:19 [Chaos Sanctuary 7777,5232] moveTo end
+10/5 23:47:19 [Chaos Sanctuary 7777,5232] moveTo getPath -> 7815,5230 tele:false
+10/5 23:47:19 [Chaos Sanctuary 7777,5232] path total nodes: 14
+10/5 23:47:22 [Chaos Sanctuary 7813,5231] moveTo end
+10/5 23:47:22 [Chaos Sanctuary 7813,5231] moveTo getPath -> 7815,5190 tele:false
+10/5 23:47:22 [Chaos Sanctuary 7813,5231] path total nodes: 13
+10/5 23:47:26 [Chaos Sanctuary 7814,5193] moveTo end
+10/5 23:47:26 [Chaos Sanctuary 7814,5193] moveTo getPath -> 7775,5190 tele:false
+10/5 23:47:26 [Chaos Sanctuary 7814,5192] path total nodes: 17
+10/5 23:47:29 [Chaos Sanctuary 7793,5198] moveTo getPath -> 7783,5193 tele:false
+10/5 23:47:29 [Chaos Sanctuary 7793,5198] path total nodes: 10
+10/5 23:47:30 [Chaos Sanctuary 7785,5194] moveTo end
+10/5 23:47:32 [Chaos Sanctuary 7777,5191] moveTo end
+10/5 23:47:32 [Chaos Sanctuary 7777,5191] moveTo getPath -> 7775,5150 tele:false
+10/5 23:47:32 [Chaos Sanctuary 7776,5191] path total nodes: 13
+10/5 23:47:49 [Chaos Sanctuary 7777,5153] moveTo end
+10/5 23:47:49 [Chaos Sanctuary 7777,5153] moveTo getPath -> 7805,5155 tele:false
+10/5 23:47:49 [Chaos Sanctuary 7776,5152] path total nodes: 13
+10/5 23:47:53 [Chaos Sanctuary 7808,5156] moveTo end
+10/5 23:47:56 [Chaos Sanctuary 7807,5156] moveTo getPath -> 7775,5160 tele:false
+10/5 23:47:56 [Chaos Sanctuary 7807,5156] path total nodes: 15
+10/5 23:47:59 [Chaos Sanctuary 7778,5160] moveTo end
+10/5 23:48:7 [Chaos Sanctuary 7775,5182] moveTo getPath -> 7790,5290 tele:false
+10/5 23:48:7 [Chaos Sanctuary 7775,5182] path total nodes: 44
+10/5 23:48:15 [Chaos Sanctuary 7790,5287] moveTo end
+10/5 23:48:15 [Chaos Sanctuary 7790,5287] moveTo getPath -> 7795,5292 tele:false
+10/5 23:48:15 [Chaos Sanctuary 7790,5287] path total nodes: 4
+10/5 23:48:16 [Chaos Sanctuary 7793,5291] moveTo end
+10/5 23:48:16 [Chaos Sanctuary 7795,5292] moveTo getPath -> 7793,5291 tele:false
+10/5 23:48:16 [Chaos Sanctuary 7795,5292] path total nodes: 3
+10/5 23:48:16 [Chaos Sanctuary 7795,5292] moveTo end
+10/5 23:48:17 [Chaos Sanctuary 7795,5292] moveTo getPath -> 7793,5291 tele:false
+10/5 23:48:17 [Chaos Sanctuary 7795,5292] path total nodes: 3
+10/5 23:48:17 [Chaos Sanctuary 7795,5292] moveTo end
+10/5 23:48:18 [Chaos Sanctuary 7795,5292] moveTo getPath -> 7793,5291 tele:false
+10/5 23:48:18 [Chaos Sanctuary 7795,5292] path total nodes: 3
+10/5 23:48:18 [Chaos Sanctuary 7795,5292] moveTo end
+10/5 23:48:19 [Chaos Sanctuary 7795,5292] moveTo getPath -> 7793,5291 tele:false
+10/5 23:48:19 [Chaos Sanctuary 7795,5292] path total nodes: 3
+10/5 23:48:20 [Chaos Sanctuary 7795,5292] moveTo end
+10/5 23:48:22 [Chaos Sanctuary 7795,5292] moveTo getPath -> 7825,5295 tele:false
+10/5 23:48:22 [Chaos Sanctuary 7795,5292] path total nodes: 13
+10/5 23:48:25 [Chaos Sanctuary 7824,5293] moveTo end
+10/5 23:48:25 [Chaos Sanctuary 7824,5293] moveTo getPath -> 7855,5310 tele:false
+10/5 23:48:25 [Chaos Sanctuary 7824,5293] path total nodes: 17
+10/5 23:48:33 [Chaos Sanctuary 7845,5322] moveTo getPath -> 7853,5316 tele:false
+10/5 23:48:33 [Chaos Sanctuary 7845,5322] path total nodes: 7
+10/5 23:48:34 [Chaos Sanctuary 7851,5317] moveTo end
+10/5 23:48:34 [Chaos Sanctuary 7851,5310] moveTo end
+10/5 23:48:34 [Chaos Sanctuary 7851,5309] moveTo getPath -> 7855,5275 tele:false
+10/5 23:48:34 [Chaos Sanctuary 7851,5309] path total nodes: 15
+10/5 23:48:37 [Chaos Sanctuary 7855,5277] moveTo end
+10/5 23:48:37 [Chaos Sanctuary 7855,5277] moveTo getPath -> 7930,5275 tele:false
+10/5 23:48:37 [Chaos Sanctuary 7855,5277] path total nodes: 23
+10/5 23:48:51 [Chaos Sanctuary 7919,5268] moveTo getPath -> 7922,5275 tele:false
+10/5 23:48:51 [Chaos Sanctuary 7919,5268] path total nodes: 5
+10/5 23:48:51 [Chaos Sanctuary 7921,5274] moveTo end
+10/5 23:49:2 [Chaos Sanctuary 7931,5276] moveTo end
+10/5 23:49:2 [Chaos Sanctuary 7931,5276] moveTo getPath -> 7920,5315 tele:false
+10/5 23:49:2 [Chaos Sanctuary 7931,5276] path total nodes: 15
+10/5 23:49:7 [Chaos Sanctuary 7923,5313] moveTo end
+10/5 23:49:12 [Chaos Sanctuary 7920,5315] moveTo getPath -> 7935,5295 tele:false
+10/5 23:49:12 [Chaos Sanctuary 7920,5315] path total nodes: 13
+10/5 23:49:15 [Chaos Sanctuary 7934,5298] moveTo end
+10/5 23:49:30 [Chaos Sanctuary 7921,5276] moveTo getPath -> 7915,5282 tele:false
+10/5 23:49:30 [Chaos Sanctuary 7921,5276] path total nodes: 5
+10/5 23:49:30 [Chaos Sanctuary 7915,5279] moveTo end
+10/5 23:49:31 [Chaos Sanctuary 7913,5280] moveTo getPath -> 7790,5290 tele:false
+10/5 23:49:31 [Chaos Sanctuary 7913,5280] path total nodes: 39
+10/5 23:49:42 [Chaos Sanctuary 7792,5289] moveTo end
+10/5 23:49:42 [Chaos Sanctuary 7792,5289] moveTo getPath -> 7797,5294 tele:false
+10/5 23:49:42 [Chaos Sanctuary 7792,5290] path total nodes: 4
+10/5 23:49:43 [Chaos Sanctuary 7794,5292] moveTo end
+10/5 23:49:43 [Chaos Sanctuary 7797,5294] moveTo getPath -> 7794,5292 tele:false
+10/5 23:49:43 [Chaos Sanctuary 7797,5294] path total nodes: 4
+10/5 23:49:44 [Chaos Sanctuary 7797,5294] moveTo end
+10/5 23:49:45 [Chaos Sanctuary 7797,5294] moveTo getPath -> 7794,5292 tele:false
+10/5 23:49:45 [Chaos Sanctuary 7797,5294] path total nodes: 4
+10/5 23:49:45 [Chaos Sanctuary 7797,5294] moveTo end
+10/5 23:49:46 [Chaos Sanctuary 7797,5294] moveTo getPath -> 7794,5292 tele:false
+10/5 23:49:46 [Chaos Sanctuary 7797,5294] path total nodes: 4
+10/5 23:49:46 [Chaos Sanctuary 7797,5294] moveTo end
+10/5 23:50:0 [Chaos Sanctuary 7804,5315] moveTo getPath -> 7794,5292 tele:false
+10/5 23:50:0 [Chaos Sanctuary 7804,5315] path total nodes: 12
+10/5 23:50:2 [Chaos Sanctuary 7795,5295] moveTo end
+10/5 23:50:4 [Chaos Sanctuary 7794,5291] moveTo getPath -> 7755,5290 tele:false
+10/5 23:50:4 [Chaos Sanctuary 7794,5291] path total nodes: 18
+10/5 23:50:12 [Chaos Sanctuary 7753,5292] moveTo end
+10/5 23:50:12 [Chaos Sanctuary 7753,5292] moveTo getPath -> 7720,5275 tele:false
+10/5 23:50:12 [Chaos Sanctuary 7753,5292] path total nodes: 20
+10/5 23:50:15 [Chaos Sanctuary 7723,5276] moveTo end
+10/5 23:50:15 [Chaos Sanctuary 7723,5276] moveTo getPath -> 7710,5315 tele:false
+10/5 23:50:15 [Chaos Sanctuary 7722,5276] path total nodes: 18
+10/5 23:50:20 [Chaos Sanctuary 7701,5319] moveTo getPath -> 7698,5315 tele:false
+10/5 23:50:20 [Chaos Sanctuary 7701,5319] path total nodes: 5
+10/5 23:50:21 [Chaos Sanctuary 7699,5316] moveTo end
+10/5 23:50:22 [Chaos Sanctuary 7708,5316] moveTo end
+10/5 23:50:22 [Chaos Sanctuary 7708,5316] moveTo getPath -> 7660,5315 tele:false
+10/5 23:50:22 [Chaos Sanctuary 7708,5316] path total nodes: 15
+10/5 23:50:26 [Chaos Sanctuary 7682,5318] moveTo getPath -> 7698,5318 tele:false
+10/5 23:50:27 [Chaos Sanctuary 7682,5318] path total nodes: 6
+10/5 23:50:28 [Chaos Sanctuary 7696,5318] moveTo end
+10/5 23:50:31 [Chaos Sanctuary 7660,5314] moveTo end
+10/5 23:50:31 [Chaos Sanctuary 7660,5314] moveTo getPath -> 7655,5280 tele:false
+10/5 23:50:31 [Chaos Sanctuary 7660,5314] path total nodes: 15
+10/5 23:50:35 [Chaos Sanctuary 7652,5292] moveTo getPath -> 7658,5303 tele:false
+10/5 23:50:35 [Chaos Sanctuary 7652,5292] path total nodes: 7
+10/5 23:50:36 [Chaos Sanctuary 7658,5301] moveTo end
+10/5 23:50:41 [Chaos Sanctuary 7656,5282] moveTo end
+10/5 23:50:45 [Chaos Sanctuary 7656,5281] moveTo getPath -> 7675,5315 tele:false
+10/5 23:50:45 [Chaos Sanctuary 7656,5281] path total nodes: 15
+10/5 23:50:48 [Chaos Sanctuary 7673,5313] moveTo end
+10/5 23:50:59 [Chaos Sanctuary 7694,5316] moveTo getPath -> 7694,5322 tele:false
+10/5 23:50:59 [Chaos Sanctuary 7694,5316] path total nodes: 4
+10/5 23:50:59 [Chaos Sanctuary 7694,5317] moveTo end
+10/5 23:50:59 [Chaos Sanctuary 7695,5320] moveTo getPath -> 7688,5323 tele:false
+10/5 23:50:59 [Chaos Sanctuary 7695,5320] path total nodes: 5
+10/5 23:51:0 [Chaos Sanctuary 7687,5321] moveTo end
+10/5 23:51:0 [Chaos Sanctuary 7688,5322] moveTo getPath -> 7791,5297 tele:0
+10/5 23:51:0 [Chaos Sanctuary 7688,5322] path total nodes: 35
+10/5 23:51:7 [Chaos Sanctuary 7789,5299] moveTo end
+10/5 23:51:20 [Chaos Sanctuary 7794,5292] moveTo getPath -> 7787,5290 tele:false
+10/5 23:51:20 [Chaos Sanctuary 7794,5292] path total nodes: 6
+10/5 23:51:21 [Chaos Sanctuary 7790,5290] moveTo end
+10/5 23:51:21 [Chaos Sanctuary 7790,5290] moveTo getPath -> 7787,5290 tele:false
+10/5 23:51:21 [Chaos Sanctuary 7790,5290] path total nodes: 3
+10/5 23:51:21 [Chaos Sanctuary 7789,5290] moveTo end
+10/5 23:51:21 [The Pandemonium Fortress 5051,5048] Script ended
+10/5 23:51:36 [The Pandemonium Fortress 5049,5044] === game Pz-186 ===
+10/5 23:51:40 [The Pandemonium Fortress 5049,5044] moveTo getPath -> 5046,5025 tele:false
+10/5 23:51:40 [The Pandemonium Fortress 5049,5044] path total nodes: 8
+10/5 23:51:42 [The Pandemonium Fortress 5047,5026] moveTo end
+10/5 23:51:42 [The Pandemonium Fortress 5047,5026] moveTo getPath -> 5044,5019 tele:false
+10/5 23:51:42 [The Pandemonium Fortress 5047,5026] path total nodes: 5
+10/5 23:51:43 [The Pandemonium Fortress 5044,5021] moveTo end
+10/5 23:51:43 [The Pandemonium Fortress 5044,5021] moveTo getPath -> 5044,5019 tele:false
+10/5 23:51:43 [The Pandemonium Fortress 5044,5021] path total nodes: 2
+10/5 23:51:43 [The Pandemonium Fortress 5044,5021] moveTo end
+10/5 23:51:44 [Harrogath 5113,5066] gamble
+10/5 23:51:44 [Harrogath 5113,5066] reviveMerc
+10/5 23:51:44 [Harrogath 5113,5066] Equip1
+10/5 23:51:44 [Harrogath 5113,5066] Grant1
+10/5 23:51:44 [Harrogath 5113,5066] Cubing
+10/5 23:51:44 [Harrogath 5113,5066] Runewords
+10/5 23:51:44 [Harrogath 5113,5066] clearBelt
+10/5 23:51:44 [Harrogath 5113,5066] heal
+10/5 23:51:44 [Harrogath 5113,5066] identify
+10/5 23:51:44 [Harrogath 5113,5066] moveTo getPath -> 5081,5029 tele:false
+10/5 23:51:44 [Harrogath 5114,5067] path total nodes: 25
+10/5 23:51:49 [Harrogath 5080,5030] moveTo end
+10/5 23:51:49 [Harrogath 5080,5030] moveTo getPath -> 5079,5027 tele:false
+10/5 23:51:50 [Harrogath 5080,5030] path total nodes: 4
+10/5 23:51:50 [Harrogath 5078,5028] moveTo end
+10/5 23:51:50 [Harrogath 5075,5025] moveTo getPath -> 5079,5027 tele:false
+10/5 23:51:50 [Harrogath 5075,5025] path total nodes: 4
+10/5 23:51:50 [Harrogath 5077,5027] moveTo end
+10/5 23:51:50 [Harrogath 5077,5027] moveTo getPath -> 5079,5027 tele:false
+10/5 23:51:50 [Harrogath 5077,5027] path total nodes: 3
+10/5 23:51:51 [Harrogath 5077,5027] moveTo end
+10/5 23:51:53 [Harrogath 5077,5027] clearInventory
+10/5 23:51:53 [Harrogath 5077,5027] fillTome
+10/5 23:51:53 [Harrogath 5077,5027] buyPotions
+10/5 23:51:55 [Harrogath 5077,5027] repair
+10/5 23:51:55 [Harrogath 5077,5027] moveTo getPath -> 5141,5045 tele:false
+10/5 23:51:55 [Harrogath 5077,5027] path total nodes: 27
+10/5 23:51:59 [Harrogath 5141,5045] moveTo end
+10/5 23:51:59 [Harrogath 5141,5045] moveTo getPath -> 5144,5037 tele:false
+10/5 23:51:59 [Harrogath 5141,5045] path total nodes: 8
+10/5 23:52:0 [Harrogath 5145,5038] moveTo end
+10/5 23:52:3 [Harrogath 5144,5035] pickItems
+10/5 23:52:3 [Harrogath 5144,5035] Equip2
+10/5 23:52:3 [Harrogath 5144,5035] Grant2
+10/5 23:52:3 [Harrogath 5144,5035] stash
+10/5 23:52:3 [Harrogath 5144,5035] doChores end
+10/5 23:52:3 [Harrogath 5144,5035] moveTo getPath -> 5118,5062 tele:false
+10/5 23:52:3 [Harrogath 5144,5035] path total nodes: 14
+10/5 23:52:5 [Harrogath 5120,5062] moveTo end
+10/5 23:52:5 [Harrogath 5120,5062] moveTo getPath -> 5114,5069 tele:false
+10/5 23:52:5 [Harrogath 5120,5062] path total nodes: 4
+10/5 23:52:6 [Harrogath 5115,5070] moveTo end
+10/5 23:52:7 [Harrogath 5115,5070] moveTo getPath -> 5120,5075 tele:false
+10/5 23:52:7 [Harrogath 5115,5070] path total nodes: 4
+10/5 23:52:7 [Harrogath 5120,5075] moveTo end
+10/5 23:52:21 [Harrogath 5120,5075] moveTo getPath -> 5118,5074 tele:false
+10/5 23:52:21 [Harrogath 5120,5075] path total nodes: 3
+10/5 23:52:21 [Harrogath 5119,5075] moveTo end
+10/5 23:52:21 [Harrogath 5119,5074] moveTo getPath -> 5114,5069 tele:false
+10/5 23:52:21 [Harrogath 5118,5074] path total nodes: 4
+10/5 23:52:22 [Harrogath 5114,5070] moveTo end
+10/5 23:52:23 [Ancient's Way 10025,10602] moveTo getPath -> 10030,10607 tele:0
+10/5 23:52:23 [Ancient's Way 10025,10602] path total nodes: 4
+10/5 23:52:24 [Ancient's Way 10029,10606] moveTo end
+10/5 23:52:31 [Ancient's Way 10030,10607] moveTo getPath -> 10024,10599 tele:0
+10/5 23:52:31 [Ancient's Way 10030,10607] path total nodes: 6
+10/5 23:52:31 [Ancient's Way 10023,10603] moveTo end
+10/5 23:52:31 [Ancient's Way 10023,10603] moveTo getPath -> 10024,10599 tele:0
+10/5 23:52:31 [Ancient's Way 10023,10603] path total nodes: 4
+10/5 23:52:32 [Ancient's Way 10021,10601] moveTo end
+10/5 23:52:34 [Harrogath 5116,5069] === [BAAL] ===
+10/5 23:53:51 [Throne Of Destruction 15092,5012] moveTo getPath -> 15097,5063 tele:0
+10/5 23:53:51 [Throne Of Destruction 15092,5012] path total nodes: 23
+10/5 23:53:55 [Throne Of Destruction 15097,5061] moveTo end
+10/5 23:53:55 [Throne Of Destruction 15097,5063] moveTo getPath -> 15079,5067 tele:0
+10/5 23:53:55 [Throne Of Destruction 15097,5063] path total nodes: 12
+10/5 23:53:57 [Throne Of Destruction 15080,5068] moveTo end
+10/5 23:53:58 [Throne Of Destruction 15077,5068] moveTo getPath -> 15091,5030 tele:0
+10/5 23:53:58 [Throne Of Destruction 15077,5068] path total nodes: 18
+10/5 23:54:2 [Throne Of Destruction 15091,5034] moveTo end
+10/5 23:54:8 [Throne Of Destruction 15091,5034] moveTo getPath -> 15090,5030 tele:0
+10/5 23:54:8 [Throne Of Destruction 15091,5034] path total nodes: 4
+10/5 23:54:8 [Throne Of Destruction 15091,5032] moveTo end
+10/5 23:54:9 [Throne Of Destruction 15090,5030] moveTo getPath -> 15094,5030 tele:0
+10/5 23:54:9 [Throne Of Destruction 15090,5030] path total nodes: 3
+10/5 23:54:9 [Throne Of Destruction 15090,5030] moveTo end
+10/5 23:54:28 [Throne Of Destruction 15090,5020] moveTo getPath -> 15116,5002 tele:0
+10/5 23:54:28 [Throne Of Destruction 15090,5020] path total nodes: 16
+10/5 23:54:32 [Throne Of Destruction 15116,5006] moveTo end
+10/5 23:54:32 [Throne Of Destruction 15116,5006] moveTo getPath -> 15090,5030 tele:0
+10/5 23:54:32 [Throne Of Destruction 15117,5005] path total nodes: 13
+10/5 23:54:35 [Throne Of Destruction 15092,5028] moveTo end
+10/5 23:54:51 [Throne Of Destruction 15110,5046] moveTo getPath -> 15093,5030 tele:0
+10/5 23:54:51 [Throne Of Destruction 15110,5046] path total nodes: 10
+10/5 23:54:52 [Throne Of Destruction 15094,5031] moveTo end
+10/5 23:55:8 [Throne Of Destruction 15091,5023] moveTo getPath -> 15089,5027 tele:0
+10/5 23:55:8 [Throne Of Destruction 15091,5023] path total nodes: 5
+10/5 23:55:8 [Throne Of Destruction 15091,5024] moveTo end
+10/5 23:55:8 [Throne Of Destruction 15091,5024] moveTo getPath -> 15087,5027 tele:0
+10/5 23:55:9 [Throne Of Destruction 15091,5024] path total nodes: 5
+10/5 23:55:9 [Throne Of Destruction 15085,5024] moveTo end
+10/5 23:55:10 [Throne Of Destruction 15086,5026] moveTo getPath -> 15089,5030 tele:0
+10/5 23:55:10 [Throne Of Destruction 15086,5026] path total nodes: 3
+10/5 23:55:10 [Throne Of Destruction 15087,5029] moveTo end
+10/5 23:55:10 [Throne Of Destruction 15088,5031] moveTo getPath -> 15092,5028 tele:0
+10/5 23:55:10 [Throne Of Destruction 15088,5031] path total nodes: 3
+10/5 23:55:11 [Throne Of Destruction 15091,5029] moveTo end
+10/5 23:55:18 [Throne Of Destruction 15091,5029] moveTo getPath -> 15090,5005 tele:0
+10/5 23:55:18 [Throne Of Destruction 15091,5029] path total nodes: 12
+10/5 23:55:22 [Throne Of Destruction 15089,5010] moveTo end
+10/5 23:55:22 [Throne Of Destruction 15089,5010] moveTo getPath -> 15090,5005 tele:0
+10/5 23:55:22 [Throne Of Destruction 15089,5010] path total nodes: 4
+10/5 23:55:23 [Throne Of Destruction 15089,5008] moveTo end
+10/5 23:55:26 [The Worldstone Chamber 15175,5895] moveTo getPath -> 15174,5887 tele:0
+10/5 23:55:26 [The Worldstone Chamber 15175,5895] path total nodes: 5
+10/5 23:55:26 [The Worldstone Chamber 15176,5889] moveTo end
+10/5 23:55:30 [The Worldstone Chamber 15184,5882] moveTo getPath -> 15176,5888 tele:0
+10/5 23:55:30 [The Worldstone Chamber 15184,5882] path total nodes: 5
+10/5 23:55:31 [The Worldstone Chamber 15178,5886] moveTo end
+10/5 23:55:32 [The Worldstone Chamber 15178,5886] moveTo getPath -> 15176,5888 tele:0
+10/5 23:55:32 [The Worldstone Chamber 15178,5886] path total nodes: 3
+10/5 23:55:32 [The Worldstone Chamber 15178,5886] moveTo end
+10/5 23:55:33 [The Worldstone Chamber 15178,5886] moveTo getPath -> 15176,5888 tele:0
+10/5 23:55:33 [The Worldstone Chamber 15178,5886] path total nodes: 3
+10/5 23:55:33 [The Worldstone Chamber 15178,5886] moveTo end
+10/5 23:55:35 [The Worldstone Chamber 15178,5886] moveTo getPath -> 15134,5923 tele:0
+10/5 23:55:35 [The Worldstone Chamber 15178,5886] path total nodes: 33
+10/5 23:55:42 [The Worldstone Chamber 15136,5923] moveTo end
+10/5 23:56:11 [The Worldstone Chamber 15133,5918] moveTo getPath -> 15140,5921 tele:0
+10/5 23:56:11 [The Worldstone Chamber 15133,5918] path total nodes: 4
+10/5 23:56:11 [The Worldstone Chamber 15136,5919] moveTo end
+10/5 23:56:15 [The Worldstone Chamber 15138,5919] moveTo getPath -> 15131,5922 tele:0
+10/5 23:56:15 [The Worldstone Chamber 15138,5919] path total nodes: 5
+10/5 23:56:15 [The Worldstone Chamber 15134,5921] moveTo end
+10/5 23:56:15 [The Worldstone Chamber 15134,5921] moveTo getPath -> 15131,5922 tele:0
+10/5 23:56:15 [The Worldstone Chamber 15133,5921] path total nodes: 4
+10/5 23:56:16 [The Worldstone Chamber 15131,5922] moveTo end
+10/5 23:56:16 [Harrogath 5099,5020] === [COUNTESS] ===
+10/5 23:56:16 [Harrogath 5099,5020] clearBelt
+10/5 23:56:16 [Harrogath 5099,5021] heal
+10/5 23:56:16 [Harrogath 5099,5021] moveTo getPath -> 5075,5032 tele:false
+10/5 23:56:16 [Harrogath 5099,5021] path total nodes: 17
+10/5 23:56:18 [Harrogath 5076,5032] moveTo end
+10/5 23:56:18 [Harrogath 5076,5032] moveTo getPath -> 5075,5030 tele:false
+10/5 23:56:18 [Harrogath 5075,5032] path total nodes: 2
+10/5 23:56:18 [Harrogath 5075,5032] moveTo end
+10/5 23:56:19 [Harrogath 5075,5032] identify
+10/5 23:56:20 [Harrogath 5075,5032] clearInventory
+10/5 23:56:21 [Harrogath 5075,5032] fillTome
+10/5 23:56:21 [Harrogath 5075,5032] buyPotions
+10/5 23:56:22 [Harrogath 5075,5032] repair
+10/5 23:56:22 [Harrogath 5075,5032] pickItems
+10/5 23:56:22 [Harrogath 5075,5032] Equip2
+10/5 23:56:22 [Harrogath 5075,5032] Grant2
+10/5 23:56:22 [Harrogath 5075,5032] stash
+10/5 23:56:22 [Harrogath 5075,5032] doChores end
+10/5 23:56:34 [Harrogath 5075,5032] moveTo getPath -> 5110,5061 tele:false
+10/5 23:56:34 [Harrogath 5075,5032] path total nodes: 27
+10/5 23:56:37 [Harrogath 5110,5058] moveTo end
+10/5 23:56:37 [Harrogath 5110,5058] moveTo getPath -> 5114,5069 tele:false
+10/5 23:56:37 [Harrogath 5110,5058] path total nodes: 5
+10/5 23:56:38 [Harrogath 5113,5064] moveTo end
+10/5 23:56:38 [Harrogath 5113,5064] moveTo getPath -> 5114,5069 tele:false
+10/5 23:56:38 [Harrogath 5114,5065] path total nodes: 2
+10/5 23:56:38 [Harrogath 5112,5069] moveTo end
+10/5 23:56:40 [Rogue Encampment 5498,4688] moveTo getPath -> 5487,4740 tele:false
+10/5 23:56:40 [Rogue Encampment 5498,4688] path total nodes: 20
+10/5 23:56:43 [Rogue Encampment 5488,4739] moveTo end
+10/5 23:57:19 [Tower Cellar Level 5 12545,11032] moveTo getPath -> 12553,11038 tele:false
+10/5 23:57:19 [Tower Cellar Level 5 12545,11032] path total nodes: 7
+10/5 23:57:21 [Tower Cellar Level 5 12551,11036] moveTo end
+10/5 23:57:21 [Tower Cellar Level 5 12551,11036] moveTo getPath -> 12565,11020 tele:false
+10/5 23:57:21 [Tower Cellar Level 5 12551,11036] path total nodes: 10
+10/5 23:57:24 [Tower Cellar Level 5 12562,11021] moveTo end
+10/5 23:57:24 [Tower Cellar Level 5 12562,11021] moveTo getPath -> 12567,11026 tele:false
+10/5 23:57:24 [Tower Cellar Level 5 12563,11020] path total nodes: 5
+10/5 23:57:25 [Tower Cellar Level 5 12566,11024] moveTo end
+10/5 23:57:25 [Tower Cellar Level 5 12567,11026] moveTo getPath -> 12566,11024 tele:false
+10/5 23:57:25 [Tower Cellar Level 5 12567,11026] path total nodes: 3
+10/5 23:57:25 [Tower Cellar Level 5 12567,11026] moveTo end
+10/5 23:57:26 [Tower Cellar Level 5 12567,11026] moveTo getPath -> 12566,11024 tele:false
+10/5 23:57:26 [Tower Cellar Level 5 12567,11026] path total nodes: 3
+10/5 23:57:26 [Tower Cellar Level 5 12567,11026] moveTo end
+10/5 23:57:27 [Tower Cellar Level 5 12567,11026] moveTo getPath -> 12566,11024 tele:false
+10/5 23:57:27 [Tower Cellar Level 5 12567,11026] path total nodes: 3
+10/5 23:57:28 [Tower Cellar Level 5 12567,11026] moveTo end
+10/5 23:57:29 [Tower Cellar Level 5 12567,11026] moveTo getPath -> 12566,11024 tele:false
+10/5 23:57:29 [Tower Cellar Level 5 12567,11026] path total nodes: 3
+10/5 23:57:29 [Tower Cellar Level 5 12567,11026] moveTo end
+10/5 23:57:30 [Tower Cellar Level 5 12567,11026] moveTo getPath -> 12566,11024 tele:false
+10/5 23:57:30 [Tower Cellar Level 5 12567,11026] path total nodes: 3
+10/5 23:57:30 [Tower Cellar Level 5 12567,11026] moveTo end
+10/5 23:57:31 [Tower Cellar Level 5 12567,11026] moveTo getPath -> 12566,11024 tele:false
+10/5 23:57:31 [Tower Cellar Level 5 12567,11026] path total nodes: 3
+10/5 23:57:31 [Tower Cellar Level 5 12567,11026] moveTo end
+10/5 23:57:32 [Tower Cellar Level 5 12567,11026] moveTo getPath -> 12566,11024 tele:false
+10/5 23:57:32 [Tower Cellar Level 5 12567,11026] path total nodes: 3
+10/5 23:57:32 [Tower Cellar Level 5 12567,11026] moveTo end
+10/5 23:57:35 [Tower Cellar Level 5 12567,11026] moveTo getPath -> 12552,11015 tele:false
+10/5 23:57:35 [Tower Cellar Level 5 12567,11026] path total nodes: 11
+10/5 23:57:37 [Tower Cellar Level 5 12554,11018] moveTo end
+10/5 23:57:37 [Tower Cellar Level 5 12554,11018] moveTo getPath -> 12552,11015 tele:false
+10/5 23:57:37 [Tower Cellar Level 5 12554,11018] path total nodes: 3
+10/5 23:57:37 [Tower Cellar Level 5 12553,11016] moveTo end
+10/5 23:57:37 [Rogue Encampment 5495,4741] === [PIT] ===
+10/5 23:57:37 [Rogue Encampment 5495,4741] clearBelt
+10/5 23:57:37 [Rogue Encampment 5495,4741] heal
+10/5 23:57:37 [Rogue Encampment 5495,4741] identify
+10/5 23:57:37 [Rogue Encampment 5495,4741] clearInventory
+10/5 23:57:37 [Rogue Encampment 5496,4741] fillTome
+10/5 23:57:37 [Rogue Encampment 5496,4741] buyPotions
+10/5 23:57:37 [Rogue Encampment 5496,4741] repair
+10/5 23:57:37 [Rogue Encampment 5496,4741] pickItems
+10/5 23:57:38 [Rogue Encampment 5497,4741] Equip2
+10/5 23:57:38 [Rogue Encampment 5497,4741] Grant2
+10/5 23:57:38 [Rogue Encampment 5497,4741] stash
+10/5 23:57:38 [Rogue Encampment 5497,4741] doChores end
+10/5 23:57:47 [Rogue Encampment 5497,4741] moveTo getPath -> 5487,4740 tele:false
+10/5 23:57:47 [Rogue Encampment 5497,4741] path total nodes: 5
+10/5 23:57:48 [Rogue Encampment 5486,4742] moveTo end
+10/5 23:58:3 [Rogue Encampment 5485,4742] moveTo getPath -> 5493,4743 tele:false
+10/5 23:58:3 [Rogue Encampment 5485,4742] path total nodes: 5
+10/5 23:58:3 [Rogue Encampment 5492,4742] moveTo end
+10/5 23:58:9 [Pit Level 2 7539,14414] moveTo getPath -> 7529,14396 tele:false
+10/5 23:58:9 [Pit Level 2 7539,14414] path total nodes: 8
+10/5 23:58:12 [Pit Level 2 7529,14397] moveTo end
+10/5 23:58:14 [Pit Level 2 7529,14396] moveTo getPath -> 7548,14429 tele:false
+10/5 23:58:14 [Pit Level 2 7529,14396] path total nodes: 13
+10/5 23:58:27 [Pit Level 2 7567,14433] moveTo end
+10/5 23:58:27 [Pit Level 2 7567,14433] moveTo getPath -> 7558,14465 tele:false
+10/5 23:58:27 [Pit Level 2 7567,14433] path total nodes: 18
+10/5 23:58:45 [Pit Level 2 7559,14463] moveTo end
+10/5 23:58:45 [Pit Level 2 7559,14463] moveTo getPath -> 7585,14445 tele:false
+10/5 23:58:45 [Pit Level 2 7559,14463] path total nodes: 14
+10/5 23:58:49 [Pit Level 2 7585,14443] moveTo end
+10/5 23:58:49 [Pit Level 2 7585,14443] moveTo getPath -> 7575,14401 tele:false
+10/5 23:58:49 [Pit Level 2 7585,14443] path total nodes: 19
+10/5 23:58:52 [Pit Level 2 7575,14404] moveTo end
+10/5 23:58:52 [Pit Level 2 7575,14404] moveTo getPath -> 7607,14420 tele:false
+10/5 23:58:52 [Pit Level 2 7575,14404] path total nodes: 15
+10/5 23:58:55 [Pit Level 2 7604,14416] [chest] skip trap name:chest classid:397 objtype:8 dist:7
+10/5 23:58:55 [Pit Level 2 7605,14418] moveTo end
+10/5 23:58:55 [Pit Level 2 7605,14418] moveTo getPath -> 7600,14431 tele:false
+10/5 23:58:55 [Pit Level 2 7605,14418] path total nodes: 9
+10/5 23:58:56 [Pit Level 2 7601,14428] moveTo end
+10/5 23:58:56 [Pit Level 2 7601,14430] moveTo getPath -> 7601,14428 tele:false
+10/5 23:58:56 [Pit Level 2 7601,14430] path total nodes: 2
+10/5 23:58:56 [Pit Level 2 7601,14430] moveTo end
+10/5 23:58:57 [Pit Level 2 7601,14430] moveTo getPath -> 7601,14428 tele:false
+10/5 23:58:57 [Pit Level 2 7601,14430] path total nodes: 2
+10/5 23:58:57 [Pit Level 2 7601,14430] moveTo end
+10/5 23:58:58 [Pit Level 2 7601,14430] moveTo getPath -> 7601,14428 tele:false
+10/5 23:58:58 [Pit Level 2 7601,14430] path total nodes: 2
+10/5 23:58:59 [Pit Level 2 7601,14430] moveTo end
+10/5 23:59:0 [Pit Level 2 7601,14430] moveTo getPath -> 7601,14428 tele:false
+10/5 23:59:0 [Pit Level 2 7601,14430] path total nodes: 2
+10/5 23:59:0 [Pit Level 2 7601,14430] moveTo end
+10/5 23:59:1 [Pit Level 2 7601,14430] moveTo getPath -> 7601,14428 tele:false
+10/5 23:59:1 [Pit Level 2 7601,14430] path total nodes: 2
+10/5 23:59:1 [Pit Level 2 7601,14430] moveTo end
+10/5 23:59:5 [Pit Level 2 7601,14430] moveTo getPath -> 7603,14425 tele:false
+10/5 23:59:5 [Pit Level 2 7601,14430] path total nodes: 4
+10/5 23:59:6 [Pit Level 2 7602,14428] moveTo end
+10/5 23:59:6 [Pit Level 2 7602,14428] moveTo getPath -> 7603,14425 tele:false
+10/5 23:59:6 [Pit Level 2 7602,14428] path total nodes: 4
+10/5 23:59:6 [Pit Level 2 7603,14425] moveTo end
+10/5 23:59:7 [Rogue Encampment 5496,4748] === [ANDY] ===
+10/5 23:59:7 [Rogue Encampment 5496,4748] clearBelt
+10/5 23:59:7 [Rogue Encampment 5496,4748] heal
+10/5 23:59:7 [Rogue Encampment 5496,4748] identify
+10/5 23:59:7 [Rogue Encampment 5496,4748] clearInventory
+10/5 23:59:7 [Rogue Encampment 5496,4748] fillTome
+10/5 23:59:7 [Rogue Encampment 5496,4748] buyPotions
+10/5 23:59:7 [Rogue Encampment 5496,4748] repair
+10/5 23:59:7 [Rogue Encampment 5496,4748] pickItems
+10/5 23:59:7 [Rogue Encampment 5496,4748] Equip2
+10/5 23:59:7 [Rogue Encampment 5496,4748] Grant2
+10/5 23:59:7 [Rogue Encampment 5496,4748] stash
+10/5 23:59:7 [Rogue Encampment 5496,4748] doChores end
+10/5 23:59:15 [Rogue Encampment 5496,4748] moveTo getPath -> 5487,4740 tele:false
+10/5 23:59:15 [Rogue Encampment 5496,4748] path total nodes: 6
+10/5 23:59:18 [Rogue Encampment 5487,4742] moveTo end
+10/5 23:59:18 [Rogue Encampment 5487,4740] moveTo getPath -> 5487,4742 tele:false
+10/5 23:59:18 [Rogue Encampment 5487,4740] path total nodes: 2
+10/5 23:59:18 [Rogue Encampment 5487,4740] moveTo end
+10/5 23:59:19 [Rogue Encampment 5487,4740] moveTo getPath -> 5487,4742 tele:false
+10/5 23:59:19 [Rogue Encampment 5487,4740] path total nodes: 2
+10/5 23:59:19 [Rogue Encampment 5487,4740] moveTo end
+10/5 23:59:20 [Rogue Encampment 5487,4740] moveTo getPath -> 5487,4742 tele:false
+10/5 23:59:20 [Rogue Encampment 5487,4740] path total nodes: 2
+10/5 23:59:20 [Rogue Encampment 5487,4740] moveTo end
+10/5 23:59:21 [Rogue Encampment 5487,4740] moveTo getPath -> 5487,4742 tele:false
+10/5 23:59:21 [Rogue Encampment 5487,4740] path total nodes: 2
+10/5 23:59:21 [Rogue Encampment 5487,4740] moveTo end
+10/5 23:59:35 [Rogue Encampment 5489,4742] moveTo getPath -> 5493,4737 tele:false
+10/5 23:59:35 [Rogue Encampment 5489,4742] path total nodes: 5
+10/5 23:59:36 [Rogue Encampment 5493,4738] moveTo end
+10/5 23:59:47 [Catacombs Level 4 22543,9541] moveTo getPath -> 22549,9536 tele:false
+10/5 23:59:47 [Catacombs Level 4 22543,9541] path total nodes: 5
+10/5 23:59:47 [Catacombs Level 4 22548,9537] moveTo end
+10/5 23:59:47 [Catacombs Level 4 22549,9536] moveTo getPath -> 22558,9525 tele:false
+10/5 23:59:47 [Catacombs Level 4 22549,9536] path total nodes: 9
+10/5 23:59:49 [Catacombs Level 4 22557,9527] moveTo end
+10/5 23:59:49 [Catacombs Level 4 22558,9527] moveTo getPath -> 22564,9526 tele:false
+10/5 23:59:49 [Catacombs Level 4 22558,9527] path total nodes: 3
+10/5 23:59:49 [Catacombs Level 4 22561,9525] moveTo end
+10/5 23:59:52 [Catacombs Level 4 22563,9526] moveTo getPath -> 22549,9520 tele:false
+10/5 23:59:52 [Catacombs Level 4 22563,9526] path total nodes: 11
+10/5 23:59:53 [Catacombs Level 4 22550,9522] moveTo end
+10/5 23:59:53 [Catacombs Level 4 22550,9522] moveTo getPath -> 22555,9527 tele:false
+10/5 23:59:53 [Catacombs Level 4 22550,9522] path total nodes: 4
+10/5 23:59:53 [Catacombs Level 4 22554,9526] moveTo end
+10/5 23:59:57 [Catacombs Level 4 22555,9527] moveTo getPath -> 22547,9520 tele:false
+10/5 23:59:57 [Catacombs Level 4 22555,9527] path total nodes: 5
+10/5 23:59:58 [Catacombs Level 4 22549,9522] moveTo end
+10/5 23:59:58 [Catacombs Level 4 22549,9522] moveTo getPath -> 22547,9520 tele:false
+10/5 23:59:58 [Catacombs Level 4 22549,9522] path total nodes: 3
+10/5 23:59:58 [Catacombs Level 4 22547,9520] moveTo end
+10/5 23:59:58 [Rogue Encampment 5497,4740] === [MEPHISTO] ===
+10/5 23:59:58 [Rogue Encampment 5497,4740] clearBelt
+10/5 23:59:58 [Rogue Encampment 5497,4740] heal
+10/5 23:59:58 [Rogue Encampment 5497,4740] identify
+10/5 23:59:58 [Rogue Encampment 5497,4741] clearInventory
+10/5 23:59:58 [Rogue Encampment 5497,4741] fillTome
+10/5 23:59:58 [Rogue Encampment 5497,4741] buyPotions
+10/5 23:59:58 [Rogue Encampment 5497,4741] moveTo getPath -> 5536,4686 tele:false
+10/5 23:59:59 [Rogue Encampment 5497,4741] path total nodes: 34
