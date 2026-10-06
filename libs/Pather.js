@@ -135,14 +135,15 @@ var Pather = {
 	teleport: true,
 	walkDistance: 5,
 	teleDistance: 35,	//260829
-	narrowAreas: [62, 63, 64, 88, 89, 91, 74],	//261001 teleport step 30 and node adjustment (Maggot Lair, Flayer Dungeon, Arcane)
+	//narrowAreas: [62, 63, 64],	//261006 teleport step 30 and node adjustment (Maggot Lair, Flayer Dungeon, 88, 89, 91, Arcane, 74)
 	cancelFlags: [0x01, 0x02, 0x04, 0x08, 0x14, 0x16, 0x0c, 0x0f, 0x17, 0x19, 0x1A],
 	wpAreas: [1, 3, 4, 5, 6, 27, 29, 32, 35, 40, 48, 42, 57, 43, 44, 52, 74, 46, 75, 76, 77, 78, 79, 80, 81, 83, 101, 103, 106, 107, 109, 111, 112, 113, 115, 123, 117, 118, 129],
 	recursion: true,
 
 	// teleport step for the current area (narrowAreas 30, else teleDistance). Every teleport path in moveTo and the SafeTele ring use it	//261001
 	getTeleDistance: function () {
-		return this.narrowAreas.indexOf(me.area) > -1 ? 30 : this.teleDistance;
+		//return this.narrowAreas.indexOf(me.area) > -1 ? 30 : this.teleDistance;
+		return this.teleDistance;	//261006
 	},
 
 	useTeleport: function () {
@@ -218,7 +219,7 @@ var Pather = {
 				}
 				
 				//260823 match the landing check used by GIP (Attack.js:636) and gate before the monster scan
-				if (!Pather.checkSpot(tx, ty, 0x1, false)) {
+				if (!Pather.checkSpot(tx, ty, 0x1 | 0x4 | 0x800 | 0x1000, false)) {	//261006
 					continue;
 				}
 				
@@ -376,7 +377,8 @@ var Pather = {
 			*/
 			if (getDistance(me, node) > 2) {
 				// Make life in Maggot Lair easier + flayer
-				if (this.narrowAreas.indexOf(me.area) > -1) {	//260716	//260823	//260921	//261001 narrowAreas
+				//if (this.narrowAreas.indexOf(me.area) > -1) {	//260716	//260823	//260921	//261001 narrowAreas
+				if (!me.inTown) {	//261006
 					adjustedNode = this.getNearestWalkable(node.x, node.y, 10, 2, 0x1 | 0x4 | 0x800 | 0x1000);	//260823
 					
 					if (adjustedNode) {

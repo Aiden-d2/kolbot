@@ -1022,7 +1022,7 @@ function AutoSmurf() {
 					}
 				}
 
-				if (alive > 1) {
+				if (alive > 2) {
 					return;
 				}
 			}
@@ -3393,7 +3393,7 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		this.bossGuard(0);	//260922	//261004 setLifeChicken(0) -> bossGuard: chicken off from the arrival
+		this.bossGuard(100);	//260922	//261004 setLifeChicken(0) -> bossGuard: chicken off from the arrival	//261006
 
 		Pather.teleport = false;
 		
@@ -5152,7 +5152,7 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		this.bossGuard(85);	//261004
+		this.bossGuard(50);	//261006
 
 		try {
 			Attack.clear(25, getLocaleString(22435));	// Shenk the Overseer //261002	//261003 20 -> 25
