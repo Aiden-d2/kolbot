@@ -1,0 +1,1566 @@
+[10/06/26 00:01:04] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 00:06:43] D2BS 6216: party has left: fowo-xa
+[10/06/26 00:06:43] D2BS 6216:  [15:06] +5.48% / [Level 89] 78.03%
+[10/06/26 00:06:43] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 00:06:43] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 00:06:43] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 00:06:43] D2BS 6216: Script default.dbj ended
+[10/06/26 00:06:56] D2BS 6216: joining game pz-187
+[10/06/26 00:06:58] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 00:06:58] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 00:06:58] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 00:06:58] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 00:06:58] D2BS 6216: equipped: [Head] 22
+[10/06/26 00:06:58] D2BS 6216: equipped: [Neck] 19
+[10/06/26 00:06:58] D2BS 6216: equipped: [Body] 20
+[10/06/26 00:06:58] D2BS 6216: equipped: [ArmR] 32
+[10/06/26 00:06:58] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 00:06:58] D2BS 6216: equipped: [RingR] 14
+[10/06/26 00:06:58] D2BS 6216: equipped: [RingL] 15
+[10/06/26 00:06:58] D2BS 6216: equipped: [Belt] 19
+[10/06/26 00:06:58] D2BS 6216: equipped: [Boots] 13
+[10/06/26 00:06:58] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 00:06:58] D2BS 6216: updateStat
+[10/06/26 00:06:58] D2BS 6216: granted: [Head] 31
+[10/06/26 00:06:59] D2BS 6216: granted: [Body] 21
+[10/06/26 00:06:59] D2BS 6216: granted: [ArmR] 24
+[10/06/26 00:06:59] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 00:07:03] D2BS 6216: farmingON
+[10/06/26 00:07:05] D2BS 6216: MiniShopBot: true
+[10/06/26 00:07:05] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 00:07:30] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 00:07:46] D2BS 6216: act5+ BO
+[10/06/26 00:08:00] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 00:11:29] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 00:12:39] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 00:14:09] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 00:15:01] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 00:16:30] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 00:22:53] D2BS 6216: party has left: fowo-xb
+[10/06/26 00:22:54] D2BS 6216:  [15:56] +6.25% / [Level 89] 84.28%
+[10/06/26 00:22:54] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 00:22:54] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 00:22:54] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 00:22:54] D2BS 6216: Script default.dbj ended
+[10/06/26 00:23:06] D2BS 6216: joining game pz-188
+[10/06/26 00:23:08] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 00:23:08] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 00:23:09] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 00:23:09] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 00:23:09] D2BS 6216: equipped: [Head] 22
+[10/06/26 00:23:09] D2BS 6216: equipped: [Neck] 19
+[10/06/26 00:23:09] D2BS 6216: equipped: [Body] 20
+[10/06/26 00:23:09] D2BS 6216: equipped: [ArmR] 32
+[10/06/26 00:23:09] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 00:23:09] D2BS 6216: equipped: [RingR] 14
+[10/06/26 00:23:09] D2BS 6216: equipped: [RingL] 15
+[10/06/26 00:23:09] D2BS 6216: equipped: [Belt] 19
+[10/06/26 00:23:09] D2BS 6216: equipped: [Boots] 13
+[10/06/26 00:23:09] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 00:23:09] D2BS 6216: updateStat
+[10/06/26 00:23:09] D2BS 6216: granted: [Head] 31
+[10/06/26 00:23:09] D2BS 6216: granted: [Body] 21
+[10/06/26 00:23:09] D2BS 6216: granted: [ArmR] 24
+[10/06/26 00:23:09] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 00:23:13] D2BS 6216: MiniShopBot: true
+[10/06/26 00:23:14] D2BS 6216: farmingON
+[10/06/26 00:23:14] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 00:23:35] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 00:23:45] D2BS 6216: act5+ BO
+[10/06/26 00:23:59] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 00:27:29] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 00:28:40] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 00:30:11] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 00:31:01] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 00:32:14] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 00:32:20] D2BS 6216: updateStat
+[10/06/26 00:32:20] D2BS 6216: granted: [Head] 31
+[10/06/26 00:32:20] D2BS 6216: granted: [Body] 21
+[10/06/26 00:32:20] D2BS 6216: granted: [ArmR] 24
+[10/06/26 00:37:08] D2BS 6216: party has left: fowo-xa
+[10/06/26 00:37:08] D2BS 6216:  [14:00] +5.22% / [Level 89] 89.50%
+[10/06/26 00:37:08] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 00:37:08] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 00:37:08] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 00:37:08] D2BS 6216: Script default.dbj ended
+[10/06/26 00:37:21] D2BS 6216: joining game pz-189
+[10/06/26 00:37:22] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 00:37:22] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 00:37:23] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 00:37:23] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 00:37:23] D2BS 6216: equipped: [Head] 22
+[10/06/26 00:37:23] D2BS 6216: equipped: [Neck] 19
+[10/06/26 00:37:23] D2BS 6216: equipped: [Body] 20
+[10/06/26 00:37:23] D2BS 6216: equipped: [ArmR] 32
+[10/06/26 00:37:23] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 00:37:23] D2BS 6216: equipped: [RingR] 14
+[10/06/26 00:37:23] D2BS 6216: equipped: [RingL] 15
+[10/06/26 00:37:23] D2BS 6216: equipped: [Belt] 19
+[10/06/26 00:37:23] D2BS 6216: equipped: [Boots] 13
+[10/06/26 00:37:23] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 00:37:23] D2BS 6216: updateStat
+[10/06/26 00:37:23] D2BS 6216: granted: [Head] 31
+[10/06/26 00:37:23] D2BS 6216: granted: [Body] 21
+[10/06/26 00:37:23] D2BS 6216: granted: [ArmR] 24
+[10/06/26 00:37:23] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 00:37:28] D2BS 6216: MiniShopBot: true
+[10/06/26 00:37:28] D2BS 6216: farmingON
+[10/06/26 00:37:28] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 00:37:46] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 00:38:01] D2BS 6216: act5+ BO
+[10/06/26 00:38:15] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 00:38:32] D2BS 6216: Baal failed: souls found
+[10/06/26 00:38:32] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 00:39:35] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 00:41:24] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 00:42:28] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 00:43:49] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 00:49:12] D2BS 6216: party has left: fowo-xc
+[10/06/26 00:49:12] D2BS 6216:  [11:50] +2.96% / [Level 89] 92.45%
+[10/06/26 00:49:12] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 00:49:14] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 00:49:14] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 00:49:14] D2BS 6216: Script default.dbj ended
+[10/06/26 00:49:26] D2BS 6216: joining game pz-190
+[10/06/26 00:49:28] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 00:49:28] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 00:49:28] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 00:49:28] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 00:49:28] D2BS 6216: equipped: [Head] 22
+[10/06/26 00:49:28] D2BS 6216: equipped: [Neck] 19
+[10/06/26 00:49:28] D2BS 6216: equipped: [Body] 20
+[10/06/26 00:49:28] D2BS 6216: equipped: [ArmR] 32
+[10/06/26 00:49:28] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 00:49:28] D2BS 6216: equipped: [RingR] 14
+[10/06/26 00:49:28] D2BS 6216: equipped: [RingL] 15
+[10/06/26 00:49:28] D2BS 6216: equipped: [Belt] 19
+[10/06/26 00:49:28] D2BS 6216: equipped: [Boots] 13
+[10/06/26 00:49:28] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 00:49:28] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 00:49:33] D2BS 6216: farmingON
+[10/06/26 00:49:36] D2BS 6216: MiniShopBot: true
+[10/06/26 00:49:36] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 00:49:56] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 00:50:07] D2BS 6216: act5+ BO
+[10/06/26 00:50:09] D2BS 6216: updateStat
+[10/06/26 00:50:22] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 00:50:34] D2BS 6216: Baal failed: souls found
+[10/06/26 00:50:34] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 00:51:44] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 00:53:28] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 00:54:24] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 00:54:36] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 00:55:50] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 01:00:44] D2BS 6216: party has left: fowo-xa
+[10/06/26 01:00:44] D2BS 6216: party has left: fowo-xa
+[10/06/26 01:00:45] D2BS 6216:  [11:17] +2.95% / [Level 89] 95.41%
+[10/06/26 01:00:45] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 01:00:45] D2BS 6216: party has left: fowo-xa
+[10/06/26 01:00:45] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 01:00:45] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 01:00:45] D2BS 6216: Script default.dbj ended
+[10/06/26 01:00:58] D2BS 6216: joining game pz-191
+[10/06/26 01:01:00] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 01:01:00] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 01:01:00] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 01:01:00] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 01:01:00] D2BS 6216: equipped: [Head] 22
+[10/06/26 01:01:00] D2BS 6216: equipped: [Neck] 19
+[10/06/26 01:01:00] D2BS 6216: equipped: [Body] 20
+[10/06/26 01:01:00] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 01:01:00] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 01:01:00] D2BS 6216: equipped: [RingR] 14
+[10/06/26 01:01:00] D2BS 6216: equipped: [RingL] 15
+[10/06/26 01:01:00] D2BS 6216: equipped: [Belt] 19
+[10/06/26 01:01:00] D2BS 6216: equipped: [Boots] 13
+[10/06/26 01:01:00] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 01:01:00] D2BS 6216: updateStat
+[10/06/26 01:01:00] D2BS 6216: granted: [Head] 31
+[10/06/26 01:01:00] D2BS 6216: granted: [Body] 21
+[10/06/26 01:01:00] D2BS 6216: granted: [ArmR] 24
+[10/06/26 01:01:00] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 01:01:05] D2BS 6216: farmingON
+[10/06/26 01:01:05] D2BS 6216: MiniShopBot: true
+[10/06/26 01:01:05] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 01:01:18] D2BS 6216: ÿc4[Reset] ÿc0Spirit Broad Sword
+[10/06/26 01:01:38] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 01:01:45] D2BS 6216: act5+ BO
+[10/06/26 01:01:57] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 01:04:55] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 01:06:00] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 01:07:29] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 01:08:20] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 01:09:40] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 01:15:33] D2BS 6216: party has left: fowo-xa
+[10/06/26 01:15:33] D2BS 6216:  [14:33] +4.82% / [Level 90] 0.60%
+[10/06/26 01:15:33] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 01:15:33] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 01:15:33] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 01:15:33] D2BS 6216: Script default.dbj ended
+[10/06/26 01:15:46] D2BS 6216: joining game pz-192
+[10/06/26 01:15:48] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 01:15:48] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 01:15:48] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 01:15:48] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 01:15:48] D2BS 6216: equipped: [Head] 22
+[10/06/26 01:15:48] D2BS 6216: equipped: [Neck] 19
+[10/06/26 01:15:48] D2BS 6216: equipped: [Body] 20
+[10/06/26 01:15:48] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 01:15:48] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 01:15:48] D2BS 6216: equipped: [RingR] 14
+[10/06/26 01:15:48] D2BS 6216: equipped: [RingL] 15
+[10/06/26 01:15:48] D2BS 6216: equipped: [Belt] 19
+[10/06/26 01:15:48] D2BS 6216: equipped: [Boots] 13
+[10/06/26 01:15:48] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 01:15:48] D2BS 6216: updateStat
+[10/06/26 01:15:48] D2BS 6216: granted: [Head] 31
+[10/06/26 01:15:48] D2BS 6216: granted: [Body] 21
+[10/06/26 01:15:48] D2BS 6216: granted: [ArmR] 24
+[10/06/26 01:15:48] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 01:15:52] D2BS 6216: MiniShopBot: true
+[10/06/26 01:15:52] D2BS 6216: farmingON
+[10/06/26 01:15:52] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 01:16:17] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 01:16:26] D2BS 6216: act5+ BO
+[10/06/26 01:16:39] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 01:17:35] D2BS 6216: Going to town
+[10/06/26 01:20:16] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 01:21:25] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 01:22:52] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 01:23:46] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 01:25:11] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 01:30:32] D2BS 6216: party has left: fowo-xa
+[10/06/26 01:30:32] D2BS 6216:  [14:45] +3.52% / [Level 90] 4.12%
+[10/06/26 01:30:32] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 01:30:32] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 01:30:33] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 01:30:33] D2BS 6216: Script default.dbj ended
+[10/06/26 01:30:45] D2BS 6216: joining game pz-193
+[10/06/26 01:30:47] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 01:30:47] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 01:30:47] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 01:30:47] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 01:30:47] D2BS 6216: equipped: [Head] 22
+[10/06/26 01:30:47] D2BS 6216: equipped: [Neck] 19
+[10/06/26 01:30:47] D2BS 6216: equipped: [Body] 20
+[10/06/26 01:30:47] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 01:30:47] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 01:30:47] D2BS 6216: equipped: [RingR] 14
+[10/06/26 01:30:47] D2BS 6216: equipped: [RingL] 15
+[10/06/26 01:30:47] D2BS 6216: equipped: [Belt] 19
+[10/06/26 01:30:47] D2BS 6216: equipped: [Boots] 13
+[10/06/26 01:30:47] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 01:30:47] D2BS 6216: updateStat
+[10/06/26 01:30:47] D2BS 6216: granted: [Head] 31
+[10/06/26 01:30:47] D2BS 6216: granted: [Body] 21
+[10/06/26 01:30:47] D2BS 6216: granted: [ArmR] 24
+[10/06/26 01:30:47] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 01:30:52] D2BS 6216: farmingON
+[10/06/26 01:30:53] D2BS 6216: MiniShopBot: true
+[10/06/26 01:30:53] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 01:31:17] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 01:31:24] D2BS 6216: act5+ BO
+[10/06/26 01:31:37] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 01:31:48] D2BS 6216: Baal failed: souls found
+[10/06/26 01:31:48] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 01:32:58] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 01:34:26] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 01:35:23] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 01:37:15] D2BS 6216: Going to town
+[10/06/26 01:38:07] D2BS 6216: Going to town
+[10/06/26 01:38:37] D2BS 6216: Going to town
+[10/06/26 01:39:07] D2BS 6216: Going to town
+[10/06/26 01:39:29] D2BS 6216: Going to town
+[10/06/26 01:39:29] D2BS 6216: [Chicken] Life (1192/3904) area:39 (25292,6032)
+[10/06/26 01:39:29] D2BS 6216:  [08:43] +0.78% / [Level 90] 4.90%
+[10/06/26 01:39:29] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 01:39:29] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 01:39:29] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 01:39:29] D2BS 6216: Script default.dbj ended
+[10/06/26 01:39:42] D2BS 6216: joining game pz-194
+[10/06/26 01:39:44] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 01:39:44] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 01:39:45] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 01:39:45] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 01:39:45] D2BS 6216: equipped: [Head] 22
+[10/06/26 01:39:45] D2BS 6216: equipped: [Neck] 19
+[10/06/26 01:39:45] D2BS 6216: equipped: [Body] 20
+[10/06/26 01:39:45] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 01:39:45] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 01:39:45] D2BS 6216: equipped: [RingR] 14
+[10/06/26 01:39:45] D2BS 6216: equipped: [RingL] 15
+[10/06/26 01:39:45] D2BS 6216: equipped: [Belt] 19
+[10/06/26 01:39:45] D2BS 6216: equipped: [Boots] 13
+[10/06/26 01:39:45] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 01:39:45] D2BS 6216: updateStat
+[10/06/26 01:39:45] D2BS 6216: granted: [Head] 31
+[10/06/26 01:39:45] D2BS 6216: granted: [Body] 21
+[10/06/26 01:39:45] D2BS 6216: granted: [ArmR] 24
+[10/06/26 01:39:45] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 01:39:51] D2BS 6216: farmingON
+[10/06/26 01:39:51] D2BS 6216: MiniShopBot: true
+[10/06/26 01:39:51] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 01:40:01] D2BS 6216: [Craft] Caster Amulet
+[10/06/26 01:40:17] D2BS 6216: equipped: [Neck] 20
+[10/06/26 01:40:17] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 01:40:25] D2BS 6216: act5+ BO
+[10/06/26 01:40:40] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 01:43:57] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 01:45:06] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 01:46:39] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 01:47:32] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 01:57:31] D2BS 6216: Cows failed: followDriver
+[10/06/26 01:58:05] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 02:00:02] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 02:00:25] D2BS 6216: equipped: [RingR] 15
+[10/06/26 02:06:20] D2BS 6216: party has left: fowo-xa
+[10/06/26 02:06:20] D2BS 6216:  [26:36] +4.20% / [Level 90] 9.10%
+[10/06/26 02:06:20] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 02:06:20] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 02:06:20] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 02:06:20] D2BS 6216: Script default.dbj ended
+[10/06/26 02:06:33] D2BS 6216: joining game pz-195
+[10/06/26 02:06:35] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 02:06:35] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 02:06:35] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 02:06:35] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 02:06:35] D2BS 6216: equipped: [Head] 22
+[10/06/26 02:06:35] D2BS 6216: equipped: [Neck] 20
+[10/06/26 02:06:35] D2BS 6216: equipped: [Body] 20
+[10/06/26 02:06:35] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 02:06:35] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 02:06:35] D2BS 6216: equipped: [RingR] 15
+[10/06/26 02:06:35] D2BS 6216: equipped: [RingL] 15
+[10/06/26 02:06:35] D2BS 6216: equipped: [Belt] 19
+[10/06/26 02:06:35] D2BS 6216: equipped: [Boots] 13
+[10/06/26 02:06:35] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 02:06:35] D2BS 6216: updateStat
+[10/06/26 02:06:35] D2BS 6216: granted: [Head] 31
+[10/06/26 02:06:35] D2BS 6216: granted: [Body] 21
+[10/06/26 02:06:35] D2BS 6216: granted: [ArmR] 24
+[10/06/26 02:06:35] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 02:06:40] D2BS 6216: MiniShopBot: true
+[10/06/26 02:06:41] D2BS 6216: farmingON
+[10/06/26 02:06:41] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 02:06:57] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 02:07:12] D2BS 6216: act5+ BO
+[10/06/26 02:07:26] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 02:09:34] D2BS 6216: Going to town
+[10/06/26 02:10:31] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 02:11:42] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 02:13:21] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 02:14:16] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 02:15:28] D2BS 6216: updateStat
+[10/06/26 02:15:54] D2BS 6216: Going to town
+[10/06/26 02:17:03] D2BS 6216: Going to town
+[10/06/26 02:24:43] D2BS 6216: Cow King found
+[10/06/26 02:24:44] D2BS 6216: Cows failed: followDriver
+[10/06/26 02:26:47] D2BS 6216:  [20:12] +2.16% / [Level 90] 11.26%
+[10/06/26 02:26:47] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 02:26:47] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 02:26:47] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 02:26:47] D2BS 6216: Script default.dbj ended
+[10/06/26 02:27:00] D2BS 6216: joining game pz-196
+[10/06/26 02:27:03] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 02:27:03] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 02:27:03] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 02:27:03] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 02:27:03] D2BS 6216: equipped: [Head] 22
+[10/06/26 02:27:03] D2BS 6216: equipped: [Neck] 20
+[10/06/26 02:27:03] D2BS 6216: equipped: [Body] 20
+[10/06/26 02:27:03] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 02:27:03] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 02:27:03] D2BS 6216: equipped: [RingR] 15
+[10/06/26 02:27:03] D2BS 6216: equipped: [RingL] 15
+[10/06/26 02:27:03] D2BS 6216: equipped: [Belt] 19
+[10/06/26 02:27:03] D2BS 6216: equipped: [Boots] 13
+[10/06/26 02:27:03] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 02:27:03] D2BS 6216: updateStat
+[10/06/26 02:27:03] D2BS 6216: granted: [Head] 31
+[10/06/26 02:27:03] D2BS 6216: granted: [Body] 21
+[10/06/26 02:27:03] D2BS 6216: granted: [ArmR] 24
+[10/06/26 02:27:03] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 02:27:08] D2BS 6216: farmingON
+[10/06/26 02:27:09] D2BS 6216: MiniShopBot: true
+[10/06/26 02:27:09] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 02:27:26] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 02:28:01] D2BS 6216: act5+ BO
+[10/06/26 02:28:14] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 02:32:03] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 02:33:09] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 02:34:38] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 02:35:53] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 02:37:48] D2BS 6216: Going to town
+[10/06/26 02:37:51] D2BS 6216: party has left: fowo-xd
+[10/06/26 02:37:51] D2BS 6216:  [10:50] +2.16% / [Level 90] 13.42%
+[10/06/26 02:37:51] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 02:37:52] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 02:37:52] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 02:37:52] D2BS 6216: Script default.dbj ended
+[10/06/26 02:38:04] D2BS 6216: joining game pz-197
+[10/06/26 02:38:05] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 02:38:05] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 02:38:07] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 02:38:07] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 02:38:07] D2BS 6216: equipped: [Head] 22
+[10/06/26 02:38:07] D2BS 6216: equipped: [Neck] 20
+[10/06/26 02:38:07] D2BS 6216: equipped: [Body] 20
+[10/06/26 02:38:07] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 02:38:07] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 02:38:07] D2BS 6216: equipped: [RingR] 15
+[10/06/26 02:38:07] D2BS 6216: equipped: [RingL] 15
+[10/06/26 02:38:07] D2BS 6216: equipped: [Belt] 19
+[10/06/26 02:38:07] D2BS 6216: equipped: [Boots] 13
+[10/06/26 02:38:07] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 02:38:07] D2BS 6216: updateStat
+[10/06/26 02:38:07] D2BS 6216: granted: [Head] 31
+[10/06/26 02:38:07] D2BS 6216: granted: [Body] 21
+[10/06/26 02:38:07] D2BS 6216: granted: [ArmR] 24
+[10/06/26 02:38:07] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 02:38:12] D2BS 6216: farmingON
+[10/06/26 02:38:14] D2BS 6216: MiniShopBot: true
+[10/06/26 02:38:14] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 02:38:37] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 02:39:02] D2BS 6216: act5+ BO
+[10/06/26 02:39:16] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 02:43:06] D2BS 6216:  [05:00] +0.17% / [Level 90] 13.58%
+[10/06/26 02:43:06] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 02:43:06] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 02:43:06] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 02:43:20] D2BS 6216: joining game pz-198
+[10/06/26 02:43:22] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 02:43:22] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 02:43:22] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 02:43:22] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 02:43:22] D2BS 6216: equipped: [Head] 22
+[10/06/26 02:43:22] D2BS 6216: equipped: [Neck] 20
+[10/06/26 02:43:22] D2BS 6216: equipped: [Body] 20
+[10/06/26 02:43:22] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 02:43:22] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 02:43:23] D2BS 6216: equipped: [RingR] 15
+[10/06/26 02:43:23] D2BS 6216: equipped: [RingL] 15
+[10/06/26 02:43:23] D2BS 6216: equipped: [Belt] 19
+[10/06/26 02:43:23] D2BS 6216: equipped: [Boots] 13
+[10/06/26 02:43:23] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 02:43:23] D2BS 6216: updateStat
+[10/06/26 02:43:23] D2BS 6216: granted: [Head] 31
+[10/06/26 02:43:23] D2BS 6216: granted: [Body] 21
+[10/06/26 02:43:23] D2BS 6216: granted: [ArmR] 24
+[10/06/26 02:43:23] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 02:43:25] D2BS 6216: MiniShopBot: true
+[10/06/26 02:43:25] D2BS 6216: farmingON
+[10/06/26 02:43:25] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 02:43:39] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 02:43:57] D2BS 6216: act5+ BO
+[10/06/26 02:44:14] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 02:45:18] D2BS 6216: Going to town
+[10/06/26 02:47:48] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 02:48:57] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 02:50:36] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 02:51:24] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 02:52:49] D2BS 6216: Going to town
+[10/06/26 02:52:51] D2BS 6216: [Chicken] Life (1845/6579) area:39 (25073,5986)
+[10/06/26 02:52:51] D2BS 6216:  [09:29] +2.66% / [Level 90] 16.24%
+[10/06/26 02:52:51] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 02:52:51] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 02:52:51] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 02:52:51] D2BS 6216: Script default.dbj ended
+[10/06/26 02:53:04] D2BS 6216: joining game pz-199
+[10/06/26 02:53:07] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 02:53:07] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 02:53:07] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 02:53:07] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 02:53:07] D2BS 6216: equipped: [Head] 22
+[10/06/26 02:53:07] D2BS 6216: equipped: [Neck] 20
+[10/06/26 02:53:07] D2BS 6216: equipped: [Body] 20
+[10/06/26 02:53:07] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 02:53:07] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 02:53:07] D2BS 6216: equipped: [RingR] 15
+[10/06/26 02:53:07] D2BS 6216: equipped: [RingL] 15
+[10/06/26 02:53:07] D2BS 6216: equipped: [Belt] 19
+[10/06/26 02:53:07] D2BS 6216: equipped: [Boots] 13
+[10/06/26 02:53:07] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 02:53:07] D2BS 6216: updateStat
+[10/06/26 02:53:07] D2BS 6216: granted: [Head] 31
+[10/06/26 02:53:07] D2BS 6216: granted: [Body] 21
+[10/06/26 02:53:07] D2BS 6216: granted: [ArmR] 24
+[10/06/26 02:53:07] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 02:53:12] D2BS 6216: farmingON
+[10/06/26 02:53:15] D2BS 6216: MiniShopBot: true
+[10/06/26 02:53:15] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 02:53:31] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 02:53:48] D2BS 6216: act5+ BO
+[10/06/26 02:54:00] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 02:57:06] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 02:58:16] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 02:59:47] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 03:00:40] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 03:10:36] D2BS 6216: party has left: fowo-xd
+[10/06/26 03:10:36] D2BS 6216:  [17:30] +2.59% / [Level 90] 18.83%
+[10/06/26 03:10:36] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 03:10:36] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 03:10:36] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 03:10:36] D2BS 6216: Script default.dbj ended
+[10/06/26 03:10:47] D2BS 6216: joining game pz-200
+[10/06/26 03:10:49] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 03:10:49] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 03:10:50] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 03:10:50] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 03:10:50] D2BS 6216: equipped: [Head] 22
+[10/06/26 03:10:50] D2BS 6216: equipped: [Neck] 20
+[10/06/26 03:10:50] D2BS 6216: equipped: [Body] 20
+[10/06/26 03:10:50] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 03:10:50] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 03:10:50] D2BS 6216: equipped: [RingR] 15
+[10/06/26 03:10:50] D2BS 6216: equipped: [RingL] 15
+[10/06/26 03:10:50] D2BS 6216: equipped: [Belt] 19
+[10/06/26 03:10:50] D2BS 6216: equipped: [Boots] 13
+[10/06/26 03:10:50] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 03:10:50] D2BS 6216: updateStat
+[10/06/26 03:10:50] D2BS 6216: granted: [Head] 31
+[10/06/26 03:10:50] D2BS 6216: granted: [Body] 21
+[10/06/26 03:10:50] D2BS 6216: granted: [ArmR] 24
+[10/06/26 03:10:50] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 03:10:55] D2BS 6216: MiniShopBot: true
+[10/06/26 03:10:55] D2BS 6216: farmingON
+[10/06/26 03:10:55] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 03:11:12] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 03:11:39] D2BS 6216: act5+ BO
+[10/06/26 03:11:56] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 03:14:49] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 03:16:15] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 03:17:43] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 03:18:33] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 03:29:06] D2BS 6216: party has left: fowo-xc
+[10/06/26 03:29:06] D2BS 6216:  [18:18] +2.37% / [Level 90] 21.20%
+[10/06/26 03:29:06] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 03:29:06] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 03:29:07] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 03:29:07] D2BS 6216: Script default.dbj ended
+[10/06/26 03:29:20] D2BS 6216: joining game pz-201
+[10/06/26 03:29:22] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 03:29:22] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 03:29:23] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 03:29:23] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 03:29:23] D2BS 6216: equipped: [Head] 22
+[10/06/26 03:29:23] D2BS 6216: equipped: [Neck] 20
+[10/06/26 03:29:23] D2BS 6216: equipped: [Body] 20
+[10/06/26 03:29:23] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 03:29:23] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 03:29:23] D2BS 6216: equipped: [RingR] 15
+[10/06/26 03:29:23] D2BS 6216: equipped: [RingL] 15
+[10/06/26 03:29:23] D2BS 6216: equipped: [Belt] 19
+[10/06/26 03:29:23] D2BS 6216: equipped: [Boots] 13
+[10/06/26 03:29:23] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 03:29:23] D2BS 6216: updateStat
+[10/06/26 03:29:23] D2BS 6216: granted: [Head] 31
+[10/06/26 03:29:23] D2BS 6216: granted: [Body] 21
+[10/06/26 03:29:23] D2BS 6216: granted: [ArmR] 24
+[10/06/26 03:29:23] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 03:29:28] D2BS 6216: farmingON
+[10/06/26 03:29:30] D2BS 6216: MiniShopBot: true
+[10/06/26 03:29:30] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 03:29:48] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 03:30:16] D2BS 6216: act5+ BO
+[10/06/26 03:30:29] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 03:33:25] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 03:34:25] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 03:36:03] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 03:36:53] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 03:42:53] D2BS 6216: Cow King found
+[10/06/26 03:42:53] D2BS 6216: Cows failed: followDriver
+[10/06/26 03:43:02] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 03:44:27] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 03:49:30] D2BS 6216: party has left: fowo-xg
+[10/06/26 03:49:30] D2BS 6216:  [20:08] +4.24% / [Level 90] 25.45%
+[10/06/26 03:49:30] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 03:49:30] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 03:49:30] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 03:49:30] D2BS 6216: Script default.dbj ended
+[10/06/26 03:49:43] D2BS 6216: joining game pz-202
+[10/06/26 03:49:44] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 03:49:44] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 03:49:44] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 03:49:44] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 03:49:44] D2BS 6216: equipped: [Head] 22
+[10/06/26 03:49:44] D2BS 6216: equipped: [Neck] 20
+[10/06/26 03:49:44] D2BS 6216: equipped: [Body] 20
+[10/06/26 03:49:44] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 03:49:44] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 03:49:44] D2BS 6216: equipped: [RingR] 15
+[10/06/26 03:49:44] D2BS 6216: equipped: [RingL] 15
+[10/06/26 03:49:44] D2BS 6216: equipped: [Belt] 19
+[10/06/26 03:49:44] D2BS 6216: equipped: [Boots] 13
+[10/06/26 03:49:44] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 03:49:44] D2BS 6216: updateStat
+[10/06/26 03:49:44] D2BS 6216: granted: [Head] 31
+[10/06/26 03:49:44] D2BS 6216: granted: [Body] 21
+[10/06/26 03:49:44] D2BS 6216: granted: [ArmR] 24
+[10/06/26 03:49:45] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 03:49:49] D2BS 6216: MiniShopBot: true
+[10/06/26 03:49:50] D2BS 6216: farmingON
+[10/06/26 03:49:50] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 03:50:08] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 03:50:23] D2BS 6216: act5+ BO
+[10/06/26 03:50:37] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 03:53:52] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 03:54:58] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 03:56:34] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 03:57:25] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 04:07:33] D2BS 6216: party has left: fowo-xb
+[10/06/26 04:07:33] D2BS 6216:  [17:49] +2.39% / [Level 90] 27.84%
+[10/06/26 04:07:33] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 04:07:33] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 04:07:33] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 04:07:33] D2BS 6216: Script default.dbj ended
+[10/06/26 04:07:51] D2BS 6216: joining game pz-203
+[10/06/26 04:07:53] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 04:07:53] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 04:07:53] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 04:07:53] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 04:07:53] D2BS 6216: equipped: [Head] 22
+[10/06/26 04:07:53] D2BS 6216: equipped: [Neck] 20
+[10/06/26 04:07:53] D2BS 6216: equipped: [Body] 20
+[10/06/26 04:07:54] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 04:07:54] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 04:07:54] D2BS 6216: equipped: [RingR] 15
+[10/06/26 04:07:54] D2BS 6216: equipped: [RingL] 15
+[10/06/26 04:07:54] D2BS 6216: equipped: [Belt] 19
+[10/06/26 04:07:54] D2BS 6216: equipped: [Boots] 13
+[10/06/26 04:07:54] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 04:07:54] D2BS 6216: updateStat
+[10/06/26 04:07:54] D2BS 6216: granted: [Head] 31
+[10/06/26 04:07:54] D2BS 6216: granted: [Body] 21
+[10/06/26 04:07:54] D2BS 6216: granted: [ArmR] 24
+[10/06/26 04:07:54] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 04:08:00] D2BS 6216: farmingON
+[10/06/26 04:08:00] D2BS 6216: MiniShopBot: true
+[10/06/26 04:08:00] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 04:08:19] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 04:08:34] D2BS 6216: act5+ BO
+[10/06/26 04:08:48] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 04:12:12] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 04:13:15] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 04:14:54] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 04:16:04] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 04:18:09] D2BS 6216: party has left: fowo-xd
+[10/06/26 04:18:09] D2BS 6216:  [10:16] +2.27% / [Level 90] 30.11%
+[10/06/26 04:18:09] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 04:18:10] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 04:18:10] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 04:18:10] D2BS 6216: Script default.dbj ended
+[10/06/26 04:18:23] D2BS 6216: joining game pz-204
+[10/06/26 04:18:25] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 04:18:25] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 04:18:25] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 04:18:25] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 04:18:25] D2BS 6216: equipped: [Head] 22
+[10/06/26 04:18:26] D2BS 6216: equipped: [Neck] 20
+[10/06/26 04:18:26] D2BS 6216: equipped: [Body] 20
+[10/06/26 04:18:26] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 04:18:26] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 04:18:26] D2BS 6216: equipped: [RingR] 15
+[10/06/26 04:18:26] D2BS 6216: equipped: [RingL] 15
+[10/06/26 04:18:26] D2BS 6216: equipped: [Belt] 19
+[10/06/26 04:18:26] D2BS 6216: equipped: [Boots] 13
+[10/06/26 04:18:26] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 04:18:26] D2BS 6216: updateStat
+[10/06/26 04:18:26] D2BS 6216: granted: [Head] 31
+[10/06/26 04:18:26] D2BS 6216: granted: [Body] 21
+[10/06/26 04:18:26] D2BS 6216: granted: [ArmR] 24
+[10/06/26 04:18:26] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 04:18:31] D2BS 6216: farmingON
+[10/06/26 04:18:32] D2BS 6216: MiniShopBot: true
+[10/06/26 04:18:32] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 04:18:48] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 04:19:03] D2BS 6216: act5+ BO
+[10/06/26 04:19:16] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 04:22:23] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 04:23:33] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 04:25:04] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 04:25:53] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 04:37:23] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 04:38:46] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 04:44:03] D2BS 6216: party has left: fowo-xd
+[10/06/26 04:44:03] D2BS 6216:  [25:38] +4.02% / [Level 90] 34.13%
+[10/06/26 04:44:03] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 04:44:03] D2BS 6216: Script ended
+[10/06/26 04:44:03] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 04:44:04] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 04:44:16] D2BS 6216: joining game pz-205
+[10/06/26 04:44:19] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 04:44:19] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 04:44:19] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 04:44:19] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 04:44:19] D2BS 6216: equipped: [Head] 22
+[10/06/26 04:44:19] D2BS 6216: equipped: [Neck] 20
+[10/06/26 04:44:19] D2BS 6216: equipped: [Body] 20
+[10/06/26 04:44:19] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 04:44:19] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 04:44:19] D2BS 6216: equipped: [RingR] 15
+[10/06/26 04:44:19] D2BS 6216: equipped: [RingL] 15
+[10/06/26 04:44:19] D2BS 6216: equipped: [Belt] 19
+[10/06/26 04:44:19] D2BS 6216: equipped: [Boots] 13
+[10/06/26 04:44:19] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 04:44:19] D2BS 6216: updateStat
+[10/06/26 04:44:19] D2BS 6216: granted: [Head] 31
+[10/06/26 04:44:19] D2BS 6216: granted: [Body] 21
+[10/06/26 04:44:19] D2BS 6216: granted: [ArmR] 24
+[10/06/26 04:44:19] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 04:44:23] D2BS 6216: farmingON
+[10/06/26 04:44:23] D2BS 6216: MiniShopBot: true
+[10/06/26 04:44:23] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 04:44:48] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 04:44:59] D2BS 6216: act5+ BO
+[10/06/26 04:45:12] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 04:48:21] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 04:49:31] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 04:50:43] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 04:51:35] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 05:02:00] D2BS 6216: Cow King found
+[10/06/26 05:02:00] D2BS 6216: Cows failed: followDriver
+[10/06/26 05:03:14] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 05:04:34] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 05:07:10] D2BS 6216: party has left: fowo-xd
+[10/06/26 05:07:10] D2BS 6216:  [22:52] +2.86% / [Level 90] 36.99%
+[10/06/26 05:07:10] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 05:07:10] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 05:07:10] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 05:07:10] D2BS 6216: Script default.dbj ended
+[10/06/26 05:07:23] D2BS 6216: joining game pz-206
+[10/06/26 05:07:24] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 05:07:24] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 05:07:25] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 05:07:25] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 05:07:25] D2BS 6216: equipped: [Head] 22
+[10/06/26 05:07:25] D2BS 6216: equipped: [Neck] 20
+[10/06/26 05:07:25] D2BS 6216: equipped: [Body] 20
+[10/06/26 05:07:25] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 05:07:25] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 05:07:25] D2BS 6216: equipped: [RingR] 15
+[10/06/26 05:07:25] D2BS 6216: equipped: [RingL] 15
+[10/06/26 05:07:25] D2BS 6216: equipped: [Belt] 19
+[10/06/26 05:07:25] D2BS 6216: equipped: [Boots] 13
+[10/06/26 05:07:25] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 05:07:25] D2BS 6216: updateStat
+[10/06/26 05:07:25] D2BS 6216: granted: [Head] 31
+[10/06/26 05:07:25] D2BS 6216: granted: [Body] 21
+[10/06/26 05:07:25] D2BS 6216: granted: [ArmR] 24
+[10/06/26 05:07:25] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 05:07:30] D2BS 6216: farmingON
+[10/06/26 05:07:32] D2BS 6216: MiniShopBot: true
+[10/06/26 05:07:32] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 05:07:51] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 05:08:03] D2BS 6216: act5+ BO
+[10/06/26 05:08:16] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 05:08:30] D2BS 6216: Baal failed: souls found
+[10/06/26 05:08:30] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 05:09:39] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 05:10:57] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 05:11:54] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 05:17:01] D2BS 6216: Going to town
+[10/06/26 05:19:45] D2BS 6216: Going to town
+[10/06/26 05:24:18] D2BS 6216: Going to town
+[10/06/26 05:26:54] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 05:28:05] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 05:33:45] D2BS 6216: party has left: fowo-xc
+[10/06/26 05:33:45] D2BS 6216:  [26:21] +2.64% / [Level 90] 39.62%
+[10/06/26 05:33:45] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 05:33:45] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 05:33:45] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 05:33:45] D2BS 6216: Script default.dbj ended
+[10/06/26 05:33:57] D2BS 6216: joining game pz-207
+[10/06/26 05:34:00] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 05:34:00] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 05:34:00] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 05:34:00] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 05:34:00] D2BS 6216: equipped: [Head] 22
+[10/06/26 05:34:00] D2BS 6216: equipped: [Neck] 20
+[10/06/26 05:34:00] D2BS 6216: equipped: [Body] 20
+[10/06/26 05:34:00] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 05:34:00] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 05:34:00] D2BS 6216: equipped: [RingR] 15
+[10/06/26 05:34:00] D2BS 6216: equipped: [RingL] 15
+[10/06/26 05:34:00] D2BS 6216: equipped: [Belt] 19
+[10/06/26 05:34:00] D2BS 6216: equipped: [Boots] 13
+[10/06/26 05:34:00] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 05:34:00] D2BS 6216: updateStat
+[10/06/26 05:34:00] D2BS 6216: granted: [Head] 31
+[10/06/26 05:34:00] D2BS 6216: granted: [Body] 21
+[10/06/26 05:34:00] D2BS 6216: granted: [ArmR] 24
+[10/06/26 05:34:00] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 05:34:05] D2BS 6216: farmingON
+[10/06/26 05:34:07] D2BS 6216: MiniShopBot: true
+[10/06/26 05:34:07] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 05:34:29] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 05:34:43] D2BS 6216: act5+ BO
+[10/06/26 05:34:56] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 05:35:13] D2BS 6216: Baal failed: souls found
+[10/06/26 05:35:13] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 05:36:10] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 05:37:53] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 05:38:44] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 05:41:06] D2BS 6216: Going to town
+[10/06/26 05:41:45] D2BS 6216: Going to town
+[10/06/26 05:42:30] D2BS 6216: Going to town
+[10/06/26 05:42:30] D2BS 6216: [Chicken] Life (1180/3713) area:39 (25253,6003)
+[10/06/26 05:42:30] D2BS 6216:  [08:31] +0.53% / [Level 90] 40.15%
+[10/06/26 05:42:30] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 05:42:30] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 05:42:30] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 05:42:30] D2BS 6216: Script default.dbj ended
+[10/06/26 05:42:43] D2BS 6216: joining game pz-208
+[10/06/26 05:42:44] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 05:42:44] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 05:42:45] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 05:42:45] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 05:42:45] D2BS 6216: equipped: [Head] 22
+[10/06/26 05:42:45] D2BS 6216: equipped: [Neck] 20
+[10/06/26 05:42:45] D2BS 6216: equipped: [Body] 20
+[10/06/26 05:42:45] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 05:42:45] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 05:42:45] D2BS 6216: equipped: [RingR] 15
+[10/06/26 05:42:45] D2BS 6216: equipped: [RingL] 15
+[10/06/26 05:42:45] D2BS 6216: equipped: [Belt] 19
+[10/06/26 05:42:45] D2BS 6216: equipped: [Boots] 13
+[10/06/26 05:42:45] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 05:42:46] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 05:42:51] D2BS 6216: MiniShopBot: true
+[10/06/26 05:42:51] D2BS 6216: farmingON
+[10/06/26 05:42:51] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 05:42:58] D2BS 6216: updateStat
+[10/06/26 05:42:58] D2BS 6216: granted: [Head] 31
+[10/06/26 05:42:58] D2BS 6216: granted: [Body] 21
+[10/06/26 05:42:58] D2BS 6216: granted: [ArmR] 24
+[10/06/26 05:43:13] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 05:43:26] D2BS 6216: act5+ BO
+[10/06/26 05:43:28] D2BS 6216: updateStat
+[10/06/26 05:43:41] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 05:43:52] D2BS 6216: Baal failed: souls found
+[10/06/26 05:43:52] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 05:45:04] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 05:46:58] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 05:47:50] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 05:50:28] D2BS 6216: Going to town
+[10/06/26 05:50:29] D2BS 6216: [Chicken] Life (1142/3713) area:39 (25269,6069)
+[10/06/26 05:50:29] D2BS 6216:  [07:44] +0.43% / [Level 90] 40.59%
+[10/06/26 05:50:29] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 05:50:29] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 05:50:29] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 05:50:29] D2BS 6216: Script default.dbj ended
+[10/06/26 05:50:40] D2BS 6216: joining game pz-209
+[10/06/26 05:50:43] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 05:50:43] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 05:50:43] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 05:50:43] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 05:50:43] D2BS 6216: equipped: [Head] 22
+[10/06/26 05:50:43] D2BS 6216: equipped: [Neck] 20
+[10/06/26 05:50:43] D2BS 6216: equipped: [Body] 20
+[10/06/26 05:50:43] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 05:50:43] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 05:50:43] D2BS 6216: equipped: [RingR] 15
+[10/06/26 05:50:43] D2BS 6216: equipped: [RingL] 15
+[10/06/26 05:50:43] D2BS 6216: equipped: [Belt] 19
+[10/06/26 05:50:43] D2BS 6216: equipped: [Boots] 13
+[10/06/26 05:50:43] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 05:50:43] D2BS 6216: updateStat
+[10/06/26 05:50:43] D2BS 6216: granted: [Head] 31
+[10/06/26 05:50:43] D2BS 6216: granted: [Body] 21
+[10/06/26 05:50:43] D2BS 6216: granted: [ArmR] 24
+[10/06/26 05:50:43] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 05:50:48] D2BS 6216: farmingON
+[10/06/26 05:50:50] D2BS 6216: MiniShopBot: true
+[10/06/26 05:50:50] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 05:51:09] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 05:51:43] D2BS 6216: act5+ BO
+[10/06/26 05:51:57] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 05:55:48] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 05:57:05] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 05:58:59] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 06:00:02] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 06:10:40] D2BS 6216: Cows failed: followDriver
+[10/06/26 06:11:46] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 06:13:07] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 06:13:11] D2BS 6216: ÿc4[Runeword] ÿc0Smoke Mage Plate
+[10/06/26 06:13:30] D2BS 6216: equipped: [Body] 21
+[10/06/26 06:18:15] D2BS 6216: Going to town
+[10/06/26 06:20:39] D2BS 6216: party has left: fowo-xa
+[10/06/26 06:20:39] D2BS 6216:  [29:57] +4.55% / [Level 90] 45.13%
+[10/06/26 06:20:39] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 06:20:39] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 06:20:40] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 06:20:40] D2BS 6216: Script default.dbj ended
+[10/06/26 06:20:52] D2BS 6216: joining game pz-210
+[10/06/26 06:20:54] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 06:20:54] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 06:20:54] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 06:20:54] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 06:20:54] D2BS 6216: equipped: [Head] 22
+[10/06/26 06:20:54] D2BS 6216: equipped: [Neck] 20
+[10/06/26 06:20:54] D2BS 6216: equipped: [Body] 21
+[10/06/26 06:20:54] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 06:20:54] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 06:20:54] D2BS 6216: equipped: [RingR] 15
+[10/06/26 06:20:54] D2BS 6216: equipped: [RingL] 15
+[10/06/26 06:20:54] D2BS 6216: equipped: [Belt] 19
+[10/06/26 06:20:54] D2BS 6216: equipped: [Boots] 13
+[10/06/26 06:20:54] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 06:20:54] D2BS 6216: updateStat
+[10/06/26 06:20:54] D2BS 6216: granted: [Head] 31
+[10/06/26 06:20:54] D2BS 6216: granted: [Body] 21
+[10/06/26 06:20:54] D2BS 6216: granted: [ArmR] 24
+[10/06/26 06:20:54] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 06:20:59] D2BS 6216: farmingON
+[10/06/26 06:20:59] D2BS 6216: Tiered: true
+[10/06/26 06:20:59] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 06:21:16] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 06:21:34] D2BS 6216: act5+ BO
+[10/06/26 06:21:48] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 06:24:28] D2BS 6216: Script default.dbj ended
+[10/06/26 06:24:28] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 06:24:28] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 06:24:28] D2BS 6216: Script threads\toolsthread.js ended
+[10/06/26 06:24:28] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 06:24:43] D2BS 6216: joining game pz-211
+[10/06/26 06:24:45] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 06:24:45] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 06:24:45] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 06:24:45] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 06:24:45] D2BS 6216: equipped: [Head] 22
+[10/06/26 06:24:45] D2BS 6216: equipped: [Neck] 20
+[10/06/26 06:24:45] D2BS 6216: equipped: [Body] 21
+[10/06/26 06:24:45] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 06:24:45] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 06:24:45] D2BS 6216: equipped: [RingR] 15
+[10/06/26 06:24:45] D2BS 6216: equipped: [RingL] 15
+[10/06/26 06:24:45] D2BS 6216: equipped: [Belt] 19
+[10/06/26 06:24:45] D2BS 6216: equipped: [Boots] 13
+[10/06/26 06:24:45] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 06:24:45] D2BS 6216: updateStat
+[10/06/26 06:24:45] D2BS 6216: granted: [Head] 31
+[10/06/26 06:24:45] D2BS 6216: granted: [Body] 21
+[10/06/26 06:24:45] D2BS 6216: granted: [ArmR] 24
+[10/06/26 06:24:45] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 06:24:48] D2BS 6216: Tiered: true
+[10/06/26 06:24:48] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 06:24:48] D2BS 6216: farmingON
+[10/06/26 06:24:48] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 06:25:44] D2BS 6216: act5+ BO
+[10/06/26 06:25:56] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 06:26:10] D2BS 6216: Baal failed: souls found
+[10/06/26 06:26:10] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 06:27:16] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 06:29:08] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 06:30:09] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 06:35:54] D2BS 6216: Cows failed: followDriver
+[10/06/26 06:36:23] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 06:37:50] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 06:43:03] D2BS 6216: Script ended
+[10/06/26 06:43:03] D2BS 6216:  [18:19] +2.17% / [Level 90] 48.82%
+[10/06/26 06:43:03] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 06:43:03] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 06:43:03] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 06:43:17] D2BS 6216: joining game pz-212
+[10/06/26 06:43:19] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 06:43:19] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 06:43:20] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 06:43:20] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 06:43:20] D2BS 6216: equipped: [Head] 22
+[10/06/26 06:43:20] D2BS 6216: equipped: [Neck] 20
+[10/06/26 06:43:20] D2BS 6216: equipped: [Body] 21
+[10/06/26 06:43:20] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 06:43:20] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 06:43:20] D2BS 6216: equipped: [RingR] 15
+[10/06/26 06:43:20] D2BS 6216: equipped: [RingL] 15
+[10/06/26 06:43:20] D2BS 6216: equipped: [Belt] 19
+[10/06/26 06:43:20] D2BS 6216: equipped: [Boots] 13
+[10/06/26 06:43:20] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 06:43:20] D2BS 6216: updateStat
+[10/06/26 06:43:20] D2BS 6216: granted: [Head] 31
+[10/06/26 06:43:20] D2BS 6216: granted: [Body] 21
+[10/06/26 06:43:20] D2BS 6216: granted: [ArmR] 24
+[10/06/26 06:43:20] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 06:43:24] D2BS 6216: farmingON
+[10/06/26 06:43:26] D2BS 6216: Tiered: true
+[10/06/26 06:43:26] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 06:43:35] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 06:44:03] D2BS 6216: act5+ BO
+[10/06/26 06:44:16] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 06:47:06] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 06:48:17] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 06:49:38] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 06:50:37] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 06:55:31] D2BS 6216: Going to town
+[10/06/26 06:56:33] D2BS 6216: Going to town
+[10/06/26 06:59:27] D2BS 6216: Going to town
+[10/06/26 07:02:15] D2BS 6216: Going to town
+[10/06/26 07:02:36] D2BS 6216: [Chicken] Life (493/1703) area:39 (25315,5930)
+[10/06/26 07:02:36] D2BS 6216: Going to town
+[10/06/26 07:02:36] D2BS 6216:  [19:17] +2.43% / [Level 90] 51.25%
+[10/06/26 07:02:36] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 07:02:36] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 07:02:36] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 07:02:36] D2BS 6216: Script default.dbj ended
+[10/06/26 07:02:49] D2BS 6216: joining game pz-213
+[10/06/26 07:02:50] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 07:02:50] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 07:02:50] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 07:02:50] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 07:02:50] D2BS 6216: equipped: [Head] 22
+[10/06/26 07:02:50] D2BS 6216: equipped: [Neck] 20
+[10/06/26 07:02:50] D2BS 6216: equipped: [Body] 21
+[10/06/26 07:02:50] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 07:02:51] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 07:02:51] D2BS 6216: equipped: [RingR] 15
+[10/06/26 07:02:51] D2BS 6216: equipped: [RingL] 15
+[10/06/26 07:02:51] D2BS 6216: equipped: [Belt] 19
+[10/06/26 07:02:51] D2BS 6216: equipped: [Boots] 13
+[10/06/26 07:02:51] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 07:02:51] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 07:02:58] D2BS 6216: farmingON
+[10/06/26 07:03:00] D2BS 6216: Tiered: true
+[10/06/26 07:03:00] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 07:03:07] D2BS 6216: updateStat
+[10/06/26 07:03:07] D2BS 6216: granted: [Head] 31
+[10/06/26 07:03:07] D2BS 6216: granted: [Body] 21
+[10/06/26 07:03:07] D2BS 6216: granted: [ArmR] 24
+[10/06/26 07:03:14] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 07:03:33] D2BS 6216: act5+ BO
+[10/06/26 07:03:35] D2BS 6216: updateStat
+[10/06/26 07:03:47] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 07:06:55] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 07:08:13] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 07:09:42] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 07:10:37] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 07:17:08] D2BS 6216: party has left: fowo-xd
+[10/06/26 07:17:08] D2BS 6216:  [14:18] +2.76% / [Level 90] 54.01%
+[10/06/26 07:17:08] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 07:17:09] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 07:17:09] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 07:17:09] D2BS 6216: Script default.dbj ended
+[10/06/26 07:17:20] D2BS 6216: joining game pz-214
+[10/06/26 07:17:22] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 07:17:22] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 07:17:22] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 07:17:22] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 07:17:22] D2BS 6216: equipped: [Head] 22
+[10/06/26 07:17:22] D2BS 6216: equipped: [Neck] 20
+[10/06/26 07:17:22] D2BS 6216: equipped: [Body] 21
+[10/06/26 07:17:22] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 07:17:22] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 07:17:22] D2BS 6216: equipped: [RingR] 15
+[10/06/26 07:17:22] D2BS 6216: equipped: [RingL] 15
+[10/06/26 07:17:22] D2BS 6216: equipped: [Belt] 19
+[10/06/26 07:17:22] D2BS 6216: equipped: [Boots] 13
+[10/06/26 07:17:22] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 07:17:22] D2BS 6216: updateStat
+[10/06/26 07:17:22] D2BS 6216: granted: [Head] 31
+[10/06/26 07:17:22] D2BS 6216: granted: [Body] 21
+[10/06/26 07:17:22] D2BS 6216: granted: [ArmR] 24
+[10/06/26 07:17:22] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 07:17:28] D2BS 6216: farmingON
+[10/06/26 07:17:29] D2BS 6216: Tiered: true
+[10/06/26 07:17:29] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 07:17:47] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 07:18:09] D2BS 6216: act5+ BO
+[10/06/26 07:18:22] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 07:21:57] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 07:23:10] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 07:24:35] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 07:25:38] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 07:35:24] D2BS 6216: Cows failed: followDriver
+[10/06/26 07:35:28] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 07:36:57] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 07:42:20] D2BS 6216: party has left: fowo-xh
+[10/06/26 07:42:20] D2BS 6216:  [24:57] +4.35% / [Level 90] 58.36%
+[10/06/26 07:42:20] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 07:42:20] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 07:42:20] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 07:42:20] D2BS 6216: Script default.dbj ended
+[10/06/26 07:42:33] D2BS 6216: joining game pz-215
+[10/06/26 07:42:35] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 07:42:35] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 07:42:35] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 07:42:35] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 07:42:35] D2BS 6216: equipped: [Head] 22
+[10/06/26 07:42:35] D2BS 6216: equipped: [Neck] 20
+[10/06/26 07:42:35] D2BS 6216: equipped: [Body] 21
+[10/06/26 07:42:35] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 07:42:35] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 07:42:35] D2BS 6216: equipped: [RingR] 15
+[10/06/26 07:42:35] D2BS 6216: equipped: [RingL] 15
+[10/06/26 07:42:35] D2BS 6216: equipped: [Belt] 19
+[10/06/26 07:42:35] D2BS 6216: equipped: [Boots] 13
+[10/06/26 07:42:35] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 07:42:35] D2BS 6216: updateStat
+[10/06/26 07:42:35] D2BS 6216: granted: [Head] 31
+[10/06/26 07:42:35] D2BS 6216: granted: [Body] 21
+[10/06/26 07:42:35] D2BS 6216: granted: [ArmR] 24
+[10/06/26 07:42:35] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 07:42:40] D2BS 6216: farmingON
+[10/06/26 07:42:41] D2BS 6216: Tiered: true
+[10/06/26 07:42:41] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 07:42:52] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 07:43:13] D2BS 6216: act5+ BO
+[10/06/26 07:43:27] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 07:43:40] D2BS 6216: Baal failed: souls found
+[10/06/26 07:43:40] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 07:44:42] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 07:46:42] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 07:47:35] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 07:50:08] D2BS 6216: party has left: fowo-xc
+[10/06/26 07:50:08] D2BS 6216:  [07:34] +0.71% / [Level 90] 59.07%
+[10/06/26 07:50:08] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 07:50:08] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 07:50:08] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 07:50:08] D2BS 6216: Script default.dbj ended
+[10/06/26 07:50:20] D2BS 6216: joining game pz-216
+[10/06/26 07:50:23] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 07:50:23] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 07:50:23] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 07:50:23] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 07:50:23] D2BS 6216: equipped: [Head] 22
+[10/06/26 07:50:23] D2BS 6216: equipped: [Neck] 20
+[10/06/26 07:50:23] D2BS 6216: equipped: [Body] 21
+[10/06/26 07:50:23] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 07:50:23] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 07:50:23] D2BS 6216: equipped: [RingR] 15
+[10/06/26 07:50:23] D2BS 6216: equipped: [RingL] 15
+[10/06/26 07:50:23] D2BS 6216: equipped: [Belt] 19
+[10/06/26 07:50:23] D2BS 6216: equipped: [Boots] 13
+[10/06/26 07:50:23] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 07:50:23] D2BS 6216: updateStat
+[10/06/26 07:50:23] D2BS 6216: granted: [Head] 31
+[10/06/26 07:50:23] D2BS 6216: granted: [Body] 21
+[10/06/26 07:50:23] D2BS 6216: granted: [ArmR] 24
+[10/06/26 07:50:23] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 07:50:28] D2BS 6216: Tiered: true
+[10/06/26 07:50:28] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 07:50:29] D2BS 6216: farmingON
+[10/06/26 07:50:37] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 07:51:06] D2BS 6216: act5+ BO
+[10/06/26 07:51:18] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 07:55:15] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 07:56:16] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 07:57:33] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 07:58:41] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 08:04:41] D2BS 6216: Cows failed: followDriver
+[10/06/26 08:05:02] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 08:06:54] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 08:13:15] D2BS 6216: party has left: fowo-xb
+[10/06/26 08:13:15] D2BS 6216:  [22:53] +4.75% / [Level 90] 63.82%
+[10/06/26 08:13:15] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 08:13:15] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 08:13:15] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 08:13:15] D2BS 6216: Script default.dbj ended
+[10/06/26 08:13:29] D2BS 6216: joining game pz-217
+[10/06/26 08:13:31] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 08:13:31] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 08:13:31] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 08:13:31] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 08:13:31] D2BS 6216: equipped: [Head] 22
+[10/06/26 08:13:32] D2BS 6216: equipped: [Neck] 20
+[10/06/26 08:13:32] D2BS 6216: equipped: [Body] 21
+[10/06/26 08:13:32] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 08:13:32] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 08:13:32] D2BS 6216: equipped: [RingR] 15
+[10/06/26 08:13:32] D2BS 6216: equipped: [RingL] 15
+[10/06/26 08:13:32] D2BS 6216: equipped: [Belt] 19
+[10/06/26 08:13:32] D2BS 6216: equipped: [Boots] 13
+[10/06/26 08:13:32] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 08:13:32] D2BS 6216: updateStat
+[10/06/26 08:13:32] D2BS 6216: granted: [Head] 31
+[10/06/26 08:13:32] D2BS 6216: granted: [Body] 21
+[10/06/26 08:13:32] D2BS 6216: granted: [ArmR] 24
+[10/06/26 08:13:32] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 08:13:37] D2BS 6216: farmingON
+[10/06/26 08:13:37] D2BS 6216: Tiered: true
+[10/06/26 08:13:37] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 08:13:56] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 08:14:11] D2BS 6216: act5+ BO
+[10/06/26 08:14:24] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 08:17:30] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 08:18:36] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 08:19:58] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 08:21:03] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 08:23:41] D2BS 6216: Going to town
+[10/06/26 08:32:42] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 08:34:13] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 08:39:27] D2BS 6216: party has left: fowo-xa
+[10/06/26 08:39:27] D2BS 6216:  [25:56] +3.40% / [Level 90] 67.22%
+[10/06/26 08:39:27] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 08:39:27] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 08:39:27] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 08:39:27] D2BS 6216: Script default.dbj ended
+[10/06/26 08:39:40] D2BS 6216: joining game pz-218
+[10/06/26 08:39:41] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 08:39:41] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 08:39:43] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 08:39:43] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 08:39:43] D2BS 6216: equipped: [Head] 22
+[10/06/26 08:39:43] D2BS 6216: equipped: [Neck] 20
+[10/06/26 08:39:43] D2BS 6216: equipped: [Body] 21
+[10/06/26 08:39:43] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 08:39:43] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 08:39:43] D2BS 6216: equipped: [RingR] 15
+[10/06/26 08:39:43] D2BS 6216: equipped: [RingL] 15
+[10/06/26 08:39:43] D2BS 6216: equipped: [Belt] 19
+[10/06/26 08:39:43] D2BS 6216: equipped: [Boots] 13
+[10/06/26 08:39:43] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 08:39:43] D2BS 6216: updateStat
+[10/06/26 08:39:43] D2BS 6216: granted: [Head] 31
+[10/06/26 08:39:43] D2BS 6216: granted: [Body] 21
+[10/06/26 08:39:43] D2BS 6216: granted: [ArmR] 24
+[10/06/26 08:39:43] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 08:39:47] D2BS 6216: Tiered: true
+[10/06/26 08:39:47] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 08:39:48] D2BS 6216: farmingON
+[10/06/26 08:40:02] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 08:40:21] D2BS 6216: act5+ BO
+[10/06/26 08:40:34] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 08:43:47] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 08:43:54] D2BS 6216: granted: [ArmR] 25
+[10/06/26 08:44:59] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 08:47:02] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 08:48:02] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 08:54:29] D2BS 6216: Going to town
+[10/06/26 08:55:18] D2BS 6216: Going to town
+[10/06/26 08:55:59] D2BS 6216: Going to town
+[10/06/26 09:00:19] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 09:01:59] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 09:07:15] D2BS 6216: Script ended
+[10/06/26 09:07:15] D2BS 6216:  [27:33] +3.89% / [Level 90] 71.11%
+[10/06/26 09:07:15] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 09:07:15] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 09:07:15] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 09:07:28] D2BS 6216: joining game pz-219
+[10/06/26 09:07:30] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 09:07:30] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 09:07:30] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 09:07:30] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 09:07:30] D2BS 6216: equipped: [Head] 22
+[10/06/26 09:07:30] D2BS 6216: equipped: [Neck] 20
+[10/06/26 09:07:30] D2BS 6216: equipped: [Body] 21
+[10/06/26 09:07:30] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 09:07:30] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 09:07:30] D2BS 6216: equipped: [RingR] 15
+[10/06/26 09:07:31] D2BS 6216: equipped: [RingL] 15
+[10/06/26 09:07:31] D2BS 6216: equipped: [Belt] 19
+[10/06/26 09:07:31] D2BS 6216: equipped: [Boots] 13
+[10/06/26 09:07:31] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 09:07:31] D2BS 6216: updateStat
+[10/06/26 09:07:31] D2BS 6216: granted: [Head] 31
+[10/06/26 09:07:31] D2BS 6216: granted: [Body] 21
+[10/06/26 09:07:31] D2BS 6216: granted: [ArmR] 25
+[10/06/26 09:07:31] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 09:07:36] D2BS 6216: farmingON
+[10/06/26 09:07:36] D2BS 6216: Tiered: true
+[10/06/26 09:07:36] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 09:07:55] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 09:08:07] D2BS 6216: act5+ BO
+[10/06/26 09:08:22] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 09:11:38] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 09:12:49] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 09:14:16] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 09:15:14] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 09:30:51] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 09:31:07] D2BS 6216: act1 BO
+[10/06/26 09:32:15] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 09:37:27] D2BS 6216: party has left: fowo-xa
+[10/06/26 09:37:27] D2BS 6216:  [29:56] +3.62% / [Level 90] 74.72%
+[10/06/26 09:37:27] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 09:37:27] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 09:37:27] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 09:37:27] D2BS 6216: Script default.dbj ended
+[10/06/26 09:37:39] D2BS 6216: joining game pz-220
+[10/06/26 09:37:41] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 09:37:41] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 09:37:42] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 09:37:42] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 09:37:42] D2BS 6216: equipped: [Head] 22
+[10/06/26 09:37:42] D2BS 6216: equipped: [Neck] 20
+[10/06/26 09:37:42] D2BS 6216: equipped: [Body] 21
+[10/06/26 09:37:42] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 09:37:42] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 09:37:42] D2BS 6216: equipped: [RingR] 15
+[10/06/26 09:37:42] D2BS 6216: equipped: [RingL] 15
+[10/06/26 09:37:42] D2BS 6216: equipped: [Belt] 19
+[10/06/26 09:37:42] D2BS 6216: equipped: [Boots] 13
+[10/06/26 09:37:42] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 09:37:42] D2BS 6216: updateStat
+[10/06/26 09:37:42] D2BS 6216: granted: [Head] 31
+[10/06/26 09:37:42] D2BS 6216: granted: [Body] 21
+[10/06/26 09:37:42] D2BS 6216: granted: [ArmR] 25
+[10/06/26 09:37:42] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 09:37:47] D2BS 6216: farmingON
+[10/06/26 09:37:48] D2BS 6216: Tiered: true
+[10/06/26 09:37:48] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 09:37:51] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 09:38:25] D2BS 6216: act5+ BO
+[10/06/26 09:38:38] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 09:42:18] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 09:43:38] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 09:44:57] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 09:46:02] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 09:55:13] D2BS 6216: Going to town
+[10/06/26 09:59:49] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 10:01:16] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 10:01:22] D2BS 6216: updateStat
+[10/06/26 10:01:22] D2BS 6216: granted: [Head] 31
+[10/06/26 10:01:22] D2BS 6216: granted: [Body] 21
+[10/06/26 10:01:22] D2BS 6216: granted: [ArmR] 25
+[10/06/26 10:07:27] D2BS 6216: party has left: fowo-xg
+[10/06/26 10:07:27] D2BS 6216:  [29:46] +4.71% / [Level 90] 79.43%
+[10/06/26 10:07:27] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 10:07:27] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 10:07:27] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 10:07:27] D2BS 6216: Script default.dbj ended
+[10/06/26 10:07:40] D2BS 6216: joining game pz-221
+[10/06/26 10:07:41] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 10:07:41] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 10:07:41] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 10:07:41] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 10:07:41] D2BS 6216: equipped: [Head] 22
+[10/06/26 10:07:41] D2BS 6216: equipped: [Neck] 20
+[10/06/26 10:07:41] D2BS 6216: equipped: [Body] 21
+[10/06/26 10:07:42] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 10:07:42] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 10:07:42] D2BS 6216: equipped: [RingR] 15
+[10/06/26 10:07:42] D2BS 6216: equipped: [RingL] 15
+[10/06/26 10:07:42] D2BS 6216: equipped: [Belt] 19
+[10/06/26 10:07:42] D2BS 6216: equipped: [Boots] 13
+[10/06/26 10:07:42] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 10:07:42] D2BS 6216: updateStat
+[10/06/26 10:07:42] D2BS 6216: granted: [Head] 31
+[10/06/26 10:07:42] D2BS 6216: granted: [Body] 21
+[10/06/26 10:07:42] D2BS 6216: granted: [ArmR] 25
+[10/06/26 10:07:42] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 10:07:48] D2BS 6216: farmingON
+[10/06/26 10:07:49] D2BS 6216: Tiered: true
+[10/06/26 10:07:49] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 10:08:04] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 10:08:18] D2BS 6216: act5+ BO
+[10/06/26 10:08:31] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 10:11:59] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 10:13:06] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 10:14:43] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 10:15:41] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 10:16:58] D2BS 6216: Going to town
+[10/06/26 10:27:40] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 10:29:04] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 10:35:39] D2BS 6216: party has left: fowo-xa, fowo-xb
+[10/06/26 10:35:39] D2BS 6216:  [27:58] +4.05% / [Level 90] 83.48%
+[10/06/26 10:35:39] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 10:35:39] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 10:35:39] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 10:35:39] D2BS 6216: Script default.dbj ended
+[10/06/26 10:35:52] D2BS 6216: joining game pz-222
+[10/06/26 10:35:54] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 10:35:54] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 10:35:54] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 10:35:54] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 10:35:54] D2BS 6216: equipped: [Head] 22
+[10/06/26 10:35:54] D2BS 6216: equipped: [Neck] 20
+[10/06/26 10:35:54] D2BS 6216: equipped: [Body] 21
+[10/06/26 10:35:54] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 10:35:54] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 10:35:54] D2BS 6216: equipped: [RingR] 15
+[10/06/26 10:35:54] D2BS 6216: equipped: [RingL] 15
+[10/06/26 10:35:54] D2BS 6216: equipped: [Belt] 19
+[10/06/26 10:35:54] D2BS 6216: equipped: [Boots] 13
+[10/06/26 10:35:54] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 10:35:54] D2BS 6216: updateStat
+[10/06/26 10:35:54] D2BS 6216: granted: [Head] 31
+[10/06/26 10:35:54] D2BS 6216: granted: [Body] 21
+[10/06/26 10:35:54] D2BS 6216: granted: [ArmR] 25
+[10/06/26 10:35:54] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 10:36:00] D2BS 6216: Tiered: true
+[10/06/26 10:36:00] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 10:36:00] D2BS 6216: farmingON
+[10/06/26 10:36:06] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 10:36:32] D2BS 6216: act5+ BO
+[10/06/26 10:36:45] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 10:40:14] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 10:41:44] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 10:43:26] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 10:44:30] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 10:51:02] D2BS 6216: party has left: fowo-xa
+[10/06/26 10:51:02] D2BS 6216:  [15:08] +2.31% / [Level 90] 85.78%
+[10/06/26 10:51:02] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 10:51:02] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 10:51:02] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 10:51:02] D2BS 6216: Script default.dbj ended
+[10/06/26 10:51:14] D2BS 6216: joining game pz-223
+[10/06/26 10:51:16] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 10:51:16] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 10:51:17] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 10:51:17] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 10:51:17] D2BS 6216: equipped: [Head] 22
+[10/06/26 10:51:17] D2BS 6216: equipped: [Neck] 20
+[10/06/26 10:51:17] D2BS 6216: equipped: [Body] 21
+[10/06/26 10:51:17] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 10:51:17] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 10:51:17] D2BS 6216: equipped: [RingR] 15
+[10/06/26 10:51:17] D2BS 6216: equipped: [RingL] 15
+[10/06/26 10:51:17] D2BS 6216: equipped: [Belt] 19
+[10/06/26 10:51:17] D2BS 6216: equipped: [Boots] 13
+[10/06/26 10:51:17] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 10:51:17] D2BS 6216: updateStat
+[10/06/26 10:51:17] D2BS 6216: granted: [Head] 31
+[10/06/26 10:51:17] D2BS 6216: granted: [Body] 21
+[10/06/26 10:51:17] D2BS 6216: granted: [ArmR] 25
+[10/06/26 10:51:17] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 10:51:24] D2BS 6216: farmingON
+[10/06/26 10:51:27] D2BS 6216: Tiered: true
+[10/06/26 10:51:27] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 10:51:27] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 10:52:12] D2BS 6216: act5+ BO
+[10/06/26 10:52:42] D2BS 6216: party has left: fowo-xa
+[10/06/26 10:52:42] D2BS 6216: no exp [01:26]
+[10/06/26 10:52:42] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 10:52:43] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 10:52:43] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 10:52:43] D2BS 6216: Script default.dbj ended
+[10/06/26 10:52:55] D2BS 6216: joining game pz-224
+[10/06/26 10:52:56] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 10:52:56] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 10:52:57] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 10:52:57] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 10:52:57] D2BS 6216: equipped: [Head] 22
+[10/06/26 10:52:57] D2BS 6216: equipped: [Neck] 20
+[10/06/26 10:52:57] D2BS 6216: equipped: [Body] 21
+[10/06/26 10:52:57] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 10:52:57] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 10:52:57] D2BS 6216: equipped: [RingR] 15
+[10/06/26 10:52:57] D2BS 6216: equipped: [RingL] 15
+[10/06/26 10:52:57] D2BS 6216: equipped: [Belt] 19
+[10/06/26 10:52:57] D2BS 6216: equipped: [Boots] 13
+[10/06/26 10:52:57] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 10:52:57] D2BS 6216: updateStat
+[10/06/26 10:52:57] D2BS 6216: granted: [Head] 31
+[10/06/26 10:52:57] D2BS 6216: granted: [Body] 21
+[10/06/26 10:52:57] D2BS 6216: granted: [ArmR] 25
+[10/06/26 10:52:57] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 10:52:59] D2BS 6216: Tiered: true
+[10/06/26 10:52:59] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 10:52:59] D2BS 6216: farmingON
+[10/06/26 10:52:59] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 10:53:25] D2BS 6216: act5+ BO
+[10/06/26 10:53:29] D2BS 6216: party has left: fowo-xb
+[10/06/26 10:53:29] D2BS 6216: no exp [00:33]
+[10/06/26 10:53:29] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 10:53:31] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 10:53:31] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 10:53:31] D2BS 6216: Script default.dbj ended
+[10/06/26 10:54:55] D2BS 6216: joining game pz-225
+[10/06/26 10:54:56] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 10:54:56] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 10:54:57] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 10:54:57] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 10:54:57] D2BS 6216: equipped: [Head] 22
+[10/06/26 10:54:57] D2BS 6216: equipped: [Neck] 20
+[10/06/26 10:54:57] D2BS 6216: equipped: [Body] 21
+[10/06/26 10:54:58] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 10:54:58] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 10:54:58] D2BS 6216: equipped: [RingR] 15
+[10/06/26 10:54:58] D2BS 6216: equipped: [RingL] 15
+[10/06/26 10:54:58] D2BS 6216: equipped: [Belt] 19
+[10/06/26 10:54:58] D2BS 6216: equipped: [Boots] 13
+[10/06/26 10:54:58] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 10:54:58] D2BS 6216: updateStat
+[10/06/26 10:54:58] D2BS 6216: granted: [Head] 31
+[10/06/26 10:54:58] D2BS 6216: granted: [Body] 21
+[10/06/26 10:54:58] D2BS 6216: granted: [ArmR] 25
+[10/06/26 10:54:58] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 10:54:59] D2BS 6216: Tiered: true
+[10/06/26 10:54:59] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 10:54:59] D2BS 6216: farmingON
+[10/06/26 10:55:00] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 10:55:23] D2BS 6216: act5+ BO
+[10/06/26 10:55:48] D2BS 6216: party has left: fowo-xa
+[10/06/26 10:55:48] D2BS 6216: no exp [00:52]
+[10/06/26 10:55:48] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 10:55:48] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 10:55:48] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 10:55:48] D2BS 6216: Script default.dbj ended
+[10/06/26 10:56:04] D2BS 6216: joining game pz-226
+[10/06/26 10:56:06] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 10:56:06] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 10:56:07] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 10:56:07] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 10:56:07] D2BS 6216: equipped: [Head] 22
+[10/06/26 10:56:07] D2BS 6216: equipped: [Neck] 20
+[10/06/26 10:56:07] D2BS 6216: equipped: [Body] 21
+[10/06/26 10:56:07] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 10:56:07] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 10:56:07] D2BS 6216: equipped: [RingR] 15
+[10/06/26 10:56:07] D2BS 6216: equipped: [RingL] 15
+[10/06/26 10:56:07] D2BS 6216: equipped: [Belt] 19
+[10/06/26 10:56:07] D2BS 6216: equipped: [Boots] 13
+[10/06/26 10:56:07] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 10:56:07] D2BS 6216: updateStat
+[10/06/26 10:56:07] D2BS 6216: granted: [Head] 31
+[10/06/26 10:56:07] D2BS 6216: granted: [Body] 21
+[10/06/26 10:56:07] D2BS 6216: granted: [ArmR] 25
+[10/06/26 10:56:07] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 10:56:09] D2BS 6216: Tiered: true
+[10/06/26 10:56:09] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 10:56:09] D2BS 6216: farmingON
+[10/06/26 10:56:09] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 10:56:34] D2BS 6216: act5+ BO
+[10/06/26 10:56:48] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 11:00:01] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 11:01:12] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 11:02:54] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 11:03:51] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 11:13:34] D2BS 6216: Going to town
+[10/06/26 11:14:41] D2BS 6216: Going to town
+[10/06/26 11:17:56] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 11:19:31] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 11:25:36] D2BS 6216: party has left: fowo-xf
+[10/06/26 11:25:36] D2BS 6216:  [29:30] +3.86% / [Level 90] 89.64%
+[10/06/26 11:25:36] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 11:25:36] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 11:25:36] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 11:25:36] D2BS 6216: Script default.dbj ended
+[10/06/26 11:25:49] D2BS 6216: joining game pz-227
+[10/06/26 11:25:50] D2BS 6216: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/06/26 11:25:50] D2BS 6216: ÿc2D2BSÿc0 :: default.dbj running.
+[10/06/26 11:25:50] D2BS 6216: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [P.CONV.nip]
+[10/06/26 11:25:50] D2BS 6216: Loaded ÿc9[P.CONV.js]
+[10/06/26 11:25:50] D2BS 6216: equipped: [Head] 22
+[10/06/26 11:25:50] D2BS 6216: equipped: [Neck] 20
+[10/06/26 11:25:50] D2BS 6216: equipped: [Body] 21
+[10/06/26 11:25:50] D2BS 6216: equipped: [ArmR] 41
+[10/06/26 11:25:50] D2BS 6216: equipped: [ArmL] 41
+[10/06/26 11:25:50] D2BS 6216: equipped: [RingR] 15
+[10/06/26 11:25:50] D2BS 6216: equipped: [RingL] 15
+[10/06/26 11:25:50] D2BS 6216: equipped: [Belt] 19
+[10/06/26 11:25:50] D2BS 6216: equipped: [Boots] 13
+[10/06/26 11:25:50] D2BS 6216: equipped: [Mitts] 14
+[10/06/26 11:25:51] D2BS 6216: updateStat
+[10/06/26 11:25:51] D2BS 6216: granted: [Head] 31
+[10/06/26 11:25:51] D2BS 6216: granted: [Body] 21
+[10/06/26 11:25:51] D2BS 6216: granted: [ArmR] 25
+[10/06/26 11:25:51] D2BS 6216: Loaded ÿc9[AutoSmurf.js]
+[10/06/26 11:25:55] D2BS 6216: Tiered: true
+[10/06/26 11:25:55] D2BS 6216: UseMerc: true HP: 70
+[10/06/26 11:25:56] D2BS 6216: farmingON
+[10/06/26 11:26:05] D2BS 6216: [Token Of Absolution]
+[10/06/26 11:26:24] D2BS 6216: Merc matched: Holy Freeze
+[10/06/26 11:26:30] D2BS 6216: act5+ BO
+[10/06/26 11:26:44] D2BS 6216: ÿc4=== [BAAL] ===
+[10/06/26 11:30:00] D2BS 6216: ÿc4=== [COUNTESS] ===
+[10/06/26 11:31:12] D2BS 6216: ÿc4=== [PIT] ===
+[10/06/26 11:32:43] D2BS 6216: ÿc4=== [ANDY] ===
+[10/06/26 11:33:28] D2BS 6216: ÿc4=== [COWS] ===
+[10/06/26 11:44:09] D2BS 6216: ÿc4=== [MEPHISTO] ===
+[10/06/26 11:45:35] D2BS 6216: ÿc4=== [DIABLO] ===
+[10/06/26 11:45:44] D2BS 6216: [Reroll] Magic Small Charm
+[10/06/26 11:51:11] D2BS 6216: party has left: fowo-xd
+[10/06/26 11:51:11] D2BS 6216:  [25:21] +4.18% / [Level 90] 93.82%
+[10/06/26 11:51:11] D2BS 6216: Script threads\autobuildthread.js ended
+[10/06/26 11:51:11] D2BS 6216: Script threads\partythread.js ended
+[10/06/26 11:51:11] D2BS 6216: Script threads\townchicken.js ended
+[10/06/26 11:51:11] D2BS 6216: Script default.dbj ended
+[10/06/26 11:51:18] D2BS 6216: D2BS Shutdown complete.

@@ -4583,3 +4583,268 @@ Line: (null)
 [10/05/26 22:19:35] D2BS 3256: ÿc4=== [ANDY] ===
 [10/05/26 22:20:34] D2BS 3256: ÿc4=== [MEPHISTO] ===
 [10/05/26 22:22:03] D2BS 3256: ÿc4=== [DIABLO] ===
+[10/05/26 22:28:38] D2BS 3256: party has left: fowo-xf
+[10/05/26 22:28:39] D2BS 3256:  [12:53] +3.20% / [Level 89] 42.31%
+[10/05/26 22:28:39] D2BS 3256: Script threads\autobuildthread.js ended
+[10/05/26 22:28:39] D2BS 3256: Script threads\partythread.js ended
+[10/05/26 22:28:39] D2BS 3256: Script threads\townchicken.js ended
+[10/05/26 22:28:39] D2BS 3256: Script default.dbj ended
+[10/05/26 22:28:48] D2BS 3256: Creating Game: pz-180
+[10/05/26 22:28:49] D2BS 3256: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/05/26 22:28:49] D2BS 3256: ÿc2D2BSÿc0 :: default.dbj running.
+[10/05/26 22:28:49] D2BS 3256: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [S.SFFW.nip]
+[10/05/26 22:28:49] D2BS 3256: Loaded ÿc9[S.SFFW.js]
+[10/05/26 22:28:49] D2BS 3256: equipped: [Head] 16
+[10/05/26 22:28:49] D2BS 3256: equipped: [Neck] 16
+[10/05/26 22:28:49] D2BS 3256: equipped: [Body] 21
+[10/05/26 22:28:49] D2BS 3256: equipped: [ArmR] 33
+[10/05/26 22:28:49] D2BS 3256: equipped: [ArmL] 26
+[10/05/26 22:28:49] D2BS 3256: equipped: [RingR] 15
+[10/05/26 22:28:49] D2BS 3256: equipped: [RingL] 13
+[10/05/26 22:28:49] D2BS 3256: equipped: [Belt] 19
+[10/05/26 22:28:49] D2BS 3256: equipped: [Boots] 13
+[10/05/26 22:28:49] D2BS 3256: equipped: [Mitts] 12
+[10/05/26 22:28:49] D2BS 3256: updateStat
+[10/05/26 22:28:49] D2BS 3256: granted: [Head] 14
+[10/05/26 22:28:49] D2BS 3256: granted: [Body] 22
+[10/05/26 22:28:49] D2BS 3256: granted: [ArmR] 41
+[10/05/26 22:28:49] D2BS 3256: Loaded ÿc9[AutoSmurf.js]
+[10/05/26 22:28:58] D2BS 3256: farmingON
+[10/05/26 22:28:59] D2BS 3256: MiniShopBot: true
+[10/05/26 22:28:59] D2BS 3256: UseMerc: true HP: 70
+[10/05/26 22:29:14] D2BS 3256: Merc matched: Holy Freeze
+[10/05/26 22:29:27] D2BS 3256: Token needed
+[10/05/26 22:29:32] D2BS 3256: act5+ BO
+[10/05/26 22:29:44] D2BS 3256: ÿc4=== [BAAL] ===
+[10/05/26 22:29:53] D2BS 3256: Baal failed: souls found
+[10/05/26 22:29:55] D2BS 3256: ÿc4=== [COUNTESS] ===
+[10/05/26 22:31:00] D2BS 3256: ÿc4=== [PIT] ===
+[10/05/26 22:32:36] D2BS 3256: ÿc4=== [ANDY] ===
+[10/05/26 22:33:37] D2BS 3256: ÿc4=== [MEPHISTO] ===
+[10/05/26 22:34:56] D2BS 3256: ÿc4=== [DIABLO] ===
+[10/05/26 22:36:24] D2BS 3256: updateStat
+[10/05/26 22:36:58] D2BS 3256: Going to town
+[10/05/26 22:38:43] D2BS 3256:  [09:54] +0.92% / [Level 89] 43.23%
+[10/05/26 22:38:43] D2BS 3256: Script threads\autobuildthread.js ended
+[10/05/26 22:38:43] D2BS 3256: Script threads\partythread.js ended
+[10/05/26 22:38:43] D2BS 3256: Script threads\townchicken.js ended
+[10/05/26 22:38:43] D2BS 3256: Script default.dbj ended
+[10/05/26 22:38:54] D2BS 3256: Creating Game: pz-181
+[10/05/26 22:38:55] D2BS 3256: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/05/26 22:38:55] D2BS 3256: ÿc2D2BSÿc0 :: default.dbj running.
+[10/05/26 22:38:55] D2BS 3256: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [S.SFFW.nip]
+[10/05/26 22:38:55] D2BS 3256: Loaded ÿc9[S.SFFW.js]
+[10/05/26 22:38:55] D2BS 3256: equipped: [Head] 16
+[10/05/26 22:38:55] D2BS 3256: equipped: [Neck] 16
+[10/05/26 22:38:55] D2BS 3256: equipped: [Body] 21
+[10/05/26 22:38:55] D2BS 3256: equipped: [ArmR] 33
+[10/05/26 22:38:55] D2BS 3256: equipped: [ArmL] 26
+[10/05/26 22:38:55] D2BS 3256: equipped: [RingR] 15
+[10/05/26 22:38:55] D2BS 3256: equipped: [RingL] 13
+[10/05/26 22:38:55] D2BS 3256: equipped: [Belt] 19
+[10/05/26 22:38:55] D2BS 3256: equipped: [Boots] 13
+[10/05/26 22:38:55] D2BS 3256: equipped: [Mitts] 12
+[10/05/26 22:38:55] D2BS 3256: updateStat
+[10/05/26 22:38:55] D2BS 3256: granted: [Head] 14
+[10/05/26 22:38:55] D2BS 3256: granted: [Body] 22
+[10/05/26 22:38:55] D2BS 3256: granted: [ArmR] 41
+[10/05/26 22:38:55] D2BS 3256: Loaded ÿc9[AutoSmurf.js]
+[10/05/26 22:39:04] D2BS 3256: farmingON
+[10/05/26 22:39:05] D2BS 3256: MiniShopBot: true
+[10/05/26 22:39:05] D2BS 3256: UseMerc: true HP: 70
+[10/05/26 22:39:22] D2BS 3256: Merc matched: Holy Freeze
+[10/05/26 22:39:35] D2BS 3256: act5+ BO
+[10/05/26 22:39:48] D2BS 3256: ÿc4=== [BAAL] ===
+[10/05/26 22:40:01] D2BS 3256: Baal failed: souls found
+[10/05/26 22:40:03] D2BS 3256: ÿc4=== [COUNTESS] ===
+[10/05/26 22:41:00] D2BS 3256: ÿc4=== [PIT] ===
+[10/05/26 22:42:13] D2BS 3256: ÿc4=== [ANDY] ===
+[10/05/26 22:43:09] D2BS 3256: ÿc4=== [MEPHISTO] ===
+[10/05/26 22:44:26] D2BS 3256: ÿc4=== [DIABLO] ===
+[10/05/26 22:50:14] D2BS 3256: party has left: fowo-xd, fowo-xg
+[10/05/26 22:50:14] D2BS 3256:  [11:19] +2.81% / [Level 89] 46.03%
+[10/05/26 22:50:14] D2BS 3256: Script threads\autobuildthread.js ended
+[10/05/26 22:50:14] D2BS 3256: Script threads\partythread.js ended
+[10/05/26 22:50:15] D2BS 3256: Script threads\townchicken.js ended
+[10/05/26 22:50:15] D2BS 3256: Script default.dbj ended
+[10/05/26 22:50:24] D2BS 3256: Creating Game: pz-182
+[10/05/26 22:50:26] D2BS 3256: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/05/26 22:50:26] D2BS 3256: ÿc2D2BSÿc0 :: default.dbj running.
+[10/05/26 22:50:26] D2BS 3256: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [S.SFFW.nip]
+[10/05/26 22:50:26] D2BS 3256: Loaded ÿc9[S.SFFW.js]
+[10/05/26 22:50:26] D2BS 3256: equipped: [Head] 16
+[10/05/26 22:50:26] D2BS 3256: equipped: [Neck] 16
+[10/05/26 22:50:26] D2BS 3256: equipped: [Body] 21
+[10/05/26 22:50:26] D2BS 3256: equipped: [ArmR] 33
+[10/05/26 22:50:26] D2BS 3256: equipped: [ArmL] 26
+[10/05/26 22:50:26] D2BS 3256: equipped: [RingR] 15
+[10/05/26 22:50:26] D2BS 3256: equipped: [RingL] 13
+[10/05/26 22:50:26] D2BS 3256: equipped: [Belt] 19
+[10/05/26 22:50:26] D2BS 3256: equipped: [Boots] 13
+[10/05/26 22:50:26] D2BS 3256: equipped: [Mitts] 12
+[10/05/26 22:50:26] D2BS 3256: updateStat
+[10/05/26 22:50:26] D2BS 3256: granted: [Head] 14
+[10/05/26 22:50:26] D2BS 3256: granted: [Body] 22
+[10/05/26 22:50:26] D2BS 3256: granted: [ArmR] 41
+[10/05/26 22:50:26] D2BS 3256: Loaded ÿc9[AutoSmurf.js]
+[10/05/26 22:50:34] D2BS 3256: farmingON
+[10/05/26 22:50:37] D2BS 3256: MiniShopBot: true
+[10/05/26 22:50:37] D2BS 3256: UseMerc: true HP: 70
+[10/05/26 22:51:01] D2BS 3256: Merc matched: Holy Freeze
+[10/05/26 22:51:11] D2BS 3256: act5+ BO
+[10/05/26 22:51:23] D2BS 3256: ÿc4=== [BAAL] ===
+[10/05/26 22:54:31] D2BS 3256: ÿc4=== [COUNTESS] ===
+[10/05/26 22:55:51] D2BS 3256: ÿc4=== [PIT] ===
+[10/05/26 22:57:16] D2BS 3256: ÿc4=== [ANDY] ===
+[10/05/26 22:58:08] D2BS 3256: ÿc4=== [MEPHISTO] ===
+[10/05/26 22:59:28] D2BS 3256: ÿc4=== [DIABLO] ===
+[10/05/26 23:06:36] D2BS 3256: party has left: fowo-xg
+[10/05/26 23:06:36] D2BS 3256: party has left: fowo-xg
+[10/05/26 23:06:36] D2BS 3256: party has left: fowo-xg
+[10/05/26 23:06:36] D2BS 3256:  [16:09] +5.54% / [Level 89] 51.57%
+[10/05/26 23:06:36] D2BS 3256: Script threads\autobuildthread.js ended
+[10/05/26 23:06:36] D2BS 3256: Script threads\partythread.js ended
+[10/05/26 23:06:36] D2BS 3256: Script threads\townchicken.js ended
+[10/05/26 23:06:36] D2BS 3256: Script default.dbj ended
+[10/05/26 23:06:46] D2BS 3256: Creating Game: pz-183
+[10/05/26 23:06:47] D2BS 3256: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/05/26 23:06:47] D2BS 3256: ÿc2D2BSÿc0 :: default.dbj running.
+[10/05/26 23:06:47] D2BS 3256: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [S.SFFW.nip]
+[10/05/26 23:06:47] D2BS 3256: Loaded ÿc9[S.SFFW.js]
+[10/05/26 23:06:47] D2BS 3256: equipped: [Head] 16
+[10/05/26 23:06:47] D2BS 3256: equipped: [Neck] 16
+[10/05/26 23:06:47] D2BS 3256: equipped: [Body] 21
+[10/05/26 23:06:47] D2BS 3256: equipped: [ArmR] 33
+[10/05/26 23:06:47] D2BS 3256: equipped: [ArmL] 26
+[10/05/26 23:06:47] D2BS 3256: equipped: [RingR] 15
+[10/05/26 23:06:47] D2BS 3256: equipped: [RingL] 13
+[10/05/26 23:06:47] D2BS 3256: equipped: [Belt] 19
+[10/05/26 23:06:47] D2BS 3256: equipped: [Boots] 13
+[10/05/26 23:06:47] D2BS 3256: equipped: [Mitts] 12
+[10/05/26 23:06:48] D2BS 3256: updateStat
+[10/05/26 23:06:48] D2BS 3256: granted: [Head] 14
+[10/05/26 23:06:48] D2BS 3256: granted: [Body] 22
+[10/05/26 23:06:48] D2BS 3256: granted: [ArmR] 41
+[10/05/26 23:06:48] D2BS 3256: Loaded ÿc9[AutoSmurf.js]
+[10/05/26 23:06:56] D2BS 3256: farmingON
+[10/05/26 23:06:58] D2BS 3256: MiniShopBot: true
+[10/05/26 23:06:58] D2BS 3256: UseMerc: true HP: 70
+[10/05/26 23:07:19] D2BS 3256: Merc matched: Holy Freeze
+[10/05/26 23:07:31] D2BS 3256: act5+ BO
+[10/05/26 23:07:44] D2BS 3256: ÿc4=== [BAAL] ===
+[10/05/26 23:11:24] D2BS 3256: ÿc4=== [COUNTESS] ===
+[10/05/26 23:12:33] D2BS 3256: ÿc4=== [PIT] ===
+[10/05/26 23:14:01] D2BS 3256: ÿc4=== [ANDY] ===
+[10/05/26 23:15:01] D2BS 3256: ÿc4=== [MEPHISTO] ===
+[10/05/26 23:16:06] D2BS 3256: updateStat
+[10/05/26 23:16:31] D2BS 3256: ÿc4=== [DIABLO] ===
+[10/05/26 23:21:53] D2BS 3256: party has left: fowo-xb
+[10/05/26 23:21:54] D2BS 3256:  [15:06] +5.36% / [Level 89] 56.93%
+[10/05/26 23:21:54] D2BS 3256: Script threads\autobuildthread.js ended
+[10/05/26 23:21:54] D2BS 3256: Script threads\partythread.js ended
+[10/05/26 23:21:54] D2BS 3256: Script threads\townchicken.js ended
+[10/05/26 23:21:54] D2BS 3256: Script default.dbj ended
+[10/05/26 23:22:03] D2BS 3256: Creating Game: pz-184
+[10/05/26 23:22:05] D2BS 3256: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/05/26 23:22:05] D2BS 3256: ÿc2D2BSÿc0 :: default.dbj running.
+[10/05/26 23:22:05] D2BS 3256: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [S.SFFW.nip]
+[10/05/26 23:22:05] D2BS 3256: Loaded ÿc9[S.SFFW.js]
+[10/05/26 23:22:05] D2BS 3256: equipped: [Head] 16
+[10/05/26 23:22:05] D2BS 3256: equipped: [Neck] 16
+[10/05/26 23:22:05] D2BS 3256: equipped: [Body] 21
+[10/05/26 23:22:05] D2BS 3256: equipped: [ArmR] 33
+[10/05/26 23:22:05] D2BS 3256: equipped: [ArmL] 26
+[10/05/26 23:22:05] D2BS 3256: equipped: [RingR] 15
+[10/05/26 23:22:05] D2BS 3256: equipped: [RingL] 13
+[10/05/26 23:22:05] D2BS 3256: equipped: [Belt] 19
+[10/05/26 23:22:05] D2BS 3256: equipped: [Boots] 13
+[10/05/26 23:22:05] D2BS 3256: equipped: [Mitts] 12
+[10/05/26 23:22:05] D2BS 3256: updateStat
+[10/05/26 23:22:05] D2BS 3256: granted: [Head] 14
+[10/05/26 23:22:05] D2BS 3256: granted: [Body] 22
+[10/05/26 23:22:05] D2BS 3256: granted: [ArmR] 41
+[10/05/26 23:22:05] D2BS 3256: Loaded ÿc9[AutoSmurf.js]
+[10/05/26 23:22:14] D2BS 3256: farmingON
+[10/05/26 23:22:17] D2BS 3256: MiniShopBot: true
+[10/05/26 23:22:17] D2BS 3256: UseMerc: true HP: 70
+[10/05/26 23:22:37] D2BS 3256: Merc matched: Holy Freeze
+[10/05/26 23:22:48] D2BS 3256: act5+ BO
+[10/05/26 23:23:02] D2BS 3256: ÿc4=== [BAAL] ===
+[10/05/26 23:26:17] D2BS 3256: ÿc4=== [COUNTESS] ===
+[10/05/26 23:27:29] D2BS 3256: ÿc4=== [PIT] ===
+[10/05/26 23:29:26] D2BS 3256: ÿc4=== [ANDY] ===
+[10/05/26 23:30:24] D2BS 3256: ÿc4=== [MEPHISTO] ===
+[10/05/26 23:31:32] D2BS 3256: ÿc4=== [DIABLO] ===
+[10/05/26 23:37:12] D2BS 3256: Script ended
+[10/05/26 23:37:12] D2BS 3256:  [15:08] +5.41% / [Level 89] 62.34%
+[10/05/26 23:37:12] D2BS 3256: Script threads\autobuildthread.js ended
+[10/05/26 23:37:12] D2BS 3256: Script threads\partythread.js ended
+[10/05/26 23:37:13] D2BS 3256: Script threads\townchicken.js ended
+[10/05/26 23:37:23] D2BS 3256: Creating Game: pz-185
+[10/05/26 23:37:25] D2BS 3256: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/05/26 23:37:25] D2BS 3256: ÿc2D2BSÿc0 :: default.dbj running.
+[10/05/26 23:37:25] D2BS 3256: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [S.SFFW.nip]
+[10/05/26 23:37:25] D2BS 3256: Loaded ÿc9[S.SFFW.js]
+[10/05/26 23:37:25] D2BS 3256: equipped: [Head] 16
+[10/05/26 23:37:25] D2BS 3256: equipped: [Neck] 16
+[10/05/26 23:37:25] D2BS 3256: equipped: [Body] 21
+[10/05/26 23:37:25] D2BS 3256: equipped: [ArmR] 33
+[10/05/26 23:37:25] D2BS 3256: equipped: [ArmL] 26
+[10/05/26 23:37:25] D2BS 3256: equipped: [RingR] 15
+[10/05/26 23:37:25] D2BS 3256: equipped: [RingL] 13
+[10/05/26 23:37:25] D2BS 3256: equipped: [Belt] 19
+[10/05/26 23:37:25] D2BS 3256: equipped: [Boots] 13
+[10/05/26 23:37:25] D2BS 3256: equipped: [Mitts] 12
+[10/05/26 23:37:25] D2BS 3256: updateStat
+[10/05/26 23:37:25] D2BS 3256: granted: [Head] 14
+[10/05/26 23:37:25] D2BS 3256: granted: [Body] 22
+[10/05/26 23:37:25] D2BS 3256: granted: [ArmR] 41
+[10/05/26 23:37:25] D2BS 3256: Loaded ÿc9[AutoSmurf.js]
+[10/05/26 23:37:34] D2BS 3256: farmingON
+[10/05/26 23:37:37] D2BS 3256: MiniShopBot: true
+[10/05/26 23:37:37] D2BS 3256: UseMerc: true HP: 70
+[10/05/26 23:37:57] D2BS 3256: Merc matched: Holy Freeze
+[10/05/26 23:38:22] D2BS 3256: act5+ BO
+[10/05/26 23:38:35] D2BS 3256: ÿc4=== [BAAL] ===
+[10/05/26 23:41:48] D2BS 3256: ÿc4=== [COUNTESS] ===
+[10/05/26 23:43:05] D2BS 3256: ÿc4=== [PIT] ===
+[10/05/26 23:44:33] D2BS 3256: ÿc4=== [ANDY] ===
+[10/05/26 23:45:15] D2BS 3256: ÿc4=== [MEPHISTO] ===
+[10/05/26 23:46:21] D2BS 3256: ÿc4=== [DIABLO] ===
+[10/05/26 23:51:21] D2BS 3256: party has left: fowo-xb
+[10/05/26 23:51:21] D2BS 3256:  [13:57] +4.86% / [Level 89] 67.19%
+[10/05/26 23:51:21] D2BS 3256: Script threads\autobuildthread.js ended
+[10/05/26 23:51:21] D2BS 3256: Script threads\partythread.js ended
+[10/05/26 23:51:21] D2BS 3256: Script threads\townchicken.js ended
+[10/05/26 23:51:21] D2BS 3256: Script default.dbj ended
+[10/05/26 23:51:32] D2BS 3256: Creating Game: pz-186
+[10/05/26 23:51:33] D2BS 3256: ÿc2D2BSÿc0 :: Starting default.dbj
+[10/05/26 23:51:33] D2BS 3256: ÿc2D2BSÿc0 :: default.dbj running.
+[10/05/26 23:51:33] D2BS 3256: Loaded ÿc9[X.nip] [Y.nip] [Z.nip] [V.nip] [S.SFFW.nip]
+[10/05/26 23:51:33] D2BS 3256: Loaded ÿc9[S.SFFW.js]
+[10/05/26 23:51:33] D2BS 3256: equipped: [Head] 16
+[10/05/26 23:51:33] D2BS 3256: equipped: [Neck] 16
+[10/05/26 23:51:33] D2BS 3256: equipped: [Body] 21
+[10/05/26 23:51:33] D2BS 3256: equipped: [ArmR] 33
+[10/05/26 23:51:33] D2BS 3256: equipped: [ArmL] 26
+[10/05/26 23:51:33] D2BS 3256: equipped: [RingR] 15
+[10/05/26 23:51:33] D2BS 3256: equipped: [RingL] 13
+[10/05/26 23:51:33] D2BS 3256: equipped: [Belt] 19
+[10/05/26 23:51:33] D2BS 3256: equipped: [Boots] 13
+[10/05/26 23:51:33] D2BS 3256: equipped: [Mitts] 12
+[10/05/26 23:51:33] D2BS 3256: updateStat
+[10/05/26 23:51:33] D2BS 3256: granted: [Head] 14
+[10/05/26 23:51:33] D2BS 3256: granted: [Body] 22
+[10/05/26 23:51:33] D2BS 3256: granted: [ArmR] 41
+[10/05/26 23:51:33] D2BS 3256: Loaded ÿc9[AutoSmurf.js]
+[10/05/26 23:51:42] D2BS 3256: farmingON
+[10/05/26 23:51:44] D2BS 3256: MiniShopBot: true
+[10/05/26 23:51:44] D2BS 3256: UseMerc: true HP: 70
+[10/05/26 23:52:06] D2BS 3256: equipped: [Neck] 18
+[10/05/26 23:52:06] D2BS 3256: Merc matched: Holy Freeze
+[10/05/26 23:52:21] D2BS 3256: act5+ BO
+[10/05/26 23:52:32] D2BS 3256: ÿc4=== [BAAL] ===
+[10/05/26 23:56:17] D2BS 3256: ÿc4=== [COUNTESS] ===
+[10/05/26 23:57:38] D2BS 3256: ÿc4=== [PIT] ===
+[10/05/26 23:59:06] D2BS 3256: ÿc4=== [ANDY] ===
+[10/05/26 23:59:59] D2BS 3256: ÿc4=== [MEPHISTO] ===
