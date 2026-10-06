@@ -54,5 +54,6 @@
 - 이전 코드와 현재 코드의 동작 대조표(모의 실행 결과): `docs/claude/attack_compare.md`
 - clear / setPosition 흐름 해설(공부용, 줄 번호 기준): `docs/claude/attack_flow.md`
 - Pather 현황(SafeTele·setPosition 대조, 결함·정리 후보): `docs/claude/pather_status.md`
+- 150런 로그 검토(로그 판정·정리 내역, 치킨 분석, 보스가드 발동값·못 켜진 13건, 새 로그 읽는 법, 사용자 검토 대기 항목): `docs/claude/log_review_261006.md` (Claude 작성 261006)
 - **스킬 사거리**(계산 공식, 미사일 데이터, 측정 결과, 측정기 코드, 현재 값과 근거): `docs/claude/skill_range.md`. 사거리 관련 정보는 빠짐없이 여기에 기록한다 (261002)
   작업 전 반드시 먼저 읽는다. 결론이 바뀐 노트는 커밋 요청 때 함께 갱신한다 (261001).
