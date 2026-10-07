@@ -942,7 +942,7 @@ var Grant = {
 	updateStat: function (merc) {
 		Config.MercStat = {id: merc.classid, str: merc.getStat(0), dex: merc.getStat(2), lvl: merc.getStat(12)};  //260804
 		
-		print("updateStat");
+		print("updateMercStat");	//261007
 		
 		return true;
 	},

@@ -89,8 +89,16 @@ function main() {
 			}
 
 			try {
-				me.overhead("Going to town");
-				print("Going to town");
+				if (townCheck) {
+					me.overhead("Town check");	//261007
+					print("Town check");	//261007
+					Misc.trace("Town check");	//261007
+				} else {
+					me.overhead("Town chicken");	//261007
+					print("Town chicken");	//261007
+					Misc.trace("Town chicken");	//261007
+				}
+				
 				Town.visitTown();
 			} catch (e) {
 				Misc.errorReport(e, "TownChicken.js");

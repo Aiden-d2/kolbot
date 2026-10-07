@@ -276,7 +276,7 @@ var ClassAttack = {
 				return Pather.teleportTo(x, y);
 			}
 
-			return Pather.walkTo(x, y, 1);
+			return Pather.walkTo(x, y, 3);	//261007
 		}
 
 		return true;

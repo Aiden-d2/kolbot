@@ -166,7 +166,8 @@ function AutoSmurf() {
 		
 		Pather.useWaypoint(null); // Will walk to and interact with waypoint.
 
-		Pather.moveTo(me.x + myX, me.y + myY); // Move off of waypoint so others can reach it.	//260822
+		//Pather.moveTo(me.x + myX, me.y + myY); // Move off of waypoint so others can reach it.	//260822
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		
 		Pickit.pickItems();
 
@@ -797,7 +798,8 @@ function AutoSmurf() {
 		} else {
 			Pather.useWaypoint(destination);
 			delay(me.ping * 2 + 200);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			//Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		}
 		
 		steps.push("at " + Pather.getAreaName(me.area) + " " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006
@@ -2508,12 +2510,16 @@ function AutoSmurf() {
 		Pather.moveTo(me.x + myX, me.y + myY);	//260822
 		this.okCount();	//260922
 		Precast.doPrecast(true);
+		
+		Pather.teleport = false;
 
-		Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true);	//260822	//261002 no offset
+		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);
+		//Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true);	//260822	//261002 no offset
 		
 		Attack.clear(20);	//261002
 		
-		Pather.moveToPreset(me.area, 1, 737, 0, 0, true); //260719	//260822	//260929	//261002 no offset
+		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);
+		//Pather.moveToPreset(me.area, 1, 737, 0, 0, true); //260719	//260822	//260929	//261002 no offset
 
 		for (i = 0; i < 5; i += 1) {
 			if (Pather.usePortal(38)) {
@@ -2528,7 +2534,8 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 		
 		for (i = 0; i < path.length; i += 2) {	//260627
-			Pather.moveTo(path[i], path[i + 1], 10, true);	//260822	//261002 no offset: an offset spot with no path made moveTo return without moving (skipped node)
+			Pather.moveTo(path[i] + myX, path[i + 1] + myY, 10, true);
+			//Pather.moveTo(path[i], path[i + 1], 10, true);	//260822	//261002 no offset: an offset spot with no path made moveTo return without moving (skipped node)
 		}
 		
 		if (Leader) {
@@ -2548,6 +2555,8 @@ function AutoSmurf() {
 				break;
 			}
 		}
+		
+		Pather.teleport = true;
 		
 		if (Leader) {
 			D2Bot.printToConsole("=== TRIST ===", 7);
@@ -4083,7 +4092,7 @@ function AutoSmurf() {
 			}
 			
 			if (!leaderFigurine) {	//260922
-				delay(((Team.Profiles.length - 1 - myPos) % 4) * 15000 + 1);	//260916	//261002 reversed order so the leader goes last
+				delay(((Team.Profiles.length - 1 - Team.Profiles.indexOf(me.profile)) % 4) * 15000 + 1);	//261007
 			}
 			
 			Town.move("alkor");
@@ -4949,7 +4958,8 @@ function AutoSmurf() {
 			var i;
 				
 			for (i = 0; i < path.length; i += 2) {
-				Pather.moveTo(path[i], path[i + 1], 3, true);	//260822	//261002 no offset
+				//Pather.moveTo(path[i], path[i + 1], 3, true);	//260822	//261002 no offset
+				Pather.moveTo(path[i], path[i + 1], 3, true, false, true);	//261007
 			}
 		};
 
@@ -5467,34 +5477,36 @@ function AutoSmurf() {
 			}
 		}
 		
-		Town.move("malah");
-		
-		malah = getUnit(1, "malah");
-		
-		for (i = 0 ; i < 100 ; i += 1) {
-			if (i > 10) {
-				Misc.quitGame("Malah scroll not received");	//260930
-			}
+		if (!me.getQuest(37, 7)) {	//261007 talked with malah and scroll used
+			Town.move("malah");
 			
-			malah.interact();
-			if (malah && malah.openMenu()) {
+			malah = getUnit(1, "malah");
+			
+			for (i = 0 ; i < 100 ; i += 1) {
+				if (i > 10) {
+					Misc.quitGame("Malah scroll not received");	//260930
+				}
+				
+				malah.interact();
+				if (malah && malah.openMenu()) {
+					delay(500);
+					me.cancel();
+				}
+				
+				if (me.findItem(646)) {
+					break;
+				}
+				
 				delay(500);
-				me.cancel();
 			}
-			
-			if (me.findItem(646)) {
-				break;
-			}
-			
-			delay(500);
-		}
 
-		scroll = me.findItem(646);
-		
-		if (scroll) {
-			clickItem(1, scroll);
-			print("ÿc8!!! [SCROLL] !!!");	Misc.trace("!!! [SCROLL] !!!");	//261002
-			D2Bot.printToConsole("!!! SCROLL !!!", 8);
+			scroll = me.findItem(646);
+			
+			if (scroll) {
+				clickItem(1, scroll);
+				print("ÿc8!!! [SCROLL] !!!");	Misc.trace("!!! [SCROLL] !!!");	//261002
+				D2Bot.printToConsole("!!! SCROLL !!!", 8);
+			}
 		}
 		
 		Town.move("anya");
@@ -7410,12 +7422,12 @@ function AutoSmurf() {
 				break;
 				
 			case "BOing":
-				Messaging.sendToList(Team.Profiles, "BOCount");
 				BOing = true;
+				Messaging.sendToList(Team.Profiles, "BOCount");
 				break;
 			case "BOed":
-				Messaging.sendToList(Team.Profiles, "BOCount");
 				BOed = true;
+				Messaging.sendToList(Team.Profiles, "BOCount");
 				break;
 			case "BOCount":
 				BOCount += 1;

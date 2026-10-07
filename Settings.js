@@ -43,9 +43,7 @@ var Team = {
 
 var Build = {
 	getBuildType: function () {
-		var build = me.profile;
-		
-		switch (build) {
+		switch (me.profile) {	//261007
 		case profiles[0]:	//profile name
 			return "S.SFFW";	//build type
 			

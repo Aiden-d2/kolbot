@@ -4,6 +4,8 @@
 *	@desc		handle player movement
 */
 
+if (!isIncluded("Settings.js")) { include("Settings.js"); };	//261007
+
 // Perform certain actions after moving to each node
 var NodeAction = {
 	// Run all the functions within NodeAction (except for itself)
@@ -30,13 +32,9 @@ var NodeAction = {
 	// Kill monsters while pathing
 	killMonsters: function (arg) {	//260927
 		if (arg.clearPath !== false) {
-			//if (me.area === 108 || me.area === 125 || me.area === 126 || me.area === 127) {
-				//Attack.clear(20);
-			//} else {
-				if (!Attack.clear(20)) {
-					return "killMonsters";
-				}
-			//}
+			if (!Attack.clear(20)) {
+				return "killMonsters";
+			}
 		}
 		
 		return true;
@@ -135,16 +133,13 @@ var Pather = {
 	teleport: true,
 	walkDistance: 5,
 	teleDistance: 35,	//260829
-	//narrowAreas: [62, 63, 64],	//261006 teleport step 30 and node adjustment (Maggot Lair, Flayer Dungeon, 88, 89, 91, Arcane, 74)
 	cancelFlags: [0x01, 0x02, 0x04, 0x08, 0x14, 0x16, 0x0c, 0x0f, 0x17, 0x19, 0x1A],
 	wpAreas: [1, 3, 4, 5, 6, 27, 29, 32, 35, 40, 48, 42, 57, 43, 44, 52, 74, 46, 75, 76, 77, 78, 79, 80, 81, 83, 101, 103, 106, 107, 109, 111, 112, 113, 115, 123, 117, 118, 129],
 	recursion: true,
 
-	// teleport step for the current area (narrowAreas 30, else teleDistance). Every teleport path in moveTo and the SafeTele ring use it	//261001
-	getTeleDistance: function () {
-		//return this.narrowAreas.indexOf(me.area) > -1 ? 30 : this.teleDistance;
-		return this.teleDistance;	//261006
-	},
+	reflection: false,	//261007
+	myX: [-5, 0, 5, 0, -5, 5, 5, -5][Team.Profiles.indexOf(me.profile) % 8],	//261007
+	myY: [0, 5, 0, -5, 5, 5, -5, -5][Team.Profiles.indexOf(me.profile) % 8],	//261007
 
 	useTeleport: function () {
 		return this.teleport && !me.getState(139) && !me.getState(140) && !me.inTown && ((me.classid === 1 && me.getSkill(54, 1)) || me.getStat(97, 54));
@@ -158,7 +153,7 @@ var Pather = {
 		clearPath - kill monsters while moving
 		pop - remove last node
 	*/
-	moveTo: function (x, y, retry, clearPath, pop) {
+	moveTo: function (x, y, retry, clearPath, pop, random) {	//261007
 		if (me.dead) { // Abort if dead
 			return false;
 		}
@@ -180,7 +175,7 @@ var Pather = {
 
 			safeNode = false;
 
-			for (dist = Pather.getTeleDistance(); dist >= Config.SafeTele.Min; dist -= Config.SafeTele.Step) {
+			for (dist = Pather.teleDistance; dist >= Config.SafeTele.Min; dist -= Config.SafeTele.Step) {	//261007 removed getTeleDistance
 				step = Config.SafeTele.Step / dist * 180 / Math.PI;
 
 				for (i = 0; ; i += 1) {	//260524
@@ -219,7 +214,7 @@ var Pather = {
 				}
 				
 				//260823 match the landing check used by GIP (Attack.js:636) and gate before the monster scan
-				if (!Pather.checkSpot(tx, ty, 0x1 | 0x4 | 0x800 | 0x1000, false)) {	//261006
+				if (!Pather.checkSpot(tx, ty, 0x1, false)) {	//261007
 					continue;
 				}
 				
@@ -242,7 +237,7 @@ var Pather = {
 			return targetNode;
 		}
 		
-		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, //260807
+		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgX, orgY, valid, //261007
 			node = {x: x, y: y},
 			fail = 0;
 
@@ -255,10 +250,6 @@ var Pather = {
 		if (x === undefined || y === undefined) {
 			Misc.errorReport(new Error("moveTo undefined coords (" + x + ", " + y + ")"), "Pather.moveTo");	//260922 temp
 			throw new Error("moveTo: Function must be called with at least 2 arguments.");
-		}
-
-		if (getDistance(me, x, y) < 2) {
-			return true;
 		}
 
 		if (typeof x !== "number" || typeof y !== "number") {
@@ -276,17 +267,66 @@ var Pather = {
 		if (pop === undefined) {
 			pop = false;
 		}
+		
+		if (random === undefined) {	//261007
+			random = false;
+		}
+		
+		if (random) {	//261007
+			if (this.reflection) {
+				orgX = x;
+				orgY = y;
+				x = x + this.myX * -1;
+				y = y + this.myY * -1;
+				
+				this.reflection = false;
+			} else {
+				orgX = x;
+				orgY = y;
+				x = x + this.myX;
+				y = y + this.myY;
+				
+				this.reflection = true;
+			}
+		}
+
+		if (getDistance(me, x, y) < 2) {
+			return true;
+		}
 
 		useTeleport = this.useTeleport();
 
-		path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.getTeleDistance() : this.walkDistance);	//260716	//260823	//260921	//261001 getTeleDistance
+		path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007 removed getTeleDistance
 
-		if (!path) {
+		if (!path) {	//no need? unreachable path returns empty array [], not falsy
 			throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y);	//260509
 		}
 		
-		if (!path.length) {	//261006 empty path (target not reachable from here): moveTo ends without moving
-			Misc.trace("moveTo no path -> " + x + "," + y + " tele:" + useTeleport);
+		if (random && !path.length) {	//261007
+			Misc.trace("moveTo no random path -> " + x + "," + y + " tele:" + useTeleport + " adjusting...");
+			D2Bot.printToConsole("moveTo no random path -> " + x + "," + y + " tele:" + useTeleport + " adjusting...");
+			
+			x = orgX;
+			y = orgY;
+			path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
+		}
+		
+		if (!path.length) {	//261007 adjusting empty path (target not reachable from here)
+			Misc.trace("moveTo no path -> " + x + "," + y + " tele:" + useTeleport + " adjusting...");
+			D2Bot.printToConsole("moveTo no path -> " + x + "," + y + " tele:" + useTeleport + " adjusting...");
+			
+			valid = this.getNearestWalkable(x, y, 10, 2, 0x1 | 0x4 | 0x800 | 0x1000);
+			
+			if (valid) {
+				Misc.trace("moveTo adjusted path -> " + valid[0] + "," + valid[1] + " tele:" + useTeleport);
+				D2Bot.printToConsole("moveTo adjusted path -> " + valid[0] + "," + valid[1] + " tele:" + useTeleport);
+				
+				path = getPath(me.area, valid[0], valid[1], me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
+			} else {
+				Misc.trace("moveTo no adjusted path -> " + x + "," + y + " tele:" + useTeleport);
+				D2Bot.printToConsole("moveTo no adjusted path -> " + x + "," + y + " tele:" + useTeleport);
+				return false;
+			}
 		}
 
 		path.reverse();
@@ -355,7 +395,7 @@ var Pather = {
 					}
 					
 					if (this.teleportTo(checkedNode.x, checkedNode.y)) {
-						path = getPath(me.area, x, y, me.x, me.y, 1, this.getTeleDistance());	//260613	//261001 narrowAreas 30 after a SafeTele hop too
+						path = getPath(me.area, x, y, me.x, me.y, 1, this.teleDistance);	//261007 removed getTeleDistance
 						
 						if (!path) { throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y); }	//260509
 						
@@ -376,9 +416,8 @@ var Pather = {
 				This will be removed if getPath changes
 			*/
 			if (getDistance(me, node) > 2) {
-				// Make life in Maggot Lair easier + flayer
-				//if (this.narrowAreas.indexOf(me.area) > -1) {	//260716	//260823	//260921	//261001 narrowAreas
-				if (!me.inTown) {	//261006
+				// Make life in Maggot Lair easier
+				if ([62, 63, 64].indexOf(me.area) > -1) {	//261007
 					adjustedNode = this.getNearestWalkable(node.x, node.y, 10, 2, 0x1 | 0x4 | 0x800 | 0x1000);	//260823
 					
 					if (adjustedNode) {
@@ -434,7 +473,7 @@ var Pather = {
 					}
 
 					// Reduce node distance in new path
-					path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? rand(25, this.getTeleDistance()) : rand(4, 8));	//260508	//261001 narrowAreas 25-30
+					path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? rand(25, this.teleDistance) : rand(2, this.walkDistance));	//261007 removed getTeleDistance
 					fail += 1;
 
 					if (!path) {
@@ -687,7 +726,7 @@ ModeLoop:
 		clearPath - kill monsters while moving
 		pop - remove last node
 	*/
-	moveToUnit: function (unit, offX, offY, clearPath, pop) {
+	moveToUnit: function (unit, offX, offY, clearPath, pop, random) {
 		var useTeleport = this.useTeleport();
 
 		if (offX === undefined) {
@@ -704,6 +743,10 @@ ModeLoop:
 
 		if (pop === undefined) {
 			pop = false;
+		}
+
+		if (random === undefined) {	//261007
+			random = false;
 		}
 
 		if (!unit || !unit.hasOwnProperty("x") || !unit.hasOwnProperty("y")) {
@@ -732,7 +775,7 @@ ModeLoop:
 		clearPath - kill monsters while moving
 		pop - remove last node
 	*/
-	moveToPreset: function (area, unitType, unitId, offX, offY, clearPath, pop) {
+	moveToPreset: function (area, unitType, unitId, offX, offY, clearPath, pop, random) {
 		if (area === undefined || unitType === undefined || unitId === undefined) {
 			throw new Error("moveToPreset: Invalid parameters.");
 		}
@@ -751,6 +794,10 @@ ModeLoop:
 
 		if (pop === undefined) {
 			pop = false;
+		}
+
+		if (random === undefined) {	//261007
+			random = false;
 		}
 
 		var presetUnit = getPresetUnit(area, unitType, unitId);
