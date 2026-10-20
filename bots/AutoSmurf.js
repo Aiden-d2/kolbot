@@ -52,8 +52,8 @@ function AutoSmurf() {
 		teamOk = false,
 		teamCount = 0,
 		guardChicken = null,	//261004 bossGuard: LifeChicken saved while the boss guard is on (null = guard off)
-		guardSeen = null,	//261006 bossGuard: boss units seen while the guard is on (gid -> name, first/last HP and ms), traced at bossEnd
-		guardStart = 0,	//261006 bossGuard: when the guard went on (ms in that trace line)
+		guardSeen = null,	//261006 bossGuard: boss units seen while the guard is on (gid -> name, last HP and ms), traced at bossEnd	//261020 last scan only
+		guardStart = 0,	//261020 bossGuard: when the first boss was found (0 = not yet); the chicken off / last times count from it
 
 		syncBO = false,
 		syncWP = false,
@@ -1006,7 +1006,9 @@ function AutoSmurf() {
 
 		guardChicken = Config.LifeChicken;
 		guardSeen = {};	//261006
-		guardStart = getTickCount();	//261006
+		guardStart = 0;	//261020 set at the first boss found
+
+		Misc.trace("bossGuard on: " + pct + "%");	//261020
 
 		if (!pct) {
 			Misc.trace("bossGuard chicken off: pct 0 (now)");	//261004
@@ -1022,8 +1024,13 @@ function AutoSmurf() {
 				hp = Math.round(unit.hp * 100 / 128),	//261006
 				seen = guardSeen[unit.gid];	//261006
 
-			if (!seen) {	//261006 first and last scan of each boss unit
-				seen = guardSeen[unit.gid] = {name: unit.name, hp0: hp, t0: getTickCount() - guardStart};
+			if (!guardStart) {	//261020 the first boss found (any of them): 0s
+				guardStart = getTickCount();
+				Misc.trace("bossGuard found: " + unit.name + " " + hp + "%");
+			}
+
+			if (!seen) {	//261006 last scan of each boss unit	//261020 first scan removed
+				seen = guardSeen[unit.gid] = {name: unit.name};
 			}
 
 			seen.hp1 = hp;
@@ -1048,26 +1055,28 @@ function AutoSmurf() {
 			}
 
 			fired = true;	//261006 was Attack.onBossLow = null
-			Misc.trace("bossGuard chicken off: pct " + pct + ", " + unit.name + " " + Math.round(unit.hp * 100 / 128) + "%@" + ((getTickCount() - seen.t0) / 1000).toFixed(1) + "s");	//261010 call value + boss HP
+			Misc.trace("bossGuard chicken off: " + unit.name + " " + hp + "%@" + ((getTickCount() - guardStart) / 1000).toFixed(1) + "s");	//261020 seconds after found
 			self.setLifeChicken(0);
 		};
 
 		return true;
 	};
 
-	// what the guard saw: each boss unit's first and last scan (HP% and seconds after the guard went on). The last scan of a dead boss is about when it died (within one clear tick)	//261006
+	// the guard goes off: the last boss's last scan (HP% and seconds after found). The last scan of a dead boss is about when it died (within one clear tick)	//261006	//261020 last line only
 	this.traceGuardSeen = function () {
-		var gid, seen,
-			list = [];
+		var gid,
+			last = null;
 
 		for (gid in guardSeen) {
-			if (guardSeen.hasOwnProperty(gid)) {
-				seen = guardSeen[gid];
-				list.push(seen.name + " " + seen.hp0 + "%@" + (seen.t0 / 1000).toFixed(1) + "s-" + seen.hp1 + "%@" + (seen.t1 / 1000).toFixed(1) + "s");
+			if (guardSeen.hasOwnProperty(gid) && (!last || guardSeen[gid].t1 > last.t1)) {
+				last = guardSeen[gid];
 			}
 		}
 
-		Misc.trace("bossGuard seen: " + (list.join(", ") || "none") + " (end@" + ((getTickCount() - guardStart) / 1000).toFixed(1) + "s)");
+		if (last) {	//261020 nothing when no boss was found
+			Misc.trace("bossGuard last: " + last.name + " " + last.hp1 + "%@" + (last.t1 / 1000).toFixed(1) + "s");
+		}
+
 		guardSeen = null;
 	};
 
@@ -1091,7 +1100,7 @@ function AutoSmurf() {
 			
 			Config.TownCheck = false;	//261013
 
-			Misc.trace("bossEnd revive: start");	//261004
+			Misc.trace("revive start");	//261004	//261020 the line's place is where I died
 
 			for (i = 0; i < 10 && !me.inTown; i += 1) {
 				if (me.mode === 17) {
@@ -1109,9 +1118,11 @@ function AutoSmurf() {
 				}
 			}
 
-			Misc.trace("bossEnd revived: " + i + "s");	//261004
+			if (Config.LifeChicken !== guardChicken) {	//261020 the line only after a chicken off
+				Misc.trace("bossGuard chicken on: " + guardChicken + "%");
+			}
+
 			this.setLifeChicken(guardChicken); // alive again, in town
-			Misc.trace("bossEnd chicken back: " + guardChicken + " (revived)");	//261004
 
 			Town.move("portalspot");
 
@@ -1123,10 +1134,8 @@ function AutoSmurf() {
 				}
 			}
 
-			Misc.trace("bossEnd portal: " + Pather.getAreaName(me.area));	//261004
-
 			if (Leader) {
-				Misc.trace("bossEnd reopen portal: " + (Pather.makePortal() ? "opened" : "failed"));	//261004 my own portal closed when I took it back
+				Pather.makePortal();	//261004 my own portal closed when I took it back	//261020 trace removed
 			}
 
 			if (me.area !== area) {
@@ -1146,8 +1155,6 @@ function AutoSmurf() {
 			} else if (getDistance(me.x, me.y, corpse.x, corpse.y) > 20) { // getCorpse skips it and returns true	//261004
 				Misc.quitGame("Failed to get corpse", "far " + Math.round(getDistance(me.x, me.y, corpse.x, corpse.y)));
 			} else {
-				Misc.trace("bossEnd corpse: at " + Math.round(getDistance(me.x, me.y, corpse.x, corpse.y)));	//261004
-
 				if (!Town.getCorpse(true)) {
 					Misc.quitGame("Failed to get corpse", me.dead ? "died" : "timeout");	//261004 reasons split
 				}
@@ -1161,12 +1168,10 @@ function AutoSmurf() {
 			
 			Config.TownCheck = true;	//261013
 
-			Misc.trace("bossEnd corpse: picked");	//261004
+			Misc.trace("corpse picked");	//261004	//261020
 		} else if (Config.LifeChicken !== guardChicken) {
 			this.setLifeChicken(guardChicken);
-			Misc.trace("bossEnd chicken back: " + guardChicken);	//261004
-		} else {
-			Misc.trace("bossEnd chicken stayed: " + guardChicken + " (boss never at pct)");	//261004
+			Misc.trace("bossGuard chicken on: " + guardChicken + "%");	//261004	//261020
 		}
 
 		guardChicken = null;
