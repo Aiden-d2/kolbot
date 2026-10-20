@@ -1,5 +1,7 @@
 # 스킬 사거리 (측정·데이터·결정) (261002)
 
+> **261020:** 이 노트는 261006 이전 기준이다. 사용자 수정(261006~261020)으로 바뀐 값·흐름은 `handoff.md` 0절을 따른다(Nova·Frozen Orb 사거리 10).
+
 스킬 사거리에 관한 것은 모두 이 문서에 모은다. 260930 측정 결과는 원래 `attack_design.md` 12-1 한 줄에만 있어 찾기 어려웠다(261002 사용자 요청으로 분리).
 코드의 사거리 값은 `libs/Misc.js` `Skill.getRange`(10줄부터). 이 값은 `Attack.setPosition`의 접근 거리이자 회피 반경 R = min(사거리, `Dodge.Range` 10)의 재료다.
 
@@ -500,7 +502,7 @@
 | Charged Bolt, Frost Nova | 6 | 기존 |
 | Whirlwind, Molten Boulder | 7 | 기존. Molten Boulder 데이터(261003): `moltenboulder` Vel 8 × Range 50 × 3/64 = **18.75**, Size 2, CollideKill 1. 볼더가 느려 9칸에서는 빗나갈 우려로 7 유지(사용자 261003). 261003부터 회피 없음(사거리 9 미만), 치킨이 늘면 9 또는 회피 대상 포함 재논의 |
 | Shock Wave (243) | 7 | 260930 7→10→7(Armageddon과 같은 값, D.FGOM 진동 방지). 261002 그대로 7, 게이트(회피 없음), 5칸보다 가까우면 5칸 커서(`Wereform.js`). 261003 가드 제거, 사거리 9 미만이라 회피 없음 |
-| Nova (48), Frozen Orb (64), Poison Nova | 9 | 260917 9, 260930 하루 10 뒤 9로(FONV 진동 방지로 FO·Nova 같은 값). 측정 Nova 11.3, FO 구슬 14.1. FO 파편 계산(261003, 구슬 위치에서): `frozenorbbolt` 18 × 25 × 3/64 ≈ 21.1, `frozenorbnova` 24 × 25 × 3/64 ≈ 28.1(맞는 범위는 미측정) |
+| Nova (48), Frozen Orb (64), Poison Nova | 9 (**261008 사용자 수정: Nova·Frozen Orb 10**, Poison Nova 9) | 260917 9, 260930 하루 10 뒤 9로(FONV 진동 방지로 FO·Nova 같은 값). 측정 Nova 11.3, FO 구슬 14.1. FO 파편 계산(261003, 구슬 위치에서): `frozenorbbolt` 18 × 25 × 3/64 ≈ 21.1, `frozenorbnova` 24 × 25 × 3/64 ≈ 28.1(맞는 범위는 미측정) |
 | Poison/Plague Javelin, Charge, Firestorm | 10 | 기존 |
 | Inner Sight, Slow Missiles | 13 | 기존 |
 | Howl (130) | 15 | 260901, 260930 20→15(측정 15.0, 스킬 레벨 20). B.WCRY `LowManaSkill = [130]` 삭제(War Cry 5 ↔ Howl 진동 방지) |

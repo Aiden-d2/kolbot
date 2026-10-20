@@ -1,12 +1,92 @@
-# 인수인계 메모 (261006)
+# 인수인계 메모 (261020)
 
 새 대화는 이 문서부터 읽는다. 이어서 CLAUDE.md(작업 규칙, **로그 규칙**)와 분석 노트를 필요한 만큼 읽는다.
 
+**0절이 최신이다.** 1절 이하와 다른 분석 노트(`attack_design.md`, `pather_status.md`, `skill_range.md` 등)는 261006 기준이라, 0절에 적은 값·흐름은 사용자 수정(261006~261020)으로 바뀌었다. 0절과 다르면 0절(=main 코드)을 따른다.
+
 ---
+
+## 0. 사용자 직접 수정 (261006~261020, main `869c963`) (Claude 작성 261020)
+마지막 Claude 병합(PR #49, `60023dd` 261006) 뒤 사용자가 GitHub 업로드로 올린 커밋 13개(`f50a2cd`~`869c963`, 그중 `058f161`·`869c963`은 내용 변경 없음)를 읽고 정리했다. 47개 파일, +1291/−631. 내용은 커밋 diff(`git diff --ignore-cr-at-eol 60023dd 869c963`)에서 확인한 것만 적었다. **의도는 코드·주석에서 읽은 것이고, 사용자에게 확인하지 않았다.**
+
+### 0-1. 빌드·프로필
+- `Settings.js`: profiles[4](a5)가 P.CONV → S.FONV(261006) → **M.HYBR**(261020). `getBuildType`은 `switch (me.profile)`(261007).
+- **새 빌드 M.HYBR**(아마존 Freezing Arrow, `builds/M.HYBR.js`·`nips/M.HYBR.nip`): 1레벨 기본 공격, 6레벨 Cold Arrow, 30레벨 Freezing Arrow, 80레벨 Guided Arrow(언타임드 22, LowManaSkill 22)·`Config.Decoy = true`. 25레벨 회피 켜기는 다른 빌드와 같음.
+- 모든 빌드(M.HYBR 제외) 45레벨 조건 안에 `LowGold = 레벨 × 3000`, `StashGold = 레벨 × 2000` 추가.
+- P.CONC: Holy Shield 20 → Conviction 17, Meditation 3 → 1, 83레벨 `AttackSkill[2]·[6] = 123`(Conviction). P.CONV: Vigor `from: 40`, 46 → 30레벨에 `Config.Conviction = true`(Cleansing 끔). S.FONV: 에너지 150 → 100, 바이탈 210 → 260, 71 → 65레벨 블록. S.FIRE: Static 제거, Energy Shield → Telekinesis 17(50레벨부터), StaticList 블록 주석. S.SFFW: Warmth 제거, Static 17 → 16, ES·TK → **Enchant 20**(50레벨부터), 65레벨 `Config.Enchant`(Player `[0]`, Merc `[338]`, Pet `[357, 417, 428]`). A.TRAP: 용병 Holy Freeze, `TierGoal.ArmR` 31 → 41.
+- nip: `Config.PickitFiles`에 `T.nip` 추가. T.nip 스탯 주석·구간 재정리(itempreventheal 117, itempierce 156 등 추가), V.nip 용병 헬름·갑옷 `[merc] == 31 → 11` 등 정리, X·Z·A.TRAP·P.CONC·N.SUMM·S.FIRE·S.SFFW nip 일부 조정(S.FIRE·S.SFFW gauntlets → lightgauntlets).
+
+### 0-2. 이동 (`libs/Pather.js`)
+- **narrowAreas·`getTeleDistance` 삭제**(261006~261007): 텔레 간격은 모든 지역 `teleDistance` 35. 노드 보정(`getNearestWalkable`)은 다시 **62·63·64(매고트 굴)만**. 실패 재계산 걷기 간격 `rand(4, 8)` → `rand(2, walkDistance)`.
+- **`moveTo` 6번째 인자 `random`**(261007): 참이면 목표에 프로필별 오프셋(`Pather.myX/myY`, `[-5,0,5,0,-5,5,5,-5]`/`[0,5,0,-5,5,5,-5,-5]`[프로필 순번 % 8], Pather.js가 `Settings.js`를 include)을 더하고, 부를 때마다 `reflection`으로 부호를 뒤집는다(+오프셋 ↔ −오프셋). 오프셋 목표에 경로가 없으면 원래 좌표로 다시 계산. `getDistance < 2` 조기 반환은 오프셋 계산 뒤로 옮김.
+- **빈 경로 처리**(261007·261012·261018): 경로가 없으면 `getNearestWalkable(x, y, 15, 2, 0x1)`로 옮긴 좌표로 다시 계산. 못 찾거나 같은 칸이면 최대 10회 무작위 걸음(`walkTo`) 뒤 경로 재계산, 10번째에 `throw`. 이 과정의 trace와 **콘솔(기본색)** 줄: `moveTo no random path`, `moveTo no path`, `moveTo adjusted path`(형식 `-> x,y in 지역`), `invalid path ... random move...`(trace만).
+- `clearPath`가 숫자를 받음(261008): `true`는 20으로 바꾸고, `NodeAction.killMonsters`는 `Attack.clear(clearPath)`, `popChests`는 `Misc.openChests(clearPath, 노드 x, y)`(상자 반경·기준점이 노드). `Misc.openChests(range, orgx, orgy)`가 기준점을 받음(불 목록도 같은 기준).
+- `moveToUnit`·`moveToPreset`에 `random` 인자 추가(기본값만 정하고 `moveTo`로 넘기지는 않음 — 0-7 ②).
+- SafeTele(261019·261020): `Angle` 75 → 60, `Step` 5 → 7, `Min` 10 → 7, `Skip`에 77·78 추가(`[62, 63, 64, 77, 78, 120, 132]`). 후보 칸 검사는 `0x1`(261006에 넣었던 0x1|0x4|0x800|0x1000은 261007에 되돌림).
+- `PathDebug.enableHooks = true`(261013, 경로 그리기 켜짐).
+
+### 0-3. 전투·회피
+- **회피 값**(261008, `Config.Dodge`·`Attack.setPosition`): `Range` 10 → **8**(감지·발동 반경, 지금 자리와 후보 자리 모두 몹 수를 8칸 안에서 셈. 261003의 "min(사거리, 10) − 2"는 삭제), 새 키 **`Move` 13**(걷기 회피 링 = min(사거리, 13), 텔레는 사거리), `MinSkillRange` 9 → **10**. setPosition 걷기 도착 기본 minDist 1.5 → **3**(소서 스태틱 접근만 1).
+- `Skill.getRange`: Nova(48)·Frozen Orb(64) 9 → **10**(261008). 이제 MinSkillRange 10과 같아 FONV 주력이 회피 대상이다.
+- 회피 채점 조건에 `|| this.usingBow` 추가(활 사용 시 회피, 의도로 보임) — 0-7 ①.
+- `Attack.clear` 끝 줍기: 261006에 내 위치 기준으로 바꿨다가 261015에 다시 org 기준(`pickItems(range, orgx, orgy)`).
+- Paladin: `reposition` 이동 문턱 0 → 3칸(261018), `walkTo` minDist 1 → 3(261007). 바알 preattack의 해머 오라 순서를 Pather 노드 오라(260915부터 Conviction 우선)와 같게 맞춤(마지막 `AttackSkill[4]` 분기 → Vigor).
+- Amazon(261016): `Config.Decoy`(true 또는 스킬 레벨 문턱) — 25칸 안 대상에 Decoy가 없거나 대상이 Decoy 자리에서 15칸 넘게 벗어나면 대상 자리에 시전. 화살 확인·afterAttack 수리 확인 삭제, 수리 필요 시 doAttack에서 `visitTown()`. 120·132에서 Charged Strike(24)로 바꾸던 `//eom` 분기 삭제.
+- `Skill.getManaCost`: lvlmana를 16비트 부호 있는 값으로 해석(Decoy처럼 레벨당 마나가 줄어드는 스킬, 261016).
+- Sorceress Enchant(261019·261020, `Precast.js`): `Config.Enchant.Enabled`일 때 doPrecast마다 `enchant()` 호출. 파티원은 `Enchant.Player`의 직업만, 용병·소환수는 `Merc`·`Pet` 목록(또는 `Revive`)만, 모두 state 16(Enchant)이 없을 때만 시전, 자신은 시전 대상에서 뺌. Numpad 1 = `Precast.enchant()`.
+
+### 0-4. 아이템·마을
+- `Equip` bodyLoc(261020 업로드분): 화살 5 → 4, 활 4 → 5, 아마존 활 5(D2 bodyloc 4 오른손·5 왼손, 활은 왼손·화살은 오른손이 원래 게임 배치). 바바리안의 classid 103 유니크 5칸 고정 예외 삭제.
+- 화살통(261014~261019): `Config.QuiverPercent` 20(새 키). `Town.needRepair`는 화살통 값(화살 81, 볼트 58)을 낼 골드가 있고 장착+인벤토리 화살 합이 최대 묶음의 20% 이하이거나 장착 화살통이 없으면 `buyQuiver`. `Town.repair`의 buyQuiver: 3막은 Hratli 대신 상점 NPC에서 사고 옛 화살통은 팔기, 다른 막은 버리고 사기, 2개(장착+예비) 구매. 3막 Hratli 건너뛰기는 수리·shopItems에만. 아마존 1막 shopItems 방문 삭제. `Pickit.canPick` 화살·볼트 합계 350·250 초과면 안 줍기(0-7 ③).
+- Runeword: Zephyr(활 6종), Sanctuary(방패 3종) 추가.
+
+### 0-5. AutoSmurf 흐름
+- `start`: 시작 때 라다먼트 북(552)을 버림(0-7 ④). 큐브·TP책 칸 정리를 doChores 뒤로, 웨이 이용 전 `Pickit.pickItems()`. 2막 이동 조건 블록·지난 게임 북 읽기 블록 주석 처리. MAIN에서 `checkRole` 뒤 `Pickit.pickItems()`(261016). 노멀 마을 준비에 `clearInventory`·`buyPotions`(261014).
+- **오프셋 → random 이동**(261007): 웨이·syncWP 뒤 흩어지기 `moveTo(me.x + myX, me.y + myY)` → `moveTo(me.x, me.y, 3, false, false, true)`. 트리스트람: 스톤 이동은 `moveToPreset(..., 0, 0, true, true, true)`(random은 전달 안 됨), 경로 순회 `moveTo(..., 10, true, false, true)`, 경로 첫 지점 `25165,5119` 추가(261008), 걷기 고정(`Pather.teleport = false` → 끝에 true). 디아블로 `followPath`도 random. 알코어 대기 순번은 `Team.Profiles.indexOf(me.profile)`로 직접 계산.
+- `clearToExit(현재, 목표)`: 세 번째 인자 삭제, `moveToExit(목표, true, true)`로 고정(261020).
+- 앤디 노멀(261008): 정리 이동 정리, `22547,9619`에서 리더 포탈, 리더의 `boss portal` 포탈(22548,9582 뒤)과 trace 삭제. 처치 뒤 재집결 노멀 `22549,9562`·그 외 `22549,9520`(random).
+- 보스가드 값: 써모너 `bossGuard(0)` → **100**(처음 본 스캔에서 끔), 쉥크 85 → **50**(261006), 에인션트 15 → **10**이고 조건이 살아 있는 고대인 **2마리 이하**(`alive > 1` → `> 2`). `bossGuard chicken off` trace에 `@초` 추가. bossEnd 시체 회수 동안 `Config.TownCheck` 끔(261013). 리더 보스 포탈의 `boss portal: opened/failed` trace 삭제(디아·에인션트·바알, 포탈은 그대로 엶).
+- 써모너: 도착 뒤 4방향 걷기 삭제, tpReady 뒤 리더 `teleportTo(me.x, me.y − 8)`(261008), `bossEnd(10)`을 저널 박스 clear 뒤로(261012), `moveToPreset(74, 2, 357, 3, 3)` 주석. 노멀 끝에 웨이 40 → 46 + okCount(261008).
+- 라다먼트 북(261012): 북 확인은 바닥(`getUnit(4, 552)`)만, 줍기 성공 시 okCount 뒤 읽기, 못 주우면 `getQuestItem failed` 퇴장. `getQuestItem`에 실패 trace 3줄.
+- 듀리엘(261018): 시작에 케인 메뉴 열고 닫기, 리더는 okCount → `useUnit(2, 100, 73)` → 포탈, 팔로워는 `usePortal(40)` → 대기 → okCount.
+- 쉥크(261008): 리더는 웨이 전, 팔로워는 portalspot 뒤 okCount 한 번씩 추가.
+- 블러드 레이븐(261006): 웨이 2가 없을 때만 웨이 받기, 카샤 조건 `getQuest(2, 1)` → `!getQuest(2, 0)`.
+- 말라(261007): `!getQuest(37, 7)`일 때만 말라 대화·스크롤.
+- 바알 웨이브: 직업별 자리 이동·precast를 웨이브 루프 앞으로(아마존 `15092,5045`, 드루 5018 → `5015`, 261016). 팔라딘 preattack 오라에 Conviction 우선.
+- `BOing`·`BOed` 처리 순서(플래그 먼저, 메시지 뒤).
+- 골드 떨구기 trace(`Picking up/Dropping/Retaking N Gold`), `maxDropAmount` 상한 사실상 제거(0-7 ⑥).
+
+### 0-6. 로그·게임 밖
+- **trace 형식**(261011, `Misc.trace(msg, skip)`): `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`(게임 밖은 `(OOG loc N)`). 두 번째 인자가 참이면 위치를 붙이지 않는다: 게임 경계 `=== [게임이름] ===`(예전 `=== game 이름 ===`), 구간 헤더 `=== [X] ===`, `[Error]`, `[Quit] stopDefault`, `party has left`.
+- 새 trace: `party has left`(PartyThread, 261008), `Town check`/`Town chicken`(TownChicken 사유 구분, print·overhead도 같은 문구, 예전 `Going to town`), `Trying to make room/Not enough room/<classid> not found`(getQuestItem), 화살통 구매 줄(`not enough quiver`, `equipQuiver ...`), `enchant: 이름`(print).
+- 콘솔 새 줄: `moveTo no path`·`adjusted path` 계열(기본색, `(지역 x,y)` 없음). 로그 규칙상 기본색은 조기 종료 이유 자리라 겹친다(관찰, 변경 제안 아님).
+- ToolsThread 일시정지: 모든 스크립트에 `Pausing./Resuming.` 표시.
+- 게임 밖: 계정 생성 대기 `(뒤집은 순번 + 1) × 25초` → `순번 × 30초 + 30초`, 문구 `Waiting for account creation`(261010). OOG 캐릭터 선택 화면 대기 5초 → 2초.
+
+### 0-7. 읽다가 발견한 결함 의심 (보고만, 수정 요청 대기)
+| # | 위치 | 내용 | 근거 |
+|---|---|---|---|
+| ① | `Attack.js:549` setPosition `scoring` | `this.usingBow`에 `()`가 없어 함수 자체(항상 참)를 본다 → **모든 직업이 레벨과 무관하게 회피 채점**, 탈라샤 무덤 오리피스 회피 끄기(`AutoSmurf.js:3963`, 260812)도 무력화 | `Attack.usingBow`는 `Attack.js:1372`의 함수 |
+| ② | `Pather.moveToPreset`/`moveToUnit` | `random`을 받지만 `moveTo` 호출에 넘기지 않음 → 트리스트람 스톤 `moveToPreset(..., true, true, true)`는 오프셋 없이 이동 | `Pather.js` 783·791·835줄 |
+| ③ | `Pickit.canPick` case 5·6 | `invQuivergetStat(70)`(점 빠짐) → 두 화살통이 다 있으면 ReferenceError. 또 `getItem("aqv", 0)`(보관)을 equi, `1`(장착)을 inv로 받아 이름이 반대이고, 조건이 보관 화살통 존재를 요구해 장착만 있으면 제한이 안 걸림 | `Town.needRepair`는 1 = 장착 |
+| ④ | `AutoSmurf.start` | `while (book) { book.drop() }`에서 `book`을 다시 읽지 않아 북이 있으면 **무한 루프** | `AutoSmurf.js` 106~112줄 |
+| ⑤ | `Pather.moveTo` 무작위 걸음 | `walkTo(me.x + rand(1, 0) ? 5 : -5, ...)`는 `(me.x + rand) ? 5 : -5`로 계산돼 절대 좌표 (5, 5)로 걷는다. 또 `getNearestWalkable`이 false면 `x = valid[0]`이 undefined가 되어 그 뒤 재계산이 undefined 좌표로 돈다 | `Pather.js` 341줄, 연산자 우선순위 |
+| ⑥ | `AutoSmurf` 골드 떨구기 | `Math.min(d, m > d ? m : d)`는 항상 `d` → `maxDropAmount` 상한이 없어짐(의도일 수도 있음) | 식 자체 |
+| ⑦ | `Skill.getManaCost` | 문턱 `> 62767`은 32767의 오타로 보임. 실제 값 범위에서는 결과 같음(추정) | |
+| ⑧ | `Town.repair` | `print("ineract closed")` 오타 | |
+
+### 0-8. 1절 이하에서 바뀐 항목 (261006 기록 대비)
+- 1절 "회피 반경·SafeTele 순서(261003)", 3절 10·29·30번: 감지 R − 2·`MinSkillRange` 9·`Angle` 75·Step 5·Min 10은 0-2·0-3 값으로 바뀜.
+- 1절 "Pather·setPosition"(261001) 텔레 간격 30(7개 지역), 3절 13번: narrowAreas 삭제로 없어짐.
+- 1절 "오프셋 정리(261002)", 3절 23~25번: 흩어지기는 random 이동으로 바뀜(0-5).
+- 1절 "보스 보호(261004)", 3절 37·39번: 써모너 100, 쉥크 50, 에인션트 10·2마리 이하, 리더 보스 포탈 trace 삭제.
+- 1절 "라다먼트 북", 3절 40번: 북 확인·읽기 흐름 0-5.
+- `log_review_261006.md` 7절 "사용자 검토 대기": 쉥크 50%로 정해짐(사용자 수정), 에인션트 조건 2마리 이하·10%(사용자 수정), syncBO는 쉥크 okCount 추가(사용자 수정).
+- CLAUDE.md 로그 규칙의 trace 형식: 0-6으로 바뀜(CLAUDE.md도 함께 고침).
 
 ## 1. 현재 상태
 - **150런 로그 검토·로그 정리(261006, 세션 `session_017K1n1kRZcUariujeLZLjcq`):** 사용자가 올린 179게임 로그(`log` 브랜치 `logs/`)로 확인 항목·치킨·보스가드를 분석하고, 로그 관련 수정은 Claude 제안대로 반영(사용자 지시 261006). 확인 끝난 임시 로그 삭제(`[MP]`, `usePortal 342`, `[chest] skip`, `[OD]`, `[TK]` 래퍼, doChores 단계, moveTo 3줄, `[MoveToSlot]` 성공, 상점 trace, summoner quest), 실패 때만 남김(moveTo 빈 경로, `[TK]` 20회), 새 로그(치킨 주변 몹·종료 지연, 물약 실패 `inv:`, `bossGuard seen`, syncBO·syncWP 단계, `tpReady received`, `usePortal ok`). **로그 외 코드 변경(보스가드 값, 에인션트 조건, syncBO 집결 등)은 사용자가 다시 검토한다.** 전체 내용: `log_review_261006.md`
-- **코드:** main `4f55291`(261001) 기준. 크래시·로그·포털 작업은 PR #7(`claude/funny-pasteur-4ymxd2`), 회피 재설계·스킬 사거리는 PR #8, Precast.summon은 PR #9, Pather·setPosition·상자는 PR #10·#11(`claude/pather-analysis-refactor-w9td75`, 세부는 `pather_status.md`)로 들어왔다. 각 작업의 게임 확인 항목은 아래 목록과 3절 표(10~14번)에 있다.
+- **코드:** 지금 main은 `869c963`(261020, 0절). 아래는 261001(`4f55291`) 기준 기록이다. 크래시·로그·포털 작업은 PR #7(`claude/funny-pasteur-4ymxd2`), 회피 재설계·스킬 사거리는 PR #8, Precast.summon은 PR #9, Pather·setPosition·상자는 PR #10·#11(`claude/pather-analysis-refactor-w9td75`, 세부는 `pather_status.md`)로 들어왔다. 각 작업의 게임 확인 항목은 아래 목록과 3절 표(10~14번)에 있다.
 - **게임 밖 흐름(261001, PR #16):** 캐릭터 선택 화면 생성, 복구할 수 없는 로그인 오류에서 정지, 대기 남은 시간 표시, 게임 밖 회색 콘솔 로그(`OOGLog`). 세부는 5절 끝, 게임 확인은 3절 15~17번.
 - **유형 B 크래시 수정(261001, PR #18):** NPC 메뉴를 열 때 대사 중이면 `me.cancel()` 대신 스페이스로 넘긴다(`Packet.skipTalk`/`endTalk`, `Misc.js`). 세부는 7절 끝, 게임 확인은 1절 인게임 검증 8번.
 - **회피 없는 스킬·변신 쿨타임(261002):** War Cry·Shock Wave·Armageddon은 사거리 밖일 때만 접근(회피 없음), 쇼크웨이브는 5칸보다 가까운 몹에 5칸 커서로 시전, Armageddon 사거리 20, 변신 빌드에서 허리케인 선시전 안 함, `Skill.cast`의 아마게돈 변신 가드. 세부는 `attack_design.md` 12-1(쇼크웨이브 시전 좌표, 회피 없는 스킬, 변신 빌드 쿨타임), 게임 확인은 3절 20~22번.
