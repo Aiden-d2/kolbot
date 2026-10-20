@@ -106,8 +106,8 @@
 | 순서 | 위치(`AutoSmurf.js`) | trace |
 |---|---|---|
 | 1 | `bossGuard` 호출 | `bossGuard on: 15%` |
-| 2 | `onBossLow`, 처음 본 스캔 한 번(`guardStart`를 이때 넣음) | `bossGuard found: Andariel 100%` |
-| 3 | `onBossLow`, HP ≤ pct | `bossGuard chicken off: Andariel 14%@13.0s` |
+| 2 | `bossScan`(261020 이름 변경, 옛 `onBossLow`), 처음 본 스캔 한 번(`guardStart`를 이때 넣음) | `bossGuard found: Andariel 100%` |
+| 3 | `bossScan`, HP ≤ pct | `bossGuard chicken off: Andariel 14%@13.0s` |
 | 4 | `bossEnd` 시작(`traceGuardSeen`) = 보스가드 off | `bossGuard last: Andariel 0%@16.1s` (마지막 보스의 마지막 발견 ≈ 킬, 스캔 1회 오차) |
 | 5 | 치킨 복구(산 사람 okCount 뒤 / 죽은 사람 부활 직후) | `bossGuard chicken on: 35%` (치킨 off가 있었을 때만, 부활 표시 없음) |
 - 치킨이 꺼져 있던 시간 = 4번 − 3번. 치킨 off가 없으면 3·5번이 없고, 보스를 못 보면 2~4번이 없다. 에인션트는 2번이 처음 본 고대인, 4번이 마지막 고대인. 써모너(pct 100)는 3번이 `@0.0s`.
@@ -118,8 +118,26 @@
 - 예전 "I'm dead": 260930 써모너 사망 퇴장 사유였고, 261004 시체 회수 도입 때 삭제(`417e5b5`). 지금은 `revive start` 줄의 위치가 죽은 자리.
 
 ### 0-11. 미결 (261020)
-- 아케인 등 getPath 오류와 관찰 로그 전체: 다른 대화에서 분석. 지침은 `log_guide.md`.
+- 아케인 등 getPath 오류와 관찰 로그: 0-12에서 분석(261020).
 - 사용자 수정 계획 목록(아직 시작 안 함): bs로그·trace 정책(usePortal은 실패만), clickWP 웨이 보유 게이트 → `Pather.wpAreas`, goWP·getWP 랜덤무브, travel 몬스터 리게이트 좌표, chores cancel 제거, clearInventory·fillTome 딜레이, Evaluate 게이트(qty는 property, 나머지는 `.Tier`), okCount 대기 방식(`msgleader {}`, 카운트 리셋 1, 팀사이즈), 라다먼트(완료 불가 플래그 게이트 N+2, 리셋 후 재입장 퇴장 또는 5분, getQuestItem canMakeRoom 0·4), getQuestItem 눈·심장·뇌 클리어 로그, 소켓 티어(아머·헬름 루비, 방패 다이아, 무기 티르·아이오), 타운체크 병합(Misc·TownChicken·ToolsThread)과 속도, 오토빌드쓰레드 싱크(혼자 포징 멈춤).
+
+### 0-12. 261013·261020 로그 검토와 로그 정리 (Claude 작성 261020, 세션 `session_0177DGM8xZ8swJWS3gnzWyim`)
+데이터: 261013 묶음(10/12 12:42~10/13 02:13, 74게임, trace·d2bs·ItemLog, 콘솔 없음) + `261014 jail.txt`(10/14 콘솔 발췌) + 261020 묶음(10/19 12:13~10/20 19:46, 약 161게임, ScriptErrorLog 포함, 실행 중 코드 바뀜: 10/20 13:00 8명 `Pather is not defined`, `ineract`/`interact` 혼재). 두 묶음 모두 사용자 확인으로 이번 수정 전 코드.
+- **아케인 무한 반복(261013 Pz-37):** a1이 19:49:34~20:01:00 같은 자리(25447,5450)에서 `moveTo no path -> 25019,5454` → `adjusted path -> 25019,5454`(보정 칸 = 원래 목표) 5,932회. 써모너 리더 `while (거리 > 10) moveToPreset`에 탈출 조건이 없어 반복, 팔로워는 tpReady 대기(시간 제한 없음). 20:01 재시작은 리소스 과다로 매니저가 꺼진 것(사용자). 사용자 관찰: 손으로 캐릭터를 옮기자 경로가 생김 → 출발 위치에 따라 경로가 달라짐. 경로가 빈 이유는 미확인. 261020 묶음 SUMMONER 24회는 재발 없음.
+  - **사용자 수정(main `3900f04`·`c002b48`):** 써모너 리더 while의 try/catch 삭제 → 랜덤 걸음 10회 뒤 throw가 로더까지 가서 게임 종료. 파밍 써모너는 catch에서 `earlyReturn`을 보내고 리더는 마을로, 팔로워는 대기 루프에서 `earlyReturn`을 보고 둘 다 `return true`(바알 소울 게이트와 같은 방식).
+  - 남은 경우: 경로는 있는데 `moveTo`가 false(throw 없음)면 while이 계속 돈다(코드 확인, 사례 없음).
+- **throw 전파(261020 묶음):** `usePortal → moveToUnit → moveTo`에는 catch가 없어 10회 뒤 throw가 로더까지 가서 게임 종료(10/20 02:49 a7, Pandemonium에서 Durance 3층 좌표 17602,8069로 이동 시도, `x:undefined`는 0-7 ⑤ 결함, 47816e6 수정됨). 랜덤 걸음은 벽에 막히면 제자리(5017,5067에서 6회)이고 그 회차엔 경로를 다시 계산하지 않는다.
+- **Jail 2층 경로 없음:** 4번째 사례(261006 17770,8131 / 10/14 17530,8071 / 10/19 17770,8011, 모두 Jail 2 목표 y 8000대). 10/19 13:10은 팔로워 a2·a4·a7이 2층 입구(17834,6640)에 있었고 a2가 그 자리에서 `[useUnit] timeout dist:0`, 리더 a1은 3층 17766,8073 도착. 사용자 가설(3층 대신 1층 쪽으로 돌아간 뒤 3층 출구로 경로 없음)과 맞는 자료이나 경로가 없는 이유는 미확인.
+- **Pz-55 무한 반복(261013):** 라다먼트 북을 든 4명이 시작 단계 `while (book) book.drop()`(북을 다시 안 읽음, 0-7 ④)에서 멈춰 `Team didn't join` 퇴장. 47816e6에서 수정됨. 수정 확인용으로 `dropping radament book` 유지.
+- **라다먼트 분실 복구 경로 확인(3절 40번):** Pz-54 a6 `getQuestItem failed` → Pz-55(위) → Pz-56 `radament atma: 9,0 1 9,1 0` → `Radament book reset` → Pz-57 `book visible: false` → `quest item not found` → Pz-58 획득. 라다먼트 줄은 사용자 수정 계획(0-11)과 함께 다룸, 유지.
+- **그 밖의 사실(판정·조치 미정):** 앤디 노멀을 8명 모두 못 찾음 2게임 연속(10/19 Pz-9·10, `boss not found: 156` → `Not ready for act2`). 인챈트 `unit.getParent(...) is undefined`(`Precast.js:481`, 10/20 16:28, getParent 두 번 호출 줄). 카운테스 `moveToPreset: Couldn't find preset unit - id 580` 2건(10/20 16:50·19:00, 탑 지하 5층 도착 실패). `Lost Khalim's Will`, `Baal: Couldn't find portal` 각 1건. `[TK] talk skipped 20 npc:Greiz` 2/2. TP 실패 1건(10/19 20:00 Flayer Dungeon 3, `portals:none`). 타운치킨 발동 0~3초 뒤 Life Chicken이 15/29(261013)·30/44(261020).
+- **desync:** 261020 묶음의 okCount 넘침(14·13)은 사용자가 한 프로필만 계속 재시작한 테스트 탓(사용자). 판정에서 제외.
+- **화살통 줄:** 결과 줄 42건(350)과 게임당 1회 방문만 셌을 뿐 검증하지 않음(끼워져 쓰이는지, 3막 판매 흐름, 261020 bodyLoc 변경 뒤 동작 미확인). 유지. 관찰: 옛 코드 Pz-1 a5 `0 + 350` → 꽉 찬 예비 화살통을 버리고 새로 삼.
+- **MoveToSlot:** 원인 미결. 실패 줄 유지, `inv:` 필드만 삭제(실패 34건 중 33건 `closed`·1건 `-`, 창을 여는 코드가 없어 성공도 `closed`일 것 → 원인 판별 불가).
+- **로그 삭제(261020, 사용자 승인, Claude 수정):** `[Quit] stopDefault`(+`tick`, `ToolsThread.js`), `moveTo entered town`(`Pather.js`), `usePortal ok`(`Pather.js`), `ancients loop`, `syncWP start/end`(+`syncTick`·`portalSec`), syncBO start/end 전부(+`syncTick`·`steps`·`steps.push`), `tpReady received`, print `Config.LifeChicken`(`AutoSmurf.js`), `identify ... sold unid`(`Town.js`), `[MoveToSlot]`의 `inv:`(`Storage.js`). 동작 변경 없음(지운 변수는 지운 trace에서만 씀, `usePortal`의 `startTick`·`tries`는 실패 줄이 써서 유지).
+- **사용자 수정(같은 날 업로드):** `Attack.onBossLow` → `Attack.bossScan`(5곳), 골드 trace `goldPile` → `goldPile.getStat(14)`.
+- **유지·후속:** 다음 로그에서 확인 후 삭제: `dropping radament book`, 골드 나눔 줄, 새 보스가드·시체 회수 줄. 사용자 수정 계획과 함께: `Not enough room for <이름>`(이름 undefined), okCount 누가 늦었나, 라다먼트 줄. getPath 원인 추적 로그는 판별 가설이 없어 넣지 않음.
+- **Claude 실수(261020):** 화살통 줄 개수만 세고 "검증됨, 삭제 후보"로 올림. getPath에 이미 정상으로 판정된 목표 칸을 보는 로그를 가설 없이 제안. `inv:` 필드를 "창 문제 아님"으로 잘못 판정. 같은 목적의 `tpReady received`·`usePortal ok`를 syncBO 결정 뒤 다시 물음. → CLAUDE.md 작업 규칙에 검증·로그 제안 규칙 추가.
 
 ## 1. 현재 상태
 - **150런 로그 검토·로그 정리(261006, 세션 `session_017K1n1kRZcUariujeLZLjcq`):** 사용자가 올린 179게임 로그(`log` 브랜치 `logs/`)로 확인 항목·치킨·보스가드를 분석하고, 로그 관련 수정은 Claude 제안대로 반영(사용자 지시 261006). 확인 끝난 임시 로그 삭제(`[MP]`, `usePortal 342`, `[chest] skip`, `[OD]`, `[TK]` 래퍼, doChores 단계, moveTo 3줄, `[MoveToSlot]` 성공, 상점 trace, summoner quest), 실패 때만 남김(moveTo 빈 경로, `[TK]` 20회), 새 로그(치킨 주변 몹·종료 지연, 물약 실패 `inv:`, `bossGuard seen`, syncBO·syncWP 단계, `tpReady received`, `usePortal ok`). **로그 외 코드 변경(보스가드 값, 에인션트 조건, syncBO 집결 등)은 사용자가 다시 검토한다.** 전체 내용: `log_review_261006.md`
@@ -144,7 +162,7 @@
   - **원복 내용:** `default.dbj` 리스너 등록 삭제, `Pickit.js`의 `gidList`(원본 FastPick 잔재였던 `[]`까지)·`gidAlive`·`itemEvent`·`pickItems`의 gid 단계와 trace 삭제. clear 끝 땅 훑기는 org 원만(기준점이 없으면 내 위치 원) 유지(#35의 "내 위치 원도"는 #36에서 되돌린 상태 그대로). `Attack.js:429` 줄 끝 메모에서 gid 목록 언급 삭제. 같은 정리로 Pickit의 쓰이지 않던 원본 잔재도 삭제: `sortFastPickItems`(원본 `fastPick` 정렬, `fastPick`은 260907에 삭제됨), `pickItem`의 `stats.color` 계산 줄은 주석 처리(원본은 `print("Picked up " + stats.color + ...)`의 색 접두어였으나 우리는 `me.overhead`로 바꾸며 안 씀). `itemColor` 함수는 남김(사용자 결정 261003).
 - **리더 팀 대기(261003, 사용자 요청):** 팔로워가 realm down·Unable To Connect 대기·restart·멈춤 중이어도 리더가 방을 만들고 2분 뒤 `Team didn't join` 으로 나가기를 반복하던 문제. 팔로워는 조인 대기 화면(`D2BotFollow.dbj` case 5)에서 리더에게 mode 3 `requestGame`(내용 `{profile}`)을 100ms 간격 5개 묶음 + 1초 쉼으로 계속 보낸다(최대 간격 약 1.1초, mode 3을 보내는 곳은 이것과 `joinCheck`뿐). 반영(리더만): `ReceiveCopyData` case 3에서 `joinWait[프로필] = getTickCount()`(gameInfo 검사 앞), 로비 case 1의 Create 직전 `teamWait`가 나를 뺀 `Team.Profiles` 모두의 마지막 시각이 3초 이내일 때까지 기다림(상한 없음, 멈춘 팔로워가 있으면 영구 대기, 로비를 벗어나면 중단). 대기 시작 뒤 5초가 지나도 빠진 프로필이 있을 때부터 콘솔 회색 한 줄 `Team wait: a3, a5 - wait (loc 1)`과 상태바 `Team wait: a3 a5`(목록이 바뀔 때 갱신). 5초 안에 차면 둘 다 없음(정상 종료 뒤 팔로워는 1초 내외로 따라 나온다, 사용자 확인). 사유는 팔로워 자기 콘솔에 남는다. 상태 파일(DataFile) 표시 방식은 사용자 설계안(메시지 수신)으로 대체돼 쓰지 않음. 일부러 적은 인원으로 돌리면 `Settings.js` `names`도 줄여야 함. 게임 확인 3절 35번.
 - **보스 보호·시체 회수(261004, 사용자 요청):** 써모너에만 있던 "치킨 끄고 죽어도 킬까지 대기" 장치를 공통 함수로. 배경: 보스전에서 한 명이 치킨으로 나간 뒤 나머지가 감지해 나가는 약 0.3초(PartyThread 100ms × 3) 안에 보스가 죽으면, 나간 쪽만 킬을 못 해 다음 게임부터 디싱크(관찰: 앤디·써모너·이주얼·디아블로). 방장(리더)이 이미 끝낸 퀘스트는 그 방에서 꺼지므로(6절 퀘스트 줄) 못 잡은 쪽은 따라잡지 못한다.
-  - `bossGuard(pct)`(`AutoSmurf.js`): 원래 치킨 값을 `guardChicken`에 저장. pct 0이면 바로 치킨 끔(써모너, 도착 시점). pct > 0이면 `Attack.onBossLow`에 훅을 넣고, `Attack.clear` 몬스터 스캔이 보스 유닛(`spec.ids` 일치)을 넘길 때 `hp*100/128 <= pct`면 한 번 치킨을 끈다(trace `bossGuard chicken off`). 에인션트(540~542)는 살아 있는 고대인이 한 마리일 때만.
+  - `bossGuard(pct)`(`AutoSmurf.js`): 원래 치킨 값을 `guardChicken`에 저장. pct 0이면 바로 치킨 끔(써모너, 도착 시점). pct > 0이면 `Attack.onBossLow`(261020 `bossScan`으로 이름 변경)에 훅을 넣고, `Attack.clear` 몬스터 스캔이 보스 유닛(`spec.ids` 일치)을 넘길 때 `hp*100/128 <= pct`면 한 번 치킨을 끈다(trace `bossGuard chicken off`). 에인션트(540~542)는 살아 있는 고대인이 한 마리일 때만.
   - `bossEnd(range)`: 보스 clear의 try/catch 바로 뒤. okCount(킬 확인, 죽은 사람은 시체로 대기해 크레딧을 받음) → 죽었으면 위치 기록 → `me.revive()`(mode 17일 때, 1초 × 10, 실패 `Revive failed`) → 마을 도착 후 치킨 복구 → portalspot → `usePortal(죽은 지역, null)`(120이면 118, 실패 `Corpse portal not found`) → 리더는 그 자리에서 `makePortal`(자기 포탈은 타면 닫힘) → 120이면 `moveToExit(120)` → `moveTo(x, y)` → 시체 확인(0.5초 × 5) 뒤 `Town.getCorpse(true)`(실패는 모두 `Failed to get corpse`, trace 상세로 구분: `not seen` 시체가 안 보임 / `far N` 20칸 밖 / `died` 줍다가 죽음 / `timeout` 30초, 261004 사용자 요청) → okCount(산 사람이 그 자리에서 엄호하며 대기). 산 사람은 첫 okCount 뒤 치킨 복구. 보호를 안 켰으면(파밍) 아무것도 안 함. 기존 okCount는 모두 유지.
   - 적용: 써모너 `bossGuard(0)`·`bossEnd(10)`(기존 `setLifeChicken(0)`·죽음 퇴장·치킨 복구 삭제, `okCount(10)` 유지), 라다먼트 85, 앤디·메피스토·이주얼·쉥크·에인션트 15, 디아블로 15(`!getQuest(26,0)`일 때만), 바알 15(`!getQuest(40,0)`일 때만). 듀리엘 제외: 킬은 14,5만 켜고(bit0은 메쉬프) 다음 게임에도 퀘스트가 살아 있어 다시 잡으면 복구됨.
   - 리더 포탈: 디아블로 별 자리(`diabloPrep` 전), 앤디 normal `moveTo(22548, 9582)` 뒤, 바알 132 `moveTo(15134, 5923)` 뒤. 에인션트는 118의 120 출구 앞에서 열고 들어감(팔로워 `usePortal(118)` → `moveToExit(120)`). 제단을 누르면 정상(120)의 TP가 모두 닫히고, 전투 중 120에서 TP를 열면 고대인이 리셋된다(6절).
@@ -225,6 +243,7 @@
 - D2BS 소스(noah-/d2bs)나 kolbot 원본(kolton/d2bot-with-kolbot)을 확인해야 하면 공개 저장소에서 받는다.
 
 ## 3. 게임에서 확인할 것 (사용자 확인 대기)
+- **261013·261020 로그 결과(0-12):** 40번 북 분실 경로 통과, 42번 통과(`sold unid` 로그 삭제), 39번 루프 1회(`ancients loop` 삭제), 24번 `no random path` 뒤 원래 좌표로 진행, 16·17·27번 상황 없음.
 - **261006 150런 결과:** 13·14·15·18·23·37·38·40(정상 경로)·41번 통과, 19번 해소로 봄, 16·17·27·42번과 40번 북 분실 경로는 상황 없음, 24번은 웨이 주변 빈 경로가 잦음. 세부는 `log_review_261006.md` 4절. 1절 인게임 검증 1·2·6번 통과, 5번 현상 확정(원인 미확정, `inv:` 추가), 9번 추적 중단.
 | # | 항목 | 확인 방법 | 관련 |
 |---|---|---|---|

@@ -5,6 +5,7 @@
 ---
 
 ## 1. 작업 규칙 (CLAUDE.md 요약, 분석에 해당하는 것)
+- **본 것만 판정하고, 가설·판별 기준·다음 할 일 없이 로그를 제안하지 않는다**(CLAUDE.md 작업 규칙, 사용자 지시 261020). 줄 개수만 센 것은 검증이 아니다.
 - **분석·보고만 한다.** 코드는 사용자가 "수정해/반영해/적용해/고쳐"라고 분명히 말할 때만 고친다. 결정(채택, 그렇게 가자)은 수정 요청이 아니다.
 - 확실한 것만 말한다. 추정은 추정이라고 밝히고, 근거(로그 줄, 시각, 프로필, 게임 이름, 코드 줄)를 붙인다.
 - 새 변수·함수·인자·로그를 만드는 제안은 그 항목을 밝혀 승인을 받는다. 결정 목록에는 사용자가 정한 것만 올리고 Claude 제안은 "제안"으로 따로 적는다.
@@ -27,7 +28,7 @@
 ## 3. trace 형식 (시기별)
 | 시기 | 줄 형식 |
 |---|---|
-| 261011 이후 | `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`. 게임 밖은 `(OOG loc N)`. `Misc.trace(msg, true)`인 줄은 위치 없음: 게임 경계, 구간 헤더, `[Error]`, `[Quit] stopDefault`, `party has left` |
+| 261011 이후 | `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`. 게임 밖은 `(OOG loc N)`. `Misc.trace(msg, true)`인 줄은 위치 없음: 게임 경계, 구간 헤더, `[Error]`, `party has left`(261020 전 로그에는 `[Quit] stopDefault`도) |
 | 261001~261010 | `M/D H:M:S [지역 x,y] 내용`(0 채움 없음), 게임 밖 `[OOG loc N]` |
 
 - 게임 경계: `=== [게임이름] ===`(261011 이후), 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다.
@@ -64,30 +65,28 @@
 ### 4-2. 치킨·사망 원인 (261006~261007)
 목적: 치킨 순간 무엇에 맞았나, 치킨 뒤 사망(종료 지연), 타운치킨과 치킨의 관계.
 - `[Quit] Life Chicken H/M | mode:N near: 이름 dN sN, ... (+N)` — 내 모드(me.mode)와 30칸 안 가까운 몹 5마리(거리, spectype 비트. 코드는 `& 0x7`이면 보스급(유니크·챔피언·슈퍼유니크), `& 0x1`이면 슈퍼유니크로 씀). 콘솔(빨강)은 `Life Chicken H/M (지역 x,y)`.
-- `[Quit] stopDefault Nms` — `quit()` 전에 스크립트 4개를 멈추는 데 걸린 시간. 261006 분석의 "치킨 뒤 2~4초 종료 지연 → 사망 3건"의 원인 확인용.
+- (261020 삭제) `[Quit] stopDefault Nms` — 261013·261020 로그 1,816건 0~344ms. 종료 지연 원인이 아님을 보고 삭제.
 - `Town check` / `Town chicken` — TownChicken이 마을에 간 이유(TownCheck 조건 / HP·MP 조건). 예전 `Going to town`.
 - `visitTown start by:<스크립트> tick:` / `visitTown back tick:` — 누가(default.dbj / TownChicken) 언제 갔다 왔나.
 - `goToTown take TP failed start tick: made:` — TP 실패 기록(추적은 중단됨, 실패 기록용).
 - 콘솔 `You died in last game`(빨강) — 다음 게임 시작에 찍힘(사망한 게임은 그 앞 게임).
-- 판정: `log_review_261006.md` 5절과 같은 표(구간별 게임·치킨·게임당, 장소, 프로필), 치킨이 타운치킨 발동 몇 초 뒤인가, 지역 진입 몇 초 안인가(4-3의 `usePortal ok`·구간 헤더 기준), near 몹 종류·거리, stopDefault 시간과 사망의 관계.
+- 판정: `log_review_261006.md` 5절과 같은 표(구간별 게임·치킨·게임당, 장소, 프로필), 치킨이 타운치킨 발동 몇 초 뒤인가, 지역 진입 몇 초 안인가(구간 헤더 기준. 261020 전 로그는 `usePortal ok`), near 몹 종류·거리.
 
 ### 4-3. 합류·동기화 (261006)
 목적: 누가 어느 단계에서 늦었나. 보스가드가 못 켜진 원인(`log_review_261006.md` 6-2의 2·3·4·13번: 코드상 설명 안 됨 / River of Flame 1분 기록 없음 / 원인 불명).
-- `syncBO start` / `syncBO end: ready Ns, at 지역 Ns, okCount Ns, home Ns`(BO를 받은 쪽은 `(BOed)`) — start만 있고 end가 없으면 그 사이에서 멈춤.
-- `syncWP start: actN WP` / `syncWP end: there Ns, end Ns`
-- `tpReady received` — 리더 포털 신호를 받은 시각.
-- `usePortal ok: 출발 -> 도착 tries:N ms:N` — 포털 진입 시각. moveTo 줄이 없어서 지역 전환 시각은 이 줄로 본다.
+- (261020 삭제, 사용자 결정) `syncBO start/end`, `syncWP start/end`, `tpReady received`, `usePortal ok` — Claude가 261006에 합류 분석용으로 넣은 줄. 261020 전 로그에만 있다. syncBO는 노멀 조기 반환(`me.diff === 0`)에 end가 찍히지 않아 start만 있어도 멈춘 것이 아니었다.
 - `usePortal failed target: owner: unit: pre: tick: tries:<시도:gid sent/click/none/dead@ms> portals:<gid/classid/주인/지역/좌표/mode/거리>` — 내 포털일 때만.
 - `[Quit] Party desynced 1·2: okCount N teamCount N teamOk X` — 개수가 모자랐나(한 명 없음) 넘쳤나(호출 횟수 불일치).
 - `party has left: 이름`(위치 없음) — 퇴장할 때까지 100ms마다 반복될 수 있다(의도). 첫 줄만 센다.
-- 판정: 같은 게임에서 프로필별 tpReady → usePortal ok 간격, 늦은 프로필의 바로 앞 줄(무엇을 하던 중인가: 마을·`Town chicken`·syncBO 단계·포털 실패).
+- 판정: 늦은 프로필의 바로 앞 줄(무엇을 하던 중인가: 마을·`Town chicken`·포털 실패). 누가 okCount를 안 보냈는지는 지금 로그로 알 수 없다(사용자 수정 계획 0-11 okCount 대기 방식과 함께 다룸).
 
 ### 4-4. 이동·경로 (Pather)
 목적: **아케인 등 getPath 오류(사용자가 따로 보기로 한 핵심)**, 텔레포트·유닛·웨이 실패.
 - 빈 경로 처리(261020 최종, `handoff.md` 0-2): `moveTo no random path -> x,y in 지역 adjusting...`(random 오프셋 목표에 경로 없음 → 원좌표로) → `moveTo no path -> x,y in 지역 adjusting...` → `moveTo adjusted path -> x,y in 지역`(보정 칸으로 경로가 나왔을 때만) → `invalid path -> 내x,내y in 지역 random move...`(랜덤 걸음, 최대 10회, 10번째 실패면 `[Error] ... moveTo: Failed to generate path`). 앞 세 줄은 콘솔(기본색)에도 찍힌다(사용자 임시 확인용, 정상 종료 판정에서 조기 종료 줄로 착각하지 않는다).
   - **이 형식은 main `72a1980`(261020 15:40) 이후다.** 그 전 코드(261007~261020 오전)는 보정 조건·랜덤 걸음 괄호가 달랐다(`handoff.md` 0-7 ⑤). 로그가 언제 코드인지 먼저 본다.
   - 아케인 사례 판정: 같은 좌표로 `moveTo no path`가 반복되는가, `adjusted`가 있는가, `invalid path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 4절 9번)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
-- `moveTo entered town, walk the rest -> x,y path:N`
+- (261020 삭제) `moveTo entered town` — 5건 정상.
+- throw 전파: 랜덤 걸음 10번째의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
 - `[useUnit] timeout iter: dist: ping: area:`
@@ -99,14 +98,14 @@
 ### 4-5. 퀘스트
 - 라다먼트 북(261004·261012): `dropping radament book`(게임 시작에 가진 북을 버림) / `radament gate: 9,0 9,1 9,5 book` / `radament atma: ...`(분실 뒤 리더 아트마 대화, N+1) / `radament book visible: true/false 9,5` / `!!! [BOOK] !!!` / `radament book read: 9,5 false`(false = 읽음). 실패: `[Quit] Radament quest item not found`(누가 못 봄), `[Quit] getQuestItem failed`(줍기 실패), `[Quit] Radament book reset`. getQuestItem 줄: `Trying to make room for 이름`, `Not enough room for 이름`, `<classid> not found`.
   - 판정: 정상 경로(visible → read) 비율, 분실 복구 N+1(atma 9,0 true 9,1 false) → N+2(visible false, 퀘스트 꺼짐) → N+3(획득)이 실제로 이어지는가.
-- `ancients loop: 39,0 X` — 에인션트 루프 회차마다.
+- (261020 삭제) `ancients loop` — 48/48 1회.
 
 ### 4-6. 마을·아이템
 - 화살통(261014~261019, 활 직업 = M.HYBR): `interact closed`(상점 창이 열려 있어 스페이스로 닫음) → `not enough quiver: 장착 + 예비` → 3막 `equipQuiver moved` / 그 밖 `equipQuiver dropped`, `invQuiver dropped` → 3막 `equipQuiver sold`, `invQuiver sold`(Ormus에게 팔고 350개짜리로 되사기) → `equipQuiver`, `invQuiver`(구매 성공) → `equipQuiver N / invQuiver N`(결과). 판정: 구매 실패(결과 줄이 `no quiver`)·같은 게임 반복 방문.
 - 골드 나눔(261010): 리더 골드 < 5000(18레벨 이상)이면 팔로워가 `Dropping N Gold`, 리더가 `Picking up N Gold`, 15초 안에 안 주우면 `Retaking N Gold`. 줄 안의 goldPile은 유닛 객체 문자열일 수 있다.
-- 감정: `identify failed / slow: 이름 (scroll|tome, Nms)`, `identify stopped: no ID scroll`, `identify: no gold for ID scroll, sold unid 이름`.
-- 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item: inv:open/closed` — 261006 결과는 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(Harrogath 게임 시작). `inv:`로 인벤토리 창 상태 확인. `[MoveToSlot] no room, dropped blocker`.
-- `[Storage.MoveTo] retry / catch`, `moved from cube to drop/sell`, `[TK] talk skipped N npc:`(스페이스 20번 다 씀, 261006에 Greiz 1건), `[hire] hiring retry (N/5)`.
+- 감정: `identify failed / slow: 이름 (scroll|tome, Nms)`, `identify stopped: no ID scroll`. (261020 삭제) `sold unid` — 13건 동작.
+- 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`.
+- `[Storage.MoveTo] retry / catch`, `moved from cube to drop/sell`, `[TK] talk skipped N npc:`(스페이스 20번 다 씀, 261006·261020에 각 1건, 모두 Greiz 20), `[hire] hiring retry (N/5)`.
 - d2bs 로그 `enchant: 이름/classid`(S.SFFW 65레벨부터 아마존·2막 용병·발키리·섀도 워리어·그리즐리).
 
 ### 4-7. 게임 밖 (회색 콘솔 + trace `(OOG loc N)`)
