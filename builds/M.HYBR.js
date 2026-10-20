@@ -159,8 +159,10 @@ var AutoBuildTemplate = {
 			}
 		},
 
-	46:	{
+	80:	{
 			Update: function () {
+				Config.AttackSkill = [-1, 31, -1, 31, -1, 22, -1];		// Guided Arrow
+				Config.LowManaSkill = [22, -1];
 				Config.Decoy = true;
 			}
 		}
