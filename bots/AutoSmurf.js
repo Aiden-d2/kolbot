@@ -5906,25 +5906,14 @@ function AutoSmurf() {
 		}
 		
 		Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260916 //260926	//260929
-		
-	BaalLoop:	//260629
-		while (true) {
-			if (!getUnit(1, 543)) {
-				break BaalLoop;
-			}
 	
-			if (me.classid === 0) {	//ama
-				Pather.moveTo(15092, 5045);	//261016
-			} else if (me.classid === 3) {	//pal
-				Pather.moveTo(15092 + rand(-5, 5), 5030);	//260909
-			} else if (me.classid === 4) {	//bar
-				Pather.moveTo(15092, 5028);
-				Precast.doPrecast(true);
-			} else if (me.classid === 5) {	//dru
-				Pather.moveTo(15092, 5015);	//261016
-			} else {
-				Pather.moveTo(15092, 5040);
-			}
+		Pather.moveTo(15092, 5032, 3, true, true, true);	//261020
+		
+	BaalLoop:	//261020
+		while (true) {
+			//if (!getUnit(1, 543)) {
+				//break BaalLoop;
+			//}
 			
 			Precast.doPrecast();
 			
@@ -5950,17 +5939,31 @@ function AutoSmurf() {
 				} while (monster.getNext());
 			}
 
-			if (wave) {
+			if (wave && !wave5) {
 				Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260926	//260929
 				
 				this.checkHydra();
 				
-				if (me.classid === 6 && !wave5) {
+				if (me.classid === 6) {
 					resetTrap = true;
+				}
+				
+				if (me.classid === 0) {	//ama
+					Pather.moveTo(15092, 5045);	//261016
+				} else if (me.classid === 3) {	//pal
+					Pather.moveTo(15092 + rand(-5, 5), 5030);	//260909
+				} else if (me.classid === 4) {	//bar
+					Pather.moveTo(15092, 5028);
+					Precast.doPrecast(true);
+				} else if (me.classid === 5) {	//dru
+					Pather.moveTo(15092, 5015);	//261016
+				} else {
+					Pather.moveTo(15092, 5040);
 				}
 			}
 			
 			if (wave5) {
+				Pather.moveTo(15092, 5028, 3, true, false, true);	//261020
 				break BaalLoop;
 			}
 			
