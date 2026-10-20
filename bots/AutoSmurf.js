@@ -5911,9 +5911,9 @@ function AutoSmurf() {
 		
 	BaalLoop:	//261020
 		while (true) {
-			//if (!getUnit(1, 543)) {
-				//break BaalLoop;
-			//}
+			if (!getUnit(1, 543)) {
+				break BaalLoop;
+			}
 			
 			Precast.doPrecast();
 			
@@ -5963,7 +5963,6 @@ function AutoSmurf() {
 			}
 			
 			if (wave5) {
-				Pather.moveTo(15092, 5028, 3, true, false, true);	//261020
 				break BaalLoop;
 			}
 			
@@ -5973,10 +5972,10 @@ function AutoSmurf() {
 		sendPacket(1, 0x40); 
 		
 		delay(me.ping * 2 + 200);
+		
+		Pather.moveTo(15092, 5032, 3, true, false, true);	//261020
 
 		if (!this.partyLevel(baalLvl) || (me.diff === 1 && (!this.partyLevel(baalLvlnm) || hireMerc))) { // If the team hasn't met the level requirement in Normal or Nightmare, don't kill baal.
-			Pather.moveTo(15092, 5032);
-			
 			Precast.doPrecast(true);
 			
 			this.okCount();
