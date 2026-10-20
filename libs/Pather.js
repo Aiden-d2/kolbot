@@ -326,14 +326,11 @@ var Pather = {
 			
 			valid = this.getNearestWalkable(x, y, 15, 2, 0x1);	//261012
 			
-			if (valid && !(x === orgx && y === orgy)) {	//261020
-				x = valid[0];	//261018
-				y = valid[1];	//261018
+			if (valid && !(valid[0] === orgx && valid[1] === orgy)) {	//261020
+				Misc.trace("moveTo adjusted path -> " + valid[0] + "," + valid[1] + " in " + Pather.getAreaName(me.area));
+				D2Bot.printToConsole("moveTo adjusted path -> " + valid[0] + "," + valid[1] + " in " + Pather.getAreaName(me.area));
 				
-				Misc.trace("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
-				D2Bot.printToConsole("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
-				
-				path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
+				path = getPath(me.area, valid[0], valid[1], me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
 			} else {
 				for (i = 0; i < 10; i += 1) {
 					Misc.trace("invalid path -> " + me.x + "," + me.y + " in " + Pather.getAreaName(me.area) + " random move...");
@@ -846,7 +843,7 @@ ModeLoop:
 		clearPath - kill monsters while moving
 	*/
 	moveToExit: function (targetArea, use, clearPath) {
-		var i, j, area, exits, targetRoom, dest, currExit,
+		var i, j, area, exits, targetRoom, dest, currExit, move,
 			areas = [];
 
 		if (targetArea instanceof Array) {
@@ -884,8 +881,13 @@ ModeLoop:
 						return false;
 					}
 
-					if (!this.moveTo(dest[0], dest[1], 30, clearPath)) {
+					move = this.moveTo(dest[0], dest[1], 30, clearPath);
+
+					switch (move) {
+					case false:
 						return false;
+					case "Souls":
+						return move;
 					}
 
 					/* i < areas.length - 1 is for crossing multiple areas.
