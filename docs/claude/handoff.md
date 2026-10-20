@@ -118,7 +118,7 @@
 - 예전 "I'm dead": 260930 써모너 사망 퇴장 사유였고, 261004 시체 회수 도입 때 삭제(`417e5b5`). 지금은 `revive start` 줄의 위치가 죽은 자리.
 
 ### 0-11. 미결 (261020)
-- 아케인 등 getPath 오류: 사용자가 로그로 따로 리뷰.
+- 아케인 등 getPath 오류와 관찰 로그 전체: 다른 대화에서 분석. 지침은 `log_guide.md`.
 - 사용자 수정 계획 목록(아직 시작 안 함): bs로그·trace 정책(usePortal은 실패만), clickWP 웨이 보유 게이트 → `Pather.wpAreas`, goWP·getWP 랜덤무브, travel 몬스터 리게이트 좌표, chores cancel 제거, clearInventory·fillTome 딜레이, Evaluate 게이트(qty는 property, 나머지는 `.Tier`), okCount 대기 방식(`msgleader {}`, 카운트 리셋 1, 팀사이즈), 라다먼트(완료 불가 플래그 게이트 N+2, 리셋 후 재입장 퇴장 또는 5분, getQuestItem canMakeRoom 0·4), getQuestItem 눈·심장·뇌 클리어 로그, 소켓 티어(아머·헬름 루비, 방패 다이아, 무기 티르·아이오), 타운체크 병합(Misc·TownChicken·ToolsThread)과 속도, 오토빌드쓰레드 싱크(혼자 포징 멈춤).
 
 ## 1. 현재 상태
