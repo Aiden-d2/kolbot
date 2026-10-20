@@ -326,29 +326,36 @@ var Pather = {
 			
 			valid = this.getNearestWalkable(x, y, 15, 2, 0x1);	//261012
 			
-			if (valid && !(valid[0] === orgx && valid[1] === orgy)) {	//261020
-				Misc.trace("moveTo adjusted path -> " + valid[0] + "," + valid[1] + " in " + Pather.getAreaName(me.area));
-				D2Bot.printToConsole("moveTo adjusted path -> " + valid[0] + "," + valid[1] + " in " + Pather.getAreaName(me.area));
-				
+			if (valid && !(valid[0] === x && valid[1] === y)) {	//261020
 				path = getPath(me.area, valid[0], valid[1], me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
-			} else {
-				for (i = 0; i < 10; i += 1) {
-					Misc.trace("invalid path -> " + me.x + "," + me.y + " in " + Pather.getAreaName(me.area) + " random move...");
+				
+				if (path.length) {
+					x = valid[0];
+					y = valid[1];
 					
-					if (this.walkTo(me.x + (rand(1, 0) ? 5 : -5), me.y + (rand(1, 0) ? 5 : -5))) {	//261020
-						path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);
-					}
-					
-					if (path.length > 0) {
-						break;
-					}
-					
-					if (i === 9) {
-						throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y);	//261018
-					}
-					
-					delay(me.ping * 2 + 1000);
+					Misc.trace("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
+					D2Bot.printToConsole("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
 				}
+			}
+		}
+		
+		if (!path.length) {	//261020
+			for (i = 0; i < 10; i += 1) {
+				Misc.trace("invalid path -> " + me.x + "," + me.y + " in " + Pather.getAreaName(me.area) + " random move...");
+				
+				if (this.walkTo(me.x + (rand(0, 1) ? 5 : -5), me.y + (rand(0, 1) ? 5 : -5))) {	//261020
+					path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);
+				}
+				
+				if (path.length > 0) {
+					break;
+				}
+				
+				if (i === 9) {
+					throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y);	//261018
+				}
+				
+				delay(me.ping * 2 + 1000);
 			}
 		}
 		
