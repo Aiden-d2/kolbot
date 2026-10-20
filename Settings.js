@@ -16,7 +16,8 @@
 		A.TRAP - Assassin / Lightning Sentry
 		B.WCRY - Barbarian / War Cry
 		D.FGOM - Druid / Werebear + Armageddon + Shock Wave
-		D.WIND - Druid / Hurricane + Tornado + Oak Sage
+		D.WIND - Druid / Hurricane + Tornado
+		M.HYBR - Amazon / Freezing Arrow
 		N.SUMM - Necromancer / Summoning + Lower Resist + Corpse Explosion
 		P.CONC - Paladin / Blessed Hammer + Concentration
 		P.CONV - Paladin / Blessed Hammer + Conviction
@@ -25,7 +26,7 @@
 		S.FIRE - Soceress / Fire Ball + Meteor
 		S.FONV - Soceress / Frozen Orb + Nova
 		S.LTNG - Soceress / Chain Lightning + Lightning
-		S.SFFW - Soceress / Static Field + Fire Wall
+		S.SFFW - Soceress / Static Field + Fire Wall + Enchant
 */
 
 var prefix = "a";
@@ -57,7 +58,7 @@ var Build = {
 			return "P.CONC";
 			
 		case profiles[4]:
-			return "S.FONV";
+			return "M.HYBR";
 			
 		case profiles[5]:
 			return "D.FGOM";

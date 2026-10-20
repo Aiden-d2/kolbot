@@ -64,7 +64,7 @@ var Config = {
 	},
 
 	//NIP
-	PickitFiles: ["X.nip", "Y.nip", "Z.nip", "V.nip"],
+	PickitFiles: ["X.nip", "Y.nip", "Z.nip", "V.nip", "T.nip"],
 	
 	//Pathing
 	OpenChests: 2,	//260928 2 = the full container list (what Attack.clear used to open). Opened by Pather on clearPath moves
@@ -74,19 +74,20 @@ var Config = {
 	
 	DetourPath: 4,
 	
-	SafeTele: {	//eom 260525
+	SafeTele: {	//261019
 		Enabled: true,
-		Range: 10,	//260930 9 -> 10	//261003 monsters within 10 (closer than 10 + exactly 10)
-		Angle: 75,	//261003 60 -> 75 (candidates are checked nearest to the original node first, so wide ones come last)
-		Step: 5,
-		Min: 10,
-		Skip: [62, 63, 64, 120, 132]	//261004 120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
+		Range: 10,
+		Angle: 60,
+		Step: 7,
+		Min: 7,
+		Skip: [62, 63, 64, 120, 132]	//120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
 	},
 
 	Dodge: {
 		Enabled: false,
-		Range: 10,	//260930 R = min(skill range, Range): a walking dodge backs off to R from the target (teleport: the skill range)	//261003 monsters within R - 2 are counted and trigger it
-		MinSkillRange: 9	//260930 skills with at least this range dodge	//261003 5 -> 9
+		Range: 8,	//261008
+		Move: 13,	//261008
+		MinSkillRange: 10	//261008
 	},
 	
 	//Gear
@@ -241,6 +242,7 @@ var Config = {
 	MakeRoom: false,
 	
 	RepairPercent: 40,
+	QuiverPercent: 20,
 	
 	//Fastmod
 	FCR: 0,
@@ -345,6 +347,14 @@ var Config = {
 	MakeRunewords: true,
 	
 	Runewords: [
+		// Zephyr
+		[Runeword.Zephyr, "cedarbow"],
+		[Runeword.Zephyr, "razorbow"],
+		[Runeword.Zephyr, "edgebow"],
+		[Runeword.Zephyr, "stagbow"],
+		[Runeword.Zephyr, "shortwarbow"],
+		[Runeword.Zephyr, "compositebow"],
+		
 		// Moser
 		[Runeword.Moser, "roundshield"],
 		
@@ -447,6 +457,11 @@ var Config = {
 		// Duress
 		//[Runeword.Duress, "archonplate"],
 		
+		// Sanctuary
+		[Runeword.Sanctuary, "kiteshield"],
+		[Runeword.Sanctuary, "largeshield"],
+		[Runeword.Sanctuary, "gothicshield"],
+		
 		// Spirit Shield
 		[Runeword.Spirit, "akaranrondache"],
 		[Runeword.Spirit, "akarantarge"],
@@ -539,11 +554,24 @@ var Config = {
 	//Amazon
 	LightningFuryDelay: 0,
 	SummonValkyrie: false,
+	Decoy: false,
 
 	//Sorceress
 	UseTelekinesis: false,
 	CastStatic: false,
 	StaticList: [],
+	Enchant: {	//261019
+		Enabled: false,
+		Player: [],			// 0=ama, 1=sor, 2=nec, 3=pal, 4=bar, 5=dru, 6=ass
+		Merc: [],			// 271=act1, 338=act2, 561=act5
+		Pet: [],
+							// 289=claygolem, 290=bloodgolem, 291=irongolem, 292=firegolem
+							// 357=valkyrie
+							// 363=necroskeleton
+							// 417=shadowwarrior, 418=shadowmaster
+							// 420=spiritwolf, 421=fenris(direwolf), 428=druidbear(grizzly)
+		Revive: false
+	},
 
 	//Necromancer
 	Golem: 0,

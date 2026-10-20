@@ -5,12 +5,13 @@
 
 js_strict(true);
 
+//include("Settings.js");
 include("tools/json2.js");
 include("tools/OOG.js");
 include("libs/Config.js");
 include("libs/Misc.js");
+include("libs/Pather.js");	//261008 Settings.js included
 include("libs/Prototypes.js");
-include("Settings.js");
 
 Config.init();
 
@@ -121,6 +122,7 @@ function partyInGame () {	//260908
 
 	if (retry > 2) {
 		print("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")));
+		Misc.trace("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")), true);	//261008
 		scriptBroadcast("quit");
 	}
 };

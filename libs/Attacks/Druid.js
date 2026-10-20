@@ -6,7 +6,6 @@
 
 var ClassAttack = {
 	doAttack: function (unit, preattack) {
-		
 		if (Config.MercWatch && Town.needMerc()) {
 			Town.visitTown();
 		}
@@ -20,9 +19,9 @@ var ClassAttack = {
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
-					return 0;
-				}
+			if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
+				return 0;
+			}
 
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
@@ -99,7 +98,7 @@ var ClassAttack = {
 			case 229: // Molten Boulder	//260814
 			case 240: // Twister
 			case 245: // Tornado
-					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x405)) {	//260826	//260930 minDist 1 is the default now
+					if (!Attack.setPosition(unit, Skill.getRange(timedSkill), 0x405)) {	//260826
 						return 0;
 					}
 

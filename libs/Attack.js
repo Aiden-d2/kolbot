@@ -458,8 +458,8 @@ var Attack = {
 		}
 
 		if (castTotal > 0) {
-			//Pickit.pickItems(range > 0 ? range : undefined, orgx, orgy);	//261003 around org (the cleared area; a boss call's org is where it fell)
-			Pickit.pickItems(range > 0 ? range : undefined);	//261006
+			Pickit.pickItems(range > 0 ? range : undefined, orgx, orgy);	//261015 around org (the cleared area; a boss call's org is where it fell)
+			//Pickit.pickItems(range > 0 ? range : undefined);	//261017
 			ClassAttack.afterAttack();
 		}
 
@@ -537,16 +537,16 @@ var Attack = {
 			return false;
 		}
 
-		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 1.5;	//260930 3 -> 1 (a dodge that stops 3 short lands inside the threat radius again)	//261003 1 -> 1.5: the 8 tiles around the spot count as arrived (diagonal 1.41); a dodge stays outside R - 2 (2 would sit on it)
+		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 3;	//261008
 
-		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, dodgeRange, threatRange, count,	//260930	//261001 count	//261003 dodgeRange
+		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, count,	//261008
 			detourOk, detourPath,	//260928
 			fence = this.tick.box,	//260929
 			pathOk = false,
 			list = [],
 			baseline = 0,
 			moveNeeded = getDistance(me, unit) > distance || checkCollision(me, unit, coll),
-			scoring = Config.Dodge.Enabled && distance >= Config.Dodge.MinSkillRange && unit.classid !== 243,	//260915	//260930 HP condition removed
+			scoring = (Config.Dodge.Enabled || this.usingBow) && distance >= Config.Dodge.MinSkillRange && unit.classid !== 243,	//260915	//260930 HP condition removed
 			angle = Math.atan2(me.y - unit.y, me.x - unit.x);
 
 		if (!moveNeeded && !scoring) {
@@ -557,10 +557,8 @@ var Attack = {
 		fireList = this.getFireList();
 
 		if (!moveNeeded) {	//260930 threat is a dodge matter only (approach no longer counts monsters)
-			dodgeRange = Math.min(distance, Config.Dodge.Range);	//260930	//261003 dodge distance only (walking ring)
-			threatRange = dodgeRange - 2;	//261003 count radius and trigger: R - 2, so the target at the ring (R, rounding +-0.7) is not counted
 			monList = this.tick.monList || this.buildMonsterList();
-			baseline = this.getMonsterCount(me.x, me.y, threatRange, monList, fireList);
+			baseline = this.getMonsterCount(me.x, me.y, Config.Dodge.Range, monList, fireList);	//261008
 
 			if (baseline === 0) {	//260930 Dodge.Count removed
 				return true;
@@ -576,7 +574,7 @@ var Attack = {
 			}
 		} else {
 			// dodge: one ring at R (narrow ground: backing off to the skill range took too long). Teleport lands at once, so the skill range	//260930
-			radii = [useTele ? distance : dodgeRange];	//261003 dodgeRange
+			radii = [useTele ? distance : Math.min(distance, Config.Dodge.Move)];	//261008
 		}
 
 		choice = null;
@@ -677,7 +675,7 @@ var Attack = {
 				}
 
 				if (!moveNeeded) {	//261001 dodge: keep the fewest (a dodge that only drops 3 -> 2 dodges again next tick)
-					count = this.getMonsterCount(c.x, c.y, threatRange, monList, fireList);	//260930 after the cheap checks	//261003 counts within R - 2
+					count = this.getMonsterCount(c.x, c.y, Config.Dodge.Range, monList, fireList);	//261008
 
 					if (count >= baseline) {
 						continue;	// not safer than where I stand, or than the best spot so far

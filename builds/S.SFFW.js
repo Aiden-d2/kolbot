@@ -36,11 +36,11 @@ var AutoBuildTemplate = {
 			{id: 43, target: 1},				// Telekinesis
 			{id: 61, target: 1},				// Fire Mastery
 			{id: 51, target: 20},				// Fire Wall
-			{id: 37, target: 7},				// Warmth
-			{id: 42, target: 17, from: 18},		// Static Field
+			{id: 42, target: 16, from: 18},		// Static Field
 			{id: 61, target: 20},				// Fire Mastery
-			{id: 58, target: 7, from: 50},		// Energy Shield
-			{id: 43, target: 16, from: 50},		// Telekinesis
+			//{id: 58, target: 7, from: 50},		// Energy Shield
+			//{id: 43, target: 16, from: 50},		// Telekinesis
+			{id: 52, target: 20, from: 50},		// Enchant
 			{id: 37, target: 20, from: 50},		// Warmth
 		]
 	},
@@ -72,6 +72,9 @@ var AutoBuildTemplate = {
 				
 				if (me.charlvl >= 45) {
 					Config.RejuvBuffer = 4;
+					
+					Config.LowGold = me.charlvl * 3000;
+					Config.StashGold = me.charlvl * 2000;
 				}					
 				
 				if (me.diff > 0) {
@@ -167,6 +170,16 @@ var AutoBuildTemplate = {
 	46:	{
 			Update: function () {
 				Config.AttackSkill = [-1, 51, 42, 51, 42, -1, 43];			// Fire Wall + Static Field
+			}
+		},
+
+	65:	{
+			Update: function () {
+				Config.Enchant.Enabled = true,
+				Config.Enchant.Player = [0];
+				Config.Enchant.Merc = [338];
+				Config.Enchant.Pet = [357, 417, 428];
+				//Config.Enchant.Revive = true;
 			}
 		}
 };

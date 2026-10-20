@@ -922,7 +922,7 @@ MainLoop:
 		tick = getTickCount();
 
 		while (getLocation() !== 12) {
-			if (getTickCount() - tick >= 5000) {
+			if (getTickCount() - tick >= 2000) {	//261010	//5000
 				break;
 			}
 

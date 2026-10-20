@@ -59,12 +59,12 @@ var Skill = {
 		case 229: // Molten Boulder
 		case 243: // Shock Wave	//260930 back to 7	//261002 measured reach 12~13; a close target is cast at 5 (Wereform.js)
 			return 7;
-		case 48: // Nova	//260917	//260930 back to 9 (10 for a day)
-		case 64: // Frozen Orb	//260917	//260930 back to 9
 		case 92: // Poison Nova
 			return 9;
 		case 15: // Poison Javelin
 		case 25: // Plague Javelin
+		case 48: // Nova	//261008
+		case 64: // Frozen Orb	//261008
 		case 107: // Charge
 		case 225: // Firestorm
 			return 10;
@@ -268,7 +268,7 @@ var Skill = {
 			if (Config.AttackSkill.concat([42, 54]).concat(Config.LowManaSkill).indexOf(skillId) > -1) {
 				delay(300);
 			}
-
+			
 			return false;
 		}
 
@@ -450,13 +450,11 @@ MainLoop:
 
 		var skillLvl = me.getSkill(skillId, 1),
 			effectiveShift = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024],
-			lvlmana = getBaseStat(3, skillId, "lvlmana") === 65535 ? -1 : getBaseStat(3, skillId, "lvlmana"), // Correction for skills that need less mana with levels (kolton)
+			lvlmana = getBaseStat(3, skillId, "lvlmana") > 62767 ? getBaseStat(3, skillId, "lvlmana") - 65536 : getBaseStat(3, skillId, "lvlmana"), //261016 16-bit unsigned -> signed (e.g. 65533 -> -3), for Decoy(id28)
 			ret = Math.max((getBaseStat(3, skillId, "mana") + lvlmana * (skillLvl - 1)) * (effectiveShift[getBaseStat(3, skillId, "manashift")] / 256), getBaseStat(3, skillId, "minmana"));
 
 		return ret;
 	}
-	
-	
 };
 
 var Equip = {
@@ -602,7 +600,7 @@ var Equip = {
 
 			break;
 		case 5: // arrows
-			bodyLoc = 5;
+			bodyLoc = 4;
 
 			break;
 		case 6: // bolts
@@ -632,11 +630,7 @@ var Equip = {
 		case 24: // scepter
 		case 25: // wand
 			if (me.classid === 4) {
-				if (item.classid === 103 && item.quality === 7) {
-					bodyLoc = 5;
-				} else {
-					bodyLoc = [4, 5];
-				}
+				bodyLoc = [4, 5];
 			} else {
 				bodyLoc = 4;
 			}
@@ -647,7 +641,7 @@ var Equip = {
 
 			break;
 		case 27: // bow
-			bodyLoc = 4;
+			bodyLoc = 5;
 
 			break;
 		case 28: // axe
@@ -775,6 +769,9 @@ var Equip = {
 
 			break;
 		case 85: // amazonbow
+			bodyLoc = 5;
+
+			break;
 		case 86: // amazonspear
 		case 87: // amazonjavelin
 			bodyLoc = 4;
@@ -1431,14 +1428,18 @@ var Misc = {
 		return true;
 	},
 
-	openChests: function (range) {
-		var unit,
+	openChests: function (range, orgx, orgy) {
+		var unit, ref,	//261008
 			unitList = [],
 			fireList = [],	//261001 fires near the chests in range, gathered in the same object scan
 			containers = ["chest", "chest3", "armorstand", "weaponrack"];
 
 		if (!range) {
 			range = 15;
+		}
+
+		if (orgx && orgy) {	//261008
+			ref = {x: orgx, y: orgy};
 		}
 
 		// Testing all container code
@@ -1456,12 +1457,12 @@ var Misc = {
 
 		if (unit) {
 			do {
-				if (unit.name && unit.name.toLowerCase() === "fire" && getDistance(me.x, me.y, unit.x, unit.y) <= range + 4) {	//261001 fire objects (bonfire, fire small/medium/large, brazier) that can reach a chest in range
+				if (unit.name && unit.name.toLowerCase() === "fire" && getDistance(ref ? ref : me, unit) <= range + 4) {	//261008 fire objects (bonfire, fire small/medium/large, brazier) that can reach a chest in range
 					fireList.push({x: unit.x, y: unit.y});
 				}
 
 				// objtype low 7 bits = trap type (lightning, firebolt, poison, nova, fire, trap monsters), bit 7 = locked	//261001
-				if (unit.name && unit.mode === 0 && getDistance(me.x, me.y, unit.x, unit.y) <= range && containers.indexOf(unit.name.toLowerCase()) > -1) {
+				if (unit.name && unit.mode === 0 && getDistance(ref ? ref : me, unit) <= range && containers.indexOf(unit.name.toLowerCase()) > -1) {	//261008 ref
 					if (!(unit.objtype & 0x7F)) {	//261001 trapped chests skipped	//261006 trace removed (in-game check done)
 						unitList.push(copyUnit(unit));
 					}
@@ -2192,7 +2193,6 @@ var Misc = {
 						}
 					}
 				}
-
 			} catch (e) {
 				check = false;
 			}
@@ -2301,18 +2301,18 @@ MainLoop:
 		return mode === 0 ? contents : true;
 	},
 
-	trace: function (msg) {	//260923 temp
+	trace: function (msg, skip) {	//260923 temp
 		var d = new Date(),
 			pad = function (n) { return (n < 10 ? "0" : "") + n; },
 			ymd = String(d.getFullYear()) + pad(d.getMonth() + 1) + pad(d.getDate()),	//260923 temp
-			stamp = (d.getMonth() + 1) + "/" + d.getDate() + " " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+			stamp = pad(d.getMonth() + 1) + "/" + pad(d.getDate()) + "/" + String(d.getFullYear()).slice(-2) + " " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());	//261011
 		
 		if (!dopen("_cache/trace/")) {	//260926
 			dopen("_cache/").create("trace");
 		}
 		
 		return this.fileAction("_cache/trace/trace-" + me.profile + "-" + ymd + ".txt", 2,	//260923 temp
-			stamp + " [" + (me.ingame ? Pather.getAreaName(me.area) + " " + me.x + "," + me.y : "OOG loc " + getLocation()) + "] " + msg + "\n");	//261001 out of game: the screen (location) number
+			"[" + stamp + "] " + msg + (skip ? "" : " (" + (me.ingame ? Pather.getAreaName(me.area) + " " + me.x + "," + me.y : "OOG loc " + getLocation()) + ")") + "\n");	//261011
 	},
 
 	// Console lines (CLAUDE.md log rules): an early quit reason is red (9), an error grey (10), both with where it happened. The same line goes to the trace	//260930
@@ -2400,7 +2400,7 @@ MainLoop:
 			D2Bot.printToConsole(oogmsg, 10);
 		}
 
-		this.trace("[Error] " + oogmsg.trim());	//260930 was showConsole() + print(msg): errors go to the console and the trace, print keeps the game flow
+		this.trace("[Error] " + oogmsg.trim(), true);	//260930 was showConsole() + print(msg): errors go to the console and the trace, print keeps the game flow
 		this.fileAction("_cache/ScriptErrorLog.txt", 2, filemsg);
 
 		if (this.screenshotErrors) {

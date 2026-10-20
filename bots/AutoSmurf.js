@@ -103,25 +103,19 @@ function AutoSmurf() {
 	};
 
 	this.start = function () {
-		var cube = me.findItem(549, -1, 3);	//260827
+		var book = me.findItem(552);
 		
-		if (cube) {	//260827
-			Storage.Inventory.MoveToSlot(cube, 0, 0);	//260827
+		while (book) {	//261012
+			if (book.drop()) {
+				Misc.trace("dropping radament book");
+			}
 		}
-		
-		var tp = me.findItem(518, -1, 3);	//260827
-		
-		if (tp) {	//260827
-			Storage.Inventory.MoveToSlot(tp, 0, 2);	//260827
-		}
-		
-		Pickit.pickItems();	//eom
 		
 		//moving to last act before party check
-		if (!me.getQuest(7, 0) && (me.getQuest(6, 0) || me.getQuest(6, 1)) && this.partyLevel(teleLvl)) {
-			Pickit.pickItems();
-			this.changeAct(2);
-		}
+		//if (!me.getQuest(7, 0) && (me.getQuest(6, 0) || me.getQuest(6, 1)) && this.partyLevel(teleLvl)) {
+			//Pickit.pickItems();
+			//this.changeAct(2);
+		//}
 		if (!me.getQuest(15, 0) && me.getQuest(7, 0)) { // if andy done, but not duriel		say(" Here ****** 2 ");
 			Pickit.pickItems();
 			Town.goToTown(2);
@@ -150,6 +144,18 @@ function AutoSmurf() {
 		
 		doneChores = true;
 		
+		var cube = me.findItem(549, -1, 3);	//260827
+		
+		if (cube) {	//260827
+			Storage.Inventory.MoveToSlot(cube, 0, 0);	//260827
+		}
+		
+		var tp = me.findItem(518, -1, 3);	//260827
+		
+		if (tp) {	//260827
+			Storage.Inventory.MoveToSlot(tp, 0, 2);	//260827
+		}
+		
 		//260901
 		var rej = (me.findItems(516, 0, 3) || []).concat(me.findItems(515, 0, 3) || []),
 			rejSlots = [[1, 2], [1, 3], [2, 3], [3, 3]];
@@ -164,13 +170,13 @@ function AutoSmurf() {
 			print("hireMerc: " + hireMerc);
 		}
 		
+		Pickit.pickItems();
+
 		Pather.useWaypoint(null); // Will walk to and interact with waypoint.
 
 		//Pather.moveTo(me.x + myX, me.y + myY); // Move off of waypoint so others can reach it.	//260822
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		
-		Pickit.pickItems();
-
 		imReady = true; // Prevents premature teamReady announcment.
 		Messaging.sendToList(Team.Profiles, "readyCount");
 		me.overhead("imReady");
@@ -210,11 +216,11 @@ function AutoSmurf() {
 		}
 		
 		// Check and use quest items that might be left over from the previous game
-		if (me.findItem(552)) {
+		/*if (me.findItem(552)) {
 			clickItem(1, me.findItem(552));
 			D2Bot.printToConsole("!!! BOOK !!!", 8);
 			delay(me.ping * 2 + 500);
-		}
+		}*/
 		
 		if (me.findItem(545)) {
 			clickItem(1, me.findItem(545));
@@ -512,13 +518,18 @@ function AutoSmurf() {
 					for (i = 0; i < (4 - dote.length); i += 1) {
 						potions.buy();
 					}
-
+					
 					me.cancel();
 				}
 			} else {
 				me.overhead("Antidote potions ready");
 			}
 			
+			if (me.diff === 0) {	//261014
+				Town.clearInventory();
+				Town.buyPotions();
+			}
+
 			if (Leader && me.diff > 0) {
 				Town.move("waypoint");
 			} else {
@@ -900,13 +911,16 @@ function AutoSmurf() {
 
 			if (goldPile) {
 				Pickit.pickItem(goldPile);
+				
+				me.overhead("Picking up " + goldPile + " Gold");
+				Misc.trace("Picking up " + goldPile + " Gold");	//261010
 			}
 
 			if (me.getStat(14)) {
 				Town.openStash();
 
 				gold(me.getStat(14), 3); // Stash my Gold.
-
+				
 				delay(me.ping * 2 + 500);
 
 				me.cancel();
@@ -918,7 +932,7 @@ function AutoSmurf() {
 		var i, goldPile,
 			dropAmount = me.gold - 5000,
 			maxDropAmount = me.gold - Config.LowGold;
-
+		
 		Town.goToTown(1);
 		Town.move("stash");
 
@@ -928,9 +942,7 @@ function AutoSmurf() {
 
 		delay(me.ping * 2 + 500);
 
-		dropAmount = Math.min(dropAmount, maxDropAmount);
-
-		me.overhead("Dropping " + Math.round(dropAmount) + " Gold");
+		dropAmount = Math.min(dropAmount, maxDropAmount > dropAmount ? maxDropAmount : dropAmount);
 
 		gold(Math.round(dropAmount), 4); // Remove Gold from Stash (must be a round number).
 
@@ -938,6 +950,9 @@ function AutoSmurf() {
 
 		while (me.getStat(14)) {
 			gold(me.getStat(14)); // Drop Gold
+
+			me.overhead("Dropping " + Math.round(dropAmount) + " Gold");
+			Misc.trace("Dropping " + Math.round(dropAmount) + " Gold");	//261010
 
 			delay(me.ping * 2 + 500);
 		}
@@ -955,6 +970,9 @@ function AutoSmurf() {
 
 			if (i >= 14 && goldPile) {
 				Pickit.pickItem(goldPile);
+				
+				me.overhead("Retaking " + goldPile + " Gold");
+				Misc.trace("Retaking " + goldPile + " Gold");	//261010
 			}
 		}
 	};
@@ -1030,7 +1048,7 @@ function AutoSmurf() {
 			}
 
 			fired = true;	//261006 was Attack.onBossLow = null
-			Misc.trace("bossGuard chicken off: pct " + pct + ", " + unit.name + " " + Math.round(unit.hp * 100 / 128) + "%");	//261004 call value + boss HP
+			Misc.trace("bossGuard chicken off: pct " + pct + ", " + unit.name + " " + Math.round(unit.hp * 100 / 128) + "%@" + ((getTickCount() - seen.t0) / 1000).toFixed(1) + "s");	//261010 call value + boss HP
 			self.setLifeChicken(0);
 		};
 
@@ -1070,6 +1088,8 @@ function AutoSmurf() {
 			area = me.area; // where I died = where the corpse is
 			x = me.x;
 			y = me.y;
+			
+			Config.TownCheck = false;	//261013
 
 			Misc.trace("bossEnd revive: start");	//261004
 
@@ -1138,6 +1158,8 @@ function AutoSmurf() {
 					delay(1000);
 				}
 			}
+			
+			Config.TownCheck = true;	//261013
 
 			Misc.trace("bossEnd corpse: picked");	//261004
 		} else if (Config.LifeChicken !== guardChicken) {
@@ -1440,7 +1462,7 @@ function AutoSmurf() {
 		return true;
 	};
 	
-	this.clearToExit = function (currentarea, targetarea, cleartype) { // SiC-666 TODO: add moving to exit without clearing after XX minutes.
+	this.clearToExit = function (currentarea, targetarea) { // SiC-666 TODO: add moving to exit without clearing after XX minutes.
 		me.overhead("Start clearToExit");
 
 		me.overhead("Currently in " + Pather.getAreaName(me.area));
@@ -1451,7 +1473,7 @@ function AutoSmurf() {
 		
 		while (me.area === currentarea) {
 			try {
-				Pather.moveToExit(targetarea, true, cleartype);
+				Pather.moveToExit(targetarea, true, true);
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.clearToExit", e);	//260930
 			}
@@ -1735,15 +1757,18 @@ function AutoSmurf() {
 				} else {
 					if (Pickit.canMakeRoom()) {
 						me.overhead("Trying to make room for " + item.name);	//eom
+						Misc.trace("Trying to make room for " + item.name);	//261012
 
 						Town.visitTown(); // Go to Town and do chores. Will throw an error if it fails to return from Town.
 					} else {
 						me.overhead("Not enough room for " + item.name);	//eom
+						Misc.trace("Not enough room for " + item.name);	//261012
 
 						return false;
 					}
 				}
 			} else {
+				Misc.trace(classid + " not found");	//261012
 				return false;
 			}
 		}
@@ -1999,7 +2024,7 @@ function AutoSmurf() {
 			return true;
 		};
 		
-		print("ÿc4=== [DEN] ===");	Misc.trace("=== [DEN] ===");	//260930
+		print("ÿc4=== [DEN] ===");	Misc.trace("=== [DEN] ===", true);	//260930
 		
 		if (!me.getQuest(1, 1)) { // Haven't cleared the Den yet.
 			if (me.diff === 0) { // All characters grab Cold Plains Waypoint in Normal. Only the Teleporting Sorc grabs it in Nightmare and Hell.
@@ -2012,7 +2037,7 @@ function AutoSmurf() {
 					
 					this.okCount();	//260922
 					
-					this.clearToExit(2, 3, 0);
+					this.clearToExit(2, 3);
 					this.okCount();	//260922
 
 					Pather.goWP(me.area, true);
@@ -2033,7 +2058,7 @@ function AutoSmurf() {
 				
 				this.okCount();	//260922
 				
-				this.clearToExit(2, 8, 0);
+				this.clearToExit(2, 8);
 				this.okCount();	//260922
 				
 				for (i = 0; i < 2; i += 1) {
@@ -2053,10 +2078,10 @@ function AutoSmurf() {
 				while (!me.inTown) {
 					switch (me.area) {
 					case 8:
-						this.clearToExit(8, 2, 0);
+						this.clearToExit(8, 2);
 						break;
 					case 2:
-						this.clearToExit(2, 1, 0);
+						this.clearToExit(2, 1);
 						break;
 					}
 					
@@ -2152,14 +2177,14 @@ function AutoSmurf() {
 		}
 		
 		if (!me.getQuest(2, 1) && !me.getQuest(2, 0)) {
-			print("ÿc4=== [BLOOD] ===");	Misc.trace("=== [BLOOD] ===");	//260930
+			print("ÿc4=== [BLOOD] ===");	Misc.trace("=== [BLOOD] ===", true);	//260930
 			
 			Pather.useWaypoint(3);
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
-			this.clearToExit(3, 17, 0);
+			this.clearToExit(3, 17);
 			
 			this.okCount();	//260922
 			Precast.doPrecast(true);
@@ -2174,7 +2199,7 @@ function AutoSmurf() {
 				Misc.caughtError("AutoSmurf.blood", e);	//260930
 			}
 			
-			this.clearToExit(17, 3, 0);
+			this.clearToExit(17, 3);
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 		}
@@ -2189,7 +2214,7 @@ function AutoSmurf() {
 				Precast.doPrecast(true);
 			}
 
-			this.clearToExit(3, 4, 0);
+			this.clearToExit(3, 4);
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 
@@ -2231,7 +2256,7 @@ function AutoSmurf() {
 	this.cain = function () { // Dark-f: rewrite rescue cain
 		var i, j, akara, cain, slave, scroll1, scroll2, stoneA, stoneB, stoneC, stoneD, stoneE, spot;	//261002 spot
 
-		print("ÿc4=== [CAIN] ===");	Misc.trace("=== [CAIN] ===");	//260930
+		print("ÿc4=== [CAIN] ===");	Misc.trace("=== [CAIN] ===", true);	//260930
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -2249,12 +2274,12 @@ function AutoSmurf() {
 				this.okCount();	//260922
 				Precast.doPrecast(true);
 
-				this.clearToExit(4, 10, 0);
+				this.clearToExit(4, 10);
 				this.okCount();	//260922
 				Precast.doPrecast(true);
 
 				while (me.area === 10) {
-					this.clearToExit(10, 5, 0);
+					this.clearToExit(10, 5);
 				}
 				
 				if (me.area === 5) {
@@ -2491,7 +2516,8 @@ function AutoSmurf() {
 
 	this.trist = function () {
 		var i,
-			path = [25168, 5189,	//261002
+			path = [25165, 5119,	//261008
+					25168, 5189,
 					25132, 5181,
 					25124, 5139,
 					25105, 5075,
@@ -2500,25 +2526,28 @@ function AutoSmurf() {
 					25053, 5189,
 					25125, 5190];
 		
-		print("ÿc4=== [TRIST] ===");	Misc.trace("=== [TRIST] ===");	//260930
+		print("ÿc4=== [TRIST] ===");	Misc.trace("=== [TRIST] ===", true);	//260930
 		
 		if (!doneChores) {
 			Town.doChores(true);
 		}
 		
 		Pather.useWaypoint(4);
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		//Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
 		Pather.teleport = false;
 
-		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);
+		Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true, true);	//261007
+		//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);
 		//Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true);	//260822	//261002 no offset
 		
 		Attack.clear(20);	//261002
 		
-		Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);
+		Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true, true);	//261007
+		//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);
 		//Pather.moveToPreset(me.area, 1, 737, 0, 0, true); //260719	//260822	//260929	//261002 no offset
 
 		for (i = 0; i < 5; i += 1) {
@@ -2534,7 +2563,7 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 		
 		for (i = 0; i < path.length; i += 2) {	//260627
-			Pather.moveTo(path[i] + myX, path[i + 1] + myY, 10, true);
+			Pather.moveTo(path[i], path[i + 1], 10, true, false, true);	//261007
 			//Pather.moveTo(path[i], path[i + 1], 10, true);	//260822	//261002 no offset: an offset spot with no path made moveTo return without moving (skipped node)
 		}
 		
@@ -2570,7 +2599,7 @@ function AutoSmurf() {
 	// add for Lv up when the partyLevel is less than the tristLvl
 	this.outer = function () {
 		
-		print("ÿc4=== [OUTER] ===");	Misc.trace("=== [OUTER] ===");	//260930
+		print("ÿc4=== [OUTER] ===");	Misc.trace("=== [OUTER] ===", true);	//260930
 		
 		if (!me.inTown) { // this.trist(); doesn't end in town.
 			Town.goToTown();
@@ -2586,7 +2615,7 @@ function AutoSmurf() {
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
-			this.clearToExit(5, 6, 0);
+			this.clearToExit(5, 6);
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 		
@@ -2604,12 +2633,12 @@ function AutoSmurf() {
 		
 		Precast.doPrecast(true);
 
-		this.clearToExit(6, 7, 0);
+		this.clearToExit(6, 7);
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
-		this.clearToExit(7, 26, 0);
-		this.clearToExit(26, 27, 0);
+		this.clearToExit(7, 26);
+		this.clearToExit(26, 27);
 		delay(250);
 		this.okCount();	//260922
 		Precast.doPrecast(true);
@@ -2633,7 +2662,7 @@ function AutoSmurf() {
 	this.smith = function () {	//260531
 		var smith;
 		
-		print("ÿc4=== [SMITH] ===");	Misc.trace("=== [SMITH] ===");	//260930
+		print("ÿc4=== [SMITH] ===");	Misc.trace("=== [SMITH] ===", true);	//260930
 		
 		if (me.area !== 27) {
 			Town.goToTown();
@@ -2649,7 +2678,7 @@ function AutoSmurf() {
 		
 		Precast.doPrecast(true);
 		
-		this.clearToExit(27, 28, 0);
+		this.clearToExit(27, 28);
 		
 		smith = getPresetUnit(28, 2, 108);
 		
@@ -2737,7 +2766,7 @@ function AutoSmurf() {
 	this.malus = function () {
 		var i, target;
 		
-		print("ÿc4=== [MALUS] ===");	Misc.trace("=== [MALUS] ===");	//260930
+		print("ÿc4=== [MALUS] ===");	Misc.trace("=== [MALUS] ===", true);	//260930
 		
 		if (me.act !== 1 || !me.inTown) {
 			Town.goToTown(1);
@@ -2786,7 +2815,7 @@ function AutoSmurf() {
 
 	this.jail = function () {
 		
-		print("ÿc4=== [JAIL] ===");	Misc.trace("=== [JAIL] ===");	//260930
+		print("ÿc4=== [JAIL] ===");	Misc.trace("=== [JAIL] ===", true);	//260930
 
 		if (me.area !== 28) {
 			if (me.area === 27) {
@@ -2807,12 +2836,12 @@ function AutoSmurf() {
 			
 			Precast.doPrecast(true);
 			
-			this.clearToExit(27, 28, 0);
+			this.clearToExit(27, 28);
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 		}
 		
-		this.clearToExit(28, 29, 0);
+		this.clearToExit(28, 29);
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 
@@ -2834,7 +2863,7 @@ function AutoSmurf() {
 
 	this.inner = function () {
 		
-		print("ÿc4=== [INNER] ===");	Misc.trace("=== [INNER] ===");	//260930
+		print("ÿc4=== [INNER] ===");	Misc.trace("=== [INNER] ===", true);	//260930
 		
 		if (me.area !== 29) {
 			Town.goToTown();
@@ -2851,7 +2880,7 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 
 		while (me.area === 29) {
-			this.clearToExit(29, 30, 0);
+			this.clearToExit(29, 30);
 		}
 		
 		if (me.area === 30) {
@@ -2882,7 +2911,7 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 		
 		while (me.area === 30) {
-			this.clearToExit(30, 31, 0);
+			this.clearToExit(30, 31);
 		}
 		
 		if (me.area === 31) {
@@ -2913,7 +2942,7 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 		
 		while (me.area === 31) {
-			this.clearToExit(31, 32, 0);
+			this.clearToExit(31, 32);
 		}
 		
 		if (me.area === 32) {
@@ -2960,7 +2989,7 @@ function AutoSmurf() {
 
 	this.cathedral = function () {
 		
-		print("ÿc4=== [CATHEDRAL] ===");	Misc.trace("=== [CATHEDRAL] ===");	//260930
+		print("ÿc4=== [CATHEDRAL] ===");	Misc.trace("=== [CATHEDRAL] ===", true);	//260930
 		
 		if (me.area !== 32) {
 			Town.goToTown();
@@ -2984,11 +3013,11 @@ function AutoSmurf() {
 		
 		Pather.moveTo(20007, 4898, 10, true);	//261004
 		
-		this.clearToExit(33, 34, 0);
+		this.clearToExit(33, 34);
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
-		this.clearToExit(34, 35, 0);
+		this.clearToExit(34, 35);
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
@@ -3015,7 +3044,7 @@ function AutoSmurf() {
 	};
 
 	this.andy = function () {
-		print("ÿc4=== [ANDY] ===");	Misc.trace("=== [ANDY] ===");	//260930
+		print("ÿc4=== [ANDY] ===");	Misc.trace("=== [ANDY] ===", true);	//260930
 		
 		if (runAndy === 0) {
 			if (me.area === 35) {
@@ -3034,17 +3063,11 @@ function AutoSmurf() {
 		if ((!me.getQuest(6, 1) && !me.getQuest(6, 0)) || !this.partyLevel(teleLvl)) {
 			if (me.diff === 0) {
 				if (runAndy === 1) {
-					this.clearToExit(35, 36, 0);
+					this.clearToExit(35, 36);
 					this.okCount();	//260922
 					Precast.doPrecast(true);
 					
-					this.clearToExit(36, 37, 0);
-					this.okCount();	//260922
-					Precast.doPrecast(true);
-
-					Pather.moveTo(22594, 9641, 10, true);
-					Pather.moveTo(22564, 9629, 10, true);
-					Pather.moveTo(22533, 9641, 10, true);
+					this.clearToExit(36, 37);
 				} else {
 					if (Leader) {
 						Pather.useWaypoint(35);
@@ -3059,16 +3082,17 @@ function AutoSmurf() {
 					}
 				
 					Pather.teleport = false;
-					
-					this.okCount();	//260922
-					Precast.doPrecast(true);
-					
-					Pather.moveTo(22594, 9641, 10, true);
-					Pather.moveTo(22564, 9629, 10, true);
-					Pather.moveTo(22533, 9641, 10, true);
 				}
 				
-				if (Leader) {
+				this.okCount();	//260922
+				Precast.doPrecast(true);
+
+				Pather.moveTo(22594, 9641, 10, true);
+				Pather.moveTo(22564, 9629, 10, true);
+				Pather.moveTo(22533, 9641, 10, true);
+				Pather.moveTo(22547, 9619, 10, true);	//261008
+			
+				if (Leader) {	//261008
 					Pather.makePortal();
 				}
 				
@@ -3077,11 +3101,6 @@ function AutoSmurf() {
 				Precast.doPrecast(true);
 			
 				Pather.moveTo(22548, 9582, 5, true);
-				//Pather.moveTo(22548, 9568, 5, true);	//260929
-
-				if (Leader) {	//261004 the portal from buffCount is back at the start of the room: open one here for the corpse run (bossEnd)
-					Misc.trace("boss portal: " + (Pather.makePortal() ? "opened" : "failed"));
-				}
 			} else {
 				if (Leader) {
 					this.travel(2);
@@ -3117,9 +3136,12 @@ function AutoSmurf() {
 			
 			delay(me.ping * 2 + 2000); // Wait for minions to die.
 
-			Pather.moveTo(22549, 9520);	//260929 regroup before the portal, same as farmingAndy	//261002 no offset, spread on arrival
-			Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
-
+			if (me.diff === 0) {	//261007 regroup before the portal
+				Pather.moveTo(22549, 9562, 3, false, false, true);
+			} else {
+				Pather.moveTo(22549, 9520, 3, false, false, true);
+			}
+			
 			this.okCount();	//260929
 
 			if (Leader) {
@@ -3165,7 +3187,7 @@ function AutoSmurf() {
 	this.cube = function () { // Only called in Normal Difficulty.
 		var i, chest;
 
-		print("ÿc4=== [CUBE] ===");	Misc.trace("=== [CUBE] ===");	//260930
+		print("ÿc4=== [CUBE] ===");	Misc.trace("=== [CUBE] ===", true);	//260930
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3257,7 +3279,7 @@ function AutoSmurf() {
 	this.amulet = function () {
 		var cain, drognan;
 		
-		print("ÿc4=== [AMULET] ===");	Misc.trace("=== [AMULET] ===");	//260930
+		print("ÿc4=== [AMULET] ===");	Misc.trace("=== [AMULET] ===", true);	//260930
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3290,7 +3312,7 @@ function AutoSmurf() {
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 
-			this.clearToExit(58, 61, 0); // Go to Claw Viper Temple Level 2
+			this.clearToExit(58, 61); // Go to Claw Viper Temple Level 2
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
@@ -3346,7 +3368,7 @@ function AutoSmurf() {
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
 		var journal, i;	//261004 chicken -> bossGuard
 
-		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===");	//260930
+		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===", true);	//260930
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3364,11 +3386,6 @@ function AutoSmurf() {
 			Town.move("waypoint");
 			
 			Pather.useWaypoint(74);
-			
-			Pather.walkTo(me.x + 5, me.y - 5);
-			Pather.walkTo(me.x + 5, me.y + 5);
-			Pather.walkTo(me.x - 5, me.y - 5);
-			Pather.walkTo(me.x - 5, me.y + 5);
 			
 			Precast.doPrecast(true);
 
@@ -3390,6 +3407,8 @@ function AutoSmurf() {
 			
 			me.overhead("tpReady");
 			Messaging.sendToList(Team.Profiles, "tpReady");
+			
+			Pather.teleportTo(me.x, me.y - 8);	//261008
 		} else {
 			Town.move("portalspot");
 			
@@ -3414,13 +3433,13 @@ function AutoSmurf() {
 			Misc.caughtError("AutoSmurf.summoner", e);	//260930
 		}
 		
-		this.bossEnd(10);	//261004 sync on the kill, the dead get their corpse, chicken back
-		
 		journal = getPresetUnit(74, 2, 357);
 		
 		Attack.clear(0, {x1: journal.roomx * 5 + journal.x - 6, x2: journal.roomx * 5 + journal.x + 13, y1: journal.roomy * 5 + journal.y - 6, y2: journal.roomy * 5 + journal.y + 13});	//260926	//260929
 		
-		Pather.moveToPreset(74, 2, 357, 3, 3);
+		this.bossEnd(10);	//261012
+		
+		//Pather.moveToPreset(74, 2, 357, 3, 3);
 
 		this.okCount(10);	//260921
 		
@@ -3457,7 +3476,12 @@ function AutoSmurf() {
 		Pather.teleport = true;
 		
 		if (me.diff === 0) {
-			delay(me.ping *2 + 1000);
+			delay(me.ping * 2 + 200);
+			Pather.useWaypoint(40);
+			
+			delay(me.ping * 2 + 200);	//261008
+			Pather.useWaypoint(46);
+			this.okCount();
 		} else {
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
@@ -3492,7 +3516,7 @@ function AutoSmurf() {
 	this.tombs = function() {	//260603
 		var i, j, chest;
 
-		print("ÿc4=== [TOMBS] ===");	Misc.trace("=== [TOMBS] ===");	//260930
+		print("ÿc4=== [TOMBS] ===");	Misc.trace("=== [TOMBS] ===", true);	//260930
 		
 		if (me.area !== 46) {
 			if (!doneChores) {
@@ -3637,7 +3661,7 @@ function AutoSmurf() {
 	this.staff = function () { // Only the Teleporting Sorc does this. She will be at least level 18 as required by MAIN to reach this stage.
 		var presetUnit;
 		
-		print("ÿc4=== [STAFF] ===");	Misc.trace("=== [STAFF] ===");	//260930
+		print("ÿc4=== [STAFF] ===");	Misc.trace("=== [STAFF] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3675,7 +3699,7 @@ function AutoSmurf() {
 			pathX = [5106, 5205, 5205, 5214, 5222],
             pathY = [5125, 5125, 5152, 5153, 5181];
 
-		print("ÿc4=== [RADAMENT] ===");	Misc.trace("=== [RADAMENT] ===");	//260930
+		print("ÿc4=== [RADAMENT] ===");	Misc.trace("=== [RADAMENT] ===", true);	//260930
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3801,13 +3825,16 @@ function AutoSmurf() {
 
 			// Look for the book once (a seen Radament always dies, the book does not show up later). Pick up only after everyone saw one:	//261004 was 16 tries with clears
 			// if anyone misses it, nobody picks one up and the whole team keeps 9,5 with no book, which the Atma reset above recovers
-			for (i = 0; i < 50 && !me.findItem(552) && !getUnit(4, 552); i += 1) {
+			//for (i = 0; i < 50 && !me.findItem(552) && !getUnit(4, 552); i += 1) {
+			for (i = 0; i < 50 && !getUnit(4, 552); i += 1) {	//261012
 				delay(40);
 			}
 
-			Misc.trace("radament book visible: " + !!(me.findItem(552) || getUnit(4, 552)) + " 9,5 " + me.getQuest(9, 5));	//261004
+			//Misc.trace("radament book visible: " + !!(me.findItem(552) || getUnit(4, 552)) + " 9,5 " + me.getQuest(9, 5));	//261004
+			Misc.trace("radament book visible: " + !!getUnit(4, 552) + " 9,5 " + me.getQuest(9, 5));	//261012
 
-			if (!me.findItem(552) && !getUnit(4, 552)) {
+			//if (!me.findItem(552) && !getUnit(4, 552)) {
+			if (!getUnit(4, 552)) {	//261012
 				Misc.quitGame("Radament quest item not found");	//260930
 
 				while (true) {	//261004
@@ -3822,9 +3849,12 @@ function AutoSmurf() {
 			book = me.findItem(552);
 			
 			if (book) {
+				this.okCount();
 				clickItem(1, book);
 				print("ÿc8!!! [BOOK] !!!");	Misc.trace("!!! [BOOK] !!!");	//261002
 				D2Bot.printToConsole("!!! BOOK !!!", 8);
+			} else {
+				Misc.quitGame("getQuestItem failed");	//261012
 			}
 
 			sendPacket(1, 0x40);	//261004 fresh quest state for the trace
@@ -3862,9 +3892,9 @@ function AutoSmurf() {
 	};
 
 	this.duriel = function () {
-		var i, orifice, hole, npc;
+		var i, cain, orifice, hole, npc;
 		
-		print("ÿc4=== [DURIEL] ===");	Misc.trace("=== [DURIEL] ===");	//260930
+		print("ÿc4=== [DURIEL] ===");	Misc.trace("=== [DURIEL] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3876,6 +3906,12 @@ function AutoSmurf() {
 			Town.goToTown(2);
 		}
 		
+		Town.move("cain");	//261018
+		cain = getUnit(1, NPC.Cain);
+		if (cain && cain.openMenu()) {
+			me.cancel();
+		}
+
 		if (!me.getQuest(14, 1) && !me.getQuest(14, 3) && !me.getQuest(14, 4)) {
 			if (Leader) {
 				Town.move("waypoint");
@@ -3959,20 +3995,20 @@ function AutoSmurf() {
 			
 			Precast.doPrecast(true);
 			
-			if (!Pather.usePortal(40, null)) {
-				Town.goToTown();
-			}
-			
-			this.okCount();
-				
-			if (Leader) {
-				delay(me.ping * 2 + 3000);
-				Pather.usePortal(getRoom().correcttomb, null);
+			if (Leader) {	//261018
+				this.okCount();
 				
 				Pather.useUnit(2, 100, 73);
-				
 				Pather.makePortal();
 			} else {
+				if (!Pather.usePortal(40, null)) {
+					Town.goToTown();
+				}
+				
+				delay(me.ping * 2 + 1000);
+				
+				this.okCount();
+				
 				me.overhead("Waiting for Duriel TP...");
 				
 				while (!Pather.usePortal(73, null)) {
@@ -4011,7 +4047,7 @@ function AutoSmurf() {
 					break;
 				}
 			}
-				
+			
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
 					Pather.makePortal();
@@ -4059,7 +4095,7 @@ function AutoSmurf() {
 		me.getQuest(20, 5/12/13/16/19) = persists after drinking potion
 	----------------------------
 */
-		print("ÿc4=== [FIGURINE] ===");	Misc.trace("=== [FIGURINE] ===");	//260930
+		print("ÿc4=== [FIGURINE] ===");	Misc.trace("=== [FIGURINE] ===", true);	//260930
 		
 		if (me.act !== 3 || !me.inTown) {
 			Town.goToTown(3);
@@ -4149,7 +4185,7 @@ function AutoSmurf() {
 	this.tome = function () { // Teleporting Sorc walks over to Alkor and completes the quest for everyone via exploit.
 		var alkor, target;
 
-		print("ÿc4=== [TOME] ===");	Misc.trace("=== [TOME] ===");	//260930
+		print("ÿc4=== [TOME] ===");	Misc.trace("=== [TOME] ===", true);	//260930
 
 		if (!me.findItem(548)) {	//260910
 			if (!doneChores) {
@@ -4209,7 +4245,7 @@ function AutoSmurf() {
 	this.eye = function () {
 		var presetUnit;
 		
-		print("ÿc4=== [EYE] ===");	Misc.trace("=== [EYE] ===");	//260930
+		print("ÿc4=== [EYE] ===");	Misc.trace("=== [EYE] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4247,7 +4283,7 @@ function AutoSmurf() {
 	this.heart = function () {
 		var presetUnit;
 		
-		print("ÿc4=== [HEART] ===");	Misc.trace("=== [HEART] ===");	//260930
+		print("ÿc4=== [HEART] ===");	Misc.trace("=== [HEART] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4285,7 +4321,7 @@ function AutoSmurf() {
 	this.brain = function () {
 		var presetUnit;
 		
-		print("ÿc4=== [BRAIN] ===");	Misc.trace("=== [BRAIN] ===");	//260930
+		print("ÿc4=== [BRAIN] ===");	Misc.trace("=== [BRAIN] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4323,7 +4359,7 @@ function AutoSmurf() {
 	this.travincal = function () {
 		var cain, presetUnit;
 		
-		print("ÿc4=== [TRAVINCAL] ===");	Misc.trace("=== [TRAVINCAL] ===");	//260930
+		print("ÿc4=== [TRAVINCAL] ===");	Misc.trace("=== [TRAVINCAL] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4461,7 +4497,7 @@ function AutoSmurf() {
 			takeRedPortal = false;
 		}
 
-		print("ÿc4=== [MEPHISTO] ===");	Misc.trace("=== [MEPHISTO] ===");	//260930
+		print("ÿc4=== [MEPHISTO] ===");	Misc.trace("=== [MEPHISTO] ===", true);	//260930
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4571,7 +4607,7 @@ function AutoSmurf() {
 	this.izual = function () {
 		var tyrael, presetUnit;
 		
-		print("ÿc4=== [IZUAL] ===");	Misc.trace("=== [IZUAL] ===");	//260930
+		print("ÿc4=== [IZUAL] ===");	Misc.trace("=== [IZUAL] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4992,7 +5028,7 @@ function AutoSmurf() {
 		this.starToVizB = [7755,5290, 7720,5275, 7710,5315, 7660,5315,
 							7655,5280];
 
-		print("ÿc4=== [DIABLO] ===");	Misc.trace("=== [DIABLO] ===");	//260930
+		print("ÿc4=== [DIABLO] ===");	Misc.trace("=== [DIABLO] ===", true);	//260930
 		
 		Town.goToTown(4);
 		
@@ -5077,8 +5113,8 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		if (Leader) {	//261004 the first portal is back at the entrance: open one at the star for the corpse run (bossEnd)
-			Misc.trace("boss portal: " + (Pather.makePortal() ? "opened" : "failed"));
+		if (Leader) {	//261008
+			Pather.makePortal();
 		}
 
 		this.diabloPrep();
@@ -5128,7 +5164,7 @@ function AutoSmurf() {
 
 	this.shenk = function () { // SiC-666 TODO: Rewrite this.
 	
-		print("ÿc4=== [SHENK] ===");	Misc.trace("=== [SHENK] ===");	//260930
+		print("ÿc4=== [SHENK] ===");	Misc.trace("=== [SHENK] ===", true);	//260930
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5137,6 +5173,8 @@ function AutoSmurf() {
 		this.syncBO();
 		
 		if (Leader) {
+			this.okCount();	//261008
+			
 			if (!Pather.useWaypoint(111)) {
 				throw new Error();
 			}
@@ -5152,6 +5190,8 @@ function AutoSmurf() {
 			}
 			
 			Town.move("portalspot");
+			
+			this.okCount();	//261008
 			
 			while (me.inTown) {
 				if (tpReady) {
@@ -5206,7 +5246,7 @@ function AutoSmurf() {
 			coords =[],
 			barbSpots = [];
 	
-		print("ÿc4=== [BARBS] ===");	Misc.trace("=== [BARBS] ===");	//260930
+		print("ÿc4=== [BARBS] ===");	Misc.trace("=== [BARBS] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5312,7 +5352,7 @@ function AutoSmurf() {
 	this.anya = function () { // Dark-f: Rewrite this.
 		var i, anya, malah, scroll, unit, waitAnya, larzuk;
 	
-		print("ÿc4=== [ANYA] ===");	Misc.trace("=== [ANYA] ===");	//260930
+		print("ÿc4=== [ANYA] ===");	Misc.trace("=== [ANYA] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5544,7 +5584,7 @@ function AutoSmurf() {
 
 	this.ancients = function () { // SiC-666 TODO: Rewrite this.
 
-		print("ÿc4=== [ANCIENTS] ===");	Misc.trace("=== [ANCIENTS] ===");	//260930
+		print("ÿc4=== [ANCIENTS] ===");	Misc.trace("=== [ANCIENTS] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5555,7 +5595,7 @@ function AutoSmurf() {
 		if (Leader) {
 			Pather.useWaypoint(118);
 			Pather.moveToExit(120, false);	//261004 portal in front of the summit: the altar closes every TP on the summit (the corpse run needs this one)
-			Misc.trace("boss portal: " + (Pather.makePortal() ? "opened" : "failed"));	//261004
+			Pather.makePortal();	//261008
 			Pather.moveToExit(120, true);
 		} else {
 			if (me.act !== 5 || !me.inTown) {
@@ -5579,7 +5619,7 @@ function AutoSmurf() {
 		
 		this.okCount();
 		
-		this.bossGuard(15);	//261004 chicken off when the last Ancient is at 15%
+		this.bossGuard(10);	//261008 chicken off when the second Ancient is at 10%
 
 		while (!me.getQuest(39,0)) {
 			var altar = getUnit(2, 546);
@@ -5677,14 +5717,16 @@ function AutoSmurf() {
 				break;
 			case 3: // Paladin
 				if (Config.AttackSkill[3] === 112) { // 112	Blessed Hammer
-					if (me.getState(2) && me.getSkill(109, 1)) {
-						Skill.setSkill(109, 0);
+					if (Config.Conviction && me.getSkill(123, 1)) {	//261016 matched to Pather logic
+						Skill.setSkill(123, 0);	//Conviction
+					} else if (me.getState(2) && me.getSkill(109, 1)) {
+						Skill.setSkill(109, 0);	//Cleansing
 					} else if (Config.Meditation && me.getSkill(120, 1)) {
-						Skill.setSkill(120, 0);
+						Skill.setSkill(120, 0);	//Meditation
 					} else if (Config.Cleansing && me.getSkill(109, 1)) {
-						Skill.setSkill(109, 0);
-					} else {
-						Skill.setSkill(Config.AttackSkill[4], 0);
+						Skill.setSkill(109, 0);	//Cleansing
+					} else if (Config.Vigor && me.getSkill(115, 1)) {
+						Skill.setSkill(115, 0);	//Vigor
 					}
 					
 					return Skill.cast(Config.AttackSkill[3], 1);
@@ -5762,7 +5804,7 @@ function AutoSmurf() {
 			return true;
 		};
 		
-		print("ÿc4=== [BAAL] ===");	Misc.trace("=== [BAAL] ===");	//260930
+		print("ÿc4=== [BAAL] ===");	Misc.trace("=== [BAAL] ===", true);	//260930
 
 		if (Leader) {
 			if (farmingON || me.diff !== 2) {
@@ -5856,7 +5898,22 @@ function AutoSmurf() {
 			if (!getUnit(1, 543)) {
 				break BaalLoop;
 			}
-		
+	
+			if (me.classid === 0) {	//ama
+				Pather.moveTo(15092, 5045);	//261016
+			} else if (me.classid === 3) {	//pal
+				Pather.moveTo(15092 + rand(-5, 5), 5030);	//260909
+			} else if (me.classid === 4) {	//bar
+				Pather.moveTo(15092, 5028);
+				Precast.doPrecast(true);
+			} else if (me.classid === 5) {	//dru
+				Pather.moveTo(15092, 5015);	//261016
+			} else {
+				Pather.moveTo(15092, 5040);
+			}
+			
+			Precast.doPrecast();
+			
 			if (!this.preattack()) {
 				delay(100);
 			}
@@ -5883,19 +5940,6 @@ function AutoSmurf() {
 				Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260926	//260929
 				
 				this.checkHydra();
-				
-				if (me.classid === 3) {	//pal
-					Pather.moveTo(15092 + rand(-5, 5), 5030);	//260909
-				} else if (me.classid === 4) {	//bar
-					Pather.moveTo(15092, 5028);
-					Precast.doPrecast(true);
-				} else if (me.classid === 5) {	//dru
-					Pather.moveTo(15092, 5018);	//261001	//261002 5013 -> 5018
-				} else {
-					Pather.moveTo(15092, 5040);
-				}
-				
-				Precast.doPrecast();
 				
 				if (me.classid === 6 && !wave5) {
 					resetTrap = true;
@@ -5975,8 +6019,8 @@ function AutoSmurf() {
 		
 		Pather.moveTo(15134, 5923);
 		
-		if (Leader) {	//261004 a portal in the Worldstone Chamber for the corpse run (bossEnd); the one after the kill reuses it
-			Misc.trace("boss portal: " + (Pather.makePortal() ? "opened" : "failed"));
+		if (Leader) {	//261008
+			Pather.makePortal();
 		}
 
 		if (!me.getQuest(40, 0)) {	//261004 questing only (Baal not killed yet), farming leaves on a chicken as before
@@ -6029,7 +6073,7 @@ function AutoSmurf() {
 	this.farmingCountess = function() { 
 		var poi;
 		
-		print("ÿc4=== [COUNTESS] ===");	Misc.trace("=== [COUNTESS] ===");	//260930
+		print("ÿc4=== [COUNTESS] ===");	Misc.trace("=== [COUNTESS] ===", true);	//260930
 		
 		Town.doChores();
 		
@@ -6103,7 +6147,7 @@ function AutoSmurf() {
 
 	this.farmingPit = function() { 
 		
-		print("ÿc4=== [PIT] ===");	Misc.trace("=== [PIT] ===");	//260930
+		print("ÿc4=== [PIT] ===");	Misc.trace("=== [PIT] ===", true);	//260930
 
 		Town.doChores();
 		
@@ -6164,7 +6208,7 @@ function AutoSmurf() {
 
 	this.farmingAndy = function() { 
 		
-		print("ÿc4=== [ANDY] ===");	Misc.trace("=== [ANDY] ===");	//260930
+		print("ÿc4=== [ANDY] ===");	Misc.trace("=== [ANDY] ===", true);	//260930
 		
 		Town.doChores();
 
@@ -6430,7 +6474,7 @@ function AutoSmurf() {
 		};
 
 		//main
-		print("ÿc4=== [COWS] ===");	Misc.trace("=== [COWS] ===");	//260930
+		print("ÿc4=== [COWS] ===");	Misc.trace("=== [COWS] ===", true);	//260930
 		
 		this.okCount();	//260824
 		
@@ -6787,7 +6831,7 @@ function AutoSmurf() {
 	this.farmingSummoner = function() {
 		var journal, i;
 		
-		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===");	//260930
+		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===", true);	//260930
 
 		Town.doChores();
 		
@@ -6887,7 +6931,7 @@ function AutoSmurf() {
 	this.farmingMephisto = function() {
 		var redPortal;
 
-		print("ÿc4=== [MEPHISTO] ===");	Misc.trace("=== [MEPHISTO] ===");	//260930
+		print("ÿc4=== [MEPHISTO] ===");	Misc.trace("=== [MEPHISTO] ===", true);	//260930
 		
 		Town.doChores();
 		
@@ -6954,7 +6998,7 @@ function AutoSmurf() {
 	this.farmingAbaddon = function() {
 		var presetUnit;
 	
-		print("ÿc4=== [ABADDON] ===");	Misc.trace("=== [ABADDON] ===");	//260930
+		print("ÿc4=== [ABADDON] ===");	Misc.trace("=== [ABADDON] ===", true);	//260930
 
 		Town.doChores();
 		
@@ -7037,7 +7081,7 @@ function AutoSmurf() {
 	this.farmingPOA = function() {
 		var presetUnit;
 	
-		print("ÿc4=== [POA] ===");	Misc.trace("=== [POA] ===");	//260930
+		print("ÿc4=== [POA] ===");	Misc.trace("=== [POA] ===", true);	//260930
 
 		Town.doChores();
 		
@@ -7120,7 +7164,7 @@ function AutoSmurf() {
 	this.farmingInfernal = function() {
 		var presetUnit;
 	
-		print("ÿc4=== [INFERNAL] ===");	Misc.trace("=== [INFERNAL] ===");	//260930
+		print("ÿc4=== [INFERNAL] ===");	Misc.trace("=== [INFERNAL] ===", true);	//260930
 
 		Town.doChores();
 		
@@ -7202,7 +7246,7 @@ function AutoSmurf() {
 	
 	this.farmingNihlathak = function() { 
 		
-		print("ÿc4=== [NIHLATHAK] ===");	Misc.trace("=== [NIHLATHAK] ===");	//260930
+		print("ÿc4=== [NIHLATHAK] ===");	Misc.trace("=== [NIHLATHAK] ===", true);	//260930
 
 		Town.doChores();
 		
@@ -7517,6 +7561,8 @@ function AutoSmurf() {
 
 //MAIN
 	this.checkRole();
+	
+	Pickit.pickItems();	//261016
 	
 	this.okCount();
 	

@@ -346,7 +346,6 @@ MainLoop:
 
 			// TK failed, disable it
 			stats.useTk = false;
-
 		}
 
 		stats.picked = me.itemcount > itemCount || !!me.getItem(-1, -1, gid);
@@ -383,9 +382,7 @@ MainLoop:
 				break;
 				
 			default:
-
 				break;
-
 			}
 		}
 
@@ -435,7 +432,7 @@ MainLoop:
 	},
 
 	canPick: function (unit) {
-		var tome, charm, i, potion, needPots, buffers, pottype, myKey, key;
+		var tome, charm, i, potion, needPots, buffers, pottype, myKey, key, equiQuiver, invQuiver;	//261014
 
 		switch (unit.classid) {
 		case 92: // Staff of Kings
@@ -461,6 +458,22 @@ MainLoop:
 				return false; // Skip gold if full
 			}
 
+			break;
+		case 5: // Arrows	//261015
+			equiQuiver = me.getItem("aqv", 0);
+			invQuiver = me.getItem("aqv", 1);
+			if (equiQuiver && equiQuiver.getStat(70) + (invQuiver ? invQuivergetStat(70) : 0) > 350) {
+				return false;
+			}
+			
+			break;
+		case 6: // Bolts	//261015
+			equiQuiver = me.getItem("cqv", 0);
+			invQuiver = me.getItem("cqv", 1);
+			if (equiQuiver && equiQuiver.getStat(70) + (invQuiver ? invQuivergetStat(70) : 0) > 250) {
+				return false;
+			}
+			
 			break;
 		case 22: // Scroll
 			tome = me.getItem(unit.classid - 11, 0); // 518 - Tome of Town Portal or 519 - Tome of Identify, mode 0 - inventory/stash

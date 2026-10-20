@@ -6,7 +6,6 @@
 
 var ClassAttack = {
 	doAttack: function (unit, preattack) {
-		
 		if (Config.MercWatch && Town.needMerc()) {
 			print("mercwatch");
 			Town.visitTown();
@@ -17,9 +16,9 @@ var ClassAttack = {
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
-					return 0;
-				}
+			if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
+				return 0;
+			}
 
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
@@ -60,7 +59,7 @@ var ClassAttack = {
 
 			while (!me.dead && Math.round(unit.hp * 100 / unit.hpmax) > Config.CastStatic && Attack.checkMonster(unit)) {
 				if (getDistance(me, unit) > staticRange || checkCollision(me, unit, 0x4)) {
-					if (!Attack.setPosition(unit, staticRange, 0x4)) {	//260826	//260930 minDist 1 is the default now
+					if (!Attack.setPosition(unit, staticRange, 0x4, 1)) {	//261008
 						return 0;
 					}
 				}

@@ -125,15 +125,15 @@ function main() {
 
 			if (script) {
 				if (script.running) {
-					if (i === 0) { // default.dbj
+					//if (i === 0) { // default.dbj	//261020
 						me.overhead("Pausing.");	//eom
-					}
+					//}
 
 					script.pause();
 				} else {
-					if (i === 0) { // default.dbj
+					//if (i === 0) { // default.dbj	//261020
 						me.overhead("Resuming.");	//eom
-					}
+					//}
 
 					script.resume();
 				}
@@ -167,7 +167,7 @@ function main() {
 		var tick = getTickCount();	//261006
 
 		this.stopDefault();
-		Misc.trace("[Quit] stopDefault " + (getTickCount() - tick) + "ms");	//261006 time spent before quit() (deaths right after a chicken)
+		Misc.trace("[Quit] stopDefault " + (getTickCount() - tick) + "ms", true);	//261006 time spent before quit() (deaths right after a chicken)
 		quit();
 	};
 
@@ -456,7 +456,7 @@ function main() {
 			break;
 			
 		case 97: // Numpad 1 (temp)
-			print(me.gameReady + " / " + me.dead + " / " + me.mode);
+			Precast.enchant();	//261019
 			break;
 		case 98: // Numpad 2
 			break;

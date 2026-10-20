@@ -69,11 +69,16 @@ var AutoBuildTemplate = {
 				
 				if (me.charlvl >= 45) {
 					Config.RejuvBuffer = 4;
+					
+					Config.LowGold = me.charlvl * 3000;
+					Config.StashGold = me.charlvl * 2000;
 				}					
 				
 				if (me.diff > 0) {
 					Config.BeltColumn = ["hp", "mp", "mp", "rv"];
 					Config.UseHP = 80;
+					
+					Config.MercSkill = "Holy Freeze";
 				}
 
 				if (me.diff > 1) {
@@ -87,7 +92,7 @@ var AutoBuildTemplate = {
 					Config.MPBuffer = 0;
 					Config.RejuvBuffer = 2;
 					
-					Config.MercSkill = "Blessed Aim";
+					//Config.MercSkill = "Blessed Aim";
 				}
 				
 				if (me.profile === Team.Leader) {
@@ -97,7 +102,7 @@ var AutoBuildTemplate = {
 				Config.TierGoal.Head = 15;
 				Config.TierGoal.Neck = 17;
 				Config.TierGoal.Body = 21;
-				Config.TierGoal.ArmR = 31;
+				Config.TierGoal.ArmR = 41;
 				Config.TierGoal.ArmL = 21;
 				Config.TierGoal.RingR = 14;
 				Config.TierGoal.RingL = 14;

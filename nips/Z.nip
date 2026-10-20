@@ -3,10 +3,10 @@
 //############################################################################################################################################################################################
 
 [name] == shako && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered] == 0
-[Type] == amulet && [quality] == unique # [strength] == 12 && [fireResist] >= 15 # [qty] == 1 && [tiered] == 0
+[type] == amulet && [quality] == unique # [strength] == 12 && [fireResist] >= 15 # [qty] == 1 && [tiered] == 0
 [name] == boneknife && [quality] == unique # # [qty] == 1 && [tiered] == 0
-[Type] == ring && [quality] == unique # [maxhp] == 40 && [magicdamagereduction] >= 1 # [qty] == 1 && [tiered] == 0
-[Type] == ring && [quality] == unique # [tohit] >= 150 && [dexterity] >= 15 # [qty] == 1 && [tiered] == 0
+[type] == ring && [quality] == unique # [maxhp] == 40 && [magicdamagereduction] >= 1 # [qty] == 1 && [tiered] == 0
+[type] == ring && [quality] == unique # [tohit] >= 150 && [dexterity] >= 15 # [qty] == 1 && [tiered] == 0
 [name] == warbelt && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered] == 0
 [name] == battleboots && [quality] == set # # [qty] == 1 && [tiered] == 0
 [name] == heavygloves && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered] == 0

@@ -1039,16 +1039,15 @@ CursorLoop:
 	},
 
 	repair: function (shopItems) {
-		var i, quiver, myQuiver, npc, repairAction, bowCheck;
+		var i, quiver, buyQuiver, equipQuiver, invQuiver, npc, repairAction, bowCheck;
 		
-		// Fuck Hratli
-		if (me.act === 3) {
-			return true;
-		}
-
 		repairAction = this.needRepair();
 
 		if (!repairAction || !repairAction.length) {
+			if (me.act === 3) {	// Hratli
+				return true;
+			}
+
 			if (((me.act !== 1 && me.diff === 0) || ((me.act === 4 || me.act === 5) && Config.MiniShopBot)) && shopItems) {	//260712
 				npc = this.initNPC("Repair", "shopItems");
 				
@@ -1067,6 +1066,10 @@ CursorLoop:
 		for (i = 0; i < repairAction.length; i += 1) {
 			switch (repairAction[i]) {
 			case "repair":
+				if (me.act === 3) {	// Hratli
+					return true;
+				}
+				
 				npc = this.initNPC("Repair", "repair");
 
 				if (!npc) {
@@ -1076,7 +1079,17 @@ CursorLoop:
 				me.repair();
 
 				break;
-			case "buyQuiver":
+			case "buyQuiver":	//261017
+				if (getInteractedNPC()) {
+					sendKey(0x20);
+					print("ineract closed");
+					Misc.trace("ineract closed");
+					
+					if (!me.automap) {
+						me.automap = true;
+					}
+				}
+				
 				bowCheck = Attack.usingBow();
 
 				if (bowCheck) {
@@ -1086,23 +1099,68 @@ CursorLoop:
 						quiver = "cqv"; // Bolts
 					}
 
-					myQuiver = me.getItem(quiver, 1);
+					equipQuiver = me.getItem(quiver, 1);
+					invQuiver = me.getItem(quiver, 0);
+					
+					print("not enough quiver: " + (equipQuiver ? equipQuiver.getStat(70) : 0) + (invQuiver ? " + " + invQuiver.getStat(70) : ""));
+					Misc.trace("not enough quiver: " + (equipQuiver ? equipQuiver.getStat(70) : 0) + (invQuiver ? " + " + invQuiver.getStat(70) : ""));
 
-					if (myQuiver) {
-						myQuiver.drop();
+					if (me.act === 3) {
+						if (equipQuiver && Storage.Inventory.MoveTo(equipQuiver)) {
+							print("equipQuiver moved");
+							Misc.trace("equipQuiver moved");
+						}
+					} else {
+						if (equipQuiver && equipQuiver.drop()) {
+							print("equipQuiver dropped");
+							Misc.trace("equipQuiver dropped");
+						}
+						
+						if (invQuiver && invQuiver.drop()) {
+							print("invQuiver dropped");
+							Misc.trace("invQuiver dropped");
+						}
 					}
-
-					npc = this.initNPC("Repair", "repair");
+					
+					if (me.act === 3) {
+						npc = this.initNPC("Shop", "buyQuiver");
+					} else {
+						npc = this.initNPC("Repair", "buyQuiver");
+					}
 
 					if (!npc) {
 						return false;
 					}
-
-					quiver = npc.getItem(quiver);
-
-					if (quiver) {
-						quiver.buy();
+					
+					if (me.act === 3 && equipQuiver && equipQuiver.sell()) {
+						print("equipQuiver sold");
+						Misc.trace("equipQuiver sold");
 					}
+					
+					buyQuiver = npc.getItem(quiver);
+					
+					if (buyQuiver && buyQuiver.buy()) {
+						print("equipQuiver");
+						Misc.trace("equipQuiver");
+					}
+					
+					if (me.act === 3 && invQuiver && invQuiver.sell()) {
+						print("invQuiver sold");
+						Misc.trace("invQuiver sold");
+						
+						buyQuiver = npc.getItem(quiver);
+					}
+					
+					if (buyQuiver && buyQuiver.buy()) {
+						print("invQuiver");
+						Misc.trace("invQuiver");
+					}
+					
+					equipQuiver = me.getItem(quiver, 1);
+					invQuiver = me.getItem(quiver, 0);
+					
+					print((equipQuiver ? "equipQuiver " + equipQuiver.getStat(70) : "no quiver") + (invQuiver ? " / invQuiver " + invQuiver.getStat(70) : ""));
+					Misc.trace((equipQuiver ? "equipQuiver " + equipQuiver.getStat(70) : "no quiver") + (invQuiver ? " / invQuiver " + invQuiver.getStat(70) : ""));
 				}
 
 				break;
@@ -1110,16 +1168,10 @@ CursorLoop:
 		}
 		
 		if (((me.act !== 1 && me.diff === 0) || ((me.act === 4 || me.act === 5) && Config.MiniShopBot)) && shopItems) {	//260712
-			npc = this.initNPC("Repair", "shopItems");
-			
-			if (!npc) {
+			if (me.act === 3) {	// Hratli
 				return true;
 			}
 			
-			this.shopItems();
-		}
-		
-		if (me.classid === 0 && me.act === 1) {
 			npc = this.initNPC("Repair", "shopItems");
 			
 			if (!npc) {
@@ -1133,7 +1185,7 @@ CursorLoop:
 	},
 
 	needRepair: function () {
-		var quiver, bowCheck, quantity,
+		var quiver, bowCheck, quantity, cost, inv,	//261014
 			repairAction = [],
 			canAfford = me.gold >= me.getRepairCost();
 
@@ -1141,23 +1193,25 @@ CursorLoop:
 		bowCheck = Attack.usingBow();
 
 		if (bowCheck) {
-			switch (bowCheck) {
+			switch (bowCheck) {	//261014
 			case "bow":
 				quiver = me.getItem("aqv", 1); // Equipped arrow quiver
+				inv = me.getItem("aqv", 0);
+				cost = 81;
 
 				break;
 			case "crossbow":
 				quiver = me.getItem("cqv", 1); // Equipped bolt quiver
+				inv = me.getItem("cqv", 0);
+				cost = 58;
 
 				break;
 			}
-
-			if (!quiver) { // Out of arrows/bolts
-				repairAction.push("buyQuiver");
-			} else {
-				quantity = quiver.getStat(70);
-
-				if (typeof quantity === "number" && quantity * 100 / getBaseStat("items", quiver.classid, "maxstack") <= Config.RepairPercent) {
+			
+			if (cost <= me.gold) {	//261019
+				quantity = quiver ? quiver.getStat(70) : quiver;
+				
+				if (!quantity || (typeof quantity === "number" && (quantity + (inv ? inv.getStat(70) : 0)) * 100 / getBaseStat("items", quiver.classid, "maxstack") <= Config.QuiverPercent)) { // Out of arrows/bolts
 					repairAction.push("buyQuiver");
 				}
 			}
@@ -2166,7 +2220,6 @@ MainLoop:
 	visitTown: function () {
 
 		if (me.inTown) {
-			
 			Equip.autoEquip();	//260821
 			Grant.autoEquip();
 			this.stash();

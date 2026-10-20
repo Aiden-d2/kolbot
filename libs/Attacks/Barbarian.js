@@ -6,9 +6,7 @@
 
 var ClassAttack = {
 	doAttack: function (unit, preattack) {
-
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Attack.getSkillElement(Config.AttackSkill[0])) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-			
 			if (getDistance(me, unit) > Skill.getRange(Config.AttackSkill[0])) {	//260927 attackSkill was read before assignment
 				// a failed approach ends the tick: going on to the main attack left tick.fail "unreachable" behind for a tick that did attack	//260929
 				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260929
@@ -48,7 +46,6 @@ var ClassAttack = {
 	},
 
 	afterAttack: function (pickit) {
-
 		Misc.unShift();
 		Precast.doPrecast(false);
 
@@ -71,7 +68,7 @@ var ClassAttack = {
 
 			return 1;
 		case 154:	// 260613	//261003 approach-only guard removed: range 5 is below Dodge.MinSkillRange 9, so setPosition never dodges it
-			if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4)) {	//260826	//260930 minDist 1 is the default now
+			if (!Attack.setPosition(unit, Skill.getRange(attackSkill), 0x4)) {	//260826
 				return 0;
 			}
 

@@ -31,10 +31,10 @@ var AutoBuildTemplate = {
 			{id: 119, target: 1},			// Sanctuary
 			{id: 112, target: 20},			// Blessed Hammer
 			{id: 123, target: 10},			// Conviction
-			{id: 115, target: 20},			// Vigor
-			{id: 108, target: 10, from:51},	// Blessed Aim
+			{id: 115, target: 20, from: 40},// Vigor
+			{id: 108, target: 10, from: 51},// Blessed Aim
 			{id: 123, target: 20},			// Conviction
-			{id: 108, target: 20, from:51},	// Blessed Aim
+			{id: 108, target: 20, from: 51},// Blessed Aim
 			{id: 101, target: 1},			// Holy Bolt
 			{id: 114, target: 1},			// Holy Freeze
 			{id: 99, target: 1},			// Prayer
@@ -69,6 +69,9 @@ var AutoBuildTemplate = {
 				
 				if (me.charlvl >= 45) {
 					Config.RejuvBuffer = 4;
+					
+					Config.LowGold = me.charlvl * 3000;
+					Config.StashGold = me.charlvl * 2000;
 				}					
 				
 				if (me.diff > 0) {
@@ -159,10 +162,11 @@ var AutoBuildTemplate = {
 			}
 		},
 
-	46:	{
+	30:	{
 			Update: function () {
 				Config.AttackSkill = [-1, 112, 123, 112, 123, 101, 123];	// Blessed Hammer + Conviction
-				Config.Cleansing = true;
+				//Config.Cleansing = true;
+				Config.Conviction = true;
 			}
 		}
 };

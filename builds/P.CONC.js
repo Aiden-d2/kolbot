@@ -35,8 +35,8 @@ var AutoBuildTemplate = {
 			{id: 108, target: 20, from: 51},// Blessed Aim
 			{id: 101, target: 1},			// Holy Bolt
 			{id: 98, target: 1},			// Might
-			{id: 120, target: 3},			// Meditation
-			{id: 117, target: 20},			// Holy Shield
+			{id: 120, target: 1},			// Meditation
+			{id: 123, target: 17},			// Conviction
 		]
 	},
 
@@ -67,6 +67,9 @@ var AutoBuildTemplate = {
 				
 				if (me.charlvl >= 45) {
 					Config.RejuvBuffer = 4;
+					
+					Config.LowGold = me.charlvl * 3000;
+					Config.StashGold = me.charlvl * 2000;
 				}					
 				
 				if (me.diff > 0) {
@@ -160,6 +163,12 @@ var AutoBuildTemplate = {
 	46:	{
 			Update: function () {
 				Config.Meditation = true;
+			}
+		},
+
+	83:	{
+			Update: function () {
+				Config.AttackSkill = [-1, 112, 123, 112, 113, 101, 123];	// Conviction
 			}
 		}
 };

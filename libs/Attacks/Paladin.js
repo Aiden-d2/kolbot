@@ -6,16 +6,15 @@
 
 var ClassAttack = {
 	doAttack: function (unit, preattack) {
-		
 		if (Config.MercWatch && Town.needMerc()) {
 			print("mercwatch");
 			Town.visitTown();
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
-					return 0;
-				}
+			if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
+				return 0;
+			}
 
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
@@ -32,6 +31,9 @@ var ClassAttack = {
 		if (Attack.getCustomAttack(unit)) {
 			attackSkill = Attack.getCustomAttack(unit)[0];
 			aura = Attack.getCustomAttack(unit)[1];
+		//} else if (me.area === 39 && me.getSkill(123, 1)) {
+			//attackSkill = 500;
+			//aura = 123;
 		} else {
 			attackSkill = Config.AttackSkill[index];
 			aura = Config.AttackSkill[index + 1];
@@ -271,7 +273,7 @@ var ClassAttack = {
 	},
 
 	reposition: function (x, y) {	//260902
-		if (Math.round(getDistance(me, x, y)) > 0) {
+		if (Math.round(getDistance(me, x, y)) > 3) {	//261018
 			if (Pather.useTeleport()) {
 				return Pather.teleportTo(x, y);
 			}

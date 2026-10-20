@@ -63,18 +63,18 @@
 ([name] == sash || [name] == lightbelt) && [quality] >= normal && [flag] != ethereal # # [tier] == 1
 ([name] == belt || [name] == heavybelt) && [quality] >= normal && [flag] != ethereal # # [tier] == 2
 
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= normal && [flag] != ethereal # # [tier] == 3
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= normal && [flag] != ethereal # # [tier] == 3
 
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
-([name] == platedbelt || ([type] == belt && [class] == exceptional && [name] != warbelt) || [name] == spiderwebsash || [name] == vampirefangbelt) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
 
 
 //============================================================================================================================================================================================
@@ -123,7 +123,7 @@
 [type] == ring && [quality] == unique # [maxhp] == 20 && [hpregen] >= 1 && [manaleech] >= 1 # [tier] == 13
 [type] == ring && [quality] == unique # [maxhp] == 40 && [magicdamagereduction] >= 1 # [tier] == 15 && [qty] == 1
 
-[type] == ring && [quality] == unique # [MaxStamina] == 50 # [tier] == 21
+[type] == ring && [quality] == unique # [maxstamina] == 50 # [tier] == 21
 [type] == ring && [quality] == unique # [itemmaxmanapercent] == 25 # [tier] == 22
 
 

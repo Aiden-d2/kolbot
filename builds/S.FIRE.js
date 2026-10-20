@@ -28,7 +28,7 @@ var AutoBuildTemplate = {
 		
 		Skills: [
 			{id: 58, target: 1, from: 43},	// Energy Shield
-			{id: 42, target: 1},			// Static Field
+			//{id: 42, target: 1},			// Static Field
 			{id: 43, target: 1},			// Telekinesis
 			{id: 45, target: 1},			// Ice Blast
 			{id: 50, target: 1},			// Shiver Armor
@@ -42,7 +42,8 @@ var AutoBuildTemplate = {
 			{id: 56, target: 20},			// Meteor
 			{id: 61, target: 20, from: 50},	// Fire Mastery
 			{id: 36, target: 20, from: 50},	// Fire Bolt
-			{id: 58, target: 16, from: 50},	// Energy Shield
+			{id: 43, target: 17, from: 50},	// Telekinesis
+			//{id: 58, target: 8, from: 50},	// Energy Shield
 		]
 	},
 
@@ -73,6 +74,9 @@ var AutoBuildTemplate = {
 				
 				if (me.charlvl >= 45) {
 					Config.RejuvBuffer = 4;
+					
+					Config.LowGold = me.charlvl * 3000;
+					Config.StashGold = me.charlvl * 2000;
 				}					
 				
 				if (me.diff > 0) {
@@ -116,7 +120,7 @@ var AutoBuildTemplate = {
 
 	6:	{
 			Update: function () {
-				if (me.diff === 0) {
+				/*if (me.diff === 0) {
 					if (me.charlvl < 25) {
 						Config.CastStatic = 25;	//no limits
 					} else {
@@ -128,7 +132,7 @@ var AutoBuildTemplate = {
 					Config.CastStatic = 50;	//50%
 				}
 				
-				Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];
+				Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];*/
 			}
 		},
 

@@ -102,7 +102,6 @@ var ClassAttack = {
 	},
 
 	doAttack: function (unit, preattack) {
-		
 		if (!this.cursesSet || this.curseState.length !== Config.Curse.length) {	// 260514
 			this.initCurses();
 		}
@@ -112,9 +111,9 @@ var ClassAttack = {
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
-					return 0;
-				}
+			if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
+				return 0;
+			}
 
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
@@ -136,7 +135,6 @@ var ClassAttack = {
 			}
 
 			Skill.cast(Config.Curse[0], 0, unit);
-
 		}
 
 		if (Config.Curse.length > 1 && Config.Curse[1] > 0 && this.isCursable(unit) && !(unit.spectype & 0x7) && !unit.getState(this.curseState[1])) {	//260510
@@ -147,7 +145,6 @@ var ClassAttack = {
 			}
 
 			Skill.cast(Config.Curse[1], 0, unit);
-
 		}
 
 		// Get timed skill

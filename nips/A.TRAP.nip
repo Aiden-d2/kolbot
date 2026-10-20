@@ -149,21 +149,30 @@
 ([type] == wand || [type] == handtohand || [type] == assassinclaw) && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
 ([type] == wand || [type] == handtohand || [type] == assassinclaw) && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
 
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 1 # [tier] == 21
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 2 # [tier] == 22
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 3 # [tier] == 23
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 4 # [tier] == 24
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 5 # [tier] == 25
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 6 # [tier] == 26
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 7 # [tier] == 27
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 8 # [tier] == 28
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 9 # [tier] == 29
-([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab] >= 10 # [tier] == 30
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 1 # [tier] == 21
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 2 # [tier] == 22
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 3 # [tier] == 23
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 4 # [tier] == 24
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 5 # [tier] == 25
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 6 # [tier] == 26
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 7 # [tier] == 27
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 8 # [tier] == 28
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 9 # [tier] == 29
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 10 # [tier] == 30
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 11 # [tier] == 31
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 12 # [tier] == 32
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 13 # [tier] == 33
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 14 # [tier] == 34
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 15 # [tier] == 35
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 16 # [tier] == 36
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 17 # [tier] == 37
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 18 # [tier] == 38
+([type] == handtohand || [type] == assassinclaw) && [quality] >= magic # [assassinskills]*3+[trapsskilltab]*2+[shadowdisciplinesskilltab]+[skilllightningsentry]+[skillfade]+[skillshockweb]+[skillshadowwarrior]+[skillmindblast] >= 19 # [tier] == 39
 
-[type] == sword && [flag] == runeword # [fhr] == 55 # [tier] == 31
-[type] == sword && [flag] == runeword # [fhr] == 55 && [maxmana] >= 100 # [tier] == 32
+[type] == sword && [flag] == runeword # [fhr] == 55 # [tier] == 41
+[type] == sword && [flag] == runeword # [fhr] == 55 && [maxmana] >= 100 # [tier] == 42
 
-[name] == flail && [flag] == runeword # [FCR] >= 40 # [tier] == 41
+[name] == flail && [flag] == runeword # [FCR] >= 40 # [tier] == 51
 
 
 //============================================================================================================================================================================================

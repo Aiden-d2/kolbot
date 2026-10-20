@@ -7,19 +7,34 @@
 var ClassAttack = {
 	bowCheck: false,
 	lightFuryTick: 0,
+	decoyPosition: {},
 
 	doAttack: function (unit, preattack) {
 		var needRepair = Town.needRepair();
 
-		if ((Config.MercWatch && Town.needMerc()) || needRepair.length > 0) {
-			Town.visitTown(!!needRepair.length);
+		if (Config.MercWatch && Town.needMerc()) {
+			Town.visitTown();
+		}
+		
+		if (needRepair && needRepair.length > 0) {	//261016
+			Town.visitTown();
+		}
+
+		if (Config.Decoy && (typeof Config.Decoy === "number" && Config.Decoy > 0 ? me.getSkill(28, 1) >= Config.Decoy : !!Config.Decoy) && getDistance(me, unit) <= 25) {	//261016
+			if (me.getMinionCount(8) === 0 || !this.decoyPosition.hasOwnProperty("x") || getDistance(unit.x, unit.y, this.decoyPosition.x, this.decoyPosition.y) > 15) {
+				if (Skill.cast(28, 0, unit)) {
+					this.decoyPosition = {x: unit.x, y: unit.y};
+				} else {
+					this.decoyPosition = {};
+				}
+			}
 		}
 
 		if (preattack && Config.AttackSkill[0] > 0 && Attack.checkResist(unit, Config.AttackSkill[0]) && (!me.getState(121) || !Skill.isTimed(Config.AttackSkill[0]))) {
-				if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
-					return 0;
-				}
-
+			if (!Attack.setPosition(unit, Skill.getRange(Config.AttackSkill[0]), 0x4)) {	//260826
+				return 0;
+			}
+			
 			Skill.cast(Config.AttackSkill[0], Skill.getHand(Config.AttackSkill[0]), unit);
 
 			return 1;
@@ -35,8 +50,6 @@ var ClassAttack = {
 		// Get timed skill
 		if (Attack.getCustomAttack(unit)) {
 			checkSkill = Attack.getCustomAttack(unit)[0];
-		} else if (me.getSkill(24, 1) && (me.area === 120 || me.area === 132)) {	//eom
-			checkSkill = 24;
 		} else {
 			checkSkill = Config.AttackSkill[index];
 		}
@@ -79,17 +92,8 @@ var ClassAttack = {
 	},
 
 	afterAttack: function () {
-		var needRepair;
-
 		Misc.unShift();
 		Precast.doPrecast(false);
-
-		needRepair = Town.needRepair();
-
-		if (needRepair && needRepair.length > 0) { // Repair check, mainly to restock arrows
-			Town.visitTown(true);
-		}
-
 		this.lightFuryTick = 0;
 	},
 
@@ -100,24 +104,6 @@ var ClassAttack = {
 		// No valid skills can be found
 		if (timedSkill < 0 && untimedSkill < 0) {
 			return 2;
-		}
-
-		// Arrow/bolt check
-		if (this.bowCheck) {
-			switch (this.bowCheck) {
-			case "bow":
-				if (!me.getItem("aqv", 1)) {
-					Town.visitTown();
-				}
-
-				break;
-			case "crossbow":
-				if (!me.getItem("cqv", 1)) {
-					Town.visitTown();
-				}
-
-				break;
-			}
 		}
 
 		if (timedSkill > -1 && (!me.getState(121) || !Skill.isTimed(timedSkill))) {

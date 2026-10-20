@@ -73,6 +73,9 @@ var AutoBuildTemplate = {
 				
 				if (me.charlvl >= 45) {
 					Config.RejuvBuffer = 4;
+					
+					Config.LowGold = me.charlvl * 3000;
+					Config.StashGold = me.charlvl * 2000;
 				}					
 				
 				if (me.diff > 0) {
@@ -168,7 +171,7 @@ var AutoBuildTemplate = {
 			}
 		},
 
-	71:	{
+	65:	{
 			Update: function () {
 				Config.AttackSkill = [-1, 64, 48, 64, 48, -1, 43];		// Frozen Orb + Nova
 			}

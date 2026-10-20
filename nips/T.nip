@@ -3,39 +3,39 @@
 //############################################################################################################################################################################################
 
 //============================================================================================================================================================================================
-// [strength]=0 // [enhanceddamage]=18 // [mindamage]=21 // [maxdamage]=22
-// [itemmaxdamageperlevel]=218(0.125=1)	// [itemmaxdamagepercentperlevel]=219
+// [strength]=0 // [dexterity]=2 // [enhanceddamage]=18
+// [mindamage]=21 // [maxdamage]=22 // [secondarymindamage]=23 // [secondarymaxdamage]=24
+// [itemmaxdamageperlevel]=218(*0.125) // [itemmaxdamagepercentperlevel]=219(*0.125)
 // [firemindam]=48 // [firemaxdam]=49 // [lightmindam]=50 // [lightmaxdam]=51 // [coldmindam]=54 // [coldmaxdam]=55
-// [tohit]=19 // [itemtohitpercent]=119 // [itemtohitperlevel]=224(16.5=33) // [itemtohitpercentperlevel]=225(1=2)
+// [tohit]=19 // [itemtohitpercent]=119 // [itemtohitperlevel]=224(*0.5) // [itemtohitpercentperlevel]=225(*0.5)
 // [itemignoretargetac]=115(1) // [itemfractionaltargetac]=116(+)
-// [itemopenwounds]=135 // [itemcrushingblow]=136 // [itemdeadlystrike]=141 // [itemdeadlystrikeperlevel]=250(0.125=1)
-// [lifeleech]=60 // [manaleech]=62 // [ias]=93 // [fhr]=99
+// [itemopenwounds]=135 // [itemcrushingblow]=136 // [itemdeadlystrike]=141 // [itemdeadlystrikeperlevel]=250(*0.125)
+// [lifeleech]=60 // [manaleech]=62
+// [ias]=93	// [frw]=96 // [fhr]=99
 // [itemskillonattack]=195(skillid) // [itemskillonhit]=198(skillid)
-// [itemhowl]=112 // [itemstupidity]=113 // [itemfreeze]=134 // [itemslow]=150(+)
-// [itemindestructible]=152(1) // [itemcannotbefrozen]=153(1)
+// [itemhowl]=112 // [itemstupidity]=113 // [itempreventheal]=117(1) // [itemfreeze]=134 // [itemslow]=150(+)
+// [itemindestructible]=152(1) // [itemcannotbefrozen]=153(1) // [itempierce]=156
 // [fireresist]=39 // [lightresist]=41 // [coldresist]=43 // [poisonresist]=45
-// [itemaddclassskills]=83 // [itemaddskilltab]=188
-// [itemallskills]=127
+// [itemallskills]=127 // [itemaddclassskills]=83 // [itemaddskilltab]=188
 //============================================================================================================================================================================================
 
 // [itemhowl]=112
-# [112] > 128 # [qty] == 1
-//# [112] == 128 # [qty] == 1	// 100%=128
-# [112] < 128 && [112] > 96 # [qty] == 1
-//# [112] == 96 # [qty] == 1	// 75%=96
-# [112] < 96 && [112] > 64 # [qty] == 1
-//# [112] == 64 # [qty] == 1	// 50%=64
-# [112] < 64 && [112] > 52 # [qty] == 1
-//# [112] == 52 # [qty] == 1	// 40%=52
-# [112] < 52 && [112] > 33 # [qty] == 1
-//# [112] == 33 # [qty] == 1	// unique greathelm(25%)
-//# [112] == 32 # [qty] == 1	// prefix screaming(25%)
-# [112] < 32 && [112] > 24 # [qty] == 1
-//# [112] == 24 # [qty] == 1	// 18%=24
-# [112] < 24 && [112] > 16 # [qty] == 1
+# [112] > 0 && [112] < 16 # [qty] == 1
 //# [112] == 16 # [qty] == 1	// 12%=16
-# [112] < 16 && [112] > 0 # [qty] == 1
-
+# [112] > 16 && [112] < 24 # [qty] == 1
+//# [112] == 24 # [qty] == 1	// 18%=24
+# [112] > 24 && [112] < 32 # [qty] == 1
+//# [112] == 32 # [qty] == 1	// prefix screaming(25%)
+//# [112] == 33 # [qty] == 1	// unique greathelm(25%)
+# [112] > 33 && [112] < 52 # [qty] == 1
+//# [112] == 52 # [qty] == 1	// 40%=52
+# [112] > 52 && [112] < 53 # [qty] == 1
+//# [112] == 64 # [qty] == 1	// 50%=64
+# [112] > 64 && [112] < 96 # [qty] == 1
+//# [112] == 96 # [qty] == 1	// 75%=96
+# [112] > 96 && [112] < 128 # [qty] == 1
+//# [112] == 128 # [qty] == 1	// 100%=128
+# [112] > 128 # [qty] == 1
 
 //[itemstupidity]=113
 //# [113] == 1 # [qty] == 1
@@ -47,10 +47,28 @@
 //# [115] == 1 # [qty] == 1
 # [115] > 1 # [qty] == 1
 
+// [itempreventheal]=117
+//# [117] == 1 # [qty] == 1
+# [117] > 1 # [qty] == 1
+
 // [itemfreeze]=134
 //# [134] == 1 # [qty] == 1
 //# [134] == 2 # [qty] == 1
 //# [134] == 3 # [qty] == 1
+//# [134] == 4 # [qty] == 1	//unique-truncheon
+# [134] > 4 # [qty] == 1
+
+// [itempierce]=156
+# [156] > 0 && [156] < 25 # [qty] == 1
+//# [156] == 25 # [qty] == 1	//unique-shortbattlebow
+# [156] > 25 && [156] < 35 # [qty] == 1
+//# [156] == 35 # [qty] == 1	//unique-repeatingcrossbow
+# [156] > 35 && [156] < 50 # [qty] == 1
+//# [156] == 50 # [qty] == 1	//unique-cedarbow
+# [156] > 50 && [156] < 66 # [qty] == 1
+//# [156] == 66 # [qty] == 1	//unique-chukonu
+# [156] > 66 && [156] < 100 # [qty] == 1
+//# [156] == 100 # [qty] == 1	//unique-Ballista
 
 //[itemmaxdamageperlevel]=218
 # [218] == 1 # [qty] == 1
@@ -81,14 +99,13 @@
 # [218] > 25 # [qty] == 1
 
 // [itemmaxdamagepercentperlevel]=219
+# [219] > 0 && [219] < 16 # [qty] == 1
+//# [219] == 16 # [qty] == 1	//unique-crusaderbow(2)
+# [219] > 16 && [219] < 20 # [qty] == 1
+//# [219] == 20 # [qty] == 1	//unique-championaxe(2.5)
+# [219] > 20 && [219] < 24 # [qty] == 1
+//# [219] == 24 # [qty] == 1	//unique-decapitator(3)
 # [219] > 24 # [qty] == 1
-//# [219] == 24 # [qty] == 1	//decapitator(3)
-# [219] < 24 && [219] > 16 # [qty] == 1
-//# [219] == 16 # [qty] == 1	//crusaderbow(2)
-# [219] < 16 # [qty] == 1
-
-[name] == championaxe # [219] > 0 # [qty] == 1	//2.5%
-
 
 // [itemtohitperlevel]=224
 # [224] == 1 # [qty] == 1

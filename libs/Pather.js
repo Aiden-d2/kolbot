@@ -32,7 +32,7 @@ var NodeAction = {
 	// Kill monsters while pathing
 	killMonsters: function (arg) {	//260927
 		if (arg.clearPath !== false) {
-			if (!Attack.clear(20)) {
+			if (!Attack.clear(arg.clearPath)) {
 				return "killMonsters";
 			}
 		}
@@ -43,7 +43,7 @@ var NodeAction = {
 	// Open chests while pathing
 	popChests: function (arg) {	//260928
 		if (!!Config.OpenChests && arg.clearPath !== false) {	//260928 only on clearing moves, like killMonsters / shrines / wells
-			Misc.openChests(15);	//260928 inside the area killMonsters just cleared (20/25)
+			Misc.openChests(arg.clearPath, arg.node.x, arg.node.y);	//261008
 		}
 	},
 
@@ -86,7 +86,7 @@ var NodeAction = {
 
 var PathDebug = {
 	hooks: [],
-	enableHooks: false,
+	enableHooks: true,	//261013
 
 	drawPath: function (path) {
 		if (!this.enableHooks) {
@@ -132,7 +132,7 @@ var PathDebug = {
 var Pather = {
 	teleport: true,
 	walkDistance: 5,
-	teleDistance: 35,	//260829
+	teleDistance: 35,	//261019
 	cancelFlags: [0x01, 0x02, 0x04, 0x08, 0x14, 0x16, 0x0c, 0x0f, 0x17, 0x19, 0x1A],
 	wpAreas: [1, 3, 4, 5, 6, 27, 29, 32, 35, 40, 48, 42, 57, 43, 44, 52, 74, 46, 75, 76, 77, 78, 79, 80, 81, 83, 101, 103, 106, 107, 109, 111, 112, 113, 115, 123, 117, 118, 129],
 	recursion: true,
@@ -218,6 +218,10 @@ var Pather = {
 					continue;
 				}
 				
+				//if (!Pather.getNearestWalkable(tx, ty, 6, 2, 0x1 | 0x4 | 0x800 | 0x1000)) {	//261011
+					//continue;
+				//}
+				
 				mc = Attack.getMonsterCount(tx, ty, Config.SafeTele.Range, monList, fireList);	//260807
 
 				if (mc < baseline) {	//260823
@@ -237,7 +241,7 @@ var Pather = {
 			return targetNode;
 		}
 		
-		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgX, orgY, valid, //261007
+		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgx, orgy, valid, //261007
 			node = {x: x, y: y},
 			fail = 0;
 
@@ -264,6 +268,10 @@ var Pather = {
 			clearPath = false;
 		}
 
+		if (clearPath === true) {	//261008
+			clearPath = 20;
+		}
+
 		if (pop === undefined) {
 			pop = false;
 		}
@@ -274,15 +282,15 @@ var Pather = {
 		
 		if (random) {	//261007
 			if (this.reflection) {
-				orgX = x;
-				orgY = y;
+				orgx = x;
+				orgy = y;
 				x = x + this.myX * -1;
 				y = y + this.myY * -1;
 				
 				this.reflection = false;
 			} else {
-				orgX = x;
-				orgY = y;
+				orgx = x;
+				orgy = y;
 				x = x + this.myX;
 				y = y + this.myY;
 				
@@ -303,32 +311,50 @@ var Pather = {
 		}
 		
 		if (random && !path.length) {	//261007
-			Misc.trace("moveTo no random path -> " + x + "," + y + " tele:" + useTeleport + " adjusting...");
-			D2Bot.printToConsole("moveTo no random path -> " + x + "," + y + " tele:" + useTeleport + " adjusting...");
+			Misc.trace("moveTo no random path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
+			D2Bot.printToConsole("moveTo no random path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
 			
-			x = orgX;
-			y = orgY;
+			x = orgx;
+			y = orgy;
+			
 			path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
 		}
 		
 		if (!path.length) {	//261007 adjusting empty path (target not reachable from here)
-			Misc.trace("moveTo no path -> " + x + "," + y + " tele:" + useTeleport + " adjusting...");
-			D2Bot.printToConsole("moveTo no path -> " + x + "," + y + " tele:" + useTeleport + " adjusting...");
+			Misc.trace("moveTo no path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
+			D2Bot.printToConsole("moveTo no path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
 			
-			valid = this.getNearestWalkable(x, y, 10, 2, 0x1 | 0x4 | 0x800 | 0x1000);
+			valid = this.getNearestWalkable(x, y, 15, 2, 0x1);	//261012
 			
-			if (valid) {
-				Misc.trace("moveTo adjusted path -> " + valid[0] + "," + valid[1] + " tele:" + useTeleport);
-				D2Bot.printToConsole("moveTo adjusted path -> " + valid[0] + "," + valid[1] + " tele:" + useTeleport);
+			x = valid[0];	//261018
+			y = valid[1];	//261018
+			
+			if (valid && !(x === orgx && y === orgy)) {	//261018
+				Misc.trace("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
+				D2Bot.printToConsole("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
 				
-				path = getPath(me.area, valid[0], valid[1], me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
+				path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
 			} else {
-				Misc.trace("moveTo no adjusted path -> " + x + "," + y + " tele:" + useTeleport);
-				D2Bot.printToConsole("moveTo no adjusted path -> " + x + "," + y + " tele:" + useTeleport);
-				return false;
+				for (i = 0; i < 10; i += 1) {
+					Misc.trace("invalid path -> " + me.x + "," + me.y + " in " + Pather.getAreaName(me.area) + " random move...");
+					
+					if (this.walkTo(me.x + rand(1, 0) ? 5 : -5, me.y + rand(1, 0) ? 5 : -5)) {
+						path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);
+					}
+					
+					if (path.length > 0) {
+						break;
+					}
+					
+					if (i === 9) {
+						throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y);	//261018
+					}
+					
+					delay(me.ping * 2 + 1000);
+				}
 			}
 		}
-
+		
 		path.reverse();
 
 		if (pop) {
@@ -601,15 +627,15 @@ MainLoop:
 			//eom	//2 poison, 9 ampli, 60 decre, 61 LR, 45 cleansing, 48 medi
 			if (!me.inTown && me.classid === 3) {
 				if (Config.Conviction && me.getSkill(123, 1)) {	//260915
-					Skill.setSkill(123, 0);
+					Skill.setSkill(123, 0);	//Conviction
 				} else if (me.getState(2) && me.getSkill(109, 1)) {
-					Skill.setSkill(109, 0);
+					Skill.setSkill(109, 0);	//Cleansing
 				} else if (Config.Meditation && me.getSkill(120, 1)) {
-					Skill.setSkill(120, 0);
+					Skill.setSkill(120, 0);	//Meditation
 				} else if (Config.Cleansing && me.getSkill(109, 1)) {
-					Skill.setSkill(109, 0);
+					Skill.setSkill(109, 0);	//Cleansing
 				} else if (Config.Vigor && me.getSkill(115, 1)) {
-					Skill.setSkill(115, 0);
+					Skill.setSkill(115, 0);	//Vigor
 				}
 			}
 			
