@@ -166,7 +166,8 @@ var Precast = new function () {
 				}
 			}
 
-			if (Config.Enchant.Enabled && me.getSkill(52, 0) && (!me.getState(16) || force)) {	//261019
+			//if (Config.Enchant.Enabled && me.getSkill(52, 0) && (!me.getState(16) || force)) {	//261019
+			if (Config.Enchant.Enabled && me.getSkill(52, 0)) {	//261020
 				this.enchant();
 			}
 
@@ -461,7 +462,8 @@ var Precast = new function () {
 		if (unit) {
 			do {
 				if (!unit.dead && Misc.inMyParty(unit.name) && getDistance(me, unit) <= 40) {
-					if (Config.Enchant.Player.indexOf(unit.classid) > -1 || unit.name === me.name) {	//261019
+					//if ((Config.Enchant.Player.indexOf(unit.classid) > -1 || unit.name === me.name) && !unit.getState(16)) {	//261020
+					if (Config.Enchant.Player.indexOf(unit.classid) > -1 && !unit.getState(16)) {	//261020
 						Skill.cast(52, 0, unit);
 						print("enchant: " + unit.name);
 					}
@@ -477,7 +479,7 @@ var Precast = new function () {
 		if (unit) {
 			do {
 				if (unit.getParent() && chanted.indexOf(unit.getParent().name) > -1 && getDistance(me, unit) <= 40) {
-					if (Config.Enchant.Merc.indexOf(unit.classid) > -1 || Config.Enchant.Pet.indexOf(unit.classid) > -1 || Config.Enchant.Revive === true) {	//261019
+					if ((Config.Enchant.Merc.indexOf(unit.classid) > -1 || Config.Enchant.Pet.indexOf(unit.classid) > -1 || Config.Enchant.Revive === true) &&  !unit.getState(16)) {	//261020
 						Skill.cast(52, 0, unit);
 						print("enchant: " + unit.classid);
 					}
