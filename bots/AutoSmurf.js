@@ -912,8 +912,8 @@ function AutoSmurf() {
 			if (goldPile) {
 				Pickit.pickItem(goldPile);
 				
-				me.overhead("Picking up " + goldPile + " Gold");
-				Misc.trace("Picking up " + goldPile + " Gold");	//261010
+				me.overhead("Picking up " + goldPile.getStat(14) + " Gold");
+				Misc.trace("Picking up " + goldPile.getStat(14) + " Gold");	//261010
 			}
 
 			if (me.getStat(14)) {
@@ -971,8 +971,8 @@ function AutoSmurf() {
 			if (i >= 14 && goldPile) {
 				Pickit.pickItem(goldPile);
 				
-				me.overhead("Retaking " + goldPile + " Gold");
-				Misc.trace("Retaking " + goldPile + " Gold");	//261010
+				me.overhead("Retaking " + goldPile.getStat(14) + " Gold");
+				Misc.trace("Retaking " + goldPile.getStat(14) + " Gold");	//261010
 			}
 		}
 	};
@@ -6868,9 +6868,17 @@ function AutoSmurf() {
 
 			while (getDistance(me.x, me.y, journal.roomx * 5 + journal.x + 8, journal.roomy * 5 + journal.y + 8) > 10) {
 				try {
-					Pather.moveToPreset(74, 2, 357, 8, 8);	//260929
+					Pather.moveToPreset(74, 2, 357, 8, 8);	//261020
 				} catch (e) {
-					Misc.caughtError("AutoSmurf.farmingSummoner", e);	//260930
+					Messaging.sendToList(Team.Profiles, "earlyReturn");
+					print("Summoner failed: Invalid Path");
+
+					while (!me.inTown) {
+						Town.goToTown();
+						delay(me.ping * 2 + 1000);
+					}
+					
+					return true;
 				}
 			}
 			
@@ -6887,11 +6895,18 @@ function AutoSmurf() {
 			this.okCount();
 			
 			while (me.inTown) {
-				if (tpReady) {
-					Pather.usePortal(74, null);
+				if (earlyReturn) {
+					earlyReturn = false;
+					print("Summoner failed: Invalid Path");
+					
+					return true;
 				}
 				
 				delay(250);
+				
+				if (tpReady) {
+					Pather.usePortal(74, null);
+				}
 			}
 			
 			tpReady = false;
