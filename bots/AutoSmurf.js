@@ -1002,7 +1002,7 @@ function AutoSmurf() {
 	// pct 0: chicken off now (Summoner). pct > 0: chicken off once the boss is at pct% HP or lower (Ancients: only when one is left)
 	this.bossGuard = function (pct) {	//261004
 		var self = this,
-			fired = false;	//261006 the chicken went off: keep watching for the trace only (was onBossLow = null)
+			fired = false;	//261006 the chicken went off: keep watching for the trace only (was bossScan = null)
 
 		guardChicken = Config.LifeChicken;
 		guardSeen = {};	//261006
@@ -1018,7 +1018,7 @@ function AutoSmurf() {
 		}
 
 		// Attack.clear hands every scanned boss unit here
-		Attack.onBossLow = function (unit) {
+		Attack.bossScan = function (unit) {
 			var i, u,
 				alive = 0,
 				hp = Math.round(unit.hp * 100 / 128),	//261006
@@ -1054,7 +1054,7 @@ function AutoSmurf() {
 				}
 			}
 
-			fired = true;	//261006 was Attack.onBossLow = null
+			fired = true;	//261006 was Attack.bossScan = null
 			Misc.trace("bossGuard chicken off: " + unit.name + " " + hp + "%@" + ((getTickCount() - guardStart) / 1000).toFixed(1) + "s");	//261020 seconds after found
 			self.setLifeChicken(0);
 		};
@@ -1088,7 +1088,7 @@ function AutoSmurf() {
 			return true;
 		}
 
-		Attack.onBossLow = null;
+		Attack.bossScan = null;
 		this.traceGuardSeen();	//261006
 
 		this.okCount(range);
@@ -3401,11 +3401,7 @@ function AutoSmurf() {
 			}
 
 			while (getDistance(me.x, me.y, journal.roomx * 5 + journal.x + 8, journal.roomy * 5 + journal.y + 8) > 10) {	//260411
-				try {
-					Pather.moveToPreset(74, 2, 357, 8, 8);	//261004
-				} catch (e) {
-					Misc.caughtError("AutoSmurf.summoner", e);	//260930
-				}
+				Pather.moveToPreset(74, 2, 357, 8, 8);	//261004
 			}
 			
 			Pather.makePortal();

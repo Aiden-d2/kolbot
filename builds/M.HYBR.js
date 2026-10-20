@@ -1,10 +1,10 @@
 /*
 	Base Stats
 	----------
- 	[0]Strength: 20		+90
- 	[1]Energy: 15		+40
- 	[2]Dexterity: 25	+55
- 	[3]Vitality: 20		+360
+ 	[0]Strength: 20		+53
+ 	[1]Energy: 15		+47
+ 	[2]Dexterity: 25	+85
+ 	[3]Vitality: 20		+320
 
 	Skills				Levelreq			SkillID
 	------------		--------			-------
@@ -21,10 +21,10 @@ var AutoBuildTemplate = {
 		Stats: [
 			{stat: 0, target: 60, per: 3},	// Strength
 			{stat: 2, target: 65},			// Dexterity
-			{stat: 1, target: 55},			// Energy
+			{stat: 1, target: 62},			// Energy
 			{stat: 3, target: 110},			// Vitality
-			{stat: 2, target: 80},			// Dexterity
-			{stat: 0, target: 110},			// Strength
+			{stat: 2, target: 110, per: 3},	// Dexterity
+			{stat: 0, target: 80},			// Strength
 			{stat: 3, target: "max"},		// Vitality
 		],
 		
@@ -34,11 +34,12 @@ var AutoBuildTemplate = {
 			{id: 32, target: 1},			// Valkyrie
 			{id: 31, target: 20},			// Freezing Arrow
 			{id: 11, target: 20},			// Cold Arrow
-			{id: 21, target: 20},			// Ice Arrow
+			{id: 21, target: 20},			// Ice ArrowPierce
 			{id: 18, target: 6},			// Avoid
 			{id: 13, target: 9},			// Dodge
 			{id: 29, target: 9},			// Evade
-			{id: 22, target: 20},			// Guided Arrow
+			{id: 33, target: 8},			// Pierce
+			{id: 22, target: 10},			// Guided Arrow
 		]
 	},
 
@@ -101,7 +102,7 @@ var AutoBuildTemplate = {
 				Config.TierGoal.Neck = 31;
 				Config.TierGoal.Body = 21;
 				//Config.TierGoal.ArmR = 21;
-				Config.TierGoal.ArmL = 51;
+				Config.TierGoal.ArmL = 45;
 				Config.TierGoal.RingR = 23;
 				Config.TierGoal.RingL = 14;
 				Config.TierGoal.Belt = 16;
