@@ -80,7 +80,7 @@ var Config = {
 		Angle: 60,
 		Step: 7,
 		Min: 7,
-		Skip: [62, 63, 64, 120, 132]	//120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
+		Skip: [62, 63, 64, 77, 78, 120, 132]	//120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
 	},
 
 	Dodge: {
