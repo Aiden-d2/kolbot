@@ -326,10 +326,10 @@ var Pather = {
 			
 			valid = this.getNearestWalkable(x, y, 15, 2, 0x1);	//261012
 			
-			x = valid[0];	//261018
-			y = valid[1];	//261018
-			
-			if (valid && !(x === orgx && y === orgy)) {	//261018
+			if (valid && !(x === orgx && y === orgy)) {	//261020
+				x = valid[0];	//261018
+				y = valid[1];	//261018
+				
 				Misc.trace("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
 				D2Bot.printToConsole("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
 				
@@ -338,7 +338,7 @@ var Pather = {
 				for (i = 0; i < 10; i += 1) {
 					Misc.trace("invalid path -> " + me.x + "," + me.y + " in " + Pather.getAreaName(me.area) + " random move...");
 					
-					if (this.walkTo(me.x + rand(1, 0) ? 5 : -5, me.y + rand(1, 0) ? 5 : -5)) {
+					if (this.walkTo(me.x + (rand(1, 0) ? 5 : -5), me.y + (rand(1, 0) ? 5 : -5))) {	//261020
 						path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);
 					}
 					
@@ -366,6 +366,10 @@ var Pather = {
 		while (path.length > 0) {
 			if (me.dead) { // Abort if dead
 				return false;
+			}
+			
+			if (Config.SafeTele.Enabled && Config.SafeTele.Soul && (getUnit(1, 639) || getUnit(1, 641))) {
+				return "Souls";
 			}
 			
 			if (!me.inTown && Config.TownCheck) {	//260516
@@ -788,7 +792,7 @@ ModeLoop:
 			this.moveTo(unit.x + offX, unit.y + offY, 0, clearPath, true);
 		}
 
-		return this.moveTo(unit.x + offX, unit.y + offY, useTeleport && unit.type && unit.type === 1 ? 3 : 0, clearPath, pop);
+		return this.moveTo(unit.x + offX, unit.y + offY, useTeleport && unit.type && unit.type === 1 ? 3 : 0, clearPath, pop, random);	//261020
 	},
 
 	/*
@@ -832,7 +836,7 @@ ModeLoop:
 			throw new Error("moveToPreset: Couldn't find preset unit - id " + unitId);
 		}
 
-		return this.moveTo(presetUnit.roomx * 5 + presetUnit.x + offX, presetUnit.roomy * 5 + presetUnit.y + offY, 3, clearPath, pop);
+		return this.moveTo(presetUnit.roomx * 5 + presetUnit.x + offX, presetUnit.roomy * 5 + presetUnit.y + offY, 3, clearPath, pop, random);	//261020
 	},
 
 	/*

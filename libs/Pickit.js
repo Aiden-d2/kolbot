@@ -459,18 +459,18 @@ MainLoop:
 			}
 
 			break;
-		case 5: // Arrows	//261015
-			equiQuiver = me.getItem("aqv", 0);
-			invQuiver = me.getItem("aqv", 1);
-			if (equiQuiver && equiQuiver.getStat(70) + (invQuiver ? invQuivergetStat(70) : 0) > 350) {
+		case 5: // Arrows	//261020
+			equiQuiver = me.getItem("aqv", 1);
+			invQuiver = me.getItem("aqv", 0);
+			if (equiQuiver && equiQuiver.getStat(70) + (invQuiver ? invQuiver.getStat(70) : 0) > 350) {
 				return false;
 			}
 			
 			break;
-		case 6: // Bolts	//261015
-			equiQuiver = me.getItem("cqv", 0);
-			invQuiver = me.getItem("cqv", 1);
-			if (equiQuiver && equiQuiver.getStat(70) + (invQuiver ? invQuivergetStat(70) : 0) > 250) {
+		case 6: // Bolts	//261020
+			equiQuiver = me.getItem("cqv", 1);
+			invQuiver = me.getItem("cqv", 0);
+			if (equiQuiver && equiQuiver.getStat(70) + (invQuiver ? invQuiver.getStat(70) : 0) > 250) {
 				return false;
 			}
 			

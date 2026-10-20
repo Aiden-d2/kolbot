@@ -546,7 +546,7 @@ var Attack = {
 			list = [],
 			baseline = 0,
 			moveNeeded = getDistance(me, unit) > distance || checkCollision(me, unit, coll),
-			scoring = (Config.Dodge.Enabled || this.usingBow) && distance >= Config.Dodge.MinSkillRange && unit.classid !== 243,	//260915	//260930 HP condition removed
+			scoring = (Config.Dodge.Enabled || this.usingBow()) && distance >= Config.Dodge.MinSkillRange && unit.classid !== 243,	//261020
 			angle = Math.atan2(me.y - unit.y, me.x - unit.x);
 
 		if (!moveNeeded && !scoring) {

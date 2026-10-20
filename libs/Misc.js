@@ -450,7 +450,7 @@ MainLoop:
 
 		var skillLvl = me.getSkill(skillId, 1),
 			effectiveShift = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024],
-			lvlmana = getBaseStat(3, skillId, "lvlmana") > 62767 ? getBaseStat(3, skillId, "lvlmana") - 65536 : getBaseStat(3, skillId, "lvlmana"), //261016 16-bit unsigned -> signed (e.g. 65533 -> -3), for Decoy(id28)
+			lvlmana = getBaseStat(3, skillId, "lvlmana") > 32767 ? getBaseStat(3, skillId, "lvlmana") - 65536 : getBaseStat(3, skillId, "lvlmana"), //261020 16-bit unsigned -> signed (e.g. 65533 -> -3), for Decoy(id28)
 			ret = Math.max((getBaseStat(3, skillId, "mana") + lvlmana * (skillLvl - 1)) * (effectiveShift[getBaseStat(3, skillId, "manashift")] / 256), getBaseStat(3, skillId, "minmana"));
 
 		return ret;

@@ -1082,8 +1082,8 @@ CursorLoop:
 			case "buyQuiver":	//261017
 				if (getInteractedNPC()) {
 					sendKey(0x20);
-					print("ineract closed");
-					Misc.trace("ineract closed");
+					print("interact closed");
+					Misc.trace("interact closed");
 					
 					if (!me.automap) {
 						me.automap = true;

@@ -75,12 +75,13 @@ var Config = {
 	DetourPath: 4,
 	
 	SafeTele: {	//261019
-		Enabled: true,
+		Enabled: false,
 		Range: 10,
 		Angle: 60,
 		Step: 7,
 		Min: 7,
-		Skip: [62, 63, 64, 77, 78, 120, 132]	//120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
+		Skip: [62, 63, 64, 77, 78, 120, 132],	//120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
+		Soul: false
 	},
 
 	Dodge: {
@@ -511,33 +512,6 @@ var Config = {
 		
 		[Runeword.CallToGem, "crystalsword"]
 	],
-	
-	/*KeepRunewords: [
-		"[type] == sword # [IAS] >= 80",// FireClaw
-		"[name] == roundshield # [fireresist] >= 45",// Moser's
-		"[type] == bow # [IAS] == 35",// Edge
-		"[type] == axe # [enhanceddamage] >= 160",// Passion, Honor, CrescentMoon, Kingslayer, Oath, Death
-		"[type] == axe # [IAS] == 25",// Steel
-		"[type] == polearm # [FHR] == 40",// Obedience
-		"([type] == polearm || [type] == staff) # [meditationaura] >= 1",// Insight Poor
-		"[type] == polearm # [meditationaura] >= 17",// Insight
-		"[type] == armor # [frw] >= 45",// Enigma
-		"[type] == armor # [fireresist] == 50",// Smoke
-		"[type] == armor # [maxhp] == 50",// Lionheart
-		"[type] == armor # [paladinskills] == 2",// Principle
-		"[type] == armor # [necromancerskills] == 2",// Bone
-		"[type] == armor # [FHR] == 40",// Duress
-		"[type] == auricshields # [FHR] == 55",// Spirit Shield
-		//"[name] == sacredtarge # [FCR] == 35 && [FHR] == 55",// Spirit Shield
-		"[name] == monarch # [FCR] == 35 && [FHR] == 55",// Spirit Shield
-		"[type] == sword # [FHR] == 55",// Spirit Sword
-		"[type] == shield # [itemgoldbonus] == 50",// Rhyme
-		"([type] == shield || [type] == auricshields) # [itemdamagetomana] == 10",// AncientsPledge
-		"[type] == armor # [FRW] == 25",// Stealth
-		"[name] == flail # [FCR] >= 40",// HeartoftheOak
-		"[type] == armor # [PlusDefense] == 15",// FortitudeGem
-		"[type] == sword # [ItemMagicBonus] == 30"// CallToGem
-	],*/
 	
 	//Attack
 	PrimarySlot: -1,

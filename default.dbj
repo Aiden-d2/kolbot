@@ -67,8 +67,7 @@ function main() {
 	// Load threads
 	load("threads/ToolsThread.js");
 	load("threads/PartyThread.js");	//260908
-
-		load("threads/TownChicken.js");
+	load("threads/TownChicken.js");
 
 	// One time maintenance - get corpse, clear leftover items, pick items in case anything important was dropped
 	if (!Scripts.UserAddon && !Scripts.Test) {

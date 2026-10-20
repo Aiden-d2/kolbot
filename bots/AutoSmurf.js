@@ -94,6 +94,9 @@ function AutoSmurf() {
 		if (Team.Leader === me.profile) {
 			Leader = true;
 			me.overhead("I am the Leader");
+			
+			Config.SafeTele.Enabled = true;
+			print("SafeTele: " + Config.SafeTele.Enabled);
 		} else if (Team.Boer === me.profile) {
 			Boer = true;
 			me.overhead("I am the Boer");
@@ -109,13 +112,10 @@ function AutoSmurf() {
 			if (book.drop()) {
 				Misc.trace("dropping radament book");
 			}
+			
+			book = me.findItem(552);	//261020
 		}
 		
-		//moving to last act before party check
-		//if (!me.getQuest(7, 0) && (me.getQuest(6, 0) || me.getQuest(6, 1)) && this.partyLevel(teleLvl)) {
-			//Pickit.pickItems();
-			//this.changeAct(2);
-		//}
 		if (!me.getQuest(15, 0) && me.getQuest(7, 0)) { // if andy done, but not duriel		say(" Here ****** 2 ");
 			Pickit.pickItems();
 			Town.goToTown(2);
@@ -930,8 +930,8 @@ function AutoSmurf() {
 
 	this.giveGold = function () {
 		var i, goldPile,
-			dropAmount = me.gold - 5000,
-			maxDropAmount = me.gold - Config.LowGold;
+			dropAmount = me.gold - Config.LowGold,
+			maxDropAmount = me.gold - 5000;
 		
 		Town.goToTown(1);
 		Town.move("stash");
@@ -942,7 +942,7 @@ function AutoSmurf() {
 
 		delay(me.ping * 2 + 500);
 
-		dropAmount = Math.min(dropAmount, maxDropAmount > dropAmount ? maxDropAmount : dropAmount);
+		dropAmount = dropAmount < 1000 ? maxDropAmount : dropAmount;	//261020
 
 		gold(Math.round(dropAmount), 4); // Remove Gold from Stash (must be a round number).
 
@@ -5371,30 +5371,30 @@ function AutoSmurf() {
 
 		if (!me.getQuest(37, 1)) {
 			if (Leader) {
+				if (me.diff === 2 && farmingON) {
+					Config.SafeTele.Soul = true;
+				}
+				
 				Pather.useWaypoint(113); 
 				Precast.doPrecast(true);
 				
 				while (me.area !== 114) {	//260628
-					Pather.moveToExit(114, true);
-				}
-				
-				if (me.diff === 2 && getUnit(1, 639)) {	//260627
-					Misc.quitGame("Souls found in Anya");	//260930
-				}
-				
-				while (true) {
-					unit = getPresetUnit(me.area, 2, 460);
-					Pather.moveToUnit(unit, 10, 10);	//260929
-					
-					anya = getUnit(2, 558);	
-					if (anya && getDistance(me, anya) < 50) {
-						break;
+					if (Pather.moveToExit(114, true) === "Souls") {	//261020
+						Misc.quitGame("Souls found in Anya");
 					}
 				}
 				
-				if (me.diff === 2 && getUnit(1, 639)) {	//260910
-					Misc.quitGame("Souls found in Anya");	//260930
+				while (!anya || getDistance(me, anya) > 30) {	//261020
+					unit = getPresetUnit(me.area, 2, 460);
+					
+					if (Pather.moveToUnit(unit, 10, 10) === "Souls") {
+						Misc.quitGame("Souls found in Anya");
+					}
+					
+					anya = getUnit(2, 558);	
 				}
+				
+				Config.SafeTele.Soul = false;	//261020
 				
 				Pather.makePortal();
 				
@@ -5827,11 +5827,13 @@ function AutoSmurf() {
 		this.syncBO();
 		
 		if (Leader) {
+			if (me.diff === 2 && farmingON) {
+				Config.SafeTele.Soul = true;
+			}
+			
 			Pather.useWaypoint(129);
 			
-			Pather.moveToExit([130, 131], true);
-			
-			if (me.diff === 2 && getUnit(1, 641) && farmingON) {	//260903
+			if (Pather.moveToExit(130, true) === "Souls") {	//261020
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
 				print("Baal failed: souls found");
 
@@ -5843,9 +5845,7 @@ function AutoSmurf() {
 				return true;
 			}
 			
-			Pather.moveTo(15118, 5002);
-			
-			if (me.diff === 2 && getUnit(1, 641) && farmingON) {	//260903
+			if (Pather.moveToExit(131, true) === "Souls") {	//261020
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
 				print("Baal failed: souls found");
 
@@ -5856,6 +5856,20 @@ function AutoSmurf() {
 				
 				return true;
 			}
+			
+			if (Pather.moveTo(15118, 5002) === "Souls") {	//261020
+				Messaging.sendToList(Team.Profiles, "earlyReturn");
+				print("Baal failed: souls found");
+
+				while (!me.inTown) {
+					Town.goToTown();
+					delay(me.ping * 2 + 1000);
+				}
+				
+				return true;
+			}
+			
+			Config.SafeTele.Soul = false;	//261020
 			
 			Pather.makePortal();
 			
