@@ -1,5 +1,28 @@
 # libs/Misc.js
 
+## Skill.getRange
+
+### 260930~261008: 스킬 사거리
+- 사거리 값과 근거는 `skill_range.md`(정보 파일)에 모두 둔다.
+
+## Skill.cast
+
+### 260928 Claude: 시전 기록, 마나 판정
+- `setSkill` 성공 직후 `Attack.tick.cast = true`(`typeof Attack` 가드). 마나 판정 `비용 + 1 > mp` → `비용 > mp`(직업 파일의 LowManaSkill 판정과 같게). `+1`은 캐시된(레벨업 전) 비용 때문에 생긴 Molten Boulder 멈춤을 덮던 것으로 추정.
+
+### 261002 Claude: 아마게돈 변신 가드
+- 249는 곰·늑대 상태가 아니면 먼저 변신(121 중이면 바로 false, 변신 실패면 false). 인간 상태 아마게돈 경로(Wereform 변신 실패·걷는 사이 만료, `diabloPrep`·바알 preattack)를 한곳에서 막는다. 전체 스킬 무조건 변신은 Cyclone Armor·CTA BO가 안 나가서 아마게돈만.
+
+## Skill.getManaCost
+
+### 260928 Claude: 캐시 제거
+- 매번 현재 스킬 레벨로 계산한다.
+
+## Misc.openChests
+
+### 260928 Claude: 갈 수 있는지 검사
+- `CollMap.checkColl(me, 상자, 0x5)`(걷기·텔레 공통). clear에서 상자 열기를 빼고 Pather `popChests`(clearPath 이동 노드마다 반경 15, `Config.OpenChests: 2`)로 일원화.
+
 ## Packet.openMenu
 
 ### 261001 Claude: 대사 중이면 스페이스로 넘김 (유형 B 크래시)

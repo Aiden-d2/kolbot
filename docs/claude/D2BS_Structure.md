@@ -7,7 +7,7 @@
 이 문서는 현재 코드베이스의 **구조와 관계만** 기술한다. 판정 이력·결함 이력·변경 경위는 담지 않는다.
 
 - 모든 내용은 main 코드에서 다시 확인했다. 저장소 밖의 내용(1-3절 DLL 패치, 1-4절 매니저 로그 경로)은 **2026-09-09 판 원문을 그대로 옮겼고 이번에 확인하지 않았다.**
-- Attack 전투 루프와 setPosition의 세부는 `attack_design.md`(명세), `attack_flow.md`(줄 번호 해설)에 있다. 이 문서에는 계약과 호출 관계만 둔다.
+- Attack 전투 루프와 setPosition의 세부는 `docs/code/Attack.md`(명세), `attack_flow.md`(줄 번호 해설)에 있다. 이 문서에는 계약과 호출 관계만 둔다.
 - **(임시)** 표시는 인게임 검증 뒤 지울 예정인 항목이다 (`handoff.md` 4절).
 
 ---
@@ -440,7 +440,7 @@ Loader.scriptName(offset)       → 실행 중 스크립트명 | null   (호출�
 
 ### Attack.js
 
-세부 명세: `attack_design.md` (2절 시그니처, 4절 전투 루프, 6절 setPosition, 7절 tick)
+세부 명세: `docs/code/Attack.md` (clear, setPosition, Attack.tick)
 
 ```
 상수  classes / infinity / ids / elements
@@ -922,7 +922,7 @@ AutoSmurf 퀘스트·파밍 함수 목록: `den`(내부 `clearDen`) `blood` `cai
 
 ### 7-3. 전투 1회 사이클
 
-세부: `attack_design.md` 4절, `attack_flow.md` 1절
+세부: `docs/code/Attack.md` clear, `attack_flow.md` 1절
 
 ```
 Attack.clear(range, must)
