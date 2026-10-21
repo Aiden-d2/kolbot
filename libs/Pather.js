@@ -384,7 +384,7 @@ var Pather = {
 				return false;
 			}
 			
-			if (Config.SafeTele.Enabled && Config.SafeTele.Soul && (getUnit(1, 639) || getUnit(1, 641))) {
+			if (Config.SafeTele.Enabled && Config.SafeTele.Soul && (getUnit(1, 639) || getUnit(1, 640) || getUnit(1, 641))) {	//261021
 				return "Souls";
 			}
 			
