@@ -2203,14 +2203,7 @@ var Misc = {
 				me.overhead("Town check (direct)");
 				print("Town check (direct)");
 				Misc.trace("Town check (direct)");
-
-				Config.TownCheck = false;	//261021 the moveTo calls inside visitTown (walking to the portal) would start another visitTown
-
-				try {
-					Town.visitTown();
-				} finally {
-					Config.TownCheck = true;	// it was on to get here
-				}
+				Town.visitTown();
 
 				return true;
 			}

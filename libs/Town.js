@@ -2250,14 +2250,19 @@ MainLoop:
 		}
 
 		var preArea = me.area,
-			preAct = me.act;
+			preAct = me.act,
+			townCheck = Config.TownCheck;	//261021
 
 		Misc.trace("visitTown start by:" + getScript(true).name + " tick:" + getTickCount());	//261004 who goes (default.dbj / TownChicken) and when
+
+		Config.TownCheck = false;	//261021 a moveTo in goToTown (walking to my portal) must not start another town trip (default calls visitTown directly: town check, quiver)
 
 		try { // not an essential function -> handle thrown errors
 			this.goToTown();
 		} catch (e) {
 			return false;
+		} finally {
+			Config.TownCheck = townCheck;	//261021 in town now (or failed)
 		}
 
 		this.doChores();

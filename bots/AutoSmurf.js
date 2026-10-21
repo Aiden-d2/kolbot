@@ -2229,8 +2229,12 @@ function AutoSmurf() {
 				this.okCount();	//260922
 				Precast.doPrecast(true);
 
-				if (me.area === 10 && Pather.moveToExit(5, true, true) !== true) {	//261021 was clearToExit(10, 5) (endless retry): one try, then quit
-					Misc.quitGame("moveToExit failed: " + Pather.getAreaName(10) + " -> " + Pather.getAreaName(5));
+				if (me.area === 10) {	//261021 was clearToExit(10, 5) (endless retry): one try, no quit: the check below takes a failure or a wrong level to town and the 5 portal
+					try {
+						Pather.moveToExit(5, true, true);
+					} catch (e) {
+						Misc.caughtError("AutoSmurf.moveToExit 5", e);	// a throw (no path) goes to the check below too
+					}
 				}
 				
 				if (me.area === 5) {
@@ -2844,8 +2848,12 @@ function AutoSmurf() {
 		
 		Precast.doPrecast(true);
 
-		if (me.area === 29 && Pather.moveToExit(30, true, true) !== true) {	//261021 was clearToExit(29, 30) (endless retry): one try, then quit
-			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(29) + " -> " + Pather.getAreaName(30));
+		if (me.area === 29) {	//261021 was clearToExit(29, 30) (endless retry): one try, no quit: the check below takes a failure or a wrong level to town and the 30 portal
+			try {
+				Pather.moveToExit(30, true, true);
+			} catch (e) {
+				Misc.caughtError("AutoSmurf.moveToExit 30", e);	// a throw (no path) goes to the check below too
+			}
 		}
 		
 		if (me.area === 30) {
@@ -2875,8 +2883,12 @@ function AutoSmurf() {
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
-		if (me.area === 30 && Pather.moveToExit(31, true, true) !== true) {	//261021 was clearToExit(30, 31) (endless retry): one try, then quit
-			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(30) + " -> " + Pather.getAreaName(31));
+		if (me.area === 30) {	//261021 was clearToExit(30, 31) (endless retry): one try, no quit: the check below takes a failure or a wrong level to town and the 31 portal
+			try {
+				Pather.moveToExit(31, true, true);
+			} catch (e) {
+				Misc.caughtError("AutoSmurf.moveToExit 31", e);	// a throw (no path) goes to the check below too
+			}
 		}
 		
 		if (me.area === 31) {
@@ -2906,8 +2918,12 @@ function AutoSmurf() {
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
-		if (me.area === 31 && Pather.moveToExit(32, true, true) !== true) {	//261021 was clearToExit(31, 32) (endless retry): one try, then quit
-			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(31) + " -> " + Pather.getAreaName(32));
+		if (me.area === 31) {	//261021 was clearToExit(31, 32) (endless retry): one try, no quit: the check below takes a failure or a wrong level to town and the 32 portal
+			try {
+				Pather.moveToExit(32, true, true);
+			} catch (e) {
+				Misc.caughtError("AutoSmurf.moveToExit 32", e);	// a throw (no path) goes to the check below too
+			}
 		}
 		
 		if (me.area === 32) {
