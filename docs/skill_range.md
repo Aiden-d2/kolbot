@@ -510,7 +510,7 @@
 | 활 스킬, Fire Wall, Fist of the Heavens, Double Throw, Psychic Hammer, Dragon Flight | 20 | 기존 (Fire Wall 260917) |
 | Armageddon (249) | 20 | 261002 7→20. 사용자: 맞든 안 맞든 20 안에 몹이 보이면 바로 시전. 게이트(회피 없음, `Wereform.js`). 효과가 시전 좌표와 무관하게 내 주변에 난다는 건 추정(미확인) |
 | Summoner(500) | 25 | 260723 |
-| Static Field (42) | 스킬 레벨 + 4 | 260915. 선시전 루프(`Sorceress.js:59`)는 floor((레벨+4)×2/3), 사거리 밖일 때만 접근(회피 없음). S.SFFW 언타임드(46레벨~) 스태틱 레벨 모의: 46→8, 48→14, 50→16, 52→17(`handoff.md` 5절) |
+| Static Field (42) | 스킬 레벨 + 4 | 260915. 선시전 루프(`Sorceress.js:59`)는 floor((레벨+4)×2/3), 사거리 밖일 때만 접근(회피 없음). S.SFFW 언타임드(46레벨~) 스태틱 레벨 모의: 46→8, 48→14, 50→16, 52→17(261003 스킬 분배 모의) |
 | Leap / Arctic Blast | 표 × 3/2 − 1 | 260513 |
 | Bone Spear/Spirit | 15 | PvP 40 |
 | Fire Ball, Lightning, Chain Lightning, Glacial Spike, Meteor, Blizzard, Mind Blast | 20 | PvP 40 |

@@ -70,7 +70,7 @@ while ($true) {
 ## 3. 분석 (Claude 세션, Linux)
 ```bash
 pip install minidump capstone
-python3 docs/claude/crash_dmpinfo.py <첫 덤프.dmp>
+python3 docs/crash_dmpinfo.py <첫 덤프.dmp>
 ```
 - 출력 항목:
   - 예외 코드·주소, 읽기/쓰기 대상, 모듈+오프셋
