@@ -156,6 +156,13 @@
 - 메모 3건: `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).
 - 8 라다먼트: N+1 `Radament book reset` 직전 리더 캐시 `radamentOff = true`. N+2 리더가 라다먼트 차례에 읽고 지운 뒤 콘솔 `Radament off: tombs, quit at 10 min` → `me.maxgametime = 10분`(엔진이 게임 시작부터 10분에 나감, 다음 게임에 default.dbj가 원래 값으로) → tombs 한 번. 라다먼트 차례엔 써모너가 끝나 리더는 캐니언 WP가 있고, 없는 팔로워는 리더 포털로 들어감(`tombs` `:3502-3525`). D2BS는 게임 단위 퀘스트 상태(완료 불가)를 읽는 함수가 없어 캐시 표시로 함.
 
+**대화 원문 대조로 보탠 것 (261021, 요약 뒤 기록이라 사용자 메시지 원문과 대조)**
+- 3번 "나 포함 팀사이즈로 세기(게이트 정리)": 이름 수집 + `missing()`(나를 빼고 Team.Profiles와 비교)으로 해결.
+- 본 흐름에 끼어드는 곳(사용자 요청으로 확인): default 안에서 직접 `visitTown` = 직업 공격 `doAttack`(용병·수리·화살통), `Pickit.pickItems`(자리 부족, `Pickit.js:175-179`), `getQuestItem` → 멈춤·유실 없음. Town check(물약) → 261021부터 직접. HP/MP 마을행(TownChicken)·Pause 키 → default 멈춤 → 중계로 막음. 동시 동작(멈춤 없음, 메시지 무관): ToolsThread(물약·치킨), PartyThread(`clickParty`), AutoBuildThread(스탯·스킬).
+- 6·7번 분석(261013·261020 로그): TownChicken이 느린 것은 스레드 탓이 아니라 HP 발동(맞는 중)일 때뿐. 발동~도착 2초 이상 = Town check 8% / HP 발동 42% / default 직접(화살통·용병) 4%. 도착 전 치킨 47건의 순간 모드는 4(피격) 29, 1(대기) 13, 10(시전) 4. TownChicken을 끄면 HP 마을행 146건 중 도착한 95건(65%)이 전투에 남음 → 유지.
+- 사용자 아이디어(결정 아님): 13번 대안 "Outer Cloister까지 경로를 만들면 게이트를 반드시 지남"(H1 trace 결과를 보고 판단). 라다먼트 "북 줍기 재시도를 넣으면 N+2 상황 자체가 줄 것"(10번 사라진 유닛 재시도가 이에 해당, `radamentOff`는 안전장치).
+- **미결: 1번 getPath 빈 경로 관찰 로그.** 첫 검토에서 `moveTo no path` 줄에 엔진 `getCollision(area, 목표)`·`getCollision(area, 내 위치)`(목표가 0xFFFF면 맵 미로드, 내 칸에 막힘·회피 비트면 출발 칸 문제)를 넣자고 [승인 필요]로 제안했으나 결정 없이 넘어감. 그 뒤 사용자 업로드(`b1b5887`)로 빈 경로 처리 줄과 랜덤 걸음이 바뀜. 다음 대화에서 사용자가 결정.
+
 **다음 논의 (사용자 결정)**
 - 팀 싱크 확장: okCount가 문제없으면 readyCount·buffCount·syncBO(답장 BOCount·BOReady 대신 도착 이름)·카우(`msgFollower`)를 `teamNames`로. 한 단계로 둬도 됨(같은 이름이 연달아 불리지 않음, `:3085`/`:3095`는 if/else).
 - **이름 정리(사용자 지시 261021):** 확장 뒤 싱크 관련 변수·플래그·메시지 이름 통일(`teamOk`/`teamReady`/`teamBuff`/`BOReady`, `imReady`/`myBuff`, `msgLeader`/`msgFollower`, 메시지 이름과 변수·함수 이름 겹침).
