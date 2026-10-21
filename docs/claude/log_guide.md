@@ -138,6 +138,17 @@
 | 35 | 리더 팀 대기 | 4-7 `Team wait` |
 | 37~41 | 보스가드·시체 회수·에인션트·라다먼트 북·okCount | 4-1, 4-5, 4-3 |
 | 42 | 25레벨 미만 ID 스크롤 골드 부족 판매 | 4-6 |
+| 261021 | okCount 이름 수집: desync 때 안 온 프로필과 그 시각에 하던 일(0-12 판별 불가 5건의 B/C 가르기) | 4-3 `missing(...)` |
+| 261021 | 중계 동작: `Town chicken` 뒤 `relay N msgs`, 그 게임 desync 여부 | 4-3 `relay` |
+| 261021 | 13번 H1: 26 → 27 출구 점이 게이트 옆 벽인가 | 4-4 `[exit] 26 -> 27` |
+| 261021 | SafeTele 거르기로 빠진 몹 수 | 4-4 `[SafeTele] monsters` |
+| 261021 | clearToExit 대체: 퇴장 `moveToExit failed`, 언더패스·Jail 보정 경로 | 4-4 |
+| 261021 | Jail 2층 경로 없음: 어느 출구 유닛을 잡았나 | 4-4 `[useUnit] timeout ... id: target: unit:` |
+| 261021 | chores 멈춤: 어느 단계(clearInventory / buyPotions), 구매 실패 반복인가 | 4-6 `chores slow`, `buy failed` |
+| 261021 | MoveToSlot 실패와 파티 수락 시각이 겹치나 | 4-6 `party accept` |
+| 261021 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
+| 261021 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
+| 261021 | 마을행 직접 호출 | 4-2 `Town check (direct)` |
 
 로그로 판단할 수 없는 항목(직접 보기): 3절 1(버벅임), 6(상자), 10·12·20~22·28~30(회피·시전), 25(케인 대기), 32·33·36(보스 주변 정리 순서).
 
