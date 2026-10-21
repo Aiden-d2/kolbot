@@ -28,7 +28,8 @@ function main() {
 		debugInfo = {area: 0, currScript: "no entry"},
 		pingTimer = [],
 		quitFlag = false,
-		timerLastDrink = [];
+		timerLastDrink = [],
+		relayMsgs = [];	//261021 team messages (copydata 55, follow node 56) that came while default.dbj was paused; the engine drops events for a paused script
 
 	D2Bot.init();
 	Config.init(false);
@@ -576,6 +577,19 @@ function main() {
 
 	addEventListener("keyup", this.keyEvent);
 	addEventListener("scriptmsg", this.scriptEvent);
+	addEventListener("copydata", function (id, data) {	//261021 keep what default.dbj misses while paused (TownChicken, Pause key)
+		var script;
+
+		if (id != 55 && id != 56) {
+			return;
+		}
+
+		script = getScript("default.dbj");
+
+		if (script && !script.running) {
+			relayMsgs.push({relay: true, id: id, data: data});
+		}
+	});
 
 	// Load Fastmod
 	Packet.changeStat(105, Config.FCR);
@@ -722,6 +736,18 @@ function main() {
 			debugInfo.area = Pather.getAreaName(me.area);
 
 			DataFile.updateStats("debugInfo", JSON.stringify(debugInfo));
+		}
+
+		if (relayMsgs.length) {	//261021 hand them over in order once default.dbj runs again
+			i = relayMsgs.length;
+
+			while (relayMsgs.length && Messaging.sendToScript("default.dbj", relayMsgs[0])) {	// false: not running (paused again), keep the rest
+				relayMsgs.shift();
+			}
+
+			if (relayMsgs.length < i) {
+				Misc.trace("relay " + (i - relayMsgs.length) + " msgs");	//261021 check: the relay works (remove once confirmed in the logs)
+			}
 		}
 
 		delay(10);	//260515

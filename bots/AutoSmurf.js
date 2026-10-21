@@ -48,9 +48,8 @@ function AutoSmurf() {
 		keyH = false,	//260809
 		keyD = false,	//260809
 		
-		okCount = 0,
+		teamNames = {},	//261021 team sync: message name -> {profile (lower case): true} (was okCount/teamCount counters)
 		teamOk = false,
-		teamCount = 0,
 		guardChicken = null,	//261004 bossGuard: LifeChicken saved while the boss guard is on (null = guard off)
 		guardSeen = null,	//261006 bossGuard: boss units seen while the guard is on (gid -> name, last HP and ms), traced at bossEnd	//261020 last scan only
 		guardStart = 0,	//261020 bossGuard: when the first boss was found (0 = not yet); the chicken off / last times count from it
@@ -437,19 +436,29 @@ function AutoSmurf() {
 
 			Pather.moveTo(orgx, orgy);
 
-			delay(1000);	//260930 was 500
+			delay(200);	//260930 was 500	//261021 1000 -> 200
 			
-			if (okCount === Team.Size - 1) {
+			if (!this.missing("okCount").length) {	//261021 all names in
 				teamOk = true;
 				Messaging.sendToList(Team.Profiles, "teamOk");
 			}
 			
 			if (getTickCount() - tick > 120 * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)
-				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "okCount " + okCount + " teamCount " + teamCount + " teamOk " + teamOk);	//260930	//261004 counts in the trace
+				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "missing(okCount): " + this.missing("okCount").join(", ") + " teamOk " + teamOk);	//260930	//261021 who did not come
 			}
 		}
 
+		delete teamNames.okCount;	//261021 clear at the phase end, before sending teamCount: a fast one's next okCount comes only after my teamCount, so it is never cleared
+
 		this.teamCount(range);
+	};
+
+	this.missing = function (name) {	//261021 team profiles whose <name> message has not come yet (me excluded)
+		var got = teamNames[name] || {};
+
+		return Team.Profiles.filter(function (profile) {
+			return profile.toLowerCase() !== me.profile.toLowerCase() && !got[profile.toLowerCase()];
+		});
 	};
 
 	this.teamCount = function (range) {
@@ -459,25 +468,24 @@ function AutoSmurf() {
 
 		Messaging.sendToList(Team.Profiles, "teamCount");
 		
-		while (teamCount !== Team.Size - 1) {
+		while (this.missing("teamCount").length) {	//261021 names
 			if (!me.inTown) {
 				Attack.clear(range);	//260727 //260926
 			}
 			
 			Pather.moveTo(orgx, orgy);
 
-			delay(1000);	//260930 was 500
+			delay(200);	//260930 was 500	//261021 1000 -> 200
 			
 			if (getTickCount() - tick > 120 * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)
-				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 2", "okCount " + okCount + " teamCount " + teamCount + " teamOk " + teamOk);	//260930	//261004 counts in the trace
+				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 2", "missing(teamCount): " + this.missing("teamCount").join(", ") + " teamOk " + teamOk);	//260930	//261021 who did not come
 			}
 		}
 		
 		me.overhead("OK");
 		
-		okCount = 0;
-		teamCount = 0;
-		teamOk = false;
+		delete teamNames.teamCount;	//261021
+		teamOk = false;	//261021 cleared here, not at the okCount phase end: a teamOk sent before its sender's teamCount has always come by now
 	};
 
 	this.buffCount = function(act) { // Goes to Town, buys three Antidote potions from Akara, drinks them, and returns to Catacombs Level 4.
@@ -7383,7 +7391,7 @@ function AutoSmurf() {
 	    });
 	};
 
-	addEventListener("copydata", (id, data) => {
+	var onCopyData = function (id, data) {	//261021 named: also called with the messages ToolsThread relays while default.dbj was paused
 		var parsed, msg, nick;	//eom
 		try {	//eom
 			parsed = JSON.parse(data);
@@ -7477,7 +7485,11 @@ function AutoSmurf() {
 				break;
 
 			case "okCount":	//260510
-				okCount += 1;
+				if (teamOk && !(teamNames.teamCount && teamNames.teamCount[nick.toLowerCase()])) {	//261021 in the teamCount phase, an okCount sent before its sender's teamCount is a late one of the round I left by teamOk: drop it (from the same sender okCount comes before teamCount)
+					break;
+				}
+
+				(teamNames.okCount = teamNames.okCount || {})[nick.toLowerCase()] = true;	//261021 names (was okCount += 1)
 				break;
 			case "teamOk":
 				if (!teamOk) {
@@ -7485,7 +7497,7 @@ function AutoSmurf() {
 				}
 				break;
 			case "teamCount":
-				teamCount += 1;
+				(teamNames.teamCount = teamNames.teamCount || {})[nick.toLowerCase()] = true;	//261021 names (was teamCount += 1)
 				break;
 			
 			case "syncBO":
@@ -7588,6 +7600,13 @@ function AutoSmurf() {
 				me.overhead("msgFollower");
 				break;
 			}
+		}
+	};
+
+	addEventListener("copydata", onCopyData);
+	addEventListener("scriptmsg", function (obj) {	//261021 relay from ToolsThread: {relay: true, id, data}
+		if (obj && typeof obj === "object" && obj.relay) {
+			onCopyData(obj.id, obj.data);
 		}
 	});
 
