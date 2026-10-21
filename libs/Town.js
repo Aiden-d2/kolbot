@@ -677,7 +677,6 @@ MainLoop:
 
 					if (!scroll) {
 						if (me.charlvl < 25 && npc.getItem(530) && me.gold < npc.getItem(530).getItemCost(0)) {	//261004 below lvl 25 with no gold for an ID scroll -> sell unid and go on
-							Misc.trace("identify: no gold for ID scroll, sold unid " + item.name + " (gold " + me.gold + ")");
 							Misc.itemLogger("Sold", item);
 							item.sell();
 							delay(me.ping * 2);

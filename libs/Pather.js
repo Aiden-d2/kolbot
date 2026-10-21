@@ -401,7 +401,6 @@ var Pather = {
 			if (useTeleport && me.inTown) {	//260930 a teleport path that runs into town (useTeleport is decided once at the start): town blocks teleport, walk the rest
 				useTeleport = false;
 				adjustedNode = getPath(me.area, x, y, me.x, me.y, 0, this.walkDistance);
-				Misc.trace("moveTo entered town, walk the rest -> " + x + "," + y + " path:" + (adjustedNode ? adjustedNode.length : "none"));	//260930
 
 				if (adjustedNode) {
 					path = adjustedNode.reverse();
@@ -1506,8 +1505,6 @@ ModeLoop:
 				// while an area loads (gameReady false, act change) keep waiting and never send again. me.area is undefined while loading
 				while (getTickCount() - tick < (redPortal ? 1500 : Math.max(1000, me.ping * 2 + 300)) || !me.gameReady) {
 					if (me.gameReady && me.area && me.area !== preArea) {
-						Misc.trace("usePortal ok: " + this.getAreaName(preArea) + " -> " + this.getAreaName(me.area) + " tries:" + (i + 1) + " ms:" + (getTickCount() - startTick));	//261006 entry time (who joined late)
-
 						delay(me.ping * 2 + 300);	//260830
 
 						return true;

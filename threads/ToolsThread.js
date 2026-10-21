@@ -165,10 +165,7 @@ function main() {
 	};
 
 	this.exit = function () {
-		var tick = getTickCount();	//261006
-
 		this.stopDefault();
-		Misc.trace("[Quit] stopDefault " + (getTickCount() - tick) + "ms", true);	//261006 time spent before quit() (deaths right after a chicken)
 		quit();
 	};
 
