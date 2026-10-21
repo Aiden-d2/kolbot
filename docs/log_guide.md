@@ -128,21 +128,21 @@
 - 이유 없이 끝난 게임은 `log_results.md` 261006 "이유 없이 끝난 게임"처럼 분류한다(크래시, 마지막 게임, 30분 시간 초과, 매니저 일시정지, 원인 불명).
 
 ## 5. 이번 로그로 볼 확인 항목
-확인 항목과 판정 방법은 `handoff.md` 2·3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
+확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
-| 2-1 | okCount 이름 수집: desync 때 안 온 프로필과 그 시각에 하던 일(`log_results.md` 판별 불가 5건의 B/C 가르기) | 4-3 `missing(...)` |
-| 2-2 | 중계 동작: `Town chicken` 뒤 `relay N msgs`, 그 게임 desync 여부 | 4-3 `relay` |
-| 2-3 | clearToExit 대체: 퇴장 `moveToExit failed`, 언더패스·Jail 보정 경로 | 4-4 |
-| 2-4 | SafeTele 거르기로 빠진 몹 수 | 4-4 `[SafeTele] monsters` |
-| 2-5 | 마을행 직접 호출 | 4-2 `Town check (direct)` |
-| 2-6 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
-| 2-8 | H1: 26 → 27 출구 점이 게이트 옆 벽인가 / chores 멈춤: 어느 단계(clearInventory / buyPotions), 구매 실패 반복인가 | 4-4 `[exit] 26 -> 27` / 4-6 `chores slow`, `buy failed` |
-| 2-9 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-9) | 4-6 `party accept` |
-| 2-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
+| 3-1 | okCount 이름 수집: desync 때 안 온 프로필과 그 시각에 하던 일(`log_results.md` 판별 불가 5건의 B/C 가르기) | 4-3 `missing(...)` |
+| 3-2 | 중계 동작: `Town chicken` 뒤 `relay N msgs`, 그 게임 desync 여부 | 4-3 `relay` |
+| 3-3 | clearToExit 대체: 퇴장 `moveToExit failed`, 언더패스·Jail 보정 경로 | 4-4 |
+| 3-4 | SafeTele 거르기로 빠진 몹 수 | 4-4 `[SafeTele] monsters` |
+| 3-5 | 마을행 직접 호출 | 4-2 `Town check (direct)` |
+| 3-6 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
+| 3-8 | H1: 26 → 27 출구 점이 게이트 옆 벽인가 / chores 멈춤: 어느 단계(clearInventory / buyPotions), 구매 실패 반복인가 | 4-4 `[exit] 26 -> 27` / 4-6 `chores slow`, `buy failed` |
+| 3-9 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-9) | 4-6 `party accept` |
+| 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
 | 1-1 | Jail 2층 경로 없음: 어느 출구 유닛을 잡았나 | 4-4 `[useUnit] timeout ... id: target: unit:` |
-| 3-1 | 보스가드·시체 회수 | 4-1 |
-| 3-2 | 골드 나눔 | 4-6 |
+| 3-11 | 보스가드·시체 회수 | 4-1 |
+| 3-12 | 골드 나눔 | 4-6 |
 
 ## 6. 보고 형식
 1. 데이터 요약: 프로필·게임 수·기간·난이도 구간·코드 버전(시기), 실행 중 코드 변경 여부.

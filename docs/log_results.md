@@ -72,7 +72,7 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 타임아웃은 각자 okCount 진입부터 120초라, desync 줄 시각 − 120초 = 그 프로필의 진입 시각. 거의 모두 `okCount 6 ... teamOk false`(아무도 7을 못 채움).
 - (A) 확인 2건, okCount 대기 중 마을행으로 default가 멈춰 teamOk·teamCount를 버림(엔진은 멈춘 스크립트의 copydata를 버림, `Events.cpp:230`): Pz-66 a1, Pz-44 a8.
 - 판별 불가 5건(나간 프로필 자신은 마을에 안 감, 한 명의 okCount를 못 받음): Pz-38 a6(a4가 Town chicken 4연속 2분 넘게 → B 유력), Pz-21 a4, Pz-19 a7, Pz-23 a2·a4, Pz-11 a3·a5. 가능한 설명: (B) 한 명이 120초 안에 okCount에 못 옴(실제 지각), (C) 보냈지만 받는 쪽 리셋에 지워짐(끝 일괄 리셋 경쟁). 누가 언제 보냈는지 기록이 없어 못 가름.
-- 대응(261021): A는 중계, C는 단계 끝 비우기, B는 `missing(...)` trace로 판별(`handoff.md` 2-1·2-2).
+- 대응(261021): A는 중계, C는 단계 끝 비우기, B는 `missing(...)` trace로 판별(`handoff.md` 3-1·3-2).
 - 261020 묶음의 okCount 넘침(14·13)은 사용자가 한 프로필만 계속 재시작한 테스트 탓. 판정에서 제외.
 
 ### TownChicken (261013·261020)
