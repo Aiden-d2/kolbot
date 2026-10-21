@@ -92,10 +92,24 @@ var Town = {
 		this.clearBelt();
 		this.heal();
 		this.identify();
+
+		var step = getTickCount();	//261021 chores stall check (seen at the heal NPC, after clearInventory): remove once the cause is found
+
 		this.clearInventory();
+
+		if (getTickCount() - step > 5000) {
+			Misc.trace("chores slow: clearInventory " + ((getTickCount() - step) / 1000).toFixed(1) + "s");	//261021
+		}
+
 		this.fillTome(518);
 		
+		step = getTickCount();	//261021
 		this.buyPotions(shopItems);
+
+		if (getTickCount() - step > 5000) {
+			Misc.trace("chores slow: buyPotions " + ((getTickCount() - step) / 1000).toFixed(1) + "s");	//261021
+		}
+
 		this.repair(shopItems);
 		
 		var i,
@@ -231,9 +245,7 @@ var Town = {
 			return false;
 		}
 		
-		me.cancel();	//260908
-		
-		return true;
+		return true;	//261021 me.cancel() removed: the next initNPC closes another NPC or reuses this one
 	},
 
 	// Check if healing is needed, based on character config
@@ -335,11 +347,16 @@ var Town = {
 
 					// Shift+buy will trigger if there's no empty columns or if only the current column is empty
 					if (useShift) {
-						pot.buy(true);
+						if (!pot.buy(true)) {
+							Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " columns:" + col.join(","));	//261021 chores stall check: remove once the cause is found
+						}
+
 						delay(me.ping * 2 + 200);
 					} else {
 						for (j = 0; j < col[i]; j += 1) {
-							pot.buy(false);
+							if (!pot.buy(false)) {
+								Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " columns:" + col.join(","));	//261021
+							}
 						}
 					}
 				}
@@ -352,8 +369,8 @@ var Town = {
 			for (i = 0; i < Config.HPBuffer - buffer.hp; i += 1) {
 				pot = this.getPotion(npc, "hp");
 
-				if (Storage.Inventory.CanFit(pot)) {
-					pot.buy(false);
+				if (Storage.Inventory.CanFit(pot) && !pot.buy(false)) {
+					Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " buffer");	//261021
 				}
 			}
 		}
@@ -362,8 +379,8 @@ var Town = {
 			for (i = 0; i < Config.MPBuffer - buffer.mp; i += 1) {
 				pot = this.getPotion(npc, "mp");
 
-				if (Storage.Inventory.CanFit(pot)) {
-					pot.buy(false);
+				if (Storage.Inventory.CanFit(pot) && !pot.buy(false)) {
+					Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " buffer");	//261021
 				}
 			}
 		}
@@ -660,7 +677,6 @@ MainLoop:
 
 					if (!scroll) {
 						if (me.charlvl < 25 && npc.getItem(530) && me.gold < npc.getItem(530).getItemCost(0)) {	//261004 below lvl 25 with no gold for an ID scroll -> sell unid and go on
-							Misc.trace("identify: no gold for ID scroll, sold unid " + item.name + " (gold " + me.gold + ")");
 							Misc.itemLogger("Sold", item);
 							item.sell();
 							delay(me.ping * 2);
@@ -2234,14 +2250,19 @@ MainLoop:
 		}
 
 		var preArea = me.area,
-			preAct = me.act;
+			preAct = me.act,
+			townCheck = Config.TownCheck;	//261021
 
 		Misc.trace("visitTown start by:" + getScript(true).name + " tick:" + getTickCount());	//261004 who goes (default.dbj / TownChicken) and when
+
+		Config.TownCheck = false;	//261021 a moveTo in goToTown (walking to my portal) must not start another town trip (default calls visitTown directly: town check, quiver)
 
 		try { // not an essential function -> handle thrown errors
 			this.goToTown();
 		} catch (e) {
 			return false;
+		} finally {
+			Config.TownCheck = townCheck;	//261021 in town now (or failed)
 		}
 
 		this.doChores();

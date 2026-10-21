@@ -1,4 +1,4 @@
-# 인수인계 메모 (261020)
+# 인수인계 메모 (261021)
 
 새 대화는 이 문서부터 읽는다. 이어서 CLAUDE.md(작업 규칙, **로그 규칙**)와 분석 노트를 필요한 만큼 읽는다.
 
@@ -119,7 +119,7 @@
 
 ### 0-11. 미결 (261020)
 - 아케인 등 getPath 오류와 관찰 로그: 0-12에서 분석(261020).
-- 사용자 수정 계획 목록(아직 시작 안 함): bs로그·trace 정책(usePortal은 실패만), clickWP 웨이 보유 게이트 → `Pather.wpAreas`, goWP·getWP 랜덤무브, travel 몬스터 리게이트 좌표, chores cancel 제거, clearInventory·fillTome 딜레이, Evaluate 게이트(qty는 property, 나머지는 `.Tier`), okCount 대기 방식(`msgleader {}`, 카운트 리셋 1, 팀사이즈), 라다먼트(완료 불가 플래그 게이트 N+2, 리셋 후 재입장 퇴장 또는 5분, getQuestItem canMakeRoom 0·4), getQuestItem 눈·심장·뇌 클리어 로그, 소켓 티어(아머·헬름 루비, 방패 다이아, 무기 티르·아이오), 타운체크 병합(Misc·TownChicken·ToolsThread)과 속도, 오토빌드쓰레드 싱크(혼자 포징 멈춤).
+- 사용자 수정 계획 목록(261021에 검토·일부 반영, 결과는 0-13): bs로그·trace 정책(usePortal은 실패만), clickWP 웨이 보유 게이트 → `Pather.wpAreas`, goWP·getWP 랜덤무브, travel 몬스터 리게이트 좌표, chores cancel 제거, clearInventory·fillTome 딜레이, Evaluate 게이트(qty는 property, 나머지는 `.Tier`), okCount 대기 방식(`msgleader {}`, 카운트 리셋 1, 팀사이즈), 라다먼트(완료 불가 플래그 게이트 N+2, 리셋 후 재입장 퇴장 또는 5분, getQuestItem canMakeRoom 0·4), getQuestItem 눈·심장·뇌 클리어 로그, 소켓 티어(아머·헬름 루비, 방패 다이아, 무기 티르·아이오), 타운체크 병합(Misc·TownChicken·ToolsThread)과 속도, 오토빌드쓰레드 싱크(혼자 포징 멈춤).
 
 ### 0-12. 261013·261020 로그 검토와 로그 정리 (Claude 작성 261020, 세션 `session_0177DGM8xZ8swJWS3gnzWyim`)
 데이터: 261013 묶음(10/12 12:42~10/13 02:13, 74게임, trace·d2bs·ItemLog, 콘솔 없음) + `261014 jail.txt`(10/14 콘솔 발췌) + 261020 묶음(10/19 12:13~10/20 19:46, 약 161게임, ScriptErrorLog 포함, 실행 중 코드 바뀜: 10/20 13:00 8명 `Pather is not defined`, `ineract`/`interact` 혼재). 두 묶음 모두 사용자 확인으로 이번 수정 전 코드.
@@ -138,6 +138,42 @@
 - **사용자 수정(같은 날 업로드):** `Attack.onBossLow` → `Attack.bossScan`(5곳), 골드 trace `goldPile` → `goldPile.getStat(14)`.
 - **유지·후속:** 다음 로그에서 확인 후 삭제: `dropping radament book`, 골드 나눔 줄, 새 보스가드·시체 회수 줄. 사용자 수정 계획과 함께: `Not enough room for <이름>`(이름 undefined), okCount 누가 늦었나, 라다먼트 줄. getPath 원인 추적 로그는 판별 가설이 없어 넣지 않음.
 - **Claude 실수(261020):** 화살통 줄 개수만 세고 "검증됨, 삭제 후보"로 올림. getPath에 이미 정상으로 판정된 목표 칸을 보는 로그를 가설 없이 제안. `inv:` 필드를 "창 문제 아님"으로 잘못 판정. 같은 목적의 `tpReady received`·`usePortal ok`를 syncBO 결정 뒤 다시 물음. → CLAUDE.md 작업 규칙에 검증·로그 제안 규칙 추가.
+
+### 0-13. 사용자 수정 계획 18항목 검토와 반영 (Claude 작성 261021, 세션 `session_0177DGM8xZ8swJWS3gnzWyim`)
+대화가 길어 앞부분이 요약된 상태에서 기록했다. 커밋: `eddab3a`(팀 싱크·중계, 되돌리기 쉽게 따로), `ab94751`(나머지). 둘 다 게임 미확인(정적 분석만).
+
+**반영함 (사용자 결정, Claude 수정)**
+- **팀 싱크 okCount(`eddab3a`):** 개수 대신 보낸 프로필 이름(`teamNames`, `this.missing(name)`). 두 단계 유지. ok 이름은 1단계 끝(teamCount 보내기 전)에, teamCount 이름과 teamOk는 2단계 끝에 비운다. 2단계 중 그 프로필의 teamCount보다 먼저 온 okCount는 버린다(teamOk로 나온 회차의 늦은 ok가 다음 회차에 남아, 연달아 호출할 때 느린 프로필의 2단계 끝 비우기가 다음 회차 teamCount를 지우는 경로를 막음). 대기 delay 1000 → 200ms. teamOk는 게임 시작 첫 okCount(늦게 들어온 프로필은 앞사람들 ok를 못 받음) 때문에 유지.
+  - 근거: 지금까지의 끝 일괄 리셋은 연달아 호출(`okCount; doPrecast(true); okCount`)에서 가장 빠른 프로필의 다음 ok를 모두가 지우면 teamOk도 못 나와 멈출 수 있었다(코드 추론). 같은 사람의 메시지는 보낸 순서대로 도착(`sendCopyData` = 동기 `SendMessage`, 이벤트 큐 FIFO).
+- **메시지 중계(`eddab3a`):** 엔진은 멈춘 스크립트의 copydata를 버린다(`Events.cpp:230`). ToolsThread가 default.dbj가 멈춰 있을 때 받은 copydata 55·56을 `relayMsgs`에 쌓았다가, 다시 돌면 `Messaging.sendToScript`로 순서대로 넘긴다(실패하면 남김). AutoSmurf 처리 본문은 `onCopyData`로 빼서 copydata·scriptmsg에서 부른다. 감수: 재개 직후 수 ms 틈의 유실, 같은 틈의 중복(이름·플래그는 무해, 아직 개수인 readyCount·buffCount·BOCount는 넘칠 수 있음 → 확장 때 해소).
+- 2 `clearToExit` 삭제: 20곳은 `moveToExit` 한 번 + 실패 시 `quitGame("moveToExit failed: A -> B")`(moveTo throw는 잡지 않음, 게임 종료). 지역 확인(`me.area === A`)은 유지(원래 함수도 그 지역일 때만 돎). 옛 바깥 while 4곳(언더패스 10→5, Jail 29→30·30→31·31→32)은 뒤에 보정 구간(목표 층이 아니면 마을 → 목표 층 포털, `Area reversed` 대기)이 있어 퇴장 없이 한 번 시도(throw도 잡음)하고 보정에 맡김(사용자 지적 261021).
+- 4 SafeTele: 몹 목록을 내 위치에서 `max(teleDistance, 노드 거리) + SafeTele.Range` 안으로(후보는 내 위치 35 안, 몹은 후보 Range 안만 셈 → 결과 같음).
+- 6 `Misc.townCheck`: default.dbj면 `visitTown` 직접(멈춤 없음). `visitTown`이 `goToTown` 동안 `Config.TownCheck`를 꺼(끝나면 원래 값) 포털로 가는 moveTo 안의 재진입을 막음(직접 호출·화살통 경로 모두, 사용자 결정 261021). TownChicken(visitTown 안에서만 부름)·MapHelper(default와 동시에 움직임)는 기존 메시지. TownCheck를 TownChicken으로 옮기는 안은 기각.
+- 10 getQuestItem: `CanFit` 전에 유닛이 사라졌으면(`sizex` undefined, `JSUnit.cpp:191-194`) 다시 찾기 3회, 넘으면 `<classid> vanished`(`Not enough room`으로 가지 않음).
+- 11 `clickWP` 삭제 → `Pather.getWP`(area 없으면 `me.area`). 12 `goWP`·`getWP` random 이동.
+- 13 H1 판별 trace(26 Monastery Gate 출구). 14 chores 멈춤 판별 trace, heal 뒤 `me.cancel()`(260908 사용자 추가, 멈춤 의심으로 넣었던 것) 삭제. cancel 15곳 검토: 나머지 유지(`stash` 시작의 cancel은 원본 kolton에도 있어 유지).
+- 16 눈·심장·뇌 `!!! X !!!`(getQuestItem 성공, 리더). 18(1) `D2Bot.printToConsole`이 `print("[console] " + msg)`도 함.
+- 메모 3건: `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).
+- 8 라다먼트: N+1 `Radament book reset` 직전 리더 캐시 `radamentOff = true`. N+2 리더가 라다먼트 차례에 읽고 지운 뒤 콘솔 `Radament off: tombs, quit at 10 min` → `me.maxgametime = 10분`(엔진이 게임 시작부터 10분에 나감, 다음 게임에 default.dbj가 원래 값으로) → tombs 한 번. 라다먼트 차례엔 써모너가 끝나 리더는 캐니언 WP가 있고, 없는 팔로워는 리더 포털로 들어감(`tombs` `:3502-3525`). D2BS는 게임 단위 퀘스트 상태(완료 불가)를 읽는 함수가 없어 캐시 표시로 함.
+
+**대화 원문 대조로 보탠 것 (261021, 요약 뒤 기록이라 사용자 메시지 원문과 대조)**
+- 3번 "나 포함 팀사이즈로 세기(게이트 정리)": 이름 수집 + `missing()`(나를 빼고 Team.Profiles와 비교)으로 해결.
+- 본 흐름에 끼어드는 곳(사용자 요청으로 확인): default 안에서 직접 `visitTown` = 직업 공격 `doAttack`(용병·수리·화살통), `Pickit.pickItems`(자리 부족, `Pickit.js:175-179`), `getQuestItem` → 멈춤·유실 없음. Town check(물약) → 261021부터 직접. HP/MP 마을행(TownChicken)·Pause 키 → default 멈춤 → 중계로 막음. 동시 동작(멈춤 없음, 메시지 무관): ToolsThread(물약·치킨), PartyThread(`clickParty`), AutoBuildThread(스탯·스킬).
+- 6·7번 분석(261013·261020 로그): TownChicken이 느린 것은 스레드 탓이 아니라 HP 발동(맞는 중)일 때뿐. 발동~도착 2초 이상 = Town check 8% / HP 발동 42% / default 직접(화살통·용병) 4%. 도착 전 치킨 47건의 순간 모드는 4(피격) 29, 1(대기) 13, 10(시전) 4. TownChicken을 끄면 HP 마을행 146건 중 도착한 95건(65%)이 전투에 남음 → 유지.
+- 사용자 아이디어(결정 아님): 13번 대안 "Outer Cloister까지 경로를 만들면 게이트를 반드시 지남"(H1 trace 결과를 보고 판단). 라다먼트 "북 줍기 재시도를 넣으면 N+2 상황 자체가 줄 것"(10번 사라진 유닛 재시도가 이에 해당, `radamentOff`는 안전장치).
+- **미결: 1번 getPath 빈 경로 관찰 로그.** 첫 검토에서 `moveTo no path` 줄에 엔진 `getCollision(area, 목표)`·`getCollision(area, 내 위치)`(목표가 0xFFFF면 맵 미로드, 내 칸에 막힘·회피 비트면 출발 칸 문제)를 넣자고 [승인 필요]로 제안했으나 결정 없이 넘어감. 그 뒤 사용자 업로드(`b1b5887`)로 빈 경로 처리 줄과 랜덤 걸음이 바뀜. 다음 대화에서 사용자가 결정.
+
+**다음 논의 (사용자 결정)**
+- 팀 싱크 확장: okCount가 문제없으면 readyCount·buffCount·syncBO(답장 BOCount·BOReady 대신 도착 이름)·카우(`msgFollower`)를 `teamNames`로. 한 단계로 둬도 됨(같은 이름이 연달아 불리지 않음, `:3085`/`:3095`는 if/else).
+- **이름 정리(사용자 지시 261021):** 확장 뒤 싱크 관련 변수·플래그·메시지 이름 통일(`teamOk`/`teamReady`/`teamBuff`/`BOReady`, `imReady`/`myBuff`, `msgLeader`/`msgFollower`, 메시지 이름과 변수·함수 이름 겹침).
+- 17 소켓(`Town.socketGems`: 재료 제외는 `Runewords.getBase`, 실패 시 커서 보석만 인벤토리로, 보관함 연 상태에서 장착 칸 클릭), 18(2) print/trace 중복 정리. 둘 다 머지 뒤 다음 대화.
+
+**기각 (메모만)**
+- 토글(Pause 키를 default 기준으로 전부 같게): 수동 Pause 없이는 꼬일 경로가 없음.
+- 5 Strict Warning `areas[area]`(입장 직후 trace의 `getAreaName`): 치명적이지 않음.
+- Town chicken HP(TownHP 40 / LifeChicken 35 간격), 15 NTIP `Qty`/`.Tier`, TownChicken을 ToolsThread로 이관, `canMakeRoom` 0·4.
+
+**main `b1b5887`(사용자 업로드 261021) 메모:** PR #53(261020)에서 지운 진단 줄이 다시 들어 있다(syncBO `syncTick`/`steps` start/end, syncWP start/end, `print("Config.LifeChicken")`, `ancients loop`, `tpReady received`, `moveTo entered town`, `usePortal ok`, `[MoveToSlot]` `inv:`, `sold unid`, `[Quit] stopDefault`). 업로드한 로컬 파일이 PR #53 이전 것이었던 것으로 보임(추정). 같은 업로드의 사용자 수정: `moveTo` 빈 경로 처리 줄 이름(`no random path ... reverting`, `original path`, `no original path`, `adjusted path`, `no adjusted path ... fixing`, `fixed path`)과 랜덤 걸음을 `getNearestWalkable`로, M.HYBR Guided Arrow 1. 다시 들어온 진단 줄은 사용자 지시로 다시 삭제(261021), 사용자 수정은 유지.
 
 ## 1. 현재 상태
 - **150런 로그 검토·로그 정리(261006, 세션 `session_017K1n1kRZcUariujeLZLjcq`):** 사용자가 올린 179게임 로그(`log` 브랜치 `logs/`)로 확인 항목·치킨·보스가드를 분석하고, 로그 관련 수정은 Claude 제안대로 반영(사용자 지시 261006). 확인 끝난 임시 로그 삭제(`[MP]`, `usePortal 342`, `[chest] skip`, `[OD]`, `[TK]` 래퍼, doChores 단계, moveTo 3줄, `[MoveToSlot]` 성공, 상점 trace, summoner quest), 실패 때만 남김(moveTo 빈 경로, `[TK]` 20회), 새 로그(치킨 주변 몹·종료 지연, 물약 실패 `inv:`, `bossGuard seen`, syncBO·syncWP 단계, `tpReady received`, `usePortal ok`). **로그 외 코드 변경(보스가드 값, 에인션트 조건, syncBO 집결 등)은 사용자가 다시 검토한다.** 전체 내용: `log_review_261006.md`

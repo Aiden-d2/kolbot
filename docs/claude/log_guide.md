@@ -64,9 +64,9 @@
 
 ### 4-2. 치킨·사망 원인 (261006~261007)
 목적: 치킨 순간 무엇에 맞았나, 치킨 뒤 사망(종료 지연), 타운치킨과 치킨의 관계.
-- `[Quit] Life Chicken H/M | mode:N near: 이름 dN sN, ... (+N)` — 내 모드(me.mode)와 30칸 안 가까운 몹 5마리(거리, spectype 비트. 코드는 `& 0x7`이면 보스급(유니크·챔피언·슈퍼유니크), `& 0x1`이면 슈퍼유니크로 씀). 콘솔(빨강)은 `Life Chicken H/M (지역 x,y)`.
+- `[Quit] Life Chicken H/M` — 콘솔(빨강)은 `Life Chicken H/M (지역 x,y)`. 261021 전 로그는 뒤에 `| mode:N near: 이름 dN sN, ...`(내 모드, 30칸 안 몹 5마리)가 붙는다(261021 삭제, 사용자 결정).
 - (261020 삭제) `[Quit] stopDefault Nms` — 261013·261020 로그 1,816건 0~344ms. 종료 지연 원인이 아님을 보고 삭제.
-- `Town check` / `Town chicken` — TownChicken이 마을에 간 이유(TownCheck 조건 / HP·MP 조건). 예전 `Going to town`.
+- `Town check` / `Town chicken` — TownChicken이 마을에 간 이유(TownCheck 조건 / HP·MP 조건). 예전 `Going to town`. 261021부터 default.dbj의 TownCheck는 `Town check (direct)`(멈춤 없이 직접 감, `visitTown start by:default.dbj`가 뒤따름).
 - `visitTown start by:<스크립트> tick:` / `visitTown back tick:` — 누가(default.dbj / TownChicken) 언제 갔다 왔나.
 - `goToTown take TP failed start tick: made:` — TP 실패 기록(추적은 중단됨, 실패 기록용).
 - 콘솔 `You died in last game`(빨강) — 다음 게임 시작에 찍힘(사망한 게임은 그 앞 게임).
@@ -76,7 +76,8 @@
 목적: 누가 어느 단계에서 늦었나. 보스가드가 못 켜진 원인(`log_review_261006.md` 6-2의 2·3·4·13번: 코드상 설명 안 됨 / River of Flame 1분 기록 없음 / 원인 불명).
 - (261020 삭제, 사용자 결정) `syncBO start/end`, `syncWP start/end`, `tpReady received`, `usePortal ok` — Claude가 261006에 합류 분석용으로 넣은 줄. 261020 전 로그에만 있다. syncBO는 노멀 조기 반환(`me.diff === 0`)에 end가 찍히지 않아 start만 있어도 멈춘 것이 아니었다.
 - `usePortal failed target: owner: unit: pre: tick: tries:<시도:gid sent/click/none/dead@ms> portals:<gid/classid/주인/지역/좌표/mode/거리>` — 내 포털일 때만.
-- `[Quit] Party desynced 1·2: okCount N teamCount N teamOk X` — 개수가 모자랐나(한 명 없음) 넘쳤나(호출 횟수 불일치).
+- `[Quit] Party desynced 1·2: missing(okCount|teamCount): 프로필, ... teamOk X`(261021~, 이름 수집) — 안 온 프로필. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지 본다. 261021 전은 `okCount N teamCount N teamOk X`(개수).
+- `relay N msgs`(261021, Claude 추가) — default.dbj가 멈춘 동안 받은 메시지를 ToolsThread가 넘김. 판정: `Town chicken` 뒤에 찍히고 그 게임에 desync가 없으면 동작. 제거 조건: 동작 확인.
 - `party has left: 이름`(위치 없음) — 퇴장할 때까지 100ms마다 반복될 수 있다(의도). 첫 줄만 센다.
 - 판정: 늦은 프로필의 바로 앞 줄(무엇을 하던 중인가: 마을·`Town chicken`·포털 실패). 누가 okCount를 안 보냈는지는 지금 로그로 알 수 없다(사용자 수정 계획 0-11 okCount 대기 방식과 함께 다룸).
 
@@ -89,14 +90,18 @@
 - throw 전파: 랜덤 걸음 10번째의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
-- `[useUnit] timeout iter: dist: ping: area:`
+- `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나(Jail 2층 경로 없음).
+- `[exit] 26 -> 27 type: exit:x,y dest:x,y`(261021, Claude 추가) — 13번 H1(출구 점이 게이트 옆 벽인가). 제거 조건: 판정.
+- `[SafeTele] monsters N near M`(261021, Claude 추가) — 45 거르기로 빠진 몹 수. 제거 조건: 확인.
+- `[Quit] moveToExit failed: A -> B`(261021~, 기본색 콘솔) — 옛 `clearToExit` 무한 재시도 대신 한 번 실패로 퇴장.
 - `[WP] wp.area: me.area: target: retry:`, `[goWP] Failed to reach WP after 10 attempts`, `[getWP] waypoint unit not found / menu not opened try:N`
 - `makePortal late/existing portal used try:N gid:`, `makePortal cast again try:N`
 - `ArreatSummit Gate`, journeyTo 경로(course 배열)
 - 소울 게이트(261020): 헬 파밍의 아냐·바알에서 리더가 소울을 보면 `[Quit] Souls found in Anya` / print `Baal failed: souls found`(d2bs 로그). 바알은 `earlyReturn`으로 팀이 마을로.
 
 ### 4-5. 퀘스트
-- 라다먼트 북(261004·261012): `dropping radament book`(게임 시작에 가진 북을 버림) / `radament gate: 9,0 9,1 9,5 book` / `radament atma: ...`(분실 뒤 리더 아트마 대화, N+1) / `radament book visible: true/false 9,5` / `!!! [BOOK] !!!` / `radament book read: 9,5 false`(false = 읽음). 실패: `[Quit] Radament quest item not found`(누가 못 봄), `[Quit] getQuestItem failed`(줍기 실패), `[Quit] Radament book reset`. getQuestItem 줄: `Trying to make room for 이름`, `Not enough room for 이름`, `<classid> not found`.
+- 라다먼트 북(261004·261012): `dropping radament book`(게임 시작에 가진 북을 버림) / `radament gate: 9,0 9,1 9,5 book` / `radament atma: ...`(분실 뒤 리더 아트마 대화, N+1) / `radament book visible: true/false 9,5` / `!!! [BOOK] !!!` / `radament book read: 9,5 false`(false = 읽음). 실패: `[Quit] Radament quest item not found`(누가 못 봄), `[Quit] getQuestItem failed`(줍기 실패), `[Quit] Radament book reset`. getQuestItem 줄: `Trying to make room for 이름`, `Not enough room for 이름`, `<classid> not found`, (261021~) `quest item vanished, retry N` / `<classid> vanished`(유닛이 사라짐: 남이 주움 추정, 제거 조건: 발생 확인). 눈·심장·뇌는 `!!! [EYE|HEART|BRAIN] !!!`(261021~).
+- 라다먼트 꺼짐(261021~): N+1 `radamentOff set` → N+2 `radamentOff -> tombs` + 콘솔 `Radament off: tombs, quit at 10 min (지역 x,y)` → 10분에 엔진이 나감(퇴장 줄 없음). 제거 조건(set/read 줄): 확인.
   - 판정: 정상 경로(visible → read) 비율, 분실 복구 N+1(atma 9,0 true 9,1 false) → N+2(visible false, 퀘스트 꺼짐) → N+3(획득)이 실제로 이어지는가.
 - (261020 삭제) `ancients loop` — 48/48 1회.
 
@@ -105,6 +110,9 @@
 - 골드 나눔(261010): 리더 골드 < 5000(18레벨 이상)이면 팔로워가 `Dropping N Gold`, 리더가 `Picking up N Gold`, 15초 안에 안 주우면 `Retaking N Gold`. 줄 안의 goldPile은 유닛 객체 문자열일 수 있다.
 - 감정: `identify failed / slow: 이름 (scroll|tome, Nms)`, `identify stopped: no ID scroll`. (261020 삭제) `sold unid` — 13건 동작.
 - 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`.
+- `chores slow: clearInventory|buyPotions Ns`(5초 초과만), `buyPotions: buy failed 코드 gold: columns:|buffer`(261021, Claude 추가) — heal NPC 앞 수십 초 멈춤 판별. 판정: buyPotions가 길고 실패 줄이 여럿 → 구매 실패 반복, 실패 줄 없음 → NPC 열기 반복, clearInventory가 길면 판매·버리기. 제거 조건: 원인 확정.
+- `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정.
+- d2bs 로그 `[console] 내용`(261021~) — 콘솔 줄이 d2bs 로그에도 남음.
 - `[Storage.MoveTo] retry / catch`, `moved from cube to drop/sell`, `[TK] talk skipped N npc:`(스페이스 20번 다 씀, 261006·261020에 각 1건, 모두 Greiz 20), `[hire] hiring retry (N/5)`.
 - d2bs 로그 `enchant: 이름/classid`(S.SFFW 65레벨부터 아마존·2막 용병·발키리·섀도 워리어·그리즐리).
 

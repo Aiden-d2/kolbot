@@ -2199,6 +2199,15 @@ var Misc = {
 		}
 
 		if (check) {
+			if (getScript(true).name.toLowerCase() === "default.dbj") {	//261021 default goes itself: no pause, so no team message is dropped. Other scripts (TownChicken inside visitTown, MapHelper) keep the message
+				me.overhead("Town check (direct)");
+				print("Town check (direct)");
+				Misc.trace("Town check (direct)");
+				Town.visitTown();
+
+				return true;
+			}
+
 			scriptBroadcast("townCheck");
 			delay(me.ping);	//260712
 
