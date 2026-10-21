@@ -1,0 +1,59 @@
+# libs/Pather.js
+
+(값(SafeTele·Dodge 등)은 자주 바뀌므로 적지 않는다. 지금 값은 `libs/Config.js`를 본다.)
+
+## NodeAction.killMonsters
+
+### 260927 사용자: spectype 인자 제거, 이동 중단 반환
+- 카오스(108)는 `clear(20)`, 그 외 `clear(25)`. clear가 false면 `"killMonsters"`를 돌려 이동을 멈춘다(false는 사망·카우킹·스킬 미보유 정지일 때만).
+- 260930 유지 결정(사용자): 문자열이라 `if (!moveTo(...))`는 성공으로 읽지만, false에 대응하는 호출부는 카우 레벨뿐이다.
+
+## NodeAction.popChests
+
+### 260928 Claude: 상자는 Pather가 연다
+- clearPath 이동 노드마다 `Misc.openChests(15)`(`Config.OpenChests: 2`). NodeAction 순서: killMonsters → popChests → getShrines → useWells. 상자 제외 조건은 `Misc.md` openChests.
+
+## PathDebug.drawPath
+
+### 261013 사용자: 경로 그리기 켬 (`enableHooks = true`)
+- 경로 노드를 이은 선을 자동지도 좌표 `Line`으로 그린다. D2BS는 automap 훅을 자동지도(Tab)가 켜져 있을 때만 그리고, 게임 화면에는 안 그린다. 선은 moveTo가 도는 동안만 남는다(새로 계산할 때마다 다시 그림, 끝에서 지움). 안쪽 moveTo(setPosition 우회 등)가 돌면 바깥 경로 선이 안쪽 경로로 바뀐다.
+
+## moveTo
+
+### 260930 Claude: 텔레 경로가 마을로 들어가면 걷기
+- `useTeleport`는 시작 때 한 번 정해진다. 텔레포트 경로가 마을로 들어가면(a2 Blood Moor → 로그 캠프, teleportTo failed 3회) 걷기로 바꾸고 걷기 경로로 다시 계산.
+
+### 261001 Claude: SafeTele 발동 조건 (`SafeTele.Count` 삭제)
+- 목표 노드 몹 수가 0이면 그대로, 1마리부터 발동. 동작 변화 없음(Count가 1이었다).
+- SafeTele와 setPosition 회피는 같은 몹 수 함수(`Attack.getMonsterCount`, 반경 이하)를 쓰지만, SafeTele는 나 중심 링(노드 방향 ±Angle)에서 노드 대신 설 자리를, setPosition은 대상 중심 링에서 시전 자리를 고른다. 목적이 달라 후보 방식이 다르다(260930 대조).
+
+### 261003 Claude: SafeTele 후보 순서 (사용자 결정·요청)
+- `safeCheckNode`가 후보 좌표를 모두 만든 뒤 원래 타겟노드와의 거리 오름차순(동점은 먼 링, 그다음 생성 순서)으로 한 번에 검사한다. 0마리면 즉시 채택, 없으면 최소. 최근 5자리 5칸 안은 제외(맴돌기 방지). 마지막 노드는 SafeTele를 거치지 않는다.
+- 이유: 전에는 바깥 링이 각도보다 먼저라, 각도를 넓히면 바깥 링의 옆자리가 안쪽 링 정면보다 먼저 뽑혔다. 원래 타겟노드는 경로상 최적 지점이므로 거기서 멀수록 목적지에서 멀어진다고 보고, 그 거리 하나로 순서를 정한다.
+
+## teleportTo
+
+### 260930 Claude: 시전 동작 기준 대기
+- 고정 대기 대신 `me.attacking` 기준: max(200, ping×2) 안에 시전 동작이 안 시작되면 바로 재시전, 시작됐으면 끝날 때까지 기다리고(겹쳐 시전 안 함), 끝났는데 제자리면 바로 재시전. 회차당 최대 2초 × 10회. maxTeleDistance(45) 검사 삭제.
+- 근거: 서버가 받아들인 요청도 1초 가까이 걸릴 수 있어, 짧은 대기는 느린 요청을 겹쳐 보내게 만들었다.
+
+## useUnit
+
+### 260930 Claude: 대기와 로딩
+- 대기 max(1000, ping×2+300) + 로딩 중(`gameReady` false) 대기. 회차 시작에 "이미 넘어갔으면 끝"(로딩 중·직후 옛 유닛으로 이동·클릭 방지, 판데모니움→해로가스 포털 `dist:74` 사례).
+
+## useWaypoint
+
+### 260930 사용자: 루트 골레인 Warriv 경유 (의도)
+- 루트 골레인(40)에서 Warriv가 50 안이면 1막 경유. 2막 시작점에서 WP가 멀어 1막 WP가 빠르다.
+
+## makePortal
+
+### 260930 Claude: 늦게 뜬 포털 처리
+- `oldGid`를 첫 시전 전에 한 번만 잡는다(매 회차 다시 잡아 늦게 뜬 내 포털을 옛것으로 보고 다시 시전하던 문제). 회차 시작에 늦게 뜬 포털이 있으면 다시 시전하지 않고 쓴다. 대기 max(1000, ping×2+300).
+
+## usePortal
+
+### 260930 Claude: 대기와 로딩, 빨간 포털
+- 파란 포털 대기 max(1000, ping×2+300), 빨간 포털 1500ms. 로딩 중(`gameReady` false)엔 대기·재전송 없음. 성공 판정은 로딩 뒤(`me.area`는 로딩 중 undefined). flash(3회마다)는 유지.
+- 근거: 260926 `usePortal 342` 로그 47회 전부 102→103 성공, 1회 35·2회 9·3~5회 3, 성공은 전송 뒤 약 1초 안. 확인: 261006 로그에서 빨간 포털 통과(옛 인게임 검증 2번).
