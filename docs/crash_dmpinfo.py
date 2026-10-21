@@ -1,4 +1,4 @@
-# 사용: python3 docs/claude/crash_dmpinfo.py <첫 덤프.dmp> [주소:앞:뒤 ...] [@주소:바이트 ...]   (모두 16진)
+# 사용: python3 docs/crash_dmpinfo.py <첫 덤프.dmp> [주소:앞:뒤 ...] [@주소:바이트 ...]   (모두 16진)
 #   주소:앞:뒤  = 그 주소 앞뒤 코드 역어셈블
 #   @주소:바이트 = 그 주소의 메모리를 dword로 출력 (전역 변수 확인용)
 import sys, struct
