@@ -39,6 +39,7 @@ var Pickit = {
 	// 2 - Cubing wants
 	// 3 - Runeword wants
 	// 4 - Pickup to sell (triggered when low on gold)
+	// 5 - Socket gem for an equipped item	//261021
 	checkItem: function (unit) {
 		if (unit.classid === 549) {	//260805
 			return {
@@ -46,11 +47,45 @@ var Pickit = {
 				tier: 0,
 				merc: 0,
 				qty: null,
-				reason: "cube",				
+				reason: "cube",
 				line: null
 			};
 		}
-		
+
+		//261021 socket gem (ground or inventory only): held gems fill the targets in socketGems order, pick if a target still has an empty socket for it
+		if ([97, 98, 99, 100, 101].indexOf(unit.itemType) > -1 && (unit.mode === 3 || unit.mode === 5 || (unit.mode === 0 && unit.location === 3)) && getBaseStat("items", unit.classid, "levelreq") <= me.charlvl) {
+			var t, g, k,
+				targets = this.socketTargets(),
+				held = (me.findItems(-1, 0, 3) || []).filter(function (gem) {
+					return gem.gid !== unit.gid && [97, 98, 99, 100, 101].indexOf(gem.itemType) > -1 && getBaseStat("items", gem.classid, "levelreq") <= me.charlvl;
+				}).sort(function (a, b) {
+					return a.gid - b.gid;
+				});
+
+			for (t = 0; t < targets.length; t += 1) {
+				for (k = targets[t].empty; k > 0; k -= 1) {
+					for (g = 0; g < held.length; g += 1) {
+						if (targets[t].gems.indexOf(held[g].itemType) > -1) {
+							break;
+						}
+					}
+
+					if (g === held.length) {
+						break;
+					}
+
+					held.splice(g, 1);
+				}
+
+				if (k > 0 && targets[t].gems.indexOf(unit.itemType) > -1) {
+					return {
+						result: 5,
+						line: null
+					};
+				}
+			}
+		}
+
 		var result = NTIP.Evaluate(unit);
 		
 		if (Cubing.checkItem(unit, result.result)) {	//260805
@@ -203,6 +238,60 @@ var Pickit = {
 		}
 		
 		return true;
+	},
+
+	// Equipped tiered items with empty sockets (not runeword bases) and the gem types (itemType, any grade) for them, in socketing order	//261021
+	socketTargets: function () {
+		var i, j, item, empty, base,
+			list = [],
+			slots = [
+				{bodyLoc: 1, gems: [99]},	// helm: ruby
+				{bodyLoc: 3, gems: [99]},	// armor: ruby
+				{bodyLoc: 4, gems: me.charlvl <= 18 ? [99, 101, 100, 98] : []},	// weapon up to lvl 18: ruby, topaz, sapphire, emerald
+				{bodyLoc: 5, gems: [97], types: [2, 69, 70]}	// shield, voodoo head, auric shield: diamond
+			];
+
+		for (i = 0; i < slots.length; i += 1) {
+			if (!slots[i].gems.length) {
+				continue;
+			}
+
+			item = me.getItem(-1, 1);
+
+			if (item) {
+				do {
+					if (item.bodylocation === slots[i].bodyLoc) {
+						break;
+					}
+				} while (item.getNext());
+			}
+
+			if (!item || item.bodylocation !== slots[i].bodyLoc || (slots[i].types && slots[i].types.indexOf(item.itemType) === -1)) {
+				continue;
+			}
+
+			empty = item.getStat(194) - item.getItems().length;
+
+			if (empty < 1 || NTIP.GetScore(item, "Tier") < 1) {
+				continue;
+			}
+
+			base = false;
+
+			for (j = 0; j < Config.Runewords.length; j += 1) {
+				if (Config.Runewords[j][1] === item.classid && Runewords.getBase(Config.Runewords[j][0], item, (Config.Runewords[j][2] || 0))) {
+					base = true;
+
+					break;
+				}
+			}
+
+			if (!base) {
+				list.push({item: copyUnit(item), bodyLoc: slots[i].bodyLoc, gems: slots[i].gems, empty: empty});
+			}
+		}
+
+		return list;
 	},
 
 	// Check if we can even free up the inventory
@@ -393,7 +482,13 @@ MainLoop:
 				Runewords.update(stats.classid, gid);
 
 				break;
-				
+			case 5:	//261021 socket gem
+				me.overhead("Picked up " + stats.name + " (ilvl " + stats.ilvl + ")" + " (Ingredient)");
+
+				Misc.itemLogger("Ingredient", item, "socket");
+
+				break;
+
 			default:
 				break;
 			}

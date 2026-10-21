@@ -35,26 +35,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - okCount(3-1)가 검증되면 readyCount·buffCount·syncBO(답장 BOCount·BOReady 대신 도착 이름)·카우(`msgFollower`)를 `teamNames`로. 한 단계로 둬도 됨(같은 이름이 연달아 불리지 않음).
 - 확장 뒤 싱크 변수·플래그·메시지 이름 통일(`teamOk`/`teamReady`/`teamBuff`/`BOReady`, `imReady`/`myBuff`, `msgLeader`/`msgFollower`, 메시지 이름과 변수·함수 이름 겹침) (사용자 지시 261021).
 
-### 2-2. 소켓 (`Town.socketGems`)
-- 재료 제외는 `Runewords.getBase`, 실패 시 커서 보석만 인벤토리로, 인벤토리 보석을 들고 장착 칸 클릭(보관함은 열지 않음, 261021 변경).
-- 사용자 결정(261021):
-  - 대상: 내가 장착한 아이템 중 소켓이 있고 1개 이상 비어 있는 것, 그리고 티어가 있는 것(`NTIP.GetScore(장비, "Tier") > 0`, 우연히 낀 소켓 정크 제외). 용병 제외(정상 작동 뒤 확장 고려).
-  - 룬워드 베이스 재료면 작업하지 않는다.
-  - 시점: `doChores` 마지막.
-  - 보석: 헬름류·아머는 루비, 방패류(네크 머리·팔라딘 방패 포함)는 다이아. 등급 상관없이 주운 순서대로. 캐릭터 레벨 제한 적용(줍기·장착 모두).
-  - 무기(칸 4): 캐릭터 레벨 18 이하에서 루비·토파즈·사파이어·에메랄드(등급 무관). 번외라 순서는 헬름·아머가 먼저(루비를 같이 쓰면 헬름·아머 우선). 문제가 되면 무기에서 루비 제외. 그 뒤는 정상 작동 뒤 룬으로 확장.
-    - 등급을 기다리지 않는 이유: 소켓 있는 아이템은 최종 티어가 아니라 결국 교체되니, 임시로 쓰는 동안 하급 보석이라도 바로 끼우는 게 유리하다(SoloPlay의 퍼펙트만 기다리는 방식 대신).
-  - 줍기: nip에 없어도, 빈 소켓 수만큼만(가진 개수는 인벤토리만 센다). Pickit 결과 값 5(신설, `canMakeRoom`에는 `f0988e7`로 이미 반영). 주운 보석은 스태시로 보내지 않는다. 큐빙이 잡아 둔 보석도 써도 된다(큐빙 루비는 크래프트 재료가 아님). 필요 개수를 넘는 보석은 기존 판정(큐빙 등)을 탄다.
-  - 장착: 장착한 채로 인벤토리 보석을 들고 해당 장착 칸 클릭(게임에서 가능, 사용자 확인). 스태시는 열지 않는다. 시작할 때 `me.cancel()`로 열린 창을 닫는다(`Equip.autoEquip`과 같은 조건).
-  - 줍기 판정(총량 방식): 인벤토리 보석을 대상 순서(헬름 → 아머 → 무기 → 방패)대로 미리 배정하고, 빈칸이 남은 대상이 이 보석을 받으면 5. `socketGems`의 넣는 순서와 같다. 판정 대상은 바닥·인벤토리 보석만(스태시·큐브 보석은 기존 판정).
-  - 실패 시 커서 보석은 인벤토리로 되돌린다(스태시로 가는 경로를 타지 않음). 그것도 실패하면 그 자리(마을)에 떨어뜨린다(`Packet.dropItem`, `Equip.equip`·`Grant.equip`과 같은 폴백, 떨어뜨린 직후 `Pickit.pickItems()`로 다시 주움, `Misc.cursorCheck`와 같은 방식). 실패는 trace(떨어뜨렸으면 `(dropped)`).
-  - 로그: 줍기는 ItemLog `Ingredient`(큐빙 재료와 같은 표현). 장착 성공은 ItemLog `Socketed`(장비 옵션 전체 + `{보석 [칸] 찬/전체, Tier 전 -> 후}`, `Misc.itemLogger` 옵션 목록에 `Socketed` 추가), 실패는 trace. print 없음. 툴팁 즉시 반영 여부는 ItemLog로 확인.
-  - 수정 규모 승인(261021): `Pickit.js`·`Town.js`·`Misc.js` 3개.
-  - 빌드별 보석 종류(Config 값, 예: 마법 계열 사파이어)는 정상 작동 확인 뒤 적용(사용자 결정 261021). 지금은 `socketTargets`의 칸별 보석 종류(itemType) 목록에 둔다.
-  - 성공 뒤 그 칸 `Equip.updateTier`(필드 줍기 판정의 `Config.TierNow` 캐시). `TieredGear`·`Tiered`는 다음 게임 빌드 갱신에서 반영돼 상관없음(사용자 판단).
-- 참고(Claude 조사 261021): kolbot-SoloPlay `Core/SoloWants.js`(필요 목록·줍기)와 `Modules/ItemUtils.js`(`checkSocketables`, 장착 해제 뒤 패킷 0x28)가 같은 설계다. D2MOO 서버는 장착 중 아이템 소켓 넣기를 허용(`Rcv0x28_SocketItem`), 보석 스탯은 부모 아이템 스탯에 합쳐진다(`STATLIST_MergeStatLists`) → 다음 autoEquip 비교부터 보석 반영 티어(클라이언트 쪽은 미확인). `getBase`에 아이템 객체를 넘기면 classid를 비교하지 않는다.
-
-### 2-3. print/trace 중복 정리 (18(2), 3절 검증 뒤)
+### 2-2. print/trace 중복 정리 (18(2), 3절 검증 뒤)
 - 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤에 한다(사용자 결정 261021). 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
 
 ## 3. 수정됨, 검증 대기 (수정 작업을 했고 게임에서 검증 전)
@@ -130,7 +111,22 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - `Not enough room for <이름>`(이름 undefined) → 3-6과 함께 본다.
 
 ### 3-14. `canMakeRoom` 0·4 (`Pickit.canMakeRoom`, 261021)
-- 바꾼 것: 0·4는 `Town.ignoredCheck`가 참이면 자리를 만들 수 있다고 본다(마을 clearInventory 인벤토리 정리와 같은 판정: 0은 팔거나 버림, 4는 팖). 예전에는 0은 건너뛰고 4는 스태시 빈자리(`canStash`)로 판정해, 비울 수 있는데도 `Not enough room`으로 포기했다. 5(소켓 보석, 2-2에서 신설 예정)는 건너뜀. 261021 사용자 기각이었으나 소켓 작업(2-2)에서 같은 판정이 걸려 다시 보고 반영(사용자 결정 261021).
+- 바꾼 것: 0·4는 `Town.ignoredCheck`가 참이면 자리를 만들 수 있다고 본다(마을 clearInventory 인벤토리 정리와 같은 판정: 0은 팔거나 버림, 4는 팖). 예전에는 0은 건너뛰고 4는 스태시 빈자리(`canStash`)로 판정해, 비울 수 있는데도 `Not enough room`으로 포기했다. 5(소켓 보석, 3-15)는 건너뜀. 261021 사용자 기각이었으나 소켓 작업(3-15)에서 같은 판정이 걸려 다시 보고 반영(사용자 결정 261021).
 - 감수: clearInventory의 4 판매가 계속 실패하면 마을 왕복이 반복된다(기존 코드도 스태시에 자리가 있으면 같음).
-- 확인 로그(Claude 추가 261021, 사용자 승인): trace `make room: <이름> (result 0|4)`(마을로 가게 한 물건), `make room skip: <이름> (result 5)`(소켓 보석이 자리를 막음, 2-2 도입 뒤 관찰).
+- 확인 로그(Claude 추가 261021, 사용자 승인): trace `make room: <이름> (result 0|4)`(마을로 가게 한 물건), `make room skip: <이름> (result 5)`(소켓 보석이 자리를 막음, 3-15 도입 뒤 관찰).
 - 확인: `make room` 뒤 같은 물건의 ItemLog `Sold`·`Dropped`가 있고 돌아와 줍는가 → 맞음. 같은 이름의 `make room`이 되풀이되면 왕복 반복 → 그 물건이 왜 안 치워졌는지 본다. `make room skip`은 보석 때문에 줍기를 포기한 빈도. 확인 뒤 두 줄 삭제.
+
+### 3-15. 소켓 보석 (`Pickit.checkItem`·`socketTargets`·`pickItem`, `Town.socketGems`·`doChores`, `Misc.itemLogger`, 261021)
+- 바꾼 것(사용자 결정 261021):
+  - 대상(`Pickit.socketTargets`): 내 장착 칸 1(헬름류)·3(아머)·4(무기, 캐릭 레벨 18 이하)·5(방패류 2·69·70) 중 티어가 있고(`NTIP.GetScore > 0`) 빈 소켓이 있으며 룬워드 베이스 재료가 아닌 것(`Config.Runewords`에서 classid 같고 `getBase` 참). 보석 종류(itemType, 등급 무관): 헬름·아머 루비, 무기 루비·토파즈·사파이어·에메랄드, 방패 다이아. 용병 제외.
+  - 줍기(`checkItem` 결과 5, Cubing 판정 앞): 바닥·인벤토리 보석만, 보석 레벨 제한 ≤ 캐릭 레벨. 인벤토리 보석(자기 제외, gid 순)을 대상 순서대로 미리 배정하고, 빈칸이 남은 대상이 이 보석을 받으면 5. nip 무관, 스태시로 가지 않음. 필요 없어지면 기존 판정(큐빙 2 / 0은 팔거나 버림).
+  - 줍기 직후(`pickItem` case 5): overhead `(Ingredient)`, ItemLog `Ingredient {socket}`.
+  - 장착(`Town.socketGems`, `doChores`의 `stash()` 뒤): `me.cancel()` 뒤 대상마다 인벤토리 보석(gid 순)을 들고 `clickItem(0, 칸)`. 스태시는 열지 않음. 성공 시 ItemLog `Socketed`(장비 옵션 전체 + `{보석 [칸] 찬/전체, Tier 전 -> 후}`), 하나라도 성공한 칸은 `Equip.updateTier(칸, true)`. 실패 시 커서 보석은 인벤토리로, 안 되면 `Packet.dropItem` 뒤 `Pickit.pickItems()`. trace `socketGems failed: <보석> -> [칸] <장비>`(드롭했으면 `(dropped)`).
+- 나중(사용자 결정): 빌드별 보석 종류 Config(itemType 또는 classid로 등급 지정 가능), 무기 룬 확장, 용병.
+- 참고(Claude 조사): kolbot-SoloPlay `SoloWants.js`·`ItemUtils.js`가 비슷한 설계(퍼펙트만 기다림, 장착 해제 뒤 패킷 0x28). D2MOO 서버는 장착 중 아이템 소켓을 허용(`Rcv0x28_SocketItem`), 보석 스탯은 장비 스탯에 합쳐짐(`STATLIST_MergeStatLists`, 클라이언트는 미확인).
+- 확인:
+  - ItemLog `Ingredient {socket}`로 빈 소켓 수만큼만 줍는가(넘게 줍지 않는가).
+  - ItemLog `Socketed`가 남고, 옵션에 보석 효과(루비 생명, 다이아 저항 등)가 바로 보이며 `Tier 전 -> 후`가 오르는가(노멀 등급은 티어 고정이라 같을 수 있음). 장착 칸 클릭으로 실제 들어가는가.
+  - trace `socketGems failed` 빈도와 이유, `(dropped)` 뒤 다시 주웠는가.
+  - 룬워드 베이스(예: 빈 3소켓 브레스트플레이트)·티어 없는 장비에는 넣지 않는가. 레벨 19 이후 무기용 보석이 정리되는가.
+  - `make room skip ... (result 5)`(3-14) 빈도.

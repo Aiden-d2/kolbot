@@ -1792,6 +1792,7 @@ var Misc = {
 		case "Transmuted":	//eom
 		case "Transmuted Fail":	//eom
 		case "Stashed":	//eom
+		case "Socketed":	//261021 equipped item after socketing, with the gem in the text
 		case "Shopped":
 		case "Gambled":
 		case "Dropped":
