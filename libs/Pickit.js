@@ -39,6 +39,7 @@ var Pickit = {
 	// 2 - Cubing wants
 	// 3 - Runeword wants
 	// 4 - Pickup to sell (triggered when low on gold)
+	// 5 - Socket gem for an equipped item	//261021
 	checkItem: function (unit) {
 		if (unit.classid === 549) {	//260805
 			return {
@@ -46,11 +47,45 @@ var Pickit = {
 				tier: 0,
 				merc: 0,
 				qty: null,
-				reason: "cube",				
+				reason: "cube",
 				line: null
 			};
 		}
-		
+
+		//261021 socket gem (ground or inventory only): held gems fill the targets in socketGems order, pick if a target still has an empty socket for it
+		if ([97, 98, 99, 100, 101].indexOf(unit.itemType) > -1 && (unit.mode === 3 || unit.mode === 5 || (unit.mode === 0 && unit.location === 3)) && getBaseStat("items", unit.classid, "levelreq") <= me.charlvl) {
+			var t, g, k,
+				targets = this.socketTargets(),
+				held = (me.findItems(-1, 0, 3) || []).filter(function (gem) {
+					return gem.gid !== unit.gid && [97, 98, 99, 100, 101].indexOf(gem.itemType) > -1 && getBaseStat("items", gem.classid, "levelreq") <= me.charlvl;
+				}).sort(function (a, b) {
+					return a.gid - b.gid;
+				});
+
+			for (t = 0; t < targets.length; t += 1) {
+				for (k = targets[t].empty; k > 0; k -= 1) {
+					for (g = 0; g < held.length; g += 1) {
+						if (targets[t].gems.indexOf(held[g].itemType) > -1) {
+							break;
+						}
+					}
+
+					if (g === held.length) {
+						break;
+					}
+
+					held.splice(g, 1);
+				}
+
+				if (k > 0 && targets[t].gems.indexOf(unit.itemType) > -1) {
+					return {
+						result: 5,
+						line: null
+					};
+				}
+			}
+		}
+
 		var result = NTIP.Evaluate(unit);
 		
 		if (Cubing.checkItem(unit, result.result)) {	//260805
@@ -205,18 +240,75 @@ var Pickit = {
 		return true;
 	},
 
+	// Equipped tiered items with empty sockets (not runeword bases) and the gem types (itemType, any grade) for them, in socketing order	//261021 arms by item type (shield or weapon), not by slot
+	socketTargets: function () {
+		var i, j, item, gems, empty, base,
+			list = [],
+			slots = [1, 3, 4, 5];	// head, body, right arm, left arm
+
+		for (i = 0; i < slots.length; i += 1) {
+			item = me.getItem(-1, 1);
+
+			if (item) {
+				do {
+					if (item.bodylocation === slots[i]) {
+						break;
+					}
+				} while (item.getNext());
+			}
+
+			if (!item || item.bodylocation !== slots[i]) {
+				continue;
+			}
+
+			if (slots[i] < 4) {	// helm (incl. primal helm, pelt, circlet), armor
+				gems = [99];	// ruby
+			} else if ([2, 69, 70].indexOf(item.itemType) > -1) {	// shield, voodoo head, auric shield (either arm)
+				gems = [97];	// diamond
+			} else if (me.charlvl <= 18) {	// weapon in either arm (bows, staves, 2h weapons are in the left arm)
+				gems = [99, 101, 100, 98];	// ruby, topaz, sapphire, emerald
+			} else {
+				continue;
+			}
+
+			empty = item.getStat(194) - item.getItems().length;
+
+			if (empty < 1 || NTIP.GetScore(item, "Tier") < 1) {
+				continue;
+			}
+
+			base = false;
+
+			for (j = 0; j < Config.Runewords.length; j += 1) {
+				if (Config.Runewords[j][1] === item.classid && Runewords.getBase(Config.Runewords[j][0], item, (Config.Runewords[j][2] || 0))) {
+					base = true;
+
+					break;
+				}
+			}
+
+			if (!base) {
+				list.push({item: copyUnit(item), bodyLoc: slots[i], gems: gems, empty: empty});
+			}
+		}
+
+		return list;
+	},
+
 	// Check if we can even free up the inventory
 	canMakeRoom: function () {
 		if (!Config.MakeRoom) {
 			return false;
 		}
 
-		var i,
+		var i, result,	//261021
 			items = Storage.Inventory.Compare(Config.Inventory);
 
 		if (items) {
 			for (i = 0; i < items.length; i += 1) {
-				switch (this.checkItem(items[i]).result) {
+				result = this.checkItem(items[i]).result;	//261021 kept for the make room trace
+
+				switch (result) {
 				case -1: // Item needs to be identified
 					// For low level chars that can't actually get id scrolls -> prevent an infinite loop
 					if (me.getStat(14) + me.getStat(15) < 100) {
@@ -224,7 +316,18 @@ var Pickit = {
 					}
 
 					return true;
-				case 0:
+				case 0:	//261021 same check as clearInventory (drop/sell)
+				case 4:	//261021 sold by clearInventory, stash space not needed
+					if (Town.ignoredCheck(items[i])) {
+						Misc.trace("make room: " + items[i].name + " (result " + result + ")");	//261021 check 0/4 town trips clear the item: remove once confirmed
+
+						return true;
+					}
+
+					break;
+				case 5:	//261021 socket gem: kept in inventory, can't make room
+					Misc.trace("make room skip: " + items[i].name + " (result 5)");	//261021 check gems block room: remove once confirmed
+
 					break;
 				default: // Check if a kept item can be stashed
 					if (Town.canStash(items[i])) {
@@ -380,7 +483,13 @@ MainLoop:
 				Runewords.update(stats.classid, gid);
 
 				break;
-				
+			case 5:	//261021 socket gem
+				me.overhead("Picked up " + stats.name + " (ilvl " + stats.ilvl + ")" + " (Ingredient)");
+
+				Misc.itemLogger("Ingredient", item, "socket");
+
+				break;
+
 			default:
 				break;
 			}

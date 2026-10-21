@@ -132,7 +132,83 @@ var Town = {
 		Grant.autoEquip();
 		
 		this.stash();
-		
+
+		this.socketGems();	//261021
+
+		return true;
+	},
+
+	// Socket inventory gems into equipped tiered items (targets and order from Pickit.socketTargets)	//261021
+	socketGems: function () {
+		var i, j, t, gems, gem, name, filled, before, after, tick, done, cursorItem, dropped,
+			targets = Pickit.socketTargets();
+
+		if (!targets.length) {
+			return true;
+		}
+
+		me.cancel();
+
+		for (i = 0; i < targets.length; i += 1) {
+			t = targets[i];
+			before = NTIP.GetScore(t.item, "Tier");
+			done = false;
+
+			for (j = 0; j < t.empty; j += 1) {
+				gems = (me.findItems(-1, 0, 3) || []).filter(function (g) {
+					return t.gems.indexOf(g.itemType) > -1 && getBaseStat("items", g.classid, "levelreq") <= me.charlvl;
+				}).sort(function (a, b) {
+					return a.gid - b.gid;	// picked order
+				});
+
+				if (!gems.length) {
+					break;
+				}
+
+				gem = gems[0];
+				name = gem.name.replace(/ÿc[0-9!"+<:;.*]/g, "");
+				filled = t.item.getItems().length;
+
+				if (gem.toCursor()) {
+					clickItem(0, t.bodyLoc);
+
+					tick = getTickCount();
+
+					while (getTickCount() - tick < 2000 && me.itemoncursor) {
+						delay(10);
+					}
+
+					delay(me.ping + 200);
+				}
+
+				if (me.itemoncursor || t.item.getItems().length <= filled) {
+					dropped = false;
+					cursorItem = me.itemoncursor ? getUnit(100) : null;
+
+					if (cursorItem && !Storage.Inventory.MoveTo(cursorItem)) {	// back to the inventory only (no stash trip with the gem on the cursor)
+						dropped = Packet.dropItem(cursorItem);
+					}
+
+					Misc.trace("socketGems failed: " + name + " -> [" + Config.Gear[t.bodyLoc] + "] " + t.item.name + (dropped ? " (dropped)" : ""));
+
+					if (dropped) {
+						Pickit.pickItems();	// dropped in town: pick it back up (picked as a socket gem again)
+					}
+
+					break;
+				}
+
+				after = NTIP.GetScore(t.item, "Tier");
+				Misc.itemLogger("Socketed", t.item, name + " [" + Config.Gear[t.bodyLoc] + "] " + (filled + 1) + "/" + t.item.getStat(194) + ", Tier " + before + " -> " + after);
+				before = after;
+				done = true;
+			}
+
+			if (done) {
+				Equip.updateTier(t.bodyLoc, true);	// Config.TierNow is the cache for field pickup checks
+			}
+		}
+
 		return true;
 	},
 
