@@ -66,18 +66,15 @@
 
 **노트 목록.** 새 대화는 `handoff.md`를 먼저 읽고, 작업할 코드의 노트와 관련 정보 파일을 읽는다. 로그 분석은 `log_guide.md`부터 읽는다.
 
-정리 중(261021): `docs/claude/`에 남은 노트는 위 구조로 단계별로 옮긴다(CLAUDE.md → handoff → Attack → Pather → AutoSmurf → 나머지). CLAUDE.md·handoff·Attack·Pather 단계는 끝났다.
-
 | 파일 | 내용 |
 |---|---|
 | `docs/handoff.md` | 미결만: 결정 대기, 반영됨·검증 대기 |
 | `docs/code/*.md` | 코드 파일별 노트 (확정된 것만) |
 | `docs/rejected.md` | 기각 노트 |
 | `docs/log_results.md` | 로그 분석 결과 (묶음마다 쌓음) |
-| `docs/claude/attack_flow.md` | clear / setPosition 흐름 해설 (공부용) |
-| `docs/claude/D2BS_Structure.md` | D2BS / kolbot 구조 참조 |
-| `docs/claude/log_guide.md` | 로그 분석 지침 |
-| `docs/claude/log_review_261006.md` | 150런 로그 검토 (261006). 정리 때 다른 노트로 흡수하고 삭제한다 |
-| `docs/claude/skill_range.md` | 스킬 사거리 (공식, 측정, 현재 값). 사거리 정보는 빠짐없이 여기에 기록한다 |
-| `docs/claude/quest_flags.md` | 퀘스트 플래그 표 (1.14d) |
-| `docs/claude/crash_analysis.md` | 크래시 분석 절차 |
+| `docs/log_guide.md` | 로그 분석 지침 |
+| `docs/D2BS_Structure.md` | D2BS / kolbot 구조 참조, 확인된 엔진·게임 사실 |
+| `docs/attack_flow.md` | clear / setPosition 흐름 해설 (공부용) |
+| `docs/skill_range.md` | 스킬 사거리 (공식, 측정, 현재 값). 사거리 정보는 빠짐없이 여기에 기록한다 |
+| `docs/quest_flags.md` | 퀘스트 플래그 표 (1.14d) |
+| `docs/crash_analysis.md` | 크래시 분석 절차와 유형별 결과 |

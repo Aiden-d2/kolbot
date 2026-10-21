@@ -8,7 +8,7 @@
 
 - 모든 내용은 main 코드에서 다시 확인했다. 저장소 밖의 내용(1-3절 DLL 패치, 1-4절 매니저 로그 경로)은 **2026-09-09 판 원문을 그대로 옮겼고 이번에 확인하지 않았다.**
 - Attack 전투 루프와 setPosition의 세부는 `docs/code/Attack.md`(명세), `attack_flow.md`(줄 번호 해설)에 있다. 이 문서에는 계약과 호출 관계만 둔다.
-- **(임시)** 표시는 인게임 검증 뒤 지울 예정인 항목이다 (`handoff.md` 4절).
+- **(임시)** 표시는 인게임 검증 뒤 지울 예정인 항목이다 (261006 이전 기준, 지금은 없을 수 있음).
 
 ---
 
@@ -1132,7 +1132,6 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | `Config.KeepRunewords` | `Config.js`의 전체 블록이 주석 처리 상태 |
 | `Config.UseKeys` | 기본 `false`. 켜면 열쇠 구매·보관 경로가 동작 |
 | `Config.Dodge.Enabled` | 기본 `false`. 빌드 템플릿 13종이 레벨 18에서 `true`로 전환 |
-| `Config.NoSkipArea` | 기본 `[]`. 지역을 넣으면 해당 지역에서 도달 불가 즉시 버림·HP 스킵·306 스킵·해머 게이트를 하지 않음 (임시, `handoff.md` 4절 1번) |
 
 ### 10-3. 조건부 — 구성이 바뀌면 즉시 사용
 
@@ -1148,7 +1147,6 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 
 | 항목 | 상태 |
 |---|---|
-| `Misc.trace` 와 `[AC]` `[SP]` trace 줄 | 임시 로그. `//260926 temp` 등 표시. 인게임 검증 뒤 정리 예정 (`handoff.md` 4절 2번) |
 | ToolsThread Numpad `1` | 임시 상태 출력 |
 | `MapThread` / `MapHelper` / `D2BotMap.dbj` | 맵 확인 전용. 일반 운영 경로에서는 로드되지 않음 |
 | 빌드 템플릿의 include | `Misc.js` 1개뿐. 템플릿이 참조하는 것은 `Config.*`, `Team.Leader`, `Equip.updateTiers` / `Grant.updateTiers`이고 `Cubing` `Runewords` `Prototypes`는 include 시점에 이미 `AutoBuild.js` 경로로 로드돼 있다 |
@@ -1156,7 +1154,7 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 ## 확인된 사실 (엔진·게임 동작, handoff에서 옮김 261021)
 - **퀘스트 크레딧·방장 규칙(261004, D2MOO 1.10f 소스 + 사용자 제공 1.14d 퀘스트 플래그 표):** 보스 킬 크레딧은 보스 지역에 있는 플레이어(죽은 시체 포함)와 같은 막의 파티원에게 들어간다(마을 포함, 사용자 확인). 게임 시작 처리는 방을 만든 첫 플레이어에게만 돈다(`Quests.cpp:1083-1131`). 방장 기록에 그 퀘스트의 bit0(완료) 또는 bit15(로드 때 bit1이 있으면 켜짐, `D2QuestRecord.cpp:76-79`)가 있으면 그 게임에서 퀘스트가 꺼져(`bNotIntro = 0`) 누구도 크레딧·퀘스트 드롭을 못 받는다. 그래서 리더가 먼저 끝낸 보스는 못 잡은 팔로워가 따라잡지 못한다. 킬 때 켜지는 bit: 앤디·써모너·라다먼트·이주얼·쉥크 bit1, 메피스토·디아블로·에인션트·바알 bit0, 듀리엘 bit5만(bit0은 메쉬프 대화).
 - **레드포탈(261004, `ObjMode.cpp:3089-3110`):** 조작한 본인의 22번 bit0 또는 **bit13**(`QFLAG_PRIMARYGOALDONE`, `ObjMode.cpp:3104`)이 있어야 4막으로 간다(261004 정정: 앞서 bit12로 적었음). 포탈이 열려 보이는 것은 방장 22,0 때문(`A3Q6.cpp:683-692`). `mephisto(true)`의 `getQuest(22,0) || getQuest(22,12)`(`AutoSmurf.js`)는 게임 조건(22,0 또는 22,13)과 다르다. bit12는 클라이언트가 퀘스트 로그를 닫았다고 보고할 때 켜진다. `handoff.md` 1-8.
-- **퀘스트 플래그 표(261004):** `docs/claude/quest_flags.md`. 0~41번의 bit별 동작(1.14d 주소)을 D2MOO와 클래식 저장 파일 문서로 검증했다. 41번은 Akara 리스펙이고, 1.14a~d에는 퀘스트 변경이 없다.
+- **퀘스트 플래그 표(261004):** `docs/quest_flags.md`. 0~41번의 bit별 동작(1.14d 주소)을 D2MOO와 클래식 저장 파일 문서로 검증했다. 41번은 Akara 리스펙이고, 1.14a~d에는 퀘스트 변경이 없다.
 - **에인션트 TP(261004, `A5Q5.cpp`):** 정상(120)에서 TP가 열리면 고대인이 비활성·리셋(`OnPortalOpened`, 처치 뒤에는 무시). 제단을 누르면 정상의 TP를 모두 닫는다(`OperateFunction65_AncientsAltar`). 크레딧은 정상에 있고 레벨 20×(난이도+1) 이상인 플레이어(생사 무관)와 5막의 파티원.
 - **라다먼트 북(261004, `A2Q1.cpp`, `ItemMode.cpp`):** 킬 때 bit1·bit5(책 보상 대기) 설정. 북 사용 시 bit5 해제 + 스킬 포인트 1, bit5가 없으면 북을 쓸 수 없다. 북은 킬한 게임에서 "bit5 있고 북 없는 플레이어" 수만큼 떨어진다(퀘스트가 켜진 게임만). 게임 시작 처리에서 bit0(아트마 보상 대화)·bit5·북 없음이면 9번을 초기화하지만 그 게임은 퀘스트가 꺼진 채다. AutoSmurf는 원래 아트마와 대화하지 않는다.
 - **`me.revive()`(261004):** D2BS 내장(kolton 원본 `d2bs/HISTORY.txt:9`, 살아 있을 때 쓰면 밴 위험). kolton `Follower.js`, blizzhackers `Rushee.js`·`Wakka.js`가 mode 17(죽음)일 때만 부른다.
@@ -1175,7 +1173,6 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 - **상점:** 같은 게임의 상점 목록은 공유. nip이 겹쳐 두 프로필이 같은 아이템을 노릴 수 있음(먼저 산 쪽만 구매).
 - **콘솔 색(D2Bot#):** 4 파랑, 5 초록, 6 노랑, 7 금색, 8 주황, 9 빨강, 10 회색, 생략 시 검정. print 색은 `ÿc0` 흰, `ÿc1` 빨강, `ÿc2` 초록, `ÿc3` 파랑, `ÿc4` 금색, `ÿc5` 회색, `ÿc6` 검정, `ÿc7` 황갈, `ÿc8` 주황, `ÿc9` 노랑, `ÿc:` 짙은 초록, `ÿc;` 보라.
 - **ProcDump:** `-e -h -n 10`. 한 크래시에 덤프가 여러 개 생기면(D2BS exit0 버그로 반복 예외) 첫 파일(접미사 없음)만 보면 된다. 261001 6건은 모두 첫 덤프에 원래 예외가 그대로 있었다(6번 유형 C도 첫 덤프에 0x6494DC가 바로 찍힘, 260930 유형 C 때처럼 0x576F08에서 꺼낼 필요 없었음). 크래시 프로세스의 procdump 로그는 약 7KB, 몇 초 뒤의 약 1.5KB 로그는 재시작된 새 프로세스다. `-e`는 처리되지 않은 예외만 덤프한다(잡힌 예외는 `-e 1`, 덤프가 많이 생길 수 있어 쓰지 않음).
-- **탈라샤 무덤 회피 토글(`AutoSmurf.js` 3693·3704, 사용자 260812):** 포탈로 파티가 모인 직후 회피가 붙은 몹 사이로 자리를 잡다 치킨이 나서, 오리피스 박스를 먼저 정리한 뒤 회피를 켠다. 박스 울타리로는 막히지 않음. 유지(261002). 되돌릴 때 무조건 `true`지만 `this.duriel`은 파티 전원 25레벨 이상에서만 실행되므로(리더는 `this.tombs` 끝에서 `partyLevel(tombsLvl 25)`까지 대기·미달이면 quit, 팔로워는 리더의 `duriel` 메시지로 진입) 빌드의 25레벨 회피 켜기와 어긋나지 않는다.
 - **미사일·몹 데이터(261002):** blizzhackers/d2data `missiles.json`·`monstats2.json`. Shock Wave 미사일 511: Vel 20, Range 14(프레임), Size 1, 관통(CollideKill 없음), NextHit 1·NextDelay 4. 몹 충돌 크기 2×2 366종, 3×3 197종.
 - **팔로워 크래시 때 전원 종료:** 크래시 난 프로필이 파티에서 빠지면 나머지 전원(리더 포함)이 `PartyThread`의 `retry > 2`(`threads/PartyThread.js:122-124`)로 약 2초 뒤 나간다. `party has left`는 print만이라 콘솔·trace에는 이유가 안 남는다(로그 규칙대로). 크래시 쪽은 매니저의 `Window has unexpectedly exited` 줄로 구분한다.
 

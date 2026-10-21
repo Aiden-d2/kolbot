@@ -95,7 +95,7 @@
 - 방장 기록과 크레딧:
   - 게임 시작 처리는 방을 만든 첫 플레이어에게만 돈다.
   - 그 플레이어 기록에 bit0 또는 bit15가 있으면 그 게임에서 해당 퀘스트가 꺼진다(MOO `Quests.cpp` `QUESTS_SequenceCycler`).
-  - 자세한 내용은 `handoff.md` 참고.
+  - 자세한 내용은 `D2BS_Structure.md` "확인된 사실"의 퀘스트 크레딧·방장 규칙.
 
 ## 목차
 

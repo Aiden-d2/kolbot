@@ -1,6 +1,6 @@
 # 로그 분석 지침 (Claude 작성 261020)
 
-다른 대화에서 사용자가 올린 로그를 분석할 때 따르는 지침이다. 먼저 `CLAUDE.md`(작업 규칙, 로그 규칙)와 `handoff.md`를 읽는다. 분석 결과는 `docs/log_results.md`에 묶음마다 쌓는다. 이전 분석의 방법과 결과는 `log_review_261006.md`에 있다.
+다른 대화에서 사용자가 올린 로그를 분석할 때 따르는 지침이다. 먼저 `CLAUDE.md`(작업 규칙, 로그 규칙)와 `handoff.md`를 읽는다. 분석 결과는 `docs/log_results.md`에 묶음마다 쌓는다.
 
 ---
 
@@ -10,8 +10,8 @@
 - 확실한 것만 말한다. 추정은 추정이라고 밝히고, 근거(로그 줄, 시각, 프로필, 게임 이름, 코드 줄)를 붙인다.
 - 새 변수·함수·인자·로그를 만드는 제안은 그 항목을 밝혀 승인을 받는다. 결정 목록에는 사용자가 정한 것만 올리고 Claude 제안은 "제안"으로 따로 적는다.
 - 사용자가 다루지 않은 항목을 정리 목록에 끼워 넣지 않는다. 질문 범위 안에서 답한다.
-- 판정표는 "다음 할 일" 기준으로 나눈다: 결과 나옴(통과·실패) / 상황 없음 / 원인 못 찾음(추적 계속·중단) (`log_review_261006.md` 8절의 실수).
-- 노트(`docs/claude/*.md`)는 대화 중에 쓰지 않고 커밋 요청 때 몰아서 기록한다.
+- 판정표는 "다음 할 일" 기준으로 나눈다: 결과 나옴(통과·실패) / 상황 없음 / 원인 못 찾음(추적 계속·중단).
+- 노트 커밋 시점은 CLAUDE.md 1절을 따른다(확정 사항이 생기면 커밋, 확정되지 않은 것은 쓰지 않음).
 
 ## 2. 받을 데이터와 준비
 | 파일 | 위치(게임 PC) | 용도 |
@@ -22,7 +22,7 @@
 | ItemLog | `kolbot/_cache/ItemLog.txt` | 줍기·구매·판매 |
 
 - 이전에는 사용자가 `log` 브랜치 `logs/`에 올렸다. 위치를 사용자에게 확인한다.
-- **어느 코드로 돌았는지 먼저 확인한다.** 사용자에게 main 커밋(또는 업로드 시각)을 묻고, 실행 중에 코드가 바뀌었는지도 묻는다(261006 분석 때 실행 중 바뀌었다, `log_review_261006.md` 1절). trace 형식으로도 시기를 가를 수 있다(3절).
+- **어느 코드로 돌았는지 먼저 확인한다.** 사용자에게 main 커밋(또는 업로드 시각)을 묻고, 실행 중에 코드가 바뀌었는지도 묻는다(261006 분석 때 실행 중 바뀌었다). trace 형식으로도 시기를 가를 수 있다(3절).
 - 분석은 Python으로 trace를 게임·구간·지역·프로필 단위로 묶어 센다(외부 데이터는 별도 폴더, `python3 -I`). 스크립트는 scratchpad에만 둔다.
 
 ## 3. trace 형식 (시기별)
@@ -34,7 +34,7 @@
 - 게임 경계: `=== [게임이름] ===`(261011 이후), 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다.
 - 구간 헤더: `=== [ANDY] ===` 등. 리더 콘솔에도 `=== ANDY ===`(구간 끝, 금색).
 - 줄 시계는 초 단위다. 초 미만 순서는 같은 파일 안의 줄 순서로 본다. 프로필 사이 비교는 PC 시계가 같다는 전제(같은 PC).
-- 위치 `(지역 x,y)`는 그 줄을 찍은 순간의 위치다. 이동을 **시작한** 줄의 좌표를 그 시각의 위치로 읽지 않는다(`log_review_261006.md` 8절 실수: 걷는 중을 멈춤으로 읽음).
+- 위치 `(지역 x,y)`는 그 줄을 찍은 순간의 위치다. 이동을 **시작한** 줄의 좌표를 그 시각의 위치로 읽지 않는다(걷는 중을 멈춤으로 읽은 적이 있다).
 
 ## 4. 관찰 로그와 목적, 판정 방법
 
@@ -55,7 +55,7 @@
   - 4번은 실제 킬보다 스캔 한 번만큼 이르다(스캔 간격은 직업마다 다름, 해머딘 1.5~2초 추정).
   - 보스전 중 죽었거나 타운치킨(`TownHP`, 가드 중에도 켜짐)으로 마을에 다녀온 프로필은 그동안 스캔이 없어 4번이 킬보다 이르다. 같은 게임에 `revive start`·`Town chicken`이 있는지 본다.
   - 늦게 들어온 팔로워는 2번 HP%가 이미 낮다. 값은 "그 프로필이 치킨 없이 버틴 시간"으로 읽는다.
-  - 치킨 off가 있어야 할 HP인데 3번이 없는 사례(못 켜진 사례)는 `log_review_261006.md` 6-2처럼 표로 정리하고, 같은 시각의 3절(합류) 줄로 원인을 찾는다.
+  - 치킨 off가 있어야 할 HP인데 3번이 없는 사례(못 켜진 사례)는 `log_results.md` 261006 보스가드의 못 켜진 13건처럼 표로 정리하고, 같은 시각의 3절(합류) 줄로 원인을 찾는다.
 - **261020 이전 형식(이번 로그에 섞여 있을 수 있음):**
   - `bossGuard chicken off: pct N, 이름 HP%` — 261010~261019에는 뒤에 `@<큰 수>s`가 붙는데 계산 오류(절대 틱 − 상대 ms)라 무시한다.
   - `bossGuard seen: 이름 첫HP%@t0-끝HP%@t1, ... (end@초)` — 시각은 **가드 온 기준**. 가드 온 시각 = 이 줄 시각 − end. 치킨이 꺼져 있던 시간은 (가드 온 시각 + t1) − chicken off 줄 시각(초 단위 오차).
@@ -70,10 +70,10 @@
 - `visitTown start by:<스크립트> tick:` / `visitTown back tick:` — 누가(default.dbj / TownChicken) 언제 갔다 왔나.
 - `goToTown take TP failed start tick: made:` — TP 실패 기록(추적은 중단됨, 실패 기록용).
 - 콘솔 `You died in last game`(빨강) — 다음 게임 시작에 찍힘(사망한 게임은 그 앞 게임).
-- 판정: `log_review_261006.md` 5절과 같은 표(구간별 게임·치킨·게임당, 장소, 프로필), 치킨이 타운치킨 발동 몇 초 뒤인가, 지역 진입 몇 초 안인가(구간 헤더 기준. 261020 전 로그는 `usePortal ok`), near 몹 종류·거리.
+- 판정: `log_results.md` 261006 치킨과 같은 표(구간별 게임·치킨·게임당, 장소, 프로필), 치킨이 타운치킨 발동 몇 초 뒤인가, 지역 진입 몇 초 안인가(구간 헤더 기준. 261020 전 로그는 `usePortal ok`), near 몹 종류·거리.
 
 ### 4-3. 합류·동기화 (261006)
-목적: 누가 어느 단계에서 늦었나. 보스가드가 못 켜진 원인(`log_review_261006.md` 6-2의 2·3·4·13번: 코드상 설명 안 됨 / River of Flame 1분 기록 없음 / 원인 불명).
+목적: 누가 어느 단계에서 늦었나. 보스가드가 못 켜진 원인(`log_results.md` 261006 못 켜진 13건의 2·3·4·13번: 코드상 설명 안 됨 / River of Flame 1분 기록 없음 / 원인 불명).
 - (261020 삭제, 사용자 결정) `syncBO start/end`, `syncWP start/end`, `tpReady received`, `usePortal ok` — Claude가 261006에 합류 분석용으로 넣은 줄. 261020 전 로그에만 있다. syncBO는 노멀 조기 반환(`me.diff === 0`)에 end가 찍히지 않아 start만 있어도 멈춘 것이 아니었다.
 - `usePortal failed target: owner: unit: pre: tick: tries:<시도:gid sent/click/none/dead@ms> portals:<gid/classid/주인/지역/좌표/mode/거리>` — 내 포털일 때만.
 - `[Quit] Party desynced 1·2: missing(okCount|teamCount): 프로필, ... teamOk X`(261021~, 이름 수집) — 안 온 프로필. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지 본다. 261021 전은 `okCount N teamCount N teamOk X`(개수).
@@ -83,9 +83,9 @@
 
 ### 4-4. 이동·경로 (Pather)
 목적: **아케인 등 getPath 오류(사용자가 따로 보기로 한 핵심)**, 텔레포트·유닛·웨이 실패.
-- 빈 경로 처리(261020 최종, `handoff.md` 0-2): `moveTo no random path -> x,y in 지역 adjusting...`(random 오프셋 목표에 경로 없음 → 원좌표로) → `moveTo no path -> x,y in 지역 adjusting...` → `moveTo adjusted path -> x,y in 지역`(보정 칸으로 경로가 나왔을 때만) → `invalid path -> 내x,내y in 지역 random move...`(랜덤 걸음, 최대 10회, 10번째 실패면 `[Error] ... moveTo: Failed to generate path`). 앞 세 줄은 콘솔(기본색)에도 찍힌다(사용자 임시 확인용, 정상 종료 판정에서 조기 종료 줄로 착각하지 않는다).
-  - **이 형식은 main `72a1980`(261020 15:40) 이후다.** 그 전 코드(261007~261020 오전)는 보정 조건·랜덤 걸음 괄호가 달랐다(`handoff.md` 0-7 ⑤). 로그가 언제 코드인지 먼저 본다.
-  - 아케인 사례 판정: 같은 좌표로 `moveTo no path`가 반복되는가, `adjusted`가 있는가, `invalid path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 4절 9번)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
+- 빈 경로 처리(261020 최종): `moveTo no random path -> x,y in 지역 adjusting...`(random 오프셋 목표에 경로 없음 → 원좌표로) → `moveTo no path -> x,y in 지역 adjusting...` → `moveTo adjusted path -> x,y in 지역`(보정 칸으로 경로가 나왔을 때만) → `invalid path -> 내x,내y in 지역 random move...`(랜덤 걸음, 최대 10회, 10번째 실패면 `[Error] ... moveTo: Failed to generate path`). 앞 세 줄은 콘솔(기본색)에도 찍힌다(사용자 임시 확인용, 정상 종료 판정에서 조기 종료 줄로 착각하지 않는다).
+  - **이 형식은 main `72a1980`(261020 15:40) 이후다.** 그 전 코드(261007~261020 오전)는 보정 조건·랜덤 걸음 괄호가 달랐다(`47816e6`에서 사용자가 고친 결함). 로그가 언제 코드인지 먼저 본다.
+  - 아케인 사례 판정: 같은 좌표로 `moveTo no path`가 반복되는가, `adjusted`가 있는가, `invalid path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 1-7)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
 - (261020 삭제) `moveTo entered town` — 5건 정상.
 - throw 전파: 랜덤 걸음 10번째의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
@@ -118,42 +118,34 @@
 
 ### 4-7. 게임 밖 (회색 콘솔 + trace `(OOG loc N)`)
 - `Team wait: a3, a5 - wait`(리더, 팔로워가 5초 넘게 안 들어올 때), `Rest: N games - wait Nm`
-- `Create account failed: 계정 "문구"` — 팝업 문구가 읽히는가(`handoff.md` 3절 16, `(no text)`면 좌표가 틀림, 261006은 모두 `(timeout)`)
-- `Create character timeout: 이름 - retry`(loc N, 3절 17), `Create character:`, `Character name taken`
+- `Create account failed: 계정 "문구"` — 팝업 문구가 읽히는가(`(no text)`면 좌표가 틀림, 261006은 모두 `(timeout)`)
+- `Create character timeout: 이름 - retry`(loc N), `Create character:`, `Character name taken`
 - 로그인 오류, `Realm down`, `CDKey in use/flagged`, `Crash: 스크립트 지역 - wait`, `Join game failed`, `Create game failed`, `Game not found`, `Unhandled location`
 
 ### 4-8. 기본 기록 (관찰용 아님, 게임 흐름 파악에 씀)
 게임 경계, 구간 헤더, `[Quit] 사유: 상세`, `[Error] 구간: 메시지 (파일 #줄)`, `Script ended`(조기 종료가 없을 때만), `boss not found: id`, `AttackSkill[N] not learned`, `!!! POTION/SCROLL/BOOK !!!`, `[Quit] High ping / Mana·Iron Golem·Merc Chicken`, `undefined item`, `[DBG] drop`, `Couldn't give the potion to merc`.
 - 정상 종료 판정(CLAUDE.md): 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상. 단 4-4의 `moveTo ... path` 콘솔 줄(검정)은 조기 종료 줄이 아니다.
-- 이유 없이 끝난 게임은 `log_review_261006.md` 7절처럼 분류한다(크래시, 마지막 게임, 30분 시간 초과, 매니저 일시정지, 원인 불명).
+- 이유 없이 끝난 게임은 `log_results.md` 261006 "이유 없이 끝난 게임"처럼 분류한다(크래시, 마지막 게임, 30분 시간 초과, 매니저 일시정지, 원인 불명).
 
-## 5. 이번 로그로 볼 확인 항목 (`handoff.md` 3절 중 로그로 판단 가능한 것)
-| # | 항목 | 로그 |
+## 5. 이번 로그로 볼 확인 항목
+확인 항목과 판정 방법은 `handoff.md` 2·3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
+| handoff | 항목 | 로그 |
 |---|---|---|
-| 16 | 계정 생성 팝업 문구 | 4-7 |
-| 17 | 캐릭터 생성 대기 창 loc | 4-7 |
-| 24 | 흩어지기(이제 random 이동) 빈 경로 | 4-4 `moveTo no random path` |
-| 27 | 웨이 없는 곳 `getWP` 복구, travel 실패 | 4-4 `[getWP]`, 콘솔 `Travel failed` |
-| 31 | 매고트 굴 SafeTele 실패 | 4-4 `[SafeTele]` 지역 62~64 |
-| 35 | 리더 팀 대기 | 4-7 `Team wait` |
-| 37~41 | 보스가드·시체 회수·에인션트·라다먼트 북·okCount | 4-1, 4-5, 4-3 |
-| 42 | 25레벨 미만 ID 스크롤 골드 부족 판매 | 4-6 |
-| 261021 | okCount 이름 수집: desync 때 안 온 프로필과 그 시각에 하던 일(0-12 판별 불가 5건의 B/C 가르기) | 4-3 `missing(...)` |
-| 261021 | 중계 동작: `Town chicken` 뒤 `relay N msgs`, 그 게임 desync 여부 | 4-3 `relay` |
-| 261021 | 13번 H1: 26 → 27 출구 점이 게이트 옆 벽인가 | 4-4 `[exit] 26 -> 27` |
-| 261021 | SafeTele 거르기로 빠진 몹 수 | 4-4 `[SafeTele] monsters` |
-| 261021 | clearToExit 대체: 퇴장 `moveToExit failed`, 언더패스·Jail 보정 경로 | 4-4 |
-| 261021 | Jail 2층 경로 없음: 어느 출구 유닛을 잡았나 | 4-4 `[useUnit] timeout ... id: target: unit:` |
-| 261021 | chores 멈춤: 어느 단계(clearInventory / buyPotions), 구매 실패 반복인가 | 4-6 `chores slow`, `buy failed` |
-| 261021 | MoveToSlot 실패와 파티 수락 시각이 겹치나 | 4-6 `party accept` |
-| 261021 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
-| 261021 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
-| 261021 | 마을행 직접 호출 | 4-2 `Town check (direct)` |
-
-로그로 판단할 수 없는 항목(직접 보기): 3절 1(버벅임), 6(상자), 10·12·20~22·28~30(회피·시전), 25(케인 대기), 32·33·36(보스 주변 정리 순서).
+| 2-1 | okCount 이름 수집: desync 때 안 온 프로필과 그 시각에 하던 일(`log_results.md` 판별 불가 5건의 B/C 가르기) | 4-3 `missing(...)` |
+| 2-2 | 중계 동작: `Town chicken` 뒤 `relay N msgs`, 그 게임 desync 여부 | 4-3 `relay` |
+| 2-3 | clearToExit 대체: 퇴장 `moveToExit failed`, 언더패스·Jail 보정 경로 | 4-4 |
+| 2-4 | SafeTele 거르기로 빠진 몹 수 | 4-4 `[SafeTele] monsters` |
+| 2-5 | 마을행 직접 호출 | 4-2 `Town check (direct)` |
+| 2-6 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
+| 2-8 | H1: 26 → 27 출구 점이 게이트 옆 벽인가 / chores 멈춤: 어느 단계(clearInventory / buyPotions), 구매 실패 반복인가 | 4-4 `[exit] 26 -> 27` / 4-6 `chores slow`, `buy failed` |
+| 2-9 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-9) | 4-6 `party accept` |
+| 2-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
+| 1-1 | Jail 2층 경로 없음: 어느 출구 유닛을 잡았나 | 4-4 `[useUnit] timeout ... id: target: unit:` |
+| 3-1 | 보스가드·시체 회수 | 4-1 |
+| 3-2 | 골드 나눔 | 4-6 |
 
 ## 6. 보고 형식
 1. 데이터 요약: 프로필·게임 수·기간·난이도 구간·코드 버전(시기), 실행 중 코드 변경 여부.
 2. 그룹별(4-1~4-7) 결과: 결과 나옴 / 상황 없음 / 원인 못 찾음으로 나눈 표. 숫자에는 근거 줄(프로필·게임·시각) 예시를 붙인다.
 3. 사용자 결정이 필요한 것: 사실과 선택지만. 수정 제안은 "제안"으로 표시하고 규모(파일 수, 새 변수·키·로그)를 밝힌다.
-4. 로그 정리 후보: 목적을 다한 로그(삭제), 실패 때만 남길 로그, 새로 필요한 로그(승인 필요). `log_review_261006.md` 3절 기준.
+4. 로그 정리 후보: 목적을 다한 로그(삭제), 실패 때만 남길 로그, 새로 필요한 로그(승인 필요). 분류: 결과가 나왔으면 삭제하거나 실패 때만 남김 / 미확인이면 로그 추가·수정 / 원인을 못 찾으면 추적 계속 또는 중단 / 실패 기록용은 유지(사용자 지시 261006).
