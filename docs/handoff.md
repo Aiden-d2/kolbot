@@ -126,6 +126,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 가설: 장착 칸 클릭은 인벤토리 창이 닫혀 있으면 소켓을 넣지 않는다(추정).
   - 수정(261021, 사용자 결정): 대상이 있으면 `me.cancel()` 대신 `Town.openStash()`(인벤토리 창도 열림, 못 열면 trace `socketGems failed: stash not opened`), 끝에 `me.cancel()`. 실패 trace에 `(cursor)`(클릭 뒤 커서에 보석이 남음, 원인 가린 뒤 삭제). 드롭했으면 창을 닫고 다시 주운 뒤 이번 방문은 끝.
   - 판정: ItemLog `Socketed`가 나오면 가설 맞음. `(cursor)` 실패가 계속되면 다음은 장착 중 패킷 0x28, 그다음 SoloPlay 방식(장착 해제 → 아이템 좌표 클릭 → 다시 장착).
+  - 2차 결과(261021, 사용자 로그): 보관함을 연 채 장착 칸 클릭도 `(cursor)` 실패(1건) → 창 가설은 틀림. 클릭 대신 `sendPacket(1, 0x28, 4, 보석 gid, 4, 장비 gid)`(보관함 연 상태)로 바꾼 시험판은 4개 프로필 5건 모두 ItemLog `Socketed`(툴팁에 보석 옵션 즉시 반영, 한 방문 두 칸 연속 가능, 마법 Targe Tier 13 -> 15, 노멀은 1 고정). 이 변경은 아직 커밋 전(사용자 시험 중).
+  - 다음 확인(사용자 시험 중): 보관함을 열지 않고(`me.cancel()`만) 0x28이 되는가. D2MOO 0x28 처리는 상호작용 대상(보관함 등)이 있을 때만 넣는다(`PlrMsg.cpp:2543-2556`, 1.10f 재구성이라 추정)라 안 될 수 있음. SoloPlay도 보관함을 연 뒤 0x28. 결과와 더 모은 로그를 보고 커밋·`(cursor)` 유지 여부·3-15 정리를 정한다.
 - 나중(사용자 결정): 빌드별 보석 종류 Config(itemType 또는 classid로 등급 지정 가능), 무기 룬 확장, 용병.
 - 참고(Claude 조사): kolbot-SoloPlay `SoloWants.js`·`ItemUtils.js`가 비슷한 설계(퍼펙트만 기다림, 장착 해제 뒤 패킷 0x28). D2MOO 서버는 장착 중 아이템 소켓을 허용(`Rcv0x28_SocketItem`), 보석 스탯은 장비 스탯에 합쳐짐(`STATLIST_MergeStatLists`, 클라이언트는 미확인).
 - 확인:
