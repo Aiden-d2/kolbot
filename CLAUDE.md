@@ -66,11 +66,14 @@
 
 **노트 목록.** 새 대화는 `handoff.md`를 먼저 읽고, 작업할 코드의 노트와 관련 정보 파일을 읽는다. 로그 분석은 `log_guide.md`부터 읽는다.
 
-정리 중(261021): 아래 노트는 아직 `docs/claude/`에 있고, 위 구조로 단계별로 옮긴다(CLAUDE.md → handoff → Attack → Pather → AutoSmurf → 나머지).
+정리 중(261021): `docs/claude/`에 남은 노트는 위 구조로 단계별로 옮긴다(CLAUDE.md → handoff → Attack → Pather → AutoSmurf → 나머지). CLAUDE.md·handoff 단계는 끝났다.
 
 | 파일 | 내용 |
 |---|---|
-| `docs/claude/handoff.md` | 인수인계: 현재 상태, 게임 확인 대기, 미결 |
+| `docs/handoff.md` | 미결만: 결정 대기, 반영됨·검증 대기 |
+| `docs/code/*.md` | 코드 파일별 노트 (확정된 것만) |
+| `docs/rejected.md` | 기각 노트 |
+| `docs/log_results.md` | 로그 분석 결과 (묶음마다 쌓음) |
 | `docs/claude/attack_status.md` | Attack 현황과 결함 (리팩터링 이전 main 기준) |
 | `docs/claude/attack_design.md` | Attack 설계 명세, 결정·기각 |
 | `docs/claude/attack_compare.md` | Attack 이전/현재 동작 대조표 (모의 실행) |

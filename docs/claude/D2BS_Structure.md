@@ -1,6 +1,6 @@
 # D2BS / Kolbot 구조 참조 문서
 
-> **261020:** 이 노트는 261006 이전 기준이다. 사용자 수정(261006~261020)으로 바뀐 값·흐름은 `handoff.md` 0절을 따른다(회피·SafeTele·텔레 간격).
+> **261020:** 이 노트는 261006 이전 기준이다. 사용자 수정(261006~261020)으로 바뀐 값·흐름은 지금 코드를 따른다(261021 handoff 정리로 0절 기록 삭제)(회피·SafeTele·텔레 간격).
 
 작성일 2026-09-29 · 기준 main `23f0d0c` · D2 Legacy 1.14d / 8캐릭 멀티프로필
 
@@ -1152,3 +1152,29 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | ToolsThread Numpad `1` | 임시 상태 출력 |
 | `MapThread` / `MapHelper` / `D2BotMap.dbj` | 맵 확인 전용. 일반 운영 경로에서는 로드되지 않음 |
 | 빌드 템플릿의 include | `Misc.js` 1개뿐. 템플릿이 참조하는 것은 `Config.*`, `Team.Leader`, `Equip.updateTiers` / `Grant.updateTiers`이고 `Cubing` `Runewords` `Prototypes`는 include 시점에 이미 `AutoBuild.js` 경로로 로드돼 있다 |
+
+## 확인된 사실 (엔진·게임 동작, handoff에서 옮김 261021)
+- **퀘스트 크레딧·방장 규칙(261004, D2MOO 1.10f 소스 + 사용자 제공 1.14d 퀘스트 플래그 표):** 보스 킬 크레딧은 보스 지역에 있는 플레이어(죽은 시체 포함)와 같은 막의 파티원에게 들어간다(마을 포함, 사용자 확인). 게임 시작 처리는 방을 만든 첫 플레이어에게만 돈다(`Quests.cpp:1083-1131`). 방장 기록에 그 퀘스트의 bit0(완료) 또는 bit15(로드 때 bit1이 있으면 켜짐, `D2QuestRecord.cpp:76-79`)가 있으면 그 게임에서 퀘스트가 꺼져(`bNotIntro = 0`) 누구도 크레딧·퀘스트 드롭을 못 받는다. 그래서 리더가 먼저 끝낸 보스는 못 잡은 팔로워가 따라잡지 못한다. 킬 때 켜지는 bit: 앤디·써모너·라다먼트·이주얼·쉥크 bit1, 메피스토·디아블로·에인션트·바알 bit0, 듀리엘 bit5만(bit0은 메쉬프 대화).
+- **레드포탈(261004, `ObjMode.cpp:3089-3110`):** 조작한 본인의 22번 bit0 또는 **bit13**(`QFLAG_PRIMARYGOALDONE`, `ObjMode.cpp:3104`)이 있어야 4막으로 간다(261004 정정: 앞서 bit12로 적었음). 포탈이 열려 보이는 것은 방장 22,0 때문(`A3Q6.cpp:683-692`). `mephisto(true)`의 `getQuest(22,0) || getQuest(22,12)`(`AutoSmurf.js`)는 게임 조건(22,0 또는 22,13)과 다르다. bit12는 클라이언트가 퀘스트 로그를 닫았다고 보고할 때 켜진다. `handoff.md` 1-8.
+- **퀘스트 플래그 표(261004):** `docs/claude/quest_flags.md`. 0~41번의 bit별 동작(1.14d 주소)을 D2MOO와 클래식 저장 파일 문서로 검증했다. 41번은 Akara 리스펙이고, 1.14a~d에는 퀘스트 변경이 없다.
+- **에인션트 TP(261004, `A5Q5.cpp`):** 정상(120)에서 TP가 열리면 고대인이 비활성·리셋(`OnPortalOpened`, 처치 뒤에는 무시). 제단을 누르면 정상의 TP를 모두 닫는다(`OperateFunction65_AncientsAltar`). 크레딧은 정상에 있고 레벨 20×(난이도+1) 이상인 플레이어(생사 무관)와 5막의 파티원.
+- **라다먼트 북(261004, `A2Q1.cpp`, `ItemMode.cpp`):** 킬 때 bit1·bit5(책 보상 대기) 설정. 북 사용 시 bit5 해제 + 스킬 포인트 1, bit5가 없으면 북을 쓸 수 없다. 북은 킬한 게임에서 "bit5 있고 북 없는 플레이어" 수만큼 떨어진다(퀘스트가 켜진 게임만). 게임 시작 처리에서 bit0(아트마 보상 대화)·bit5·북 없음이면 9번을 초기화하지만 그 게임은 퀘스트가 꺼진 채다. AutoSmurf는 원래 아트마와 대화하지 않는다.
+- **`me.revive()`(261004):** D2BS 내장(kolton 원본 `d2bs/HISTORY.txt:9`, 살아 있을 때 쓰면 밴 위험). kolton `Follower.js`, blizzhackers `Rushee.js`·`Wakka.js`가 mode 17(죽음)일 때만 부른다.
+- **okCount 연속 호출(261004):** 초기화는 각자 teamCount를 빠져나올 때 한다. 먼저 끝난 사람의 다음 okCount 메시지가 늦은 사람의 초기화에 지워질 수 있지만, 먼저 초기화한 사람은 전원 메시지를 받으므로 teamOk로 풀린다. 전제: 보낸 순서대로 도착(추정), 모든 프로필이 같은 횟수로 호출. 비교가 `===`라 호출 횟수가 어긋나면 120초 타임아웃.
+- **D2BS `me.mp`:** 실제 마나를 내림한 정수다(`JSUnit.cpp:262`, stat 8 `>> 8`).
+- **D2BS `include`:** 이미 include한 파일은 다시 실행하지 않는다(`Script.cpp:308`).
+- **D2BS 이벤트(261003, noah-/d2bs 소스):** 리스너가 등록돼 있으면(`IsListenerRegistered`, `Events.cpp:250`) 게임 스레드가 이벤트마다 `FireEvent`로 큐에 넣고 `TriggerOperationCallback()`을 부른다(`Script.cpp:419-427`). 스크립트는 delay 안(`JSCore.cpp:145-151`)뿐 아니라 JS 실행 중 검사 지점의 `operationCallback`(`ScriptEngine.cpp:316-322`)에서도 큐를 비우며 리스너를 실행한다. 즉 리스너는 메인 스크립트가 무엇을 하던 중이든 그 스택 위에서 돈다. `operationCallback`에 재진입 방지가 없고, 스크립트 스택 한도는 `JS_SetNativeStackQuota(runtime, 50000)`(`Script.cpp:121`)이라 넘으면 too much recursion. `RegisterEvent`는 같은 함수의 중복 등록을 막지 않는다(`Script.cpp:352-358`). itemaction은 0x9C(내)·0x9D(다른 플레이어, `global`) 아이템 패킷과 상점 거래(mode 100+)에서 온다(`D2NetHandlers.cpp:72-76·132-168`), 리스너 인자 순서는 `(gid, mode, code, global)`(`ScriptEngine.cpp:468-471`). 상시 리스너(특히 itemaction·gamepacket)는 이벤트가 몰리는 곳에서 이 위험이 있다(`rejected.md` Pickit gid 줍기).
+- **이벤트 처리:** default.dbj의 `AutoBuild.levelUpHandler`만 레벨업 때 `applyConfigUpdates`를 한다. 다른 스레드는 `Config.js`의 별도 핸들러로 json만 다시 읽는다.
+- **소수점 마나 비용:** 빌드 공격 스킬의 절반 이상이 소수점이다(Fire Bolt는 모든 레벨 2.5). 계산식은 skills.txt의 mana·lvlmana·manashift·minmana다.
+- **`getPath`:** WalkPathReducer 노드 간격은 5칸 이하다. 그래서 `노드 수 × 5`는 실제 길이와 같거나 크다.
+- **D2BS `getPath`(261002, noah-/d2bs 소스):** kolbot은 `getPath(area, 목표x, 목표y, 내x, 내y, ...)`로 불러 엔진 안에서는 목표가 출발점이다(`JSGame.cpp` `my_getPath`). 출발·도착 칸이 막혔으면 `MutatePoint`가 ±2칸에서 주변까지 빈 칸으로 옮기고(`WalkPathReducer.h`), A*는 출발 칸 자체를 검사하지 않는다(그래서 물체 칸 목표도 경로가 나온다). 열린 칸이 바닥나면(목표 구역이 내 위치와 이어지지 않거나 레벨 맵 밖, `ActMap`은 맵 데이터 없는 칸을 Avoid로 봄) **빈 배열**을 돌려준다. kolbot `moveTo`의 `if (!path)`는 빈 배열을 거르지 못해, 반복문을 안 돌고 false로 끝난다(trace `path total nodes: 0`).
+- **D2BS 유닛 속성:** 읽을 때마다 ID로 유닛을 다시 찾고, 못 찾으면 `undefined`(`JSUnit.cpp` 186~194). `me.area`는 로딩 중 undefined. `me.gameReady`는 방 정보가 없거나 갱신 중이면 false(액트 전환 중 false는 근거 있음, 같은 액트 포털은 근거 없음).
+- **최소 게임 시간:** 게임 안 `Config.MinGameTime` 300초는 정상 종료(default.dbj)에서만 마을에서 대기. 로비 `StarterConfig.MinGameTime` 60초는 리더(D2BotLead)만, 60초보다 짧은 게임일 때. quit은 바로 나감.
+- **경험치 로그:** ToolsThread가 `quit` 메시지를 받을 때 찍음(정상·조기 종료 모두). 치킨도 나가기 전에 찍음(261001).
+- **리더:** a1(`Creating Game`은 리더만 남김). 260930 리더 치킨 8/59게임(팔로워 전원 동시 종료), 사용자: 무시.
+- **상점:** 같은 게임의 상점 목록은 공유. nip이 겹쳐 두 프로필이 같은 아이템을 노릴 수 있음(먼저 산 쪽만 구매).
+- **콘솔 색(D2Bot#):** 4 파랑, 5 초록, 6 노랑, 7 금색, 8 주황, 9 빨강, 10 회색, 생략 시 검정. print 색은 `ÿc0` 흰, `ÿc1` 빨강, `ÿc2` 초록, `ÿc3` 파랑, `ÿc4` 금색, `ÿc5` 회색, `ÿc6` 검정, `ÿc7` 황갈, `ÿc8` 주황, `ÿc9` 노랑, `ÿc:` 짙은 초록, `ÿc;` 보라.
+- **ProcDump:** `-e -h -n 10`. 한 크래시에 덤프가 여러 개 생기면(D2BS exit0 버그로 반복 예외) 첫 파일(접미사 없음)만 보면 된다. 261001 6건은 모두 첫 덤프에 원래 예외가 그대로 있었다(6번 유형 C도 첫 덤프에 0x6494DC가 바로 찍힘, 260930 유형 C 때처럼 0x576F08에서 꺼낼 필요 없었음). 크래시 프로세스의 procdump 로그는 약 7KB, 몇 초 뒤의 약 1.5KB 로그는 재시작된 새 프로세스다. `-e`는 처리되지 않은 예외만 덤프한다(잡힌 예외는 `-e 1`, 덤프가 많이 생길 수 있어 쓰지 않음).
+- **탈라샤 무덤 회피 토글(`AutoSmurf.js` 3693·3704, 사용자 260812):** 포탈로 파티가 모인 직후 회피가 붙은 몹 사이로 자리를 잡다 치킨이 나서, 오리피스 박스를 먼저 정리한 뒤 회피를 켠다. 박스 울타리로는 막히지 않음. 유지(261002). 되돌릴 때 무조건 `true`지만 `this.duriel`은 파티 전원 25레벨 이상에서만 실행되므로(리더는 `this.tombs` 끝에서 `partyLevel(tombsLvl 25)`까지 대기·미달이면 quit, 팔로워는 리더의 `duriel` 메시지로 진입) 빌드의 25레벨 회피 켜기와 어긋나지 않는다.
+- **미사일·몹 데이터(261002):** blizzhackers/d2data `missiles.json`·`monstats2.json`. Shock Wave 미사일 511: Vel 20, Range 14(프레임), Size 1, 관통(CollideKill 없음), NextHit 1·NextDelay 4. 몹 충돌 크기 2×2 366종, 3×3 197종.
+- **팔로워 크래시 때 전원 종료:** 크래시 난 프로필이 파티에서 빠지면 나머지 전원(리더 포함)이 `PartyThread`의 `retry > 2`(`threads/PartyThread.js:122-124`)로 약 2초 뒤 나간다. `party has left`는 print만이라 콘솔·trace에는 이유가 안 남는다(로그 규칙대로). 크래시 쪽은 매니저의 `Window has unexpectedly exited` 줄로 구분한다.
