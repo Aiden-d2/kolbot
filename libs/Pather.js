@@ -241,7 +241,7 @@ var Pather = {
 			return targetNode;
 		}
 		
-		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgx, orgy, valid, myx, myy, //261021
+		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgx, orgy, valid, myx, myy, monAll, monRange, //261021
 			node = {x: x, y: y},
 			fail = 0;
 
@@ -429,6 +429,16 @@ var Pather = {
 				}
 				
 				monList = Attack.buildMonsterList();
+				monAll = monList.length;	//261021 all monsters, for the check trace
+				monRange = Math.max(this.teleDistance, getDistance(me, node)) + Config.SafeTele.Range;	//261021 candidates are within teleDistance of me and count monsters within Range of themselves: farther ones never count
+				monList = monList.filter(function (mon) {
+					return getDistance(me, mon) <= monRange;
+				});
+
+				if (monList.length < monAll) {
+					Misc.trace("[SafeTele] monsters " + monAll + " near " + monList.length);	//261021 check: how many the filter cuts (remove once seen)
+				}
+
 				fireList = Attack.getFireList();	//260807
 				
 				checkedNode = safeCheckNode(node, monList, fireList, excludedNodes);	// 260829
@@ -895,6 +905,10 @@ ModeLoop:
 
 				if (currExit.target === areas[i]) {
 					dest = this.getNearestWalkable(currExit.x, currExit.y, 10, 2);	//260824
+
+					if (me.area === 26) {	//261021 H1 check (Monastery Gate): is the exit point on the wall next to the gate? remove once judged
+						Misc.trace("[exit] " + me.area + " -> " + areas[i] + " type:" + currExit.type + " exit:" + currExit.x + "," + currExit.y + " dest:" + (dest ? dest[0] + "," + dest[1] : "none"));
+					}
 					
 					if (!dest) {
 						return false;
@@ -1156,7 +1170,7 @@ ModeLoop:
 				delay(10);
 			}
 			
-			Misc.trace("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area);	//260622	//260930 print -> trace (diagnostic)
+			Misc.trace("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area + " id:" + id + " target:" + targetArea + " unit:" + unit.x + "," + unit.y);	//260622	//260930 print -> trace (diagnostic)	//261021 id, target, unit spot (which exit it took)
 			
 			coord = CollMap.getRandCoordinate(me.x, -1, 1, me.y, -1, 1, 3);
 			this.moveTo(coord.x, coord.y);
@@ -1699,7 +1713,7 @@ MainLoop:
 					}
 					
 					try {
-						this.moveToPreset(me.area, 2, wpIDs[i], 0, 0, clearPath, false);
+						this.moveToPreset(me.area, 2, wpIDs[i], 0, 0, clearPath, false, true);	//261021 random spot near the WP (the team does not stack on one tile)
 					} catch (e) {
 						Misc.caughtError("Pather.goWP", e);	//260930
 					}
@@ -1722,6 +1736,10 @@ MainLoop:
 		clearPath - clear path
 	*/
 	getWP: function (area, clearPath) {	//261002 goWP + click the waypoint, returns whether it is activated
+		if (area === undefined) {	//261021 no area: the current one (AutoSmurf.clickWP removed)
+			area = me.area;
+		}
+
 		var i, wp,
 			wpIndex = this.wpAreas.indexOf(area);
 
@@ -1741,7 +1759,7 @@ MainLoop:
 			}
 
 			if (getDistance(me, wp) > 5) {
-				this.moveToUnit(wp);
+				this.moveToUnit(wp, 0, 0, false, false, true);	//261021 random
 			}
 
 			Misc.click(0, 0, wp);

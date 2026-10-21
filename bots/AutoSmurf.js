@@ -882,7 +882,7 @@ function AutoSmurf() {
 
 		this.okCount();
 		
-		this.clickWP();
+		Pather.getWP();	//261021 was clickWP
 		
 		if (!oneway) {
 			Pather.useWaypoint(home);
@@ -1363,19 +1363,19 @@ function AutoSmurf() {
 							delay(5000);
 						}
 
-						this.clickWP();
+						Pather.getWP();	//261021 was clickWP
 
 						Pather.moveToExit([128, 120, 118], true);
 
-						this.clickWP();
+						Pather.getWP();	//261021 was clickWP
 
 						Pather.moveToExit(117, true);
 
-						this.clickWP();
+						Pather.getWP();	//261021 was clickWP
 
 						Pather.moveToExit(115, true);
 
-						this.clickWP();
+						Pather.getWP();	//261021 was clickWP
 
 						return true;
 					}
@@ -1422,7 +1422,7 @@ function AutoSmurf() {
 						Pather.moveToExit([77, 78], true);
 					}
 					
-					this.clickWP(78);
+					Pather.getWP(78);	//261021 was clickWP
 
 					break;
 				case 110: // Harrogath -> Bloody Foothills
@@ -1464,7 +1464,7 @@ function AutoSmurf() {
 				}
 
 				if (wpAreas.indexOf(areaIDs[nextAreaIndex]) > -1) { // Check if the next area (which we are now in) has a waypoint. If it does, grab it, go to town, wait for party, run chores, take waypoint, and wait for the party.
-					this.clickWP();
+					Pather.getWP();	//261021 was clickWP
 
 				}
 			}
@@ -1473,30 +1473,6 @@ function AutoSmurf() {
 		}
 		
 		return true;
-	};
-	
-	this.clearToExit = function (currentarea, targetarea) { // SiC-666 TODO: add moving to exit without clearing after XX minutes.
-		me.overhead("Start clearToExit");
-
-		me.overhead("Currently in " + Pather.getAreaName(me.area));
-		
-		delay(250);
-		
-		me.overhead("Clearing to " + Pather.getAreaName(targetarea));
-		
-		while (me.area === currentarea) {
-			try {
-				Pather.moveToExit(targetarea, true, true);
-			} catch (e) {
-				Misc.caughtError("AutoSmurf.clearToExit", e);	//260930
-			}
-
-			Packet.flash(me.gid);
-
-			delay(me.ping * 2 + 250);
-		}
-
-		me.overhead("End clearToExit");
 	};
 	
 	this.changeAct = function (act) {
@@ -1667,66 +1643,10 @@ function AutoSmurf() {
 		return true;
 	};
 	
-	this.clickWP = function (area) { // Move to nearest wp and click it.
-		var i, j, wp, presetUnit,
-		wpIDs = [119, 145, 156, 157, 237, 238, 288, 323, 324, 398, 402, 429, 494, 496, 511, 539];
-
-		if (area === undefined) {
-			area = me.area;
-		}
-		
-		if (area !== me.area) {
-			Pather.journeyTo(area);
-		}
-
-		for (i = 0 ; i < wpIDs.length ; i += 1) {
-			presetUnit = getPresetUnit(me.area, 2, wpIDs[i]);
-
-			if (presetUnit) {
-				me.overhead("Getting nearest WP...");
-
-				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 10) {
-					try {
-						Pather.moveToPreset(me.area, 2, wpIDs[i]);	//260929
-					} catch (e) {
-						Misc.caughtError("AutoSmurf.clickWP", e);	//260930
-					}
-
-					Packet.flash(me.gid);
-
-					delay(me.ping * 2 + 500);
-				}
-
-				wp = getUnit(2, "waypoint");
-
-				if (wp) {
-					for (j = 0 ; j < 10 ; j += 1) {
-						sendPacket(1, 0x13, 4, wp.type, 4, wp.gid);
-
-						delay(me.ping * 2 + 500);
-
-						if (getUIFlag(0x14)) {
-							delay(me.ping * 2 + 200);
-
-							me.cancel();
-
-							break;
-						}
-
-						Packet.flash(me.gid);
-
-						delay(me.ping * 2 + 500);
-
-						Pather.moveToUnit(presetUnit);	//260929
-					}
-				}
-			}
-		}
-	};
-
 //SUPPORTING
 	this.getQuestItem = function (classid, chestid) { // Accepts classid only or a classid/chestid combination.
-		var i, chest, item,
+		var i, chest, item, name,
+			vanished = 0,	//261021 times the unit was gone when checked (someone else picked it)
 			tick = getTickCount();
 
 		if (classid === 173 && me.findItem(174)) {
@@ -1762,6 +1682,21 @@ function AutoSmurf() {
 		while (!me.findItem(classid)) { // Try more than once in case someone beats me to it.
 			item = getUnit(4, classid);
 
+			if (item && item.sizex === undefined) {	//261021 the unit is gone (its properties read undefined): look again instead of "Not enough room"
+				vanished += 1;
+				Misc.trace("quest item vanished, retry " + vanished);	//261021 check: does this happen (remove once seen)
+
+				if (vanished > 3) {
+					Misc.trace(classid + " vanished");	//261021
+
+					return false;
+				}
+
+				delay(me.ping * 2 + 100);
+
+				continue;
+			}
+
 			if (item) {
 				if (Storage.Inventory.CanFit(item)) {
 					Pickit.pickItem(item);
@@ -1784,6 +1719,12 @@ function AutoSmurf() {
 				Misc.trace(classid + " not found");	//261012
 				return false;
 			}
+		}
+
+		if (classid >= 553 && classid <= 555) {	//261021 Khalim's eye, heart, brain: on the pick (leader)
+			name = ["EYE", "HEART", "BRAIN"][classid - 553];
+			print("ÿc8!!! [" + name + "] !!!");	Misc.trace("!!! [" + name + "] !!!");
+			D2Bot.printToConsole("!!! " + name + " !!!", 8);
 		}
 
 		return true;
@@ -2050,7 +1991,9 @@ function AutoSmurf() {
 					
 					this.okCount();	//260922
 					
-					this.clearToExit(2, 3);
+					if (me.area === 2 && Pather.moveToExit(3, true, true) !== true) {	//261021 was clearToExit(2, 3) (endless retry): one try, then quit
+						Misc.quitGame("moveToExit failed: " + Pather.getAreaName(2) + " -> " + Pather.getAreaName(3));
+					}
 					this.okCount();	//260922
 
 					Pather.goWP(me.area, true);
@@ -2058,7 +2001,7 @@ function AutoSmurf() {
 					
 					this.okCount();
 					
-					this.clickWP();
+					Pather.getWP();	//261021 was clickWP
 					
 					Pather.useWaypoint(1);
 				}
@@ -2071,7 +2014,9 @@ function AutoSmurf() {
 				
 				this.okCount();	//260922
 				
-				this.clearToExit(2, 8);
+				if (me.area === 2 && Pather.moveToExit(8, true, true) !== true) {	//261021 was clearToExit(2, 8) (endless retry): one try, then quit
+					Misc.quitGame("moveToExit failed: " + Pather.getAreaName(2) + " -> " + Pather.getAreaName(8));
+				}
 				this.okCount();	//260922
 				
 				for (i = 0; i < 2; i += 1) {
@@ -2091,10 +2036,14 @@ function AutoSmurf() {
 				while (!me.inTown) {
 					switch (me.area) {
 					case 8:
-						this.clearToExit(8, 2);
+						if (me.area === 8 && Pather.moveToExit(2, true, true) !== true) {	//261021 was clearToExit(8, 2) (endless retry): one try, then quit
+							Misc.quitGame("moveToExit failed: " + Pather.getAreaName(8) + " -> " + Pather.getAreaName(2));
+						}
 						break;
 					case 2:
-						this.clearToExit(2, 1);
+						if (me.area === 2 && Pather.moveToExit(1, true, true) !== true) {	//261021 was clearToExit(2, 1) (endless retry): one try, then quit
+							Misc.quitGame("moveToExit failed: " + Pather.getAreaName(2) + " -> " + Pather.getAreaName(1));
+						}
 						break;
 					}
 					
@@ -2197,7 +2146,9 @@ function AutoSmurf() {
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
-			this.clearToExit(3, 17);
+			if (me.area === 3 && Pather.moveToExit(17, true, true) !== true) {	//261021 was clearToExit(3, 17) (endless retry): one try, then quit
+				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(3) + " -> " + Pather.getAreaName(17));
+			}
 			
 			this.okCount();	//260922
 			Precast.doPrecast(true);
@@ -2212,7 +2163,9 @@ function AutoSmurf() {
 				Misc.caughtError("AutoSmurf.blood", e);	//260930
 			}
 			
-			this.clearToExit(17, 3);
+			if (me.area === 17 && Pather.moveToExit(3, true, true) !== true) {	//261021 was clearToExit(17, 3) (endless retry): one try, then quit
+				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(17) + " -> " + Pather.getAreaName(3));
+			}
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 		}
@@ -2227,7 +2180,9 @@ function AutoSmurf() {
 				Precast.doPrecast(true);
 			}
 
-			this.clearToExit(3, 4);
+			if (me.area === 3 && Pather.moveToExit(4, true, true) !== true) {	//261021 was clearToExit(3, 4) (endless retry): one try, then quit
+				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(3) + " -> " + Pather.getAreaName(4));
+			}
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 
@@ -2236,7 +2191,7 @@ function AutoSmurf() {
 
 			this.okCount();
 			
-			this.clickWP();
+			Pather.getWP();	//261021 was clickWP
 			
 			Pather.useWaypoint(1);
 			this.okCount();	//260922
@@ -2287,12 +2242,14 @@ function AutoSmurf() {
 				this.okCount();	//260922
 				Precast.doPrecast(true);
 
-				this.clearToExit(4, 10);
+				if (me.area === 4 && Pather.moveToExit(10, true, true) !== true) {	//261021 was clearToExit(4, 10) (endless retry): one try, then quit
+					Misc.quitGame("moveToExit failed: " + Pather.getAreaName(4) + " -> " + Pather.getAreaName(10));
+				}
 				this.okCount();	//260922
 				Precast.doPrecast(true);
 
-				while (me.area === 10) {
-					this.clearToExit(10, 5);
+				if (me.area === 10 && Pather.moveToExit(5, true, true) !== true) {	//261021 was clearToExit(10, 5) (endless retry): one try, then quit
+					Misc.quitGame("moveToExit failed: " + Pather.getAreaName(10) + " -> " + Pather.getAreaName(5));
 				}
 				
 				if (me.area === 5) {
@@ -2302,7 +2259,7 @@ function AutoSmurf() {
 						Pather.makePortal();
 					}
 				} else {
-					this.clickWP();
+					Pather.getWP();	//261021 was clickWP
 					Pather.useWaypoint(1);
 					Town.move("portalspot");
 					
@@ -2323,7 +2280,7 @@ function AutoSmurf() {
 
 				this.okCount();
 				
-				this.clickWP();
+				Pather.getWP();	//261021 was clickWP
 				
 				Pather.useWaypoint(1);
 				this.okCount();	//260922
@@ -2628,7 +2585,9 @@ function AutoSmurf() {
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
-			this.clearToExit(5, 6);
+			if (me.area === 5 && Pather.moveToExit(6, true, true) !== true) {	//261021 was clearToExit(5, 6) (endless retry): one try, then quit
+				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(5) + " -> " + Pather.getAreaName(6));
+			}
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 		
@@ -2637,7 +2596,7 @@ function AutoSmurf() {
 
 			this.okCount();
 			
-			this.clickWP();
+			Pather.getWP();	//261021 was clickWP
 		} else {
 			Pather.useWaypoint(6);
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
@@ -2646,12 +2605,18 @@ function AutoSmurf() {
 		
 		Precast.doPrecast(true);
 
-		this.clearToExit(6, 7);
+		if (me.area === 6 && Pather.moveToExit(7, true, true) !== true) {	//261021 was clearToExit(6, 7) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(6) + " -> " + Pather.getAreaName(7));
+		}
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
-		this.clearToExit(7, 26);
-		this.clearToExit(26, 27);
+		if (me.area === 7 && Pather.moveToExit(26, true, true) !== true) {	//261021 was clearToExit(7, 26) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(7) + " -> " + Pather.getAreaName(26));
+		}
+		if (me.area === 26 && Pather.moveToExit(27, true, true) !== true) {	//261021 was clearToExit(26, 27) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(26) + " -> " + Pather.getAreaName(27));
+		}
 		delay(250);
 		this.okCount();	//260922
 		Precast.doPrecast(true);
@@ -2661,7 +2626,7 @@ function AutoSmurf() {
 
 		this.okCount();
 		
-		this.clickWP();
+		Pather.getWP();	//261021 was clickWP
 		
 		if (Leader) {
 			D2Bot.printToConsole("=== OUTER ===", 7);
@@ -2691,7 +2656,9 @@ function AutoSmurf() {
 		
 		Precast.doPrecast(true);
 		
-		this.clearToExit(27, 28);
+		if (me.area === 27 && Pather.moveToExit(28, true, true) !== true) {	//261021 was clearToExit(27, 28) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(27) + " -> " + Pather.getAreaName(28));
+		}
 		
 		smith = getPresetUnit(28, 2, 108);
 		
@@ -2849,12 +2816,16 @@ function AutoSmurf() {
 			
 			Precast.doPrecast(true);
 			
-			this.clearToExit(27, 28);
+			if (me.area === 27 && Pather.moveToExit(28, true, true) !== true) {	//261021 was clearToExit(27, 28) (endless retry): one try, then quit
+				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(27) + " -> " + Pather.getAreaName(28));
+			}
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 		}
 		
-		this.clearToExit(28, 29);
+		if (me.area === 28 && Pather.moveToExit(29, true, true) !== true) {	//261021 was clearToExit(28, 29) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(28) + " -> " + Pather.getAreaName(29));
+		}
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 
@@ -2863,7 +2834,7 @@ function AutoSmurf() {
 
 		this.okCount();
 		
-		this.clickWP();
+		Pather.getWP();	//261021 was clickWP
 	
 		if (Leader) {
 			D2Bot.printToConsole("=== JAIL ===", 7);
@@ -2892,8 +2863,8 @@ function AutoSmurf() {
 		
 		Precast.doPrecast(true);
 
-		while (me.area === 29) {
-			this.clearToExit(29, 30);
+		if (me.area === 29 && Pather.moveToExit(30, true, true) !== true) {	//261021 was clearToExit(29, 30) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(29) + " -> " + Pather.getAreaName(30));
 		}
 		
 		if (me.area === 30) {
@@ -2923,8 +2894,8 @@ function AutoSmurf() {
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
-		while (me.area === 30) {
-			this.clearToExit(30, 31);
+		if (me.area === 30 && Pather.moveToExit(31, true, true) !== true) {	//261021 was clearToExit(30, 31) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(30) + " -> " + Pather.getAreaName(31));
 		}
 		
 		if (me.area === 31) {
@@ -2954,8 +2925,8 @@ function AutoSmurf() {
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
-		while (me.area === 31) {
-			this.clearToExit(31, 32);
+		if (me.area === 31 && Pather.moveToExit(32, true, true) !== true) {	//261021 was clearToExit(31, 32) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(31) + " -> " + Pather.getAreaName(32));
 		}
 		
 		if (me.area === 32) {
@@ -2989,7 +2960,7 @@ function AutoSmurf() {
 
 		this.okCount();
 		
-		this.clickWP();
+		Pather.getWP();	//261021 was clickWP
 		
 		if (Leader) {
 			D2Bot.printToConsole("=== INNER ===", 7);
@@ -3026,11 +2997,15 @@ function AutoSmurf() {
 		
 		Pather.moveTo(20007, 4898, 10, true);	//261004
 		
-		this.clearToExit(33, 34);
+		if (me.area === 33 && Pather.moveToExit(34, true, true) !== true) {	//261021 was clearToExit(33, 34) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(33) + " -> " + Pather.getAreaName(34));
+		}
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
-		this.clearToExit(34, 35);
+		if (me.area === 34 && Pather.moveToExit(35, true, true) !== true) {	//261021 was clearToExit(34, 35) (endless retry): one try, then quit
+			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(34) + " -> " + Pather.getAreaName(35));
+		}
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
@@ -3039,7 +3014,7 @@ function AutoSmurf() {
 
 		this.okCount();
 		
-		this.clickWP();
+		Pather.getWP();	//261021 was clickWP
 		
 		if (!this.partyLevel(teleLvl)) {
 			runAndy = 1;
@@ -3076,11 +3051,15 @@ function AutoSmurf() {
 		if ((!me.getQuest(6, 1) && !me.getQuest(6, 0)) || !this.partyLevel(teleLvl)) {
 			if (me.diff === 0) {
 				if (runAndy === 1) {
-					this.clearToExit(35, 36);
+					if (me.area === 35 && Pather.moveToExit(36, true, true) !== true) {	//261021 was clearToExit(35, 36) (endless retry): one try, then quit
+						Misc.quitGame("moveToExit failed: " + Pather.getAreaName(35) + " -> " + Pather.getAreaName(36));
+					}
 					this.okCount();	//260922
 					Precast.doPrecast(true);
 					
-					this.clearToExit(36, 37);
+					if (me.area === 36 && Pather.moveToExit(37, true, true) !== true) {	//261021 was clearToExit(36, 37) (endless retry): one try, then quit
+						Misc.quitGame("moveToExit failed: " + Pather.getAreaName(36) + " -> " + Pather.getAreaName(37));
+					}
 				} else {
 					if (Leader) {
 						Pather.useWaypoint(35);
@@ -3325,7 +3304,9 @@ function AutoSmurf() {
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 
-			this.clearToExit(58, 61); // Go to Claw Viper Temple Level 2
+			if (me.area === 58 && Pather.moveToExit(61, true, true) !== true) {	//261021 was clearToExit(58, 61) (endless retry): one try, then quit // Go to Claw Viper Temple Level 2
+				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(58) + " -> " + Pather.getAreaName(61));
+			}
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
@@ -3480,7 +3461,7 @@ function AutoSmurf() {
 
 		this.okCount();
 		
-		this.clickWP();
+		Pather.getWP();	//261021 was clickWP
 		
 		Pather.teleport = true;
 		
@@ -3550,7 +3531,7 @@ function AutoSmurf() {
 				}
 				
 				delay(250);
-				this.clickWP();
+				Pather.getWP();	//261021 was clickWP
 			}
 			
 			Pather.moveTo(me.x + myX, me.y + myY);	//260822
@@ -3733,6 +3714,8 @@ function AutoSmurf() {
 			sendPacket(1, 0x40); // fresh quest state
 			delay(me.ping * 2 + 500);
 			Misc.trace("radament atma: 9,0 " + me.getQuest(9, 0) + " 9,1 " + me.getQuest(9, 1) + " 9,5 " + me.getQuest(9, 5));
+			DataFile.updateStats("radamentOff", true);	//261021 the next game I make has quest 9 off (no book): skip Radament there
+			Misc.trace("radamentOff set");	//261021 check: set and read (remove once seen)
 			Misc.quitGame("Radament book reset");
 
 			while (true) {
@@ -3778,7 +3761,7 @@ function AutoSmurf() {
                         delay(me.ping * 2 + 200);
                     }
 					
-                    this.clickWP();
+                    Pather.getWP();	//261021 was clickWP
 				}
 				
 				Pather.moveToExit(49, true);
@@ -5682,7 +5665,7 @@ function AutoSmurf() {
 			me.cancel();	//260916	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			Pather.makePortal();
 			Pather.moveToExit([128, 129], true);
-			this.clickWP();
+			Pather.getWP();	//261021 was clickWP
 			Pather.useWaypoint(109);
 		} else {
 			delay(me.ping * 2 + 5000);
@@ -6958,7 +6941,7 @@ function AutoSmurf() {
 			Pather.usePortal(46);
 		}
 		
-		this.clickWP();
+		Pather.getWP();	//261021 was clickWP
 		Pather.useWaypoint(1);
 		
 		Pather.teleport = true;
@@ -7717,6 +7700,20 @@ function AutoSmurf() {
 			}
 
 			if ((!me.getQuest(9, 1) && !me.getQuest(9, 0)) || (me.getQuest(9, 5) && !me.findItem(552))) {	// Haven't finished Radament's Lair.	//261004 or the book was lost
+				if (DataFile.getStats().radamentOff) {	//261021 game after the book reset: quest 9 is off here, the book does not drop. Tombs, then leave at 10 min from the game start
+					DataFile.updateStats("radamentOff", false);
+					Misc.trace("radamentOff -> tombs");	//261021 check (remove once seen)
+					D2Bot.printToConsole("Radament off: tombs, quit at 10 min (" + Misc.where() + ")");	//261021 the reason line for the quit below (the engine leaves without one)
+					me.maxgametime = 10 * 60 * 1000;	// the engine leaves the game at this time from the start; default.dbj sets Config.MaxGameTime again next game
+
+					Messaging.sendToList(Team.Profiles, "tombs");
+					this.tombs();
+
+					while (true) {	// tombs ended before 10 min: wait for the engine to leave
+						delay(1000);
+					}
+				}
+
 				Messaging.sendToList(Team.Profiles, "radament");				
 				this.radament();
 			}

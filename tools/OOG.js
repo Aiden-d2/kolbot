@@ -35,6 +35,8 @@ var D2Bot = {
 				args: [JSON.stringify(printObj)]
 			};
 
+		print("[console] " + msg);	//261021 the console line in the d2bs log too
+
 		sendCopyData(null, this.handle, 0, JSON.stringify(obj));
 	},
 
