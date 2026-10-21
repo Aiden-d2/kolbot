@@ -140,14 +140,18 @@ var Town = {
 
 	// Socket inventory gems into equipped tiered items (targets and order from Pickit.socketTargets)	//261021
 	socketGems: function () {
-		var i, j, t, gems, gem, name, filled, before, after, tick, done, cursorItem, dropped,
+		var i, j, t, gems, gem, name, filled, before, after, tick, done, cursorItem, dropped, onCursor,
 			targets = Pickit.socketTargets();
 
 		if (!targets.length) {
 			return true;
 		}
 
-		me.cancel();
+		if (!this.openStash()) {	//261021 inventory panel open, as when socketing by hand (the body click didn't socket with the panels closed)
+			Misc.trace("socketGems failed: stash not opened");	//261021
+
+			return false;
+		}
 
 		for (i = 0; i < targets.length; i += 1) {
 			t = targets[i];
@@ -183,16 +187,20 @@ var Town = {
 
 				if (me.itemoncursor || t.item.getItems().length <= filled) {
 					dropped = false;
+					onCursor = me.itemoncursor;	//261021 gem still on the cursor after the click: remove once the cause is found
 					cursorItem = me.itemoncursor ? getUnit(100) : null;
 
 					if (cursorItem && !Storage.Inventory.MoveTo(cursorItem)) {	// back to the inventory only (no stash trip with the gem on the cursor)
 						dropped = Packet.dropItem(cursorItem);
 					}
 
-					Misc.trace("socketGems failed: " + name + " -> [" + Config.Gear[t.bodyLoc] + "] " + t.item.name + (dropped ? " (dropped)" : ""));
+					Misc.trace("socketGems failed: " + name + " -> [" + Config.Gear[t.bodyLoc] + "] " + t.item.name + (onCursor ? " (cursor)" : "") + (dropped ? " (dropped)" : ""));	//261021 (cursor)
 
 					if (dropped) {
+						me.cancel();	//261021 close the stash before picking up
 						Pickit.pickItems();	// dropped in town: pick it back up (picked as a socket gem again)
+
+						return false;	//261021 stop for this visit (stash closed)
 					}
 
 					break;
@@ -208,6 +216,8 @@ var Town = {
 				Equip.updateTier(t.bodyLoc, true);	// Config.TierNow is the cache for field pickup checks
 			}
 		}
+
+		me.cancel();	//261021
 
 		return true;
 	},

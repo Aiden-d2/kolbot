@@ -122,6 +122,10 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 줍기(`checkItem` 결과 5, Cubing 판정 앞): 바닥·인벤토리 보석만, 보석 레벨 제한 ≤ 캐릭 레벨. 인벤토리 보석(자기 제외, gid 순)을 대상 순서대로 미리 배정하고, 빈칸이 남은 대상이 이 보석을 받으면 5. nip 무관, 스태시로 가지 않음. 필요 없어지면 기존 판정(큐빙 2 / 0은 팔거나 버림).
   - 줍기 직후(`pickItem` case 5): overhead `(Ingredient)`, ItemLog `Ingredient {socket}`.
   - 장착(`Town.socketGems`, `doChores`의 `stash()` 뒤): `me.cancel()` 뒤 대상마다 인벤토리 보석(gid 순)을 들고 `clickItem(0, 칸)`. 스태시는 열지 않음. 성공 시 ItemLog `Socketed`(장비 옵션 전체 + `{보석 [칸] 찬/전체, Tier 전 -> 후}`), 하나라도 성공한 칸은 `Equip.updateTier(칸, true)`. 실패 시 커서 보석은 인벤토리로, 안 되면 `Packet.dropItem` 뒤 `Pickit.pickItems()`. trace `socketGems failed: <보석> -> [칸] <장비>`(드롭했으면 `(dropped)`).
+- 1차 게임 결과(261021, 사용자 로그): 줍기·대상 선정은 됨. 장착은 매번 `socketGems failed: Chipped Sapphire -> [ArmR] Spiked Club`(창을 닫은 채 장착 칸 클릭). 소켓은 비어 있었고 사용자가 인벤토리를 연 채 손으로 넣으니 들어감. `clickItem(0, 칸)`은 클라이언트의 장착 칸 클릭 함수를 그대로 부른다(D2BS `JSGame.cpp:431-439`). 인벤토리만 여는 호출은 D2BS·kolbot 계열에 없음.
+  - 가설: 장착 칸 클릭은 인벤토리 창이 닫혀 있으면 소켓을 넣지 않는다(추정).
+  - 수정(261021, 사용자 결정): 대상이 있으면 `me.cancel()` 대신 `Town.openStash()`(인벤토리 창도 열림, 못 열면 trace `socketGems failed: stash not opened`), 끝에 `me.cancel()`. 실패 trace에 `(cursor)`(클릭 뒤 커서에 보석이 남음, 원인 가린 뒤 삭제). 드롭했으면 창을 닫고 다시 주운 뒤 이번 방문은 끝.
+  - 판정: ItemLog `Socketed`가 나오면 가설 맞음. `(cursor)` 실패가 계속되면 다음은 장착 중 패킷 0x28, 그다음 SoloPlay 방식(장착 해제 → 아이템 좌표 클릭 → 다시 장착).
 - 나중(사용자 결정): 빌드별 보석 종류 Config(itemType 또는 classid로 등급 지정 가능), 무기 룬 확장, 용병.
 - 참고(Claude 조사): kolbot-SoloPlay `SoloWants.js`·`ItemUtils.js`가 비슷한 설계(퍼펙트만 기다림, 장착 해제 뒤 패킷 0x28). D2MOO 서버는 장착 중 아이템 소켓을 허용(`Rcv0x28_SocketItem`), 보석 스탯은 장비 스탯에 합쳐짐(`STATLIST_MergeStatLists`, 클라이언트는 미확인).
 - 확인:
