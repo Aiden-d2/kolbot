@@ -641,6 +641,11 @@ function AutoSmurf() {
 			return false;
 		}
 		
+		var syncTick = getTickCount(),	//261006 step times (s since the start) for who joined late
+			steps = [];
+
+		Misc.trace("syncBO start");	//261006
+		
 		if (Leader) {
 			if (!me.getState(32)) {
 				while (BOCount < Team.Size - 1) {
@@ -679,9 +684,11 @@ function AutoSmurf() {
 		BOing = false;
 		BOCount = 0;
 		BOReady = false;
+		steps.push("ready " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006 BOing/BOed and BOReady handshake done
 		
 		if (BOed) {
 			BOed = false;
+			Misc.trace("syncBO end: " + steps.join(", ") + " (BOed)");	//261006
 			return false;
 		}
 		
@@ -806,9 +813,11 @@ function AutoSmurf() {
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		}
 		
+		steps.push("at " + Pather.getAreaName(me.area) + " " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		this.okCount();
+		steps.push("okCount " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006
 
 		if (destination === 2) {
 			while (me.area !== home) {
@@ -820,6 +829,7 @@ function AutoSmurf() {
 		}
 		
 		delay(me.ping * 2 + 1000);
+		Misc.trace("syncBO end: " + steps.join(", ") + ", home " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006
 		
 		return true;
 	};
@@ -841,6 +851,10 @@ function AutoSmurf() {
 		print(msg);
 		me.overhead(msg);
 
+		var syncTick = getTickCount();	//261006
+
+		Misc.trace("syncWP start: " + msg);	//261006
+
 		if (Leader) {
 			Pather.useWaypoint(destination);
 			delay(me.ping * 2 + 200);
@@ -856,6 +870,8 @@ function AutoSmurf() {
 			}
 		}
 		
+		var portalSec = ((getTickCount() - syncTick) / 1000).toFixed(1);	//261006
+
 		this.okCount();
 		
 		this.clickWP();
@@ -867,6 +883,7 @@ function AutoSmurf() {
 		}
 		
 		delay(me.ping * 2 + 200);
+		Misc.trace("syncWP end: there " + portalSec + "s, end " + ((getTickCount() - syncTick) / 1000).toFixed(1) + "s");	//261006
 		
 		return true;
 	};
@@ -975,6 +992,8 @@ function AutoSmurf() {
 
 		Misc.fileAction("_cache/config." + me.profile + ".json", 1, JSON.stringify(buildconfig));
 		scriptBroadcast(JSON.stringify({lifeChicken: value}));
+		
+		print("Config.LifeChicken: " + value);
 
 		return true;
 	};
@@ -5642,6 +5661,7 @@ function AutoSmurf() {
 			me.cancel();
 			sendPacket(1, 0x40);	//261004 fresh quest state for the loop check: the dead sent theirs before the kill
 			delay(me.ping * 2 + 500);
+			Misc.trace("ancients loop: 39,0 " + me.getQuest(39, 0));	//261004
 		}
 
 		this.bossEnd();	//261004
@@ -7513,6 +7533,7 @@ function AutoSmurf() {
 				
 			case "tpReady":
 				tpReady = true;
+				Misc.trace("tpReady received");	//261006 with "usePortal ok" next: how long the portal took
 				me.overhead("tpReady");
 				break;
 			case "earlyReturn":

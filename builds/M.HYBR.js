@@ -34,10 +34,11 @@ var AutoBuildTemplate = {
 			{id: 32, target: 1},			// Valkyrie
 			{id: 31, target: 20},			// Freezing Arrow
 			{id: 11, target: 20},			// Cold Arrow
-			{id: 21, target: 20},			// Ice ArrowPierce
+			{id: 21, target: 20},			// Ice Arrow
 			{id: 18, target: 6},			// Avoid
 			{id: 13, target: 9},			// Dodge
 			{id: 29, target: 9},			// Evade
+			{id: 22, target: 1},			// Guided Arrow
 			{id: 33, target: 8},			// Pierce
 			{id: 22, target: 10},			// Guided Arrow
 		]

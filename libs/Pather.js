@@ -241,7 +241,7 @@ var Pather = {
 			return targetNode;
 		}
 		
-		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgx, orgy, valid, //261007
+		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgx, orgy, valid, myx, myy, //261021
 			node = {x: x, y: y},
 			fail = 0;
 
@@ -311,18 +311,23 @@ var Pather = {
 		}
 		
 		if (random && !path.length) {	//261007
-			Misc.trace("moveTo no random path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
-			D2Bot.printToConsole("moveTo no random path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
+			Misc.trace("no random path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " reverting...");
+			D2Bot.printToConsole("no random path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " reverting...");
 			
 			x = orgx;
 			y = orgy;
 			
 			path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
+		
+			if (path.length > 0) {
+				Misc.trace("original path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
+				D2Bot.printToConsole("original path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
+			}
 		}
 		
 		if (!path.length) {	//261007 adjusting empty path (target not reachable from here)
-			Misc.trace("moveTo no path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
-			D2Bot.printToConsole("moveTo no path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
+			Misc.trace("no original path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
+			D2Bot.printToConsole("no original path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
 			
 			valid = this.getNearestWalkable(x, y, 15, 2, 0x1);	//261012
 			
@@ -333,26 +338,33 @@ var Pather = {
 					x = valid[0];
 					y = valid[1];
 					
-					Misc.trace("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
-					D2Bot.printToConsole("moveTo adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
+					Misc.trace("adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
+					D2Bot.printToConsole("adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
 				}
 			}
 		}
 		
-		if (!path.length) {	//261020
+		if (!path.length) {	//261021
 			for (i = 0; i < 10; i += 1) {
-				Misc.trace("invalid path -> " + me.x + "," + me.y + " in " + Pather.getAreaName(me.area) + " random move...");
+				Misc.trace("no adjusted path -> " + me.x + "," + me.y + " in " + Pather.getAreaName(me.area) + " fixing...");
 				
-				if (this.walkTo(me.x + (rand(0, 1) ? 5 : -5), me.y + (rand(0, 1) ? 5 : -5))) {	//261020
+				myx = me.x;
+				myy = me.y;
+				
+				valid = this.getNearestWalkable(myx + (rand(0, 1) ? 5 * (rand(0, 1) ? 0 : 1) : -5 * (rand(0, 1) ? 0 : 1)), myy + (rand(0, 1) ? 5 * (rand(0, 1) ? 0 : 1) : -5 * (rand(0, 1) ? 0 : 1)), 5, 2, 0x1);	//261021
+				
+				if (valid && this.walkTo(valid[0], valid[1])) {	//261021
 					path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);
 				}
 				
 				if (path.length > 0) {
+					Misc.trace("fixed path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
+					D2Bot.printToConsole("fixed path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
 					break;
 				}
 				
 				if (i === 9) {
-					throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y);	//261018
+					throw new Error("moveTo: Failed to generate path: " + x + "," + y + " in " + Pather.getAreaName(me.area));	//261021
 				}
 				
 				delay(me.ping * 2 + 1000);
@@ -389,6 +401,7 @@ var Pather = {
 			if (useTeleport && me.inTown) {	//260930 a teleport path that runs into town (useTeleport is decided once at the start): town blocks teleport, walk the rest
 				useTeleport = false;
 				adjustedNode = getPath(me.area, x, y, me.x, me.y, 0, this.walkDistance);
+				Misc.trace("moveTo entered town, walk the rest -> " + x + "," + y + " path:" + (adjustedNode ? adjustedNode.length : "none"));	//260930
 
 				if (adjustedNode) {
 					path = adjustedNode.reverse();
@@ -1479,6 +1492,8 @@ ModeLoop:
 				// while an area loads (gameReady false, act change) keep waiting and never send again. me.area is undefined while loading
 				while (getTickCount() - tick < (redPortal ? 1500 : Math.max(1000, me.ping * 2 + 300)) || !me.gameReady) {
 					if (me.gameReady && me.area && me.area !== preArea) {
+						Misc.trace("usePortal ok: " + this.getAreaName(preArea) + " -> " + this.getAreaName(me.area) + " tries:" + (i + 1) + " ms:" + (getTickCount() - startTick));	//261006 entry time (who joined late)
+
 						delay(me.ping * 2 + 300);	//260830
 
 						return true;

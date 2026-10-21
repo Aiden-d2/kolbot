@@ -343,7 +343,10 @@ Loop:
 			return true;
 		}
 
+		var invOpen = "-";	//261006 inventory panel state at the place click (FAILED line)
+
 		if (target.toCursor()) {
+			invOpen = getUIFlag(0x01) ? "open" : "closed";	//261006
 			clickItem(0, col, row, this.location);
 
 			tick = getTickCount();
@@ -375,7 +378,7 @@ Loop:
 
 			var occupant = this.buffer[row][col] > 0 ? this.itemList[this.buffer[row][col] - 1] : null;
 
-			Misc.trace("[MoveToSlot] " + item.fname + " FAILED slot:" + (occupant ? occupant.fname : "empty") + " dropped:" + dropped + " item:" + (target ? "loc " + target.location + " mode " + target.mode + " at " + target.x + "," + target.y : "gone"));	//260922	//260930 temp detail	//260930 print -> trace (diagnostic)	//261020 inv: removed
+			Misc.trace("[MoveToSlot] " + item.fname + " FAILED slot:" + (occupant ? occupant.fname : "empty") + " dropped:" + dropped + " item:" + (target ? "loc " + target.location + " mode " + target.mode + " at " + target.x + "," + target.y : "gone") + " inv:" + invOpen);	//260922	//260930 temp detail	//260930 print -> trace (diagnostic)
 		}
 
 		return rv	//260827
