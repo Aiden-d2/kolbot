@@ -12,33 +12,33 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - Jail 2층(4건: 261006 17770,8131 / 10/14 17530,8071 / 10/19 17770,8011, 모두 목표 y 8000대): 사용자 가설(3층 대신 1층 쪽으로 돌아간 뒤 3층 출구로 경로 없음)과 맞는 자료이나 경로가 없는 이유는 미확인.
 - **관찰 로그 안(결정 없음):** `moveTo no path` 줄에 엔진 `getCollision(area, 목표)`·`getCollision(area, 내 위치)`(목표가 0xFFFF면 맵 미로드, 내 칸에 막힘·회피 비트면 출발 칸 문제). 그 뒤 사용자 업로드(`b1b5887`)로 빈 경로 처리 줄과 랜덤 걸음이 바뀌어, 이 안을 쓸지 다시 봐야 한다.
 
-### 1-2. 팀 싱크 확장
-- okCount(3-1)가 문제없으면 readyCount·buffCount·syncBO(답장 BOCount·BOReady 대신 도착 이름)·카우(`msgFollower`)를 `teamNames`로. 한 단계로 둬도 됨(같은 이름이 연달아 불리지 않음).
-- 확장 뒤 싱크 변수·플래그·메시지 이름 통일(`teamOk`/`teamReady`/`teamBuff`/`BOReady`, `imReady`/`myBuff`, `msgLeader`/`msgFollower`, 메시지 이름과 변수·함수 이름 겹침) (사용자 지시 261021).
-
-### 1-3. 소켓 (`Town.socketGems`)
-- 재료 제외는 `Runewords.getBase`, 실패 시 커서 보석만 인벤토리로, 보관함 연 상태에서 장착 칸 클릭.
-
-### 1-4. print/trace 중복 정리 (18(2))
-
-### 1-5. Monastery Gate 출구 (`AutoSmurf.js`, 사용자 아이디어)
+### 1-2. Monastery Gate 출구 (`AutoSmurf.js`, 사용자 아이디어)
 - "Outer Cloister까지 경로를 만들면 게이트를 반드시 지난다." H1 판별 trace(3-8) 결과를 보고 판단.
 
-### 1-6. 부활·소환형(샤먼) 우선 (보류)
+### 1-3. 부활·소환형(샤먼) 우선 (보류)
 - 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류함.
 
-### 1-7. while + catch 무한 루프 (보류, 기록만)
+### 1-4. while + catch 무한 루프 (보류, 기록만)
 - `AutoSmurf.js`의 `while (목표까지 거리 > N) { try { moveToPreset/moveTo/moveToExit } catch { print } }`는 탈출 조건이 없다. 경로 계산이 계속 실패하면 같은 자리에서 무한 반복(260930 기준 10곳: Arcane, moveToExit, WP, Cube 상자, 저널 2곳, 탈무덤 상자, 3557, Orifice, 빨간 포털). 써모너 리더 while은 1-1처럼 사용자가 고침.
 
-### 1-8. `getQuest` bit 점검 (발견만)
+### 1-5. `getQuest` bit 점검 (발견만)
 - `quest_flags.md` 끝의 "kolbot 코드 참조 점검": 14,1·26,1은 항상 거짓, 4,1은 보상 뒤 꺼짐, 22,12는 레드포탈 조건(22,0 또는 22,13)과 다름, 20,6 주석은 의미가 다름.
 
-### 1-9. MoveToSlot 실패 원인 (판별 불가)
+### 1-6. MoveToSlot 실패 원인 (판별 불가)
 - 실패 줄 유지, `inv:` 필드는 삭제(261020). 실패 34건 중 33건 `closed`·1건 `-`, 창을 여는 코드가 없어 성공도 `closed`일 것 → 원인 판별 불가.
 
 ## 2. 결정됨, 수정 대기 (진행하기로 결정했고 수정 작업 전)
 
-(없음)
+261021 사용자 결정, 머지 뒤 다음 대화로 미룸.
+
+### 2-1. 팀 싱크 확장 (3-1 검증 뒤)
+- okCount(3-1)가 검증되면 readyCount·buffCount·syncBO(답장 BOCount·BOReady 대신 도착 이름)·카우(`msgFollower`)를 `teamNames`로. 한 단계로 둬도 됨(같은 이름이 연달아 불리지 않음).
+- 확장 뒤 싱크 변수·플래그·메시지 이름 통일(`teamOk`/`teamReady`/`teamBuff`/`BOReady`, `imReady`/`myBuff`, `msgLeader`/`msgFollower`, 메시지 이름과 변수·함수 이름 겹침) (사용자 지시 261021).
+
+### 2-2. 소켓 (`Town.socketGems`)
+- 재료 제외는 `Runewords.getBase`, 실패 시 커서 보석만 인벤토리로, 보관함 연 상태에서 장착 칸 클릭.
+
+### 2-3. print/trace 중복 정리 (18(2))
 
 ## 3. 수정됨, 검증 대기 (수정 작업을 했고 게임에서 검증 전)
 
@@ -51,7 +51,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ### 3-2. 메시지 중계 (`ToolsThread`, `AutoSmurf.onCopyData`)
 - 바꾼 것: 엔진은 멈춘 스크립트의 copydata를 버린다(`Events.cpp:230`). ToolsThread가 default.dbj가 멈춰 있을 때 받은 copydata 55·56을 `relayMsgs`에 쌓았다가, 다시 돌면 `Messaging.sendToScript`로 순서대로 넘긴다(실패하면 남김). AutoSmurf 처리 본문은 `onCopyData`로 빼서 copydata·scriptmsg에서 부른다.
-- 감수: 재개 직후 수 ms 틈의 유실, 같은 틈의 중복(이름·플래그는 무해, 아직 개수인 readyCount·buffCount·BOCount는 넘칠 수 있음 → 1-2 확장 때 해소).
+- 감수: 재개 직후 수 ms 틈의 유실, 같은 틈의 중복(이름·플래그는 무해, 아직 개수인 readyCount·buffCount·BOCount는 넘칠 수 있음 → 2-1 확장 때 해소).
 - 확인: okCount 대기 중 마을행(TownChicken·Pause)이 있었던 게임에서 desync 타임아웃이 없는가.
 
 ### 3-3. `clearToExit` 삭제 (`AutoSmurf.js`)
@@ -76,7 +76,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ### 3-8. 판별 trace와 cancel 삭제
 - 바꾼 것: H1 판별 trace(26 Monastery Gate 출구), chores 멈춤 판별 trace, heal 뒤 `me.cancel()`(260908 사용자 추가) 삭제. cancel 15곳 중 나머지는 유지(`stash` 시작의 cancel은 원본에도 있음).
-- 확인: H1 trace 결과로 1-5 판단, chores 멈춤 재발 여부.
+- 확인: H1 trace 결과로 1-2 판단, chores 멈춤 재발 여부.
 
 ### 3-9. 콘솔·trace 추가
 - 바꾼 것: 눈·심장·뇌 `!!! X !!!`(getQuestItem 성공, 리더), `D2Bot.printToConsole`이 `print("[console] " + msg)`도 함, `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).

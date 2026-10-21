@@ -85,7 +85,7 @@
 목적: **아케인 등 getPath 오류(사용자가 따로 보기로 한 핵심)**, 텔레포트·유닛·웨이 실패.
 - 빈 경로 처리(261020 최종): `moveTo no random path -> x,y in 지역 adjusting...`(random 오프셋 목표에 경로 없음 → 원좌표로) → `moveTo no path -> x,y in 지역 adjusting...` → `moveTo adjusted path -> x,y in 지역`(보정 칸으로 경로가 나왔을 때만) → `invalid path -> 내x,내y in 지역 random move...`(랜덤 걸음, 최대 10회, 10번째 실패면 `[Error] ... moveTo: Failed to generate path`). 앞 세 줄은 콘솔(기본색)에도 찍힌다(사용자 임시 확인용, 정상 종료 판정에서 조기 종료 줄로 착각하지 않는다).
   - **이 형식은 main `72a1980`(261020 15:40) 이후다.** 그 전 코드(261007~261020 오전)는 보정 조건·랜덤 걸음 괄호가 달랐다(`47816e6`에서 사용자가 고친 결함). 로그가 언제 코드인지 먼저 본다.
-  - 아케인 사례 판정: 같은 좌표로 `moveTo no path`가 반복되는가, `adjusted`가 있는가, `invalid path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 1-7)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
+  - 아케인 사례 판정: 같은 좌표로 `moveTo no path`가 반복되는가, `adjusted`가 있는가, `invalid path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 1-4)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
 - (261020 삭제) `moveTo entered town` — 5건 정상.
 - throw 전파: 랜덤 걸음 10번째의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
@@ -138,7 +138,7 @@
 | 3-5 | 마을행 직접 호출 | 4-2 `Town check (direct)` |
 | 3-6 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
 | 3-8 | H1: 26 → 27 출구 점이 게이트 옆 벽인가 / chores 멈춤: 어느 단계(clearInventory / buyPotions), 구매 실패 반복인가 | 4-4 `[exit] 26 -> 27` / 4-6 `chores slow`, `buy failed` |
-| 3-9 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-9) | 4-6 `party accept` |
+| 3-9 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
 | 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
 | 1-1 | Jail 2층 경로 없음: 어느 출구 유닛을 잡았나 | 4-4 `[useUnit] timeout ... id: target: unit:` |
 | 3-11 | 보스가드·시체 회수 | 4-1 |
