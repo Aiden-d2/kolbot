@@ -7,9 +7,6 @@
 ### this.travel
 - **261021 엑트5 travel(9) 진입 조건 확장** — `Leader && !getWaypoint(37)`(118만 봄)에 115·117 웨이도 검사. 이유: 빠진 웨이는 쓰는 시점에 `getWP`가 찍어 오류가 나지 않는다.
 
-### this.getQuestItem
-- **261021 `canMakeRoom` 0·4** — 이유: 사용자 기각(0-13 검토).
-
 ### this.malus / this.shenk(Qual-Kehk) / this.anya(Malah)
 - **261021 재시도 실패 때 게임을 나가지 않고 그 구간만 건너뛰기** — Malus 30회, Qual-Kehk 5회, Malah 10회 실패 시 `quitGame` 대신 건너뜀. 이유: 사용자 기각. 260930에 leveling 구간(Andy·Tombs)의 quit → return도 하지 않기로 함(Tombs는 return하면 두리엘로 넘어감).
 

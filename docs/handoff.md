@@ -121,3 +121,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-13. 그 밖의 확인용 줄
 - `dropping radament book`(시작 단계 북 버리기 무한 루프 수정 확인용, 47816e6). 확인 뒤 삭제.
 - `Not enough room for <이름>`(이름 undefined) → 3-6과 함께 본다.
+
+### 3-14. `canMakeRoom` 0·4 (`Pickit.canMakeRoom`, 261021)
+- 바꾼 것: 0·4는 `Town.ignoredCheck`가 참이면 자리를 만들 수 있다고 본다(마을 clearInventory 인벤토리 정리와 같은 판정: 0은 팔거나 버림, 4는 팖). 예전에는 0은 건너뛰고 4는 스태시 빈자리(`canStash`)로 판정해, 비울 수 있는데도 `Not enough room`으로 포기했다. 5(소켓 보석, 2-2에서 신설 예정)는 건너뜀. 261021 사용자 기각이었으나 소켓 작업(2-2)에서 같은 판정이 걸려 다시 보고 반영(사용자 결정 261021).
+- 감수: clearInventory의 4 판매가 계속 실패하면 마을 왕복이 반복된다(기존 코드도 스태시에 자리가 있으면 같음).
+- 확인 로그(Claude 추가 261021, 사용자 승인): trace `make room: <이름> (result 0|4)`(마을로 가게 한 물건), `make room skip: <이름> (result 5)`(소켓 보석이 자리를 막음, 2-2 도입 뒤 관찰).
+- 확인: `make room` 뒤 같은 물건의 ItemLog `Sold`·`Dropped`가 있고 돌아와 줍는가 → 맞음. 같은 이름의 `make room`이 되풀이되면 왕복 반복 → 그 물건이 왜 안 치워졌는지 본다. `make room skip`은 보석 때문에 줍기를 포기한 빈도. 확인 뒤 두 줄 삭제.

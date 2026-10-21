@@ -211,12 +211,14 @@ var Pickit = {
 			return false;
 		}
 
-		var i,
+		var i, result,	//261021
 			items = Storage.Inventory.Compare(Config.Inventory);
 
 		if (items) {
 			for (i = 0; i < items.length; i += 1) {
-				switch (this.checkItem(items[i]).result) {
+				result = this.checkItem(items[i]).result;	//261021 kept for the make room trace
+
+				switch (result) {
 				case -1: // Item needs to be identified
 					// For low level chars that can't actually get id scrolls -> prevent an infinite loop
 					if (me.getStat(14) + me.getStat(15) < 100) {
@@ -224,7 +226,18 @@ var Pickit = {
 					}
 
 					return true;
-				case 0:
+				case 0:	//261021 same check as clearInventory (drop/sell)
+				case 4:	//261021 sold by clearInventory, stash space not needed
+					if (Town.ignoredCheck(items[i])) {
+						Misc.trace("make room: " + items[i].name + " (result " + result + ")");	//261021 check 0/4 town trips clear the item: remove once confirmed
+
+						return true;
+					}
+
+					break;
+				case 5:	//261021 socket gem: kept in inventory, can't make room
+					Misc.trace("make room skip: " + items[i].name + " (result 5)");	//261021 check gems block room: remove once confirmed
+
 					break;
 				default: // Check if a kept item can be stashed
 					if (Town.canStash(items[i])) {
