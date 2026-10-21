@@ -38,7 +38,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 2-2. 소켓 (`Town.socketGems`)
 - 재료 제외는 `Runewords.getBase`, 실패 시 커서 보석만 인벤토리로, 인벤토리 보석을 들고 장착 칸 클릭(보관함은 열지 않음, 261021 변경).
 - 사용자 결정(261021):
-  - 대상: 내가 장착한 아이템 중 소켓이 있고 1개 이상 비어 있는 것. 용병 제외(정상 작동 뒤 확장 고려).
+  - 대상: 내가 장착한 아이템 중 소켓이 있고 1개 이상 비어 있는 것, 그리고 티어가 있는 것(`NTIP.GetScore(장비, "Tier") > 0`, 우연히 낀 소켓 정크 제외). 용병 제외(정상 작동 뒤 확장 고려).
   - 룬워드 베이스 재료면 작업하지 않는다.
   - 시점: `doChores` 마지막.
   - 보석: 헬름류·아머는 루비, 방패류(네크 머리·팔라딘 방패 포함)는 다이아. 등급 상관없이 주운 순서대로. 캐릭터 레벨 제한 적용(줍기·장착 모두).
@@ -46,7 +46,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
     - 등급을 기다리지 않는 이유: 소켓 있는 아이템은 최종 티어가 아니라 결국 교체되니, 임시로 쓰는 동안 하급 보석이라도 바로 끼우는 게 유리하다(SoloPlay의 퍼펙트만 기다리는 방식 대신).
   - 줍기: nip에 없어도, 빈 소켓 수만큼만(가진 개수는 인벤토리만 센다). Pickit 결과 값 5(신설, `canMakeRoom`에는 `f0988e7`로 이미 반영). 주운 보석은 스태시로 보내지 않는다. 큐빙이 잡아 둔 보석도 써도 된다(큐빙 루비는 크래프트 재료가 아님). 필요 개수를 넘는 보석은 기존 판정(큐빙 등)을 탄다.
   - 장착: 장착한 채로 인벤토리 보석을 들고 해당 장착 칸 클릭(게임에서 가능, 사용자 확인). 스태시는 열지 않는다.
-  - 로그: 줍기는 ItemLog `Ingredient`(큐빙 재료와 같은 표현). 장착 성공·실패는 trace만(print 없음).
+  - 로그: 줍기는 ItemLog `Ingredient`(큐빙 재료와 같은 표현). 장착 성공은 ItemLog `Socketed`(장비 옵션 전체 + `{보석 [칸] 찬/전체, Tier 전 -> 후}`, `Misc.itemLogger` 옵션 목록에 `Socketed` 추가), 실패는 trace. print 없음. 툴팁 즉시 반영 여부는 ItemLog로 확인.
+  - 수정 규모 승인(261021): `Pickit.js`·`Town.js`·`Misc.js` 3개.
   - 성공 뒤 그 칸 `Equip.updateTier`(필드 줍기 판정의 `Config.TierNow` 캐시). `TieredGear`·`Tiered`는 다음 게임 빌드 갱신에서 반영돼 상관없음(사용자 판단).
 - 참고(Claude 조사 261021): kolbot-SoloPlay `Core/SoloWants.js`(필요 목록·줍기)와 `Modules/ItemUtils.js`(`checkSocketables`, 장착 해제 뒤 패킷 0x28)가 같은 설계다. D2MOO 서버는 장착 중 아이템 소켓 넣기를 허용(`Rcv0x28_SocketItem`), 보석 스탯은 부모 아이템 스탯에 합쳐진다(`STATLIST_MergeStatLists`) → 다음 autoEquip 비교부터 보석 반영 티어(클라이언트 쪽은 미확인). `getBase`에 아이템 객체를 넘기면 classid를 비교하지 않는다.
 
