@@ -39,7 +39,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤에 한다(사용자 결정 261021). 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
 
 ### 2-3. 소켓 장착을 매니저 아이템 로그에도 (`Town.socketGems`, 사용자 메모 261021)
-- 지금 소켓 성공은 `_cache/ItemLog.txt`(`Misc.itemLogger("Socketed")`)에만 남는다. 매니저(D2Bot#) 아이템 로그에도 나오게 한다(`Misc.logItem`, 장착 성공의 `Misc.logItem("Equipped [티어]")`와 같은 방식). 표시 형식은 다른 매니저 아이템 로그와 같게(사용자 결정 261021). 범위(소켓만인지, 다른 ItemLog 줄도인지)는 작업할 때 정한다.
+- 지금 소켓 성공은 `_cache/ItemLog.txt`(`Misc.itemLogger("Socketed")`)에만 남는다. 매니저(D2Bot#) 아이템 로그에도 나오게 한다(`Misc.logItem`, 장착 성공의 `Misc.logItem("Equipped [티어]")`와 같은 방식). 표시 형식은 다른 매니저 아이템 로그와 같게(사용자 결정 261021). 범위: 보석을 장착한 로그(`Socketed`)만. 재료(`Ingredient`)는 매니저에 원래 찍히지 않으니 그대로(사용자 결정 261021).
 
 ## 3. 수정됨, 검증 대기 (수정 작업을 했고 게임에서 검증 전)
 
