@@ -255,6 +255,7 @@ var Config = {
 	
 	//Auto
 	AutoEquip: true,
+	SocketGems: {Head: [99], Body: [99], Shield: [97], Weapon: [99, 101, 100, 98]},	//261021 gems for empty sockets of equipped tiered items: itemType (96-102) = any grade, classid (557-601) = that grade only. builds can override (e.g. Config.SocketGems.Head = [100])
 	AutoBuild: {
 		Enabled: true,
 		Verbose: false,

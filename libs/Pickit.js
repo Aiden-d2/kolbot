@@ -53,11 +53,11 @@ var Pickit = {
 		}
 
 		//261021 socket gem (ground or inventory only): held gems fill the targets in socketGems order, pick if a target still has an empty socket for it
-		if ([97, 98, 99, 100, 101].indexOf(unit.itemType) > -1 && (unit.mode === 3 || unit.mode === 5 || (unit.mode === 0 && unit.location === 3)) && getBaseStat("items", unit.classid, "levelreq") <= me.charlvl) {
+		if (unit.itemType >= 96 && unit.itemType <= 102 && (unit.mode === 3 || unit.mode === 5 || (unit.mode === 0 && unit.location === 3)) && getBaseStat("items", unit.classid, "levelreq") <= me.charlvl) {	//261021 all gem types (Config.SocketGems picks)
 			var t, g, k,
 				targets = this.socketTargets(),
 				held = (me.findItems(-1, 0, 3) || []).filter(function (gem) {
-					return gem.gid !== unit.gid && [97, 98, 99, 100, 101].indexOf(gem.itemType) > -1 && getBaseStat("items", gem.classid, "levelreq") <= me.charlvl;
+					return gem.gid !== unit.gid && gem.itemType >= 96 && gem.itemType <= 102 && getBaseStat("items", gem.classid, "levelreq") <= me.charlvl;	//261021 all gem types
 				}).sort(function (a, b) {
 					return a.gid - b.gid;
 				});
@@ -65,7 +65,7 @@ var Pickit = {
 			for (t = 0; t < targets.length; t += 1) {
 				for (k = targets[t].empty; k > 0; k -= 1) {
 					for (g = 0; g < held.length; g += 1) {
-						if (targets[t].gems.indexOf(held[g].itemType) > -1) {
+						if (targets[t].gems.indexOf(held[g].itemType) > -1 || targets[t].gems.indexOf(held[g].classid) > -1) {	//261021 itemType or classid
 							break;
 						}
 					}
@@ -77,7 +77,7 @@ var Pickit = {
 					held.splice(g, 1);
 				}
 
-				if (k > 0 && targets[t].gems.indexOf(unit.itemType) > -1) {
+				if (k > 0 && (targets[t].gems.indexOf(unit.itemType) > -1 || targets[t].gems.indexOf(unit.classid) > -1)) {	//261021 itemType or classid
 					return {
 						result: 5,
 						line: null
@@ -261,13 +261,17 @@ var Pickit = {
 				continue;
 			}
 
-			if (slots[i] < 4) {	// helm (incl. primal helm, pelt, circlet), armor
-				gems = [99];	// ruby
+			if (slots[i] === 1) {	// helm (incl. primal helm, pelt, circlet)
+				gems = Config.SocketGems.Head;	//261021 from Config
+			} else if (slots[i] === 3) {	// armor
+				gems = Config.SocketGems.Body;	//261021
 			} else if ([2, 69, 70].indexOf(item.itemType) > -1) {	// shield, voodoo head, auric shield (either arm)
-				gems = [97];	// diamond
-			} else if (me.charlvl <= 18) {	// weapon in either arm (bows, staves, 2h weapons are in the left arm)
-				gems = [99, 101, 100, 98];	// ruby, topaz, sapphire, emerald
-			} else {
+				gems = Config.SocketGems.Shield;	//261021
+			} else {	// weapon in either arm (bows, staves, 2h weapons are in the left arm)	//261021 level 18 limit removed (runes later)
+				gems = Config.SocketGems.Weapon;	//261021
+			}
+
+			if (!gems || !gems.length) {	//261021 no gems set for this part
 				continue;
 			}
 
