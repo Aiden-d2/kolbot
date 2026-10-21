@@ -23,6 +23,11 @@
 ### 260928 Claude: 갈 수 있는지 검사
 - `CollMap.checkColl(me, 상자, 0x5)`(걷기·텔레 공통). clear에서 상자 열기를 빼고 Pather `popChests`(clearPath 이동 노드마다 반경 15, `Config.OpenChests: 2`)로 일원화.
 
+### 261001 Claude: 트랩·불 옆 상자 제외 (사용자 요청)
+- 목록을 만드는 `getUnit(2)` 루프에서 `objtype & 0x7F`가 0이 아니면(트랩 1~8) 빼고, `"explodingchest"`도 뺀다. 같은 루프에서 이름 `"fire"` 오브젝트(나에게서 range+4 안)를 모아 `Attack.checkFire`(반경 4 이하) 상자를 뺀다(`getUnit` 추가 호출 없음).
+- 근거: 게임은 이 값으로 트랩을 고른다(D2MOO `ObjMode.cpp:373`), 트랩 없는 컨테이너는 0이라 걸러지지 않는다(컨테이너별 표는 `D2BS_Structure.md`). `CorpseOnStick` 자체는 불·데미지가 없고 옆의 `fire` 오브젝트가 데미지를 준다. 이름으로 `corpseonstick`을 빼는 안은 불 없는 시체도 빠지고 다른 상자는 못 걸러 기각.
+- 확인: 확인용 trace `[chest] skip trap|fire`로 게임 확인 뒤 261006에 trace 삭제.
+
 ## Packet.openMenu
 
 ### 261001 Claude: 대사 중이면 스페이스로 넘김 (유형 B 크래시)

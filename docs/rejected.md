@@ -74,11 +74,11 @@
 - **261001 `prevNode` 주석 규칙** — 이유: 기각·보류(261001 Pather 검토).
 
 ### moveTo
-- **261001 죽은 코드 정리(`cleared`·`MainLoop:`·`j`/`wp`), PathDebug, `errorReport //260922 temp`** — 이유: 기각·보류(261001 Pather 검토).
+- **261001 죽은 코드 정리** — `moveTo`의 빈 `if (!cleared)` 블록, `teleportTo`의 쓰이지 않는 `MainLoop:` 레이블, `goWP`의 쓰이지 않는 `j`·`wp` 선언, `PathDebug.coordsInPath`(호출 0곳, 원본에도 있음), `moveTo` 좌표 없음 분기의 `errorReport //260922 temp`. 지워도 동작 영향은 없다. 이유: 사용자 기각·보류(261001).
 
 ### moveTo safeCheckNode (SafeTele)
-- **261001 SafeTele 후보에 0x4 시야 검사** — 이유: 기각(`pather_status.md` 검토).
-- **261001 clearPath true 이동에서 SafeTele 끄기** — 이유: 재검토 뒤 기각(`pather_status.md` 3-6).
+- **261001 SafeTele 후보에 나→후보 0x4 시야 검사** — 이유: 0x4는 SafeTele와 연관 없음(사용자).
+- **261001 clearPath true 이동에서 SafeTele 끄기** — 끄면 중간 노드에 그대로 착지해 모든 노드에서 clear·상자를 한다. 이유: 결함 근거가 없고 "안전하게 착지"와 "경로 위 무리를 빠짐없이 치기" 중 방침 문제라 지금대로(재검토 뒤 사용자 기각).
 
 ### journeyTo
 - **261001 journeyTo throw 방어** — 이유: 기각·보류.
@@ -90,6 +90,9 @@
   - 검토한 해결안(채택 안 함): D2BS 수정(재진입 방지·스택 한도 상향, 재빌드 필요), clear 싸움 구간에만 리스너 켜기(위험을 줄일 뿐 없애지 못함), 주기적 `getUnit` 훑기(비용), 마을에서만 끄기(필드 건을 못 막음).
 
 ## libs/Misc.js
+
+### openChest (Countess 상자)
+- **261001 Countess 탑 5층 상자 열기** — 프리셋 580 자리의 classid 371 `ForgottenTowerChest`는 OperateFn 0·Selectable 0인 퀘스트 소품이다(최초 퀘스트 완료 때 한 번 열리는 연출). 패킷으로 상호작용하면 서버 assert에 걸릴 수 있다(추정). 이유: 열지 않음, 원본의 좌표(12526, 12565) 막기 유지(여는 코드 `7971b20`은 `61e4e1b`로 되돌림).
 
 ### townCheck
 - **261021 TownCheck를 TownChicken으로 옮기기** — 이유: 사용자 기각. 채택은 default.dbj면 `visitTown` 직접.

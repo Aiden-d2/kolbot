@@ -1178,3 +1178,107 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 - **탈라샤 무덤 회피 토글(`AutoSmurf.js` 3693·3704, 사용자 260812):** 포탈로 파티가 모인 직후 회피가 붙은 몹 사이로 자리를 잡다 치킨이 나서, 오리피스 박스를 먼저 정리한 뒤 회피를 켠다. 박스 울타리로는 막히지 않음. 유지(261002). 되돌릴 때 무조건 `true`지만 `this.duriel`은 파티 전원 25레벨 이상에서만 실행되므로(리더는 `this.tombs` 끝에서 `partyLevel(tombsLvl 25)`까지 대기·미달이면 quit, 팔로워는 리더의 `duriel` 메시지로 진입) 빌드의 25레벨 회피 켜기와 어긋나지 않는다.
 - **미사일·몹 데이터(261002):** blizzhackers/d2data `missiles.json`·`monstats2.json`. Shock Wave 미사일 511: Vel 20, Range 14(프레임), Size 1, 관통(CollideKill 없음), NextHit 1·NextDelay 4. 몹 충돌 크기 2×2 366종, 3×3 197종.
 - **팔로워 크래시 때 전원 종료:** 크래시 난 프로필이 파티에서 빠지면 나머지 전원(리더 포함)이 `PartyThread`의 `retry > 2`(`threads/PartyThread.js:122-124`)로 약 2초 뒤 나간다. `party has left`는 print만이라 콘솔·trace에는 이유가 안 남는다(로그 규칙대로). 크래시 쪽은 매니저의 `Window has unexpectedly exited` 줄로 구분한다.
+
+### 설 수 있는 칸 검사 (pather_status에서 옮김 261021)
+
+**자료원 두 가지 (D2BS 소스 확인)**
+| 자료원 | 쓰는 함수 | 값 | 모르는 칸 |
+|---|---|---|---|
+| `getCollision(area, x, y)` (D2BS `ActMap::GetMapData`) | `Attack.validSpot`, setPosition 걷기, `CollMap.getRandCoordinate`, AutoSmurf 카우 방 | 방 충돌 값 + **74·111·112·117 지역은 회피 레이어(avoid) OR** (`ActMap.cpp:182`) | 0xFFFF (모든 비트) |
+| `CollMap.getColl` (`room.getCollision()` 캐시) | `Pather.checkSpot`, `getNearestWalkable`, `CollMap.checkColl` | 방 충돌 값 그대로 (회피 레이어 없음) | 5 (0x1 \| 0x4) |
+
+**플래그**: 아래 충돌 플래그 표.
+
+**칸(점) 검사**
+| 검사 | 보는 칸 | 플래그 | 자료원 | 쓰는 곳 |
+|---|---|---|---|---|
+| `Pather.checkSpot(x, y, 0x1)` | 상하좌우 4칸 (가운데 **안 봄**) | 0x1 | CollMap | SafeTele 후보, setPosition 텔레 착지 |
+| `getNearestWalkable(x, y, r, step)` | 시작점부터 바깥 사각 테두리로 넓히며 `checkSpot` | 기본 0x1 | CollMap (끝에 `CollMap.reset()`) | `moveToExit` 출구 자리, `getNearestRoom`, AutoSmurf 카우 방 |
+| `getNearestWalkable(…, 10, 2, 0x1\|0x4\|0x800\|0x1000)` | 같음 | 벽·시야·닫힌 문·NPC 자리 | CollMap | 매고트 굴(62~64) 경로 노드 보정 |
+| `getCollision & 0x1` | 가운데 1칸 | 0x1 | getCollision | setPosition 걷기 착지 |
+| `Attack.validSpot(x, y)` | 가운데 1칸 | 0x1 \| 0x400 (object) | getCollision | 해머 자리(`Paladin.js:263`), `walkTo` 옆걸음(`:591`), `Misc.js:2924`, 시체 폭발 등 대상 칸 검사(직업 파일 대부분은 **몹이 선 칸**을 검사) |
+| `getRandCoordinate` | 가운데 1칸 | 0x1 | getCollision | `useUnit`·`openUnit`·`useWaypoint` 재시도 이동 |
+
+**선(직선) 검사** (참고)
+| 검사 | 방식 | 쓰는 곳 |
+|---|---|---|
+| `CollMap.checkColl(a, b, coll)` | a→b 직선의 각 점마다 3×3 (두께 1) | setPosition(타깃 시야, 나→후보 0x4/0x5), `Misc.openChests` 0x5, 해머 0x4(두께 0) |
+| 엔진 `checkCollision(a, b, coll)` | D2BS 내부 | setPosition 이동 필요 판정, `useWells` 0x4, Assassin |
+
+**엔진 `getCollision`과 `CollMap.getColl` 비교 (기능은 같다: 한 칸의 충돌 플래그를 돌려준다)**
+| 항목 | 엔진 `getCollision` | `CollMap.getColl` |
+|---|---|---|
+| 읽는 곳 | D2BS `ActMap`이 지역의 방을 찾아 그 방의 충돌 지도에서 읽음 | `getRoom(x, y).getCollision()`으로 방 충돌 지도를 JS 배열로 복사해 두고 읽음 |
+| 값의 시점 | 부를 때마다 게임의 현재 값 | 복사해 둔 값(최대 25개 방). `CollMap.reset()`(방 25개 초과, `getNearestWalkable` 끝) 전까지 그대로 |
+| 회피 레이어 | 74·111·112·117 지역은 더함 (Arcane, 바바리안 방책 지역) | 없음 |
+| 모르는 칸 | 0xFFFF | 5 (0x1 \| 0x4) |
+| 비용 | 호출마다 엔진 진입 + 정리(`CleanUp`) | 첫 방 복사 뒤에는 배열 조회 |
+| 주 용도 | 한두 칸 검사(`validSpot`, setPosition 걷기, `getRandCoordinate`) | 여러 칸 검사(`checkSpot` 4칸, `getNearestWalkable` 탐색, `checkColl` 직선) |
+
+- 겹침: 같은 질문에 답하는 두 함수다. 같은 칸을 두 함수로 같이 검사하는 곳은 없고, 호출부마다 한쪽만 쓴다(원본 kolbot부터).
+- 복사본이라 생기는 차이(추정): 충돌 지도에는 유닛·문 비트(3-7의 "변함" 표시)도 들어 있다. CollMap은 복사 시점 값이라, 매고트 굴 노드 보정(`0x800|0x1000`)은 복사 뒤 움직인 유닛·열린 문을 반영하지 못할 수 있다. 벽(0x1)·시야(0x4)는 변하지 않아 영향 없음.
+- 74(Arcane)에서 텔레 착지(`checkSpot`, CollMap)는 회피 레이어를 모르고, 걷기 착지(`getCollision`)는 안다. 같은 자리가 텔레로는 통과, 걷기로는 막힘일 수 있다(추정).
+- `checkSpot`은 가운데 칸을 안 봐서 1칸짜리 기둥 위를 통과시킬 수 있다(원본 kolbot 동작).
+
+**walkTo 옆걸음** (`Pather.js` `walkTo`, `ModeLoop`)
+- 목표를 클릭한 뒤 500ms 안에 걷기/달리기 동작(mode 2·3·6)이 시작되지 않으면 "막혔다"고 본다(3번이면 false).
+- 목표→나 방향에 직각(±90°)으로 **내 자리에서 5칸** 떨어진 두 점을 차례로 보고, `validSpot`을 통과한 첫 점을 클릭해 최대 1초 옆으로 비켜선 뒤 목표를 다시 클릭한다. 몹·오브젝트에 몸이 걸렸을 때 빠져나오는 동작이다. 코드의 TODO는 "getNearestWalkable로 바꿀 수도"라는 원본 메모.
+
+### 충돌 플래그 전체 (pather_status에서 옮김 261021)
+출처: D2MOO(`source/D2Common/include/D2Collision.h`, 게임 코드 역공학)의 이름·주석, D2BS(`Map/Diablo_II/ActMap.h`)의 이름. 두 곳의 이름이 다른 비트가 있다. D2MOO 주석 자체도 "일관성 없이 쓰임", "가끔" 같은 단서가 붙어 있어 의미는 이름과 주석 수준이다.
+
+| 값 | D2MOO 이름 (주석) | D2BS 이름 | 의미 | 변함 | kolbot 사용 |
+|---|---|---|---|---|---|
+| 0x0001 | WALL (아케인 허공·절벽 벽 등, 사실상 플레이어를 막음) | BlockWalk | 걸을 수 없는 칸 | 고정 | 착지·걷기 검사 전부, `0x5` |
+| 0x0002 | VISIBLE (위로 쏠 수 없는 타일 장애물) | BlockLineOfSight | 시야 막힘 | 고정 | 없음 |
+| 0x0004 | MISSILE_BARRIER (일관성 없이 쓰임, 미사일·비행 막음?) | Wall | 미사일 막힘 | 고정 | "시야·원거리 막힘"으로 51곳, `0x5`, 해머, Druid `0x405`, Paladin `0x2004` |
+| 0x0008 | NOPLAYER | BlockPlayer | 플레이어만 못 지나감(이름 기준) | 고정 | 없음 |
+| 0x0010 | PRESET (일부 바닥에만 있음) | AlternateTile | 바닥 종류 표시 | 고정 | 없음 |
+| 0x0020 | BLANK (칸이 유효하지 않을 때) | Blank | 빈 칸 | 고정 | 없음 |
+| 0x0040 | MISSILE | Missile | 미사일 유닛 자리 | 변함 | 없음 |
+| 0x0080 | PLAYER | Player | 플레이어 유닛 자리 | 변함 | 없음 |
+| 0x00C0 | WATER (= MISSILE \| PLAYER 조합) | – | 물 | – | 없음 |
+| 0x0100 | MONSTER | NPCLocation | 몬스터 유닛 자리 | 변함 | 없음 |
+| 0x0200 | ITEM | Item | 아이템 자리 | 변함 | 없음 |
+| 0x0400 | OBJECT | Object | 오브젝트(상자·횃불 등) 자리 | 거의 고정 | `validSpot`, Druid `0x405` |
+| 0x0800 | DOOR | ClosedDoor | 닫힌 문 | 문 열리면 변함 | 매고트 굴 노드 보정 |
+| 0x1000 | NO_PATH (유닛에 가끔 설정, 항상은 아님) | NPCCollision | 유닛 관련 경로 막힘 | 변함 | 매고트 굴 노드 보정 |
+| 0x2000 | PET (공격 가능한 몬스터 존재와 연관) | FriendlyNPC | 이름이 서로 다름 | 변함 | Paladin `0x2004` |
+| 0x4000 | 4000 (이름 없음) | Unknown | 모름 | – | 없음 |
+| 0x8000 | CORPSE (포털도 씀, 죽은 몹) | DeadBody | 시체·포털 | 변함 | 없음 |
+| 0xFFFF | ALL_MASK | Avoid | 전부. D2BS `getCollision`이 모르는 칸에 돌려줌 | – | – |
+
+"변함"은 이름으로 본 추정이다(유닛·문 상태에 따라 바뀌는 비트).
+
+**게임 자체가 쓰는 조합 (D2MOO)** — 참고
+| 이름 | 값 | 구성 |
+|---|---|---|
+| PLAYER_PATH (플레이어 이동) | 0x1C09 | WALL \| NOPLAYER \| OBJECT \| DOOR \| NO_PATH |
+| PLAYER_FLYING | 0x0804 | DOOR \| MISSILE_BARRIER |
+| PLAYER_WW (훨윈드) | 0x0C01 | WALL \| OBJECT \| DOOR |
+| RADIAL_BARRIER | 0x0805 | DOOR \| MISSILE_BARRIER \| WALL |
+| FLYING_UNIT | 0x1804 | MISSILE_BARRIER \| DOOR \| NO_PATH |
+| MONSTER_MISSILE | 0x0101 | MONSTER \| WALL |
+| MONSTER_PATH | 0x3C01 | WALL \| OBJECT \| NO_PATH \| PET \| DOOR |
+| DOOR_BLOCK_VIS | 0x0806 | DOOR \| MISSILE_BARRIER \| VISIBLE |
+| BLOCKS_DOOR | 0x8180 | PLAYER \| MONSTER \| CORPSE |
+| SPAWN | 0x3E01 | WALL \| ITEM \| OBJECT \| DOOR \| NO_PATH \| PET |
+| PLACEMENT | 0x3F11 | SPAWN \| PRESET \| MONSTER |
+| INVALID | 0x0027 | BLANK \| MISSILE_BARRIER \| VISIBLE \| WALL |
+
+- kolbot의 걷기·착지 검사는 0x1만 본다. 게임의 플레이어 이동 조합(0x1C09)은 0x8·0x400·0x800·0x1000도 막힘으로 본다. 차이만 기록(수정 제안 아님).
+- kolbot은 0x4를 시야로 쓰는데, 게임 코드상 0x4는 미사일 막힘이고 시야는 0x2다. 원본 kolbot부터 이렇게 써 왔고 동작해 왔다(원거리 스킬에는 미사일 막힘이 맞는 기준일 수 있음, 추정).
+
+### 상자 컨테이너별 트랩 값 (261001, objects.txt + D2MOO `Objects.cpp`, pather_status에서 옮김)
+`Misc.openChests` 목록 54종의 초기화 함수(InitFn)를 대조했다.
+| InitFn | 목록의 컨테이너 | InteractType |
+|---|---|---|
+| 03 Chest | chest, chest3, chestl/r, woodchest, burialchest, tomb 계열, groundtomb, casket 일부, deadperson, object2, hidden stash 일부, barrel wilderness 일부, evilurn | (몬스터 레벨/8+5)% 확률로 트랩 1~8, 잠김 가능이면 0x80 |
+| 02 Urn | urn, largeurn, jar1~3, icecavejar1~4, basket 일부, bonechest, cocoon, corpse 일부, hungskeleton, ratnest 일부, skeleton 일부, guardcorpse, stash(정글) | 같은 확률로 트랩 1~8 |
+| 27 GooPile | goo pile | 33.3%로 3 |
+| 57 SparklyChest | 반짝이는 상자 | 03과 같음 |
+| 없음 | barrel(일반·폭발), armorstand, weaponrack, holeanim, casket·sarcophagus 일부, roguecorpse, corpseonstick, loose rock·boulder, hollow log, pillar, skull pile, jug, 퀘스트 상자(큐브·스크롤·지팡이·칼림) | 0 (걸러지지 않음) |
+- 이 함수들은 값을 0 또는 트랩 번호로만 쓴다(다른 용도는 우물·제단·포털뿐, 목록에 없음). 값이 들어가는 컨테이너의 동작 함수는 모두 열 때 `SetTrapCallback(InteractType & 0x7F)`를 부르고(`ObjMode.cpp:1247`, 2468, 2516, 2578, 2609, 정글 은닉처), 트랩 번호 1~8은 모두 트랩 함수에 연결된다. → **0이 아니면 진짜 트랩, 트랩 없는 컨테이너는 걸러지지 않는다.**
+
+### 원본 kolbot과 같은 Pather 동작 (260930 확인)
+- `moveTo` 반환은 마지막 처리 노드와의 거리 ≤ 5, `moveToUnit`은 PresetUnit이면 `pop`을 안 넘김, `plotCourse`의 `visitedNodes.indexOf`는 키가 아닌 값을 찾음(트리 구조라 실제 문제 없음).

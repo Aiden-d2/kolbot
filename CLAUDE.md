@@ -66,7 +66,7 @@
 
 **노트 목록.** 새 대화는 `handoff.md`를 먼저 읽고, 작업할 코드의 노트와 관련 정보 파일을 읽는다. 로그 분석은 `log_guide.md`부터 읽는다.
 
-정리 중(261021): `docs/claude/`에 남은 노트는 위 구조로 단계별로 옮긴다(CLAUDE.md → handoff → Attack → Pather → AutoSmurf → 나머지). CLAUDE.md·handoff·Attack 단계는 끝났다.
+정리 중(261021): `docs/claude/`에 남은 노트는 위 구조로 단계별로 옮긴다(CLAUDE.md → handoff → Attack → Pather → AutoSmurf → 나머지). CLAUDE.md·handoff·Attack·Pather 단계는 끝났다.
 
 | 파일 | 내용 |
 |---|---|
@@ -75,7 +75,6 @@
 | `docs/rejected.md` | 기각 노트 |
 | `docs/log_results.md` | 로그 분석 결과 (묶음마다 쌓음) |
 | `docs/claude/attack_flow.md` | clear / setPosition 흐름 해설 (공부용) |
-| `docs/claude/pather_status.md` | Pather 현황, SafeTele·setPosition 대조, 결정 |
 | `docs/claude/D2BS_Structure.md` | D2BS / kolbot 구조 참조 |
 | `docs/claude/log_guide.md` | 로그 분석 지침 |
 | `docs/claude/log_review_261006.md` | 150런 로그 검토 (261006). 정리 때 다른 노트로 흡수하고 삭제한다 |
