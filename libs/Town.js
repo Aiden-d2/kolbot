@@ -147,11 +147,7 @@ var Town = {
 			return true;
 		}
 
-		if (!this.openStash()) {	//261021 inventory panel open, as when socketing by hand (the body click didn't socket with the panels closed)
-			Misc.trace("socketGems failed: stash not opened");	//261021
-
-			return false;
-		}
+		me.cancel();	//261021 0x28 needs no stash/inventory panel (tested)
 
 		for (i = 0; i < targets.length; i += 1) {
 			t = targets[i];
@@ -160,7 +156,7 @@ var Town = {
 
 			for (j = 0; j < t.empty; j += 1) {
 				gems = (me.findItems(-1, 0, 3) || []).filter(function (g) {
-					return t.gems.indexOf(g.itemType) > -1 && getBaseStat("items", g.classid, "levelreq") <= me.charlvl;
+					return (t.gems.indexOf(g.itemType) > -1 || t.gems.indexOf(g.classid) > -1) && getBaseStat("items", g.classid, "levelreq") <= me.charlvl;	//261021 itemType or classid
 				}).sort(function (a, b) {
 					return a.gid - b.gid;	// picked order
 				});
@@ -174,7 +170,7 @@ var Town = {
 				filled = t.item.getItems().length;
 
 				if (gem.toCursor()) {
-					clickItem(0, t.bodyLoc);
+					sendPacket(1, 0x28, 4, gem.gid, 4, t.item.gid);	//261021 insert socket item (cursor gem -> equipped item): clickItem(0, bodyLoc) left the gem on the cursor
 
 					tick = getTickCount();
 
@@ -213,7 +209,7 @@ var Town = {
 			}
 
 			if (done) {
-				Equip.updateTier(t.bodyLoc, true);	// Config.TierNow is the cache for field pickup checks
+				Equip.updateTier(t.bodyLoc);	// Config.TierNow is the cache for field pickup checks	//261021 print the new tier (same line as after equipping)
 			}
 		}
 
