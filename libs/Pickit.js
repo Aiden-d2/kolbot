@@ -240,33 +240,34 @@ var Pickit = {
 		return true;
 	},
 
-	// Equipped tiered items with empty sockets (not runeword bases) and the gem types (itemType, any grade) for them, in socketing order	//261021
+	// Equipped tiered items with empty sockets (not runeword bases) and the gem types (itemType, any grade) for them, in socketing order	//261021 arms by item type (shield or weapon), not by slot
 	socketTargets: function () {
-		var i, j, item, empty, base,
+		var i, j, item, gems, empty, base,
 			list = [],
-			slots = [
-				{bodyLoc: 1, gems: [99]},	// helm: ruby
-				{bodyLoc: 3, gems: [99]},	// armor: ruby
-				{bodyLoc: 4, gems: me.charlvl <= 18 ? [99, 101, 100, 98] : []},	// weapon up to lvl 18: ruby, topaz, sapphire, emerald
-				{bodyLoc: 5, gems: [97], types: [2, 69, 70]}	// shield, voodoo head, auric shield: diamond
-			];
+			slots = [1, 3, 4, 5];	// head, body, right arm, left arm
 
 		for (i = 0; i < slots.length; i += 1) {
-			if (!slots[i].gems.length) {
-				continue;
-			}
-
 			item = me.getItem(-1, 1);
 
 			if (item) {
 				do {
-					if (item.bodylocation === slots[i].bodyLoc) {
+					if (item.bodylocation === slots[i]) {
 						break;
 					}
 				} while (item.getNext());
 			}
 
-			if (!item || item.bodylocation !== slots[i].bodyLoc || (slots[i].types && slots[i].types.indexOf(item.itemType) === -1)) {
+			if (!item || item.bodylocation !== slots[i]) {
+				continue;
+			}
+
+			if (slots[i] < 4) {	// helm (incl. primal helm, pelt, circlet), armor
+				gems = [99];	// ruby
+			} else if ([2, 69, 70].indexOf(item.itemType) > -1) {	// shield, voodoo head, auric shield (either arm)
+				gems = [97];	// diamond
+			} else if (me.charlvl <= 18) {	// weapon in either arm (bows, staves, 2h weapons are in the left arm)
+				gems = [99, 101, 100, 98];	// ruby, topaz, sapphire, emerald
+			} else {
 				continue;
 			}
 
@@ -287,7 +288,7 @@ var Pickit = {
 			}
 
 			if (!base) {
-				list.push({item: copyUnit(item), bodyLoc: slots[i].bodyLoc, gems: slots[i].gems, empty: empty});
+				list.push({item: copyUnit(item), bodyLoc: slots[i], gems: gems, empty: empty});
 			}
 		}
 
