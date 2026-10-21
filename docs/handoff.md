@@ -50,6 +50,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 실패 시 커서 보석은 인벤토리로 되돌린다(스태시로 가는 경로를 타지 않음). 그것도 실패하면 그 자리(마을)에 떨어뜨린다(`Packet.dropItem`, `Equip.equip`·`Grant.equip`과 같은 폴백, 떨어뜨린 직후 `Pickit.pickItems()`로 다시 주움, `Misc.cursorCheck`와 같은 방식). 실패는 trace(떨어뜨렸으면 `(dropped)`).
   - 로그: 줍기는 ItemLog `Ingredient`(큐빙 재료와 같은 표현). 장착 성공은 ItemLog `Socketed`(장비 옵션 전체 + `{보석 [칸] 찬/전체, Tier 전 -> 후}`, `Misc.itemLogger` 옵션 목록에 `Socketed` 추가), 실패는 trace. print 없음. 툴팁 즉시 반영 여부는 ItemLog로 확인.
   - 수정 규모 승인(261021): `Pickit.js`·`Town.js`·`Misc.js` 3개.
+  - 빌드별 보석 종류(Config 값, 예: 마법 계열 사파이어)는 정상 작동 확인 뒤 적용(사용자 결정 261021). 지금은 `socketTargets`의 칸별 보석 종류(itemType) 목록에 둔다.
   - 성공 뒤 그 칸 `Equip.updateTier`(필드 줍기 판정의 `Config.TierNow` 캐시). `TieredGear`·`Tiered`는 다음 게임 빌드 갱신에서 반영돼 상관없음(사용자 판단).
 - 참고(Claude 조사 261021): kolbot-SoloPlay `Core/SoloWants.js`(필요 목록·줍기)와 `Modules/ItemUtils.js`(`checkSocketables`, 장착 해제 뒤 패킷 0x28)가 같은 설계다. D2MOO 서버는 장착 중 아이템 소켓 넣기를 허용(`Rcv0x28_SocketItem`), 보석 스탯은 부모 아이템 스탯에 합쳐진다(`STATLIST_MergeStatLists`) → 다음 autoEquip 비교부터 보석 반영 티어(클라이언트 쪽은 미확인). `getBase`에 아이템 객체를 넘기면 classid를 비교하지 않는다.
 
