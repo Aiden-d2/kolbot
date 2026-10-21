@@ -2209,7 +2209,7 @@ var Misc = {
 			}
 
 			scriptBroadcast("townCheck");
-			delay(me.ping);	//260712
+			//delay(me.ping);	//260712
 
 			return true;
 		}

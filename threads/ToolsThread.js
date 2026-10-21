@@ -126,15 +126,15 @@ function main() {
 
 			if (script) {
 				if (script.running) {
-					//if (i === 0) { // default.dbj	//261020
+					if (i === 0) { // default.dbj	//261021
 						me.overhead("Pausing.");	//eom
-					//}
+					}
 
 					script.pause();
 				} else {
-					//if (i === 0) { // default.dbj	//261020
+					if (i === 0) { // default.dbj	//261021
 						me.overhead("Resuming.");	//eom
-					//}
+					}
 
 					script.resume();
 				}
