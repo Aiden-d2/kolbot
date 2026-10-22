@@ -81,7 +81,7 @@ var Attack = {
 			}
 		}
 
-		var i, unit, gid, entry, target, result, attackSkill, mustAlive, nearest, nearestLive, dist, lostEntry, sweepLeft,	//261003 sweepLeft
+		var i, unit, gid, entry, target, result, attackSkill, mustAlive, nearest, nearestLive, dist, lostEntry, sweepLeft, shaman,	//261003 sweepLeft	//261022 shaman
 			mustSeen = false,
 			orgx = me.x,
 			orgy = me.y,
@@ -329,6 +329,21 @@ var Attack = {
 				// 4. target: nearest first. A must target drifting past leashRange wins right away; what is close to me is handled once I am next to it	//260929
 				// deferred must targets (no usable skill last time) go to the back: picked only when nothing else is left	//260928
 				target = nearestLive || nearest;
+
+				// normal act 1: a shaman revives the fallen around it, so the nearest shaman goes first (a must target is kept, and one past the leash still wins below)	//261022
+				if (me.diff === 0 && me.act === 1 && !target.must) {
+					shaman = null;
+
+					for (gid in entries) {
+						if (entries.hasOwnProperty(gid) && !entries[gid].must && !entries[gid].deferred && [58, 59, 60, 61].indexOf(entries[gid].unit.classid) > -1 && (!shaman || getDistance(me, entries[gid].unit) < getDistance(me, shaman.unit))) {	//261022 Fallen, Carver, Devilkin, Dark Shaman (act 1 normal)
+							shaman = entries[gid];
+						}
+					}
+
+					if (shaman) {
+						target = shaman;
+					}
+				}
 
 				if (!sweepFirst && !target.must) {	//261003 stage 2 only	//260929 no "nothing within dangerRange" condition: clearing around me first only let the boss drift away, the way there is not cleared anyway
 					for (gid in entries) {

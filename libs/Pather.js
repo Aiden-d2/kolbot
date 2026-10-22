@@ -213,24 +213,26 @@ var Pather = {
 					continue;
 				}
 				
-				//260823 match the landing check used by GIP (Attack.js:636) and gate before the monster scan
-				if (!Pather.checkSpot(tx, ty, 0x1, false)) {	//261007
+				mc = Attack.getMonsterCount(tx, ty, Config.SafeTele.Range, monList, fireList);	//260807	//261022 counted first (array math): the landing check below only runs for a candidate that would be taken
+
+				if (mc >= baseline) {	//261022 not fewer than the best so far: skip without reading collision (same pick as before)
+					continue;
+				}
+
+				//260823 match the landing check used by GIP (Attack.js:636)
+				if (!Pather.checkSpot(tx, ty, 0x1, false)) {	//261007	//261022 after the monster count (a new room is copied into CollMap here)
 					continue;
 				}
 				
 				//if (!Pather.getNearestWalkable(tx, ty, 6, 2, 0x1 | 0x4 | 0x800 | 0x1000)) {	//261011
 					//continue;
 				//}
-				
-				mc = Attack.getMonsterCount(tx, ty, Config.SafeTele.Range, monList, fireList);	//260807
 
-				if (mc < baseline) {	//260823
-					baseline = mc;
-					safeNode = {x: tx, y: ty, monCount: mc};
-					
-					if (mc === 0) {
-						break;
-					}
+				baseline = mc;	//260823
+				safeNode = {x: tx, y: ty, monCount: mc};
+
+				if (mc === 0) {
+					break;
 				}
 			}
 
@@ -1096,7 +1098,9 @@ ModeLoop:
 		targetArea - area id of where the unit leads to
 	*/
 	useUnit: function (type, id, targetArea) {
-		var i, tick, unit, coord,
+		var i, j, tick, unit, spot,
+			side = 0,	//261022 next side of the unit to try after a timeout
+			dirs = [[4, 0], [0, 4], [-4, 0], [0, -4]],	//261022 stairs open toward one of +x, +y, -x, -y (isometric map): spots 4 tiles out
 			preArea = me.area;
 		
 		for (i = 0; i < 5; i += 1) {
@@ -1117,14 +1121,14 @@ ModeLoop:
 			return me.gameReady && !!me.area && (targetArea ? me.area === targetArea : me.area !== preArea);
 		}
 
-		for (i = 0; i < 7; i += 1) {	//260903
+		for (i = 0; i < 8; i += 1) {	//260903	//261022 7 -> 8: the 4 sides twice
 			if (moved()) {	//260930 moved in right after the last wait: the unit is in the old area now, do not walk or click it
 				delay(100);
 
 				return true;
 			}
 
-			if (getDistance(me, unit) > 5) {
+			if (getDistance(me, unit) > 7) {	//261022 5 -> 7: a side spot (4 tiles + 2 arrival) is not pulled back onto the unit
 				this.moveToUnit(unit);
 			}
 
@@ -1148,6 +1152,7 @@ ModeLoop:
 			}
 
 			if (type === 5) {
+				delay(600);	//261022 let the cast (teleport right before) finish: a click during it is dropped (original kolbot waits 300, sorc cast at 0 FCR is about 0.52s)
 				Misc.click(0, 0, unit);
 			} else {
 				sendPacket(1, 0x13, 4, unit.type, 4, unit.gid);
@@ -1156,7 +1161,7 @@ ModeLoop:
 			tick = getTickCount();
 
 			// about 1s like usePortal, and while an area loads (act change portal) keep waiting instead of walking and clicking again	//260930 was ping*2+300
-			while (getTickCount() - tick < Math.max(1000, me.ping * 2 + 300) || !me.gameReady) {
+			while (getTickCount() - tick < Math.max(1000, me.ping * 2 + 300) || !me.gameReady || ([2, 3, 6].indexOf(me.mode) > -1 && getTickCount() - tick < 4000)) {	//261022 still walking in after the click: keep waiting (up to 4s)
 				if (moved()) {
 					delay(100);
 					return true;
@@ -1167,8 +1172,26 @@ ModeLoop:
 			
 			Misc.trace("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area + " id:" + id + " target:" + targetArea + " unit:" + unit.x + "," + unit.y);	//260622	//260930 print -> trace (diagnostic)	//261021 id, target, unit spot (which exit it took)
 			
-			coord = CollMap.getRandCoordinate(me.x, -1, 1, me.y, -1, 1, 3);
-			this.moveTo(coord.x, coord.y);
+			if (moved()) {	//261022 moved in right at the timeout: no side step on the old area's spot
+				delay(100);
+
+				return true;
+			}
+
+			for (j = 0; j < 4; j += 1) {	//261022 was a random step of 3 around me (a walker did not move: moveTo arrives within 4): the next side of the unit, skip blocked spots and the one I stand on
+				spot = {x: unit.x + dirs[side % 4][0], y: unit.y + dirs[side % 4][1]};
+				side += 1;
+
+				if (this.checkSpot(spot.x, spot.y, 0x1) && getDistance(me, spot.x, spot.y) > 2) {
+					if (this.useTeleport()) {
+						this.teleportTo(spot.x, spot.y, 2);
+					} else {
+						this.walkTo(spot.x, spot.y, 2);
+					}
+
+					break;
+				}
+			}
 		}
 
 		return targetArea ? me.area === targetArea : me.area !== preArea;
