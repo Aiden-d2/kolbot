@@ -31,6 +31,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 처음 안(사용자): moveTo 경로 재시도 초과 throw만 통과시키기. 이어서 사용자 의견: useUnit이 실패해도 결국 getPath 실패로 이어지니 throw를 그냥 전파하는 게 맞지 않나.
   - Claude 의견(261022): catch를 없애고 전파하는 쪽에 동의. 근거: 261022 로그(8프로필 65게임)에 `Misc.caughtError` 줄(`[Error] 구간: ...`)이 0건 → catch가 잡아 재시도로 복구된 사례가 없었다. 주의: `useUnit`은 7회 실패면 throw 없이 false를 돌려주고 `moveToExit`도 false만 돌려준다 → `while (me.area !== N) { moveToExit(N) }` 꼴은 catch를 없애도 계속 돈다(throw가 없으므로). 이런 곳은 횟수 제한이나 실패 처리가 따로 필요(1-7과 같이 검토). `Pather.goWP` 안의 catch(`Pather.goWP`)도 같은 종류.
   - 하수구 라다먼트 사례는 사용자가 손으로 옮겨 풀렸다(저절로 풀린 것 아님).
+  - 어디를 바꾸나(사용자 질문 261022, 코드 확인): 래핑 함수는 이미 전파한다. `moveToExit`·`moveToUnit`·`moveToPreset`·`useUnit`에는 catch가 없고, `moveTo` 노드 루프의 try는 `finally`만 있다(`NodeAction.go` 부분). 막는 곳은 최종 호출부의 catch(`AutoSmurf.js` catch 31곳 중 이동을 감싼 곳)와 `Pather.goWP`의 catch뿐 → 최종 호출부를 바꿔야 한다.
+  - useUnit 실패 시 throw(사용자 의견 261022): 261022 로그에서 7회 모두 실패한 경우 2건 — a1 Jail 1층 06:33:57(iter:6) 뒤 호출부가 다시 불러(06:33:59 iter:0~2) 06:34:09 Jail 2층 도착 = 재시도로 복구됨, a1 Flayer Dungeon 1층 07:03:58 = 게임 종료(1-7). useUnit이 throw하면 Jail 같은 복구도 잃는다. Claude 의견: useUnit은 지금처럼 false를 돌려주고, 결과를 보지 않고 다음 지역 좌표로 가는 호출부(`brain`, `radament`의 `moveToExit` 뒤)가 결과를 확인하게 하는 쪽. 결정은 사용자(1-7과 같이).
 - 사용자 관찰·방향(261022): 경로가 없어 `Failed`가 찍힌 뒤에도 스크립트가 끝나지 않고 다음 시도를 계속한다. while로 걸린 곳은 무한 루프. → 경로 재시도 10회 뒤에는 스크립트를 끝내는 throw가 필요하고, 그러려면 호출부의 catch도 같이 없어져야 한다.
   - 코드(261022 확인): `Pather.moveTo`는 이미 랜덤 걸음 10회 실패 뒤 `throw new Error("moveTo: Failed to generate path ...")`를 던진다. 계속 도는 것은 호출부(아래 후보)의 `try { ... } catch`가 잡아 while이 다시 돌기 때문(코드 기준). 관찰한 곳(사용자 261022): Claw Viper Temple("여기에도 catch가 있는 것 같다"). 코드 확인(261022): `AutoSmurf.amulet`의 58 → 61 구간(`moveToExit(61, true, true)` 실패면 `quitGame`)과 `Pather.moveToExit` 안에는 try/catch가 없다. 261022 로그의 a7 Pz-15 Claw Viper 2층 사례는 throw가 로더(`Loader.loadScripts`의 catch → `Misc.errorReport`)까지 올라가 그 게임이 끝났다. 계속 도는 곳이 어디인지(어느 while·catch인지)는 사용자 로그로 다시 확인 필요.
   - 정정(사용자 261022): Claw Viper는 정상 종료였고, 계속 돈 곳은 하수구 라다먼트. 사용자 콘솔(10/22 11:30~11:31, a1): `no original path -> 7597,8027 in Sewers Level 2` → `AutoSmurf.radament: moveTo: Failed to generate path: 7597,8027 in Sewers Level 2 (Sewers Level 2 7521,6582)`(11:30:35, `Misc.caughtError` 줄) → 같은 `no original path` 4회 더(약 13~15초 간격) → 11:31:22 `fixed path -> 7597,8027 in Sewers Level 3`. 저절로 풀린 것이 아니라 사용자가 손으로 3층으로 옮김(사용자 정정 261022).
@@ -74,6 +76,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 판별 방법은 검토에서 정한다(예: getWP 회차마다 웨이까지 거리·목표 좌표가 번갈아 바뀌는가).
 - 사용자 결정(261022): `getWP`의 random 좌표를 없앤다(사용자 수정 예정).
 - 텔레 travel 중 웨이 찍을 때 goWP가 관여하나(사용자 질문 261022, 코드 확인): 관여한다. `getWP`는 먼저 `goWP`(프리셋까지 > 10이면 random으로 `moveToPreset`)를 부르고, 그 다음 자기 단계(웨이까지 > 5면 random `moveToUnit`, 최대 5회)로 클릭한다. 왕복 가능성: goWP 단계는 기준 10에 오프셋 최대 약 7.1이라 착지 오차가 약 3칸을 넘을 때만, getWP 단계는 기준 5라 대각 프로필은 늘·오프셋 5 프로필은 1칸 오차로도. → 버벅임은 getWP 단계 쪽일 가능성이 크다(코드 기준, 로그 확인 전). getWP random을 없애면 goWP가 오프셋 자리(5~7칸)에 내린 뒤 getWP가 웨이 자체로 한 번 더 이동하고 끝난다(왕복은 없음).
+- 확인(261022): goWP는 반복 조건이 "프리셋까지 > 10"이라 10 안에 들어오면 반복하지 않는다 → getWP의 random만 없앤다(사용자 결정).
 
 ### 1-10. 텔레포트가 제자리에 머묾 / 두 번에 한 번 씹힘 (`Pather.teleportTo`·`moveTo`, 사용자 관찰 261022, 원인 파악 필요)
 - 사용자 관찰: 텔레포트 때 제자리 텔레포트, 또는 텔레가 두 번에 한 번 씹히며 제자리를 유지하는 모습.
