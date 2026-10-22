@@ -44,7 +44,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - ② `while (me.area !== N) { moveToExit(N) }` 꼴, `moveToExit` 결과를 보지 않고 다음 지역 좌표로 가는 곳은 travel `default`처럼 "moveToExit 3회 반복, 도착하면 break, 못 가면 throw".
   - ③ `useUnit`에는 throw를 넣지 않는다(7회 실패면 false → ②의 3회 재시도가 받음, Jail 사례처럼 재시도로 넘어가는 경우를 살림).
   - 실패 처리는 `Misc.quitGame`(사용자 결정 261022, 다른 조기 종료와 일관성 우선. 처음 정한 throw에서 바꿈): throw는 Loader가 잡아 default.dbj가 `MinGameTime` 300초까지 마을에서 대기한 뒤 나가고, quitGame은 바로 나간다(realm 보호는 리더 로비 `MinGameTime` 60초). 기존 `moveToExit failed` quitGame 20곳도 같은 방식.
-  - ④ useUnit 조정, 방법은 검토: 대기를 1~2초 늘림(대가: 진짜 실패 때 7회 × 늘린 시간) / timeout 뒤 무작위 이동 직전에 `moved()`를 한 번 더 확인 / 계단 `getNearestWalkable`.
+  - ④ useUnit 조정(사용자 확정 261022): 기본 대기는 지금대로 약 1초. 클릭 뒤 대기 루프에 걷기 가드(모드 2·3·6이면 상한 4초까지 계속 대기). timeout 뒤 무작위 걸음(내 위치 기준 ±3칸)을 유닛 둘레 8자리(±3칸, `checkSpot` 통과한 곳) 차례 시도로 바꾼다. 클릭 앞 300ms 대기 도입 여부는 검토 중.
+  - 근거(261022 로그 10/21~10/22 15:50, `[useUnit] timeout` 414줄·164연속): 실패 회차 사이 이동 250건 중 190건(76%)이 무작위 걸음만큼만 움직임 = 클릭 뒤 1초 동안 제자리. 7회 모두 실패 13건(대부분 a1, travel 재시도로 넘어감). 원본 kolbot(kolton 3회, blizzhackers 5회)은 클릭 앞 300ms, 대기 3000ms, 같은 무작위 걸음이고 뚫린 쪽 처리는 없음.
+  - LvlWarp 대조(외부 blizzhackers `d2data` `lvlwarp.json`): 로그의 계단 `id:`(= `getArea().exits`의 `tileid`)는 LvlWarp `Id`와 같은 번호로 보임(19개 이름이 지역 쌍과 모두 맞음: 12 Tower to Crypt 20→21, 14 Jail Down 29→30, 56 Dungeon Down 88→89, 82 Baal Temple Down R 129→130 등). 실패 위치(거리 5 이하)는 대체로 유닛 좌표에서 1~2칸, 그 계단의 `ExitWalkX/Y` 방향 쪽에 몰림(12: +x, 18·14: +y, 23: −y, 56: −x, 38: (1,1) 13건 중 12건). `ExitWalk`의 뜻(도착 때 걸어 나오는 방향 = 앞쪽, 추정)이 맞다면 "반대편이라 안 먹힘"보다 "유닛 바로 위·옆에 붙어 서서 안 먹힘"에 가깝다(추정, 미검증).
   - 수정 규모: `AutoSmurf.js`의 `Pather.moveToExit(` 76곳 중 결과를 확인하는 곳 23곳(261022 셈), catch 31곳 중 이동을 감싼 곳, `Pather.goWP`, `Pather.useUnit`. 문자열 검색 후보(탈출 조건은 하나씩 안 봄): `travel`(10073,8670), `cube` 상자, `tombs`(46 출구·상자), `radament`(48·프리셋 40), `duriel` Orifice, `mephisto` 빨간 포털, `farmingSummoner` 저널, `den`의 지역·마을 while, 옛 `clearToExit` 자리의 바깥 while 4곳(언더패스 10→5, Jail 29→30·30→31·31→32, 한 번 시도하고 throw도 잡음). 공용 함수(3회 시도 후 throw)를 둘지는 목록을 본 뒤 정한다(새 함수는 승인 필요). `while (!usePortal)` 대기 구문은 대상 아님(사용자).
 - **검증 방법**(Claude 제안): 이동 실패가 무한 반복 없이 게임 종료로 끝나는가(콘솔 `[Error] moveTo: Failed` 또는 3회 실패 throw 줄 뒤 `Script ended`/다음 게임). ④는 `[useUnit] timeout` 뒤 옛 지역 좌표 `no original path`가 사라지는가.
 
@@ -96,6 +98,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **확인된 것**(코드): 후보는 원래 노드에 가까운 순으로 정렬해 한 번 훑는다. 후보마다 `checkSpot`(십자 4칸 `CollMap.getColl & 0x1`, 처음 보는 방이면 `room.getCollision()` 복사, 방 25개 넘으면 캐시 전체 비움) → 통과하면 몹 수 → `mc < baseline`이면 채택하고 `baseline = mc`, 0이면 끝. 0이 없으면 35개를 다 본다. 결과 = 걸을 수 있는 후보 중 몹 수 최소, 그중 원래 노드에 가장 가까운 것. 후보 수는 Angle 75·Step 5·Min 10에서 70개, 지금 Angle 60·Step 7·Min 7에서 35개(렉 때문에 사용자가 바꿈, Flayer Jungle·Great Marsh는 Skip).
 - **구현안**: 두 검사의 순서만 바꾼다(몹 수 먼저 → `mc < baseline`일 때만 `checkSpot` → 통과하면 채택). 고르는 자리는 지금과 같고, `checkSpot`(방 복사)은 그때까지의 최솟값보다 적은 후보에서만 불린다(벽 안 저몹 후보 포함). 새 변수 없음. 남으면 다음 단계로 몹 수로 다시 정렬해 처음 통과하는 하나를 고르는 안(같은 결과, 정렬 한 번 추가).
 - **검증 방법**: 텔레 이동 렉 체감(Bloody Foothills 등), 고르는 자리가 같으므로 동작 변화 없음.
+
+### 2-13. MPQ 데이터 완전 추출 (사용자 요청 261022)
+- **확인된 것**: 사용자가 쓴 1.14d listfile(MPQEditor용)에 이름 없는 항목(`File00000127.dc6`, `File00000133.xxx` 등) 약 80개가 있고, excel 목록에 `lvlwarp`·`belts`·`cubemod` 등이 없다. listfile에 이름이 없는 파일은 이름으로 꺼내지지 않는다. 추출본에는 lvlmaze·lvlprest·lvlsub·lvltypes·levels만 있고 LvlWarp가 없다(사용자).
+- **구현안**: 더 완전한 listfile(커뮤니티 listfile 등)로 다시 추출해 excel 전체(`.bin`·`.txt`)를 확보한다. 그 전까지 LvlWarp는 외부 `d2data`로 대신한다.
+- **검증 방법**: 이름 없는 항목 0개, `LvlWarp.bin`이 있고 `d2data` 값과 같은가.
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
