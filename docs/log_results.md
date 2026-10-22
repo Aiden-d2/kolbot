@@ -140,3 +140,28 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
   - 6건 모두 랜덤 걸음 10회(`no adjusted path ... fixing` 60줄 = 6 × 10) 실패, 4건은 10회 내내 위치가 그대로.
 - `Misc.caughtError` 줄(`[Error] 구간: ...`) 0건(8프로필 65게임) → 호출부 catch가 잡아 재시도로 복구된 사례 없음(handoff 2-4의 근거).
 - 사용자 콘솔(10/22 11:30~11:31, 이 묶음 밖): a1 하수구 라다먼트에서 `moveToExit(49)` 결과를 보지 않고 3층 상자 좌표로 가는 `while + catch`가 무한 반복, 사용자가 손으로 3층으로 옮겨 풀림(handoff 1-4·1-7).
+
+## 261022 묶음 2 (10/21 21:54 ~ 10/22 15:50, 8프로필, a1 113게임)
+데이터: trace·d2bs·콘솔·ItemLog·ScriptErrorLog·`_cache`(config 캐시 포함). 앞 묶음(~09:35)을 포함하고 09:35~15:50이 더해진 것. 이 절은 근거만 두고, 정한 것은 `handoff.md`(2-4·2-7·2-12·2-13)를 따른다.
+
+### 리더(a1) Life Chicken
+- a1 36건, 다른 프로필 각 1~5건(콘솔 집계도 같음). 전체 52건 중 a1 69%(261006 묶음은 57건 중 25건 44%, 게임 구성이 달라 직접 비교에 한계).
+- 구간별 a1: 10/21 21:54~23:59 15게임 4건, 10/22 00:00~09:35 50게임 12건, 09:35~11:00 9게임 0건, 11:00~15:50 39게임 20건(최대 HP 1,800대).
+- 36건 중 31건은 직전 5초 안에 `Town chicken`, 그중 22건은 같은 초. a1 `Town chicken` 55회 중 30회(55%)가 10초 안에 Life Chicken으로 끝남.
+- 치킨 직전 15초 활동(`trace` 위치·줄 기준): 텔레 이동 중 약 20건(SafeTele 판정 8~27회, 이동 50~400칸), 마을에서 포털로 돌아온 직후 9건(`visitTown back` 뒤 0~12초), useUnit timeout 3건, getWP 실패 3건, `teleportTo failed` 2건, 노멀 4건은 기록 없음. 직전 활동의 d2bs 표시: travel 중 15건(Ancient's Way 7 등), 혼자 하는 퀘스트 아이템 구간 6건.
+- 같은 travel 반복: Pz-88~91(12:39~12:53) Bloody Foothills·Frigid Highlands 4게임 연속 `Traveling to Ancient's Way` 중 치킨, 07:25~07:44에도 같은 모양 4건.
+- SafeTele 설정 이력(git `libs/Config.js`): 09-14 Range 9·Angle 60·Step 5·Min 15 → 09-30 Range 10 → 10-02 Min 10 → 10-03 Angle 75·후보를 원래 노드 거리순 → 10-19(사용자 업로드 82ede23) Angle 60·Step 7·Min 7. 후보 수 70개(75/5/10) → 35개(60/7/7). 치킨 설정값(`LifeChicken` 35·`TownHP` 40·`UseHP` 등)과 ToolsThread 치킨 판정 코드는 09-14 이후 로그 줄 말고는 바뀌지 않음.
+- 원인 판정: 비중 증가의 원인은 확정 못 함. SafeTele 이동 중이 다수라는 것까지 확인(Min 7 짧은 텔레 영향은 착지 링 거리가 trace에 없어 판정 불가).
+
+### useUnit timeout
+- `[useUnit] timeout` 414줄, 연속 시도 164개. 마지막 회차 분포: 0:61, 1:48, 2:21, 3:7, 4:9, 5:5, 6(7회 모두 실패):13(대부분 a1, travel 재시도로 넘어감).
+- 0회차 timeout 164건 중 129건(79%)이 유닛에서 0~2칸 = 첫 클릭부터 붙어 선 채 실패.
+- 회차 사이 이동 250건 중 190건(76%)이 정확히 무작위 걸음(x·y 각각 −3·0·+3)만큼 = 클릭 뒤 약 1초 동안 제자리.
+- 계단 `id:`(`getArea().exits`의 `tileid`)는 LvlWarp `Id`와 같은 번호로 보임(외부 `d2data` `lvlwarp.json`, 19개 이름이 지역 쌍과 모두 맞음). `ExitWalk`는 사용 뒤 다음 지역에서 걸어 나오는 방향이라 진입 방향 근거로 쓰지 않음(사용자).
+- 원본 kolbot(kolton 3회, blizzhackers 5회): 클릭 앞 300ms, 대기 3000ms, 같은 무작위 걸음, 뚫린 쪽 처리 없음.
+- 프로필별: a1 350줄·연속 110개, a2 22줄·15개, a3~a8 각 3~10줄. 걷는 프로필(a3~a8) 39개 연속 중 36개는 0회차 뒤 바로 성공(0회차 거리 0~2칸 28개). 걷기 무작위 걸음은 `walkTo` 도착 판정 4칸이라 제자리 → 같은 자리 재클릭으로 성공. 실패 반복은 텔레 캐릭터에 몰림.
+
+### chores slow (5초 초과만 찍힘)
+- buyPotions 580건. 마을별 중앙값/최대: Harrogath 326건 8.0/15.1, Lut Gholein 146건 9.4/21.7, Pandemonium 60건 8.6/17.4, Kurast Docktown 22건 10.2/14.6, Rogue Encampment 26건 8.9/16.5. 20초 이상 7건은 모두 Lut Gholein이고 여러 프로필이 같은 시각(11:33:13~17 3명, 11:44:56~11:45:01 5명). 힐·상점이 같은 NPC인 막(`Town.tasks`: 1·3·4·5막)에서도 중앙값 8~10초.
+- clearInventory 255건. 마을별 20초 이상: Rogue Encampment 79건 중 13, Lut Gholein 63건 중 5, Kurast Docktown 3, Pandemonium 3, Harrogath 1.
+- 단계별 시간이 없어 어느 단계인지는 판정 불가(판별 로그는 handoff 2-7).

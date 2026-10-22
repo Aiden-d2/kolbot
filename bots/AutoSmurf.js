@@ -804,10 +804,7 @@ function AutoSmurf() {
 				delay(me.ping * 2 + 200);
 			}
 			
-			while (me.area !== destination) {
-				Pather.moveToExit(destination, true);
-				Packet.flash(me.gid);
-			}
+			this.exitTo(destination);	//261022 was an endless while
 		} else {
 			Pather.useWaypoint(destination);
 			delay(me.ping * 2 + 200);
@@ -820,10 +817,7 @@ function AutoSmurf() {
 		this.okCount();
 
 		if (destination === 2) {
-			while (me.area !== home) {
-				Pather.moveToExit(home, true);
-				Packet.flash(me.gid);
-			}
+			this.exitTo(home);	//261022 was an endless while
 		} else {
 			Pather.useWaypoint(home);
 		}
@@ -1123,7 +1117,7 @@ function AutoSmurf() {
 			}
 
 			if (me.area !== area) {
-				Pather.moveToExit(area, true);
+				this.exitTo(area);	//261022 result checked
 			}
 
 			Pather.moveTo(x, y);
@@ -1166,6 +1160,43 @@ function AutoSmurf() {
 	};
 
 //PATHING
+	// moveToExit with the result checked: 3 tries (a course partly done goes on from where I am), then the game ends	//261022
+	// was an endless while, or the next area's spot taken after a failed move (brain, radament). "Souls" comes back as is
+	this.exitTo = function (areas, clearPath) {	//261022
+		var i, move,
+			list = areas instanceof Array ? areas : [areas],
+			last = list[list.length - 1];
+
+		for (i = 0; i < 3; i += 1) {
+			if (me.area === last) {
+				return true;
+			}
+
+			try {
+				move = Pather.moveToExit(list.slice(list.indexOf(me.area) + 1), true, clearPath);
+			} catch (e) {
+				Misc.caughtError("AutoSmurf.exitTo", e);	// a throw (no path) counts as a failed try
+			}
+
+			if (move === "Souls") {
+				return move;
+			}
+
+			if (me.area === last) {
+				return true;
+			}
+
+			Packet.flash(me.gid);
+			delay(me.ping * 2 + 500);
+		}
+
+		Misc.quitGame("moveToExit failed: " + Pather.getAreaName(me.area) + " -> " + Pather.getAreaName(last));
+
+		while (true) {
+			delay(1000);
+		}
+	};
+
 	this.travel = function (goal) { // 1->10, a custom waypoint getter function
 		var i, homeTown, nextAreaIndex, target, destination, unit,
 			wpAreas = [],
@@ -1378,15 +1409,23 @@ function AutoSmurf() {
 						Pather.useWaypoint(52);
 					}
 
-					Pather.moveToExit(53, true);
+					this.exitTo(53);	//261022 result checked
 
 					break;
 				case 74: // Arcane Sanctuary
-					while (getDistance(me.x, me.y, 10073, 8670) > 10) {
+					for (i = 0; i < 3 && getDistance(me.x, me.y, 10073, 8670) > 10; i += 1) {	//261022 was an endless while: 3 tries
 						try {
 							Pather.moveTo(10073, 8670);
 						} catch (e) {
 							Misc.caughtError("AutoSmurf.travel", e);	//260930
+						}
+					}
+
+					if (getDistance(me.x, me.y, 10073, 8670) > 10) {	//261022
+						Misc.quitGame("Arcane portal not reached");
+
+						while (true) {
+							delay(1000);
 						}
 					}
 
@@ -1395,7 +1434,7 @@ function AutoSmurf() {
 					break;
 				case 78: // Flayer Jungle
 					if (!Pather.moveToExit(78, true)) {	//260908
-						Pather.moveToExit([77, 78], true);
+						this.exitTo([77, 78]);	//261022 result checked
 					}
 					
 					Pather.getWP(78);	//261021 was clickWP
@@ -1420,23 +1459,11 @@ function AutoSmurf() {
 						}
 					}
 
-					Pather.moveToExit(areaIDs[nextAreaIndex], true);
+					this.exitTo(areaIDs[nextAreaIndex]);	//261022 result checked
 
 					break;
 				default:
-					for (i = 0; i < 3; i += 1) { // 260511
-						Pather.moveToExit(areaIDs[nextAreaIndex], true);
-						
-						if (me.area === areaIDs[nextAreaIndex]) {
-							break;
-						}
-						
-						delay(me.ping * 2 + 500);
-					}
-					
-					if (me.area !== areaIDs[nextAreaIndex]) {	//260511
-						throw new Error("Travel failed: area " + areaIDs[nextAreaIndex]);
-					}
+					this.exitTo(areaIDs[nextAreaIndex]);	//260511	//261022 same 3 tries, ends with quitGame instead of a throw
 				}
 
 				if (wpAreas.indexOf(areaIDs[nextAreaIndex]) > -1) { // Check if the next area (which we are now in) has a waypoint. If it does, grab it, go to town, wait for party, run chores, take waypoint, and wait for the party.
@@ -1658,26 +1685,22 @@ function AutoSmurf() {
 		while (!me.findItem(classid)) { // Try more than once in case someone beats me to it.
 			item = getUnit(4, classid);
 
-			if (item && item.sizex === undefined) {	//261021 the unit is gone (its properties read undefined): look again instead of "Not enough room"
-				vanished += 1;
-				Misc.trace("quest item vanished, retry " + vanished);	//261021 check: does this happen (remove once seen)
-
-				if (vanished > 3) {
-					Misc.trace(classid + " vanished");	//261021
-
-					return false;
-				}
-
-				delay(me.ping * 2 + 100);
-
-				continue;
-			}
-
 			if (item) {
 				if (Storage.Inventory.CanFit(item)) {
 					Pickit.pickItem(item);
 
 					delay(me.ping * 2 + 500);
+				} else if (item.sizex === undefined) {	//261021 the unit is gone (its properties read undefined): look again instead of "Not enough room"	//261022 moved after CanFit: it can vanish while CanFit reloads the inventory (size reads undefined there, CanFit false)
+					vanished += 1;
+					Misc.trace("quest item vanished, retry " + vanished);	//261021 check: does this happen (remove once seen)
+
+					if (vanished > 3) {
+						Misc.trace(classid + " vanished");	//261021
+
+						return false;
+					}
+
+					delay(me.ping * 2 + 100);
 				} else {
 					if (Pickit.canMakeRoom()) {
 						me.overhead("Trying to make room for " + item.name);	//eom
@@ -1962,11 +1985,7 @@ function AutoSmurf() {
 		if (!me.getQuest(1, 1)) { // Haven't cleared the Den yet.
 			if (me.diff === 0) { // All characters grab Cold Plains Waypoint in Normal. Only the Teleporting Sorc grabs it in Nightmare and Hell.
 				if (!getWaypoint(1)) {
-					while (me.area === 1) {
-						Pather.moveToExit(2, true);
-						delay(me.ping * 2 + 250);
-						Packet.flash(me.gid);
-					}
+					this.exitTo(2);	//261022 was an endless while
 					
 					this.okCount();	//260922
 					
@@ -1985,11 +2004,7 @@ function AutoSmurf() {
 					Pather.useWaypoint(1);
 				}
 				
-				while (me.area === 1) {
-					Pather.moveToExit(2, true);
-					delay(me.ping * 2 + 250);
-					Packet.flash(me.gid);
-				}
+				this.exitTo(2);	//261022 was an endless while
 				
 				this.okCount();	//260922
 				
@@ -2031,13 +2046,7 @@ function AutoSmurf() {
 				}
 			} else { // diff > 0
 				if (Leader) {
-					if (me.area === 1) {
-						Pather.moveToExit(2, true); // Move from Rogue Encampment to Blood Moor
-					}
-					
-					if (me.area === 2) {
-						Pather.moveToExit(8, true);
-					}
+					this.exitTo([2, 8]);	//261022 Rogue Encampment -> Blood Moor -> Den of Evil, result checked
 					
 					Pather.makePortal();
 				} else {
@@ -3058,7 +3067,7 @@ function AutoSmurf() {
 				} else {
 					if (Leader) {
 						Pather.useWaypoint(35);
-						Pather.moveToExit([36, 37], true);
+						this.exitTo([36, 37]);	//261022 result checked
 						Pather.makePortal();
 					} else {
 						Town.move("portalspot");
@@ -3097,7 +3106,7 @@ function AutoSmurf() {
 				
 				if (Leader) {
 					Pather.useWaypoint(35);
-					Pather.moveToExit([36, 37], true);
+					this.exitTo([36, 37]);	//261022 result checked
 					Pather.moveTo(22548, 9520); //Dark-f: this is from running Andy
 					Pather.makePortal();
 				} else {
@@ -3189,7 +3198,7 @@ function AutoSmurf() {
 		if (Leader) {
 			Pather.useWaypoint(57); // Halls Of The Dead Level 2
 			Precast.doPrecast(true);
-			Pather.moveToExit(60, true);
+			this.exitTo(60);	//261022 result checked
 			Pather.makePortal();
 		} else {
 			Town.move("portalspot");
@@ -3216,11 +3225,19 @@ function AutoSmurf() {
 			delay(me.ping * 2 + 250);
 		}
 
-		while (getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 10) {
+		for (i = 0; i < 3 && getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 10; i += 1) {	//261022 was an endless while: 3 tries
 			try {
 				Pather.moveToPreset(60, 2, 354, 0, 0, true);	//260929
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.cube", e);	//260930
+			}
+		}
+
+		if (getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 10) {	//261022
+			Misc.quitGame("Cube chest not reached");
+
+			while (true) {
+				delay(1000);
 			}
 		}
 
@@ -3282,7 +3299,7 @@ function AutoSmurf() {
 			if (Leader) {
 				Pather.useWaypoint(44);
 				Precast.doPrecast(true);
-				Pather.moveToExit([45, 58], true);
+				this.exitTo([45, 58]);	//261022 result checked
 				Pather.makePortal();
 			} else {
 				Town.move("portalspot");
@@ -3317,7 +3334,7 @@ function AutoSmurf() {
 			}
 		} else if (Leader) {
 			Pather.useWaypoint(44);
-			Pather.moveToExit([45, 58, 61], true);
+			this.exitTo([45, 58, 61]);	//261022 result checked
 			Pather.moveTo(15044, 14045);
 			Pather.makePortal();
 		}
@@ -3557,9 +3574,7 @@ function AutoSmurf() {
 				this.okCount();
 			}
 			
-			while (me.area === 46) {
-				Pather.moveToExit(i, true, true); // Go in the tomb.
-			}
+			this.exitTo(i, true); // Go in the tomb.	//261022 was an endless while
 
 			this.okCount();
 			Precast.doPrecast(true);
@@ -3567,7 +3582,7 @@ function AutoSmurf() {
 			chest = getPresetUnit(me.area, 2, 397);
 			
 			if (chest) {
-				while (getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 25) {
+				for (j = 0; j < 3 && getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 25; j += 1) {	//261022 was an endless while: 3 tries
 					try {
 						Pather.moveTo(chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y, 3, true);	//260822	//261002 no offset
 					} catch (e) {
@@ -3577,6 +3592,14 @@ function AutoSmurf() {
 					delay(me.ping * 2 + 200);
 					
 					Packet.flash(me.gid);
+				}
+
+				if (getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 25) {	//261022
+					Misc.quitGame("Tomb chest not reached");
+
+					while (true) {
+						delay(1000);
+					}
 				}
 				
 			} else {
@@ -3656,7 +3679,7 @@ function AutoSmurf() {
 
 		Precast.doPrecast(true);
 
-		Pather.moveToExit([62, 63, 64], true);
+		this.exitTo([62, 63, 64]);	//261022 result checked
 		
 		presetUnit = getPresetUnit(64, 2, 356);
 		
@@ -3723,39 +3746,22 @@ function AutoSmurf() {
 					this.okCount();
                     Pather.useWaypoint(48);
                 } else {
-                    while (me.area !== 48) {
-                        if (me.area === 47) {
-                            try {
-                                Pather.moveToExit(48, true);
-                            } catch (e2) {
-                                Misc.caughtError("AutoSmurf.radament", e2);	//260930
-                                Town.goToTown(2);
-                            }
-                        } else if (me.area === 40) {
-                            for (i = 0; i < pathX.length; i += 1) {
-                                Pather.moveTo(pathX[i], pathY[i]);
-                                Packet.flash(me.gid);
-                                delay(me.ping * 2 + 200);
-							}
-							
-							this.okCount();
-							
-                            try {
-                                Pather.moveToExit(47, true);
-                            } catch (e3) {
-                                Misc.caughtError("AutoSmurf.radament", e3);	//260930
-                                Town.goToTown(2);
-                            }
-                        }
+                    if (me.area === 40) {	//261022 was an endless while over 40 / 47 (any other area spun forever)
+                        for (i = 0; i < pathX.length; i += 1) {
+                            Pather.moveTo(pathX[i], pathY[i]);
+                            Packet.flash(me.gid);
+                            delay(me.ping * 2 + 200);
+						}
 						
-                        Packet.flash(me.gid);
-                        delay(me.ping * 2 + 200);
+						this.okCount();
                     }
+
+                    this.exitTo([47, 48]);	//261022 Lut Gholein -> Sewers 1 -> Sewers 2, result checked
 					
                     Pather.getWP();	//261021 was clickWP
 				}
 				
-				Pather.moveToExit(49, true);
+				this.exitTo(49);	//261022 result checked (a failed move here spun forever toward the level 3 chest)
 				
 				for (i = 0 ; i < 5 ; i += 1) {
 					presetUnit = getPresetUnit(49, 2, 355); // Chest by Radament.
@@ -3767,11 +3773,19 @@ function AutoSmurf() {
 					delay(me.ping * 2 + 250);
 				}
 				
-				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 40) {
+				for (i = 0; i < 3 && getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 40; i += 1) {	//261022 was an endless while: 3 tries
 					try {
 						Pather.moveToUnit(presetUnit, 10, 10);	//260929
 					} catch (e) {
 						Misc.caughtError("AutoSmurf.radament", e);	//260930
+					}
+				}
+
+				if (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 40) {	//261022
+					Misc.quitGame("Radament chest not reached");
+
+					while (true) {
+						delay(1000);
 					}
 				}
 				
@@ -3902,7 +3916,7 @@ function AutoSmurf() {
 				
 				Pather.useWaypoint(46);
 				Precast.doPrecast(true);
-				Pather.moveToExit(getRoom().correcttomb, true);
+				this.exitTo(getRoom().correcttomb);	//261022 result checked
 
 				for (i = 0 ; i < 5 ; i += 1) {
 					orifice = getPresetUnit(getRoom().correcttomb, 2, 152);
@@ -3914,11 +3928,19 @@ function AutoSmurf() {
 					delay(me.ping * 2 + 250);
 				}
 
-				while (getDistance(me.x, me.y, orifice.roomx * 5 + orifice.x, orifice.roomy * 5 + orifice.y) > 10) {
+				for (i = 0; i < 3 && getDistance(me.x, me.y, orifice.roomx * 5 + orifice.x, orifice.roomy * 5 + orifice.y) > 10; i += 1) {	//261022 was an endless while: 3 tries
 					try {
 						Pather.moveToPreset(getRoom().correcttomb, 2, 152);	//260929
 					} catch (e) {
 						Misc.caughtError("AutoSmurf.duriel", e);	//260930
+					}
+				}
+
+				if (getDistance(me.x, me.y, orifice.roomx * 5 + orifice.x, orifice.roomy * 5 + orifice.y) > 10) {	//261022
+					Misc.quitGame("Orifice not reached");
+
+					while (true) {
+						delay(1000);
 					}
 				}
 
@@ -3981,7 +4003,19 @@ function AutoSmurf() {
 			if (Leader) {	//261018
 				this.okCount();
 				
-				Pather.useUnit(2, 100, 73);
+				try {	//261022 result checked: a failed entry opened the portal outside and the followers waited for 73 forever
+					if (!Pather.useUnit(2, 100, 73)) {
+						throw new Error("useUnit failed");
+					}
+				} catch (e) {
+					Misc.caughtError("AutoSmurf.duriel", e);
+					Misc.quitGame("Duriel chamber not entered");
+
+					while (true) {
+						delay(1000);
+					}
+				}
+
 				Pather.makePortal();
 			} else {
 				if (!Pather.usePortal(40, null)) {
@@ -4240,7 +4274,7 @@ function AutoSmurf() {
 
 		Pather.useWaypoint(76);
 		Precast.doPrecast(true);
-		Pather.moveToExit(85, true);
+		this.exitTo(85);	//261022 result checked
 
 		presetUnit = getPresetUnit(85, 2, 407);
 
@@ -4274,7 +4308,7 @@ function AutoSmurf() {
 
 		Pather.useWaypoint(80);
 		Precast.doPrecast(true);
-		Pather.moveToExit([92, 93], true);
+		this.exitTo([92, 93]);	//261022 result checked
 
 		presetUnit = getPresetUnit(93, 2, 405);
 
@@ -4308,7 +4342,7 @@ function AutoSmurf() {
 
 		Pather.useWaypoint(78);
 		Precast.doPrecast(true);
-		Pather.moveToExit([88, 89, 91], true);
+		this.exitTo([88, 89, 91]);	//261022 result checked (a failed move went to the level 3 preset from level 1)
 	
 		presetUnit = getPresetUnit(91, 2, 406);
 
@@ -4481,7 +4515,7 @@ function AutoSmurf() {
 		if (Leader) { // I am the Teleporting Sorc.
 			Pather.useWaypoint(101);
 			Precast.doPrecast(true);
-			Pather.moveToExit(102, true);
+			this.exitTo(102);	//261022 result checked
 			Pather.moveTo(17566, 8069);
 			Pather.makePortal();
 		} else {
@@ -4542,11 +4576,19 @@ function AutoSmurf() {
 				Pather.teleport = true;
 			}
 			
-			while (getDistance(me.x, me.y, redPortal.roomx * 5 + redPortal.x, redPortal.roomy * 5 + redPortal.y) > 10) {
+			for (i = 0; i < 3 && getDistance(me.x, me.y, redPortal.roomx * 5 + redPortal.x, redPortal.roomy * 5 + redPortal.y) > 10; i += 1) {	//261022 was an endless while: 3 tries
 				try {
 					Pather.moveToPreset(102, 2, 342);	//260929
 				} catch (e) {
 					Misc.caughtError("AutoSmurf.mephisto", e);	//260930
+				}
+			}
+
+			if (getDistance(me.x, me.y, redPortal.roomx * 5 + redPortal.x, redPortal.roomy * 5 + redPortal.y) > 10) {	//261022
+				Misc.quitGame("Red portal not reached");
+
+				while (true) {
+					delay(1000);
 				}
 			}
 			
@@ -5349,10 +5391,8 @@ function AutoSmurf() {
 				Pather.useWaypoint(113); 
 				Precast.doPrecast(true);
 				
-				while (me.area !== 114) {	//260628
-					if (Pather.moveToExit(114, true) === "Souls") {	//261020
-						Misc.quitGame("Souls found in Anya");
-					}
+				if (this.exitTo(114) === "Souls") {	//260628	//261020	//261022 was an endless while
+					Misc.quitGame("Souls found in Anya");
 				}
 				
 				while (!anya || getDistance(me, anya) > 30) {	//261020
@@ -5567,7 +5607,7 @@ function AutoSmurf() {
 			Pather.useWaypoint(118);
 			Pather.moveToExit(120, false);	//261004 portal in front of the summit: the altar closes every TP on the summit (the corpse run needs this one)
 			Pather.makePortal();	//261008
-			Pather.moveToExit(120, true);
+			this.exitTo(120);	//261022 result checked
 		} else {
 			if (me.act !== 5 || !me.inTown) {
 				Town.goToTown(5);
@@ -5578,7 +5618,7 @@ function AutoSmurf() {
 				delay(1000);
 			}
 
-			Pather.moveToExit(120, true);	//261004
+			this.exitTo(120);	//261004	//261022 result checked
 		}
 
 		delay(me.ping * 2 + 1000);
@@ -5642,7 +5682,7 @@ function AutoSmurf() {
 		if (Leader) {
 			me.cancel();	//260916	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
 			Pather.makePortal();
-			Pather.moveToExit([128, 129], true);
+			this.exitTo([128, 129]);	//261022 result checked
 			Pather.getWP();	//261021 was clickWP
 			Pather.useWaypoint(109);
 		} else {
@@ -5803,7 +5843,7 @@ function AutoSmurf() {
 			
 			Pather.useWaypoint(129);
 			
-			if (Pather.moveToExit(130, true) === "Souls") {	//261020
+			if (this.exitTo(130) === "Souls") {	//261020	//261022 result checked
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
 				print("Baal failed: souls found");
 
@@ -5815,7 +5855,7 @@ function AutoSmurf() {
 				return true;
 			}
 			
-			if (Pather.moveToExit(131, true) === "Souls") {	//261020
+			if (this.exitTo(131) === "Souls") {	//261020	//261022 result checked
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
 				print("Baal failed: souls found");
 
@@ -6070,7 +6110,7 @@ function AutoSmurf() {
 			this.okCount();
 			
 			Pather.useWaypoint(6);
-			Pather.moveToExit([20, 21, 22, 23, 24, 25], true);
+			this.exitTo([20, 21, 22, 23, 24, 25]);	//261022 result checked
 			
 			poi = getPresetUnit(me.area, 2, 580);
 
@@ -6141,7 +6181,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Pather.useWaypoint(6);
-			Pather.moveToExit([7, 12, 16], true);
+			this.exitTo([7, 12, 16]);	//261022 result checked
 			Pather.makePortal();
 		} else {
 			if (me.act !== 1 || !me.inTown) {
@@ -6205,7 +6245,7 @@ function AutoSmurf() {
 			this.okCount();
 			
 			Pather.useWaypoint(35);
-			Pather.moveToExit([36, 37], true);
+			this.exitTo([36, 37]);	//261022 result checked
 			Pather.moveTo(22549, 9520);
 			
 			Pather.makePortal();
@@ -6943,7 +6983,7 @@ function AutoSmurf() {
 			this.okCount();
 			
 			Pather.useWaypoint(101);
-			Pather.moveToExit(102, true);
+			this.exitTo(102);	//261022 result checked
 			Pather.moveTo(17566, 8069);
 			Pather.makePortal();
 		} else {
@@ -7262,7 +7302,7 @@ function AutoSmurf() {
 			this.okCount();
 			
 			Pather.usePortal(121);
-			Pather.moveToExit([122, 123, 124], true);
+			this.exitTo([122, 123, 124]);	//261022 result checked
 			Pather.moveToPreset(me.area, 2, 462, 15, 15);
 			
 			if (me.diff === 2 && getUnit(1, 597)) {	//260627

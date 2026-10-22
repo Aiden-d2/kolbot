@@ -75,6 +75,9 @@ var Town = {
 			this.goToTown();
 		}
 
+		var c = this.chores = {start: getTickCount()},	//261022 chores stall check: step times, one trace line when the whole chores take over 10s (remove after the next log analysis)
+			tick = getTickCount();
+
 		if (shopItems) {
 			this.gamble();
 			if (Config.UseKeys) {	//260928 top up keys on regular visits only (never a reason to go to town)
@@ -88,29 +91,33 @@ var Town = {
 			Cubing.doCubing();
 			Runewords.makeRunewords();
 		}
+
+		c.pre = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
 		
 		this.clearBelt();
 		this.heal();
+		c.heal = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
 		this.identify();
-
-		var step = getTickCount();	//261021 chores stall check (seen at the heal NPC, after clearInventory): remove once the cause is found
+		c.id = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
 
 		this.clearInventory();
-
-		if (getTickCount() - step > 5000) {
-			Misc.trace("chores slow: clearInventory " + ((getTickCount() - step) / 1000).toFixed(1) + "s");	//261021
-		}
+		c.inv = getTickCount() - tick;	//261022 was the "chores slow: clearInventory" line (261021)
+		tick = getTickCount();	//261022
 
 		this.fillTome(518);
+		c.tome = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
 		
-		step = getTickCount();	//261021
 		this.buyPotions(shopItems);
-
-		if (getTickCount() - step > 5000) {
-			Misc.trace("chores slow: buyPotions " + ((getTickCount() - step) / 1000).toFixed(1) + "s");	//261021
-		}
+		c.buy = getTickCount() - tick;	//261022 was the "chores slow: buyPotions" line (261021)
+		tick = getTickCount();	//261022
 
 		this.repair(shopItems);
+		c.repair = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
 		
 		var i,
 			cancelFlags = [0x01, 0x02, 0x04, 0x08, 0x14, 0x16, 0x0c, 0x0f, 0x19, 0x1a];
@@ -131,9 +138,23 @@ var Town = {
 		Equip.autoEquip();
 		Grant.autoEquip();
 		
+		c.rest = getTickCount() - tick;	//261022 cancel, pickItems, autoEquip
+		tick = getTickCount();	//261022
+
 		this.stash();
+		c.stash = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
 
 		this.socketGems();	//261021
+		c.gems = getTickCount() - tick;	//261022
+
+		if (getTickCount() - c.start > 10000) {	//261022 one line per slow chores
+			Misc.trace("chores " + ((getTickCount() - c.start) / 1000).toFixed(1) + "s: pre " + (c.pre / 1000).toFixed(1) + " heal " + (c.heal / 1000).toFixed(1) + " id " + (c.id / 1000).toFixed(1)
+				+ " inv " + (c.inv / 1000).toFixed(1) + " [npc:" + c.invNpc + " belt " + ((c.belt || 0) / 1000).toFixed(1) + "s/" + (c.beltClicks || 0) + " pots " + ((c.pots || 0) / 1000).toFixed(1) + "s/" + (c.potCount || 0)
+				+ " cube " + ((c.cube || 0) / 1000).toFixed(1) + "s/" + (c.cubeCount || 0) + " stash " + ((c.stashInv || 0) / 1000).toFixed(1) + "s/" + (c.stashCount || 0) + " left " + ((c.left || 0) / 1000).toFixed(1) + "s/" + (c.leftCount || 0) + "]"
+				+ " tome " + (c.tome / 1000).toFixed(1) + " buy " + (c.buy / 1000).toFixed(1) + " [npc " + ((c.buyNpc || 0) / 1000).toFixed(1) + "s buys " + (c.buys || 0) + " shift " + (c.shift || 0) + " fail " + (c.buyFail || 0) + "]"
+				+ " repair " + (c.repair / 1000).toFixed(1) + " rest " + (c.rest / 1000).toFixed(1) + " stash " + (c.stash / 1000).toFixed(1) + " gems " + (c.gems / 1000).toFixed(1));
+		}
 
 		return true;
 	},
@@ -351,6 +372,8 @@ var Town = {
 		}
 
 		var i, j, npc, useShift, col, beltSize, pot,
+			c = this.chores || {},	//261022 chores stall check (doChores step line)
+			tick = getTickCount(),	//261022
 			needPots = false,
 			needBuffer = false,	//260525
 			buffer = {
@@ -416,6 +439,7 @@ var Town = {
 		}
 
 		npc = this.initNPC("Shop", "buyPotions");
+		c.buyNpc = getTickCount() - tick;	//261022 walk to the shop NPC (act 4 trip in normal) and open it
 
 		if (!npc) {
 			return false;
@@ -430,14 +454,21 @@ var Town = {
 
 					// Shift+buy will trigger if there's no empty columns or if only the current column is empty
 					if (useShift) {
+						c.buys = (c.buys || 0) + 1;	//261022
+						c.shift = (c.shift || 0) + 1;	//261022
+
 						if (!pot.buy(true)) {
+							c.buyFail = (c.buyFail || 0) + 1;	//261022
 							Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " columns:" + col.join(","));	//261021 chores stall check: remove once the cause is found
 						}
 
 						delay(me.ping * 2 + 200);
 					} else {
 						for (j = 0; j < col[i]; j += 1) {
+							c.buys = (c.buys || 0) + 1;	//261022
+
 							if (!pot.buy(false)) {
+								c.buyFail = (c.buyFail || 0) + 1;	//261022
 								Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " columns:" + col.join(","));	//261021
 							}
 						}
@@ -1858,7 +1889,11 @@ MainLoop:
 
 	clearInventory: function () {
 		var i, col, result, item, beltSize,
+			c = this.chores || {},	//261022 chores stall check (doChores step line)
+			tick = getTickCount(),	//261022
 			items = [];
+
+		c.invNpc = (getInteractedNPC() ? getInteractedNPC().name : "-") + (getUIFlag(0x08) ? " 08" : "") + (getUIFlag(0x0C) ? " 0C" : "");	//261022 NPC menu or trade open when it starts (heal leaves it open)
 
 		// Return potions to belt
 		item = me.getItem(-1, 0);
@@ -1891,6 +1926,7 @@ MainLoop:
 							clickItem(2, item.x, item.y, item.location); // Shift-click potion
 						}
 
+						c.beltClicks = (c.beltClicks || 0) + 1;	//261022
 						delay(me.ping * 2 + 200);
 
 						col = this.checkColumns(beltSize);
@@ -1898,6 +1934,9 @@ MainLoop:
 				}
 			}
 		}
+
+		c.belt = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
 
 		// Cleanup remaining potions
 		item = me.getItem(-1, 0);
@@ -1929,25 +1968,32 @@ MainLoop:
 
 			// Cleanup healing potions
 			while (items[0].length > Config.HPBuffer) {
-				items[0].shift().drop();	//eom
+				items[0].shift().interact();	//261022 drop -> drink (original kolbot): a drop does not go through while the heal NPC menu is open
+				c.potCount = (c.potCount || 0) + 1;	//261022
 				delay(200 + me.ping * 2);
 			}
 
 			// Cleanup mana potions
 			while (items[1].length > Config.MPBuffer) {
-				items[1].shift().drop();	//eom
+				items[1].shift().interact();	//261022 drop -> drink
+				c.potCount = (c.potCount || 0) + 1;	//261022
 				delay(200 + me.ping * 2);
 			}
 			
 			// Cleanup rejuv potions	//260901
 			while (items[2].length > Config.RejuvBuffer) {
-				items[2].shift().drop();
+				items[2].shift().interact();	//261022 drop -> drink
+				c.potCount = (c.potCount || 0) + 1;	//261022
 				delay(200 + me.ping * 2);
 			}
 		}
 
+		c.pots = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
+
 		// eom cube clear	//260919
 		items = Storage.Cube.Compare(Config.Cube);
+		c.cubeCount = items ? items.length : 0;	//261022
 		
 		for (i = 0; !!items && i < items.length; i += 1) {
 			if (this.ignoredCheck(items[i])) {
@@ -1982,8 +2028,12 @@ MainLoop:
 			}
 		}
 		
+		c.cube = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
+
 		// eom stash clear
 		items = Storage.Stash.Compare(Config.Stash);
+		c.stashCount = items ? items.length : 0;	//261022
 		
 		for (i = 0; !!items && i < items.length; i += 1) {
 			if (this.ignoredCheck(items[i])) {
@@ -2016,8 +2066,12 @@ MainLoop:
 			}
 		}
 		
+		c.stashInv = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
+
 		// Any leftover items from a failed ID (crashed game, disconnect etc.)
 		items = Storage.Inventory.Compare(Config.Inventory);
+		c.leftCount = items ? items.length : 0;	//261022
 		
 		for (i = 0; !!items && i < items.length; i += 1) {
 			if (this.ignoredCheck(items[i])) {
@@ -2057,6 +2111,8 @@ MainLoop:
 				}
 			}
 		}
+
+		c.left = getTickCount() - tick;	//261022
 
 		return true;
 	},
