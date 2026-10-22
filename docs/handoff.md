@@ -27,13 +27,14 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ### 1-4. while + catch 무한 루프 (나머지 곳 상태와 수정 필요 여부 검토 필요, 사용자 261022)
 - `AutoSmurf.js`의 `while (목표까지 거리 > N) { try { moveToPreset/moveTo/moveToExit } catch { print } }`는 탈출 조건이 없다. 경로 계산이 계속 실패하면 같은 자리에서 무한 반복(260930 기준 10곳: Arcane, moveToExit, WP, Cube 상자, 저널 2곳, 탈무덤 상자, 3557, Orifice, 빨간 포털). 써모너 리더 while은 사용자가 고침(throw로 끝냄). moveToExit 쪽 상당수는 3-3(`clearToExit` 삭제)에서 한 번 시도로 바뀜.
-- **방향(사용자 261022, Claude 동의):** while 루프는 남긴다(다 없애면 재시도로 복구되던 경우까지 포기). 대신 moveTo의 경로 재시도 초과 throw(`moveTo: Failed to generate path`)만 호출부 catch가 막지 않게 한다 → 그 throw는 로더까지 올라가 게임이 끝나고, 다른 오류는 지금처럼 잡아 재시도.
-  - 구현 방식(Claude 제안, 미결정): catch를 통째로 없애면 같은 try 안의 다른 오류(`useUnit: Unit not found` 등)도 못 잡으므로, catch 안에서 경로 실패 오류만 다시 던지는 방식. 대상은 아래 후보 중 try 안에 moveTo 계열이 있는 곳.
-  - 감수: 하수구 라다먼트 사례처럼 우연히 풀리던 경우(약 1분 뒤 3층으로 넘어감)도 게임 종료가 된다.
+- **방향(사용자 261022):** while 루프는 남기고, 호출부 catch가 throw를 막지 않게 한다 → throw는 로더까지 올라가 게임이 끝난다.
+  - 처음 안(사용자): moveTo 경로 재시도 초과 throw만 통과시키기. 이어서 사용자 의견: useUnit이 실패해도 결국 getPath 실패로 이어지니 throw를 그냥 전파하는 게 맞지 않나.
+  - Claude 의견(261022): catch를 없애고 전파하는 쪽에 동의. 근거: 261022 로그(8프로필 65게임)에 `Misc.caughtError` 줄(`[Error] 구간: ...`)이 0건 → catch가 잡아 재시도로 복구된 사례가 없었다. 주의: `useUnit`은 7회 실패면 throw 없이 false를 돌려주고 `moveToExit`도 false만 돌려준다 → `while (me.area !== N) { moveToExit(N) }` 꼴은 catch를 없애도 계속 돈다(throw가 없으므로). 이런 곳은 횟수 제한이나 실패 처리가 따로 필요(1-7과 같이 검토). `Pather.goWP` 안의 catch(`Pather.goWP`)도 같은 종류.
+  - 하수구 라다먼트 사례는 사용자가 손으로 옮겨 풀렸다(저절로 풀린 것 아님).
 - 사용자 관찰·방향(261022): 경로가 없어 `Failed`가 찍힌 뒤에도 스크립트가 끝나지 않고 다음 시도를 계속한다. while로 걸린 곳은 무한 루프. → 경로 재시도 10회 뒤에는 스크립트를 끝내는 throw가 필요하고, 그러려면 호출부의 catch도 같이 없어져야 한다.
   - 코드(261022 확인): `Pather.moveTo`는 이미 랜덤 걸음 10회 실패 뒤 `throw new Error("moveTo: Failed to generate path ...")`를 던진다. 계속 도는 것은 호출부(아래 후보)의 `try { ... } catch`가 잡아 while이 다시 돌기 때문(코드 기준). 관찰한 곳(사용자 261022): Claw Viper Temple("여기에도 catch가 있는 것 같다"). 코드 확인(261022): `AutoSmurf.amulet`의 58 → 61 구간(`moveToExit(61, true, true)` 실패면 `quitGame`)과 `Pather.moveToExit` 안에는 try/catch가 없다. 261022 로그의 a7 Pz-15 Claw Viper 2층 사례는 throw가 로더(`Loader.loadScripts`의 catch → `Misc.errorReport`)까지 올라가 그 게임이 끝났다. 계속 도는 곳이 어디인지(어느 while·catch인지)는 사용자 로그로 다시 확인 필요.
-  - 정정(사용자 261022): Claw Viper는 정상 종료였고, 계속 돈 곳은 하수구 라다먼트. 사용자 콘솔(10/22 11:30~11:31, a1): `no original path -> 7597,8027 in Sewers Level 2` → `AutoSmurf.radament: moveTo: Failed to generate path: 7597,8027 in Sewers Level 2 (Sewers Level 2 7521,6582)`(11:30:35, `Misc.caughtError` 줄) → 같은 `no original path` 4회 더(약 13~15초 간격) → 11:31:22 `fixed path -> 7597,8027 in Sewers Level 3`(랜덤 걸음 중 3층으로 넘어가 경로가 생김, 약 1분 만에 풀림).
-  - 코드(261022 확인): `AutoSmurf.radament` 리더 쪽 `Pather.moveToExit(49, true)`(2층 → 3층) 결과를 보지 않고, 3층(49) 프리셋 355(라다먼트 옆 상자)까지 `while (거리 > 40) { try { Pather.moveToUnit(presetUnit, 10, 10) } catch (e) { Misc.caughtError("AutoSmurf.radament", e) } }`. 2층에 남으면 3층 좌표라 경로가 없고, throw를 catch가 잡아 while이 다시 돈다 → 1-4 무한 루프와 1-7(지역 이동 실패 뒤 다음 지역 좌표) 둘 다 해당. 이번엔 우연히 3층으로 넘어가 풀렸을 뿐. `moveToExit(49)`가 왜 실패했는지는 이 콘솔로는 모름(그 시각 trace의 `[useUnit] timeout` 줄로 확인 필요).
+  - 정정(사용자 261022): Claw Viper는 정상 종료였고, 계속 돈 곳은 하수구 라다먼트. 사용자 콘솔(10/22 11:30~11:31, a1): `no original path -> 7597,8027 in Sewers Level 2` → `AutoSmurf.radament: moveTo: Failed to generate path: 7597,8027 in Sewers Level 2 (Sewers Level 2 7521,6582)`(11:30:35, `Misc.caughtError` 줄) → 같은 `no original path` 4회 더(약 13~15초 간격) → 11:31:22 `fixed path -> 7597,8027 in Sewers Level 3`. 저절로 풀린 것이 아니라 사용자가 손으로 3층으로 옮김(사용자 정정 261022).
+  - 코드(261022 확인): `AutoSmurf.radament` 리더 쪽 `Pather.moveToExit(49, true)`(2층 → 3층) 결과를 보지 않고, 3층(49) 프리셋 355(라다먼트 옆 상자)까지 `while (거리 > 40) { try { Pather.moveToUnit(presetUnit, 10, 10) } catch (e) { Misc.caughtError("AutoSmurf.radament", e) } }`. 2층에 남으면 3층 좌표라 경로가 없고, throw를 catch가 잡아 while이 다시 돈다 → 1-4 무한 루프와 1-7(지역 이동 실패 뒤 다음 지역 좌표) 둘 다 해당. 손으로 옮기지 않았으면 계속 돌았다. `moveToExit(49)`가 왜 실패했는지는 이 콘솔로는 모름(그 시각 trace의 `[useUnit] timeout` 줄로 확인 필요).
 - 261022 문자열 검색(while 뒤 12줄 안에 try와 이동 함수, 탈출 조건은 하나씩 안 봄)으로 나온 후보: `travel`(10073,8670), `cube` 상자, `tombs`(46 출구·상자), `radament`(48·프리셋 40), `duriel` Orifice, `mephisto` 빨간 포털, `farmingSummoner` 저널, `usePortal` 대기 while(`den`·`andy`·`duriel`·`mephisto`·`farmingAndy`·`farmingMephisto`), `den`의 지역·마을 while.
 
 ### 1-5. `getQuest` bit 점검 (발견만)
@@ -71,7 +72,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - `getWP`: 웨이까지 거리 > 5면 `moveToUnit(wp, ..., random)`을 최대 5회(메뉴가 안 열릴 때마다) 부른다. 대각 오프셋(약 7.1) 프로필은 도착해도 늘 5를 넘고, 오프셋 5 프로필도 텔레 착지가 1칸만 어긋나면 5를 넘는다 → 다음 회차에 반대편(약 10~14칸 떨어진 자리)으로 다시 이동 → 왕복(가설, 사용자 관찰과 맞음, 로그 확인 전).
   - `goWP`: 프리셋까지 거리 > 10이면 random으로 `moveToPreset`을 최대 10회. 오프셋이 10보다 작아 보통 한 번에 끝난다(코드 기준).
 - 판별 방법은 검토에서 정한다(예: getWP 회차마다 웨이까지 거리·목표 좌표가 번갈아 바뀌는가).
-- 사용자 결정(261022): `getWP`의 random 좌표를 없앤다(사용자 수정 예정). `goWP`는 기준 10에 오프셋 최대 약 7.1이라 착지 오차가 약 3칸 넘을 때만 왕복할 수 있다(코드 기준) → 플라이 소서 버벅임과는 대체로 무관으로 보고 둔다.
+- 사용자 결정(261022): `getWP`의 random 좌표를 없앤다(사용자 수정 예정).
+- 텔레 travel 중 웨이 찍을 때 goWP가 관여하나(사용자 질문 261022, 코드 확인): 관여한다. `getWP`는 먼저 `goWP`(프리셋까지 > 10이면 random으로 `moveToPreset`)를 부르고, 그 다음 자기 단계(웨이까지 > 5면 random `moveToUnit`, 최대 5회)로 클릭한다. 왕복 가능성: goWP 단계는 기준 10에 오프셋 최대 약 7.1이라 착지 오차가 약 3칸을 넘을 때만, getWP 단계는 기준 5라 대각 프로필은 늘·오프셋 5 프로필은 1칸 오차로도. → 버벅임은 getWP 단계 쪽일 가능성이 크다(코드 기준, 로그 확인 전). getWP random을 없애면 goWP가 오프셋 자리(5~7칸)에 내린 뒤 getWP가 웨이 자체로 한 번 더 이동하고 끝난다(왕복은 없음).
 
 ### 1-10. 텔레포트가 제자리에 머묾 / 두 번에 한 번 씹힘 (`Pather.teleportTo`·`moveTo`, 사용자 관찰 261022, 원인 파악 필요)
 - 사용자 관찰: 텔레포트 때 제자리 텔레포트, 또는 텔레가 두 번에 한 번 씹히며 제자리를 유지하는 모습.
