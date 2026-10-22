@@ -17,11 +17,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - `[exit]`는 26 안에서 26 → 27 출구를 고를 때만 찍었다. 벽 쪽 진입을 정하는 7 → 26 출구 점은 찍히지 않았다. 옛 가설 "출구 점이 게이트 옆 벽인가"는 시험되지 않았다(틀렸다고 판정된 것 아님). `[exit]`는 261022 삭제.
 - **판단에 필요한 것**: 진행할지, 한다면 7 → 26 출구 점·동선을 볼 검증 방법. 사용자 아이디어(결정 아님): "Outer Cloister까지 경로를 만들면 게이트를 반드시 지난다."
 
-### 1-3. 부활형 우선: Fallen Shaman만
-- **문제**: 부활형 몹을 먼저 잡을지. 거리순 대전제와 충돌한다.
-- **확인된 것**: 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류했었다.
-- **판단에 필요한 것**: 범위를 Fallen Shaman만 우선순위에 두는 안으로 좁혀 진행할지(사용자 261022).
-
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
 
 ### 2-1. 팀 싱크 확장 (`AutoSmurf` readyCount·buffCount·syncBO·카우, 3-1 검증 뒤)
@@ -84,8 +79,14 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 검증 실패(261022 사용자 로그): a1 하수구 3층 `radament book visible: true 9,5 1`(11:32:34) → `Not enough room for undefined`(11:32:37) → `[Quit] getQuestItem failed`. `vanished` 줄 없음, 인벤토리에 빈칸 있었음(사용자).
   - 코드: `CanFit`은 실제 아이템만으로 빈칸을 센다(`Config.Inventory` 잠금 안 봄). `FindSpot`은 `Storage.Reload()`로 내 아이템을 다 훑은 뒤 `item.sizex/sizey`를 읽는다. trace의 이름 undefined = 그때 유닛 속성이 이미 사라짐.
 - **가설**(추정): `sizex` 확인 뒤 `FindSpot`이 크기를 읽기 전에 유닛이 사라져 크기가 undefined → 반복이 돌지 않아 "자리 없음". 누가 주웠는지·내가 가졌는지는 이 줄로 모름.
-- **구현안**(미정): 사라짐 확인을 `CanFit` 실패 뒤(자리 없음으로 판정하기 직전)로 옮기는 안과, 그때 `me.findItem(classid)`도 볼지. 대상 `AutoSmurf.getQuestItem` 한 함수.
+- **구현안**(사용자 채택 261022): 사라짐 확인(`item.sizex === undefined` → vanished 회수, 3회 넘으면 `<classid> vanished` return false, 아니면 delay 뒤 continue)을 `CanFit` 앞에서 `CanFit` 실패 뒤(`canMakeRoom` 판정 앞)로 옮긴다. `CanFit` 앞에서 이미 사라진 경우도 NaN으로 `CanFit`이 false가 되어 같은 갈래로 온다(지금 확인의 상위 집합). `me.findItem` 추가 확인은 하지 않는다(while 조건이 본다). 대상 `AutoSmurf.getQuestItem` 한 함수, 새 변수 없음.
 - **검증 방법**: `vanished` 줄이 찍히고 `Not enough room for undefined`가 없어지는가. `quest item vanished, retry N` trace는 사례를 본 뒤 삭제.
+
+### 2-11. Fallen Shaman 우선 (`Attack.clear`, 사용자 채택 261022, 옛 1-3)
+- **확인된 것**(코드): `Attack.clear` 4단계는 `target = nearestLive || nearest`(거리순) 뒤에 leash 루프(MUST가 `leashRange` 25 이상 멀어지면 MUST 우선)가 있다. entries에는 소탕 범위(호출 위치 기준) 또는 위험 범위(MUST가 살아 있을 때 내 주변) 안의 몹만 들어온다.
+- **구현안**: `target = nearestLive || nearest;` 바로 뒤, leash 루프 앞에 둔다(MUST leash가 그대로 이김). 노말 액트 1(`me.diff === 0 && me.act === 1`)에서 entries 중 MUST가 아니고 deferred가 아닌 샤먼(classid 58·59 = Fallen·Carver Shaman, monstats 기억이라 구현 전 확인 필요) 중 가장 가까운 것을 target으로. 샤먼이 unreachable·noskill이면 기존대로 drop. 수정 규모: `libs/Attack.js` 한 곳 약 8줄, 샤먼 id 목록(새 상수, 승인 필요).
+- **알려진 영향**: 근접 캐릭은 무리를 지나 샤먼까지 들어간다(이전 보류 사유, 사용자가 감수). 원거리는 사거리 자리로 이동해 친다.
+- **검증 방법**(Claude 제안): 노말 액트 1 구간(Den·Blood·Cain) 구간 시간, 낙오·`Party desynced` 빈도 전후 비교.
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
