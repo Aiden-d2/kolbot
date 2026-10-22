@@ -42,6 +42,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 사례(261022 로그, a1 Pz-52 뇌 구간): Flayer Dungeon Level 1(88)에서 Level 2(89)로 가는 `useUnit`이 `[useUnit] timeout` iter:4·5·6(07:03:56~58, dist 1~5, unit `10116,8024`)으로 7회 모두 실패 → 1층에 남은 채 `no original path -> 10014,11879 in Flayer Dungeon Level 1`(07:03:59) → 랜덤 걸음 10회 실패 → `[Error] moveTo: Failed to generate path`(07:04:14) → 게임 종료.
 - 코드(261022 확인): `useUnit`은 7회 뒤 `targetArea`에 못 가면 false를 돌려준다(throw 없음). `AutoSmurf.brain`은 `Pather.moveToExit([88, 89, 91], true)`의 결과를 보지 않고 바로 `Pather.moveTo(91 프리셋 406)`(뇌 상자, Level 3 좌표)로 간다 → 다른 지역 좌표라 경로가 날 수 없다.
 - 검토할 것: (1) useUnit이 유닛 바로 옆(dist 1~5)에서 왜 7회 모두 못 넘어갔나(클릭·패킷이 안 먹은 것인지, 핑인지: 로그에 근거 없음). (2) moveToExit 결과를 보지 않고 다음 지역 좌표로 가는 호출부가 brain 말고도 있는가. (3) 실패 시 처리(재시도·퇴장 등)를 어떻게 할지. 검증 방법(무엇을 보면 원인이 갈리는가)도 이 검토에서 정한다.
+- 3-7 웨이 실패와의 관계(사용자 질문 261022, 코드 확인): 웨이는 `Pather.useUnit`을 쓰지 않는다(`getWP`·`useWaypoint`가 직접 `getUnit(2, "waypoint")` → 클릭/`interact`). 증상도 다르다: 1-7은 유닛을 찾아 옆에서 7회 눌렀는데 못 넘어감, 3-7은 유닛 자체를 못 찾음(`waypoint unit not found`). 같은 원인인지는 미확인, 3-7 판별 trace 결과와 함께 본다.
 - 1-1의 다른 관찰(지역이 바뀐 직후 useUnit 무작위 이동이 옛 지역 좌표로, Pit of Acheron 같은 자리)은 1-1에서 사례를 더 모은다.
 
 ### 1-8. chores 20초 이상 멈춤 세부 검토 (`Town.clearInventory`·`buyPotions`, 3-8에서 이어짐, 사용자 261022)
