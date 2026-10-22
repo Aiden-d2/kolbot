@@ -88,6 +88,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 사용자 육안 관찰(261022): 화면 전환으로 보아 텔레 자체는 되는 것 같다. 위치가 거의 바뀌지 않는 좌표로 한 번 텔레하거나, 실패해 제자리 착지하는 경우 둘 중 하나로 보임. 서버가 West라 핑 차이 때문일 수도 있음(사용자 추정). 핑 문제라면 로그로 잡히지 않을 것 같다(사용자).
 - 볼 곳(코드): `teleportTo`의 시전·대기(`docs/code/Pather.md` teleportTo 260930 "시전 동작 기준 대기"), `moveTo` 노드 루프의 SafeTele(`safeCheckNode`가 고른 칸), 노드 간격(`teleDistance` 35).
 
+### 1-11. 웨이 유닛 못 찾음 (`Pather.getWP`·`useWaypoint`, 3-7 실패 2건, 사용자 261022)
+- 사례: a1 Pz-49·50 Catacombs Level 2 `[getWP] waypoint unit not found` → `useWaypoint`가 그 자리에서 `wp.area:null` 12회 → throw → 게임 종료(3-7).
+- 코드로 정해지는 것: `goWP` while은 프리셋 10칸 안이거나 10회 뒤 `[goWP] Failed` trace로만 끝난다 → 실패 줄이 없었으니 프리셋을 찾았다면 10칸 안에서 유닛 조회가 실패한 것. Pz-49는 `going to nearest WP`(프리셋 찾음) 확인. Pz-50은 d2bs 로그의 `going to nearest WP` 유무로 "프리셋 못 찾음(goWP가 움직이지 않음)"을 가른다(코드 수정 없음, 확인 전).
+- 다음: 10칸 안에서 12회 조회가 모두 실패하는 원인 후보부터 검토(결정 대기).
+
 ## 2. 결정됨, 수정 대기 (진행하기로 결정했고 수정 작업 전)
 
 261021 사용자 결정, 머지 뒤 다음 대화로 미룸.
@@ -102,6 +107,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 2-3. 콘솔 줄의 print 색 맞추기 (`D2Bot.printToConsole`, `tools/OOG.js`, 사용자 결정 261022, 구현은 나중에 논의)
 - 지금: `printToConsole`이 `print("[console] " + msg)`로 d2bs 로그에도 남기지만(3-9), 색 인자(매니저 색 번호: 기본 0, 빨강 9, 회색 10 등)를 쓰지 않아 게임 화면 색이 콘솔 색과 다르다.
 - 결정: 콘솔 색과 print 색을 일치시킨다. 방법(색 번호 → `ÿc` 코드 대응)은 구현할 때 논의.
+- 사용자 결정 261022: 기본색(0)은 print도 기본(코드 붙이지 않음).
 
 ### 2-4. 이동 무한 반복 막기 (`AutoSmurf.js` 호출부, `Pather.goWP`, 사용자 결정 261022, 수정은 다음 대화)
 - 목적: 실패했는데 throw가 없거나 catch가 막아 다음 코드가 실행되고, 없는 경로를 계속 다시 부르는 무한 반복을 막는다(배경 1-4, 사례 1-7·하수구 라다먼트).
@@ -112,9 +118,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ### 2-5. getWP random 좌표 제거 (`Pather.getWP`, 사용자 결정 261022)
 - 이유: getWP는 웨이까지 > 5면 random 오프셋(5 또는 약 7.1, 부를 때마다 부호 반대)으로 최대 5회 이동해 왕복할 수 있다(1-9, 코드 기준). goWP는 기준 10이라 그대로 둔다.
-
-### 2-6. getWP 판별 trace (`Pather.getWP`, 3-7, 사용자 결정 261022)
-- `[getWP] waypoint unit not found` 줄에 웨이 프리셋 좌표와 내 거리를 붙인다(1줄). 거리 > 10이면 goWP 도착 판정 문제, ≤ 10이면 유닛 조회 문제. 제거 조건: 판정.
 
 ## 3. 수정됨, 검증 대기 (수정 작업을 했고 게임에서 검증 전)
 
@@ -155,7 +158,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 바꾼 것: `clickWP` 삭제 → `Pather.getWP`(area 없으면 `me.area`). `goWP`·`getWP` random 이동.
 - 확인: 웨이 찍기·이용이 정상인가, 웨이 앞에서 겹쳐 서지 않는가.
 - 261022: `menu not opened` 72건 모두 try:1 안에 끝남. 실패 2건(a1 Pz-49·50 Catacombs 2층): goWP는 실패 줄 없이 끝났는데 `[getWP] waypoint unit not found` → `useWaypoint`는 유닛이 없으면 움직이지 않고 12회 재시도 뒤 throw → 게임 종료. 예전부터 간헐적으로 있던 원인 미상(사용자).
-- 결정(사용자 261022) → 2-6: getWP 판별 trace.
+- 결정(사용자 261022) → 옛 2-6 getWP 판별 trace는 기각(`rejected.md` getWP). 실패 원인은 1-11에서 검토.
 
 ### 3-8. 판별 trace와 cancel 삭제
 - 바꾼 것: H1 판별 trace(26 Monastery Gate 출구), chores 멈춤 판별 trace, heal 뒤 `me.cancel()`(260908 사용자 추가) 삭제. cancel 15곳 중 나머지는 유지(`stash` 시작의 cancel은 원본에도 있음).

@@ -77,6 +77,9 @@
 - **261001 SafeTele 후보에 나→후보 0x4 시야 검사** — 이유: 0x4는 SafeTele와 연관 없음(사용자).
 - **261001 clearPath true 이동에서 SafeTele 끄기** — 끄면 중간 노드에 그대로 착지해 모든 노드에서 clear·상자를 한다. 이유: 결함 근거가 없고 "안전하게 착지"와 "경로 위 무리를 빠짐없이 치기" 중 방침 문제라 지금대로(재검토 뒤 사용자 기각).
 
+### getWP
+- **261022 `[getWP] waypoint unit not found` 줄에 웨이 프리셋 좌표·거리 추가(옛 handoff 2-6)** — 목적은 "웨이 앞에 못 감(> 10)"과 "갔는데 유닛 조회 실패(≤ 10)"를 가르는 것. 이유: 내 위치는 `Misc.trace`가 이미 붙이고, `goWP` while은 프리셋 10칸 안이거나 10회 뒤 `[goWP] Failed` trace로만 끝나므로 실패 줄이 없으면 코드상 ≤ 10(Pz-49는 `going to nearest WP`로 프리셋 찾음도 확인). 남는 "프리셋 못 찾음"은 d2bs 로그의 `going to nearest WP` 유무로 가려진다. 판정이 나와도 다음 할 일이 바뀌지 않는다(Claude 검토, 사용자 수용 261022).
+
 ### journeyTo
 - **261001 journeyTo throw 방어** — 이유: 기각·보류.
 
