@@ -108,6 +108,9 @@
 ### moveToSpot
 - **261001 `alkor error`를 `Misc.quitGame`으로** — 알코어 자리 이동이 90초 넘고 알코어가 안 보일 때만 `quit()` 직접 호출. 이유: 발현 없음(메모만).
 
+### socketGems
+- **261022 아이템 작업 콘솔 줄을 `[종류] 공식 -> 베이스`로 통일**(룬워드·리셋·큐빙·젬드) — 이유: 사용자 기각(원안 유지). 큐빙 `[Socket]`·`[Rune]`·`[Token Of Absolution]`은 공식 이름이 없어 일부 줄만 화살표 모양이 되고, `CLAUDE.md` 4절 "진행 요약은 기존대로"와도 부딪힌다. 젬드는 기존 형식 `# [Gem] 보석 베이스 (n/m)`.
+
 ## threads/ToolsThread.js
 
 ### togglePause
