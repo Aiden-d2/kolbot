@@ -81,7 +81,7 @@
 | `docs/log_results.md` | 로그 분석 결과 (묶음마다 쌓음) |
 | `docs/log_guide.md` | 로그 분석 지침 |
 | `docs/D2BS_Structure.md` | D2BS / kolbot 구조 참조, 확인된 엔진·게임 사실 |
-| `docs/attack_flow.md` | clear / setPosition 흐름 해설 (공부용) |
+| `docs/attack_flow.md` | clear / setPosition 흐름 정리 |
 | `docs/skill_range.md` | 스킬 사거리 (공식, 측정, 현재 값). 사거리 정보는 빠짐없이 여기에 기록한다 |
 | `docs/quest_flags.md` | 퀘스트 플래그 표 (1.14d) |
 | `docs/crash_analysis.md` | 크래시 분석 절차와 유형별 결과 |
