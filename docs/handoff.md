@@ -104,11 +104,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 2-2. print/trace 중복 정리 (18(2), 3절 검증 뒤)
 - 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤에 한다(사용자 결정 261021). 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
 
-### 2-3. 콘솔 줄의 print 색 맞추기 (`D2Bot.printToConsole`, `tools/OOG.js`, 사용자 결정 261022, 구현은 나중에 논의)
-- 지금: `printToConsole`이 `print("[console] " + msg)`로 d2bs 로그에도 남기지만(3-9), 색 인자(매니저 색 번호: 기본 0, 빨강 9, 회색 10 등)를 쓰지 않아 게임 화면 색이 콘솔 색과 다르다.
-- 결정: 콘솔 색과 print 색을 일치시킨다. 방법(색 번호 → `ÿc` 코드 대응)은 구현할 때 논의.
-- 사용자 결정 261022: 기본색(0)은 print도 기본(코드 붙이지 않음).
-
 ### 2-4. 이동 무한 반복 막기 (`AutoSmurf.js` 호출부, `Pather.goWP`, 사용자 결정 261022, 수정은 다음 대화)
 - 목적: 실패했는데 throw가 없거나 catch가 막아 다음 코드가 실행되고, 없는 경로를 계속 다시 부르는 무한 반복을 막는다(배경 1-4, 사례 1-7·하수구 라다먼트).
 - ① 이동(moveTo 계열)을 감싼 호출부 catch를 없앤다 → `moveTo`의 경로 실패 throw(랜덤 걸음 10회 뒤)가 로더까지 올라가 게임 종료. 래핑 함수(`moveToExit`·`moveToUnit`·`moveToPreset`·`useUnit`)는 이미 전파하므로 바꾸지 않는다. 막는 곳은 `AutoSmurf.js`의 이동을 감싼 catch와 `Pather.goWP`의 catch. 근거: 261022 로그에 `Misc.caughtError` 0건(catch로 복구된 사례 없음).
@@ -168,7 +163,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-9. 콘솔·trace 추가
 - 바꾼 것: 눈·심장·뇌 `!!! X !!!`(getQuestItem 성공, 리더), `D2Bot.printToConsole`이 `print("[console] " + msg)`도 함, `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).
 - 확인: 줄이 형식대로 찍히는가.
-- 261022: 통과(눈·심장·뇌 콘솔 중복은 사용자 업로드 `d8af14f`에서 정리). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로. print 색은 2-3.
+- 261022: 통과(눈·심장·뇌 콘솔 중복은 사용자 업로드 `d8af14f`에서 정리). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로. print 색 맞추기(옛 2-3)는 기각(`rejected.md` printToConsole).
 
 ### 3-10. 라다먼트 `radamentOff` (`AutoSmurf.radament`)
 - 바꾼 것: N+1 `Radament book reset` 직전 리더 캐시 `radamentOff = true`. N+2 리더가 라다먼트 차례에 읽고 지운 뒤 콘솔 `Radament off: tombs, quit at 10 min` → `me.maxgametime = 10분`(엔진이 게임 시작부터 10분에 나감, 다음 게임에 default.dbj가 원래 값으로) → tombs 한 번. 라다먼트 차례엔 써모너가 끝나 리더는 캐니언 WP가 있고, 없는 팔로워는 리더 포털로 들어감. D2BS는 게임 단위 퀘스트 상태(완료 불가)를 읽는 함수가 없어 캐시 표시로 함.

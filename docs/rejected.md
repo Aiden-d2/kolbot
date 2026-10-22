@@ -125,5 +125,10 @@
 ## tools/NTItemParser.dbl
 - **261021 NTIP `Qty`/`.Tier` 게이트** — 이유: 사용자 기각.
 
+## tools/OOG.js
+
+### printToConsole
+- **261022 콘솔 줄의 print 색을 콘솔 색과 맞춤(옛 handoff 2-3)** — `print("[console] " + msg)`에 색 번호에 맞는 `ÿc` 코드를 붙이는 안(대응표는 `D2BS_Structure.md` OOG.js). 이유: 색이 쓸모 있는 곳은 게임 화면 콘솔뿐이고, 같은 줄은 매니저 콘솔(색)·trace에 이미 있으며 줄 종류는 글자로 구분된다. d2bs 로그 파일에는 코드가 글자로 남아 군더더기가 된다(사용자 기각).
+
 ## D2BotLead.dbj / D2BotFollow.dbj (게임 밖)
 - **261001 로그인 대기 창 무한 대기 처리** — 내장 `login()`(D2BS 엔진) 안이라 손댈 수 없다. JS 교체는 비밀번호를 얻을 방법이 없어 기각, 감시 스레드도 기각. 서버 다운 처리도 기각.
