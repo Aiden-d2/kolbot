@@ -11,6 +11,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 아케인(261013 Pz-37): a1이 같은 자리(25447,5450)에서 `moveTo no path -> 25019,5454` → `adjusted path -> 25019,5454`(보정 칸 = 원래 목표)를 5,932회 반복. 손으로 캐릭터를 옮기자 경로가 생김 → 출발 위치에 따라 경로가 달라짐. 써모너 리더 while은 사용자가 throw로 끝나게 고침(main `3900f04`·`c002b48`). 남은 경우: 경로는 있는데 `moveTo`가 false(throw 없음)면 while이 계속 돈다(코드 확인, 사례 없음).
   - Jail 2층(4건: 261006 17770,8131 / 10/14 17530,8071 / 10/19 17770,8011, 모두 목표 y 8000대): 사용자 가설(3층 대신 1층 쪽으로 돌아간 뒤 3층 출구로 경로 없음)과 맞는 자료이나 경로가 없는 이유는 미확인.
 - **관찰 로그 안(결정 없음):** `moveTo no path` 줄에 엔진 `getCollision(area, 목표)`·`getCollision(area, 내 위치)`(목표가 0xFFFF면 맵 미로드, 내 칸에 막힘·회피 비트면 출발 칸 문제). 그 뒤 사용자 업로드(`b1b5887`)로 빈 경로 처리 줄과 랜덤 걸음이 바뀌어, 이 안을 쓸지 다시 봐야 한다.
+- 261022 로그: 빈 경로 폴백 성공(원래 목표로 19, 보정 칸으로 23). 끝내 실패해 게임이 끝난 6건 관찰(분류 확정 아님): 지역이 바뀐 직후 `useUnit` 무작위 이동이 옛 지역 좌표로(Tal Rasha #4·Harem 1·Claw Viper 2), 지역 이동 실패 뒤 다음 층 좌표로(Flayer Dungeon 1), 같은 자리 `12700,7584`에서 못 움직임(Pit of Acheron 2건). 6건 모두 랜덤 걸음 10회 실패, 4건은 위치가 그대로.
+- 사용자 결정 261022: 사례를 더 모은다. 위 유형만 있다고 단정할 수 없고, 핑 문제인지 정말 경로가 없었는지도 불분명.
 
 ### 1-2. Monastery Gate 동선 H1 (`AutoSmurf.outer`, `Pather.moveToExit`)
 - 문제(사용자 설명 261022): Tamoe Highland(7) → Monastery Gate(26) → Outer Cloister(27)로 갈 때 26의 모양이 특수해서, 가장 짧은 길이 아니라 벽 쪽으로 들어간 뒤 중앙 게이트를 거쳐 27로 넘어간다. 목적: 벽 쪽 진입 자리에서 게이트까지 가는 거리를 줄인다(게이트로 바로 도착하게 할 수 있는가).
@@ -19,17 +21,38 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 지금 trace로 판정 못 하는 이유: `[exit]`는 26 안에서 26 → 27 출구를 고를 때만 찍는다(`me.area === 26`). 벽 쪽 진입을 정하는 7 → 26 출구 점(Tamoe Highland 쪽에서 고른 좌표)은 찍히지 않는다. 옛 가설 문구 "출구 점이 게이트 옆 벽인가"는 이 로그로 시험되지 않았다(틀렸다고 판정된 것 아님).
 - 다음: `[exit]`는 261022 삭제(게이트·진입 자리 좌표는 위에 기록, 7 → 26 출구·동선은 이 줄에 없음). 새 검증 방법을 정한다(결정 대기).
 
-### 1-3. 부활·소환형(샤먼) 우선 (보류)
-- 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류함.
+### 1-3. 부활형 우선: Fallen Shaman만 (검토 필요, 사용자 261022)
+- 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류했었다.
+- 261022 사용자: 범위를 Fallen Shaman만 우선순위에 두는 안으로 좁혀 검토한다.
 
-### 1-4. while + catch 무한 루프 (보류, 기록만)
-- `AutoSmurf.js`의 `while (목표까지 거리 > N) { try { moveToPreset/moveTo/moveToExit } catch { print } }`는 탈출 조건이 없다. 경로 계산이 계속 실패하면 같은 자리에서 무한 반복(260930 기준 10곳: Arcane, moveToExit, WP, Cube 상자, 저널 2곳, 탈무덤 상자, 3557, Orifice, 빨간 포털). 써모너 리더 while은 1-1처럼 사용자가 고침.
+### 1-4. while + catch 무한 루프 (나머지 곳 상태와 수정 필요 여부 검토 필요, 사용자 261022)
+- `AutoSmurf.js`의 `while (목표까지 거리 > N) { try { moveToPreset/moveTo/moveToExit } catch { print } }`는 탈출 조건이 없다. 경로 계산이 계속 실패하면 같은 자리에서 무한 반복(260930 기준 10곳: Arcane, moveToExit, WP, Cube 상자, 저널 2곳, 탈무덤 상자, 3557, Orifice, 빨간 포털). 써모너 리더 while은 사용자가 고침(throw로 끝냄). moveToExit 쪽 상당수는 3-3(`clearToExit` 삭제)에서 한 번 시도로 바뀜.
+- 261022 문자열 검색(while 뒤 12줄 안에 try와 이동 함수, 탈출 조건은 하나씩 안 봄)으로 나온 후보: `travel`(10073,8670), `cube` 상자, `tombs`(46 출구·상자), `radament`(48·프리셋 40), `duriel` Orifice, `mephisto` 빨간 포털, `farmingSummoner` 저널, `usePortal` 대기 while(`den`·`andy`·`duriel`·`mephisto`·`farmingAndy`·`farmingMephisto`), `den`의 지역·마을 while.
 
 ### 1-5. `getQuest` bit 점검 (발견만)
 - `quest_flags.md` 끝의 "kolbot 코드 참조 점검": 14,1·26,1은 항상 거짓, 4,1은 보상 뒤 꺼짐, 22,12는 레드포탈 조건(22,0 또는 22,13)과 다름, 20,6 주석은 의미가 다름.
 
-### 1-6. MoveToSlot 실패 원인 (판별 불가)
-- 실패 줄 유지, `inv:` 필드는 삭제(261020). 실패 34건 중 33건 `closed`·1건 `-`, 창을 여는 코드가 없어 성공도 `closed`일 것 → 원인 판별 불가.
+### 1-6. MoveToSlot 실패 원인 (`Storage` MoveToSlot, `PartyThread` 파티 수락)
+- 실패 줄 유지, `inv:` 필드는 삭제(261020). 실패 34건 중 33건 `closed`·1건 `-`, 창을 여는 코드가 없어 성공도 `closed`일 것 → 창 상태로는 판별 불가.
+- 판별 방법(261021, 3-9에서 추가): 팔로워 파티 수락 trace `party accept: 이름`(`PartyThread`). 실패 줄 `[MoveToSlot] ... FAILED`와 같은 시각(같은 초)에 수락이 있으면 수락 클릭이 옮기던 물약을 방해한 것으로 본다(가설). 겹침이 없으면 이 가설은 틀림.
+- 261022 로그: `party accept` 579줄, MoveToSlot 실패 0건(65게임) → 판정할 사례 없음. 실패가 다시 나오면 판정.
+
+### 1-7. useUnit 지역 이동 실패 뒤 다음 지역 좌표로 이동 (1-1 B유형, `Pather.useUnit`·`moveToExit`, 호출부, 검증·개선 방법 찾기, 사용자 261022)
+- 사용자 판단: getPath 문제가 아니라 useUnit(지역 이동 실패)과 그 뒤 처리 문제. 1-1과 따로 검토한다.
+- 사례(261022 로그, a1 Pz-52 뇌 구간): Flayer Dungeon Level 1(88)에서 Level 2(89)로 가는 `useUnit`이 `[useUnit] timeout` iter:4·5·6(07:03:56~58, dist 1~5, unit `10116,8024`)으로 7회 모두 실패 → 1층에 남은 채 `no original path -> 10014,11879 in Flayer Dungeon Level 1`(07:03:59) → 랜덤 걸음 10회 실패 → `[Error] moveTo: Failed to generate path`(07:04:14) → 게임 종료.
+- 코드(261022 확인): `useUnit`은 7회 뒤 `targetArea`에 못 가면 false를 돌려준다(throw 없음). `AutoSmurf.brain`은 `Pather.moveToExit([88, 89, 91], true)`의 결과를 보지 않고 바로 `Pather.moveTo(91 프리셋 406)`(뇌 상자, Level 3 좌표)로 간다 → 다른 지역 좌표라 경로가 날 수 없다.
+- 검토할 것: (1) useUnit이 유닛 바로 옆(dist 1~5)에서 왜 7회 모두 못 넘어갔나(클릭·패킷이 안 먹은 것인지, 핑인지: 로그에 근거 없음). (2) moveToExit 결과를 보지 않고 다음 지역 좌표로 가는 호출부가 brain 말고도 있는가. (3) 실패 시 처리(재시도·퇴장 등)를 어떻게 할지. 검증 방법(무엇을 보면 원인이 갈리는가)도 이 검토에서 정한다.
+- 3-7 웨이 실패와의 관계(사용자 질문 261022, 코드 확인): 웨이는 `Pather.useUnit`을 쓰지 않는다(`getWP`·`useWaypoint`가 직접 `getUnit(2, "waypoint")` → 클릭/`interact`). 증상도 다르다: 1-7은 유닛을 찾아 옆에서 7회 눌렀는데 못 넘어감, 3-7은 유닛 자체를 못 찾음(`waypoint unit not found`). 같은 원인인지는 미확인, 3-7 판별 trace 결과와 함께 본다.
+- 1-1의 다른 관찰(지역이 바뀐 직후 useUnit 무작위 이동이 옛 지역 좌표로, Pit of Acheron 같은 자리)은 1-1에서 사례를 더 모은다.
+
+### 1-8. chores 20초 이상 멈춤 세부 검토 (`Town.clearInventory`·`buyPotions`, 3-8에서 이어짐, 사용자 261022)
+- 사용자 판단: clearInventory든 buyPotions든 20초 이상 멈추는 조건이 어디서 생길 수 있는지 파악한다. 물약 문제이고 두 함수가 비슷한 로직을 가졌다면 둘 다 설명된다.
+- 261022 로그: clearInventory 226건(5초 초과만 찍힘, 중앙 7.8초, 20초 이상 19, 최대 47.4초), buyPotions 302건(중앙 8.9초, 20초 이상 1(21.6초, a2 Lut Gholein), 최대 21.6초). `buy failed` 7건은 모두 a2 골드 부족. 긴 clearInventory가 여러 프로필에서 같은 시각에 몰림(22:13 a5·a7, 00:06 a4·a6·a7, 00:13 a2·a3, 02:05 a4·a5·a7). 게임 시작 직후만은 아님(20초 이상 19건 중 7건이 게임 시작 40초 안). 긴 사례 여럿(a6 00:06:18 47.4초, a7 00:06:02 21.7초)은 clearInventory 동안 ItemLog·trace가 없음 → 그 사례에서는 인벤토리 팔기·버리기(ItemLog 남김)·큐브 비우기(trace 남김)가 아님.
+- 코드(261022 확인): `doChores` 순서 heal → identify → clearInventory → fillTome → buyPotions(제자리에서 돌아 heal NPC 앞에서 멈춘 것처럼 보임).
+  - clearInventory 단계: ① 벨트 물약 되돌리기(인벤토리 물약마다 4열을 돌며 맞는 열에 클릭, 클릭마다 `delay(ping*2+200)`, 기록 없음) ② 큐브 비우기(trace) ③ 보관함 비우기(overhead만) ④ 인벤토리 팔기·버리기(ItemLog, 4는 `initNPC("Shop")` 뒤 판매).
+  - buyPotions: `initNPC("Shop", "buyPotions")` → 벨트 4열마다 shift 구매(`delay(ping*2+200)`) 또는 열 칸 수만큼 구매 → HP·MP 버퍼 구매. 공통점: 둘 다 벨트 물약 열(`checkColumns`)을 다룬다. buyPotions는 NPC 열기(`initNPC`)도 있다.
+- 지금 로그로 못 가르는 이유: 두 함수 모두 전체 시간만 찍혀 안의 어느 단계인지 모름.
+- 검토할 것: 두 함수에서 20초 이상이 날 수 있는 반복·대기 조건(벨트 열 계산, 클릭·구매 실패 시 반복, NPC 열기 재시도)을 코드로 찾고, 단계별 시간 trace(5초 초과만) 등 판별 방법을 정한다. Claude 제안(261022, 미결정): 단계별 시간 trace — 벨트 단계가 길면 물약 수·클릭 횟수, 보관함 단계가 길면 옮기던 물건을 본다.
 
 ## 2. 결정됨, 수정 대기 (진행하기로 결정했고 수정 작업 전)
 
@@ -46,13 +69,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 지금: `printToConsole`이 `print("[console] " + msg)`로 d2bs 로그에도 남기지만(3-9), 색 인자(매니저 색 번호: 기본 0, 빨강 9, 회색 10 등)를 쓰지 않아 게임 화면 색이 콘솔 색과 다르다.
 - 결정: 콘솔 색과 print 색을 일치시킨다. 방법(색 번호 → `ÿc` 코드 대응)은 구현할 때 논의.
 
-### 2-4. 골드 받기 리더 대기 1000 → 200ms (`AutoSmurf` 골드 받기 루프, 사용자 결정 261022)
-- 261022 로그: 리더가 00:16 게임 7더미 중 3, 02:41 게임 8더미 중 5만 받음. 리더는 더미마다 `delay(1000)` → 줍기 → 보관함 넣기를 반복해 더미당 4~9초, 팔로워는 버린 뒤 15초에 `Retaking`(바닥의 아무 더미). 시각이 맞는 설명이나 원인 확정 아님(02:41 게임 리더 19초 빈 곳은 원인 모름).
-- 결정: 리더 대기를 200ms로 바꿔 다시 돌린다. 그래도 문제면 재논의.
-
 ## 3. 수정됨, 검증 대기 (수정 작업을 했고 게임에서 검증 전)
 
-**261022 로그 결과와 다음 단계(사용자 결정 261022, 근거는 `log_results.md` 261022 묶음).** 3-2·3-5·3-9·3-15는 이번 로그로 통과했지만 사례가 적어 한 싸이클 더 관찰하고, 이변이 없으면 코드 노트로 옮긴다. 3-4·3-11도 한 싸이클 더 본다.
+**261022 로그 결과와 다음 단계(사용자 결정 261022, 근거는 `log_results.md` 261022 묶음).** 3-2·3-5·3-9·3-15는 이번 로그로 통과했지만 사례가 적어 한 싸이클 더 관찰하고, 이변이 없으면 코드 노트로 옮긴다. 3-1·3-4·3-11도 한 싸이클 더 본다. 3-14는 통과해 `docs/code/Pickit.md`로 옮김.
 
 261021 수정분(커밋 `eddab3a`·`ab94751`, 정적 분석만)과 261020 확인용 로그.
 
@@ -88,10 +107,13 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-7. `clickWP` 삭제, 웨이 random (`Pather.getWP`·`goWP`)
 - 바꾼 것: `clickWP` 삭제 → `Pather.getWP`(area 없으면 `me.area`). `goWP`·`getWP` random 이동.
 - 확인: 웨이 찍기·이용이 정상인가, 웨이 앞에서 겹쳐 서지 않는가.
+- 261022: `menu not opened` 72건 모두 try:1 안에 끝남. 실패 2건(a1 Pz-49·50 Catacombs 2층): goWP는 실패 줄 없이 끝났는데 `[getWP] waypoint unit not found` → `useWaypoint`는 유닛이 없으면 움직이지 않고 12회 재시도 뒤 throw → 게임 종료. 예전부터 간헐적으로 있던 원인 미상(사용자).
+- 결정(사용자 261022, 수정 전): `[getWP] waypoint unit not found` 줄에 웨이 프리셋 좌표와 내 거리를 붙인다. 거리 > 10이면 goWP 도착 판정 문제, ≤ 10이면 유닛 조회 문제. 제거 조건: 판정.
 
 ### 3-8. 판별 trace와 cancel 삭제
 - 바꾼 것: H1 판별 trace(26 Monastery Gate 출구), chores 멈춤 판별 trace, heal 뒤 `me.cancel()`(260908 사용자 추가) 삭제. cancel 15곳 중 나머지는 유지(`stash` 시작의 cancel은 원본에도 있음).
 - 확인: H1 trace 결과로 1-2 판단(261022 로그로는 판정 못 함, 1-2 참고), chores 멈춤 재발 여부.
+- 261022 chores 멈춤: 재발(사용자 확인), 세부 검토는 1-8. 멈추는 함수는 clearInventory(20초 이상 19건, 최대 47.4초). buyPotions는 최대 21.6초(20초 이상 1건). clearInventory 안의 단계(벨트 물약 되돌리기 / 큐브 / 보관함 / 인벤토리 팔기·버리기)는 시간이 없어 특정 못 함. 긴 사례 여럿(a6 00:06 47.4초, a7 00:06 21.7초 등)은 clearInventory 안에 ItemLog·trace가 하나도 없어 팔기·버리기·큐브 단계는 아님(인벤토리 판매·버림은 ItemLog, 큐브는 trace를 남김) → 남는 것은 기록을 남기지 않는 벨트 물약 되돌리기·보관함 비우기(추정, 코드 기준).
 
 ### 3-9. 콘솔·trace 추가
 - 바꾼 것: 눈·심장·뇌 `!!! X !!!`(getQuestItem 성공, 리더), `D2Bot.printToConsole`이 `print("[console] " + msg)`도 함, `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).
@@ -124,18 +146,13 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-12. 골드 나눔 줄 (`AutoSmurf.giveGold`, 261020 사용자)
 - 동작: 주는 양 = 골드 − LowGold, 그것이 1000 미만이면 골드 − 5000. 리더가 골드를 받는 것이 LowGold보다 우선(사용자 의도). 예전 식은 LowGold 아래 팔로워의 양이 음수가 되어 실제로 주고받지 못했음.
 - 확인: trace `Picking up/Dropping/Retaking N Gold`가 음수 없이 찍히고 리더가 받는가. 확인 뒤 줄 삭제.
-- 261022: 음수 없음. 리더는 일부만 받음 → 2-4.
+- 261022: 음수 없음. 리더가 00:16 게임 7더미 중 3, 02:41 게임 8더미 중 5만 받음. 리더는 더미마다 `delay(1000)` → 줍기 → 보관함 넣기를 반복해 더미당 4~9초, 팔로워는 버린 뒤 15초에 `Retaking`(바닥의 아무 더미). 시각이 맞는 설명이나 원인 확정 아님(02:41 게임 리더 19초 빈 곳은 원인 모름).
+- 261022 사용자 수정(`bb94fac`·`284a5aa`): `pickGold` 반복 15회 × 1초 → 50회 × `ping*2+100`, 시작 때 보관함 넣기 삭제, 보관함 넣기 조건 골드 있음 → `charlvl × 10000` 이상, `giveGold` 대기 15초 → 10초(다시 줍기 `i >= 9`), 그 밖 `ping*2+500` → `ping*2+200`. 그래도 문제면 재논의.
+- 확인: 리더가 모든 더미를 받는가(`Picking up` 수 = `Dropping` 수).
 
 ### 3-13. 그 밖의 확인용 줄
 - `dropping radament book`(시작 단계 북 버리기 무한 루프 수정 확인용, 47816e6). 확인 뒤 삭제.
 - `Not enough room for <이름>`(이름 undefined) → 3-6과 함께 본다.
-
-### 3-14. `canMakeRoom` 0·4 (`Pickit.canMakeRoom`, 261021)
-- 바꾼 것: 0·4는 `Town.ignoredCheck`가 참이면 자리를 만들 수 있다고 본다(마을 clearInventory 인벤토리 정리와 같은 판정: 0은 팔거나 버림, 4는 팖). 예전에는 0은 건너뛰고 4는 스태시 빈자리(`canStash`)로 판정해, 비울 수 있는데도 `Not enough room`으로 포기했다. 5(소켓 보석, 3-15)는 건너뜀. 261021 사용자 기각이었으나 소켓 작업(3-15)에서 같은 판정이 걸려 다시 보고 반영(사용자 결정 261021).
-- 감수: clearInventory의 4 판매가 계속 실패하면 마을 왕복이 반복된다(기존 코드도 스태시에 자리가 있으면 같음).
-- 확인 로그(Claude 추가 261021, 사용자 승인): trace `make room: <이름> (result 0|4)`(마을로 가게 한 물건, 261022 삭제), `make room skip: <이름> (result 5)`(261022 삭제: 보석을 훑을 때마다 찍혀 "보석 때문에 포기"를 재지 못함).
-- 261022: 통과(사용자 확인). `make room` 21건 모두 그 물건이 ItemLog `Sold`/`Dropped`, 되풀이 0. 판정은 clearInventory 인벤토리 정리와 같은 코드(`Storage.Inventory.Compare` + `ignoredCheck` + `checkItem` 0 버림·4 팖)라 반대 방향 확인 불필요. 다시 줍기는 `visitTown` 뒤 `pickItems(10)`이 하고, 실패면 `make room`이 되풀이돼 보임. `make room skip` 0건.
-- 확인: `make room` 뒤 같은 물건의 ItemLog `Sold`·`Dropped`가 있고 돌아와 줍는가 → 맞음. 같은 이름의 `make room`이 되풀이되면 왕복 반복 → 그 물건이 왜 안 치워졌는지 본다. 확인 뒤 두 줄 삭제(261022 둘 다 삭제).
 
 ### 3-15. 소켓 보석 (`Pickit.checkItem`·`socketTargets`·`pickItem`, `Town.socketGems`·`doChores`, `Misc.itemLogger`, 261021)
 - 바꾼 것(사용자 결정 261021):
