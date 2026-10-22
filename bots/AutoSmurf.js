@@ -25,9 +25,8 @@ function AutoSmurf() {
 // -------- Other Settings ----------------
 		Leader = false,
 		Boer = false,
-		myPos = Team.Profiles.indexOf(me.profile),	//261002 profile number - 1 (0~7), shared by the offset and the Alkor wait
-		myX = [-5, 0, 5, 5, 5, 0, -5, -5][myPos % 8],	//261002 8 directions around the spot: 1 2 3 / 8 . 4 / 7 6 5 (profile 1 top-left, clockwise)
-		myY = [-5, -5, -5, 0, 5, 5, 5, 0][myPos % 8],	//261002
+		myX = [-5, 0, 5, 5, 5, 0, -5, -5][Team.Profiles.indexOf(me.profile) % 8],	//261022 8 directions around the spot: 1 2 3 / 8 . 4 / 7 6 5 (profile 1 top-left, clockwise)
+		myY = [-5, -5, -5, 0, 5, 5, 5, 0][Team.Profiles.indexOf(me.profile) % 8],	//261022
 		
 		imReady,
 		readyCount = 0,

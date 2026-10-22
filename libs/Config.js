@@ -80,7 +80,7 @@ var Config = {
 		Angle: 75,	//261022 60 -> 75 (back to the 10-03 value: compare the lag with the landing check moved after the monster count)
 		Step: 5,	//261022 7 -> 5
 		Min: 10,	//261022 7 -> 10
-		Skip: [62, 63, 64, 77, 78, 120, 132],	//120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
+		Skip: [62, 63, 64, 120, 132],	//120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
 		Soul: false
 	},
 
