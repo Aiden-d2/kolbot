@@ -65,6 +65,13 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 웨이는 `useUnit`을 쓰지 않는다(`getWP`·`useWaypoint`가 직접 `getUnit(2, "waypoint")`). 2-4 B유형(유닛을 찾아 옆에서 눌렀는데 못 넘어감)과 증상이 다르다(유닛 자체를 못 찾음).
 - 검토할 것: 10칸 안에서 12회 조회가 모두 실패하는 원인 후보와 수정 방향.
 
+### 2-10. getQuestItem 사라진 유닛 확인 위치 (`AutoSmurf.getQuestItem`, 옛 3-6 검증 실패, 261022)
+- 지금 코드(261021, 옛 3-6): `CanFit` 전에 `item.sizex === undefined`면 다시 찾기 3회, 넘으면 `<classid> vanished`. 그 밖은 `CanFit` 실패 → `canMakeRoom` 실패 → `Not enough room for <이름>` → `return false` → `[Quit] getQuestItem failed`.
+- 검증 실패(261022 사용자 로그): a1 하수구 3층 `radament book visible: true 9,5 1`(11:32:34) → `Not enough room for undefined`(11:32:37) → `[Quit] getQuestItem failed`. `vanished` 줄 없음, 인벤토리에 빈칸 있었음(사용자).
+- 확인된 것(코드): `CanFit`은 실제 아이템만으로 빈칸을 센다(`Config.Inventory` 잠금 안 봄). `FindSpot`은 `Storage.Reload()`로 내 아이템을 다 훑은 뒤 `item.sizex/sizey`를 읽는다. trace의 이름 undefined = 그때 유닛 속성이 이미 사라짐.
+- 가설(추정): `sizex` 확인 뒤 `FindSpot`이 크기를 읽기 전에 유닛이 사라져 크기가 undefined → 반복이 돌지 않아 "자리 없음". 누가 주웠는지·내가 가졌는지는 이 줄로 모름.
+- 검토할 것: 사라짐 확인을 `CanFit` 실패 뒤(자리 없음으로 판정하기 직전)로 옮기는 안과, 그때 `me.findItem(classid)`도 볼지. 검증: `vanished` 줄이 찍히고 `Not enough room for undefined`가 없어지는가.
+
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
 **261022 로그 결과와 다음 단계(사용자 결정 261022, 근거는 `log_results.md` 261022 묶음).** 3-2·3-5·3-9·3-15는 이번 로그로 통과했지만 사례가 적어 한 싸이클 더 관찰하고, 이변이 없으면 코드 노트로 옮긴다. 3-1·3-4·3-11도 한 싸이클 더 본다. 3-14는 통과해 `docs/code/Pickit.md`로 옮김.
@@ -91,15 +98,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 바꾼 것: default.dbj면 `visitTown` 직접(멈춤 없음). `visitTown`이 `goToTown` 동안 `Config.TownCheck`를 꺼(끝나면 원래 값) 포털로 가는 moveTo 안의 재진입을 막음(직접 호출·화살통 경로 모두). TownChicken(visitTown 안에서만 부름)·MapHelper(default와 동시에 움직임)는 기존 메시지.
 - 확인: `Town check` 마을행이 정상 왕복하는가, 재진입(마을행 중 또 마을행) 없음.
 - 261022: 통과(58건, 중첩 0). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로.
-
-### 3-6. getQuestItem 사라진 유닛 (`AutoSmurf.getQuestItem`)
-- 바꾼 것: `CanFit` 전에 유닛이 사라졌으면(`sizex` undefined, `JSUnit.cpp:191-194`) 다시 찾기 3회, 넘으면 `<classid> vanished`(`Not enough room`으로 가지 않음).
-- 확인: trace `vanished` 줄, `Not enough room for undefined`가 사라졌는가.
-- 261022 사용자 로그: 해소 안 됨. a1 하수구 3층 `radament book visible: true 9,5 1`(11:32:34) → `Not enough room for undefined`(11:32:37) → `[Quit] getQuestItem failed`. `vanished` 줄 없음, 인벤토리에 빈칸 있었음(사용자).
-  - 코드(261022 확인): `CanFit`은 실제 아이템만으로 빈칸을 센다(`Config.Inventory` 잠금은 안 봄). `sizex` 확인 → `CanFit`(`FindSpot` 안에서 `Storage.Reload()`로 내 아이템을 다 훑은 뒤 `item.sizex/sizey`를 읽음) → 실패면 `canMakeRoom` → trace `item.name`. 이름이 undefined = trace 때 유닛 속성이 이미 사라짐.
-  - 가설(추정): `sizex` 확인 뒤 `FindSpot`이 크기를 읽기 전에 유닛이 사라져(누가 주움) 크기가 undefined → 반복이 돌지 않아 "자리 없음". 지금 확인 위치가 너무 이르다. 누가 주웠는지·내가 가졌는지는 이 줄로 모름.
-  - 수정 방향은 결정 전.
-- `Not enough room for <이름>`(옛 3-13에서 합침): 이름이 undefined면 이 가설 쪽.
 
 ### 3-9. 콘솔·trace 추가
 - 바꾼 것: 눈·심장·뇌 `!!! X !!!`(getQuestItem 성공, 리더), `D2Bot.printToConsole`이 `print("[console] " + msg)`도 함, `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).
