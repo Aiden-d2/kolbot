@@ -88,19 +88,22 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 
 ## 261022 묶음 (10/21 21:54 ~ 10/22 09:35, 8프로필 65게임)
 데이터: trace·d2bs·콘솔·ItemLog·ScriptErrorLog(Pz-1~65, 보스는 대부분 8명 × 2회 = 16건). 실행 중 코드가 바뀐 것으로 보임: 소켓 장착이 23:36까지 장착 칸 클릭판(실패만), 23:40부터 0x28판(성공만). main 병합(#63) 23:55, 사용자 업로드 `d8af14f` 09:34(실행 끝난 뒤). 어느 시각에 어느 판이었는지는 사용자 확인 전.
+- 이 절은 분석 결과(근거)만 둔다. 이 결과로 정한 다음 단계(한 싸이클 더 관찰, 2절 결정, 1절 검토 항목)는 `handoff.md`를 따른다. 아래 판정 중 대화에서 바로잡은 것은 "정정(261022)"으로 표시.
 
 ### handoff 3절 판정
 - 3-1 okCount 이름: 안 온 프로필이 이름으로 남음. desync 2게임 3줄.
   - Pz-5 Tamoe Highland: a1·a7 `missing(okCount): a5, a8`. a5는 같은 시각 아직 Black Marsh에서 화살통 마을행(`visitTown start by:default.dbj` 22:42:28 ~ back 22:43:01) → 실제 지각(B). a8은 그 시간 trace·d2bs 기록 없음(하던 일 모름).
   - Pz-30 Travincal: a6 `missing(okCount): a3`. a3은 구간 시작(02:20:45)부터 퇴장까지 기록 없음.
 - 3-2 중계: `relay N msgs` 6건. 5건은 `Town chicken` 다녀온 직후(2~7 msgs), 그 게임들 desync 없음 → 동작. 1건(a6 Pz-13, 23:46:49 Rogue Encampment)은 마을행 없음: 게임 시작 뒤 약 2분 default.dbj 기록 없고 a4 `Team didn't join the game within 2 minutes` → 원인 미확인.
-- 3-3 clearToExit 삭제: `moveToExit failed` 0건. moveToExit 안의 moveTo throw로 게임 종료 2건(a7 Pz-15 Claw Viper Temple Level 2, a1 Pz-22 Tal Rasha's Tomb #4, 설계대로 잡지 않음). 언더패스·Jail 보정 구간이 돈 기록 없음.
-- 3-4 SafeTele 범위: 동작이 같은지는 로그로 판정 불가. `[SafeTele] monsters`는 a1 5,365줄, 평균 26마리 중 12마리가 범위 안(47%). a2(SafeTele 꺼짐)도 348줄: trace가 `safeCheckNode`의 `Enabled` 검사 앞(`Pather.moveTo`)에 있어서 찍힘, 동작 영향 없음.
+- 3-3 clearToExit 삭제: `moveToExit failed` 0건. moveToExit 안의 moveTo throw로 게임 종료 2건(a7 Pz-15 Claw Viper Temple Level 2, a1 Pz-22 Tal Rasha's Tomb #4, 설계대로 잡지 않음; 둘 다 아래 "추가 분석"의 A유형). 언더패스·Jail 보정 구간이 돈 기록 없음 → 케이스 없음.
+- 3-4 SafeTele 범위: 정정(261022) — 결과가 같은 것은 거리 관계로 보장된다(후보 칸은 모두 내 위치에서 `teleDistance` 35 안, 원래 노드는 노드 거리, 몹은 후보에서 Range 안만 셈 → 내 위치에서 `max(teleDistance, 노드 거리) + Range` 밖의 몹은 어느 후보에서도 세어지지 않음, 남는 차이는 후보 좌표 `Math.round`의 1칸 미만 경계뿐). trace의 목적(거르기로 얼마나 빠지나)은 달성: `[SafeTele] monsters`는 a1 5,365줄, 평균 26마리 중 12마리가 범위 안(47%). a2(SafeTele 꺼짐)도 348줄: trace가 `safeCheckNode`의 `Enabled` 검사 앞(`Pather.moveTo`)에 있어서 찍힘, 동작 영향 없음.
 - 3-5 Town check 직접: 58건 모두 바로 `visitTown start by:default.dbj`. 50건 back, 7건 마을에 있는 동안 다른 프로필 퇴장으로 게임 종료, 1건 TP 타기 실패(a8 00:02:11 `usePortal failed` 14회 → `goToTown take TP failed`) 뒤 다시 Town check → 00:03:08 back. 마을행 중 또 마을행(중첩) 0건 → 통과.
 - 3-6 getQuestItem: `vanished`·`Not enough room` 0건 → 상황 없음. 북 16, 눈·심장·뇌 각 2.
 - 3-7 getWP: `menu not opened` 72건(try:0 67, try:1 5, 그 이상 0), `[goWP] Failed` 0. 실패 2건: a1 Pz-49·Pz-50 연속 ANDY Catacombs Level 2 `[getWP] waypoint unit not found` → `[WP] wp.area:null` 12회 → `useWaypoint: Failed to use waypoint`. goWP 실패 줄 없음, Pz-51은 정상 → 원인 못 찾음. 겹쳐 서기는 로그로 못 봄.
-- 3-8 H1 `[exit]`: 2게임 9줄 모두 `type:1 exit:15140,5000 dest:15140,5001`, 모두 Outer Cloister로 넘어감(실패 0). 게이트 옆 벽인지는 맵 대조 필요 → 판정 못 함.
+  - 추가(261022): 두 건 모두 getWP 때 이미 2층(`area:35`). Pz-49는 06:35:20 1층 → 2층 `useUnit` timeout iter:0 뒤 넘어가 06:35:22 goWP(`going to nearest WP`), 06:35:28 웨이 못 찾음. 코드: goWP는 실패 줄이 없으면 프리셋 10칸 안에 왔다고 판단한 것, `useWaypoint`는 웨이 유닛이 없으면 움직이지 않고 그 자리에서 재시도한 뒤 throw. 웨이 프리셋 좌표·거리가 줄에 없어 "웨이 앞에 못 감"과 "갔는데 유닛 조회 실패"를 못 가름 → 판별 trace(handoff 2-6).
+- 3-8 H1 `[exit]`: 2게임 9줄 모두 `type:1 exit:15140,5000 dest:15140,5001`, 모두 Outer Cloister로 넘어감(실패 0). 정정(261022): 판정 못 한 이유는 맵 대조가 아니라, `[exit]`가 26 안에서 26 → 27 출구만 찍고 벽 쪽 진입을 정하는 7 → 26 출구는 찍지 않기 때문. 얻은 것: 게이트 위치 `15140,5000`(사용자), 26 진입 자리(줄을 찍을 때 위치) 약 `15180,5087` = 벽 쪽 진입 자리(사용자), 차이 x 40·y 87(직선 약 96). H1의 문제·목적은 handoff 1-2, `[exit]`는 261022 삭제.
 - 3-8 chores 멈춤: clearInventory 226건(중앙 7.8초, 20초 이상 19, 최대 47.4초), buyPotions 302건(중앙 8.9초, 최대 21.6초). `buy failed` 7건은 모두 a2 골드 부족(211·370, mp4). 긴 clearInventory는 판매 수와 무관: 판매는 처음 몇 초에 끝나고 나머지는 기록 없음(예: a6 00:06:18 47.4초, 판매 2건 00:05:28·30). 같은 시각 여러 프로필이 길다(00:06:02~18 a4·a6·a7, 02:05:32~50 a4·a5·a7) → 원인 못 찾음.
+  - 추가(261022): 정정 — a6 00:06:18 47.4초의 판매 2건(00:05:28·30)은 clearInventory 시작(00:05:31) 전이다. 긴 사례 여럿(a6 00:06:18 47.4초, a7 00:06:02 21.7초)은 clearInventory 동안 ItemLog·trace가 하나도 없음 → 그 사례에서는 인벤토리 팔기·버리기(ItemLog 남김)·큐브 비우기(trace 남김)가 아님. 남는 것은 기록을 남기지 않는 벨트 물약 되돌리기·보관함 비우기(코드 기준 추정). 20초 이상 19건 중 7건이 게임 시작 40초 안(게임 시작만은 아님). 멈추는 함수는 clearInventory로 특정(buyPotions는 20초 이상 1건). 세부 검토는 handoff 1-8.
 - 3-9 콘솔·trace: 리더 콘솔에 `!!! EYE/HEART/BRAIN !!!`와 옛 `=== EYE/HEART/BRAIN ===`가 1~3초 차로 둘 다 찍힘(중복, 사용자 업로드 `d8af14f`에서 하나로 정리). `[console]` 미러, `[useUnit] timeout`의 id·target·unit(189줄), Life Chicken에서 mode·near 빠짐 확인. `party accept` 579줄, MoveToSlot 실패 0건이라 겹침 판정은 상황 없음.
 - 3-10 radamentOff: 북 리셋 0건 → 상황 없음. 북 정상 경로(visible → read) 16/16.
 - 3-11 보스가드: 사망 0(`You died` 0, `revive start` 0), 가드 중 Life Chicken 0, 가드 중 `Town chicken` 1(a4 쉥크). 시체 회수 상황 없음.
@@ -116,8 +119,9 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 | 바알(15) | 4~15 (7/8, 1건은 25%에 처음 봄) | 0~1.6초 |
 
 - 3-12 골드 나눔: 음수 없음 → 통과. 리더는 일부만 받음: 00:16 7더미 중 3, 02:41 8더미 중 5. 나머지는 15초 뒤 팔로워 `Retaking`이 바닥의 아무 더미(`getUnit(4, 523, 3)`)를 주움(a7이 a2 몫 8493, a4·a7이 같은 더미 동시). 리더 쪽은 더미마다 1초 대기와 보관함 열기를 반복(`AutoSmurf` 골드 받기 루프).
+  - 추가(261022, 시각 대조, 원인 확정 아님): 00:16 게임 팔로워 버림 00:16:55~17:02, 리더 줍기 16:59·17:08·17:12(더미당 4~9초), 팔로워 다시 줍기 17:11~17:18(버린 지 15초). 02:41 게임 리더 줍기 사이 19초 빈 곳(41:22 → 41:41)은 원인 모름. 이후 사용자 수정(`bb94fac`·`284a5aa`)은 handoff 3-12.
 - 3-13: `dropping radament book` 0건 → 상황 없음.
-- 3-14 canMakeRoom 0·4: `make room` 21건(4가 15, 0이 6), 21건 모두 그 물건의 ItemLog `Sold`/`Dropped` → 정리 통과. 같은 물건 되풀이 0, `make room skip` 0. 다시 줍는지는 확인 못 함: 줍는 물건 이름은 trace에 없고 ItemLog는 결과 1·2·3·5만 남김(`Pickit.pickItem`).
+- 3-14 canMakeRoom 0·4: `make room` 21건(4가 15, 0이 6), 21건 모두 그 물건의 ItemLog `Sold`/`Dropped` → 정리 통과. 같은 물건 되풀이 0, `make room skip` 0. 정정(261022): 다시 줍는지는 확인할 필요 없음 — 돌아오면 `pickItems(10)`이 다시 줍고, 그래도 자리가 없으면 `make room`이 되풀이돼 보인다(되풀이 0). 판정은 clearInventory 인벤토리 정리와 같은 코드(`Storage.Inventory.Compare` + `ignoredCheck` + `checkItem` 0 버림·4 팖)라 반대 방향 확인도 불필요. `make room skip`은 보석을 훑을 때마다 찍혀 "보석 때문에 포기"를 재지 못하는 줄이었다(설계 잘못). 두 줄 261022 삭제, 3-14는 `docs/code/Pickit.md`로 이관.
 - 3-15 소켓 0x28: 23:40 이후 `Socketed` 23건, 실패 0(`(cursor)`·`(dropped)` 없음). 23:36까지 클릭판 실패 58건(handoff 1·2차 결과와 같은 시기). 빈 소켓보다 많이 주운 경우 없음. 티어: Wolf Head 1→11, Targe 13→15→17, Beast Visor 13→14→16, War Hammer 17→19, Dread Shell 13→16, 노멀 Cap·Leather Armor 1 고정.
   - a1 22:54 Chipped Sapphire: `Socketed` 없이 Spiked Club이 `Gemmed`(Adds 1-3 cold)로 팔림(00:34:53) → 1차 결과의 사용자 손 장착으로 보임(추정).
   - a1 00:42 Chipped Emerald: 00:45 무기를 Vicious Morning Star로 바꿔 대상이 사라짐 → `Dropped` 2회(00:45:36·00:47:32) 뒤 `Sold`(버린 뒤 다시 주운 것으로 보임, 추정).
@@ -125,4 +129,14 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
   - 장착 중 빈 소켓 룬워드 베이스 사례 없음 → 베이스 제외는 시험되지 않음.
 
 ### 그 밖 (handoff 1-1)
-- `Failed to generate path` Error 5건(Pit of Acheron 2, Claw Viper Temple Level 2, Tal Rasha's Tomb #4, Flayer Dungeon Level 1). Jail 2층 경로 없음 0건. `[useUnit] timeout` 189줄은 모두 다음 층으로 넘어감.
+- `Failed to generate path` Error 5건(Pit of Acheron 2, Claw Viper Temple Level 2, Tal Rasha's Tomb #4, Flayer Dungeon Level 1) + `[Quit] changeAct 3 failed: ... Harem Level 1` 1건. Jail 2층 경로 없음 0건.
+- 정정(261022): `[useUnit] timeout` 189줄이 "모두 다음 층으로 넘어감"은 틀림. iter 분포 0:100, 1:43, 2:21, 3:12, 4:7, 5:4, 6:2. 7회 모두 실패 2건 — a1 Jail 1층 06:33:57(iter:6) 뒤 travel `default` 분기가 `moveToExit`를 다시 불러(06:33:59 iter:0~2) 06:34:09 Jail 2층 도착(재시도로 복구), a1 Flayer Dungeon 1층 07:03:58 → 게임 종료(아래 B).
+
+### 추가 분석 (261022, 대화 중)
+- 빈 경로 폴백: `original path`(랜덤 목표 → 원래 목표) 성공 19, `adjusted path`(보정 칸) 성공 23. 끝내 실패한 6건은 getPath 자체 문제가 아니었다(관찰, 분류 확정 아님, handoff 1-1):
+  - A. 지역이 바뀐 직후 옛 지역 좌표로 이동(3건: a1 Tal Rasha #4, a6 Harem 1, a7 Claw Viper 2). `useUnit` timeout 직후 무작위 이동(`moveTo(coord)`)이 옛 지역 좌표로 실행됨. 예: Canyon `12527,5285`에서 timeout → 다음 줄 `no original path -> 12530,5282 in Tal Rashas Tomb #4`. 간격(초 단위): 01:04:08 → 01:04:08, 02:03:40 → 02:03:41, 00:15:25 → 00:15:26 = timeout 뒤 1초 안에 이미 다음 지역. 핑 172~188.
+  - B. 지역 이동 실패 뒤 다음 지역 좌표로 이동(1건: a1 Pz-52 Flayer Dungeon 1). `useUnit` 7회 실패(iter:4·5·6, dist 1~5, unit `10116,8024`) → `AutoSmurf.brain`이 `moveToExit([88, 89, 91])` 결과를 보지 않고 3층 프리셋 406(`10014,11879`)로 이동 → 경로 없음 → 게임 종료(handoff 1-7).
+  - C. 같은 자리에서 못 움직임(2건: a1 Pz-45·a2 Pz-38 Pit of Acheron). 두 게임 모두 `12700,7584`에서 약 27칸 앞 목표로 경로 없음, 랜덤 걸음 10회 동안 위치가 그대로. 원인 미상.
+  - 6건 모두 랜덤 걸음 10회(`no adjusted path ... fixing` 60줄 = 6 × 10) 실패, 4건은 10회 내내 위치가 그대로.
+- `Misc.caughtError` 줄(`[Error] 구간: ...`) 0건(8프로필 65게임) → 호출부 catch가 잡아 재시도로 복구된 사례 없음(handoff 2-4의 근거).
+- 사용자 콘솔(10/22 11:30~11:31, 이 묶음 밖): a1 하수구 라다먼트에서 `moveToExit(49)` 결과를 보지 않고 3층 상자 좌표로 가는 `while + catch`가 무한 반복, 사용자가 손으로 3층으로 옮겨 풀림(handoff 1-4·1-7).
