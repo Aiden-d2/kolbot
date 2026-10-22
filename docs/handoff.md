@@ -133,9 +133,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-14. `canMakeRoom` 0·4 (`Pickit.canMakeRoom`, 261021)
 - 바꾼 것: 0·4는 `Town.ignoredCheck`가 참이면 자리를 만들 수 있다고 본다(마을 clearInventory 인벤토리 정리와 같은 판정: 0은 팔거나 버림, 4는 팖). 예전에는 0은 건너뛰고 4는 스태시 빈자리(`canStash`)로 판정해, 비울 수 있는데도 `Not enough room`으로 포기했다. 5(소켓 보석, 3-15)는 건너뜀. 261021 사용자 기각이었으나 소켓 작업(3-15)에서 같은 판정이 걸려 다시 보고 반영(사용자 결정 261021).
 - 감수: clearInventory의 4 판매가 계속 실패하면 마을 왕복이 반복된다(기존 코드도 스태시에 자리가 있으면 같음).
-- 확인 로그(Claude 추가 261021, 사용자 승인): trace `make room: <이름> (result 0|4)`(마을로 가게 한 물건, 261022 삭제), `make room skip: <이름> (result 5)`(소켓 보석이 자리를 막음, 3-15 도입 뒤 관찰, 한 싸이클 더 본다).
+- 확인 로그(Claude 추가 261021, 사용자 승인): trace `make room: <이름> (result 0|4)`(마을로 가게 한 물건, 261022 삭제), `make room skip: <이름> (result 5)`(261022 삭제: 보석을 훑을 때마다 찍혀 "보석 때문에 포기"를 재지 못함).
 - 261022: 통과(사용자 확인). `make room` 21건 모두 그 물건이 ItemLog `Sold`/`Dropped`, 되풀이 0. 판정은 clearInventory 인벤토리 정리와 같은 코드(`Storage.Inventory.Compare` + `ignoredCheck` + `checkItem` 0 버림·4 팖)라 반대 방향 확인 불필요. 다시 줍기는 `visitTown` 뒤 `pickItems(10)`이 하고, 실패면 `make room`이 되풀이돼 보임. `make room skip` 0건.
-- 확인: `make room` 뒤 같은 물건의 ItemLog `Sold`·`Dropped`가 있고 돌아와 줍는가 → 맞음. 같은 이름의 `make room`이 되풀이되면 왕복 반복 → 그 물건이 왜 안 치워졌는지 본다. `make room skip`은 보석 때문에 줍기를 포기한 빈도. 확인 뒤 두 줄 삭제.
+- 확인: `make room` 뒤 같은 물건의 ItemLog `Sold`·`Dropped`가 있고 돌아와 줍는가 → 맞음. 같은 이름의 `make room`이 되풀이되면 왕복 반복 → 그 물건이 왜 안 치워졌는지 본다. 확인 뒤 두 줄 삭제(261022 둘 다 삭제).
 
 ### 3-15. 소켓 보석 (`Pickit.checkItem`·`socketTargets`·`pickItem`, `Town.socketGems`·`doChores`, `Misc.itemLogger`, 261021)
 - 바꾼 것(사용자 결정 261021):
@@ -161,5 +161,4 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - ItemLog `Socketed`가 남고, 옵션에 보석 효과(루비 생명, 다이아 저항 등)가 바로 보이며 `Tier 전 -> 후`가 오르는가(노멀 등급은 티어 고정이라 같을 수 있음). 장착 칸 클릭으로 실제 들어가는가.
   - trace `socketGems failed` 빈도와 이유, `(dropped)` 뒤 다시 주웠는가.
   - 룬워드 베이스(예: 빈 3소켓 브레스트플레이트)·티어 없는 장비에는 넣지 않는가. 레벨 19 이후 무기용 보석이 정리되는가.
-  - `make room skip ... (result 5)`(3-14) 빈도.
 - 261022: 통과(0x28 뒤 `Socketed` 23건, 실패 0). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로. a1 머리 칸 사파이어(23:58)가 코드 버전 차이인지는 사용자 확인 전.

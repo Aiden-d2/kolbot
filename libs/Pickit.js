@@ -327,9 +327,7 @@ var Pickit = {
 					}
 
 					break;
-				case 5:	//261021 socket gem: kept in inventory, can't make room
-					Misc.trace("make room skip: " + items[i].name + " (result 5)");	//261021 check gems block room: remove once confirmed
-
+				case 5:	//261021 socket gem: kept in inventory, can't make room	//261022 skip trace removed
 					break;
 				default: // Check if a kept item can be stashed
 					if (Town.canStash(items[i])) {
