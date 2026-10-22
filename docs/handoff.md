@@ -92,6 +92,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **알려진 영향**: 근접 캐릭은 무리를 지나 샤먼까지 들어간다(이전 보류 사유, 사용자가 감수). 원거리는 사거리 자리로 이동해 친다.
 - **검증 방법**(Claude 제안): 노말 액트 1 구간(Den·Blood·Cain) 구간 시간, 낙오·`Party desynced` 빈도 전후 비교.
 
+### 2-12. SafeTele 후보 검사 순서 (`Pather.moveTo` 안 `safeCheckNode`, 사용자 채택 261022)
+- **확인된 것**(코드): 후보는 원래 노드에 가까운 순으로 정렬해 한 번 훑는다. 후보마다 `checkSpot`(십자 4칸 `CollMap.getColl & 0x1`, 처음 보는 방이면 `room.getCollision()` 복사, 방 25개 넘으면 캐시 전체 비움) → 통과하면 몹 수 → `mc < baseline`이면 채택하고 `baseline = mc`, 0이면 끝. 0이 없으면 35개를 다 본다. 결과 = 걸을 수 있는 후보 중 몹 수 최소, 그중 원래 노드에 가장 가까운 것. 후보 수는 Angle 75·Step 5·Min 10에서 70개, 지금 Angle 60·Step 7·Min 7에서 35개(렉 때문에 사용자가 바꿈, Flayer Jungle·Great Marsh는 Skip).
+- **구현안**: 두 검사의 순서만 바꾼다(몹 수 먼저 → `mc < baseline`일 때만 `checkSpot` → 통과하면 채택). 고르는 자리는 지금과 같고, `checkSpot`(방 복사)은 그때까지의 최솟값보다 적은 후보에서만 불린다(벽 안 저몹 후보 포함). 새 변수 없음. 남으면 다음 단계로 몹 수로 다시 정렬해 처음 통과하는 하나를 고르는 안(같은 결과, 정렬 한 번 추가).
+- **검증 방법**: 텔레 이동 렉 체감(Bloody Foothills 등), 고르는 자리가 같으므로 동작 변화 없음.
+
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
 ### 3-1. okCount 이름 수집 (`AutoSmurf.okCount`·`teamCount`·`missing`)
