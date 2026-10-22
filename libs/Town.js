@@ -147,7 +147,7 @@ var Town = {
 			return true;
 		}
 
-		me.cancel();	//261021 0x28 needs no stash/inventory panel (tested)
+		me.cancel();	//261021 test: 0x28 without the stash open
 
 		for (i = 0; i < targets.length; i += 1) {
 			t = targets[i];

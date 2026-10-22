@@ -1708,8 +1708,11 @@ function AutoSmurf() {
 
 		if (classid >= 553 && classid <= 555) {	//261021 Khalim's eye, heart, brain: on the pick (leader)
 			name = ["EYE", "HEART", "BRAIN"][classid - 553];
-			print("ÿc8!!! [" + name + "] !!!");	Misc.trace("!!! [" + name + "] !!!");
-			D2Bot.printToConsole("!!! " + name + " !!!", 8);
+			D2Bot.printToConsole("===" + name + "===", 7);
+		}
+		
+		if (classid === 356) {	//261022
+			D2Bot.printToConsole("=== STAFF ===", 7);
 		}
 
 		return true;
@@ -3676,10 +3679,6 @@ function AutoSmurf() {
 
 		Town.goToTown();
 
-		if (Leader) {
-			D2Bot.printToConsole("=== STAFF ===", 7);
-		}
-		
 		doneChores = false;
 		
 		return true;
@@ -4264,10 +4263,6 @@ function AutoSmurf() {
 
 		Town.goToTown();
 
-		if (Leader) {
-			D2Bot.printToConsole("=== EYE ===", 7);
-		}
-		
 		doneChores = false;
 		
 		return true;
@@ -4302,10 +4297,6 @@ function AutoSmurf() {
 
 		Town.goToTown();
 
-		if (Leader) {
-			D2Bot.printToConsole("=== HEART ===", 7);
-		}
-		
 		doneChores = false;
 		
 		return true;
@@ -4340,10 +4331,6 @@ function AutoSmurf() {
 
 		Town.goToTown();
 
-		if (Leader) {
-			D2Bot.printToConsole("=== BRAIN ===", 7);
-		}
-		
 		doneChores = false;
 		
 		return true;
