@@ -131,11 +131,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 261022 사용자 수정(`8a7ff56`): N+2의 tombs는 `partyLevel(tombsLvl)`이 참이면 바로 break해 아무것도 안 했다 → `tombs(force)` 인자, 메시지 `forceTombs`(팔로워 `forceTombs` 플래그 → `tombs(true)`), 리더는 라다먼트 꺼짐 때 `forceTombs`를 보내고 `tombs(true)`. 확인: N+2에서 tombs가 실제로 돈다(구간 헤더 `=== [TOMBS] ===`와 이동 줄).
 
 
-### 3-16. 스태프 콘솔 줄 (`AutoSmurf.getQuestItem`, 261022 사용자 발견·수정)
-- 문제: `d8af14f`에서 넣은 `if (classid === 356)`이 상자 id(356)를 봐서 참이 될 수 없었다(호출은 `getQuestItem(92, 356)`, 92 = Staff of Kings).
-- 바꾼 것(사용자 `8a7ff56`): 조건 `classid === 92`.
-- 확인: 스태프를 주우면 리더 콘솔에 `=== STAFF ===`가 찍힌다.
-
 ### 3-11. 보스가드·시체 회수 trace (`AutoSmurf.bossGuard`·`bossScan`·`bossEnd`, 261020)
 - 용어: **보스가드 on/off**(`bossGuard()` 호출 ~ `bossEnd` 시작), **치킨 on/off**(LifeChicken 0 ↔ 원래 값). 목적: 발견부터 킬까지 치킨 %가 적정한지 보기. 일어나지 않은 사건은 찍지 않는다. `@` 시간은 found(아무 보스나 처음 본 때) 기준 초.
 
@@ -190,3 +185,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - trace `socketGems failed` 빈도와 이유, `(dropped)` 뒤 다시 주웠는가.
   - 룬워드 베이스(예: 빈 3소켓 브레스트플레이트)·티어 없는 장비에는 넣지 않는가. 레벨 19 이후 무기용 보석이 정리되는가.
 - 261022: 통과(0x28 뒤 `Socketed` 23건, 실패 0). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로. a1 머리 칸 사파이어(23:58)가 코드 버전 차이인지는 사용자 확인 전.
+
+### 3-16. 스태프 콘솔 줄 (`AutoSmurf.getQuestItem`, 261022 사용자 발견·수정)
+- 문제: `d8af14f`에서 넣은 `if (classid === 356)`이 상자 id(356)를 봐서 참이 될 수 없었다(호출은 `getQuestItem(92, 356)`, 92 = Staff of Kings).
+- 바꾼 것(사용자 `8a7ff56`): 조건 `classid === 92`.
+- 확인: 스태프를 주우면 리더 콘솔에 `=== STAFF ===`가 찍힌다.
