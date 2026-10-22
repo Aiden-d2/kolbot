@@ -52,12 +52,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 수정 규모: `AutoSmurf.js`의 `Pather.moveToExit(` 76곳 중 결과를 확인하는 곳 23곳(261022 셈), catch 31곳 중 이동을 감싼 곳, `Pather.goWP`, `Pather.useUnit`. 문자열 검색 후보(탈출 조건은 하나씩 안 봄): `travel`(10073,8670), `cube` 상자, `tombs`(46 출구·상자), `radament`(48·프리셋 40), `duriel` Orifice, `mephisto` 빨간 포털, `farmingSummoner` 저널, `den`의 지역·마을 while, 옛 `clearToExit` 자리의 바깥 while 4곳(언더패스 10→5, Jail 29→30·30→31·31→32, 한 번 시도하고 throw도 잡음). 공용 함수(3회 시도 후 throw)를 둘지는 목록을 본 뒤 정한다(새 함수는 승인 필요). `while (!usePortal)` 대기 구문은 대상 아님(사용자).
 - **검증 방법**(Claude 제안): 이동 실패가 무한 반복 없이 게임 종료로 끝나는가(콘솔 `[Error] moveTo: Failed` 또는 3회 실패 throw 줄 뒤 `Script ended`/다음 게임). ④는 `[useUnit] timeout` 뒤 옛 지역 좌표 `no original path`가 사라지는가.
 
-### 2-5. getWP random 좌표 제거 (`Pather.getWP`, 사용자 결정 261022, 옛 1-9)
-- **확인된 것**(코드): getWP는 웨이까지 > 5면 random 오프셋(`Pather.myX/myY`, 5 또는 대각 약 7.1, 부를 때마다 부호 반대)으로 `moveToUnit`을 최대 5회 부른다. `AutoSmurf.travel`이 getWP를 여러 번 부른다. goWP는 기준 10이라 10 안에 들어오면 반복하지 않는다.
-- **가설**: 대각 오프셋 프로필은 도착해도 늘 5를 넘고, 오프셋 5 프로필도 착지가 1칸만 어긋나면 넘어 반대편으로 왕복한다 → 플라이 소서 웨이 착지 버벅임(사용자 관찰)과 맞음(로그 확인 전).
-- **구현안**: `libs/Pather.js` getWP의 `moveToUnit(wp, 0, 0, false, false, true)`에서 random 인자를 지운다. 한 줄, 새 변수 없음. goWP는 그대로.
-- **검증 방법**(Claude 제안): 웨이 찍을 때 버벅임(왕복)이 없어지는가(작동), `[getWP] waypoint menu not opened` 빈도.
-
 ### 2-7. chores 20초 이상 멈춤 (`Town.doChores`·`clearInventory`·`buyPotions`, 사용자 261022, 옛 1-8·3-8)
 - **확인된 것**
   - 261022 로그: clearInventory 226건(5초 초과만 찍힘, 중앙 7.8초, 20초 이상 19, 최대 47.4초), buyPotions 302건(중앙 8.9초, 20초 이상 1(21.6초, a2 Lut Gholein)). `buy failed` 7건은 모두 a2 골드 부족. 긴 clearInventory가 여러 프로필에서 같은 시각에 몰림(22:13 a5·a7, 00:06 a4·a6·a7, 00:13 a2·a3, 02:05 a4·a5·a7). 20초 이상 19건 중 7건이 게임 시작 40초 안. 긴 사례 여럿(a6 00:06:18 47.4초, a7 00:06:02 21.7초)은 clearInventory 동안 ItemLog·trace가 없음 → 인벤토리 팔기·버리기(ItemLog)·큐브 비우기(trace) 단계는 아님.
@@ -179,3 +173,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **바꾼 것**: 실패 줄 유지, `inv:` 필드 삭제(261020). 판별 trace `party accept: 이름`(261021 `ab94751`, 팔로워 `PartyThread`). 실패 34건 중 33건 `closed`·1건 `-`이고 창을 여는 코드가 없어 성공도 `closed`일 것 → 창 상태로는 판별 불가라 수락 시각으로 가른다.
 - **검증 방법**: 실패 줄 `[MoveToSlot] ... FAILED`와 같은 시각(같은 초)에 수락이 있으면 수락 클릭이 옮기던 물약을 방해한 것(가설). 겹침이 없으면 가설은 틀림.
 - **결과**: 261022 `party accept` 579줄, MoveToSlot 실패 0건(65게임) → 판정할 사례 없음. 실패가 다시 나오면 판정.
+
+### 3-18. getWP random 좌표 제거 (`Pather.getWP`, 옛 2-5)
+- **바꾼 것**(261022 `ae1767b`): getWP가 웨이까지 > 5일 때 부르는 `moveToUnit(wp, 0, 0, false, false, true)`에서 random 인자를 지움. goWP(프리셋 > 10, random 유지)는 그대로. 근거(가설, 로그 확인 전): 대각 오프셋(약 7.1) 프로필은 도착해도 늘 5를 넘고, 오프셋 5 프로필도 1칸 어긋나면 넘어 부를 때마다 반대편으로 왕복 → 플라이 소서 웨이 착지 버벅임(사용자 관찰).
+- **검증 방법**: 웨이 찍을 때 버벅임(왕복)이 없어지는가(작동), `[getWP] waypoint menu not opened` 빈도.
+- **결과**: 기록 없음.
