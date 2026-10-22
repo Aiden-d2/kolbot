@@ -74,6 +74,7 @@ function AutoSmurf() {
 		amulet = false,
 		summoner = false,
 		tombs = false,
+		forceTombs = false,
 		radament = false,
 		duriel = false,
 		
@@ -1701,7 +1702,7 @@ function AutoSmurf() {
 			D2Bot.printToConsole("===" + name + "===", 7);
 		}
 		
-		if (classid === 356) {	//261022
+		if (classid === 92) {	//261022
 			D2Bot.printToConsole("=== STAFF ===", 7);
 		}
 
@@ -3497,7 +3498,7 @@ function AutoSmurf() {
 		return true;
 	};
 
-	this.tombs = function() {	//260603
+	this.tombs = function(force) {	//261022
 		var i, j, chest;
 
 		print("ÿc4=== [TOMBS] ===");	Misc.trace("=== [TOMBS] ===", true);	//260930
@@ -3537,7 +3538,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		for (i = 66; i <= 72; i += 1) {
-			if (this.partyLevel(tombsLvl)) {
+			if (this.partyLevel(tombsLvl) && !force) {
 				break;
 			}
 			
@@ -7526,6 +7527,9 @@ function AutoSmurf() {
 			case "tombs":
 				tombs = true;
 				break;
+			case "forceTombs":
+				forceTombs = true;
+				break;
 			case "radament":
 				radament = true;
 				break;
@@ -7682,8 +7686,8 @@ function AutoSmurf() {
 					D2Bot.printToConsole("Radament off: tombs, quit at 10 min (" + Misc.where() + ")");	//261021 the reason line for the quit below (the engine leaves without one)
 					me.maxgametime = 10 * 60 * 1000;	// the engine leaves the game at this time from the start; default.dbj sets Config.MaxGameTime again next game
 
-					Messaging.sendToList(Team.Profiles, "tombs");
-					this.tombs();
+					Messaging.sendToList(Team.Profiles, "forceTombs");
+					this.tombs(true);
 
 					while (true) {	// tombs ended before 10 min: wait for the engine to leave
 						delay(1000);
@@ -7718,6 +7722,11 @@ function AutoSmurf() {
 				if (tombs) {
 					this.tombs();
 					tombs = false;
+				}
+
+				if (forceTombs) {
+					this.tombs(true);
+					forceTombs = false;
 				}
 
 				if (radament) {
