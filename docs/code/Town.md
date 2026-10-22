@@ -1,5 +1,10 @@
 # libs/Town.js
 
+## heal
+
+### 261021 Claude: 끝의 `me.cancel()` 삭제
+- 260908 사용자가 넣은 heal 끝 `me.cancel()`을 지움(chores 멈춤 판별 정리 때). 다른 cancel은 유지(`stash` 시작의 cancel은 원본에도 있음). 261022 로그까지 문제 보고 없음.
+
 ## fillTome
 
 ### 261001 Claude: TP 책 골드 게이트

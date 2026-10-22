@@ -43,13 +43,14 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 사용자 관찰: 플라이 소서가 웨이에 정확히 착지하지 못해 버벅거린다.
 - 이유(코드 기준, 로그 확인 전): getWP는 웨이까지 > 5면 random 오프셋(`Pather.myX/myY`, 5 또는 대각 약 7.1, 부를 때마다 부호 반대)으로 최대 5회 이동해 왕복할 수 있다. `AutoSmurf.travel`이 getWP를 여러 번 부른다. goWP는 기준 10이라 10 안에 들어오면 반복하지 않으므로 그대로 둔다. getWP random을 없애면 goWP가 오프셋 자리(5~7칸)에 내린 뒤 getWP가 웨이 자체로 한 번 더 이동하고 끝난다.
 
-### 2-7. chores 20초 이상 멈춤 (`Town.clearInventory`·`buyPotions`, 3-8에서 이어짐, 사용자 261022, 옛 1-8)
+### 2-7. chores 20초 이상 멈춤 (`Town.clearInventory`·`buyPotions`, 옛 3-8에서 이어짐, 사용자 261022, 옛 1-8)
 - 사용자 판단: clearInventory든 buyPotions든 20초 이상 멈추는 조건이 어디서 생길 수 있는지 파악한다. 물약 문제이고 두 함수가 비슷한 로직을 가졌다면 둘 다 설명된다.
 - 261022 로그: clearInventory 226건(5초 초과만 찍힘, 중앙 7.8초, 20초 이상 19, 최대 47.4초), buyPotions 302건(중앙 8.9초, 20초 이상 1(21.6초, a2 Lut Gholein), 최대 21.6초). `buy failed` 7건은 모두 a2 골드 부족. 긴 clearInventory가 여러 프로필에서 같은 시각에 몰림(22:13 a5·a7, 00:06 a4·a6·a7, 00:13 a2·a3, 02:05 a4·a5·a7). 게임 시작 직후만은 아님(20초 이상 19건 중 7건이 게임 시작 40초 안). 긴 사례 여럿(a6 00:06:18 47.4초, a7 00:06:02 21.7초)은 clearInventory 동안 ItemLog·trace가 없음 → 그 사례에서는 인벤토리 팔기·버리기(ItemLog 남김)·큐브 비우기(trace 남김)가 아님.
 - 코드(261022 확인): `doChores` 순서 heal → identify → clearInventory → fillTome → buyPotions(제자리에서 돌아 heal NPC 앞에서 멈춘 것처럼 보임).
   - clearInventory 단계: ① 벨트 물약 되돌리기(인벤토리 물약마다 4열을 돌며 맞는 열에 클릭, 클릭마다 `delay(ping*2+200)`, 기록 없음) ② 큐브 비우기(trace) ③ 보관함 비우기(overhead만) ④ 인벤토리 팔기·버리기(ItemLog, 4는 `initNPC("Shop")` 뒤 판매).
   - buyPotions: `initNPC("Shop", "buyPotions")` → 벨트 4열마다 shift 구매(`delay(ping*2+200)`) 또는 열 칸 수만큼 구매 → HP·MP 버퍼 구매. 공통점: 둘 다 벨트 물약 열(`checkColumns`)을 다룬다. buyPotions는 NPC 열기(`initNPC`)도 있다.
 - 지금 로그로 못 가르는 이유: 두 함수 모두 전체 시간만 찍혀 안의 어느 단계인지 모름.
+- 판별 trace(261021, 옛 3-8, 코드에 있음): `chores slow: clearInventory/buyPotions Ns`(5초 초과, `Town.doChores`), `buyPotions: buy failed ...`(`Town.buyPotions`). 제거 조건: 원인이 정해지면 삭제.
 - 검토할 것: 두 함수에서 20초 이상이 날 수 있는 반복·대기 조건(벨트 열 계산, 클릭·구매 실패 시 반복, NPC 열기 재시도)을 코드로 찾고 수정 방향을 정한다. Claude 제안(261022, 미결정): 단계별 시간 trace(5초 초과만) — 벨트 단계가 길면 물약 수·클릭 횟수, 보관함 단계가 길면 옮기던 물건을 본다.
 
 ### 2-8. 텔레포트가 제자리에 머묾 / 두 번에 한 번 씹힘 (`Pather.teleportTo`·`moveTo`, 사용자 관찰 261022, 옛 1-10)
@@ -99,11 +100,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 가설(추정): `sizex` 확인 뒤 `FindSpot`이 크기를 읽기 전에 유닛이 사라져(누가 주움) 크기가 undefined → 반복이 돌지 않아 "자리 없음". 지금 확인 위치가 너무 이르다. 누가 주웠는지·내가 가졌는지는 이 줄로 모름.
   - 수정 방향은 결정 전.
 - `Not enough room for <이름>`(옛 3-13에서 합침): 이름이 undefined면 이 가설 쪽.
-
-### 3-8. 판별 trace와 cancel 삭제
-- 바꾼 것: H1 판별 trace(26 Monastery Gate 출구), chores 멈춤 판별 trace, heal 뒤 `me.cancel()`(260908 사용자 추가) 삭제. cancel 15곳 중 나머지는 유지(`stash` 시작의 cancel은 원본에도 있음).
-- 확인: H1 trace 결과로 1-2 판단(261022 로그로는 판정 못 함, 1-2 참고), chores 멈춤 재발 여부.
-- 261022 chores 멈춤: 재발(사용자 확인), 세부 검토는 2-7. 멈추는 함수는 clearInventory(20초 이상 19건, 최대 47.4초). buyPotions는 최대 21.6초(20초 이상 1건). clearInventory 안의 단계(벨트 물약 되돌리기 / 큐브 / 보관함 / 인벤토리 팔기·버리기)는 시간이 없어 특정 못 함. 긴 사례 여럿(a6 00:06 47.4초, a7 00:06 21.7초 등)은 clearInventory 안에 ItemLog·trace가 하나도 없어 팔기·버리기·큐브 단계는 아님(인벤토리 판매·버림은 ItemLog, 큐브는 trace를 남김) → 남는 것은 기록을 남기지 않는 벨트 물약 되돌리기·보관함 비우기(추정, 코드 기준).
 
 ### 3-9. 콘솔·trace 추가
 - 바꾼 것: 눈·심장·뇌 `!!! X !!!`(getQuestItem 성공, 리더), `D2Bot.printToConsole`이 `print("[console] " + msg)`도 함, `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).
