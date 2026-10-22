@@ -12,8 +12,12 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - Jail 2층(4건: 261006 17770,8131 / 10/14 17530,8071 / 10/19 17770,8011, 모두 목표 y 8000대): 사용자 가설(3층 대신 1층 쪽으로 돌아간 뒤 3층 출구로 경로 없음)과 맞는 자료이나 경로가 없는 이유는 미확인.
 - **관찰 로그 안(결정 없음):** `moveTo no path` 줄에 엔진 `getCollision(area, 목표)`·`getCollision(area, 내 위치)`(목표가 0xFFFF면 맵 미로드, 내 칸에 막힘·회피 비트면 출발 칸 문제). 그 뒤 사용자 업로드(`b1b5887`)로 빈 경로 처리 줄과 랜덤 걸음이 바뀌어, 이 안을 쓸지 다시 봐야 한다.
 
-### 1-2. Monastery Gate 출구 (`AutoSmurf.js`, 사용자 아이디어)
-- "Outer Cloister까지 경로를 만들면 게이트를 반드시 지난다." H1 판별 trace(3-8) 결과를 보고 판단.
+### 1-2. Monastery Gate 동선 H1 (`AutoSmurf.outer`, `Pather.moveToExit`)
+- 문제(사용자 설명 261022): Tamoe Highland(7) → Monastery Gate(26) → Outer Cloister(27)로 갈 때 26의 모양이 특수해서, 가장 짧은 길이 아니라 벽 쪽으로 들어간 뒤 중앙 게이트를 거쳐 27로 넘어간다. 목적: 벽 쪽 진입 자리에서 게이트까지 가는 거리를 줄인다(게이트로 바로 도착하게 할 수 있는가).
+- 사용자 아이디어(결정 아님): "Outer Cloister까지 경로를 만들면 게이트를 반드시 지난다."
+- 261022 로그(`[exit] 26 -> 27`, 2게임 9줄, 모두 통과): 26 → 27 출구 점 `15140,5000`(보정 칸 `15140,5001`) = 게이트 위치(사용자). 26에서 이 줄을 찍을 때의 위치(26 진입 뒤) 약 `15180,5087` = 벽 쪽 진입 자리(사용자). 차이 x 40, y 87(직선 약 96).
+- 지금 trace로 판정 못 하는 이유: `[exit]`는 26 안에서 26 → 27 출구를 고를 때만 찍는다(`me.area === 26`). 벽 쪽 진입을 정하는 7 → 26 출구 점(Tamoe Highland 쪽에서 고른 좌표)은 찍히지 않는다. 옛 가설 문구 "출구 점이 게이트 옆 벽인가"는 이 로그로 시험되지 않았다(틀렸다고 판정된 것 아님).
+- 다음: `[exit]`는 261022 삭제(게이트·진입 자리 좌표는 위에 기록, 7 → 26 출구·동선은 이 줄에 없음). 새 검증 방법을 정한다(결정 대기).
 
 ### 1-3. 부활·소환형(샤먼) 우선 (보류)
 - 거리순 대전제와 충돌한다. 무리 속 파고들기, 근접은 사실상 효과 없음 등 어느 안도 트레이드오프라 사용자가 보류함.
@@ -38,7 +42,17 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 2-2. print/trace 중복 정리 (18(2), 3절 검증 뒤)
 - 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤에 한다(사용자 결정 261021). 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
 
+### 2-3. 콘솔 줄의 print 색 맞추기 (`D2Bot.printToConsole`, `tools/OOG.js`, 사용자 결정 261022, 구현은 나중에 논의)
+- 지금: `printToConsole`이 `print("[console] " + msg)`로 d2bs 로그에도 남기지만(3-9), 색 인자(매니저 색 번호: 기본 0, 빨강 9, 회색 10 등)를 쓰지 않아 게임 화면 색이 콘솔 색과 다르다.
+- 결정: 콘솔 색과 print 색을 일치시킨다. 방법(색 번호 → `ÿc` 코드 대응)은 구현할 때 논의.
+
+### 2-4. 골드 받기 리더 대기 1000 → 200ms (`AutoSmurf` 골드 받기 루프, 사용자 결정 261022)
+- 261022 로그: 리더가 00:16 게임 7더미 중 3, 02:41 게임 8더미 중 5만 받음. 리더는 더미마다 `delay(1000)` → 줍기 → 보관함 넣기를 반복해 더미당 4~9초, 팔로워는 버린 뒤 15초에 `Retaking`(바닥의 아무 더미). 시각이 맞는 설명이나 원인 확정 아님(02:41 게임 리더 19초 빈 곳은 원인 모름).
+- 결정: 리더 대기를 200ms로 바꿔 다시 돌린다. 그래도 문제면 재논의.
+
 ## 3. 수정됨, 검증 대기 (수정 작업을 했고 게임에서 검증 전)
+
+**261022 로그 결과와 다음 단계(사용자 결정 261022, 근거는 `log_results.md` 261022 묶음).** 3-2·3-5·3-9·3-15는 이번 로그로 통과했지만 사례가 적어 한 싸이클 더 관찰하고, 이변이 없으면 코드 노트로 옮긴다. 3-4·3-11도 한 싸이클 더 본다.
 
 261021 수정분(커밋 `eddab3a`·`ab94751`, 정적 분석만)과 261020 확인용 로그.
 
@@ -51,6 +65,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 바꾼 것: 엔진은 멈춘 스크립트의 copydata를 버린다(`Events.cpp:230`). ToolsThread가 default.dbj가 멈춰 있을 때 받은 copydata 55·56을 `relayMsgs`에 쌓았다가, 다시 돌면 `Messaging.sendToScript`로 순서대로 넘긴다(실패하면 남김). AutoSmurf 처리 본문은 `onCopyData`로 빼서 copydata·scriptmsg에서 부른다.
 - 감수: 재개 직후 수 ms 틈의 유실, 같은 틈의 중복(이름·플래그는 무해, 아직 개수인 readyCount·buffCount·BOCount는 넘칠 수 있음 → 2-1 확장 때 해소).
 - 확인: okCount 대기 중 마을행(TownChicken·Pause)이 있었던 게임에서 desync 타임아웃이 없는가.
+- 261022: 통과(`relay` 6건 중 마을 다녀온 직후 5건, 그 게임 desync 없음). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로.
 
 ### 3-3. `clearToExit` 삭제 (`AutoSmurf.js`)
 - 바꾼 것: 20곳은 `moveToExit` 한 번 + 실패 시 `quitGame("moveToExit failed: A -> B")`(moveTo throw는 잡지 않음, 게임 종료). 지역 확인(`me.area === A`)은 유지. 옛 바깥 while 4곳(언더패스 10→5, Jail 29→30·30→31·31→32)은 뒤에 보정 구간(목표 층이 아니면 마을 → 목표 층 포털, `Area reversed` 대기)이 있어 퇴장 없이 한 번 시도(throw도 잡음)하고 보정에 맡김.
@@ -59,10 +74,12 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-4. SafeTele 몹 목록 범위 (`Pather` safeCheckNode)
 - 바꾼 것: 몹 목록을 내 위치에서 `max(teleDistance, 노드 거리) + SafeTele.Range` 안으로(후보는 내 위치 35 안, 몹은 후보 Range 안만 셈 → 결과 같음).
 - 확인: SafeTele 동작이 이전과 같은가(텔레 이동 중 멈칫·되돌아감 없음).
+- 261022: `[SafeTele] monsters`로 거르기 양 확인(a1 평균 26마리 → 12마리). 결과가 같은 것은 거리 관계로 보장(후보는 내 위치 `teleDistance` 안, 몹은 후보 Range 안만 셈). 한 싸이클 더 본다.
 
 ### 3-5. Town check 직접 처리 (`Misc.townCheck`, `Town.visitTown`)
 - 바꾼 것: default.dbj면 `visitTown` 직접(멈춤 없음). `visitTown`이 `goToTown` 동안 `Config.TownCheck`를 꺼(끝나면 원래 값) 포털로 가는 moveTo 안의 재진입을 막음(직접 호출·화살통 경로 모두). TownChicken(visitTown 안에서만 부름)·MapHelper(default와 동시에 움직임)는 기존 메시지.
 - 확인: `Town check` 마을행이 정상 왕복하는가, 재진입(마을행 중 또 마을행) 없음.
+- 261022: 통과(58건, 중첩 0). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로.
 
 ### 3-6. getQuestItem 사라진 유닛 (`AutoSmurf.getQuestItem`)
 - 바꾼 것: `CanFit` 전에 유닛이 사라졌으면(`sizex` undefined, `JSUnit.cpp:191-194`) 다시 찾기 3회, 넘으면 `<classid> vanished`(`Not enough room`으로 가지 않음).
@@ -74,11 +91,12 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ### 3-8. 판별 trace와 cancel 삭제
 - 바꾼 것: H1 판별 trace(26 Monastery Gate 출구), chores 멈춤 판별 trace, heal 뒤 `me.cancel()`(260908 사용자 추가) 삭제. cancel 15곳 중 나머지는 유지(`stash` 시작의 cancel은 원본에도 있음).
-- 확인: H1 trace 결과로 1-2 판단, chores 멈춤 재발 여부.
+- 확인: H1 trace 결과로 1-2 판단(261022 로그로는 판정 못 함, 1-2 참고), chores 멈춤 재발 여부.
 
 ### 3-9. 콘솔·trace 추가
 - 바꾼 것: 눈·심장·뇌 `!!! X !!!`(getQuestItem 성공, 리더), `D2Bot.printToConsole`이 `print("[console] " + msg)`도 함, `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).
 - 확인: 줄이 형식대로 찍히는가.
+- 261022: 통과(눈·심장·뇌 콘솔 중복은 사용자 업로드 `d8af14f`에서 정리). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로. print 색은 2-3.
 
 ### 3-10. 라다먼트 `radamentOff` (`AutoSmurf.radament`)
 - 바꾼 것: N+1 `Radament book reset` 직전 리더 캐시 `radamentOff = true`. N+2 리더가 라다먼트 차례에 읽고 지운 뒤 콘솔 `Radament off: tombs, quit at 10 min` → `me.maxgametime = 10분`(엔진이 게임 시작부터 10분에 나감, 다음 게임에 default.dbj가 원래 값으로) → tombs 한 번. 라다먼트 차례엔 써모너가 끝나 리더는 캐니언 WP가 있고, 없는 팔로워는 리더 포털로 들어감. D2BS는 게임 단위 퀘스트 상태(완료 불가)를 읽는 함수가 없어 캐시 표시로 함.
@@ -101,10 +119,12 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 시체 회수(죽어 있던 프로필): `revive start`(위치 = 죽은 지역·좌표) → 5번 → `corpse picked`. 실패는 `[Quit]` 줄(`Revive failed`, `Corpse portal not found`, `Failed to get corpse: not seen / far N / died / timeout`), okCount 타임아웃 `Dead wait timeout`.
 - 현재 값(사용자 수정): 써모너 100(처음 본 스캔에서 끔), 쉥크 50, 에인션트 10이고 살아 있는 고대인 2마리 이하. bossEnd 시체 회수 동안 `Config.TownCheck` 끔.
 - 제거 조건: 다음 로그에서 치킨 % 판단이 끝나면 삭제(사용자 결정에 따름).
+- 261022: 결과 나옴(사망 0, 가드 중 Life Chicken 0, 보스별 표는 `log_results.md`). 한 싸이클 더 본다.
 
 ### 3-12. 골드 나눔 줄 (`AutoSmurf.giveGold`, 261020 사용자)
 - 동작: 주는 양 = 골드 − LowGold, 그것이 1000 미만이면 골드 − 5000. 리더가 골드를 받는 것이 LowGold보다 우선(사용자 의도). 예전 식은 LowGold 아래 팔로워의 양이 음수가 되어 실제로 주고받지 못했음.
 - 확인: trace `Picking up/Dropping/Retaking N Gold`가 음수 없이 찍히고 리더가 받는가. 확인 뒤 줄 삭제.
+- 261022: 음수 없음. 리더는 일부만 받음 → 2-4.
 
 ### 3-13. 그 밖의 확인용 줄
 - `dropping radament book`(시작 단계 북 버리기 무한 루프 수정 확인용, 47816e6). 확인 뒤 삭제.
@@ -113,7 +133,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-14. `canMakeRoom` 0·4 (`Pickit.canMakeRoom`, 261021)
 - 바꾼 것: 0·4는 `Town.ignoredCheck`가 참이면 자리를 만들 수 있다고 본다(마을 clearInventory 인벤토리 정리와 같은 판정: 0은 팔거나 버림, 4는 팖). 예전에는 0은 건너뛰고 4는 스태시 빈자리(`canStash`)로 판정해, 비울 수 있는데도 `Not enough room`으로 포기했다. 5(소켓 보석, 3-15)는 건너뜀. 261021 사용자 기각이었으나 소켓 작업(3-15)에서 같은 판정이 걸려 다시 보고 반영(사용자 결정 261021).
 - 감수: clearInventory의 4 판매가 계속 실패하면 마을 왕복이 반복된다(기존 코드도 스태시에 자리가 있으면 같음).
-- 확인 로그(Claude 추가 261021, 사용자 승인): trace `make room: <이름> (result 0|4)`(마을로 가게 한 물건), `make room skip: <이름> (result 5)`(소켓 보석이 자리를 막음, 3-15 도입 뒤 관찰).
+- 확인 로그(Claude 추가 261021, 사용자 승인): trace `make room: <이름> (result 0|4)`(마을로 가게 한 물건, 261022 삭제), `make room skip: <이름> (result 5)`(소켓 보석이 자리를 막음, 3-15 도입 뒤 관찰, 한 싸이클 더 본다).
+- 261022: 통과(사용자 확인). `make room` 21건 모두 그 물건이 ItemLog `Sold`/`Dropped`, 되풀이 0. 판정은 clearInventory 인벤토리 정리와 같은 코드(`Storage.Inventory.Compare` + `ignoredCheck` + `checkItem` 0 버림·4 팖)라 반대 방향 확인 불필요. 다시 줍기는 `visitTown` 뒤 `pickItems(10)`이 하고, 실패면 `make room`이 되풀이돼 보임. `make room skip` 0건.
 - 확인: `make room` 뒤 같은 물건의 ItemLog `Sold`·`Dropped`가 있고 돌아와 줍는가 → 맞음. 같은 이름의 `make room`이 되풀이되면 왕복 반복 → 그 물건이 왜 안 치워졌는지 본다. `make room skip`은 보석 때문에 줍기를 포기한 빈도. 확인 뒤 두 줄 삭제.
 
 ### 3-15. 소켓 보석 (`Pickit.checkItem`·`socketTargets`·`pickItem`, `Town.socketGems`·`doChores`, `Misc.itemLogger`, 261021)
@@ -141,3 +162,4 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - trace `socketGems failed` 빈도와 이유, `(dropped)` 뒤 다시 주웠는가.
   - 룬워드 베이스(예: 빈 3소켓 브레스트플레이트)·티어 없는 장비에는 넣지 않는가. 레벨 19 이후 무기용 보석이 정리되는가.
   - `make room skip ... (result 5)`(3-14) 빈도.
+- 261022: 통과(0x28 뒤 `Socketed` 23건, 실패 0). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로. a1 머리 칸 사파이어(23:58)가 코드 버전 차이인지는 사용자 확인 전.

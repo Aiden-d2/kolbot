@@ -905,10 +905,6 @@ ModeLoop:
 				if (currExit.target === areas[i]) {
 					dest = this.getNearestWalkable(currExit.x, currExit.y, 10, 2);	//260824
 
-					if (me.area === 26) {	//261021 H1 check (Monastery Gate): is the exit point on the wall next to the gate? remove once judged
-						Misc.trace("[exit] " + me.area + " -> " + areas[i] + " type:" + currExit.type + " exit:" + currExit.x + "," + currExit.y + " dest:" + (dest ? dest[0] + "," + dest[1] : "none"));
-					}
-					
 					if (!dest) {
 						return false;
 					}

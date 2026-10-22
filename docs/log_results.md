@@ -85,3 +85,44 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - default 안에서 직접 `visitTown`: 직업 공격 `doAttack`(용병·수리·화살통), `Pickit.pickItems`(자리 부족), `getQuestItem` → 멈춤·유실 없음. Town check(물약)는 261021부터 직접.
 - HP/MP 마을행(TownChicken)·Pause 키 → default 멈춤 → 중계로 막음.
 - 동시 동작(멈춤 없음, 메시지 무관): ToolsThread(물약·치킨), PartyThread(`clickParty`), AutoBuildThread(스탯·스킬).
+
+## 261022 묶음 (10/21 21:54 ~ 10/22 09:35, 8프로필 65게임)
+데이터: trace·d2bs·콘솔·ItemLog·ScriptErrorLog(Pz-1~65, 보스는 대부분 8명 × 2회 = 16건). 실행 중 코드가 바뀐 것으로 보임: 소켓 장착이 23:36까지 장착 칸 클릭판(실패만), 23:40부터 0x28판(성공만). main 병합(#63) 23:55, 사용자 업로드 `d8af14f` 09:34(실행 끝난 뒤). 어느 시각에 어느 판이었는지는 사용자 확인 전.
+
+### handoff 3절 판정
+- 3-1 okCount 이름: 안 온 프로필이 이름으로 남음. desync 2게임 3줄.
+  - Pz-5 Tamoe Highland: a1·a7 `missing(okCount): a5, a8`. a5는 같은 시각 아직 Black Marsh에서 화살통 마을행(`visitTown start by:default.dbj` 22:42:28 ~ back 22:43:01) → 실제 지각(B). a8은 그 시간 trace·d2bs 기록 없음(하던 일 모름).
+  - Pz-30 Travincal: a6 `missing(okCount): a3`. a3은 구간 시작(02:20:45)부터 퇴장까지 기록 없음.
+- 3-2 중계: `relay N msgs` 6건. 5건은 `Town chicken` 다녀온 직후(2~7 msgs), 그 게임들 desync 없음 → 동작. 1건(a6 Pz-13, 23:46:49 Rogue Encampment)은 마을행 없음: 게임 시작 뒤 약 2분 default.dbj 기록 없고 a4 `Team didn't join the game within 2 minutes` → 원인 미확인.
+- 3-3 clearToExit 삭제: `moveToExit failed` 0건. moveToExit 안의 moveTo throw로 게임 종료 2건(a7 Pz-15 Claw Viper Temple Level 2, a1 Pz-22 Tal Rasha's Tomb #4, 설계대로 잡지 않음). 언더패스·Jail 보정 구간이 돈 기록 없음.
+- 3-4 SafeTele 범위: 동작이 같은지는 로그로 판정 불가. `[SafeTele] monsters`는 a1 5,365줄, 평균 26마리 중 12마리가 범위 안(47%). a2(SafeTele 꺼짐)도 348줄: trace가 `safeCheckNode`의 `Enabled` 검사 앞(`Pather.moveTo`)에 있어서 찍힘, 동작 영향 없음.
+- 3-5 Town check 직접: 58건 모두 바로 `visitTown start by:default.dbj`. 50건 back, 7건 마을에 있는 동안 다른 프로필 퇴장으로 게임 종료, 1건 TP 타기 실패(a8 00:02:11 `usePortal failed` 14회 → `goToTown take TP failed`) 뒤 다시 Town check → 00:03:08 back. 마을행 중 또 마을행(중첩) 0건 → 통과.
+- 3-6 getQuestItem: `vanished`·`Not enough room` 0건 → 상황 없음. 북 16, 눈·심장·뇌 각 2.
+- 3-7 getWP: `menu not opened` 72건(try:0 67, try:1 5, 그 이상 0), `[goWP] Failed` 0. 실패 2건: a1 Pz-49·Pz-50 연속 ANDY Catacombs Level 2 `[getWP] waypoint unit not found` → `[WP] wp.area:null` 12회 → `useWaypoint: Failed to use waypoint`. goWP 실패 줄 없음, Pz-51은 정상 → 원인 못 찾음. 겹쳐 서기는 로그로 못 봄.
+- 3-8 H1 `[exit]`: 2게임 9줄 모두 `type:1 exit:15140,5000 dest:15140,5001`, 모두 Outer Cloister로 넘어감(실패 0). 게이트 옆 벽인지는 맵 대조 필요 → 판정 못 함.
+- 3-8 chores 멈춤: clearInventory 226건(중앙 7.8초, 20초 이상 19, 최대 47.4초), buyPotions 302건(중앙 8.9초, 최대 21.6초). `buy failed` 7건은 모두 a2 골드 부족(211·370, mp4). 긴 clearInventory는 판매 수와 무관: 판매는 처음 몇 초에 끝나고 나머지는 기록 없음(예: a6 00:06:18 47.4초, 판매 2건 00:05:28·30). 같은 시각 여러 프로필이 길다(00:06:02~18 a4·a6·a7, 02:05:32~50 a4·a5·a7) → 원인 못 찾음.
+- 3-9 콘솔·trace: 리더 콘솔에 `!!! EYE/HEART/BRAIN !!!`와 옛 `=== EYE/HEART/BRAIN ===`가 1~3초 차로 둘 다 찍힘(중복, 사용자 업로드 `d8af14f`에서 하나로 정리). `[console]` 미러, `[useUnit] timeout`의 id·target·unit(189줄), Life Chicken에서 mode·near 빠짐 확인. `party accept` 579줄, MoveToSlot 실패 0건이라 겹침 판정은 상황 없음.
+- 3-10 radamentOff: 북 리셋 0건 → 상황 없음. 북 정상 경로(visible → read) 16/16.
+- 3-11 보스가드: 사망 0(`You died` 0, `revive start` 0), 가드 중 Life Chicken 0, 가드 중 `Town chicken` 1(a4 쉥크). 시체 회수 상황 없음.
+
+| 보스(pct) | chicken off HP | off → last |
+|---|---|---|
+| 써모너(100) | 100 12건, 늦게 온 팔로워 87·87·87·15 | 0~4.7초 |
+| 라다먼트(85) | 52~84 | 0.8~6.3초 |
+| 앤디(15) | 2~14 (9건) | 0~1.5초 |
+| 메피·이주얼·디아(15) | 11~15 | 2.4~7.1초 |
+| 쉥크(50) | 20~50 (14/16, 2건은 85%·77%에서 마지막으로 봄) | 0~3.7초 |
+| 에인션트(10) | 1~9 | 12건 3초 안, 4건 15~21초(마지막 고대인 기준) |
+| 바알(15) | 4~15 (7/8, 1건은 25%에 처음 봄) | 0~1.6초 |
+
+- 3-12 골드 나눔: 음수 없음 → 통과. 리더는 일부만 받음: 00:16 7더미 중 3, 02:41 8더미 중 5. 나머지는 15초 뒤 팔로워 `Retaking`이 바닥의 아무 더미(`getUnit(4, 523, 3)`)를 주움(a7이 a2 몫 8493, a4·a7이 같은 더미 동시). 리더 쪽은 더미마다 1초 대기와 보관함 열기를 반복(`AutoSmurf` 골드 받기 루프).
+- 3-13: `dropping radament book` 0건 → 상황 없음.
+- 3-14 canMakeRoom 0·4: `make room` 21건(4가 15, 0이 6), 21건 모두 그 물건의 ItemLog `Sold`/`Dropped` → 정리 통과. 같은 물건 되풀이 0, `make room skip` 0. 다시 줍는지는 확인 못 함: 줍는 물건 이름은 trace에 없고 ItemLog는 결과 1·2·3·5만 남김(`Pickit.pickItem`).
+- 3-15 소켓 0x28: 23:40 이후 `Socketed` 23건, 실패 0(`(cursor)`·`(dropped)` 없음). 23:36까지 클릭판 실패 58건(handoff 1·2차 결과와 같은 시기). 빈 소켓보다 많이 주운 경우 없음. 티어: Wolf Head 1→11, Targe 13→15→17, Beast Visor 13→14→16, War Hammer 17→19, Dread Shell 13→16, 노멀 Cap·Leather Armor 1 고정.
+  - a1 22:54 Chipped Sapphire: `Socketed` 없이 Spiked Club이 `Gemmed`(Adds 1-3 cold)로 팔림(00:34:53) → 1차 결과의 사용자 손 장착으로 보임(추정).
+  - a1 00:42 Chipped Emerald: 00:45 무기를 Vicious Morning Star로 바꿔 대상이 사라짐 → `Dropped` 2회(00:45:36·00:47:32) 뒤 `Sold`(버린 뒤 다시 주운 것으로 보임, 추정).
+  - a1 Cap 머리 칸 23:58 Chipped Sapphire, 00:01 Chipped Ruby. `Config.SocketGems` Head `[99]`(루비)와 사파이어가 안 맞음 → 코드 버전 차이로 보임(추정, 확인 전).
+  - 장착 중 빈 소켓 룬워드 베이스 사례 없음 → 베이스 제외는 시험되지 않음.
+
+### 그 밖 (handoff 1-1)
+- `Failed to generate path` Error 5건(Pit of Acheron 2, Claw Viper Temple Level 2, Tal Rasha's Tomb #4, Flayer Dungeon Level 1). Jail 2층 경로 없음 0건. `[useUnit] timeout` 189줄은 모두 다음 층으로 넘어감.
