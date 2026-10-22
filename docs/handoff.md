@@ -11,6 +11,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 아케인(261013 Pz-37): a1이 같은 자리(25447,5450)에서 `moveTo no path -> 25019,5454` → `adjusted path -> 25019,5454`(보정 칸 = 원래 목표)를 5,932회 반복. 손으로 캐릭터를 옮기자 경로가 생김 → 출발 위치에 따라 경로가 달라짐. 써모너 리더 while은 사용자가 throw로 끝나게 고침(main `3900f04`·`c002b48`). 남은 경우: 경로는 있는데 `moveTo`가 false(throw 없음)면 while이 계속 돈다(코드 확인, 사례 없음).
   - Jail 2층(4건: 261006 17770,8131 / 10/14 17530,8071 / 10/19 17770,8011, 모두 목표 y 8000대): 사용자 가설(3층 대신 1층 쪽으로 돌아간 뒤 3층 출구로 경로 없음)과 맞는 자료이나 경로가 없는 이유는 미확인.
 - **관찰 로그 안(결정 없음):** `moveTo no path` 줄에 엔진 `getCollision(area, 목표)`·`getCollision(area, 내 위치)`(목표가 0xFFFF면 맵 미로드, 내 칸에 막힘·회피 비트면 출발 칸 문제). 그 뒤 사용자 업로드(`b1b5887`)로 빈 경로 처리 줄과 랜덤 걸음이 바뀌어, 이 안을 쓸지 다시 봐야 한다.
+- 261022 로그: 빈 경로 폴백 성공(원래 목표로 19, 보정 칸으로 23). 끝내 실패해 게임이 끝난 6건 관찰(분류 확정 아님): 지역이 바뀐 직후 `useUnit` 무작위 이동이 옛 지역 좌표로(Tal Rasha #4·Harem 1·Claw Viper 2), 지역 이동 실패 뒤 다음 층 좌표로(Flayer Dungeon 1), 같은 자리 `12700,7584`에서 못 움직임(Pit of Acheron 2건). 6건 모두 랜덤 걸음 10회 실패, 4건은 위치가 그대로.
+- 사용자 결정 261022: 사례를 더 모은다. 위 유형만 있다고 단정할 수 없고, 핑 문제인지 정말 경로가 없었는지도 불분명.
 
 ### 1-2. Monastery Gate 동선 H1 (`AutoSmurf.outer`, `Pather.moveToExit`)
 - 문제(사용자 설명 261022): Tamoe Highland(7) → Monastery Gate(26) → Outer Cloister(27)로 갈 때 26의 모양이 특수해서, 가장 짧은 길이 아니라 벽 쪽으로 들어간 뒤 중앙 게이트를 거쳐 27로 넘어간다. 목적: 벽 쪽 진입 자리에서 게이트까지 가는 거리를 줄인다(게이트로 바로 도착하게 할 수 있는가).
@@ -88,10 +90,13 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-7. `clickWP` 삭제, 웨이 random (`Pather.getWP`·`goWP`)
 - 바꾼 것: `clickWP` 삭제 → `Pather.getWP`(area 없으면 `me.area`). `goWP`·`getWP` random 이동.
 - 확인: 웨이 찍기·이용이 정상인가, 웨이 앞에서 겹쳐 서지 않는가.
+- 261022: `menu not opened` 72건 모두 try:1 안에 끝남. 실패 2건(a1 Pz-49·50 Catacombs 2층): goWP는 실패 줄 없이 끝났는데 `[getWP] waypoint unit not found` → `useWaypoint`는 유닛이 없으면 움직이지 않고 12회 재시도 뒤 throw → 게임 종료. 예전부터 간헐적으로 있던 원인 미상(사용자).
+- 결정(사용자 261022, 수정 전): `[getWP] waypoint unit not found` 줄에 웨이 프리셋 좌표와 내 거리를 붙인다. 거리 > 10이면 goWP 도착 판정 문제, ≤ 10이면 유닛 조회 문제. 제거 조건: 판정.
 
 ### 3-8. 판별 trace와 cancel 삭제
 - 바꾼 것: H1 판별 trace(26 Monastery Gate 출구), chores 멈춤 판별 trace, heal 뒤 `me.cancel()`(260908 사용자 추가) 삭제. cancel 15곳 중 나머지는 유지(`stash` 시작의 cancel은 원본에도 있음).
 - 확인: H1 trace 결과로 1-2 판단(261022 로그로는 판정 못 함, 1-2 참고), chores 멈춤 재발 여부.
+- 261022 chores 멈춤: 재발(사용자 확인). 멈추는 함수는 clearInventory(20초 이상 19건, 최대 47.4초). buyPotions는 최대 21.6초(20초 이상 1건). clearInventory 안의 단계(벨트 물약 되돌리기 / 큐브 / 보관함 / 인벤토리 팔기·버리기)는 시간이 없어 특정 못 함. 긴 사례 여럿(a6 00:06 47.4초, a7 00:06 21.7초 등)은 clearInventory 안에 ItemLog·trace가 하나도 없어 팔기·버리기·큐브 단계는 아님(인벤토리 판매·버림은 ItemLog, 큐브는 trace를 남김) → 남는 것은 기록을 남기지 않는 벨트 물약 되돌리기·보관함 비우기(추정, 코드 기준).
 
 ### 3-9. 콘솔·trace 추가
 - 바꾼 것: 눈·심장·뇌 `!!! X !!!`(getQuestItem 성공, 리더), `D2Bot.printToConsole`이 `print("[console] " + msg)`도 함, `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).
