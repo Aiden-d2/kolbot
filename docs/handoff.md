@@ -54,8 +54,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 코드: `doChores` 순서 heal → identify → clearInventory → fillTome → buyPotions. clearInventory 단계: ① 벨트 물약 되돌리기(인벤토리 물약마다 4열을 돌며 맞는 열에 클릭, 클릭마다 `delay(ping*2+200)`, 기록 없음) ② 큐브 비우기(trace) ③ 보관함 비우기(overhead만) ④ 인벤토리 팔기·버리기(ItemLog, `initNPC("Shop")` 뒤 판매). buyPotions: `initNPC("Shop", "buyPotions")` → 벨트 4열마다 shift 구매 또는 열 칸 수만큼 구매 → HP·MP 버퍼 구매. 둘 다 벨트 물약 열(`checkColumns`)을 다룬다.
   - 판별 trace(261021, 코드에 있음): `chores slow: clearInventory/buyPotions Ns`(5초 초과, `Town.doChores`), `buyPotions: buy failed ...`(`Town.buyPotions`). 두 함수 모두 전체 시간만 찍혀 안의 어느 단계인지 모름.
 - **가설**: 남는 것은 기록을 남기지 않는 벨트 물약 되돌리기·보관함 비우기(추정, 코드 기준). 사용자 판단: 물약 문제이고 두 함수가 비슷한 로직을 가졌다면 둘 다 설명된다.
-- **구현안**(미정): 두 함수에서 20초 이상이 날 수 있는 반복·대기 조건(벨트 열 계산, 클릭·구매 실패 시 반복, NPC 열기 재시도)을 코드로 찾고 수정 방향을 정한다. Claude 제안(261022, 미결정): 단계별 시간 trace(5초 초과만) — 벨트 단계가 길면 물약 수·클릭 횟수, 보관함 단계가 길면 옮기던 물건.
-- **검증 방법**: `chores slow` 20초 이상 건수. 판별 trace 제거 조건: 원인이 정해지면 삭제.
+- **구현안**(사용자 채택 261022, 수정은 다른 항목 확정 뒤 한꺼번에)
+  - 남는 물약 정리(체력·마나·회복 세 루프)를 `.drop()` → `.interact()`(마시기, 원본 kolbot 동작, 09-14 첫 커밋에 주석으로 남아 있음)로. 근거: NPC 메뉴(`0x08`)가 열린 상태에서는 드롭이 안 먹힘(사용자 퀴버 테스트), `heal`이 메뉴를 열어 둔 채 clearInventory로 들어감. `Unit.prototype.drop`은 `0x19`·`0x1A`만 닫는다.
+  - 판별 로그: 지금의 `chores slow: clearInventory/buyPotions` 두 줄을, `doChores` 전체가 10초를 넘을 때 한 줄로 바꾼다. 단계별 시간(heal, identify, clearInventory[시작 시 NPC·UI, 벨트 시간·클릭, 물약 정리 시간·개수·실패, 큐브, 보관함, 인벤토리 잔여], fillTome, buyPotions[NPC까지 시간, 구매 횟수·시간·shift·실패], repair, stash, socketGems). 새 지역 객체 1개. 한 싸이클로 끝낸다(사용자).
+  - 261022 로그(10/21~10/22 15:50, 5초 초과만): buyPotions 580건, 중앙값 8~10초(힐·상점이 같은 NPC인 Harrogath도 8.0초), 20초 이상 7건은 모두 Lut Gholein(Fara → Drognan, 여러 프로필 같은 시각). clearInventory 255건, 20초 이상 25건(Rogue Encampment 13).
+- **검증 방법**: 위 한 줄로 단계별 원인 판정, 마시기 뒤 clearInventory 20초 이상이 사라지는가. 판별 로그 제거 조건: 이 싸이클 분석 뒤 삭제.
 
 ### 2-8. 텔레포트가 제자리에 머묾 / 두 번에 한 번 씹힘 (`Pather.teleportTo`·`moveTo`, 사용자 관찰 261022, 옛 1-10)
 - **확인된 것**
