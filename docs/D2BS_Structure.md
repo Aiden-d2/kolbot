@@ -690,6 +690,16 @@ ControlAction  click / setText / getText / timeoutDelay / joinChannel / createGa
 
 `DataFile`에 새로 쓰는 키: `restInfo {count, start}`, `playTime` (D2BotLead), `debugInfo` (ToolsThread), `Merc` (Merc.hire).
 
+**색 번호 (261022 조사, 사용자 자료 260923 + 커뮤니티 자료 대조, 공식 문서 없음)**
+
+| `printToConsole` 색 | 0 기본(검정) | 4 blue | 5 green | 6 yellow | 7 gold | 8 orange | 9 red | 10 grey |
+|---|---|---|---|---|---|---|---|---|
+| 같은 색 `print` 코드 | 없음(흰색) | `ÿc3` | `ÿc2` | `ÿc9` | `ÿc4` | `ÿc8` | `ÿc1` | `ÿc5` |
+
+- `print`·`overhead` 코드: `ÿc0` White, `ÿc1` Red, `ÿc2` Green, `ÿc3` Blue, `ÿc4` Gold, `ÿc5` Grey, `ÿc6` Black, `ÿc7` Tan, `ÿc8` Orange, `ÿc9` Yellow, `ÿc:` Dark Green, `ÿc;` Purple. 사용자 자료와 kolbot 이슈 #1146 목록이 12개 모두 일치(이름만 다름: `ÿc4` DARK_GOLD/Brown, `ÿc7` LIGHT_GOLD). #1146에는 `ÿc<` GREEN이 더 있음(미확인).
+- 콘솔 4~9는 개인 포크(Roger-Takeshita/Kolbot_Roger-That: 3 Black, 7 Brown)와 일치. 10 grey는 외부 자료에 없고 사용자 자료·현재 사용과 맞음. 이슈 #2503의 다른 번호표는 `_NTIPAliasColor`(아이템 염색 색)라 콘솔 색이 아닌 것으로 봄(추정).
+- `ÿc` 코드는 게임 화면 콘솔에서는 색으로 보이지만 d2bs 로그 파일에는 글자로 남는다(사용자 확인 261022).
+
 ### Prototypes.js
 ```
 Unit.getStatEx(id, subid) / getItems(...) / getColor() / getPrefix(id) / getSuffix(id)
