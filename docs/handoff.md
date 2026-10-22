@@ -27,6 +27,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ### 1-4. while + catch 무한 루프 (나머지 곳 상태와 수정 필요 여부 검토 필요, 사용자 261022)
 - `AutoSmurf.js`의 `while (목표까지 거리 > N) { try { moveToPreset/moveTo/moveToExit } catch { print } }`는 탈출 조건이 없다. 경로 계산이 계속 실패하면 같은 자리에서 무한 반복(260930 기준 10곳: Arcane, moveToExit, WP, Cube 상자, 저널 2곳, 탈무덤 상자, 3557, Orifice, 빨간 포털). 써모너 리더 while은 사용자가 고침(throw로 끝냄). moveToExit 쪽 상당수는 3-3(`clearToExit` 삭제)에서 한 번 시도로 바뀜.
+- 사용자 관찰·방향(261022): 경로가 없어 `Failed`가 찍힌 뒤에도 스크립트가 끝나지 않고 다음 시도를 계속한다. while로 걸린 곳은 무한 루프. → 경로 재시도 10회 뒤에는 스크립트를 끝내는 throw가 필요하고, 그러려면 호출부의 catch도 같이 없어져야 한다.
+  - 코드(261022 확인): `Pather.moveTo`는 이미 랜덤 걸음 10회 실패 뒤 `throw new Error("moveTo: Failed to generate path ...")`를 던진다. 계속 도는 것은 호출부(아래 후보)의 `try { ... } catch`가 잡아 while이 다시 돌기 때문(코드 기준). 관찰한 곳(사용자 261022): Claw Viper Temple("여기에도 catch가 있는 것 같다"). 코드 확인(261022): `AutoSmurf.amulet`의 58 → 61 구간(`moveToExit(61, true, true)` 실패면 `quitGame`)과 `Pather.moveToExit` 안에는 try/catch가 없다. 261022 로그의 a7 Pz-15 Claw Viper 2층 사례는 throw가 로더(`Loader.loadScripts`의 catch → `Misc.errorReport`)까지 올라가 그 게임이 끝났다. 계속 도는 곳이 어디인지(어느 while·catch인지)는 사용자 로그로 다시 확인 필요.
 - 261022 문자열 검색(while 뒤 12줄 안에 try와 이동 함수, 탈출 조건은 하나씩 안 봄)으로 나온 후보: `travel`(10073,8670), `cube` 상자, `tombs`(46 출구·상자), `radament`(48·프리셋 40), `duriel` Orifice, `mephisto` 빨간 포털, `farmingSummoner` 저널, `usePortal` 대기 while(`den`·`andy`·`duriel`·`mephisto`·`farmingAndy`·`farmingMephisto`), `den`의 지역·마을 while.
 
 ### 1-5. `getQuest` bit 점검 (발견만)
@@ -43,6 +45,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 코드(261022 확인): `useUnit`은 7회 뒤 `targetArea`에 못 가면 false를 돌려준다(throw 없음). `AutoSmurf.brain`은 `Pather.moveToExit([88, 89, 91], true)`의 결과를 보지 않고 바로 `Pather.moveTo(91 프리셋 406)`(뇌 상자, Level 3 좌표)로 간다 → 다른 지역 좌표라 경로가 날 수 없다.
 - 검토할 것: (1) useUnit이 유닛 바로 옆(dist 1~5)에서 왜 7회 모두 못 넘어갔나(클릭·패킷이 안 먹은 것인지, 핑인지: 로그에 근거 없음). (2) moveToExit 결과를 보지 않고 다음 지역 좌표로 가는 호출부가 brain 말고도 있는가. (3) 실패 시 처리(재시도·퇴장 등)를 어떻게 할지. 검증 방법(무엇을 보면 원인이 갈리는가)도 이 검토에서 정한다.
 - 3-7 웨이 실패와의 관계(사용자 질문 261022, 코드 확인): 웨이는 `Pather.useUnit`을 쓰지 않는다(`getWP`·`useWaypoint`가 직접 `getUnit(2, "waypoint")` → 클릭/`interact`). 증상도 다르다: 1-7은 유닛을 찾아 옆에서 7회 눌렀는데 못 넘어감, 3-7은 유닛 자체를 못 찾음(`waypoint unit not found`). 같은 원인인지는 미확인, 3-7 판별 trace 결과와 함께 본다.
+- 사용자 관찰(261022, 검토 필요): useUnit이 실패하는 가장 큰 이유는 계단(stair) 유닛이 클 때 `getNearestWalkable`이 걸을 칸을 못 찾는 것 같다. 볼 곳(코드): `Pather.moveToExit`의 출구 점 보정 `getNearestWalkable(currExit.x, currExit.y, 10, 2)`(못 찾으면 false), `useUnit`의 `moveToUnit(unit)`(5칸 넘을 때) → `moveTo` 안의 보정 `getNearestWalkable(x, y, 15, 2, 0x1)`. 미확인.
+- useUnit 재시도 간격(개선 방향 참고): 사용자 기억(261022) — 원래 실패 뒤 재시도가 약 2초였는데 너무 길어 많이 줄였다. 저장소 기록: 회차 7회(`//260903`), 열기 뒤 `delay(max(ping*2, 300))`(`//260903`), 회차 대기 `max(1000, ping*2+300)` + 로딩 중 대기(`//260930`, 그 전 `ping*2+300`, `docs/code/Pather.md` useUnit). 저장소 첫 커밋(`8c0856c`, 261004)에 이미 1000ms 판이라 2초였던 시기의 코드는 저장소에 없음. 줄인 간격이 이번 실패(dist 1~5에서 7회 실패)와 관계있는지는 미확인.
+- 3-7과 순서 관계(사용자 질문 261022, 로그 확인): 3-7 실패 2건은 getWP 때 이미 2층이었다(`[getWP] waypoint unit not found. area:35`, `[WP] ... me.area:35`). Pz-49는 06:35:20 1층 → 2층 `useUnit` timeout iter:0 뒤 넘어가 06:35:22 goWP, 06:35:28 웨이 못 찾음. 따라서 "2층에 못 간 채 getWP"는 아니다.
 - 1-1의 다른 관찰(지역이 바뀐 직후 useUnit 무작위 이동이 옛 지역 좌표로, Pit of Acheron 같은 자리)은 1-1에서 사례를 더 모은다.
 
 ### 1-8. chores 20초 이상 멈춤 세부 검토 (`Town.clearInventory`·`buyPotions`, 3-8에서 이어짐, 사용자 261022)
@@ -123,6 +128,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-10. 라다먼트 `radamentOff` (`AutoSmurf.radament`)
 - 바꾼 것: N+1 `Radament book reset` 직전 리더 캐시 `radamentOff = true`. N+2 리더가 라다먼트 차례에 읽고 지운 뒤 콘솔 `Radament off: tombs, quit at 10 min` → `me.maxgametime = 10분`(엔진이 게임 시작부터 10분에 나감, 다음 게임에 default.dbj가 원래 값으로) → tombs 한 번. 라다먼트 차례엔 써모너가 끝나 리더는 캐니언 WP가 있고, 없는 팔로워는 리더 포털로 들어감. D2BS는 게임 단위 퀘스트 상태(완료 불가)를 읽는 함수가 없어 캐시 표시로 함.
 - 확인: 북 분실 뒤 N+2 게임에서 콘솔 줄과 10분 퇴장, N+3에서 북 획득.
+- 261022 사용자 수정(`8a7ff56`): N+2의 tombs는 `partyLevel(tombsLvl)`이 참이면 바로 break해 아무것도 안 했다 → `tombs(force)` 인자, 메시지 `forceTombs`(팔로워 `forceTombs` 플래그 → `tombs(true)`), 리더는 라다먼트 꺼짐 때 `forceTombs`를 보내고 `tombs(true)`. 확인: N+2에서 tombs가 실제로 돈다(구간 헤더 `=== [TOMBS] ===`와 이동 줄).
 
 
 ### 3-11. 보스가드·시체 회수 trace (`AutoSmurf.bossGuard`·`bossScan`·`bossEnd`, 261020)
@@ -179,3 +185,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - trace `socketGems failed` 빈도와 이유, `(dropped)` 뒤 다시 주웠는가.
   - 룬워드 베이스(예: 빈 3소켓 브레스트플레이트)·티어 없는 장비에는 넣지 않는가. 레벨 19 이후 무기용 보석이 정리되는가.
 - 261022: 통과(0x28 뒤 `Socketed` 23건, 실패 0). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로. a1 머리 칸 사파이어(23:58)가 코드 버전 차이인지는 사용자 확인 전.
+
+### 3-16. 스태프 콘솔 줄 (`AutoSmurf.getQuestItem`, 261022 사용자 발견·수정)
+- 문제: `d8af14f`에서 넣은 `if (classid === 356)`이 상자 id(356)를 봐서 참이 될 수 없었다(호출은 `getQuestItem(92, 356)`, 92 = Staff of Kings).
+- 바꾼 것(사용자 `8a7ff56`): 조건 `classid === 92`.
+- 확인: 스태프를 주우면 리더 콘솔에 `=== STAFF ===`가 찍힌다.
