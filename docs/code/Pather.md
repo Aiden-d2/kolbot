@@ -57,3 +57,8 @@
 ### 260930 Claude: 대기와 로딩, 빨간 포털
 - 파란 포털 대기 max(1000, ping×2+300), 빨간 포털 1500ms. 로딩 중(`gameReady` false)엔 대기·재전송 없음. 성공 판정은 로딩 뒤(`me.area`는 로딩 중 undefined). flash(3회마다)는 유지.
 - 근거: 260926 `usePortal 342` 로그 47회 전부 102→103 성공, 1회 35·2회 9·3~5회 3, 성공은 전송 뒤 약 1초 안. 확인: 261006 로그에서 빨간 포털 통과(옛 인게임 검증 2번).
+
+## goWP / getWP
+
+### 261021 Claude: 웨이 앞 random 이동
+- goWP(프리셋까지 > 10)·getWP(웨이까지 > 5) 이동에 random(프로필별 오프셋 `Pather.myX/myY`)을 줘 팀이 웨이 앞 한 칸에 겹쳐 서지 않게 함. 같이 `AutoSmurf.clickWP`를 지우고 `Pather.getWP`(area 없으면 `me.area`)로. getWP 쪽 random은 왕복 우려로 제거하기로 함(handoff 2-5).

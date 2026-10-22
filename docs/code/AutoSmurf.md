@@ -10,6 +10,11 @@
 ### 261003 Claude: 범위 조정 (사용자 요청)
 - Andariel(2곳)·Izual·Shenk·Nihlathak 20 → 25, Radament·Countess 15 → 20, Blood Raven 10 → 0(죽으면 주변 소환몹도 죽어 끝 줍기 25가 유리), Summoner 10 → 0(합류 때 이미 내 10칸 안이라 주변 메이지는 위험 대상으로 잡히고, 뒤에 박스 정리·`okCount(10)`이 있음). 보스 호출의 range는 보스 위치(org) 기준 정리 반경이고 위험 반경(내 10칸)과 다르다.
 
+## 출구 이동 (여러 함수의 `moveToExit`, 옛 `clearToExit`)
+
+### 261021 Claude: `clearToExit` 삭제
+- 20곳은 `moveToExit` 한 번 + 실패 시 `quitGame("moveToExit failed: A -> B")`(moveTo throw는 잡지 않음). 지역 확인(`me.area === A`)은 유지. 옛 바깥 while 4곳(언더패스 10→5, Jail 29→30·30→31·31→32)은 뒤에 보정 구간(목표 층이 아니면 마을 → 목표 층 포털, `Area reversed` 대기)이 있어 퇴장 없이 한 번 시도(throw도 잡음)하고 보정에 맡김. 이 4곳의 catch는 handoff 2-4 ① 대상.
+
 ## this.okCount / this.teamCount
 
 ### 261004 Claude: 죽은 사람도 타임아웃, 타임아웃 상세

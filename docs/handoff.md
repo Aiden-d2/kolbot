@@ -58,8 +58,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 사용자 육안 관찰(261022): 화면 전환으로 보아 텔레 자체는 되는 것 같다. 위치가 거의 바뀌지 않는 좌표로 한 번 텔레하거나, 실패해 제자리 착지하는 경우 둘 중 하나로 보임. 서버가 West라 핑 차이 때문일 수도 있음(사용자 추정). 핑 문제라면 로그로 잡히지 않을 것 같다(사용자).
 - 볼 곳(코드): `teleportTo`의 시전·대기(`docs/code/Pather.md` teleportTo 260930 "시전 동작 기준 대기"), `moveTo` 노드 루프의 SafeTele(`safeCheckNode`가 고른 칸), 노드 간격(`teleDistance` 35). 원인과 수정 방향을 검토한다.
 
-### 2-9. 웨이 유닛 못 찾음 (`Pather.getWP`·`useWaypoint`, 3-7 실패 2건, 사용자 261022, 옛 1-11)
-- 사례: a1 Pz-49·50 Catacombs Level 2 `[getWP] waypoint unit not found` → `useWaypoint`가 그 자리에서 `wp.area:null` 12회 → throw → 게임 종료(3-7).
+### 2-9. 웨이 유닛 못 찾음 (`Pather.getWP`·`useWaypoint`, 옛 3-7 실패 2건, 사용자 261022, 옛 1-11)
+- 사례: a1 Pz-49·50 Catacombs Level 2 `[getWP] waypoint unit not found` → `useWaypoint`가 그 자리에서 `wp.area:null` 12회 → throw → 게임 종료.
 - 코드로 정해지는 것: `goWP` while은 프리셋 10칸 안이거나 10회 뒤 `[goWP] Failed` trace로만 끝난다 → 실패 줄이 없었으니 프리셋을 찾았다면 10칸 안에서 유닛 조회가 실패한 것. Pz-49는 `going to nearest WP`(프리셋 찾음) 확인. Pz-50은 d2bs 로그의 `going to nearest WP` 유무로 "프리셋 못 찾음(goWP가 움직이지 않음)"을 가른다(코드 수정 없음, 확인 전).
 - 웨이는 `useUnit`을 쓰지 않는다(`getWP`·`useWaypoint`가 직접 `getUnit(2, "waypoint")`). 2-4 B유형(유닛을 찾아 옆에서 눌렀는데 못 넘어감)과 증상이 다르다(유닛 자체를 못 찾음).
 - 검토할 것: 10칸 안에서 12회 조회가 모두 실패하는 원인 후보와 수정 방향.
@@ -81,10 +81,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 확인: okCount 대기 중 마을행(TownChicken·Pause)이 있었던 게임에서 desync 타임아웃이 없는가.
 - 261022: 통과(`relay` 6건 중 마을 다녀온 직후 5건, 그 게임 desync 없음). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로.
 
-### 3-3. `clearToExit` 삭제 (`AutoSmurf.js`)
-- 바꾼 것: 20곳은 `moveToExit` 한 번 + 실패 시 `quitGame("moveToExit failed: A -> B")`(moveTo throw는 잡지 않음, 게임 종료). 지역 확인(`me.area === A`)은 유지. 옛 바깥 while 4곳(언더패스 10→5, Jail 29→30·30→31·31→32)은 뒤에 보정 구간(목표 층이 아니면 마을 → 목표 층 포털, `Area reversed` 대기)이 있어 퇴장 없이 한 번 시도(throw도 잡음)하고 보정에 맡김.
-- 확인: 콘솔 `moveToExit failed: A -> B` 빈도와 지역.
-
 ### 3-4. SafeTele 몹 목록 범위 (`Pather` safeCheckNode)
 - 바꾼 것: 몹 목록을 내 위치에서 `max(teleDistance, 노드 거리) + SafeTele.Range` 안으로(후보는 내 위치 35 안, 몹은 후보 Range 안만 셈 → 결과 같음).
 - 확인: SafeTele 동작이 이전과 같은가(텔레 이동 중 멈칫·되돌아감 없음).
@@ -98,12 +94,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-6. getQuestItem 사라진 유닛 (`AutoSmurf.getQuestItem`)
 - 바꾼 것: `CanFit` 전에 유닛이 사라졌으면(`sizex` undefined, `JSUnit.cpp:191-194`) 다시 찾기 3회, 넘으면 `<classid> vanished`(`Not enough room`으로 가지 않음).
 - 확인: trace `vanished` 줄, `Not enough room for undefined`가 사라졌는가.
-
-### 3-7. `clickWP` 삭제, 웨이 random (`Pather.getWP`·`goWP`)
-- 바꾼 것: `clickWP` 삭제 → `Pather.getWP`(area 없으면 `me.area`). `goWP`·`getWP` random 이동.
-- 확인: 웨이 찍기·이용이 정상인가, 웨이 앞에서 겹쳐 서지 않는가.
-- 261022: `menu not opened` 72건 모두 try:1 안에 끝남. 실패 2건(a1 Pz-49·50 Catacombs 2층): goWP는 실패 줄 없이 끝났는데 `[getWP] waypoint unit not found` → `useWaypoint`는 유닛이 없으면 움직이지 않고 12회 재시도 뒤 throw → 게임 종료. 예전부터 간헐적으로 있던 원인 미상(사용자).
-- 결정(사용자 261022) → 옛 2-6 getWP 판별 trace는 기각(`rejected.md` getWP). 실패 원인은 2-9에서 검토.
+- 261022 사용자 로그: 해소 안 됨. a1 하수구 3층 `radament book visible: true 9,5 1`(11:32:34) → `Not enough room for undefined`(11:32:37) → `[Quit] getQuestItem failed`. `vanished` 줄 없음, 인벤토리에 빈칸 있었음(사용자).
+  - 코드(261022 확인): `CanFit`은 실제 아이템만으로 빈칸을 센다(`Config.Inventory` 잠금은 안 봄). `sizex` 확인 → `CanFit`(`FindSpot` 안에서 `Storage.Reload()`로 내 아이템을 다 훑은 뒤 `item.sizex/sizey`를 읽음) → 실패면 `canMakeRoom` → trace `item.name`. 이름이 undefined = trace 때 유닛 속성이 이미 사라짐.
+  - 가설(추정): `sizex` 확인 뒤 `FindSpot`이 크기를 읽기 전에 유닛이 사라져(누가 주움) 크기가 undefined → 반복이 돌지 않아 "자리 없음". 지금 확인 위치가 너무 이르다. 누가 주웠는지·내가 가졌는지는 이 줄로 모름.
+  - 수정 방향은 결정 전.
+- `Not enough room for <이름>`(옛 3-13에서 합침): 이름이 undefined면 이 가설 쪽.
 
 ### 3-8. 판별 trace와 cancel 삭제
 - 바꾼 것: H1 판별 trace(26 Monastery Gate 출구), chores 멈춤 판별 trace, heal 뒤 `me.cancel()`(260908 사용자 추가) 삭제. cancel 15곳 중 나머지는 유지(`stash` 시작의 cancel은 원본에도 있음).
@@ -146,9 +141,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 261022 사용자 수정(`bb94fac`·`284a5aa`): `pickGold` 반복 15회 × 1초 → 50회 × `ping*2+100`, 시작 때 보관함 넣기 삭제, 보관함 넣기 조건 골드 있음 → `charlvl × 10000` 이상, `giveGold` 대기 15초 → 10초(다시 줍기 `i >= 9`), 그 밖 `ping*2+500` → `ping*2+200`. 그래도 문제면 재논의.
 - 확인: 리더가 모든 더미를 받는가(`Picking up` 수 = `Dropping` 수).
 
-### 3-13. 그 밖의 확인용 줄
-- `dropping radament book`(시작 단계 북 버리기 무한 루프 수정 확인용, 47816e6). 확인 뒤 삭제.
-- `Not enough room for <이름>`(이름 undefined) → 3-6과 함께 본다.
+### 3-13. 라다먼트 북 버리기 (`AutoSmurf.start`, `dropping radament book`)
+- 바꾼 것(`47816e6`): 시작 단계 북 버리기 무한 루프 수정. 버릴 때마다 trace `dropping radament book`.
+- 확인: 북을 가진 채 시작한 게임에서 이 줄 뒤 정상 진행(무한 반복 없음). 확인 뒤 줄 삭제.
 
 ### 3-15. 소켓 보석 (`Pickit.checkItem`·`socketTargets`·`pickItem`, `Town.socketGems`·`doChores`, `Misc.itemLogger`, 261021)
 - 바꾼 것(사용자 결정 261021):
