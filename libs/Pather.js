@@ -1752,7 +1752,7 @@ MainLoop:
 			}
 
 			if (getDistance(me, wp) > 5) {
-				this.moveToUnit(wp, 0, 0, false, false, true);	//261021 random
+				this.moveToUnit(wp, 0, 0, false, false);	//261022 random removed: the offset (5, diagonal 7.1) kept the > 5 check failing and flipped sides each call
 			}
 
 			Misc.click(0, 0, wp);
