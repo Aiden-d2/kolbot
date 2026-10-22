@@ -1792,7 +1792,7 @@ var Misc = {
 		case "Transmuted":	//eom
 		case "Transmuted Fail":	//eom
 		case "Stashed":	//eom
-		case "Socketed":	//261021 equipped item after socketing, with the gem in the text
+		case "Gemmed":	//261022 equipped item after a gem/rune went in (Socketed -> Gemmed)
 		case "Shopped":
 		case "Gambled":
 		case "Dropped":
@@ -1882,6 +1882,14 @@ var Misc = {
 		}
 
 		if (action.match("granted", "i")) {
+			lastArea = DataFile.getStats().lastArea;
+
+			if (lastArea) {
+				desc += ("\n\\xffc0" + lastArea);	//eom
+			}
+		}
+
+		if (action.match("gemmed", "i")) {	//261022
 			lastArea = DataFile.getStats().lastArea;
 
 			if (lastArea) {

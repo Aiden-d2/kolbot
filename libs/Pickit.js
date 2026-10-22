@@ -490,7 +490,7 @@ MainLoop:
 			case 5:	//261021 socket gem
 				me.overhead("Picked up " + stats.name + " (ilvl " + stats.ilvl + ")" + " (Ingredient)");
 
-				Misc.itemLogger("Ingredient", item, "socket");
+				Misc.itemLogger("Ingredient", item, me.findItems(item.classid, 0).length);	//261022 count like the other ingredients
 
 				break;
 

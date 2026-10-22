@@ -140,18 +140,17 @@ var Town = {
 
 	// Socket inventory gems into equipped tiered items (targets and order from Pickit.socketTargets)	//261021
 	socketGems: function () {
-		var i, j, t, gems, gem, name, filled, before, after, tick, done, cursorItem, dropped, onCursor,
+		var i, j, t, gems, gem, name, base, result, filled, tick, done, cursorItem, dropped, onCursor,	//261022 before/after tier removed, base name for the console
 			targets = Pickit.socketTargets();
 
 		if (!targets.length) {
 			return true;
 		}
 
-		me.cancel();	//261021 test: 0x28 without the stash open
+		me.cancel();	//261022 0x28 needs no stash/inventory panel (tested)
 
 		for (i = 0; i < targets.length; i += 1) {
 			t = targets[i];
-			before = NTIP.GetScore(t.item, "Tier");
 			done = false;
 
 			for (j = 0; j < t.empty; j += 1) {
@@ -193,18 +192,20 @@ var Town = {
 					Misc.trace("socketGems failed: " + name + " -> [" + Config.Gear[t.bodyLoc] + "] " + t.item.name + (onCursor ? " (cursor)" : "") + (dropped ? " (dropped)" : ""));	//261021 (cursor)
 
 					if (dropped) {
-						me.cancel();	//261021 close the stash before picking up
+						me.cancel();	//261022 close panels before picking up
 						Pickit.pickItems();	// dropped in town: pick it back up (picked as a socket gem again)
 
-						return false;	//261021 stop for this visit (stash closed)
+						return false;	//261022 stop for this visit
 					}
 
 					break;
 				}
 
-				after = NTIP.GetScore(t.item, "Tier");
-				Misc.itemLogger("Socketed", t.item, name + " [" + Config.Gear[t.bodyLoc] + "] " + (filled + 1) + "/" + t.item.getStat(194) + ", Tier " + before + " -> " + after);
-				before = after;
+				result = NTIP.Evaluate(t.item);	//261022 line after socketing (same as Equipped)
+				base = getLocaleString(getBaseStat(0, t.item.classid, "namestr")).trim();	//261022 base name only (no affixes), same as the cubing console line
+				D2Bot.printToConsole("# [Gem] " + name + " " + base + " (" + (filled + 1) + "/" + t.item.getStat(194) + ")", 5);	//261022
+				Misc.itemLogger("Gemmed", t.item, result.line);	//261022 Socketed -> Gemmed, nip line like the other logs
+				Misc.logItem("Gemmed", t.item, result.line);	//261022 manager item log
 				done = true;
 			}
 

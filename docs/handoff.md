@@ -38,9 +38,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 2-2. print/trace 중복 정리 (18(2), 3절 검증 뒤)
 - 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤에 한다(사용자 결정 261021). 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
 
-### 2-3. 소켓 장착을 매니저 아이템 로그에도 (`Town.socketGems`, 사용자 메모 261021)
-- 지금 소켓 성공은 `_cache/ItemLog.txt`(`Misc.itemLogger("Socketed")`)에만 남는다. 매니저(D2Bot#) 아이템 로그에도 나오게 한다(`Misc.logItem`, 장착 성공의 `Misc.logItem("Equipped [티어]")`와 같은 방식). 표시 형식은 다른 매니저 아이템 로그와 같게(사용자 결정 261021). 범위: 보석을 장착한 로그(`Socketed`)만, 보석 하나 넣을 때마다(작업 성공마다, ItemLog와 같은 시점). 재료(`Ingredient`)는 매니저에 원래 찍히지 않으니 그대로(사용자 결정 261021).
-
 ## 3. 수정됨, 검증 대기 (수정 작업을 했고 게임에서 검증 전)
 
 261021 수정분(커밋 `eddab3a`·`ab94751`, 정적 분석만)과 261020 확인용 로그.
@@ -134,6 +131,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 3차 결과(261021, 사용자 로그): 보관함을 열지 않고(`me.cancel()`만) 0x28 성공. a6 드루 Wolf Head에 사파이어 2개(사용자 로컬 시험으로 머리 보석을 사파이어로 바꿈, 저장소 미반영) `Socketed` 1/2·2/2, Tier 1 -> 1 -> 11. → 보관함 열기는 필요 없다(D2MOO 상호작용 조건은 1.14d와 다르거나 재구성 차이, 추정). 저장소 작업 트리는 아직 보관함 + 0x28 판, 커밋 전.
 - 4차 변경(261021, 사용자 결정, 작업 트리·커밋 전): 소켓 뒤 `Equip.updateTier(칸)` 출력(`equipped: [칸] 티어`, 티어 변화는 ItemLog와 따로 알아야 함). 부위별 보석을 `Config.SocketGems = {Head: [99], Body: [99], Shield: [97], Weapon: [99, 101, 100, 98]}`로(itemType 96~102 = 전 등급, classid 557~601 = 그 등급만, 빌드에서 덮어씀, 빌드 값은 나중). 보석 관문은 96~102 전체. 무기 레벨 18 제한 제거(나중에 룬으로 대체).
 - 실패 trace `(cursor)`(Claude 추가 261021): 한 사이클(다음 로그 묶음) 더 보고 그때도 0x28 실패가 0건이면 삭제(사용자 결정 261022). 261022 묶음은 0x28 23건 성공, 실패 0.
+- 5차 변경(261022, 사용자 결정, 옛 2-3 포함): 로그 이름 `Socketed` → `Gemmed`(룬워드가 안 되는 소켓 작업은 모두 젬드). ItemLog `Gemmed {nip 라인}`(넣은 뒤 `NTIP.Evaluate`, 보석·칸·티어 표시 삭제). 매니저 아이템 로그 `Misc.logItem("Gemmed", 장비, 라인)`(다른 로그와 같은 형식, 지역도 붙임: `logItem` 지역 조건에 gemmed). 매니저 콘솔 `# [Gem] 보석 베이스 (찬/전체)` 색 5(베이스는 `getLocaleString(getBaseStat(0, classid, "namestr"))`, 큐빙 콘솔 줄과 같은 방식). 젬드용 보석 Ingredient `{가진 개수}`(다른 재료와 같게). print `equipped: [칸] 티어`는 그대로.
+  - 확인: 콘솔 `# [Gem]`의 베이스 이름이 접두·접미 없이 나오는가, 매니저 아이템 로그에 그림·옵션·라인·지역이 다른 로그처럼 나오는가.
 - 나중(사용자 결정): 빌드별 보석 종류 Config(itemType 또는 classid로 등급 지정 가능), 무기 룬 확장, 용병.
 - 참고(Claude 조사): kolbot-SoloPlay `SoloWants.js`·`ItemUtils.js`가 비슷한 설계(퍼펙트만 기다림, 장착 해제 뒤 패킷 0x28). D2MOO 서버는 장착 중 아이템 소켓을 허용(`Rcv0x28_SocketItem`), 보석 스탯은 장비 스탯에 합쳐짐(`STATLIST_MergeStatLists`, 클라이언트는 미확인).
 - 확인:
