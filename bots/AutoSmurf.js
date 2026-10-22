@@ -885,20 +885,10 @@ function AutoSmurf() {
 		Town.goToTown(1);
 		Town.move("stash");
 
-		if (me.getStat(14)) {
-			Town.openStash();
-
-			gold(me.getStat(14), 3); // Stash my Gold to make sure I have room to pick more up.
-
-			delay(me.ping * 2 + 500);
-
-			me.cancel();
-		}
-
-		for (i = 0; i < 15; i += 1) { // Wait up to 15 seconds for someone to drop Gold for me to pick up.
+		for (i = 0; i < 50; i += 1) { // Wait up to 10 seconds for someone to drop Gold for me to pick up.
 			goldPile = getUnit(4, 523, 3);
 
-			delay(1000);
+			delay(me.ping * 2 + 200);
 
 			if (goldPile) {
 				amount = goldPile.getStat(14);
@@ -909,12 +899,12 @@ function AutoSmurf() {
 				Misc.trace("Picking up " + amount + " Gold");	//261021
 			}
 
-			if (me.getStat(14)) {
+			if (me.getStat(14) >= me.charlvl * 10000) {
 				Town.openStash();
 
 				gold(me.getStat(14), 3); // Stash my Gold.
 				
-				delay(me.ping * 2 + 500);
+				delay(me.ping * 2 + 200);
 
 				me.cancel();
 			}
@@ -933,13 +923,13 @@ function AutoSmurf() {
 
 		gold(me.getStat(14), 3); // Stash my Gold.
 
-		delay(me.ping * 2 + 500);
+		delay(me.ping * 2 + 200);
 
 		dropGold = dropGold < 1000 ? dropGoldMax : dropGold;	//261020
 
 		gold(Math.round(dropGold), 4); // Remove Gold from Stash (must be a round number).
 
-		delay(me.ping * 2 + 500);
+		delay(me.ping * 2 + 200);
 
 		while (me.getStat(14)) {
 			gold(me.getStat(14)); // Drop Gold
@@ -947,12 +937,12 @@ function AutoSmurf() {
 			me.overhead("Dropping " + Math.round(dropGold) + " Gold");
 			Misc.trace("Dropping " + Math.round(dropGold) + " Gold");	//261010
 
-			delay(me.ping * 2 + 500);
+			delay(me.ping * 2 + 200);
 		}
 
 		me.cancel();
 
-		for (i = 0 ; i < 15 ; i += 1) { // Wait 15 seconds for someone to pick up the Gold I've dropped.
+		for (i = 0 ; i < 10 ; i += 1) { // Wait 10 seconds for someone to pick up the Gold I've dropped.
 			delay(1000);
 
 			goldPile = getUnit(4, 523, 3);
