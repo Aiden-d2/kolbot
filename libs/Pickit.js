@@ -310,7 +310,7 @@ var Pickit = {
 
 		if (items) {
 			for (i = 0; i < items.length; i += 1) {
-				result = this.checkItem(items[i]).result;	//261021 kept for the make room trace
+				result = this.checkItem(items[i]).result;	//261021	//261022 make room trace removed
 
 				switch (result) {
 				case -1: // Item needs to be identified
@@ -323,8 +323,6 @@ var Pickit = {
 				case 0:	//261021 same check as clearInventory (drop/sell)
 				case 4:	//261021 sold by clearInventory, stash space not needed
 					if (Town.ignoredCheck(items[i])) {
-						Misc.trace("make room: " + items[i].name + " (result " + result + ")");	//261021 check 0/4 town trips clear the item: remove once confirmed
-
 						return true;
 					}
 

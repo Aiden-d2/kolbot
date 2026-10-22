@@ -91,7 +91,7 @@
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
 - `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나(Jail 2층 경로 없음).
-- `[exit] 26 -> 27 type: exit:x,y dest:x,y`(261021, Claude 추가) — 13번 H1(출구 점이 게이트 옆 벽인가). 제거 조건: 판정.
+- (261022 삭제) `[exit] 26 -> 27 type: exit:x,y dest:x,y` — H1(Monastery Gate 동선). 좌표는 `handoff.md` 1-2.
 - `[SafeTele] monsters N near M`(261021, Claude 추가) — 45 거르기로 빠진 몹 수. 제거 조건: 확인.
 - `[Quit] moveToExit failed: A -> B`(261021~, 기본색 콘솔) — 옛 `clearToExit` 무한 재시도 대신 한 번 실패로 퇴장.
 - `[WP] wp.area: me.area: target: retry:`, `[goWP] Failed to reach WP after 10 attempts`, `[getWP] waypoint unit not found / menu not opened try:N`
@@ -137,7 +137,7 @@
 | 3-4 | SafeTele 거르기로 빠진 몹 수 | 4-4 `[SafeTele] monsters` |
 | 3-5 | 마을행 직접 호출 | 4-2 `Town check (direct)` |
 | 3-6 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
-| 3-8 | H1: 26 → 27 출구 점이 게이트 옆 벽인가 / chores 멈춤: 어느 단계(clearInventory / buyPotions), 구매 실패 반복인가 | 4-4 `[exit] 26 -> 27` / 4-6 `chores slow`, `buy failed` |
+| 3-8 | chores 멈춤: 어느 단계(clearInventory / buyPotions), 구매 실패 반복인가 (H1은 `handoff.md` 1-2, `[exit]` 261022 삭제) | 4-6 `chores slow`, `buy failed` |
 | 3-9 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
 | 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
 | 1-1 | Jail 2층 경로 없음: 어느 출구 유닛을 잡았나 | 4-4 `[useUnit] timeout ... id: target: unit:` |
