@@ -27,45 +27,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **구현안**: 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
 - **선행 조건**: 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤(사용자 결정 261021).
 
-### 2-4. 이동 무한 반복 막기, useUnit 조정 (`AutoSmurf.js` 호출부, `Pather.goWP`·`useUnit`, 사용자 결정 261022, 옛 1-1·1-4·1-7)
-- **확인된 것**
-  - 래핑 함수(`moveToExit`·`moveToUnit`·`moveToPreset`·`useUnit`)에는 catch가 없고, `moveTo` 노드 루프의 try는 `finally`만 있다. `moveTo`는 랜덤 걸음 10회 실패 뒤 throw한다. 막는 곳은 최종 호출부의 catch(`AutoSmurf.js`)와 `Pather.goWP`의 catch.
-  - `useUnit`은 7회 실패면 throw 없이 false, `moveToExit`도 false만 돌려준다 → `while (me.area !== N) { moveToExit(N) }` 꼴은 catch를 없애도 계속 돈다.
-  - 261022 로그(8프로필 65게임)에 `Misc.caughtError` 0건 → catch로 복구된 사례 없음.
-  - 사례: `AutoSmurf.brain`이 `moveToExit([88, 89, 91], true)` 결과를 보지 않고 Level 3 좌표(91 프리셋 406)로 감(a1 Pz-52, Flayer Dungeon 1 → 2 useUnit 7회 실패 → 게임 종료). `AutoSmurf.radament` 리더가 `moveToExit(49, true)` 결과를 보지 않고 `while (거리 > 40) { try { moveToUnit(3층 프리셋 355) } catch }` → 2층에서 무한 반복, 사용자가 손으로 3층으로 옮겨 풀림(10/22 11:30, a1).
-  - useUnit 7회 모두 실패 2건(261022): a1 Jail 1층(06:33:57)은 travel `default`(`for (i < 3) { moveToExit; 도착이면 break }`, 못 가면 `throw "Travel failed"`)의 재시도로 06:34:09 2층 도착, a1 Flayer Dungeon 1층(07:03:58)은 게임 종료.
-  - useUnit 현재 값: 회차 7회(`//260903`), 열기 뒤 `delay(max(ping*2, 300))`, 회차 대기 `max(1000, ping*2+300)` + 로딩 중(`gameReady` false) 대기(`//260930`). 예전 약 2초였다가 줄였음(사용자 기억, 그 코드는 저장소에 없음).
-  - useUnit 실패 A유형(261022): `[useUnit] timeout` 뒤 1초 안에 이미 다음 지역(Tal Rasha #4 01:04:08 → 01:04:08, Harem 1 02:03:40 → 02:03:41, Claw Viper 2 00:15:25 → 00:15:26, 핑 172~188) → 무작위 이동이 옛 지역 좌표로 가 경로 없음. B유형: 유닛 옆(dist 1~5)에서 7회 실패(Flayer Dungeon 1 → 2, unit `10116,8024`).
-- **가설**
-  - A유형은 대기 중 넘어가는 중이었을 가능성이 크다(추정). 핑·서버 지연인지 로딩 시간인지는 미확인(같은 막 안 층 이동에서 `gameReady`가 false가 되는지 미확인).
-  - B유형은 계단 유닛에서 `getNearestWalkable`이 걸을 칸을 못 찾는 것과 관련(사용자 관찰, 미확인: `moveToExit`의 `getNearestWalkable(currExit.x, currExit.y, 10, 2)`, `moveTo`의 `getNearestWalkable(x, y, 15, 2, 0x1)`).
-- **구현안**(결정된 방향, 사용자 261022)
-  - ① 이동(moveTo 계열)을 감싼 호출부 catch를 없앤다 → throw가 로더까지 올라가 게임 종료. 대상: `AutoSmurf.js`의 이동을 감싼 catch, `Pather.goWP`의 catch. 래핑 함수는 바꾸지 않는다.
-  - ② `while (me.area !== N) { moveToExit(N) }` 꼴, `moveToExit` 결과를 보지 않고 다음 지역 좌표로 가는 곳은 travel `default`처럼 "moveToExit 3회 반복, 도착하면 break, 못 가면 throw".
-  - ③ `useUnit`에는 throw를 넣지 않는다(7회 실패면 false → ②의 3회 재시도가 받음, Jail 사례처럼 재시도로 넘어가는 경우를 살림).
-  - 실패 처리는 `Misc.quitGame`(사용자 결정 261022, 다른 조기 종료와 일관성 우선. 처음 정한 throw에서 바꿈): throw는 Loader가 잡아 default.dbj가 `MinGameTime` 300초까지 마을에서 대기한 뒤 나가고, quitGame은 바로 나간다(realm 보호는 리더 로비 `MinGameTime` 60초). 기존 `moveToExit failed` quitGame 20곳도 같은 방식.
-  - ④ useUnit 조정(사용자 확정 261022): 기본 대기는 지금대로 약 1초. 클릭 뒤 대기 루프에 걷기 가드(모드 2·3·6이면 상한 4초까지 계속 대기). timeout 뒤 무작위 걸음(내 위치 기준 ±3칸)을 유닛 기준 4방향(±x, ±y, 아이소메트릭 구조상 계단은 이 4방향뿐, 사용자) 자리를 차례로 시도하는 것으로 바꾸고, 회차를 8회(4방향 두 바퀴)로 한다(사용자 확정 261022). 첫 클릭은 지금 자리에서 바로 한다(첫 클릭 실패 빈도를 보기 위해, 물러나기는 사용자 철회 261022). 4방향 자리는 유닛 기준 4칸, 이동은 `moveTo` 대신 도착 오차 2칸으로 직접(텔레 `teleportTo(x, y, 2)`, 걷기 `walkTo(x, y, 2)`) — `moveTo`의 걷기는 4칸 안이면 도착으로 보고 움직이지 않기 때문. 내 위치에서 2칸 이하인 자리는 건너뛴다(사용자 채택 261022). 유닛 좌표를 기준점으로 4방향 같은 거리로 잡는다(유닛 좌표에 서 있던 기록이 있어 그 칸은 걸을 수 있는 칸, 몸체·벽 쪽 자리는 `checkSpot`으로 건너뜀). 회차마다 하는 "N칸 넘으면 `moveToUnit`(유닛 위로)"의 판정 거리를 5 → 7로(사용자 확정 261022: 4칸 자리 + 오차 2칸 = 최대 6칸이 되돌려지지 않게, 첫 접근도 6~7칸이면 그 자리에서 클릭). 클릭 앞 고정 `delay(600)`을 계단 타일(type 5, `Misc.click` 분기)에만 도입, 오브젝트(type 2, 패킷 0x13)는 지금대로(시전 판정 게이트 없이, 사용자 확정 261022. 원본 kolbot은 300ms, 소서 시전 동작 FCR 0 기준 13프레임 약 0.52초를 덮도록 600. `Misc.openChest`는 useUnit을 쓰지 않아 영향 없음). 600ms가 효과 있으면 다음에 `me.attacking` 게이트(시전 끝날 때까지, 상한 600ms)로 바꾼다(사용자 261022).
-  - 근거(261022 로그 10/21~10/22 15:50, `[useUnit] timeout` 414줄·164연속): 실패 회차 사이 이동 250건 중 190건(76%)이 무작위 걸음만큼만 움직임 = 클릭 뒤 1초 동안 제자리. 7회 모두 실패 13건(대부분 a1, travel 재시도로 넘어감). 원본 kolbot(kolton 3회, blizzhackers 5회)은 클릭 앞 300ms, 대기 3000ms, 같은 무작위 걸음이고 뚫린 쪽 처리는 없음.
-  - LvlWarp 대조(외부 blizzhackers `d2data` `lvlwarp.json`): 로그의 계단 `id:`(= `getArea().exits`의 `tileid`)는 LvlWarp `Id`와 같은 번호로 보임(19개 이름이 지역 쌍과 모두 맞음: 12 Tower to Crypt 20→21, 14 Jail Down 29→30, 56 Dungeon Down 88→89, 82 Baal Temple Down R 129→130 등). 실패 위치(거리 5 이하)는 대체로 유닛 좌표에서 1~2칸, 그 계단의 `ExitWalkX/Y` 방향 쪽에 몰림(12: +x, 18·14: +y, 23: −y, 56: −x, 38: (1,1) 13건 중 12건). `ExitWalk`의 뜻(도착 때 걸어 나오는 방향 = 앞쪽, 추정)이 맞다면 "반대편이라 안 먹힘"보다 "유닛 바로 위·옆에 붙어 서서 안 먹힘"에 가깝다(추정, 미검증).
-  - `ExitWalk`는 계단을 쓴 뒤 다음 지역에서 걸어 나오는 방향이라 진입 방향과는 무관(사용자 지적, 261022) → 위 "ExitWalk 쪽" 해석은 근거로 쓰지 않는다.
-  - `moveToExit`의 `getNearestWalkable(출구, 10, 2)`(원본 `5, 1`, 260824 변경, 저장소 이전): 4번째 인자는 size가 아니라 step. 출구 점이 `checkSpot`을 통과하면 두 값 모두 출구 점 그대로, 막혔으면 원본은 1·2·3·4칸 링, 지금은 1·3·5·7·9칸 링을 본다 → 지금 값은 같거나 더 먼 자리만 고른다(더 가까워지지 않음). 함수 본체(`getNearestWalkable`·`checkSpot`)는 원본과 같다. 0회차 timeout 164건 중 129건(79%)이 유닛에서 0~2칸 = 첫 클릭부터 유닛에 붙어 선 채 실패.
-  - 텔레 여부로 나눈 결과(261022): timeout 414줄 중 a1(플라이 소서) 350줄·연속 110개, a2(소서, SafeTele 줄 있음) 22줄, 걷는 프로필 a3~a8 각 3~10줄. 걷는 프로필은 39개 연속 중 36개가 1회 timeout 뒤 바로 넘어감(0회차 거리 0~2칸이 28개인데도). 걷는 캐릭터의 무작위 걸음(±3칸)은 `walkTo` 도착 판정 4칸 때문에 실제로 안 움직이므로 같은 자리에서 다시 클릭해 성공한 것 → "너무 붙어서 클릭이 안 먹힘" 가설은 약해짐. 텔레 캐릭터는 이동(텔레) 직후 바로 클릭하는 구조라, 시전 동작 중 클릭이 무시된다는 가설(사용자: 딜레이 문제)과 맞음(추정, 미검증).
-  - 구현 방식(사용자 확정 261022): `AutoSmurf`에 새 함수 하나(`this.exitTo(areas, clearPath)`, 승인)로 ②를 처리한다 — `moveToExit`를 3회 시도, 배열 경로는 남은 구간부터 다시, "Souls" 반환은 그대로 돌려줌, 3회 실패면 `Misc.quitGame`. ①의 거리 while + catch 6곳(travel 74, cube 상자, tombs 상자, radament 프리셋, duriel 오리피스, mephisto 빨간 포털)은 catch를 지우는 대신 3회 상한, 실패·throw면 `Misc.quitGame`(catch를 지우면 throw가 Loader로 가 5분 대기 종료가 되어 quit 결정과 어긋나므로). `duriel`의 `useUnit(2, 100, 73)` 결과도 확인해 실패면 quitGame. `Pather.goWP`의 catch는 그대로(10회 상한이 있어 무한 반복 아님, 사용자). 옛 `clearToExit` 자리 21곳(한 번 시도 후 quitGame)은 그대로.
-  - 수정 규모: `AutoSmurf.js`의 `Pather.moveToExit(` 76곳 중 결과를 확인하는 곳 23곳(261022 셈), catch 31곳 중 이동을 감싼 곳, `Pather.goWP`, `Pather.useUnit`. 문자열 검색 후보(탈출 조건은 하나씩 안 봄): `travel`(10073,8670), `cube` 상자, `tombs`(46 출구·상자), `radament`(48·프리셋 40), `duriel` Orifice, `mephisto` 빨간 포털, `farmingSummoner` 저널, `den`의 지역·마을 while, 옛 `clearToExit` 자리의 바깥 while 4곳(언더패스 10→5, Jail 29→30·30→31·31→32, 한 번 시도하고 throw도 잡음). 공용 함수(3회 시도 후 throw)를 둘지는 목록을 본 뒤 정한다(새 함수는 승인 필요). `while (!usePortal)` 대기 구문은 대상 아님(사용자).
-- **검증 방법**(Claude 제안): 이동 실패가 무한 반복 없이 게임 종료로 끝나는가(콘솔 `[Error] moveTo: Failed` 또는 3회 실패 throw 줄 뒤 `Script ended`/다음 게임). ④는 `[useUnit] timeout` 뒤 옛 지역 좌표 `no original path`가 사라지는가.
-
-### 2-7. chores 20초 이상 멈춤 (`Town.doChores`·`clearInventory`·`buyPotions`, 사용자 261022, 옛 1-8·3-8)
-- **확인된 것**
-  - 261022 로그: clearInventory 226건(5초 초과만 찍힘, 중앙 7.8초, 20초 이상 19, 최대 47.4초), buyPotions 302건(중앙 8.9초, 20초 이상 1(21.6초, a2 Lut Gholein)). `buy failed` 7건은 모두 a2 골드 부족. 긴 clearInventory가 여러 프로필에서 같은 시각에 몰림(22:13 a5·a7, 00:06 a4·a6·a7, 00:13 a2·a3, 02:05 a4·a5·a7). 20초 이상 19건 중 7건이 게임 시작 40초 안. 긴 사례 여럿(a6 00:06:18 47.4초, a7 00:06:02 21.7초)은 clearInventory 동안 ItemLog·trace가 없음 → 인벤토리 팔기·버리기(ItemLog)·큐브 비우기(trace) 단계는 아님.
-  - 코드: `doChores` 순서 heal → identify → clearInventory → fillTome → buyPotions. clearInventory 단계: ① 벨트 물약 되돌리기(인벤토리 물약마다 4열을 돌며 맞는 열에 클릭, 클릭마다 `delay(ping*2+200)`, 기록 없음) ② 큐브 비우기(trace) ③ 보관함 비우기(overhead만) ④ 인벤토리 팔기·버리기(ItemLog, `initNPC("Shop")` 뒤 판매). buyPotions: `initNPC("Shop", "buyPotions")` → 벨트 4열마다 shift 구매 또는 열 칸 수만큼 구매 → HP·MP 버퍼 구매. 둘 다 벨트 물약 열(`checkColumns`)을 다룬다.
-  - 판별 trace(261021, 코드에 있음): `chores slow: clearInventory/buyPotions Ns`(5초 초과, `Town.doChores`), `buyPotions: buy failed ...`(`Town.buyPotions`). 두 함수 모두 전체 시간만 찍혀 안의 어느 단계인지 모름.
-- **가설**: 남는 것은 기록을 남기지 않는 벨트 물약 되돌리기·보관함 비우기(추정, 코드 기준). 사용자 판단: 물약 문제이고 두 함수가 비슷한 로직을 가졌다면 둘 다 설명된다.
-- **구현안**(사용자 채택 261022, 수정은 다른 항목 확정 뒤 한꺼번에)
-  - 남는 물약 정리(체력·마나·회복 세 루프)를 `.drop()` → `.interact()`(마시기, 원본 kolbot 동작, 09-14 첫 커밋에 주석으로 남아 있음)로. 근거: NPC 메뉴(`0x08`)가 열린 상태에서는 드롭이 안 먹힘(사용자 퀴버 테스트), `heal`이 메뉴를 열어 둔 채 clearInventory로 들어감. `Unit.prototype.drop`은 `0x19`·`0x1A`만 닫는다.
-  - 판별 로그: 지금의 `chores slow: clearInventory/buyPotions` 두 줄을, `doChores` 전체가 10초를 넘을 때 한 줄로 바꾼다. 단계별 시간(heal, identify, clearInventory[시작 시 NPC·UI, 벨트 시간·클릭, 물약 정리 시간·개수·실패, 큐브, 보관함, 인벤토리 잔여], fillTome, buyPotions[NPC까지 시간, 구매 횟수·시간·shift·실패], repair, stash, socketGems). 새 지역 객체 1개. 한 싸이클로 끝낸다(사용자).
-  - 261022 로그(10/21~10/22 15:50, 5초 초과만): buyPotions 580건, 중앙값 8~10초(힐·상점이 같은 NPC인 Harrogath도 8.0초), 20초 이상 7건은 모두 Lut Gholein(Fara → Drognan, 여러 프로필 같은 시각). clearInventory 255건, 20초 이상 25건(Rogue Encampment 13).
-- **검증 방법**: 위 한 줄로 단계별 원인 판정, 마시기 뒤 clearInventory 20초 이상이 사라지는가. 판별 로그 제거 조건: 이 싸이클 분석 뒤 삭제.
-
 ### 2-8. 텔레포트가 제자리에 머묾 / 두 번에 한 번 씹힘 (`Pather.teleportTo`·`moveTo`, 사용자 관찰 261022, 옛 1-10)
 - **확인된 것**
   - 사용자 관찰: 제자리 텔레포트, 또는 두 번에 한 번 씹히며 제자리를 유지. 화면 전환으로 보아 텔레 자체는 되는 것 같다.
@@ -82,27 +43,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **가설**: 없음(원인 후보 검토 전). Pz-50은 d2bs 로그의 `going to nearest WP` 유무로 "프리셋 못 찾음(goWP가 움직이지 않음)"을 가른다(코드 수정 없음, 확인 전).
 - **구현안**(미정): 10칸 안에서 12회 조회가 모두 실패하는 원인 후보와 수정 방향.
 - **검증 방법**: 검토에서 정한다. 판별 trace 안(옛 2-6)은 기각(`rejected.md` getWP).
-
-### 2-10. getQuestItem 사라진 유닛 확인 위치 (`AutoSmurf.getQuestItem`, 옛 3-6 검증 실패, 261022)
-- **확인된 것**
-  - 지금 코드(261021 `ab94751`, 옛 3-6): `CanFit` 전에 `item.sizex === undefined`면 다시 찾기 3회, 넘으면 `<classid> vanished`. 그 밖은 `CanFit` 실패 → `canMakeRoom` 실패 → `Not enough room for <이름>` → `return false` → `[Quit] getQuestItem failed`.
-  - 검증 실패(261022 사용자 로그): a1 하수구 3층 `radament book visible: true 9,5 1`(11:32:34) → `Not enough room for undefined`(11:32:37) → `[Quit] getQuestItem failed`. `vanished` 줄 없음, 인벤토리에 빈칸 있었음(사용자).
-  - 코드: `CanFit`은 실제 아이템만으로 빈칸을 센다(`Config.Inventory` 잠금 안 봄). `FindSpot`은 `Storage.Reload()`로 내 아이템을 다 훑은 뒤 `item.sizex/sizey`를 읽는다. trace의 이름 undefined = 그때 유닛 속성이 이미 사라짐.
-- **가설**(추정): `sizex` 확인 뒤 `FindSpot`이 크기를 읽기 전에 유닛이 사라져 크기가 undefined → 반복이 돌지 않아 "자리 없음". 누가 주웠는지·내가 가졌는지는 이 줄로 모름.
-- **구현안**(사용자 채택 261022): 사라짐 확인(`item.sizex === undefined` → vanished 회수, 3회 넘으면 `<classid> vanished` return false, 아니면 delay 뒤 continue)을 `CanFit` 앞에서 `CanFit` 실패 뒤(`canMakeRoom` 판정 앞)로 옮긴다. `CanFit` 앞에서 이미 사라진 경우도 NaN으로 `CanFit`이 false가 되어 같은 갈래로 온다(지금 확인의 상위 집합). `me.findItem` 추가 확인은 하지 않는다(while 조건이 본다). 대상 `AutoSmurf.getQuestItem` 한 함수, 새 변수 없음.
-- **검증 방법**: `vanished` 줄이 찍히고 `Not enough room for undefined`가 없어지는가. `quest item vanished, retry N` trace는 사례를 본 뒤 삭제.
-
-### 2-11. Fallen Shaman 우선 (`Attack.clear`, 사용자 채택 261022, 옛 1-3)
-- **확인된 것**(코드): `Attack.clear` 4단계는 `target = nearestLive || nearest`(거리순) 뒤에 leash 루프(MUST가 `leashRange` 25 이상 멀어지면 MUST 우선)가 있다. entries에는 소탕 범위(호출 위치 기준) 또는 위험 범위(MUST가 살아 있을 때 내 주변) 안의 몹만 들어온다.
-- **구현안**: `target = nearestLive || nearest;` 바로 뒤, leash 루프 앞에 둔다(MUST leash가 그대로 이김). 노말 액트 1(`me.diff === 0 && me.act === 1`)에서 entries 중 MUST가 아니고 deferred가 아닌 샤먼 58·59·60·61(외부 `d2data` 확인 261022: monstats 58 Fallen·59 Carver·60 Devilkin·61 Dark Shaman, levels 액트 1 노말 몬스터 목록에 이 넷이 나옴 — Cold Plains·Den 58, Black Marsh·Tristram 59, Outer Cloister·Barracks 60, Cathedral·Catacombs 1~2 61) 중 가장 가까운 것을 target으로. 샤먼이 unreachable·noskill이면 기존대로 drop. 수정 규모: `libs/Attack.js` 한 곳 약 8줄, 샤먼 id 목록(새 상수, 승인 필요).
-- **알려진 영향**: 근접 캐릭은 무리를 지나 샤먼까지 들어간다(이전 보류 사유, 사용자가 감수). 원거리는 사거리 자리로 이동해 친다.
-- **검증 방법**(Claude 제안): 노말 액트 1 구간(Den·Blood·Cain) 구간 시간, 낙오·`Party desynced` 빈도 전후 비교.
-
-### 2-12. SafeTele 후보 검사 순서 (`Pather.moveTo` 안 `safeCheckNode`, 사용자 채택 261022)
-- **확인된 것**(코드): 후보는 원래 노드에 가까운 순으로 정렬해 한 번 훑는다. 후보마다 `checkSpot`(십자 4칸 `CollMap.getColl & 0x1`, 처음 보는 방이면 `room.getCollision()` 복사, 방 25개 넘으면 캐시 전체 비움) → 통과하면 몹 수 → `mc < baseline`이면 채택하고 `baseline = mc`, 0이면 끝. 0이 없으면 35개를 다 본다. 결과 = 걸을 수 있는 후보 중 몹 수 최소, 그중 원래 노드에 가장 가까운 것. 후보 수는 Angle 75·Step 5·Min 10에서 70개, 지금 Angle 60·Step 7·Min 7에서 35개(렉 때문에 사용자가 바꿈, Flayer Jungle·Great Marsh는 Skip).
-- **구현안**: 두 검사의 순서만 바꾼다(몹 수 먼저 → `mc < baseline`일 때만 `checkSpot` → 통과하면 채택). 고르는 자리는 지금과 같고, `checkSpot`(방 복사)은 그때까지의 최솟값보다 적은 후보에서만 불린다(벽 안 저몹 후보 포함). 새 변수 없음. 남으면 다음 단계로 몹 수로 다시 정렬해 처음 통과하는 하나를 고르는 안(같은 결과, 정렬 한 번 추가).
-  - `Config.SafeTele`를 렉이 있던 때의 값으로 되돌린다: Angle 60 → 75, Step 7 → 5, Min 7 → 10(10-03~10-19 값, Range 10·Skip은 지금대로). 순서 변경으로 렉이 줄었는지 육안 비교용(사용자 확정 261022).
-- **검증 방법**: 같은 설정(후보 70개)에서 렉이 전보다 줄었는가(Bloody Foothills 등 육안), 고르는 자리는 같으므로 동작 변화 없음. Min이 7 → 10으로 바뀌어 짧은 텔레(7칸 링)가 빠지므로 a1 치킨 비중 변화는 이 변경과 섞여 보인다.
 
 ### 2-13. MPQ 데이터 완전 추출 (사용자 요청 261022)
 - **확인된 것**: 사용자가 쓴 1.14d listfile(MPQEditor용)에 이름 없는 항목(`File00000127.dc6`, `File00000133.xxx` 등) 약 80개가 있고, excel 목록에 `lvlwarp`·`belts`·`cubemod` 등이 없다. listfile에 이름이 없는 파일은 이름으로 꺼내지지 않는다. 추출본에는 lvlmaze·lvlprest·lvlsub·lvltypes·levels만 있고 LvlWarp가 없다(사용자).
@@ -199,4 +139,37 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-18. getWP random 좌표 제거 (`Pather.getWP`, 옛 2-5)
 - **바꾼 것**(261022 `ae1767b`): getWP가 웨이까지 > 5일 때 부르는 `moveToUnit(wp, 0, 0, false, false, true)`에서 random 인자를 지움. goWP(프리셋 > 10, random 유지)는 그대로. 근거(가설, 로그 확인 전): 대각 오프셋(약 7.1) 프로필은 도착해도 늘 5를 넘고, 오프셋 5 프로필도 1칸 어긋나면 넘어 부를 때마다 반대편으로 왕복 → 플라이 소서 웨이 착지 버벅임(사용자 관찰).
 - **검증 방법**: 웨이 찍을 때 버벅임(왕복)이 없어지는가(작동), `[getWP] waypoint menu not opened` 빈도.
+- **결과**: 기록 없음.
+
+### 3-19. 이동 무한 반복 막기 (`AutoSmurf.exitTo` 외, 옛 2-4 ①②③)
+- **바꾼 것**(261022 `482171b`): 새 함수 `AutoSmurf.exitTo(areas, clearPath)` — `moveToExit` 3회(throw도 한 번의 실패로 셈, 배열 경로는 남은 구간부터, "Souls"는 그대로 반환), 실패면 `[Quit] moveToExit failed: A -> B`. 결과를 안 보던 `moveToExit`·`while (me.area …)` 루프를 `exitTo`로: syncBO 2, bossEnd, travel 53·78 대체·110·default(3회 + throw였음 → quitGame), den 2+[2,8], andy 2, cube, amulet 2, tombs, staff, radament [47,48](40·47 외 지역에서 끝없이 돌던 while)·49, duriel 무덤, eye·heart·brain, mephisto, anya, ancients 120 2·[128,129], baal 130·131, farming Countess·Pit·Andy·Mephisto·Nihlathak. 거리 while + catch 6곳은 3회 상한, 못 가면 quitGame(`Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`). duriel 오리피스 `useUnit(2, 100, 73)` 실패면 `Duriel chamber not entered`. 그대로 둔 것: `Pather.goWP`의 catch(10회 상한), 옛 clearToExit 자리 21곳, travel case 32·100/101·115~129, changeAct, cain·inner 한 번 시도, tome, izual, ancients `moveToExit(120, false)`. 실패 처리를 throw가 아닌 quitGame으로 한 이유: throw는 Loader에서 `MinGameTime` 300초 대기 후 종료라 다른 조기 종료와 어긋남(사용자 결정 261022).
+- **배경**(옛 2-4): 사례 `AutoSmurf.brain`(a1 Pz-52, Flayer Dungeon 1 → 2 useUnit 7회 실패 뒤 3층 프리셋으로 이동 → 경로 없음 종료), `AutoSmurf.radament` 리더(10/22 11:30 a1, 49 결과를 안 보고 3층 상자로 가는 while + catch 무한 반복, 손으로 풀림). `moveTo`는 노드 이동 실패·빈 경로에 throw 없이 false도 돌려줘 catch만 지워서는 거리 while이 멈추지 않는다(코드 확인 261022).
+- **검증 방법**: 이동 실패가 무한 반복 없이 `[Quit] moveToExit failed` 또는 위 사유 줄로 끝나는가. `[Error] AutoSmurf.exitTo: ...`(throw를 실패로 센 경우)도 함께 본다. 정상 경로가 막히지 않는가(구간 진행).
+- **결과**: 기록 없음.
+
+### 3-20. useUnit 조정 (`Pather.useUnit`, 옛 2-4 ④)
+- **바꾼 것**(261022 `482171b`, 사용자 확정): 계단 타일(type 5) 클릭 앞 `delay(600)`(오브젝트는 그대로), 클릭 뒤 대기에 걷기 가드(모드 2·3·6이면 상한 4초), 회차 7 → 8, 유닛 위로 붙이는 판정 `> 5` → `> 7`, timeout 뒤 무작위 걸음(내 위치 ±3칸) 대신 유닛 좌표 기준 4방향(±x, ±y) 4칸 자리를 차례로(막힌 자리·내 위치 2칸 이하 자리 건너뜀, 텔레 `teleportTo(x, y, 2)` / 걷기 `walkTo(x, y, 2)`). timeout 직후 이미 넘어갔으면 옆 이동 없이 return(Claude 추가: 옛 지역 좌표로 텔레 반복 방지). 첫 클릭은 지금 자리에서.
+- **근거**(`log_results.md` 261022 묶음 2): timeout 414줄 중 a1 350줄, 걷는 프로필은 39연속 중 36개가 1회 뒤 성공(유닛에 0~2칸 붙어 있어도) → "붙어서 안 먹힘"보다 "텔레 직후 클릭이 무시됨"(추정)에 가까움. 원본 kolbot은 클릭 앞 300ms, 대기 3000ms. 소서 시전 FCR 0 기준 13프레임 약 0.52초. 계단 id = LvlWarp `Id`(외부 `d2data`, `ExitWalk`는 진입 방향과 무관). `moveToExit`의 `getNearestWalkable(출구, 10, 2)`(원본 5, 1)는 같거나 더 먼 자리만 고름.
+- **검증 방법**: 텔레 캐릭터(a1)의 `[useUnit] timeout` 수와 0회차 timeout 비율(첫 클릭 실패 빈도), 8회 모두 실패 건수. 효과가 있으면 다음에 `me.attacking` 게이트(시전 끝까지, 상한 600ms)로 바꾼다(사용자 261022).
+- **결과**: 기록 없음.
+
+### 3-21. chores 물약 마시기·단계별 로그 (`Town.doChores`·`clearInventory`·`buyPotions`, 옛 2-7)
+- **바꾼 것**(261022 `482171b`): 남는 물약 정리 세 루프 `.drop()` → `.interact()`(원본 kolbot 동작. NPC 메뉴가 열린 상태에서는 드롭이 안 먹힘, 사용자 퀴버 테스트). 판별 로그: `chores slow` 두 줄 대신 `doChores` 전체가 10초를 넘으면 한 줄 `chores Ns: pre heal id inv [npc:<시작 시 NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`. 단계 값은 `Town.chores` 객체(새 속성)에 모음.
+- **근거**(`log_results.md` 261022 묶음 2): buyPotions 5초 초과 580건(중앙값 8~10초, 20초 이상 7건 모두 Lut Gholein 같은 시각), clearInventory 255건(20초 이상 25건, Rogue Encampment 13).
+- **검증 방법**: 한 싸이클로 단계별 원인 판정(사용자: 반복 없이 한 번에). 마시기 뒤 inv의 pots 시간이 짧아졌는가, buy가 npc(걷기·열기)인지 구매인지. 제거 조건: 이 싸이클 분석 뒤 삭제.
+- **결과**: 기록 없음.
+
+### 3-22. getQuestItem 사라짐 확인 위치 (`AutoSmurf.getQuestItem`, 옛 2-10)
+- **바꾼 것**(261022 `482171b`): `item.sizex === undefined` 확인을 `CanFit` 앞에서 `CanFit` 실패 뒤(`canMakeRoom` 앞)로. `CanFit`이 인벤토리를 다시 읽는 동안 유닛이 사라지면 크기가 undefined라 `CanFit`이 false가 되고 `Not enough room for undefined`로 끝나던 경우(261022 a1 하수구 3층)를 vanished로 받음.
+- **검증 방법**: `quest item vanished`·`<classid> vanished`가 찍히고 `Not enough room for undefined`가 없어지는가. `quest item vanished, retry N`은 사례를 본 뒤 삭제.
+- **결과**: 기록 없음.
+
+### 3-23. 샤먼 우선 (`Attack.clear`, 옛 2-11)
+- **바꾼 것**(261022 `482171b`): 4단계 `target = nearestLive || nearest` 뒤, leash 루프 앞. 노말 액트 1이고 target이 MUST가 아니면, entries 중 MUST·deferred가 아닌 샤먼 58·59·60·61(Fallen·Carver·Devilkin·Dark, 외부 `d2data` levels의 액트 1 노말 몬스터 목록) 중 가장 가까운 것을 target으로. MUST가 leash 밖이면 그대로 MUST가 이김.
+- **검증 방법**: 노말 액트 1 구간(Den·Blood·Cain·Cathedral 등) 구간 시간, 낙오·`Party desynced` 빈도 전후 비교. 근접 캐릭이 무리 속으로 들어가 맞는 것은 감수(사용자).
+- **결과**: 기록 없음.
+
+### 3-24. SafeTele 후보 검사 순서·설정 복원 (`Pather.moveTo` 안 `safeCheckNode`, `Config.SafeTele`, 옛 2-12)
+- **바꾼 것**(261022 `482171b`): 후보마다 몹 수를 먼저 세고 `mc >= baseline`이면 건너뜀, 적을 때만 `checkSpot`(처음 보는 방이면 `room.getCollision()` 복사) → 통과하면 채택. 고르는 자리는 전과 같다. `Config.SafeTele` Angle 60 → 75, Step 7 → 5, Min 7 → 10(10-03~10-19 값, 후보 35 → 70개, 링 35·30·25·20·15·10).
+- **검증 방법**: 렉이 있던 설정(후보 70개)에서 렉이 줄었는가(Bloody Foothills 등 육안). Min 7 → 10으로 짧은 텔레가 빠져 a1 치킨 비중 변화는 이 변경과 섞여 보인다.
 - **결과**: 기록 없음.
