@@ -43,6 +43,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - 코드(261022 확인): `useUnit`은 7회 뒤 `targetArea`에 못 가면 false를 돌려준다(throw 없음). `AutoSmurf.brain`은 `Pather.moveToExit([88, 89, 91], true)`의 결과를 보지 않고 바로 `Pather.moveTo(91 프리셋 406)`(뇌 상자, Level 3 좌표)로 간다 → 다른 지역 좌표라 경로가 날 수 없다.
 - 검토할 것: (1) useUnit이 유닛 바로 옆(dist 1~5)에서 왜 7회 모두 못 넘어갔나(클릭·패킷이 안 먹은 것인지, 핑인지: 로그에 근거 없음). (2) moveToExit 결과를 보지 않고 다음 지역 좌표로 가는 호출부가 brain 말고도 있는가. (3) 실패 시 처리(재시도·퇴장 등)를 어떻게 할지. 검증 방법(무엇을 보면 원인이 갈리는가)도 이 검토에서 정한다.
 - 3-7 웨이 실패와의 관계(사용자 질문 261022, 코드 확인): 웨이는 `Pather.useUnit`을 쓰지 않는다(`getWP`·`useWaypoint`가 직접 `getUnit(2, "waypoint")` → 클릭/`interact`). 증상도 다르다: 1-7은 유닛을 찾아 옆에서 7회 눌렀는데 못 넘어감, 3-7은 유닛 자체를 못 찾음(`waypoint unit not found`). 같은 원인인지는 미확인, 3-7 판별 trace 결과와 함께 본다.
+- useUnit 재시도 간격(개선 방향 참고): 사용자 기억(261022) — 원래 실패 뒤 재시도가 약 2초였는데 너무 길어 많이 줄였다. 저장소 기록: 회차 7회(`//260903`), 열기 뒤 `delay(max(ping*2, 300))`(`//260903`), 회차 대기 `max(1000, ping*2+300)` + 로딩 중 대기(`//260930`, 그 전 `ping*2+300`, `docs/code/Pather.md` useUnit). 저장소 첫 커밋(`8c0856c`, 261004)에 이미 1000ms 판이라 2초였던 시기의 코드는 저장소에 없음. 줄인 간격이 이번 실패(dist 1~5에서 7회 실패)와 관계있는지는 미확인.
+- 3-7과 순서 관계(사용자 질문 261022, 로그 확인): 3-7 실패 2건은 getWP 때 이미 2층이었다(`[getWP] waypoint unit not found. area:35`, `[WP] ... me.area:35`). Pz-49는 06:35:20 1층 → 2층 `useUnit` timeout iter:0 뒤 넘어가 06:35:22 goWP, 06:35:28 웨이 못 찾음. 따라서 "2층에 못 간 채 getWP"는 아니다.
 - 1-1의 다른 관찰(지역이 바뀐 직후 useUnit 무작위 이동이 옛 지역 좌표로, Pit of Acheron 같은 자리)은 1-1에서 사례를 더 모은다.
 
 ### 1-8. chores 20초 이상 멈춤 세부 검토 (`Town.clearInventory`·`buyPotions`, 3-8에서 이어짐, 사용자 261022)
