@@ -879,30 +879,30 @@ function AutoSmurf() {
 		return true;
 	};
 
-	this.pickGold = function () {
+	this.pickGold = function () {	//261021
 		var i, goldPile, amount;
 
 		Town.goToTown(1);
 		Town.move("stash");
 
-		for (i = 0; i < 50; i += 1) { // Wait up to 10 seconds for someone to drop Gold for me to pick up.
+		for (i = 0; i < 50; i += 1) {
 			goldPile = getUnit(4, 523, 3);
 
-			delay(me.ping * 2 + 200);
+			delay(me.ping * 2 + 100);
 
 			if (goldPile) {
 				amount = goldPile.getStat(14);
 				
 				Pickit.pickItem(goldPile);
 				
-				me.overhead("Picking up " + amount + " Gold");	//261021
-				Misc.trace("Picking up " + amount + " Gold");	//261021
+				me.overhead("Picking up " + amount + " Gold");
+				Misc.trace("Picking up " + amount + " Gold");
 			}
 
 			if (me.getStat(14) >= me.charlvl * 10000) {
 				Town.openStash();
 
-				gold(me.getStat(14), 3); // Stash my Gold.
+				gold(me.getStat(14), 3);
 				
 				delay(me.ping * 2 + 200);
 
@@ -911,7 +911,7 @@ function AutoSmurf() {
 		}
 	};
 
-	this.giveGold = function () {
+	this.giveGold = function () {	//261021
 		var i, goldPile, amount,
 			dropGold = me.gold - Config.LowGold,
 			dropGoldMax = me.gold - 5000;
@@ -925,7 +925,7 @@ function AutoSmurf() {
 
 		delay(me.ping * 2 + 200);
 
-		dropGold = dropGold < 1000 ? dropGoldMax : dropGold;	//261020
+		dropGold = dropGold < 1000 ? dropGoldMax : dropGold;
 
 		gold(Math.round(dropGold), 4); // Remove Gold from Stash (must be a round number).
 
@@ -935,7 +935,7 @@ function AutoSmurf() {
 			gold(me.getStat(14)); // Drop Gold
 
 			me.overhead("Dropping " + Math.round(dropGold) + " Gold");
-			Misc.trace("Dropping " + Math.round(dropGold) + " Gold");	//261010
+			Misc.trace("Dropping " + Math.round(dropGold) + " Gold");
 
 			delay(me.ping * 2 + 200);
 		}
@@ -951,13 +951,13 @@ function AutoSmurf() {
 				break;
 			}
 
-			if (i >= 14 && goldPile) {
+			if (i >= 9 && goldPile) {
 				amount = goldPile.getStat(14);
 				
 				Pickit.pickItem(goldPile);
 				
 				me.overhead("Retaking " + amount + " Gold");
-				Misc.trace("Retaking " + amount + " Gold");	//261010
+				Misc.trace("Retaking " + amount + " Gold");
 			}
 		}
 	};
