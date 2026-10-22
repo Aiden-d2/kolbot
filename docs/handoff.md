@@ -43,6 +43,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - ① 이동(moveTo 계열)을 감싼 호출부 catch를 없앤다 → throw가 로더까지 올라가 게임 종료. 대상: `AutoSmurf.js`의 이동을 감싼 catch, `Pather.goWP`의 catch. 래핑 함수는 바꾸지 않는다.
   - ② `while (me.area !== N) { moveToExit(N) }` 꼴, `moveToExit` 결과를 보지 않고 다음 지역 좌표로 가는 곳은 travel `default`처럼 "moveToExit 3회 반복, 도착하면 break, 못 가면 throw".
   - ③ `useUnit`에는 throw를 넣지 않는다(7회 실패면 false → ②의 3회 재시도가 받음, Jail 사례처럼 재시도로 넘어가는 경우를 살림).
+  - 실패 처리는 throw(사용자 결정 261022): Loader가 잡아 `errorReport`(콘솔 회색 `Error in`, 사유는 throw 메시지) → default.dbj가 `MinGameTime` 300초까지 마을에서 대기한 뒤 나감(realm down 방지). `Misc.quitGame`은 quit 방송으로 바로 나가므로 쓰지 않는다.
   - ④ useUnit 조정, 방법은 검토: 대기를 1~2초 늘림(대가: 진짜 실패 때 7회 × 늘린 시간) / timeout 뒤 무작위 이동 직전에 `moved()`를 한 번 더 확인 / 계단 `getNearestWalkable`.
   - 수정 규모: `AutoSmurf.js`의 `Pather.moveToExit(` 76곳 중 결과를 확인하는 곳 23곳(261022 셈), catch 31곳 중 이동을 감싼 곳, `Pather.goWP`, `Pather.useUnit`. 문자열 검색 후보(탈출 조건은 하나씩 안 봄): `travel`(10073,8670), `cube` 상자, `tombs`(46 출구·상자), `radament`(48·프리셋 40), `duriel` Orifice, `mephisto` 빨간 포털, `farmingSummoner` 저널, `den`의 지역·마을 while, 옛 `clearToExit` 자리의 바깥 while 4곳(언더패스 10→5, Jail 29→30·30→31·31→32, 한 번 시도하고 throw도 잡음). 공용 함수(3회 시도 후 throw)를 둘지는 목록을 본 뒤 정한다(새 함수는 승인 필요). `while (!usePortal)` 대기 구문은 대상 아님(사용자).
 - **검증 방법**(Claude 제안): 이동 실패가 무한 반복 없이 게임 종료로 끝나는가(콘솔 `[Error] moveTo: Failed` 또는 3회 실패 throw 줄 뒤 `Script ended`/다음 게임). ④는 `[useUnit] timeout` 뒤 옛 지역 좌표 `no original path`가 사라지는가.
