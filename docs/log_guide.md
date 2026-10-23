@@ -93,7 +93,7 @@
 - `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms, 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(handoff 3-20). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
 - (261022 삭제) `[exit] 26 -> 27 type: exit:x,y dest:x,y` — H1(Monastery Gate 동선). 좌표는 `handoff.md` 1-2.
 - `[SafeTele] monsters N near M`(261021, Claude 추가) — 45 거르기로 빠진 몹 수. 제거 조건: 확인.
-- `[Quit] moveToExit failed: A -> B`(261021~, 기본색 콘솔) — 옛 `clearToExit` 무한 재시도 대신 한 번 실패로 퇴장. 261022 `482171b`부터 `AutoSmurf.exitTo`(3회 실패)도 같은 줄, throw는 `[Error] AutoSmurf.exitTo: ...`로 먼저 찍힘. 거리 while 3회 실패 사유: `Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`, `Duriel chamber not entered`(handoff 3-19).
+- `[Quit] moveToExit failed: A -> B`(261021~, 기본색 콘솔) — 옛 `clearToExit` 무한 재시도 대신 한 번 실패로 퇴장. 261022 `482171b`부터 `AutoSmurf.exitTo`(3회 실패)도 같은 줄, throw는 `[Error] AutoSmurf.exitTo: ...`로 먼저 찍힘. 거리 while 3회 실패 사유: `Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`, `Duriel chamber not entered`(`docs/code/AutoSmurf.md` exitTo).
 - `[WP] wp.area: me.area: target: retry:`, `[goWP] Failed to reach WP after 10 attempts`, `[getWP] waypoint unit not found / menu not opened try:N`
 - `makePortal late/existing portal used try:N gid:`, `makePortal cast again try:N`
 - `ArreatSummit Gate`, journeyTo 경로(course 배열)
@@ -110,7 +110,7 @@
 - 골드 나눔(261010): 리더 골드 < 5000(18레벨 이상)이면 팔로워가 `Dropping N Gold`, 리더가 `Picking up N Gold`, 15초 안에 안 주우면 `Retaking N Gold`. 줄 안의 goldPile은 유닛 객체 문자열일 수 있다.
 - 감정: `identify failed / slow: 이름 (scroll|tome, Nms)`, `identify stopped: no ID scroll`. (261020 삭제) `sold unid` — 13건 동작.
 - 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`.
-- (261022 `482171b`에서 바뀜) `chores slow: clearInventory|buyPotions Ns`(261021~261022 로그) → `chores Ns: pre heal id inv [npc:<NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`(doChores 전체 10초 초과만, Claude 추가). `buyPotions: buy failed 코드 gold: columns:|buffer`(261021)는 그대로. 판정: 어느 단계가 긴가 — inv의 pots(물약 정리, 261022부터 마시기), belt 클릭 수, buy의 npc(상점 NPC까지 걷기·열기)와 구매 횟수·실패, 시작 시 NPC 메뉴(08)·거래창(0C). 제거 조건: 이 싸이클 분석 뒤 삭제(handoff 3-21).
+- (261022 `482171b`에서 바뀜) `chores slow: clearInventory|buyPotions Ns`(261021~261022 로그) → `chores Ns: pre heal id inv [npc:<NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`(doChores 전체 10초 초과만, Claude 추가). `buyPotions: buy failed 코드 gold: columns:|buffer`(261021)는 그대로. 판정: 어느 단계가 긴가 — inv의 pots(물약 정리, 261022부터 마시기), belt 클릭 수, buy의 npc(상점 NPC까지 걷기·열기)와 구매 횟수·실패, 시작 시 NPC 메뉴(08)·거래창(0C). 제거 조건: handoff 2-17 판정 뒤 삭제 여부 결정.
 - `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정.
 - d2bs 로그 `[console] 내용`(261021~) — 콘솔 줄이 d2bs 로그에도 남음.
 - `[Storage.MoveTo] retry / catch`, `moved from cube to drop/sell`, `[TK] talk skipped N npc:`(스페이스 20번 다 씀, 261006·261020에 각 1건, 모두 Greiz 20), `[hire] hiring retry (N/5)`.
@@ -137,8 +137,6 @@
 | 3-4 | SafeTele 거르기로 빠진 몹 수 | 4-4 `[SafeTele] monsters` |
 | 3-5 | 마을행 직접 호출 | 4-2 `Town check (direct)` |
 | 3-6 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
-| 3-21 | chores 단계별 시간, 물약 마시기 뒤 변화 | 4-6 `chores Ns: ...`, `buy failed` |
-| 3-19 | 이동 실패가 무한 반복 없이 끝나는가 | 4-4 `[Quit] moveToExit failed`, 거리 while 사유, `[Error] AutoSmurf.exitTo` |
 | 3-20 | useUnit 첫 클릭 실패 빈도, 8회 실패 | 4-4 `[useUnit] timeout` |
 | 3-22 | 퀘스트 아이템 사라짐 위치 변경 | 4-5 `quest item vanished`, `Not enough room for undefined` |
 | 3-9 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |

@@ -8,6 +8,8 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
+**지금 돌고 있는 로그**(사용자 261023): main `33d3ae3`(261023 15:23 업로드) 코드로 한 싸이클 더 도는 중. 3절 중 261023 커밋(3-15 이름 정리 2차·3-25 nip 재료 줄)이 들어 있고, 그 뒤 논의한 수정(2-17 벨트 판별 로그 등)은 들어 있지 않다. 다음 로그 분석은 이 버전 기준으로 본다.
+
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
 ### 1-2. Monastery Gate 동선 H1 (`AutoSmurf.outer`, `Pather.moveToExit`)
@@ -88,12 +90,23 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 함께 정할 것: Ko 미리 모으기(`[qty] == 2 && [tiered] != 0`, 사용자: 코·말 룬을 먼저 줍도록), 생추어리 tier 번호(모저 41과 같은 급 이상, 구현 때 정함), tier 줄 옵션(맞을 때 회복 20·민첩 20, 게임 지식 — 확인 필요).
 - **검증 방법**: 검토에서 정한다.
 
+### 2-17. 벨트 물약 넣기 지연 판별 (`Town.clearInventory` 벨트 루프·`doChores`, 옛 3-21)
+- **확인된 것**
+  - 옛 3-21(261022 `482171b`, 물약 정리 마시기 + `chores` 단계별 줄)의 261023 결과(1,729줄): 물약 정리(pots)는 15회 최대 3.9초 → 느린 원인 아님. buy 5초 초과 458건은 시간의 중앙값 75%가 상점 NPC까지(걷기·열기), 구매 실패 합계 2. inv 5초 초과 202건 중 104건은 80% 이상이 벨트 넣기.
+  - 벨트 클릭 663건이 둘로 갈림: 느림 56건은 클릭당 3.6~3.8초이고 한 정리 안의 클릭이 모두 느림, 56건 모두 정리 시작 때 NPC 메뉴(08) 열림. 빠름은 메뉴 열림 444건·닫힘 96건(닫힘에서 느림 0). 같은 프로필이 연달아 반복(a1 00:00~00:06 Lut Gholein 5회 연속 6클릭, a7 16회). 느린 56건 모두 `pots 0/0`.
+  - 코드: 벨트 열이 비면 `toCursor()`(클릭 뒤 1초 × 3회, 실패하면 false) → 벨트 클릭, 열에 물약이 있으면 shift-click. 남은 물약 정리는 `HPBuffer` 등 예비 수를 넘는 것만 마심.
+  - 사용자: 메뉴가 열려 있으면 클릭은 안 되는 게 맞다(클릭이 메뉴를 닫음).
+- **가설**: 빈 열 경로의 `toCursor`가 메뉴가 열린 동안 3회 모두 실패(3초 + 클릭 뒤 대기 약 0.6초 = 3.6초). 물약이 벨트에 못 들어가 열이 계속 비고, 예비로 인벤토리에 남아 다음 방문에도 되풀이. 클릭이 메뉴를 닫는다면 두 번째 시도는 성공해야 하는데 3.6초라 메뉴도 닫지 못한 것으로 보임(추정).
+- **구현안**(채택, 사용자 261023): 판별 로그. `chores` 줄 belt 항목에 `cur 시도/실패 put 실패 shift 시도/실패 ui 직전>직후 left N`. `Town.chores` 새 속성 7개 — `beltCur`·`beltCurFail`(toCursor 실패)·`beltPutFail`(toCursor 성공인데 벨트 클릭 뒤 열 변화 없음)·`beltShift`·`beltShiftFail`(클릭 뒤 열 변화 없음)·`beltUI`(첫 빈 열 시도 직전·직후 메뉴 08·인벤토리 창 01)·`beltLeft`(물약 정리 뒤 인벤토리에 남은 물약 수). 성공 판정은 클릭 전후 `checkColumns`. 줄 찍는 조건에 벨트 실패 1건 이상 추가(지금은 10초 초과만). 수정 범위 `libs/Town.js` 한 파일.
+- **검증 방법**: 느린 정리에서 cur 실패 = 클릭 수이고 shift 실패 0이면 가설 맞음(ui 직후 08이면 클릭이 메뉴를 못 닫음). 메뉴가 닫혀 있을 때 cur 실패 0이면 메뉴 원인 확정. 느린 정리에 cur이 없거나 shift 실패가 있으면 가설 틀림 → shift-click 쪽 재검토. 맞으면 수정안(벨트 전에 메뉴 닫기 / 빈 열도 shift-click)을 검토(그 전에 `rejected.md`). 제거 조건: 판정 뒤 7개 속성·조건 삭제(기존 `chores` 줄 삭제 여부도 그때).
+
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
 ### 3-1. okCount 이름 수집 (`AutoSmurf.okCount`·`teamCount`·`missing`)
 - **바꾼 것**(261021 `eddab3a`): 개수 대신 보낸 프로필 이름(`teamNames`, `this.missing(name)`). 두 단계 유지. ok 이름은 1단계 끝(teamCount 보내기 전)에, teamCount 이름과 teamOk는 2단계 끝에 비운다. 2단계 중 그 프로필의 teamCount보다 먼저 온 okCount는 버린다. 대기 delay 1000 → 200ms. teamOk는 게임 시작 첫 okCount(늦게 들어온 프로필은 앞사람들 ok를 못 받음) 때문에 유지. 근거: 끝 일괄 리셋은 연달아 호출(`okCount; doPrecast(true); okCount`)에서 가장 빠른 프로필의 다음 ok를 모두가 지우면 teamOk도 못 나와 멈출 수 있었다(코드 추론). 같은 사람의 메시지는 보낸 순서대로 도착(`sendCopyData` = 동기 `SendMessage`, 이벤트 큐 FIFO).
 - **검증 방법**: 타임아웃 줄 `[Quit] Party desynced 1/2: missing(okCount|teamCount): 프로필, ... teamOk X`로 안 온 프로필이 남는가. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지(마을행·포털 실패 등) 본다. `log_results.md` desync 분석의 판별 불가 5건(B 실제 지각 / C 리셋 경쟁)을 가르는 용도. 261021 전 로그는 `okCount N teamCount N teamOk X`(개수).
 - **결과**: 261022 한 싸이클 더 본다(사용자 결정).
+  - 261023(10/22 21:43~10/23 15:24, 119게임, `9e10ff6`): desync 3게임 5줄 모두 안 온 프로필 이름이 남음, 셋 다 그 프로필이 실제로 늦음(B), 리셋 경쟁(C) 0 → 이름 수집은 작동. 늦은 이유는 기록이 없어 모름: Pz-14 a7이 TRIST에 머묾(23:09:55~23:15:11, 다른 7명은 23:12:54 JAIL), Pz-42 a4가 메피 포털을 타지 않음(02:28:33 마을 정리 뒤 기록 없음, `bossGuard on` 없음), Pz-6 BLOOD 8명 모두 6분 기록 없음(22:06~22:12, a5·a6 빠짐). 늦은 이유는 더 돌려 같은 구간이 반복되는지 본다(사용자 261023).
 
 ### 3-2. 메시지 중계 (`ToolsThread`, `AutoSmurf.onCopyData`)
 - **바꾼 것**(261021 `eddab3a`): 엔진은 멈춘 스크립트의 copydata를 버린다(`Events.cpp:230`). ToolsThread가 default.dbj가 멈춰 있을 때 받은 copydata 55·56을 `relayMsgs`에 쌓았다가, 다시 돌면 `Messaging.sendToScript`로 순서대로 넘긴다(실패하면 남김). AutoSmurf 처리 본문은 `onCopyData`로 빼서 copydata·scriptmsg에서 부른다. 감수: 재개 직후 수 ms 틈의 유실, 같은 틈의 중복(이름·플래그는 무해, 아직 개수인 readyCount·buffCount·BOCount는 넘칠 수 있음 → 2-1 확장 때 해소).
@@ -178,22 +191,10 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **검증 방법**: 실패 줄 `[MoveToSlot] ... FAILED`와 같은 시각(같은 초)에 수락이 있으면 수락 클릭이 옮기던 물약을 방해한 것(가설). 겹침이 없으면 가설은 틀림.
 - **결과**: 261022 `party accept` 579줄, MoveToSlot 실패 0건(65게임) → 판정할 사례 없음. 실패가 다시 나오면 판정.
 
-### 3-19. 이동 무한 반복 막기 (`AutoSmurf.exitTo` 외, 옛 2-4 ①②③)
-- **바꾼 것**(261022 `482171b`): 새 함수 `AutoSmurf.exitTo(areas, clearPath)` — `moveToExit` 3회(throw도 한 번의 실패로 셈, 배열 경로는 남은 구간부터, "Souls"는 그대로 반환), 실패면 `[Quit] moveToExit failed: A -> B`. 결과를 안 보던 `moveToExit`·`while (me.area …)` 루프를 `exitTo`로: syncBO 2, bossEnd, travel 53·78 대체·110·default(3회 + throw였음 → quitGame), den 2+[2,8], andy 2, cube, amulet 2, tombs, staff, radament [47,48](40·47 외 지역에서 끝없이 돌던 while)·49, duriel 무덤, eye·heart·brain, mephisto, anya, ancients 120 2·[128,129], baal 130·131, farming Countess·Pit·Andy·Mephisto·Nihlathak. 거리 while + catch 6곳은 3회 상한, 못 가면 quitGame(`Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`). duriel 오리피스 `useUnit(2, 100, 73)` 실패면 `Duriel chamber not entered`. 그대로 둔 것: `Pather.goWP`의 catch(10회 상한), 옛 clearToExit 자리 21곳, travel case 32·100/101·115~129, changeAct, cain·inner 한 번 시도, tome, izual, ancients `moveToExit(120, false)`. 실패 처리를 throw가 아닌 quitGame으로 한 이유: throw는 Loader에서 `MinGameTime` 300초 대기 후 종료라 다른 조기 종료와 어긋남(사용자 결정 261022).
-- **배경**(옛 2-4): 사례 `AutoSmurf.brain`(a1 Pz-52, Flayer Dungeon 1 → 2 useUnit 7회 실패 뒤 3층 프리셋으로 이동 → 경로 없음 종료), `AutoSmurf.radament` 리더(10/22 11:30 a1, 49 결과를 안 보고 3층 상자로 가는 while + catch 무한 반복, 손으로 풀림). `moveTo`는 노드 이동 실패·빈 경로에 throw 없이 false도 돌려줘 catch만 지워서는 거리 while이 멈추지 않는다(코드 확인 261022).
-- **검증 방법**: 이동 실패가 무한 반복 없이 `[Quit] moveToExit failed` 또는 위 사유 줄로 끝나는가. `[Error] AutoSmurf.exitTo: ...`(throw를 실패로 센 경우)도 함께 본다. 정상 경로가 막히지 않는가(구간 진행).
-- **결과**: 기록 없음.
-
 ### 3-20. useUnit 조정 (`Pather.useUnit`, 옛 2-4 ④)
 - **바꾼 것**(261022 `482171b`, 사용자 확정): 계단 타일(type 5) 클릭 앞 `delay(600)`(오브젝트는 그대로), 클릭 뒤 대기에 걷기 가드(모드 2·3·6이면 상한 4초), 회차 7 → 8, 유닛 위로 붙이는 판정 `> 5` → `> 7`, timeout 뒤 무작위 걸음(내 위치 ±3칸) 대신 유닛 좌표 기준 4방향(±x, ±y) 4칸 자리를 차례로(막힌 자리·내 위치 2칸 이하 자리 건너뜀, 텔레 `teleportTo(x, y, 2)` / 걷기 `walkTo(x, y, 2)`). timeout 직후 이미 넘어갔으면 옆 이동 없이 return(Claude 추가: 옛 지역 좌표로 텔레 반복 방지). 첫 클릭은 지금 자리에서.
 - **근거**(`log_results.md` 261022 묶음 2): timeout 414줄 중 a1 350줄, 걷는 프로필은 39연속 중 36개가 1회 뒤 성공(유닛에 0~2칸 붙어 있어도) → "붙어서 안 먹힘"보다 "텔레 직후 클릭이 무시됨"(추정)에 가까움. 원본 kolbot은 클릭 앞 300ms, 대기 3000ms. 소서 시전 FCR 0 기준 13프레임 약 0.52초. 계단 id = LvlWarp `Id`(외부 `d2data`, `ExitWalk`는 진입 방향과 무관). `moveToExit`의 `getNearestWalkable(출구, 10, 2)`(원본 5, 1)는 같거나 더 먼 자리만 고름.
 - **검증 방법**: 텔레 캐릭터(a1)의 `[useUnit] timeout` 수와 0회차 timeout 비율(첫 클릭 실패 빈도), 8회 모두 실패 건수. 효과가 있으면 다음에 `me.attacking` 게이트(시전 끝까지, 상한 600ms)로 바꾼다(사용자 261022).
-- **결과**: 기록 없음.
-
-### 3-21. chores 물약 마시기·단계별 로그 (`Town.doChores`·`clearInventory`·`buyPotions`, 옛 2-7)
-- **바꾼 것**(261022 `482171b`): 남는 물약 정리 세 루프 `.drop()` → `.interact()`(원본 kolbot 동작. NPC 메뉴가 열린 상태에서는 드롭이 안 먹힘, 사용자 퀴버 테스트). 판별 로그: `chores slow` 두 줄 대신 `doChores` 전체가 10초를 넘으면 한 줄 `chores Ns: pre heal id inv [npc:<시작 시 NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`. 단계 값은 `Town.chores` 객체(새 속성)에 모음.
-- **근거**(`log_results.md` 261022 묶음 2): buyPotions 5초 초과 580건(중앙값 8~10초, 20초 이상 7건 모두 Lut Gholein 같은 시각), clearInventory 255건(20초 이상 25건, Rogue Encampment 13).
-- **검증 방법**: 한 싸이클로 단계별 원인 판정(사용자: 반복 없이 한 번에). 마시기 뒤 inv의 pots 시간이 짧아졌는가, buy가 npc(걷기·열기)인지 구매인지. 제거 조건: 이 싸이클 분석 뒤 삭제.
 - **결과**: 기록 없음.
 
 ### 3-22. getQuestItem 사라짐 확인 위치 (`AutoSmurf.getQuestItem`, 옛 2-10)

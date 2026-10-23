@@ -36,6 +36,14 @@
 - 동작: 보스 clear의 try/catch 바로 뒤. okCount(킬 확인, 죽은 사람은 시체로 대기해 크레딧을 받음) → 죽었으면 위치 기록 → `me.revive()`(mode 17일 때, 1초 × 10, 실패 `Revive failed`) → 마을 도착 후 치킨 복구 → portalspot → `usePortal(죽은 지역, null)`(120이면 118, 실패 `Corpse portal not found`) → 리더는 그 자리에서 `makePortal` → 120이면 `moveToExit(120)` → `moveTo(x, y)` → 시체 확인(0.5초 × 5) 뒤 `Town.getCorpse(true)`(실패는 `Failed to get corpse`, 상세 `not seen` / `far N` / `died` / `timeout`) → okCount(산 사람이 엄호하며 대기). 산 사람은 첫 okCount 뒤 치킨 복구. 보호를 안 켰으면(파밍) 아무것도 안 함.
 - 확인: 261006 로그. 261013에 회수 동안 `Config.TownCheck` 끔(사용자), trace는 261020에 바뀜 → `handoff.md` 3-11.
 
+## this.exitTo
+
+### 261022 Claude: 이동 무한 반복 막기 (`482171b`, 옛 handoff 2-4 ①②③·3-19)
+- `exitTo(areas, clearPath)`: `moveToExit` 3회(throw도 한 번의 실패로 셈, 배열 경로는 남은 구간부터, "Souls"는 그대로 반환), 실패면 `[Quit] moveToExit failed: A -> B`. 결과를 안 보던 `moveToExit`·`while (me.area …)` 루프를 `exitTo`로 바꿈(syncBO, bossEnd, travel, den, andy, cube, amulet, tombs, staff, radament, duriel, eye·heart·brain, mephisto, anya, ancients, baal, farming).
+- 거리 while + catch 6곳은 3회 상한, 못 가면 quitGame(`Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`). duriel 오리피스 `useUnit` 실패면 `Duriel chamber not entered`. 상자까지는 `moveTo(retry 3)` × 3회.
+- throw가 아닌 quitGame인 이유: throw는 Loader에서 `MinGameTime` 300초 대기 후 종료라 다른 조기 종료와 어긋남(사용자 결정 261022).
+- 확인: 261023 로그(119게임) 사유 줄로 끝남 6건(`moveToExit failed` 1, `Tomb chest not reached` 4, `Cube chest not reached` 1), `[Error] AutoSmurf.exitTo` 0. 무덤 4/10게임 퇴장은 미로형 지역에서 8명 동선이 꼬여 다시 시도가 많은 탓으로 봄(사용자) → 작동 통과(사용자 261023).
+
 ## this.den
 
 ### 260928 Claude: `Attack.clearLevel` → den 내부 `clearDen`
