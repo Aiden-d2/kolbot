@@ -359,12 +359,10 @@ var Config = {
 	
 	RunewordRecipe: [	//261023 Runewords -> RunewordRecipe
 		// Zephyr
-		[Runeword.Zephyr, "cedarbow"],
-		[Runeword.Zephyr, "razorbow"],
-		[Runeword.Zephyr, "edgebow"],
+		[Runeword.Zephyr, "ceremonialbow"],
+		[Runeword.Zephyr, "ashwoodbow"],
+		[Runeword.Zephyr, "reflexbow"],
 		[Runeword.Zephyr, "stagbow"],
-		[Runeword.Zephyr, "shortwarbow"],
-		[Runeword.Zephyr, "compositebow"],
 		
 		// Moser
 		[Runeword.Moser, "roundshield"],
@@ -412,8 +410,19 @@ var Config = {
 		[Runeword.Steel, "axe"],
 		
 		// Edge
+		[Runeword.Edge, "ceremonialbow"],
+		[Runeword.Edge, "ashwoodbow"],
+		[Runeword.Edge, "reflexbow"],
+		[Runeword.Edge, "stagbow"],
+		
+		[Runeword.Edge, "runebow"],
+		[Runeword.Edge, "shortsiegebow"],
+		[Runeword.Edge, "doublebow"],
+		[Runeword.Edge, "cedarbow"],
+		[Runeword.Edge, "razorbow"],
+		[Runeword.Edge, "edgebow"],
+		
 		[Runeword.Edge, "shortbow"],
-		[Runeword.Edge, "longbow"],
 		
 		// Obedience
 		[Runeword.Obedience, "greatpoleaxe"],
