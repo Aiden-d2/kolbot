@@ -131,8 +131,6 @@
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
-| 3-3 | clearToExit 대체: 퇴장 `moveToExit failed`, 언더패스·Jail 보정 경로 | 4-4 |
-| 3-6 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
 | 3-22 | 퀘스트 아이템 사라짐 위치 변경 | 4-5 `quest item vanished`, `Not enough room for undefined` |
 | 3-17 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
 | 3-26 | desync 때 빠진 프로필이 하던 일, 같은 구간 반복 | 4-3 `missing(...)` |
