@@ -144,14 +144,14 @@ var AutoBuildTemplate = {
 	24:	{
 			Update: function () {
 				Config.Cubing = true;
-				Config.Runewords.push([Runeword.Principle, "mageplate"]);
-				Config.Runewords.push([Runeword.Principle, "lightplate"]);
+				Config.RunewordRecipe.push([Runeword.Principle, "mageplate"]);	//261023 Runewords -> RunewordRecipe
+				Config.RunewordRecipe.push([Runeword.Principle, "lightplate"]);	//261023 Runewords -> RunewordRecipe
 				
 				if (!Config.Tiered) {
-					Config.Recipes.push([Recipe.Caster.Boots, "wyrmhideboots"]);
-					Config.Recipes.push([Recipe.Caster.Belt, "sharkskinbelt"]);
-					Config.Recipes.push([Recipe.Caster.Amulet]);
-					Config.Recipes.push([Recipe.Caster.Ring]);
+					Config.CubeRecipe.push([Recipe.Caster.Boots, "wyrmhideboots"]);	//261023 Recipes -> CubeRecipe
+					Config.CubeRecipe.push([Recipe.Caster.Belt, "sharkskinbelt"]);	//261023 Recipes -> CubeRecipe
+					Config.CubeRecipe.push([Recipe.Caster.Amulet]);	//261023 Recipes -> CubeRecipe
+					Config.CubeRecipe.push([Recipe.Caster.Ring]);	//261023 Recipes -> CubeRecipe
 				}
 			}
 		},

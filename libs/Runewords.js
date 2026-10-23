@@ -4,7 +4,7 @@
 *	@desc		make and reroll runewords
 */
 
-// TODO: Config.Runewords[i][0] can be false, but array methods can be used on it
+// TODO: Config.RunewordRecipe[i][0] can be false, but array methods can be used on it
 
 var Runeword = {
 	// 1.09
@@ -108,21 +108,21 @@ var Runewords = {
 	validGids: [],
 
 	init: function () {
-		if (!Config.MakeRunewords) {
+		if (!Config.Runewording) {	//261023 MakeRunewords -> Runewording
 			return;
 		}
 
 		var i;//, info, parsedLine;
 
 		// change text to classid
-		for (i = 0; i < Config.Runewords.length; i += 1) {
-			if (Config.Runewords[i][0] !== false) {
-				if (isNaN(Config.Runewords[i][1])) {
-					if (NTIPAliasClassID.hasOwnProperty(Config.Runewords[i][1].replace(/\s+/g, "").toLowerCase())) {
-						Config.Runewords[i][1] = NTIPAliasClassID[Config.Runewords[i][1].replace(/\s+/g, "").toLowerCase()];
+		for (i = 0; i < Config.RunewordRecipe.length; i += 1) {	//261023 Runewords -> RunewordRecipe
+			if (Config.RunewordRecipe[i][0] !== false) {	//261023
+				if (isNaN(Config.RunewordRecipe[i][1])) {	//261023
+					if (NTIPAliasClassID.hasOwnProperty(Config.RunewordRecipe[i][1].replace(/\s+/g, "").toLowerCase())) {	//261023
+						Config.RunewordRecipe[i][1] = NTIPAliasClassID[Config.RunewordRecipe[i][1].replace(/\s+/g, "").toLowerCase()];	//261023
 					} else {
-						Misc.errorReport("ÿc1Invalid runewords entry:ÿc0 " + Config.Runewords[i][1]);
-						Config.Runewords.splice(i, 1);
+						Misc.errorReport("ÿc1Invalid runewords entry:ÿc0 " + Config.RunewordRecipe[i][1]);	//261023
+						Config.RunewordRecipe.splice(i, 1);	//261023
 
 						i -= 1;
 					}
@@ -141,16 +141,16 @@ var Runewords = {
 		this.needList = [];
 		items = me.findItems(-1, 0);
 
-		for (i = 0; i < Config.Runewords.length; i += 1) {
+		for (i = 0; i < Config.RunewordRecipe.length; i += 1) {	//261023
 			if (!baseCheck) {
-				baseCheck = this.getBase(Config.Runewords[i][0], Config.Runewords[i][1], (Config.Runewords[i][2]||0)) || this.getBase(Config.Runewords[i][0], Config.Runewords[i][1], (Config.Runewords[i][2]||0), true);
+				baseCheck = this.getBase(Config.RunewordRecipe[i][0], Config.RunewordRecipe[i][1], (Config.RunewordRecipe[i][2]||0)) || this.getBase(Config.RunewordRecipe[i][0], Config.RunewordRecipe[i][1], (Config.RunewordRecipe[i][2]||0), true);	//261023
 			}
 
-			if (this.getBase(Config.Runewords[i][0], Config.Runewords[i][1], (Config.Runewords[i][2]||0))) {
+			if (this.getBase(Config.RunewordRecipe[i][0], Config.RunewordRecipe[i][1], (Config.RunewordRecipe[i][2]||0))) {	//261023
 RuneLoop:
-				for (j = 0; j < Config.Runewords[i][0].length; j += 1) {
+				for (j = 0; j < Config.RunewordRecipe[i][0].length; j += 1) {	//261023
 					for (k = 0; k < items.length; k += 1) {
-						if (items[k].classid === Config.Runewords[i][0][j]) {
+						if (items[k].classid === Config.RunewordRecipe[i][0][j]) {	//261023
 							this.validGids.push(items[k].gid);
 							items.splice(k, 1);
 
@@ -160,7 +160,7 @@ RuneLoop:
 						}
 					}
 
-					this.needList.push(Config.Runewords[i][0][j]);
+					this.needList.push(Config.RunewordRecipe[i][0][j]);	//261023
 				}
 			}
 		}
@@ -205,17 +205,17 @@ RuneLoop:
 
 		items = me.findItems(-1, 0); // get items in inventory/stash
 
-		for (i = 0; i < Config.Runewords.length; i += 1) {
+		for (i = 0; i < Config.RunewordRecipe.length; i += 1) {	//261023
 			itemList = []; // reset item list
-			base = this.getBase(Config.Runewords[i][0], Config.Runewords[i][1], (Config.Runewords[i][2]||0)); // check base
+			base = this.getBase(Config.RunewordRecipe[i][0], Config.RunewordRecipe[i][1], (Config.RunewordRecipe[i][2]||0)); // check base	//261023
 
 			if (base) {
 				itemList.push(base); // push the base
 
 RuneLoop:
-				for (j = 0; j < Config.Runewords[i][0].length; j += 1) {
+				for (j = 0; j < Config.RunewordRecipe[i][0].length; j += 1) {	//261023
 					for (k = 0; k < items.length; k += 1) {
-						if (items[k].classid === Config.Runewords[i][0][j]) { // rune matched
+						if (items[k].classid === Config.RunewordRecipe[i][0][j]) { // rune matched	//261023
 							itemList.push(items[k]); // push into the item list
 							items.splice(k, 1); // remove from item list as to not count it twice
 
@@ -229,7 +229,7 @@ RuneLoop:
 						break RuneLoop;
 					}
 
-					if (itemList.length === Config.Runewords[i][0].length + 1) { // runes + base
+					if (itemList.length === Config.RunewordRecipe[i][0].length + 1) { // runes + base	//261023
 						return itemList; // these items are our runeword
 					}
 				}
@@ -240,7 +240,7 @@ RuneLoop:
 	},
 
 	checkItem: function (unit) { // for pickit
-		if (!Config.MakeRunewords) {
+		if (!Config.Runewording) {	//261023
 			return false;
 		}
 
@@ -347,7 +347,7 @@ RuneLoop:
 	},
 
 	makeRunewords: function () {
-		if (!Config.MakeRunewords) {
+		if (!Config.Runewording) {	//261023
 			return false;
 		}
 
@@ -400,14 +400,14 @@ RuneLoop:
 	rerollRunewords: function () {
 		var i, base, scroll, hel, parts, logString;	//260831
 
-		for (i = 0; i < Config.Runewords.length; i += 1) {
+		for (i = 0; i < Config.RunewordRecipe.length; i += 1) {	//261023
 			hel = me.getItem(624, 0);
 
 			if (!hel) {
 				return false;
 			}
 
-			base = this.getBase(Config.Runewords[i][0], Config.Runewords[i][1], (Config.Runewords[i][2]||0), true); // get a bad runeword
+			base = this.getBase(Config.RunewordRecipe[i][0], Config.RunewordRecipe[i][1], (Config.RunewordRecipe[i][2]||0), true); // get a bad runeword	//261023
 
 			if (base) {
 				scroll = this.getScroll();

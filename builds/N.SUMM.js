@@ -156,15 +156,15 @@ var AutoBuildTemplate = {
 	24:	{
 			Update: function () {
 				Config.Cubing = true;
-				Config.Runewords.push([Runeword.Bone, "mageplate"]);
-				Config.Runewords.push([Runeword.Bone, "lightplate"]);
+				Config.RunewordRecipe.push([Runeword.Bone, "mageplate"]);	//261023 Runewords -> RunewordRecipe
+				Config.RunewordRecipe.push([Runeword.Bone, "lightplate"]);	//261023 Runewords -> RunewordRecipe
 				
 				if (!Config.Tiered) {
-					Config.Recipes.push([Recipe.Moser2]);
-					Config.Recipes.push([Recipe.Caster.Boots, "wyrmhideboots"]);
-					Config.Recipes.push([Recipe.Caster.Belt, "sharkskinbelt"]);
-					Config.Recipes.push([Recipe.Caster.Amulet]);
-					Config.Recipes.push([Recipe.Caster.Ring]);
+					Config.CubeRecipe.push([Recipe.Moser2]);	//261023 Recipes -> CubeRecipe
+					Config.CubeRecipe.push([Recipe.Caster.Boots, "wyrmhideboots"]);	//261023 Recipes -> CubeRecipe
+					Config.CubeRecipe.push([Recipe.Caster.Belt, "sharkskinbelt"]);	//261023 Recipes -> CubeRecipe
+					Config.CubeRecipe.push([Recipe.Caster.Amulet]);	//261023 Recipes -> CubeRecipe
+					Config.CubeRecipe.push([Recipe.Caster.Ring]);	//261023 Recipes -> CubeRecipe
 				}
 				
 				Config.Curse[0] = 87;
