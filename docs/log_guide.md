@@ -141,7 +141,6 @@
 | 3-19 | 이동 실패가 무한 반복 없이 끝나는가 | 4-4 `[Quit] moveToExit failed`, 거리 while 사유, `[Error] AutoSmurf.exitTo` |
 | 3-20 | useUnit 첫 클릭 실패 빈도, 8회 실패 | 4-4 `[useUnit] timeout` |
 | 3-22 | 퀘스트 아이템 사라짐 위치 변경 | 4-5 `quest item vanished`, `Not enough room for undefined` |
-| 3-24 | SafeTele 순서 변경 뒤 렉(육안), Min 10 | 4-4 |
 | 3-9 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
 | 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
 | 3-11 | 보스가드·시체 회수 | 4-1 |

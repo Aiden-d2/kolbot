@@ -63,7 +63,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 사용자 관찰: 몹 밀집 지역에서 후퇴와 제자리를 반복한다.
   - 코드: 방문한 자리 목록은 `excludedNodes`다. `moveTo`가 SafeTele로 고른 자리를 최근 5개까지 쌓고, `safeCheckNode`는 그 5칸 안의 후보를 뺀다(맴돌기 방지, `docs/code/Pather.md` 261003).
 - **가설**: 없음(검토 전).
-- **구현안**(미정): ① 방문한 자리 제외(`excludedNodes`)가 의도대로 작동하는지 점검 ② 밀집 지역에서 후퇴·제자리를 반복하는 결함 수정. 관련: 2-8(제자리 텔레), 3-24(후보 검사 순서).
+- **구현안**(미정): ① 방문한 자리 제외(`excludedNodes`)가 의도대로 작동하는지 점검 ② 밀집 지역에서 후퇴·제자리를 반복하는 결함 수정. 관련: 2-8(제자리 텔레), 후보 검사 순서(`docs/code/Pather.md` moveTo 261022).
 - **검증 방법**: 검토에서 정한다.
 
 ### 2-15. 착용 중인 베이스로 룬워드·펀치 (`Runewords.getBase`·`makeRunewords`, `Cubing`, 사용자 261023)
@@ -178,11 +178,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **검증 방법**: 실패 줄 `[MoveToSlot] ... FAILED`와 같은 시각(같은 초)에 수락이 있으면 수락 클릭이 옮기던 물약을 방해한 것(가설). 겹침이 없으면 가설은 틀림.
 - **결과**: 261022 `party accept` 579줄, MoveToSlot 실패 0건(65게임) → 판정할 사례 없음. 실패가 다시 나오면 판정.
 
-### 3-18. getWP random 좌표 제거 (`Pather.getWP`, 옛 2-5)
-- **바꾼 것**(261022 `ae1767b`): getWP가 웨이까지 > 5일 때 부르는 `moveToUnit(wp, 0, 0, false, false, true)`에서 random 인자를 지움. goWP(프리셋 > 10, random 유지)는 그대로. 근거(가설, 로그 확인 전): 대각 오프셋(약 7.1) 프로필은 도착해도 늘 5를 넘고, 오프셋 5 프로필도 1칸 어긋나면 넘어 부를 때마다 반대편으로 왕복 → 플라이 소서 웨이 착지 버벅임(사용자 관찰).
-- **검증 방법**: 웨이 찍을 때 버벅임(왕복)이 없어지는가(작동), `[getWP] waypoint menu not opened` 빈도.
-- **결과**: 기록 없음.
-
 ### 3-19. 이동 무한 반복 막기 (`AutoSmurf.exitTo` 외, 옛 2-4 ①②③)
 - **바꾼 것**(261022 `482171b`): 새 함수 `AutoSmurf.exitTo(areas, clearPath)` — `moveToExit` 3회(throw도 한 번의 실패로 셈, 배열 경로는 남은 구간부터, "Souls"는 그대로 반환), 실패면 `[Quit] moveToExit failed: A -> B`. 결과를 안 보던 `moveToExit`·`while (me.area …)` 루프를 `exitTo`로: syncBO 2, bossEnd, travel 53·78 대체·110·default(3회 + throw였음 → quitGame), den 2+[2,8], andy 2, cube, amulet 2, tombs, staff, radament [47,48](40·47 외 지역에서 끝없이 돌던 while)·49, duriel 무덤, eye·heart·brain, mephisto, anya, ancients 120 2·[128,129], baal 130·131, farming Countess·Pit·Andy·Mephisto·Nihlathak. 거리 while + catch 6곳은 3회 상한, 못 가면 quitGame(`Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`). duriel 오리피스 `useUnit(2, 100, 73)` 실패면 `Duriel chamber not entered`. 그대로 둔 것: `Pather.goWP`의 catch(10회 상한), 옛 clearToExit 자리 21곳, travel case 32·100/101·115~129, changeAct, cain·inner 한 번 시도, tome, izual, ancients `moveToExit(120, false)`. 실패 처리를 throw가 아닌 quitGame으로 한 이유: throw는 Loader에서 `MinGameTime` 300초 대기 후 종료라 다른 조기 종료와 어긋남(사용자 결정 261022).
 - **배경**(옛 2-4): 사례 `AutoSmurf.brain`(a1 Pz-52, Flayer Dungeon 1 → 2 useUnit 7회 실패 뒤 3층 프리셋으로 이동 → 경로 없음 종료), `AutoSmurf.radament` 리더(10/22 11:30 a1, 49 결과를 안 보고 3층 상자로 가는 while + catch 무한 반복, 손으로 풀림). `moveTo`는 노드 이동 실패·빈 경로에 throw 없이 false도 돌려줘 catch만 지워서는 거리 while이 멈추지 않는다(코드 확인 261022).
@@ -204,16 +199,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 ### 3-22. getQuestItem 사라짐 확인 위치 (`AutoSmurf.getQuestItem`, 옛 2-10)
 - **바꾼 것**(261022 `482171b`): `item.sizex === undefined` 확인을 `CanFit` 앞에서 `CanFit` 실패 뒤(`canMakeRoom` 앞)로. `CanFit`이 인벤토리를 다시 읽는 동안 유닛이 사라지면 크기가 undefined라 `CanFit`이 false가 되고 `Not enough room for undefined`로 끝나던 경우(261022 a1 하수구 3층)를 vanished로 받음.
 - **검증 방법**: `quest item vanished`·`<classid> vanished`가 찍히고 `Not enough room for undefined`가 없어지는가. `quest item vanished, retry N`은 사례를 본 뒤 삭제.
-- **결과**: 기록 없음.
-
-### 3-23. 샤먼 우선 (`Attack.clear`, 옛 2-11)
-- **바꾼 것**(261022 `482171b`): 4단계 `target = nearestLive || nearest` 뒤, leash 루프 앞. 노말 액트 1이고 target이 MUST가 아니면, entries 중 MUST·deferred가 아닌 샤먼 58·59·60·61(Fallen·Carver·Devilkin·Dark, 외부 `d2data` levels의 액트 1 노말 몬스터 목록) 중 가장 가까운 것을 target으로. MUST가 leash 밖이면 그대로 MUST가 이김.
-- **검증 방법**: 노말 액트 1 구간(Den·Blood·Cain·Cathedral 등) 구간 시간, 낙오·`Party desynced` 빈도 전후 비교. 근접 캐릭이 무리 속으로 들어가 맞는 것은 감수(사용자).
-- **결과**: 기록 없음.
-
-### 3-24. SafeTele 후보 검사 순서·설정 복원 (`Pather.moveTo` 안 `safeCheckNode`, `Config.SafeTele`, 옛 2-12)
-- **바꾼 것**(261022 `482171b`): 후보마다 몹 수를 먼저 세고 `mc >= baseline`이면 건너뜀, 적을 때만 `checkSpot`(처음 보는 방이면 `room.getCollision()` 복사) → 통과하면 채택. 고르는 자리는 전과 같다. `Config.SafeTele` Angle 60 → 75, Step 7 → 5, Min 7 → 10(10-03~10-19 값, 후보 35 → 70개, 링 35·30·25·20·15·10).
-- **검증 방법**: 렉이 있던 설정(후보 70개)에서 렉이 줄었는가(Bloody Foothills 등 육안). Min 7 → 10으로 짧은 텔레가 빠져 a1 치킨 비중 변화는 이 변경과 섞여 보인다.
 - **결과**: 기록 없음.
 
 ### 3-25. nip 재료 줄 정리 (킵 qty → 홀드, 모든 빌드 nip·X·Z·V, `Config.js` 레시피, PR #77)
