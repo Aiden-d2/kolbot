@@ -165,3 +165,50 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - buyPotions 580건. 마을별 중앙값/최대: Harrogath 326건 8.0/15.1, Lut Gholein 146건 9.4/21.7, Pandemonium 60건 8.6/17.4, Kurast Docktown 22건 10.2/14.6, Rogue Encampment 26건 8.9/16.5. 20초 이상 7건은 모두 Lut Gholein이고 여러 프로필이 같은 시각(11:33:13~17 3명, 11:44:56~11:45:01 5명). 힐·상점이 같은 NPC인 막(`Town.tasks`: 1·3·4·5막)에서도 중앙값 8~10초.
 - clearInventory 255건. 마을별 20초 이상: Rogue Encampment 79건 중 13, Lut Gholein 63건 중 5, Kurast Docktown 3, Pandemonium 3, Harrogath 1.
 - 단계별 시간이 없어 어느 단계인지는 판정 불가(판별 로그는 handoff 2-7).
+
+## 261023 묶음 (10/22 21:43 ~ 10/23 15:24, 8프로필 119게임)
+데이터: trace·d2bs·콘솔·ItemLog·ScriptErrorLog·`_cache`(config 캐시 포함). 새 계정으로 노말부터 파밍까지. 코드는 main `9e10ff6`(10/22 21:34 업로드, PR #72 포함, 261023 커밋 없음) — 콘솔 `# [Gem]`, ItemLog `<Gemmed>`, `chores Ns:` 줄로 확인. config 캐시의 보석 설정(`Head:[100,99]` 등, `Socketing` 키)은 `9e10ff6`과 다르며 언제 쓰였는지 모름. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 판정
+- 3-1 okCount 이름 수집: desync 3게임 5줄 모두 빠진 프로필 이름이 남음. 셋 다 그 프로필이 실제로 늦음(B), 리셋 경쟁(C) 0. 늦은 이유는 handoff 3-26.
+  - Pz-6 22:12 a4 `missing(okCount): a5, a6`(Stony Field). 22:06:16 BLOOD 시작부터 8명 모두 6분 trace·d2bs 기록 없음 → 하던 일 모름.
+  - Pz-14 23:15 a4 `missing: a7`(Outer Cloister). 다른 7명은 23:12:54 `=== [JAIL] ===`, a7은 TRIST(23:09:55)에서 기록 없이 머묾.
+  - Pz-42 02:30 a1·a5·a7 `missing: a4`(Durance 3). a4는 02:28:33 마을 정리 뒤 기록 없고 다른 7명에게 있는 `bossGuard on`이 없음 → 메피 포털을 타지 않음.
+- 3-2 중계: `relay` 5건(a1 02:25:59, a3 06:53:27, a7 00:29:25·08:01:55·08:02:23) 모두 `Town chicken` → `visitTown back` 직후. 중계한 프로필로 인한 desync 0(Pz-42 desync는 a4 미도착).
+- 3-4 SafeTele 범위: `[SafeTele] monsters` a1 9,858줄 평균 29.3마리 중 14.4마리가 범위 안. a2(SafeTele 꺼짐) 514줄.
+- 3-5 Town check 직접: 114건 모두 바로 `visitTown start by:default.dbj`. back 102, 마을에 있는 동안 다른 프로필 퇴장 9, Life Chicken 3. 마을행 중 Town check 중첩 0. Life Chicken 3건(a1 12:09:52·13:34:43·14:02:04)은 직접 마을행이 필드에 있는 동안 TownChicken(HP)도 출발한 뒤 0~7초 안에 치킨, 12:09 건은 다음 게임 `You died`.
+- 3-9 콘솔·trace: 눈·심장·뇌 콘솔 각 3건 한 번씩(중복 없음), `[useUnit] timeout` 34줄 모두 id·target·unit, Life Chicken 줄에 mode·near 없음, d2bs `[console]` 미러 있음. `party accept` 1,043줄, MoveToSlot 실패 0.
+- 3-11 보스가드: 가드 중 사망 0, 시체 회수 0. 가드 중 Life Chicken 2건은 치킨이 켜져 있던 때(a8 Pz-17 앤디 100%, a2 Pz-100 디아 98%). 가드 중 Town chicken 2건(a3·a7 써모너, 둘 다 relay).
+
+| 보스(pct) | 건수 | chicken off HP 최소/중앙/최대 | off → last 최소/중앙/최대 | 5초 초과 |
+|---|---|---|---|---|
+| 써모너(100) | 24 | 55/100/100 | 0/2.2/6.4초 | 3 |
+| 라다먼트(85) | 24 | 46/74/84 | 0.3/4.6/12.4초 | 8 |
+| 앤디(15) | 24 | 1/13/15 | 0/1.5/2.3초 | 0 |
+| 메피(15) | 23 | 11/14/15 | 1.8/3.7/4.6초 | 0 |
+| 이주얼(15) | 24 | 7/14/15 | 0/3.2/6.4초 | 8 |
+| 디아(15) | 22 | 13/14/15 | 2.5/3.2/5.3초 | 1 |
+| 쉥크(50) | 24 | 7/41/49 | 0/1.0/3.5초 | 0 |
+| 에인션트(10, Korlic 먼저) | 16 | 4/4.5/6 | 4.7/7.0/8.8초 | 14 |
+| 에인션트(10, Madawc 먼저) | 8 | 4/5/9 | 0/6.3/7.1초 | 7 |
+| 바알(15) | 23 | 9/15/15 | 0/6.6/9.7초 | 13 |
+
+  - 바알 1건(a3 Pz-60)은 22%에서 한 번만 보여 chicken off 없음. 처음 본 HP가 이미 pct 이하: 써모너 24, 라다먼트 2, 메피 1, 바알 1. 타운치킨으로 인한 last 이른 기록은 빼지 않음.
+- 3-12 골드 나눔(사용자 수정 뒤 코드): 2게임(00:25, 03:14) 버림 12 = 리더 줍기 12, 금액 일치, 더미당 1~3초, `Retaking` 0, 음수 없음.
+- 3-15 소켓 보석: 보석 `Ingredient` 14 = `Gemmed` 14, `socketGems failed` 0(`(cursor)`·`(dropped)` 없음). 07:35 이후 Flawless 보석 `Ingredient`는 큐빙 재료(모두 Stashed, Perfect 생김). a8 23:49:56 Chipped Emerald가 몸 칸 Quilted Armor에 들어간 것은 사용자가 중간에 보석 설정을 임시로 바꿨다가 되돌린 것(사용자 261023).
+- 3-16 스태프: `=== STAFF ===` 3건.
+- 3-19 exitTo: 사유 줄 6건(`moveToExit failed: Outer Cloister -> Barracks` a8 22:52:46, `Tomb chest not reached` a8 00:35:49·a1 00:51:50·a5 01:01:43·a6 01:09:45, `Cube chest not reached` a1 00:13:23), `[Error] AutoSmurf.exitTo` 0. TOMBS 10게임 중 4게임이 상자 미도달로 퇴장, 줄에 좌표·거리가 없어 원인 판정 불가(사용자: 미로형 지역 8명 동선 꼬임). 상자 이동은 `moveTo(retry 3)` × 3회.
+- 3-20 useUnit: timeout 34줄(a1 15줄·12연속, a2 2, a3 3, a4 1, a5 5, a6 3, a7 2, a8 3), 8회 모두 실패 0, 마지막 회차 대부분 0. 261022 묶음 2(414줄, a1 350줄·110연속)와 게임 구성이 같은지는 대조 안 함. a5 01:52:18 `dist:10067`은 이미 다음 지역에서 찍힌 줄.
+- 3-21 chores(1,729줄, 10초 초과만):
+  - 물약 정리(pots, 마시기) 15회 최대 3.9초.
+  - buy 5초 초과 458건(중앙 9.0초, 20초 이상 8), 그 시간의 중앙값 75%가 상점 NPC(걷기·열기). 구매 실패 합계 2.
+  - inv 5초 초과 202건(중앙 8.0초, 최대 31.4초, 20초 이상 21), 104건은 80% 이상이 벨트 넣기.
+  - 벨트 클릭 663건: 느림 56건은 클릭당 3.6~3.8초이고 한 정리 안의 클릭이 모두 느림, 모두 정리 시작 때 NPC 메뉴(08) 열림, 모두 `pots 0/0`. 메뉴 열림 빠름 444, 중간(1.5~3초) 7, 메뉴 닫힘 96(느림 0). 같은 프로필 연속(a1 00:00~00:06 Lut Gholein 5회 6클릭, a7 16회, a2 13회). 가설·판별은 handoff 3-27(옛 2-17).
+  - 정리 시작 때 08 열림 1,335/1,729. 같은 시각 여러 프로필이 함께 긴 경우: 00:16~00:17 Lut Gholein(heal 50~60초·repair 38초, 4명), 02:06 Kurast Docktown(heal 20~29초, 4명).
+- 상황 없음: 3-10(`radamentOff`·북 리셋 0), 3-13(`dropping radament book` 0), 3-17(MoveToSlot 실패 0), 3-22(`vanished`·`Not enough room` 0).
+
+### 그 밖
+- 조기 종료 사유: Life Chicken 67(a1 47, a2 5, a4 4, a8 4, a3·a5·a7 2, a6 1), Tomb chest 4, desync 4줄(3게임), Figurine incompleted 3, Diablo not found 3, Souls found in Anya 2, Not ready to start Duriel 2, moveToExit failed 1, Cube chest 1, Team didn't join 1, Players not in after act change 1.
+- 사망 4건 모두 a1(`You died` 06:39·12:10·12:25·13:53, 보스가드 밖).
+- `[Error]` 1건: a3 03:33:15 Pit of Acheron `moveTo: Failed to generate path: 12674,7594`(261022 묶음 C유형과 같은 곳 근처).
+- `[teleportTo failed]` 10건(Worldstone Keep Level 2 03:11~03:13에 8건), getWP `menu not opened` 104건(try:0 100, a1 90).

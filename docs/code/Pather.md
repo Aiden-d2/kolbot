@@ -31,6 +31,16 @@
 - `safeCheckNode`가 후보 좌표를 모두 만든 뒤 원래 타겟노드와의 거리 오름차순(동점은 먼 링, 그다음 생성 순서)으로 한 번에 검사한다. 0마리면 즉시 채택, 없으면 최소. 최근 5자리 5칸 안은 제외(맴돌기 방지). 마지막 노드는 SafeTele를 거치지 않는다.
 - 이유: 전에는 바깥 링이 각도보다 먼저라, 각도를 넓히면 바깥 링의 옆자리가 안쪽 링 정면보다 먼저 뽑혔다. 원래 타겟노드는 경로상 최적 지점이므로 거기서 멀수록 목적지에서 멀어진다고 보고, 그 거리 하나로 순서를 정한다.
 
+### 261022 Claude: SafeTele 후보 검사 순서·설정 복원 (`482171b`, 옛 handoff 2-12·3-24)
+- `safeCheckNode`가 후보마다 몹 수를 먼저 세고 `mc >= baseline`이면 건너뛴다. 적을 때만 `checkSpot`(처음 보는 방이면 `room.getCollision()` 복사)을 하고 통과하면 채택. 고르는 자리는 전과 같다.
+- `Config.SafeTele`의 Angle·Step·Min을 10-03~10-19 값으로 되돌림(후보 35 → 70개).
+- 목적: 후보 70개 설정에서 렉이 있었으므로, 몹 수로 먼저 걸러 `checkSpot`을 부르는 횟수를 줄인다.
+- 확인: 261023 사용자 육안 검증 통과.
+
+### 261021 Claude: SafeTele 몹 목록 범위 (`eddab3a`·`ab94751`, 옛 handoff 3-4)
+- 몹 목록을 내 위치에서 `max(teleDistance, 노드 거리) + SafeTele.Range` 안으로 거름. 후보는 모두 내 위치에서 `teleDistance` 안, 몹은 후보에서 Range 안만 세므로 고르는 자리는 같다(남는 차이는 후보 좌표 반올림의 1칸 미만 경계).
+- 확인: 261022·261023 `[SafeTele] monsters`(a1 평균 26 → 12마리, 29 → 14마리). 검증 통과(사용자 261023). 확인 줄과 `monAll`은 261023 `0f6da09`에서 삭제(handoff 3-28 검증 대기).
+
 ## teleportTo
 
 ### 260930 Claude: 시전 동작 기준 대기
@@ -41,6 +51,14 @@
 
 ### 260930 Claude: 대기와 로딩
 - 대기 max(1000, ping×2+300) + 로딩 중(`gameReady` false) 대기. 회차 시작에 "이미 넘어갔으면 끝"(로딩 중·직후 옛 유닛으로 이동·클릭 방지, 판데모니움→해로가스 포털 `dist:74` 사례).
+
+### 261021 Claude: timeout trace 상세 (`ab94751`, 옛 handoff 3-9)
+- `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`에 id(LvlWarp `Id`)·target·unit 좌표 추가.
+
+### 261022 Claude: 계단 클릭 앞 대기·옆 자리 이동 (`482171b`, 사용자 확정, 옛 handoff 2-4 ④·3-20)
+- 계단 타일(type 5) 클릭 앞 `delay(600)`(오브젝트는 그대로), 클릭 뒤 대기에 걷기 가드(모드 2·3·6이면 상한 4초), 회차 7 → 8, 유닛 위로 붙이는 판정 `> 5` → `> 7`. timeout 뒤 무작위 걸음(내 위치 ±3칸) 대신 유닛 좌표 기준 4방향(±x, ±y) 4칸 자리를 차례로(막힌 자리·내 위치 2칸 이하 자리 건너뜀, 텔레 `teleportTo(x, y, 2)` / 걷기 `walkTo(x, y, 2)`). timeout 직후 이미 넘어갔으면 옆 이동 없이 return(옛 지역 좌표로 텔레 반복 방지). 첫 클릭은 지금 자리에서.
+- 근거(`log_results.md` 261022 묶음 2): timeout 414줄 중 a1 350줄, 걷는 프로필은 39연속 중 36개가 1회 뒤 성공 → "텔레 직후 클릭이 무시됨"(추정)에 가까움. 원본 kolbot은 클릭 앞 300ms, 대기 3000ms.
+- 확인: 261023 로그(119게임) timeout 34줄(a1 15줄·12연속), 8회 모두 실패 0. 검증 통과(사용자 261023). 다음 단계 `me.attacking` 게이트는 handoff 2-19.
 
 ## useWaypoint
 
@@ -62,3 +80,8 @@
 
 ### 261021 Claude: 웨이 앞 random 이동
 - goWP(프리셋까지 > 10)·getWP(웨이까지 > 5) 이동에 random(프로필별 오프셋 `Pather.myX/myY`)을 줘 팀이 웨이 앞 한 칸에 겹쳐 서지 않게 함. 같이 `AutoSmurf.clickWP`를 지우고 `Pather.getWP`(area 없으면 `me.area`)로. getWP 쪽 random은 왕복 우려로 제거하기로 함(handoff 2-5).
+
+### 261022 Claude: getWP 웨이 앞 random 제거 (`ae1767b`, 옛 handoff 2-5·3-18)
+- getWP가 웨이까지 > 5일 때 부르는 `moveToUnit(wp, 0, 0, false, false, true)`에서 random 인자를 지움. goWP(프리셋 > 10)의 random은 유지.
+- 이유: 대각 오프셋(약 7.1) 프로필은 도착해도 늘 5를 넘고, 오프셋 5 프로필도 1칸 어긋나면 넘어 부를 때마다 반대편으로 왕복했다(플라이 소서 웨이 착지 버벅임, 사용자 관찰).
+- 확인: 261023 사용자 육안 검증 통과.

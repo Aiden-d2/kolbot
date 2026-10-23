@@ -28,6 +28,16 @@
 - 근거: 게임은 이 값으로 트랩을 고른다(D2MOO `ObjMode.cpp:373`), 트랩 없는 컨테이너는 0이라 걸러지지 않는다(컨테이너별 표는 `D2BS_Structure.md`). `CorpseOnStick` 자체는 불·데미지가 없고 옆의 `fire` 오브젝트가 데미지를 준다. 이름으로 `corpseonstick`을 빼는 안은 불 없는 시체도 빠지고 다른 상자는 못 걸러 기각.
 - 확인: 확인용 trace `[chest] skip trap|fire`로 게임 확인 뒤 261006에 trace 삭제.
 
+## Misc.itemLogger / Misc.logItem
+
+### 261021~261023 사용자 결정: 소켓 보석 로그 (옛 handoff 3-15)
+- `itemLogger`의 `Ingredient {가진 개수}`(소켓 보석 줍기)와 `Socketed`(261023 전 `Gemmed`) case, `logItem` match. 동작은 `Town.md` socketGems. 검증 통과(사용자 261023).
+
+## Misc.townCheck
+
+### 261021 Claude: default.dbj는 직접 마을행 (`ab94751`, 옛 handoff 3-5)
+- default.dbj면 `Town.visitTown`을 직접 부른다(멈춤 없음, trace `Town check (direct)`). TownChicken(visitTown 안에서만 부름)·MapHelper(default와 동시에 움직임)는 기존 메시지. 재진입 막기는 `Town.md` visitTown. 검증 통과(사용자 261023).
+
 ## Packet.openMenu
 
 ### 261001 Claude: 대사 중이면 스페이스로 넘김 (유형 B 크래시)

@@ -243,7 +243,7 @@ var Pather = {
 			return targetNode;
 		}
 		
-		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgx, orgy, valid, myx, myy, monAll, monRange, //261021
+		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgx, orgy, valid, myx, myy, monRange, //261021	//261023 monAll removed
 			node = {x: x, y: y},
 			fail = 0;
 
@@ -430,15 +430,10 @@ var Pather = {
 				}
 				
 				monList = Attack.buildMonsterList();
-				monAll = monList.length;	//261021 all monsters, for the check trace
 				monRange = Math.max(this.teleDistance, getDistance(me, node)) + Config.SafeTele.Range;	//261021 candidates are within teleDistance of me and count monsters within Range of themselves: farther ones never count
 				monList = monList.filter(function (mon) {
 					return getDistance(me, mon) <= monRange;
-				});
-
-				if (monList.length < monAll) {
-					Misc.trace("[SafeTele] monsters " + monAll + " near " + monList.length);	//261021 check: how many the filter cuts (remove once seen)
-				}
+				});	//261023 check trace removed (confirmed)
 
 				fireList = Attack.getFireList();	//260807
 				

@@ -709,15 +709,9 @@ function main() {
 			DataFile.updateStats("debugInfo", JSON.stringify(debugInfo));
 		}
 
-		if (relayMsgs.length) {	//261021 hand them over in order once default.dbj runs again
-			i = relayMsgs.length;
-
+		if (relayMsgs.length) {	//261021 hand them over in order once default.dbj runs again	//261023 relay check trace removed (confirmed)
 			while (relayMsgs.length && Messaging.sendToScript("default.dbj", relayMsgs[0])) {	// false: not running (paused again), keep the rest
 				relayMsgs.shift();
-			}
-
-			if (relayMsgs.length < i) {
-				Misc.trace("relay " + (i - relayMsgs.length) + " msgs");	//261021 check: the relay works (remove once confirmed in the logs)
 			}
 		}
 

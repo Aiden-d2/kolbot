@@ -52,6 +52,11 @@
 ### 261015 사용자: 끝 줍기 기준점
 - 끝 줍기를 org 기준으로(`pickItems(range > 0 ? range : 기본, orgx, orgy)`). 보스 호출의 org는 보스가 죽은 자리.
 
+### 261022 Claude: 노말 액트 1 샤먼 우선 (`482171b`, 옛 handoff 2-11·3-23)
+- 4단계 `target = nearestLive || nearest` 뒤, 목줄 루프 앞. 노말 액트 1이고 target이 MUST가 아니면, entries 중 MUST·deferred가 아닌 샤먼 58·59·60·61(Fallen·Carver·Devilkin·Dark Shaman) 중 가장 가까운 것을 target으로. MUST가 목줄 밖이면 그대로 MUST가 이긴다.
+- 근접 캐릭이 무리 속으로 들어가 맞는 것은 감수(사용자).
+- 확인: 261023 사용자 육안 검증 통과.
+
 ## setPosition
 
 ### 260928 Claude: 접근·회피를 한 함수로
