@@ -78,7 +78,6 @@
 // [Shield] 20mana 30resi 20/30A-resi // 40/60life
 //============================================================================================================================================================================================
 
-
 [type] == shield && [flag] == runeword # [itemdamagetomana] == 10 # [tier] == 26
 
 [name] == roundshield && [quality] == unique && [flag] != ethereal # [fireresist] >= 45 # [tier] == 41
@@ -154,7 +153,6 @@
 ([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*65+[sorceressskills]*65-[itemaddskilltab]*30+[fireskilltab]*75+[skillfiremastery]*15+[skillfirewall]*20+[skillstaticfield]*10+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 190 # [tier] == 29
 ([type] == orb || [type] == wand) && [quality] >= normal && [flag] != ethereal # [itemallskills]*65+[sorceressskills]*65-[itemaddskilltab]*30+[fireskilltab]*75+[skillfiremastery]*15+[skillfirewall]*20+[skillstaticfield]*10+[skillenergyshield]*10+[skillshiverarmor]*10+[skillwarmth]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 200 # [tier] == 30
 
-
 [type] == sword && [flag] == runeword # [fhr] == 55 # [tier] == 31
 [type] == sword && [flag] == runeword # [fhr] == 55 && [maxmana] >= 100 # [tier] == 32
 
@@ -180,6 +178,8 @@
 // [Spirit Sword]
 ([name] == crystalsword || [name] == broadsword) && [quality] == normal && [level] >= 26 # [sockets] == 0 @ (([name] == flail && [flag] == runeword) || ([name] == swirlingcrystal && [quality] == unique) || ([type] == sword && ([quality] == normal || [quality] == superior))) # (([sockets] == 0 && [sorceressskills] == 0) || [sockets] == 4 || [sorceressskills] == 3) # [qty] < 1	//261023 keep qty -> hold, orbs this build wears
 ([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 @ (([name] == flail && [flag] == runeword) || ([name] == swirlingcrystal && [quality] == unique) || ([type] == sword && ([quality] == normal || [quality] == superior))) # ([sockets] == 4 || [sorceressskills] == 3) # [qty] < 1	//261023 keep qty -> hold, orbs this build wears
+
+// [HeartoftheOak]
 [name] == flail && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 1 && [tiered] == 0	//261023 HotO base, like B.WCRY
 
 

@@ -68,7 +68,6 @@
 //============================================================================================================================================================================================
 
 
-
 //============================================================================================================================================================================================
 // [Amulet] 90/120mana 40resi 20A-resi // 60/100life 20/30ener
 //============================================================================================================================================================================================
@@ -226,6 +225,8 @@
 // [Spirit Sword]
 ([name] == crystalsword || [name] == broadsword) && [quality] == normal && [level] >= 26 # [sockets] == 0 @ (([name] == flail && [flag] == runeword) || ([type] == sword && ([quality] == normal || [quality] == superior))) # ([sockets] == 0 || [sockets] == 4) # [qty] < 1	//261023 keep qty -> hold
 ([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 @ (([name] == flail && [flag] == runeword) || ([type] == sword && ([quality] == normal || [quality] == superior))) # [sockets] == 4 # [qty] < 1	//261023 keep qty -> hold
+
+// [HeartoftheOak]
 [name] == flail && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 1 && [tiered] == 0	//261023 HotO base, like B.WCRY
 
 

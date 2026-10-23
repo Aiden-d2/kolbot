@@ -200,6 +200,7 @@
 ([name] == crystalsword || [name] == broadsword || [name] == claymore || [name] == giantsword) && [quality] == normal && [level] >= 26 # [sockets] == 0 @ (([name] == flail && [flag] == runeword) || ([type] == sword && ([quality] == normal || [quality] == superior))) # ([sockets] == 0 || [sockets] == 4) # [qty] < 2	//261023 hold counts HotO + 0/4os bases incl Spirit, total < 2
 ([name] == crystalsword || [name] == broadsword || [name] == claymore || [name] == giantsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 @ (([name] == flail && [flag] == runeword) || ([type] == sword && ([quality] == normal || [quality] == superior))) # [sockets] == 4 # [qty] < 2	//261023 hold counts HotO + 4os bases incl Spirit, no burntwand
 
+// [HeartoftheOak]
 [name] == flail && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 2 && [tiered] == 0
 
 

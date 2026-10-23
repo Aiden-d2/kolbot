@@ -178,6 +178,7 @@
 
 //[name] == cedarbow && [quality] == unique && [flag] != ethereal # # [tier] == 51
 //[name] == razorbow && [quality] == unique && [flag] != ethereal # # [tier] == 52
+[name] == ceremonialbow && [quality] == unique && [flag] != ethereal # # [tier] == 53
 
 [name] == arrows # # [qty] == 2
 
