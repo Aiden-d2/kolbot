@@ -642,7 +642,7 @@ Cubing.doCubing()      실제 큐브 작업. Town.doChores(shopItems) 경로
 Cubing.update() / getCube() / emptyCube() / openCube() / closeCube()
 전역: Roll, Recipe, RecipeName
 
-Runewords.init()       Config.Runewords 를 파싱해 리스트 구축
+Runewords.init()       Config.RunewordRecipe 를 파싱해 리스트 구축
 Runewords.checkItem(unit) / keepItem(unit)   Pickit / Town 이 호출
 Runewords.makeRunewords()                    Town.doChores 경로
 Runewords.getBase / socketItem / update / checkRunewords / getScroll / rerollRunewords
@@ -1102,8 +1102,9 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | `AutoBuild{Enabled Verbose DebugMode}` | `Config.init`, `AutoBuild`, `AutoBuildThread` |
 | `SkipLogging` `Debug` `ItemInfo` `ItemInfoQuality` `Log*` | `Misc.logItem` / `itemLogger`, `Cubing`(`LogCubingInfo`) |
 | `LogExperience` | `ToolsThread` → `Experience.log` |
-| `Cubing` `Recipes` | `Cubing.init` / `buildRecipes` |
-| `MakeRunewords` `Runewords` | `Runewords.init` / `makeRunewords` |
+| `Socketing` `SocketRecipe` | `Pickit.socketTargets` → `Pickit.checkItem`(보석 줍기), `Town.socketGems` |
+| `Cubing` `CubeRecipe` | `Cubing.init` / `buildRecipes` |
+| `Runewording` `RunewordRecipe` | `Runewords.init` / `makeRunewords` |
 | `PrimarySlot` `AttackSkill` `LowManaSkill` `CustomAttack` | `Attack`, `ClassAttack`, `Misc`(Skill) |
 | `SkipEnchant` `SkipImmune` `SkipAura` `SkipException` | `Attack.skipCheck` |
 | `Vigor` `Conviction` `Meditation` `Cleansing` | `Pather.walkTo`(팔라딘 오라), `AutoSmurf` |

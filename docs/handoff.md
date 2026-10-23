@@ -113,16 +113,18 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ### 3-15. 소켓 보석 (`Pickit.checkItem`·`socketTargets`·`pickItem`, `Town.socketGems`·`doChores`, `Misc.itemLogger`·`logItem`)
 - **바꾼 것**(사용자 결정, 커밋 `02662d5`·`8730a5b`·`132bc5e`·`e9279d9`, 최종 상태)
-  - 대상(`Pickit.socketTargets`): 내 장착 칸 1(머리: 투구·바바·드루 전용·서클릿)·3(몸)·4·5(양손 칸은 종류로: 방패류 2·69·70이면 방패, 그 밖은 무기 — 활·지팡이·양손 무기·바바 두 번째 무기가 칸 5에 있어서) 중 티어가 있고(`NTIP.GetScore > 0`) 빈 소켓이 있으며 룬워드 베이스 재료가 아닌 것(`Config.Runewords`에서 classid 같고 `getBase` 참). 용병 제외. 부위별 보석 `Config.SocketGems = {Head: [99], Body: [99], Shield: [97], Weapon: [99, 101, 100, 98]}`(itemType 96~102 = 전 등급, classid 557~601 = 그 등급만, 빌드에서 덮어씀). 보석 관문은 96~102 전체. 무기 레벨 18 제한 제거.
+  - 대상(`Pickit.socketTargets`): 내 장착 칸 1(머리: 투구·바바·드루 전용·서클릿)·3(몸)·4·5(양손 칸은 종류로: 방패류 2·69·70이면 방패, 그 밖은 무기 — 활·지팡이·양손 무기·바바 두 번째 무기가 칸 5에 있어서) 중 티어가 있고(`NTIP.GetScore > 0`) 빈 소켓이 있으며 룬워드 베이스 재료가 아닌 것(`Config.RunewordRecipe`에서 classid 같고 `getBase` 참). 용병 제외. 부위별 보석 `Config.SocketRecipe`(261023 값은 아래)(itemType 96~102 = 전 등급, classid 557~601 = 그 등급만, 빌드에서 덮어씀). 보석 관문은 96~102 전체. 무기 레벨 18 제한 제거.
   - 줍기(`checkItem` 결과 5, Cubing 판정 앞): 바닥·인벤토리 보석만, 보석 레벨 제한 ≤ 캐릭 레벨. 인벤토리 보석(자기 제외, gid 순)을 대상 순서대로 미리 배정하고, 빈칸이 남은 대상이 이 보석을 받으면 5. nip 무관, 스태시로 가지 않음. 필요 없어지면 기존 판정. 줍기 직후 overhead `(Ingredient)`, ItemLog `Ingredient {가진 개수}`.
-  - 장착(`Town.socketGems`, `doChores`의 `stash()` 뒤): 보관함을 열지 않고 `sendPacket(1, 0x28, 4, 보석 gid, 4, 장비 gid)`. 성공 시 ItemLog `Gemmed {nip 라인}`(넣은 뒤 `NTIP.Evaluate`), 매니저 아이템 로그 `Misc.logItem("Gemmed", 장비, 라인)`(지역 포함), 매니저 콘솔 `# [Gem] 보석 베이스 (찬/전체)` 색 5(베이스는 `getLocaleString(getBaseStat(0, classid, "namestr"))`), print `equipped: [칸] 티어`(`Equip.updateTier`). 실패 시 커서 보석은 인벤토리로, 안 되면 `Packet.dropItem` 뒤 `Pickit.pickItems()`, trace `socketGems failed: <보석> -> [칸] <장비>`(`(dropped)`, `(cursor)`).
+  - 장착(`Town.socketGems`, `doChores`의 `stash()` 뒤): 보관함을 열지 않고 `sendPacket(1, 0x28, 4, 보석 gid, 4, 장비 gid)`. 성공 시 ItemLog `Socketing {nip 라인}`(넣은 뒤 `NTIP.Evaluate`), 매니저 아이템 로그 `Misc.logItem("Socketing", 장비, 라인)`(지역 포함), 매니저 콘솔 `# [Gem] 보석 베이스 (찬/전체)` 색 5(베이스는 `getLocaleString(getBaseStat(0, classid, "namestr"))`), print `equipped: [칸] 티어`(`Equip.updateTier`). 실패 시 커서 보석은 인벤토리로, 안 되면 `Packet.dropItem` 뒤 `Pickit.pickItems()`, trace `socketGems failed: <보석> -> [칸] <장비>`(`(dropped)`, `(cursor)`).
+  - 261023 사용자: 이름 통일(Config `ing` 스위치 + `*Recipe`). `Gemmed` → `Socketing`(ItemLog·매니저 아이템 로그, `Misc.itemLogger` case·`logItem` match) — 노멀 아이템은 이름에 이미 `Gemmed`가 붙어 콘솔에 `Gemmed Gemmed …`로 두 번 찍혔다. 스위치 `Config.Socketing: true` 신설(`Pickit.socketTargets`가 꺼져 있으면 빈 목록 → 장착·보석 줍기 모두 안 함, 보석은 nip 판정). `Config.SocketGems` → `Config.SocketRecipe`, 자리는 `//Cubing` 바로 위, 기본값 `{Head: [100, 99], Body: [100, 99], Shield: [97], Weapon: [101, 98, 99, 100]}`(머리·몸 사파이어 추가, 무기 순서 변경). 함께 `Config.Recipes` → `CubeRecipe`, `Config.Runewords` → `RunewordRecipe`, `Config.MakeRunewords` → `Runewording`(빌드 14개 push 포함).
   - 경위(261021 사용자 로그): 장착 칸 클릭 `clickItem(0, 칸)`은 창을 닫아도·보관함을 열어도 `(cursor)` 실패 → 창 가설 틀림. 패킷 0x28은 보관함을 연 채(5건)·열지 않고도(a6 Wolf Head 2건) 성공. D2MOO 0x28 처리의 상호작용 조건(`PlrMsg.cpp:2543-2556`, 1.10f 재구성)은 1.14d와 다르거나 재구성 차이(추정). 참고: kolbot-SoloPlay도 0x28을 씀.
 - **검증 방법**
   - ItemLog `Ingredient`로 빈 소켓 수만큼만 줍는가.
-  - `Gemmed`가 남고 옵션에 보석 효과가 바로 보이며 티어가 오르는가(노멀은 고정일 수 있음).
+  - `Socketing`(261023 전 로그는 `Gemmed`)이 남고 매니저 콘솔에 `Gemmed`가 한 번만 찍히며, 옵션에 보석 효과가 바로 보이며 티어가 오르는가(노멀은 고정일 수 있음).
   - 콘솔 `# [Gem]`의 베이스 이름이 접두·접미 없이 나오는가, 매니저 아이템 로그에 그림·옵션·라인·지역이 다른 로그처럼 나오는가.
   - `socketGems failed` 빈도와 이유, `(dropped)` 뒤 다시 주웠는가. `(cursor)`(Claude 추가 261021): 다음 로그 묶음도 0x28 실패 0건이면 삭제(사용자 결정 261022).
   - 룬워드 베이스·티어 없는 장비에는 넣지 않는가.
+  - 261023 이름 바꾼 뒤: 큐빙(`CubeRecipe`)·룬워드(`RunewordRecipe`, 빌드 push 포함)가 이전처럼 돈다(Transmuted·Runeworded 줄). `Socketing: false`면 `Socketing`·`# [Gem]`·보석 `Ingredient`가 없다.
 - **결과**: 261022 통과(0x28 `Socketed` 23건, 실패 0). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로. a1 머리 칸 사파이어(23:58)가 코드 버전 차이인지는 사용자 확인 전.
 - 나중(사용자 결정, 이 항목 밖): 빌드별 보석 종류 Config 값, 무기 룬 확장, 용병.
 
