@@ -255,7 +255,6 @@ var Config = {
 	
 	//Auto
 	AutoEquip: true,
-	SocketGems: {Head: [99], Body: [99], Shield: [97], Weapon: [99, 101, 100, 98]},	//261021 gems for empty sockets of equipped tiered items: itemType (96-102) = any grade, classid (557-601) = that grade only. builds can override (e.g. Config.SocketGems.Head = [100])
 	AutoBuild: {
 		Enabled: true,
 		Verbose: false,
@@ -283,10 +282,20 @@ var Config = {
 	LogLowGems: false,
 	LogHighGems: false,
 	
+	//Socketing
+	Socketing: true,	//261023 new switch: Town.socketGems and socket gem pickup (Pickit.socketTargets)
+	
+	SocketRecipe: {	//261023 SocketGems -> SocketRecipe, sapphire in Head/Body, Weapon order. gems for empty sockets of equipped tiered items: itemType (96-102) = any grade, classid (557-601) = that grade only. builds can override (e.g. Config.SocketRecipe.Head = [100])
+		Head: [100, 99],	//261023
+		Body: [100, 99],	//261023
+		Shield: [97],	//261023
+		Weapon: [101, 98, 99, 100]	//261023
+	},
+	
 	//Cubing
 	Cubing: false,
 	
-	Recipes: [
+	CubeRecipe: [	//261023 Recipes -> CubeRecipe
 		[Recipe.Token],
 		
 		//[Recipe.Moser2],
@@ -346,9 +355,9 @@ var Config = {
 	],
 	
 	//Runewording
-	MakeRunewords: true,
+	Runewording: true,	//261023 MakeRunewords -> Runewording
 	
-	Runewords: [
+	RunewordRecipe: [	//261023 Runewords -> RunewordRecipe
 		// Zephyr
 		[Runeword.Zephyr, "cedarbow"],
 		[Runeword.Zephyr, "razorbow"],

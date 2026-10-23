@@ -53,7 +53,7 @@ var Pickit = {
 		}
 
 		//261021 socket gem (ground or inventory only): held gems fill the targets in socketGems order, pick if a target still has an empty socket for it
-		if (unit.itemType >= 96 && unit.itemType <= 102 && (unit.mode === 3 || unit.mode === 5 || (unit.mode === 0 && unit.location === 3)) && getBaseStat("items", unit.classid, "levelreq") <= me.charlvl) {	//261021 all gem types (Config.SocketGems picks)
+		if (unit.itemType >= 96 && unit.itemType <= 102 && (unit.mode === 3 || unit.mode === 5 || (unit.mode === 0 && unit.location === 3)) && getBaseStat("items", unit.classid, "levelreq") <= me.charlvl) {	//261021 all gem types (Config.SocketRecipe picks)	//261023 SocketGems -> SocketRecipe in the memo
 			var t, g, k,
 				targets = this.socketTargets(),
 				held = (me.findItems(-1, 0, 3) || []).filter(function (gem) {
@@ -246,6 +246,10 @@ var Pickit = {
 			list = [],
 			slots = [1, 3, 4, 5];	// head, body, right arm, left arm
 
+		if (!Config.Socketing) {	//261023 switch off: no socketing in town and no socket gem pickup (gems go to nip)
+			return list;
+		}
+
 		for (i = 0; i < slots.length; i += 1) {
 			item = me.getItem(-1, 1);
 
@@ -262,13 +266,13 @@ var Pickit = {
 			}
 
 			if (slots[i] === 1) {	// helm (incl. primal helm, pelt, circlet)
-				gems = Config.SocketGems.Head;	//261021 from Config
+				gems = Config.SocketRecipe.Head;	//261021 from Config	//261023
 			} else if (slots[i] === 3) {	// armor
-				gems = Config.SocketGems.Body;	//261021
+				gems = Config.SocketRecipe.Body;	//261021	//261023
 			} else if ([2, 69, 70].indexOf(item.itemType) > -1) {	// shield, voodoo head, auric shield (either arm)
-				gems = Config.SocketGems.Shield;	//261021
+				gems = Config.SocketRecipe.Shield;	//261021	//261023
 			} else {	// weapon in either arm (bows, staves, 2h weapons are in the left arm)	//261021 level 18 limit removed (runes later)
-				gems = Config.SocketGems.Weapon;	//261021
+				gems = Config.SocketRecipe.Weapon;	//261021	//261023
 			}
 
 			if (!gems || !gems.length) {	//261021 no gems set for this part
@@ -283,8 +287,8 @@ var Pickit = {
 
 			base = false;
 
-			for (j = 0; j < Config.Runewords.length; j += 1) {
-				if (Config.Runewords[j][1] === item.classid && Runewords.getBase(Config.Runewords[j][0], item, (Config.Runewords[j][2] || 0))) {
+			for (j = 0; j < Config.RunewordRecipe.length; j += 1) {	//261023 Runewords -> RunewordRecipe
+				if (Config.RunewordRecipe[j][1] === item.classid && Runewords.getBase(Config.RunewordRecipe[j][0], item, (Config.RunewordRecipe[j][2] || 0))) {	//261023
 					base = true;
 
 					break;

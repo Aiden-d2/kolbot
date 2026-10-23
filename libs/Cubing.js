@@ -123,13 +123,13 @@ var Cubing = {
 
 		var i;
 
-		for (i = 0; i < Config.Recipes.length; i += 1) {
-			if (Config.Recipes[i].length > 1 && isNaN(Config.Recipes[i][1])) {
-				if (NTIPAliasClassID.hasOwnProperty(Config.Recipes[i][1].replace(/\s+/g, "").toLowerCase())) {
-					Config.Recipes[i][1] = NTIPAliasClassID[Config.Recipes[i][1].replace(/\s+/g, "").toLowerCase()];
+		for (i = 0; i < Config.CubeRecipe.length; i += 1) {	//261023 Recipes -> CubeRecipe
+			if (Config.CubeRecipe[i].length > 1 && isNaN(Config.CubeRecipe[i][1])) {	//261023
+				if (NTIPAliasClassID.hasOwnProperty(Config.CubeRecipe[i][1].replace(/\s+/g, "").toLowerCase())) {	//261023
+					Config.CubeRecipe[i][1] = NTIPAliasClassID[Config.CubeRecipe[i][1].replace(/\s+/g, "").toLowerCase()];	//261023
 				} else {
-					Misc.errorReport("ÿc1Invalid cubing entry:ÿc0 " + Config.Recipes[i][1]);
-					Config.Recipes.splice(i, 1);
+					Misc.errorReport("ÿc1Invalid cubing entry:ÿc0 " + Config.CubeRecipe[i][1]);	//261023
+					Config.CubeRecipe.splice(i, 1);	//261023
 
 					i -= 1;
 				}
@@ -207,14 +207,14 @@ var Cubing = {
 
 		this.recipes = [];
 
-		for (i = 0; i < Config.Recipes.length; i += 1) {
-			if (typeof Config.Recipes[i] !== "object" || (Config.Recipes[i].length > 2 && typeof Config.Recipes[i][2] !== "number") || Config.Recipes[i].length < 1) {
+		for (i = 0; i < Config.CubeRecipe.length; i += 1) {	//261023
+			if (typeof Config.CubeRecipe[i] !== "object" || (Config.CubeRecipe[i].length > 2 && typeof Config.CubeRecipe[i][2] !== "number") || Config.CubeRecipe[i].length < 1) {	//261023
 				throw new Error("Cubing.buildRecipes: Invalid recipe format.");
 			}
 
-			switch (Config.Recipes[i][0]) {
+			switch (Config.CubeRecipe[i][0]) {	//261023
 			case Recipe.Gem:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], Config.Recipes[i][1], Config.Recipes[i][1]], Index: Recipe.Gem, AlwaysEnabled: true});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], Config.CubeRecipe[i][1], Config.CubeRecipe[i][1]], Index: Recipe.Gem, AlwaysEnabled: true});	//261023
 
 				break;
 			case Recipe.Moser2:
@@ -222,27 +222,27 @@ var Cubing = {
 
 				break;
 			case Recipe.HitPower.Helm:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 615, 643, 571], Level: 84, Index: Recipe.HitPower.Helm});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 615, 643, 571], Level: 84, Index: Recipe.HitPower.Helm});	//261023
 
 				break;
 			case Recipe.HitPower.Boots:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 617, 643, 571], Level: 71, Index: Recipe.HitPower.Boots});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 643, 571], Level: 71, Index: Recipe.HitPower.Boots});	//261023
 
 				break;
 			case Recipe.HitPower.Gloves:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 618, 643, 571], Level: 79, Index: Recipe.HitPower.Gloves});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 618, 643, 571], Level: 79, Index: Recipe.HitPower.Gloves});	//261023
 
 				break;
 			case Recipe.HitPower.Belt:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 616, 643, 571], Level: 71, Index: Recipe.HitPower.Belt});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 643, 571], Level: 71, Index: Recipe.HitPower.Belt});	//261023
 
 				break;
 			case Recipe.HitPower.Shield:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 614, 643, 571], Level: 82, Index: Recipe.HitPower.Shield});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 614, 643, 571], Level: 82, Index: Recipe.HitPower.Shield});	//261023
 
 				break;
 			case Recipe.HitPower.Body:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 613, 643, 571], Level: 85, Index: Recipe.HitPower.Body});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 613, 643, 571], Level: 85, Index: Recipe.HitPower.Body});	//261023
 
 				break;
 			case Recipe.HitPower.Amulet:
@@ -254,31 +254,31 @@ var Cubing = {
 
 				break;
 			case Recipe.HitPower.Weapon:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 612, 643, 571], Level: 85, Index: Recipe.HitPower.Weapon});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 612, 643, 571], Level: 85, Index: Recipe.HitPower.Weapon});	//261023
 
 				break;
 			case Recipe.Blood.Helm:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 617, 643, 581], Level: 84, Index: Recipe.Blood.Helm});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 643, 581], Level: 84, Index: Recipe.Blood.Helm});	//261023
 
 				break;
 			case Recipe.Blood.Boots:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 614, 643, 581], Level: 71, Index: Recipe.Blood.Boots});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 614, 643, 581], Level: 71, Index: Recipe.Blood.Boots});	//261023
 
 				break;
 			case Recipe.Blood.Gloves:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 613, 643, 581], Level: 79, Index: Recipe.Blood.Gloves});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 613, 643, 581], Level: 79, Index: Recipe.Blood.Gloves});	//261023
 
 				break;
 			case Recipe.Blood.Belt:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 616, 643, 581], Level: 71, Index: Recipe.Blood.Belt});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 643, 581], Level: 71, Index: Recipe.Blood.Belt});	//261023
 
 				break;
 			case Recipe.Blood.Shield:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 615, 643, 581], Level: 82, Index: Recipe.Blood.Shield});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 615, 643, 581], Level: 82, Index: Recipe.Blood.Shield});	//261023
 
 				break;
 			case Recipe.Blood.Body:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 619, 643, 581], Level: 85, Index: Recipe.Blood.Body});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 619, 643, 581], Level: 85, Index: Recipe.Blood.Body});	//261023
 
 				break;
 			case Recipe.Blood.Amulet:
@@ -290,31 +290,31 @@ var Cubing = {
 
 				break;
 			case Recipe.Blood.Weapon:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 618, 643, 581], Level: 85, Index: Recipe.Blood.Weapon});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 618, 643, 581], Level: 85, Index: Recipe.Blood.Weapon});	//261023
 
 				break;
 			case Recipe.Caster.Helm:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 613, 643, 561], Level: 84, Index: Recipe.Caster.Helm});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 613, 643, 561], Level: 84, Index: Recipe.Caster.Helm});	//261023
 
 				break;
 			case Recipe.Caster.Boots:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 619, 643, 561], Level: 71, Index: Recipe.Caster.Boots});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 619, 643, 561], Level: 71, Index: Recipe.Caster.Boots});	//261023
 
 				break;
 			case Recipe.Caster.Gloves:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 618, 643, 561], Level: 79, Index: Recipe.Caster.Gloves});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 618, 643, 561], Level: 79, Index: Recipe.Caster.Gloves});	//261023
 
 				break;
 			case Recipe.Caster.Belt:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 615, 643, 561], Level: 71, Index: Recipe.Caster.Belt});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 615, 643, 561], Level: 71, Index: Recipe.Caster.Belt});	//261023
 
 				break;
 			case Recipe.Caster.Shield:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 614, 643, 561], Level: 82, Index: Recipe.Caster.Shield});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 614, 643, 561], Level: 82, Index: Recipe.Caster.Shield});	//261023
 
 				break;
 			case Recipe.Caster.Body:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 616, 643, 561], Level: 85, Index: Recipe.Caster.Body});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 643, 561], Level: 85, Index: Recipe.Caster.Body});	//261023
 
 				break;
 			case Recipe.Caster.Amulet:
@@ -326,31 +326,31 @@ var Cubing = {
 
 				break;
 			case Recipe.Caster.Weapon:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 612, 643, 561], Level: 85, Index: Recipe.Caster.Weapon});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 612, 643, 561], Level: 85, Index: Recipe.Caster.Weapon});	//261023
 
 				break;
 			case Recipe.Safety.Helm:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 615, 643, 576], Level: 84, Index: Recipe.Safety.Helm});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 615, 643, 576], Level: 84, Index: Recipe.Safety.Helm});	//261023
 
 				break;
 			case Recipe.Safety.Boots:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 618, 643, 576], Level: 71, Index: Recipe.Safety.Boots});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 618, 643, 576], Level: 71, Index: Recipe.Safety.Boots});	//261023
 
 				break;
 			case Recipe.Safety.Gloves:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 617, 643, 576], Level: 79, Index: Recipe.Safety.Gloves});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 643, 576], Level: 79, Index: Recipe.Safety.Gloves});	//261023
 
 				break;
 			case Recipe.Safety.Belt:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 616, 643, 576], Level: 71, Index: Recipe.Safety.Belt});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 643, 576], Level: 71, Index: Recipe.Safety.Belt});	//261023
 
 				break;
 			case Recipe.Safety.Shield:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 613, 643, 576], Level: 82, Index: Recipe.Safety.Shield});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 613, 643, 576], Level: 82, Index: Recipe.Safety.Shield});	//261023
 
 				break;
 			case Recipe.Safety.Body:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 614, 643, 576], Level: 85, Index: Recipe.Safety.Body});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 614, 643, 576], Level: 85, Index: Recipe.Safety.Body});	//261023
 
 				break;
 			case Recipe.Safety.Amulet:
@@ -362,83 +362,83 @@ var Cubing = {
 
 				break;
 			case Recipe.Safety.Weapon:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 621, 643, 576], Level: 85, Index: Recipe.Safety.Weapon});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 621, 643, 576], Level: 85, Index: Recipe.Safety.Weapon});	//261023
 
 				break;
 			case Recipe.Unique.Weapon.ToExceptional:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 617, 621, 576], Index: Recipe.Unique.Weapon.ToExceptional, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 621, 576], Index: Recipe.Unique.Weapon.ToExceptional, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Unique.Weapon.ToElite: // Ladder only
 				if (me.ladder) {
-					this.recipes.push({Ingredients: [Config.Recipes[i][1], 626, 630, 576], Index: Recipe.Unique.Weapon.ToElite, Ethereal: Config.Recipes[i][2]});
+					this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 626, 630, 576], Index: Recipe.Unique.Weapon.ToElite, Ethereal: Config.CubeRecipe[i][2]});	//261023
 				}
 
 				break;
 			case Recipe.Unique.Armor.ToExceptional:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 616, 622, 586], Index: Recipe.Unique.Armor.ToExceptional, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 622, 586], Index: Recipe.Unique.Armor.ToExceptional, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Unique.Armor.ToElite: // Ladder only
 				if (me.ladder) {
-					this.recipes.push({Ingredients: [Config.Recipes[i][1], 629, 627, 586], Index: Recipe.Unique.Armor.ToElite, Ethereal: Config.Recipes[i][2]});
+					this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 629, 627, 586], Index: Recipe.Unique.Armor.ToElite, Ethereal: Config.CubeRecipe[i][2]});	//261023
 				}
 
 				break;
 			case Recipe.Rare.Weapon.ToExceptional:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 618, 620, 571], Index: Recipe.Rare.Weapon.ToExceptional, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 618, 620, 571], Index: Recipe.Rare.Weapon.ToExceptional, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Rare.Weapon.ToElite:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 628, 631, 571], Index: Recipe.Rare.Weapon.ToElite, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 628, 631, 571], Index: Recipe.Rare.Weapon.ToElite, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Rare.Armor.ToExceptional:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 617, 619, 561], Index: Recipe.Rare.Armor.ToExceptional, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 619, 561], Index: Recipe.Rare.Armor.ToExceptional, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Rare.Armor.ToElite:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 627, 630, 561], Index: Recipe.Rare.Armor.ToElite, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 627, 630, 561], Index: Recipe.Rare.Armor.ToElite, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Socket.Shield:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 616, 620, 581], Index: Recipe.Socket.Shield, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 620, 581], Index: Recipe.Socket.Shield, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Socket.Weapon:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 617, 620, 561], Index: Recipe.Socket.Weapon, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 620, 561], Index: Recipe.Socket.Weapon, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Socket.Armor:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 616, 619, 566], Index: Recipe.Socket.Armor, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 619, 566], Index: Recipe.Socket.Armor, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Socket.Helm:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 617, 619, 571], Index: Recipe.Socket.Helm, Ethereal: Config.Recipes[i][2]});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 619, 571], Index: Recipe.Socket.Helm, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Reroll.Magic: // Hacky solution ftw
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], "pgem", "pgem", "pgem"], Level: 91, Index: Recipe.Reroll.Magic});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], "pgem", "pgem", "pgem"], Level: 91, Index: Recipe.Reroll.Magic});	//261023
 
 				break;
 			case Recipe.Reroll.Rare:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 601, 601, 601, 601, 601, 601], Index: Recipe.Reroll.Rare});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 601, 601, 601, 601, 601, 601], Index: Recipe.Reroll.Rare});	//261023
 
 				break;
 			case Recipe.Reroll.HighRare:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 601, 522], Index: Recipe.Reroll.HighRare, Enabled: false});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 601, 522], Index: Recipe.Reroll.HighRare, Enabled: false});	//261023
 
 				break;
 			case Recipe.LowToNorm.Weapon:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 611, "cgem"], Index: Recipe.LowToNorm.Weapon});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 611, "cgem"], Index: Recipe.LowToNorm.Weapon});	//261023
 
 				break;
 			case Recipe.LowToNorm.Armor:
-				this.recipes.push({Ingredients: [Config.Recipes[i][1], 610, "cgem"], Index: Recipe.LowToNorm.Armor});
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 610, "cgem"], Index: Recipe.LowToNorm.Armor});	//261023
 
 				break;
 			case Recipe.Rune:
-				switch (Config.Recipes[i][1]) {
+				switch (Config.CubeRecipe[i][1]) {	//261023
 				case 610: // el
 				case 611: // eld
 				case 612: // tir
@@ -448,7 +448,7 @@ var Cubing = {
 				case 616: // tal
 				case 617: // ral
 				case 618: // ort
-					this.recipes.push({Ingredients: [Config.Recipes[i][1], Config.Recipes[i][1], Config.Recipes[i][1]], Index: Recipe.Rune, AlwaysEnabled: true});
+					this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], Config.CubeRecipe[i][1], Config.CubeRecipe[i][1]], Index: Recipe.Rune, AlwaysEnabled: true});	//261023
 
 					break;
 				case 619: // thul->amn
