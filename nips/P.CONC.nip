@@ -69,12 +69,6 @@
 // [Shield] 20mana 30resi 20/30A-resi // 40/60life
 //============================================================================================================================================================================================
 
-[name] == gothicshield && [quality] == unique && [flag] != ethereal # # [tier] == 21
-[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 110 # [tier] == 22
-[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [tier] == 23
-[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 130 # [tier] == 24
-[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [tier] == 25
-[name] == gothicshield && [quality] == unique && [flag] != ethereal # ([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 150 # [tier] == 26
 
 
 //============================================================================================================================================================================================
@@ -216,22 +210,22 @@
 //============================================================================================================================================================================================
 
 // [Smoke]
-([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 # [qty] == 1 @ [type] == armor && [flag] == runeword # ([fireresist] == 50 || [paladinskills] == 2) # [qty] == 0
+([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 @ [type] == armor && ([quality] == normal || [quality] == superior) # (([sockets] == 2 && [frw] == 0) || [paladinskills] == 2) # [qty] < 1	//261023 keep qty -> hold, Stealth excluded by frw
 
 // [Principle]
-([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 # [qty] == 1 @ [type] == armor && [flag] == runeword # [paladinskills] == 2 # [qty] == 0
+([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ [type] == armor && ([quality] == normal || [quality] == superior) # [sockets] == 3 # [qty] < 1	//261023 keep qty -> hold
 
 // [AncientsPledge]
-([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 # [qty] == 1 @ (([type] == auricshields && ([quality] == normal || [quality] == superior || [flag] == runeword)) || ([name] == gothicshield && [quality] == unique)) # (([fireresist] >= 10 && [itemdamagetomana] == 0 && [sockets] == 3) || [fhr] == 55 || [fireresist] >= 45) # [qty] == 0
-([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 && [fireresist] >= 10 # [qty] == 1 @ (([type] == auricshields && [flag] == runeword)) # ([fhr] >= 55 || ([fireresist] >= 58 && [itemdamagetomana] == 10)) # [qty] == 0
+([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ [type] == auricshields && ([quality] == normal || [quality] == superior) # ([sockets] == 3 || [fhr] == 55) # [qty] < 1	//261023 keep qty -> hold, gothic unique removed
+([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 && [fireresist] >= 10 @ [type] == auricshields && ([quality] == normal || [quality] == superior) # (([sockets] == 3 && [fireresist] >= 10 && [itemdamagetomana] == 0) || ([fireresist] >= 58 && [itemdamagetomana] == 10) || [fhr] >= 55) # [qty] < 1	//261023 keep qty -> hold
 
 // [Spirit Shield]
-([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 1 @ [type] == auricshields && ([quality] == normal || [quality] == superior || [flag] == runeword) # ([fhr] == 55 || ([fireresist] >= 10 && [sockets] == 4)) # [qty] == 0
-([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 && [fireresist] >= 10 # [qty] == 1 @ [type] == auricshields && [flag] == runeword # [fhr] == 55 && [fireresist] >= 10 # [qty] == 0
+([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 @ [type] == auricshields && ([quality] == normal || [quality] == superior) # [sockets] == 4 # [qty] < 1	//261023 keep qty -> hold
+([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 && [fireresist] >= 10 @ [type] == auricshields && ([quality] == normal || [quality] == superior) # [sockets] == 4 && [fireresist] >= 10 # [qty] < 1	//261023 keep qty -> hold
 
 // [Spirit Sword]
-([name] == crystalsword || [name] == broadsword) && [quality] == normal && [level] >= 26 # [sockets] == 0 # [qty] == 1 @ (([name] == boneknife && [quality] == unique) || ([type] == sword && ([quality] == normal || [quality] == superior || [flag] == runeword))) # ([fcr] == 50 || [fhr] >= 55 || [sockets] == 4) # [qty] == 0
-([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 # [qty] == 1 @ (([name] == boneknife && [quality] == unique) || ([type] == sword && [flag] == runeword)) # ([fcr] == 50 || [fhr] >= 55) # [qty] == 0
+([name] == crystalsword || [name] == broadsword) && [quality] == normal && [level] >= 26 # [sockets] == 0 @ (([name] == boneknife && [quality] == unique) || ([type] == sword && ([quality] == normal || [quality] == superior))) # ([sockets] == 0 || [sockets] == 4 || [fcr] == 50) # [qty] < 1	//261023 keep qty -> hold, boneknife fcr 50
+([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 @ (([name] == boneknife && [quality] == unique) || ([type] == sword && ([quality] == normal || [quality] == superior))) # ([sockets] == 4 || [fcr] == 50) # [qty] < 1	//261023 keep qty -> hold, boneknife fcr 50
 
 
 //============================================================================================================================================================================================

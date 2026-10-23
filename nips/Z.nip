@@ -11,7 +11,7 @@
 [name] == battleboots && [quality] == set # # [qty] == 1 && [tiered] == 0
 [name] == heavygloves && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered] == 0
 
-[name] == breastplate && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 # [qty] == 1 && [tiered] == 0
+//[name] == breastplate && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 # [qty] == 1 && [tiered] == 0	//261023 Enigma off: no base
 
 [name] == crystalsword && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 5 # [qty] == 1 && [tiered] == 0
 
