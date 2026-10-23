@@ -49,6 +49,14 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **구현안**: 더 완전한 listfile(커뮤니티 listfile 등)로 다시 추출해 excel 전체(`.bin`·`.txt`)를 확보한다. 그 전까지 LvlWarp는 외부 `d2data`로 대신한다.
 - **검증 방법**: 이름 없는 항목 0개, `LvlWarp.bin`이 있고 `d2data` 값과 같은가.
 
+### 2-14. SafeTele 로직 재점검·수정 (`Pather.moveTo` 안 `safeCheckNode`, 사용자 261023)
+- **확인된 것**
+  - 사용자 관찰: 몹 밀집 지역에서 후퇴와 제자리를 반복한다.
+  - 코드: 방문한 자리 목록은 `excludedNodes`다. `moveTo`가 SafeTele로 고른 자리를 최근 5개까지 쌓고, `safeCheckNode`는 그 5칸 안의 후보를 뺀다(맴돌기 방지, `docs/code/Pather.md` 261003).
+- **가설**: 없음(검토 전).
+- **구현안**(미정): ① 방문한 자리 제외(`excludedNodes`)가 의도대로 작동하는지 점검 ② 밀집 지역에서 후퇴·제자리를 반복하는 결함 수정. 관련: 2-8(제자리 텔레), 3-24(후보 검사 순서).
+- **검증 방법**: 검토에서 정한다.
+
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
 ### 3-1. okCount 이름 수집 (`AutoSmurf.okCount`·`teamCount`·`missing`)
