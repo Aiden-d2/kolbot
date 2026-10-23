@@ -57,6 +57,15 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **구현안**(미정): ① 방문한 자리 제외(`excludedNodes`)가 의도대로 작동하는지 점검 ② 밀집 지역에서 후퇴·제자리를 반복하는 결함 수정. 관련: 2-8(제자리 텔레), 3-24(후보 검사 순서).
 - **검증 방법**: 검토에서 정한다.
 
+### 2-15. 착용 중인 베이스로 룬워드·펀치 (`Runewords.getBase`·`makeRunewords`, `Cubing`, 사용자 261023)
+- **확인된 것**
+  - 홀드·킵 qty(`NTIP.CheckQuantityOwned`)는 착용 장비(mode 1)와 용병 장비를 센다. 룬워드는 베이스를 `me.getItem(base, 0)`(보관품)으로만 찾고(`getBase`), 큐빙도 `me.findItems(-1, 0)`만 본다(`Cubing.buildLists`). → 착용 중인 베이스는 베이스로 세어져 새 베이스를 막는데 재료로는 쓰이지 않는다(용병이 노말 엘리트 4·5소켓 폴암을 들면 더 나은 것이 룬워드뿐이라 막힐 수 있음, 바바리안 tier 11~20 노말 검).
+  - `doChores`는 제작(`Town.js:91~92`) 뒤 마을 정리(104)를 거쳐 다시 장착(`Equip`·`Grant.autoEquip`, 138~139)한다 → 같은 방문 안에서 다시 입는다. 빈 칸은 tier -1(`Equip.getEquippedItem`). `Config.Tiered`는 `Equip.updateTiers`(빌드 시작)에서만 계산 → `updateTier(칸)`으로 바뀌지 않는다.
+  - 용병 장비 벗기기는 `clickItem(4, 칸)`(`Grant.removeItems`), 자리가 없으면 `Packet.dropItem`.
+- **구현안**: 베이스 찾기에 착용·용병 장비를 넣고, 착용 중이면 벗겨 인벤토리에 넣은 뒤(자리 있을 때만) `updateTier(칸)` → 기존 제작 → 기존 장착. 펀치(`Cubing`)도 같은 방식. 다시 굴리기(`rerollRunewords`)는 보관품만(착용 중인 룬워드는 자기 tier를 넘지 못해 "맞지 않는 룬워드"로 판정될 수 있음). 수정 범위 `libs/Runewords.js`·`libs/Cubing.js`. 벗기는 단계를 함수로 뺄지는 구현 검토 때 승인.
+- **부작용 검토**(261023): 제작 중 실패 시 반쯤 찬 베이스는 손해 없음(재료 옵션 0, 잃는 것은 룬 — 보관품과 같음). 무기 교체 칸(11·12)은 봇이 쓰지 않음. 벗긴 동안 스탯 변화 없음(재료에 옵션 없음).
+- **검증 방법**: 검토에서 정한다.
+
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
 ### 3-1. okCount 이름 수집 (`AutoSmurf.okCount`·`teamCount`·`missing`)
