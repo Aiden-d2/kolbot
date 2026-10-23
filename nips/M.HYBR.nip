@@ -187,14 +187,16 @@
 //============================================================================================================================================================================================
 
 // [Smoke]
-([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 # [qty] == 1 @ [type] == armor && [flag] == runeword # ([fireresist] == 50 || [fhr] == 40) # [qty] == 0
+([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 @ [type] == armor && ([quality] == normal || [quality] == superior) # (([sockets] == 2 && [frw] == 0) || [fhr] == 40) # [qty] < 1	//261023 keep qty -> hold, Stealth excluded by frw
 
 // [Duress]
-([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 # [qty] == 1 @ [type] == armor && ([quality] == normal || [quality] == superior || [flag] == runeword) # ([sockets] == 3 || [fhr] == 40) # [qty] == 0
-[name] == mageplate && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 # [qty] == 1 @ [type] == armor && [flag] == runeword # [fhr] == 40 # [qty] == 0
+([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ [type] == armor && ([quality] == normal || [quality] == superior) # [sockets] == 3 # [qty] < 1	//261023 keep qty -> hold
+[name] == mageplate && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ (([name] == mageplate && ([quality] == normal || [quality] == superior)) || ([type] == armor && [flag] == runeword)) # [sockets] == 3 # [qty] < 1	//261023 keep qty -> hold, Duress on any base stops
 
-// [Zephyr]
-[name] == stagbow && ([quality] == normal || [quality] == superior) # [sockets] == 2 # [qty] == 1 @ [name] == stagbow && [flag] == runeword # # [qty] == 0
+// [Zephyr & Edge]
+([name] == stagbow || [name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior) # ([sockets] == 2 || [sockets] == 3) @ (([name] == stagbow || [name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior)) || ([type] == amazonbow && ([flag] == runeword || [quality] == unique)) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1	//261023 base upgrade stag -> ashwood -> ceremonial
+([name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior) # ([sockets] == 2 || [sockets] == 3) @ (([name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior)) || ([type] == amazonbow && ([flag] == runeword || [quality] == unique)) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1	//261023 base upgrade stag -> ashwood -> ceremonial
+[name] == ceremonialbow && ([quality] == normal || [quality] == superior) # ([sockets] == 2 || [sockets] == 3) @ ([name] == ceremonialbow && ([quality] == normal || [quality] == superior)) || ([type] == amazonbow && ([flag] == runeword || [quality] == unique)) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1	//261023 base upgrade stag -> ashwood -> ceremonial
 
 
 //============================================================================================================================================================================================

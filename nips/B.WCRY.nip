@@ -194,11 +194,11 @@
 //============================================================================================================================================================================================
 
 // [Smoke]
-([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 # [qty] == 1 @ [type] == armor && ([quality] == unique || [flag] == runeword) # ([fcr] >= 30 || [fireresist] == 50) # [qty] == 0
+([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 @ ([type] == armor && ([quality] == normal || [quality] == superior)) || ([name] == serpentskinarmor && [quality] == unique) # (([sockets] == 2 && [frw] == 0) || [fcr] >= 30) # [qty] < 1	//261023 keep qty -> hold, Stealth excluded by frw
 
 // [Spirit Sword]
-([name] == crystalsword || [name] == broadsword || [name] == claymore || [name] == giantsword) && [quality] == normal && [level] >= 26 # ([sockets] == 0 || [sockets] == 4) # [qty] == 2 @ (([name] == flail && [flag] == runeword) || ([type] == sword && ([quality] == normal || [quality] == superior || [flag] == runeword))) # ([fcr] >= 40 || [fhr] >= 55 || [sockets] == 4) # [qty] < 2
-([name] == crystalsword || [name] == broadsword || [name] == claymore || [name] == giantsword) && ([quality] == normal || [quality] == superior || [flag] == runeword) # [sockets] == 4 # [qty] == 2 @ (([name] == flail && [flag] == runeword) || ([name] == burntwand && [quality] == unique) || ([type] == sword && [flag] == runeword)) # ([fcr] >= 40 || [fhr] >= 55) # [qty] < 2
+([name] == crystalsword || [name] == broadsword || [name] == claymore || [name] == giantsword) && [quality] == normal && [level] >= 26 # [sockets] == 0 @ (([name] == flail && [flag] == runeword) || ([type] == sword && ([quality] == normal || [quality] == superior))) # ([sockets] == 0 || [sockets] == 4) # [qty] < 2	//261023 hold counts HotO + 0/4os bases incl Spirit, total < 2
+([name] == crystalsword || [name] == broadsword || [name] == claymore || [name] == giantsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 @ (([name] == flail && [flag] == runeword) || ([type] == sword && ([quality] == normal || [quality] == superior))) # [sockets] == 4 # [qty] < 2	//261023 hold counts HotO + 4os bases incl Spirit, no burntwand
 
 [name] == flail && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 2 && [tiered] == 0
 

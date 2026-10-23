@@ -129,8 +129,6 @@ var AutoBuildTemplate = {
 	24:	{
 			Update: function () {
 				Config.Cubing = true;
-				Config.RunewordRecipe.push([Runeword.Lionheart, "mageplate"]);	//261023 Runewords -> RunewordRecipe
-				Config.RunewordRecipe.push([Runeword.Lionheart, "lightplate"]);	//261023 Runewords -> RunewordRecipe
 				
 				if (!Config.Tiered) {
 					Config.CubeRecipe.push([Recipe.Caster.Boots, "wyrmhideboots"]);	//261023 Recipes -> CubeRecipe

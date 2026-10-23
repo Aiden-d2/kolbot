@@ -425,31 +425,31 @@ var Config = {
 		[Runeword.Edge, "shortbow"],
 		
 		// Obedience
-		[Runeword.Obedience, "greatpoleaxe"],
+		//[Runeword.Obedience, "greatpoleaxe"],	//261023 merc str too high
 		[Runeword.Obedience, "crypticaxe"],
-		[Runeword.Obedience, "giantthresher"],
+		//[Runeword.Obedience, "giantthresher"],	//261023 merc str too high
 		[Runeword.Obedience, "thresher"],
 		
 		// Insight
-		[Runeword.Insight, "greatpoleaxe"],
+		//[Runeword.Insight, "greatpoleaxe"],	//261023 merc str too high
 		[Runeword.Insight, "crypticaxe"],
-		[Runeword.Insight, "giantthresher"],
+		//[Runeword.Insight, "giantthresher"],	//261023 merc str too high
 		[Runeword.Insight, "thresher"],
 		
 		[Runeword.Insight, "archonstaff"],
 		[Runeword.Insight, "shillelagh"],		
 		[Runeword.Insight, "elderstaff"],
 		
-		[Runeword.Insight, "becdecorbin"],
-		[Runeword.Insight, "partizan"],
-		[Runeword.Insight, "bill"],
-		[Runeword.Insight, "battlescythe"],
+		//[Runeword.Insight, "becdecorbin"],	//261023 elite thresher/cryptic only
+		//[Runeword.Insight, "partizan"],	//261023 elite thresher/cryptic only
+		//[Runeword.Insight, "bill"],	//261023 elite thresher/cryptic only
+		//[Runeword.Insight, "battlescythe"],	//261023 elite thresher/cryptic only
 		
-		[Runeword.Insight, "halberd"],
-		[Runeword.Insight, "poleaxe"],
+		//[Runeword.Insight, "halberd"],	//261023 elite thresher/cryptic only
+		//[Runeword.Insight, "poleaxe"],	//261023 elite thresher/cryptic only
 		
 		// Enigma
-		[Runeword.Enigma, "breastplate"],
+		//[Runeword.Enigma, "breastplate"],	//261023 Enigma off
 		
 		// Smoke
 		//[Runeword.Smoke, "archonplate"],
