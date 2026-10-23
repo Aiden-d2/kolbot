@@ -300,45 +300,45 @@ var Config = {
 		
 		//[Recipe.Moser2],
 		
-		[Recipe.Socket.Weapon, "berserkeraxe"],
-		[Recipe.Socket.Weapon, "ettinaxe"],
-		[Recipe.Socket.Weapon, "naga"],
+		[Recipe.Punch.Weapon, "berserkeraxe"],	//261023 Recipe.Socket -> Recipe.Punch
+		[Recipe.Punch.Weapon, "ettinaxe"],	//261023
+		[Recipe.Punch.Weapon, "naga"],	//261023
 		
-		[Recipe.Socket.Weapon, "greatpoleaxe"],
-		[Recipe.Socket.Weapon, "crypticaxe"],
-		[Recipe.Socket.Weapon, "giantthresher"],
-		[Recipe.Socket.Weapon, "thresher"],
+		[Recipe.Punch.Weapon, "greatpoleaxe"],	//261023
+		[Recipe.Punch.Weapon, "crypticaxe"],	//261023
+		[Recipe.Punch.Weapon, "giantthresher"],	//261023
+		[Recipe.Punch.Weapon, "thresher"],	//261023
 		
-		[Recipe.Socket.Weapon, "archonstaff"],
-		[Recipe.Socket.Weapon, "shillelagh"],
-		[Recipe.Socket.Weapon, "elderstaff"],
+		[Recipe.Punch.Weapon, "archonstaff"],	//261023
+		[Recipe.Punch.Weapon, "shillelagh"],	//261023
+		[Recipe.Punch.Weapon, "elderstaff"],	//261023
 		
-		[Recipe.Socket.Weapon, "becdecorbin"],
-		[Recipe.Socket.Weapon, "partizan"],
-		[Recipe.Socket.Weapon, "bill"],
-		[Recipe.Socket.Weapon, "battlescythe"],
+		[Recipe.Punch.Weapon, "becdecorbin"],	//261023
+		[Recipe.Punch.Weapon, "partizan"],	//261023
+		[Recipe.Punch.Weapon, "bill"],	//261023
+		[Recipe.Punch.Weapon, "battlescythe"],	//261023
 		
-		[Recipe.Socket.Weapon, "halberd"],
-		[Recipe.Socket.Weapon, "poleaxe"],
+		[Recipe.Punch.Weapon, "halberd"],	//261023
+		[Recipe.Punch.Weapon, "poleaxe"],	//261023
 		
-		[Recipe.Socket.Armor, "archonplate", Roll.Eth],
-		[Recipe.Socket.Armor, "sacredarmor", Roll.Eth],
+		[Recipe.Punch.Armor, "archonplate", Roll.Eth],	//261023
+		[Recipe.Punch.Armor, "sacredarmor", Roll.Eth],	//261023
 		
-		[Recipe.Socket.Shield, "sacredtarge"],
-		[Recipe.Socket.Shield, "vortexshield"],
+		[Recipe.Punch.Shield, "sacredtarge"],	//261023
+		[Recipe.Punch.Shield, "vortexshield"],	//261023
 		
-		[Recipe.Socket.Shield, "akaranrondache"],
-		[Recipe.Socket.Shield, "akarantarge"],
-		[Recipe.Socket.Shield, "aerinshield"],
-		[Recipe.Socket.Shield, "heraldicshield"],
-		[Recipe.Socket.Shield, "rondache"],
-		[Recipe.Socket.Shield, "targe"],
+		[Recipe.Punch.Shield, "akaranrondache"],	//261023
+		[Recipe.Punch.Shield, "akarantarge"],	//261023
+		[Recipe.Punch.Shield, "aerinshield"],	//261023
+		[Recipe.Punch.Shield, "heraldicshield"],	//261023
+		[Recipe.Punch.Shield, "rondache"],	//261023
+		[Recipe.Punch.Shield, "targe"],	//261023
 		
-		[Recipe.Socket.Weapon, "crystalsword"],
-		[Recipe.Socket.Weapon, "broadsword"],
-		[Recipe.Socket.Weapon, "claymore"],
-		[Recipe.Socket.Weapon, "giantsword"],
-		[Recipe.Socket.Weapon, "phaseblade"],
+		[Recipe.Punch.Weapon, "crystalsword"],	//261023
+		[Recipe.Punch.Weapon, "broadsword"],	//261023
+		[Recipe.Punch.Weapon, "claymore"],	//261023
+		[Recipe.Punch.Weapon, "giantsword"],	//261023
+		[Recipe.Punch.Weapon, "phaseblade"],	//261023
 		
 		//[Recipe.Caster.Amulet],
 		//[Recipe.Caster.Ring],

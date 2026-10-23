@@ -224,9 +224,9 @@ var Town = {
 
 				result = NTIP.Evaluate(t.item);	//261022 line after socketing (same as Equipped)
 				base = getLocaleString(getBaseStat(0, t.item.classid, "namestr")).trim();	//261022 base name only (no affixes), same as the cubing console line
-				D2Bot.printToConsole("# [Gem] " + name + " " + base + " (" + (filled + 1) + "/" + t.item.getStat(194) + ")", 5);	//261022
-				Misc.itemLogger("Socketing", t.item, result.line);	//261023 Gemmed -> Socketing (normal items already have "Gemmed" in the name), nip line like the other logs
-				Misc.logItem("Socketing", t.item, result.line);	//261023 Gemmed -> Socketing, manager item log
+				D2Bot.printToConsole("[Socket] " + name + " " + base + " (" + (filled + 1) + "/" + t.item.getStat(194) + ")", 5);	//261023 "# [Gem]" -> "[Socket]"
+				Misc.itemLogger("Socketed", t.item, result.line);	//261023 Gemmed -> Socketed (normal items already have "Gemmed" in the name), nip line like the other logs
+				Misc.logItem("Socketed", t.item, result.line);	//261023 Gemmed -> Socketed, manager item log
 				done = true;
 			}
 
