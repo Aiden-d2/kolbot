@@ -39,7 +39,7 @@
 
 ### 261021 Claude: SafeTele 몹 목록 범위 (`eddab3a`·`ab94751`, 옛 handoff 3-4)
 - 몹 목록을 내 위치에서 `max(teleDistance, 노드 거리) + SafeTele.Range` 안으로 거름. 후보는 모두 내 위치에서 `teleDistance` 안, 몹은 후보에서 Range 안만 세므로 고르는 자리는 같다(남는 차이는 후보 좌표 반올림의 1칸 미만 경계).
-- 확인: 261022·261023 `[SafeTele] monsters`(a1 평균 26 → 12마리, 29 → 14마리). 검증 통과(사용자 261023). 확인 줄은 삭제 결정(handoff 2-18).
+- 확인: 261022·261023 `[SafeTele] monsters`(a1 평균 26 → 12마리, 29 → 14마리). 검증 통과(사용자 261023). 확인 줄과 `monAll`은 261023 `0f6da09`에서 삭제(handoff 3-28 검증 대기).
 
 ## teleportTo
 
