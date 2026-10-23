@@ -77,7 +77,7 @@ var Recipe = {
 			ToElite: 44
 		}
 	},
-	Socket: {
+	Punch: {	//261023 Socket -> Punch (socket gem logs use Socket)
 		Shield: 45,
 		Weapon: 46,
 		Armor: 47,
@@ -104,11 +104,11 @@ var RecipeName = [];
 	RecipeName[28] = RecipeName[29] = RecipeName[30] = RecipeName[31] = RecipeName[32] = RecipeName[33] = RecipeName[34] = RecipeName[35] = RecipeName[36] = "[Craft] Safety";
 	RecipeName[37] = RecipeName[38] = RecipeName[39] = RecipeName[40] = "[Upgrade] Unique";
 	RecipeName[41] = RecipeName[42] = RecipeName[43] = RecipeName[44] = "[Upgrade] Rare";
-	RecipeName[45] = RecipeName[46] = RecipeName[47] = RecipeName[48] = "[Socket]";
+	RecipeName[45] = RecipeName[46] = RecipeName[47] = RecipeName[48] = "[Punch]";	//261023 [Socket] -> [Punch]
 	RecipeName[49] = "[Reroll] Magic";
 	RecipeName[50] = "[Reroll] Rare";
 	RecipeName[51] = "[Reroll] HighRare";
-	RecipeName[52] = "[Rune]";
+	RecipeName[52] = "[Upgrade]";	//261023 [Rune] -> [Upgrade] (the rune name follows)
 	RecipeName[53] = "[Token Of Absolution]";
 	RecipeName[54] = RecipeName[55] = "[Upgrade] White";
 
@@ -401,20 +401,20 @@ var Cubing = {
 				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 627, 630, 561], Index: Recipe.Rare.Armor.ToElite, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
-			case Recipe.Socket.Shield:
-				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 620, 581], Index: Recipe.Socket.Shield, Ethereal: Config.CubeRecipe[i][2]});	//261023
+			case Recipe.Punch.Shield:	//261023 Recipe.Socket -> Recipe.Punch
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 620, 581], Index: Recipe.Punch.Shield, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
-			case Recipe.Socket.Weapon:
-				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 620, 561], Index: Recipe.Socket.Weapon, Ethereal: Config.CubeRecipe[i][2]});	//261023
+			case Recipe.Punch.Weapon:	//261023
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 620, 561], Index: Recipe.Punch.Weapon, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
-			case Recipe.Socket.Armor:
-				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 619, 566], Index: Recipe.Socket.Armor, Ethereal: Config.CubeRecipe[i][2]});	//261023
+			case Recipe.Punch.Armor:	//261023
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 616, 619, 566], Index: Recipe.Punch.Armor, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
-			case Recipe.Socket.Helm:
-				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 619, 571], Index: Recipe.Socket.Helm, Ethereal: Config.CubeRecipe[i][2]});	//261023
+			case Recipe.Punch.Helm:	//261023
+				this.recipes.push({Ingredients: [Config.CubeRecipe[i][1], 617, 619, 571], Index: Recipe.Punch.Helm, Ethereal: Config.CubeRecipe[i][2]});	//261023
 
 				break;
 			case Recipe.Reroll.Magic: // Hacky solution ftw
@@ -867,7 +867,7 @@ IngredientLoop:
 			return false;
 		}
 
-		if (recipe.Index >= Recipe.Socket.Shield && recipe.Index <= Recipe.Socket.Helm) {
+		if (recipe.Index >= Recipe.Punch.Shield && recipe.Index <= Recipe.Punch.Helm) {	//261023
 			// Normal item matching pickit entry, no sorcets
 			if (unit.quality === 2 && unit.getStat(194) === 0) {
 				switch (recipe.Ethereal) {
@@ -986,7 +986,7 @@ IngredientLoop:
 					print(string);
 
 					if (Config.LogCubingInfo) {
-						D2Bot.printToConsole("@ " + string, 5);
+						D2Bot.printToConsole(string, 5);	//261023 "@ " removed
 					}
 				}
 				
