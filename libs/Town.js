@@ -148,9 +148,11 @@ var Town = {
 		this.socketGems();	//261021
 		c.gems = getTickCount() - tick;	//261022
 
-		if (getTickCount() - c.start > 10000) {	//261022 one line per slow chores
+		if (getTickCount() - c.start > 10000 || c.beltCurFail || c.beltPutFail || c.beltShiftFail) {	//261022 one line per slow chores	//261023 or any belt failure
 			Misc.trace("chores " + ((getTickCount() - c.start) / 1000).toFixed(1) + "s: pre " + (c.pre / 1000).toFixed(1) + " heal " + (c.heal / 1000).toFixed(1) + " id " + (c.id / 1000).toFixed(1)
-				+ " inv " + (c.inv / 1000).toFixed(1) + " [npc:" + c.invNpc + " belt " + ((c.belt || 0) / 1000).toFixed(1) + "s/" + (c.beltClicks || 0) + " pots " + ((c.pots || 0) / 1000).toFixed(1) + "s/" + (c.potCount || 0)
+				+ " inv " + (c.inv / 1000).toFixed(1) + " [npc:" + c.invNpc + " belt " + ((c.belt || 0) / 1000).toFixed(1) + "s/" + (c.beltClicks || 0)
+				+ " cur " + (c.beltCur || 0) + "/" + (c.beltCurFail || 0) + " put " + (c.beltPutFail || 0) + " shift " + (c.beltShift || 0) + "/" + (c.beltShiftFail || 0) + " ui " + (c.beltUI || "-") + " remain " + (c.beltLeft || 0)	//261023 belt check (handoff 2-17)
+				+ " pots " + ((c.pots || 0) / 1000).toFixed(1) + "s/" + (c.potCount || 0)
 				+ " cube " + ((c.cube || 0) / 1000).toFixed(1) + "s/" + (c.cubeCount || 0) + " stash " + ((c.stashInv || 0) / 1000).toFixed(1) + "s/" + (c.stashCount || 0) + " left " + ((c.left || 0) / 1000).toFixed(1) + "s/" + (c.leftCount || 0) + "]"
 				+ " tome " + (c.tome / 1000).toFixed(1) + " buy " + (c.buy / 1000).toFixed(1) + " [npc " + ((c.buyNpc || 0) / 1000).toFixed(1) + "s buys " + (c.buys || 0) + " shift " + (c.shift || 0) + " fail " + (c.buyFail || 0) + "]"
 				+ " repair " + (c.repair / 1000).toFixed(1) + " rest " + (c.rest / 1000).toFixed(1) + " stash " + (c.stash / 1000).toFixed(1) + " gems " + (c.gems / 1000).toFixed(1));
@@ -161,7 +163,7 @@ var Town = {
 
 	// Socket inventory gems into equipped tiered items (targets and order from Pickit.socketTargets)	//261021
 	socketGems: function () {
-		var i, j, t, gems, gem, name, base, result, filled, tick, done, cursorItem, dropped, onCursor,	//261022 before/after tier removed, base name for the console
+		var i, j, t, gems, gem, name, base, result, filled, tick, done, cursorItem, dropped,	//261022 before/after tier removed, base name for the console	//261023 onCursor removed
 			targets = Pickit.socketTargets();
 
 		if (!targets.length) {
@@ -203,14 +205,13 @@ var Town = {
 
 				if (me.itemoncursor || t.item.getItems().length <= filled) {
 					dropped = false;
-					onCursor = me.itemoncursor;	//261021 gem still on the cursor after the click: remove once the cause is found
 					cursorItem = me.itemoncursor ? getUnit(100) : null;
 
 					if (cursorItem && !Storage.Inventory.MoveTo(cursorItem)) {	// back to the inventory only (no stash trip with the gem on the cursor)
 						dropped = Packet.dropItem(cursorItem);
 					}
 
-					Misc.trace("socketGems failed: " + name + " -> [" + Config.Gear[t.bodyLoc] + "] " + t.item.name + (onCursor ? " (cursor)" : "") + (dropped ? " (dropped)" : ""));	//261021 (cursor)
+					Misc.trace("socketGems failed: " + name + " -> [" + Config.Gear[t.bodyLoc] + "] " + t.item.name + (dropped ? " (dropped)" : ""));	//261023 (cursor) removed (0x28 never left it, 2 log cycles)
 
 					if (dropped) {
 						me.cancel();	//261022 close panels before picking up
@@ -1888,7 +1889,7 @@ MainLoop:
 	},
 
 	clearInventory: function () {
-		var i, col, result, item, beltSize,
+		var i, col, result, item, beltSize, total, path, ui,	//261023 belt check
 			c = this.chores || {},	//261022 chores stall check (doChores step line)
 			tick = getTickCount(),	//261022
 			items = [];
@@ -1918,11 +1919,26 @@ MainLoop:
 
 				for (i = 0; i < 4; i += 1) {
 					if (item.code.indexOf(Config.BeltColumn[i]) > -1 && col[i] > 0) {
+						total = col[0] + col[1] + col[2] + col[3];	//261023 belt check: free slots before the click
+						path = "shift";	//261023 shift / cur (toCursor failed) / put (on the cursor, belt clicked)
+
 						if (col[i] === beltSize) { // Pick up the potion and put it in belt if the column is empty
+							c.beltCur = (c.beltCur || 0) + 1;	//261023 empty column path
+							path = "cur";	//261023
+							ui = (getUIFlag(0x08) ? "08" : "-") + (getUIFlag(0x01) ? "01" : "");	//261023 NPC menu / inventory panel before the first try
+
 							if (item.toCursor()) {
+								path = "put";	//261023
 								clickItem(0, i, 0, 2);
+							} else {
+								c.beltCurFail = (c.beltCurFail || 0) + 1;	//261023 toCursor failed (3 x 1s)
+							}
+
+							if (c.beltUI === undefined) {	//261023 first empty column try only: did the click close the menu
+								c.beltUI = ui + ">" + (getUIFlag(0x08) ? "08" : "-") + (getUIFlag(0x01) ? "01" : "");
 							}
 						} else {
+							c.beltShift = (c.beltShift || 0) + 1;	//261023 shift-click path
 							clickItem(2, item.x, item.y, item.location); // Shift-click potion
 						}
 
@@ -1930,6 +1946,14 @@ MainLoop:
 						delay(me.ping * 2 + 200);
 
 						col = this.checkColumns(beltSize);
+
+						if (col[0] + col[1] + col[2] + col[3] === total) {	//261023 belt unchanged after the click
+							if (path === "put") {
+								c.beltPutFail = (c.beltPutFail || 0) + 1;	//261023 on the cursor but not in the belt
+							} else if (path === "shift") {
+								c.beltShiftFail = (c.beltShiftFail || 0) + 1;	//261023
+							}
+						}
 					}
 				}
 			}
@@ -1986,6 +2010,17 @@ MainLoop:
 				c.potCount = (c.potCount || 0) + 1;	//261022
 				delay(200 + me.ping * 2);
 			}
+		}
+
+		item = me.getItem(-1, 0);	//261023 belt check: potions left in the inventory after the cleanup (kept as buffer, tried again next visit)
+		c.beltLeft = 0;
+
+		if (item) {
+			do {
+				if (item.location === 3 && [76, 77, 78].indexOf(item.itemType) > -1) {
+					c.beltLeft += 1;
+				}
+			} while (item.getNext());
 		}
 
 		c.pots = getTickCount() - tick;	//261022
