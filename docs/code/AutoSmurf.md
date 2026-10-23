@@ -19,7 +19,21 @@
 
 ### 261004 Claude: 죽은 사람도 타임아웃, 타임아웃 상세
 - 죽은 사람도 120초 타임아웃(`&& !me.dead` 삭제, 사유 `Dead wait timeout`). 타임아웃 trace 상세에 `okCount`/`teamCount`/`teamOk` 값.
-- 확인: 261006 로그. 261021 이름 수집 방식은 `handoff.md` 3-1(검증 대기).
+- 확인: 261006 로그. 261021 이름 수집 방식은 아래 261021 항목.
+
+### 261021 Claude: 이름 수집 (`eddab3a`, 옛 handoff 3-1)
+- 개수 대신 보낸 프로필 이름(`teamNames`, `this.missing(name)`). 두 단계 유지. ok 이름은 1단계 끝(teamCount 보내기 전)에, teamCount 이름과 teamOk는 2단계 끝에 비운다. 2단계 중 그 프로필의 teamCount보다 먼저 온 okCount는 버린다. 대기 delay 1000 → 200ms. teamOk는 게임 시작 첫 okCount(늦게 들어온 프로필은 앞사람들 ok를 못 받음) 때문에 유지.
+- 이유: 끝 일괄 리셋은 연달아 호출(`okCount; doPrecast(true); okCount`)에서 가장 빠른 프로필의 다음 ok를 모두가 지우면 teamOk도 못 나와 멈출 수 있었다(코드 추론). 같은 사람의 메시지는 보낸 순서대로 도착(`sendCopyData` = 동기 `SendMessage`, 이벤트 큐 FIFO).
+- 타임아웃 줄 `[Quit] Party desynced 1/2: missing(okCount|teamCount): 프로필, ... teamOk X`.
+- 확인: 261022·261023 로그. desync 때 안 온 프로필 이름이 남고, 261023 3게임 모두 그 프로필이 실제로 늦음(리셋 경쟁 0). 검증 통과(사용자 261023). 늦은 이유는 다른 증상으로 `handoff.md` 1-13.
+
+## this.pickGold / this.giveGold
+
+### 261020·261022 사용자: 골드 나눔 (`bb94fac`·`284a5aa`, 옛 handoff 3-12)
+- 주는 양 = 골드 − LowGold, 그것이 1000 미만이면 골드 − 5000. 리더가 골드를 받는 것이 LowGold보다 우선(사용자 의도). 예전 식은 LowGold 아래 팔로워의 양이 음수가 되어 실제로 주고받지 못했다.
+- 261022: `pickGold` 반복 15회 × 1초 → 50회 × `ping*2+100`, 시작 때 보관함 넣기 삭제, 보관함 넣기 조건 골드 있음 → `charlvl × 10000` 이상, `giveGold` 대기 15초 → 10초(다시 줍기 `i >= 9`), 그 밖 `ping*2+500` → `ping*2+200`.
+- trace `Picking up/Dropping/Retaking N Gold`는 유지(사용자 261023): 골드 주고받기는 ItemLog에 남지 않아 이 줄이 유일한 기록이고, `Retaking`이 리더가 못 받은 표시다.
+- 확인: 261023 로그 2게임, 버린 12더미를 리더가 모두 주움(금액 일치, 더미당 1~3초), `Retaking` 0, 음수 없음. 검증 통과(사용자 261023).
 
 ## this.bossGuard
 
@@ -48,6 +62,13 @@
 - 거리 while + catch 6곳은 3회 상한, 못 가면 quitGame(`Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`). duriel 오리피스 `useUnit` 실패면 `Duriel chamber not entered`. 상자까지는 `moveTo(retry 3)` × 3회.
 - throw가 아닌 quitGame인 이유: throw는 Loader에서 `MinGameTime` 300초 대기 후 종료라 다른 조기 종료와 어긋남(사용자 결정 261022).
 - 확인: 261023 로그(119게임) 사유 줄로 끝남 6건(`moveToExit failed` 1, `Tomb chest not reached` 4, `Cube chest not reached` 1), `[Error] AutoSmurf.exitTo` 0. 무덤 4/10게임 퇴장은 미로형 지역에서 8명 동선이 꼬여 다시 시도가 많은 탓으로 봄(사용자) → 작동 통과(사용자 261023).
+
+## this.getQuestItem
+
+### 261021·261022: 퀘스트 아이템 콘솔 (`ab94751`·`d8af14f`·`8a7ff56`, 옛 handoff 3-9·3-16)
+- 리더 콘솔 `===EYE===`·`===HEART===`·`===BRAIN===`(눈·심장·뇌, 261021 Claude 추가, 261022 사용자 `d8af14f`에서 하나로 정리)와 `=== STAFF ===`.
+- 261022 사용자 `8a7ff56`: 스태프 조건 `classid === 356`(상자 id라 참이 될 수 없었음, 호출은 `getQuestItem(92, 356)`) → `classid === 92`.
+- 확인: 261023 로그 눈·심장·뇌 각 3건 한 번씩, STAFF 3건. 검증 통과(사용자 261023).
 
 ## this.den
 
@@ -98,3 +119,9 @@
 ### 260928 사용자: followDriver 교체
 - 드라이버(리더)가 보이면 거리 > 30 → moveTo(clear 없이 따라붙기) + BO, 15~30 → `moveTo(..., 3, true)`(경로 노드마다 clear, `"killMonsters"`면 false), 15 이하 → `Attack.clear(25)`. 안 보이고 msgNode가 있으면 같은 규칙으로 msgNode 기준, 둘 다 없으면 `Attack.clear(15)`.
 - 사용자 원문의 msgNode 분기 `getDistance(me, driver) > 15`는 driver가 없는 분기라 `getDistance(me, msgNode[0], msgNode[1]) > 15`로 고쳐 반영(Claude).
+
+## onCopyData (main의 copydata 처리)
+
+### 261021 Claude: ToolsThread 중계 받기 (`eddab3a`, 옛 handoff 3-2)
+- 처리 본문을 `onCopyData`로 빼서 copydata와 scriptmsg(`{relay: true, id, data}`, ToolsThread가 넘김)에서 부른다. 중계 쪽은 `ToolsThread.md`.
+- 확인: 261022·261023 로그. 검증 통과(사용자 261023).

@@ -90,7 +90,7 @@
 - throw 전파: 랜덤 걸음 10번째의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
-- `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms, 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(handoff 3-20). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
+- `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms, 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(`docs/code/Pather.md` useUnit 261022). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
 - (261022 삭제) `[exit] 26 -> 27 type: exit:x,y dest:x,y` — H1(Monastery Gate 동선). 좌표는 `handoff.md` 1-2.
 - `[SafeTele] monsters N near M`(261021, Claude 추가) — 45 거르기로 빠진 몹 수. 제거 조건: 확인.
 - `[Quit] moveToExit failed: A -> B`(261021~, 기본색 콘솔) — 옛 `clearToExit` 무한 재시도 대신 한 번 실패로 퇴장. 261022 `482171b`부터 `AutoSmurf.exitTo`(3회 실패)도 같은 줄, throw는 `[Error] AutoSmurf.exitTo: ...`로 먼저 찍힘. 거리 while 3회 실패 사유: `Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`, `Duriel chamber not entered`(`docs/code/AutoSmurf.md` exitTo).
@@ -131,17 +131,11 @@
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
-| 3-1 | okCount 이름 수집: desync 때 안 온 프로필과 그 시각에 하던 일(`log_results.md` 판별 불가 5건의 B/C 가르기) | 4-3 `missing(...)` |
-| 3-2 | 중계 동작: `Town chicken` 뒤 `relay N msgs`, 그 게임 desync 여부 | 4-3 `relay` |
 | 3-3 | clearToExit 대체: 퇴장 `moveToExit failed`, 언더패스·Jail 보정 경로 | 4-4 |
-| 3-4 | SafeTele 거르기로 빠진 몹 수 | 4-4 `[SafeTele] monsters` |
-| 3-5 | 마을행 직접 호출 | 4-2 `Town check (direct)` |
 | 3-6 | 퀘스트 아이템 사라짐(남이 주움) | 4-5 `quest item vanished`, `<classid> vanished` |
-| 3-20 | useUnit 첫 클릭 실패 빈도, 8회 실패 | 4-4 `[useUnit] timeout` |
 | 3-22 | 퀘스트 아이템 사라짐 위치 변경 | 4-5 `quest item vanished`, `Not enough room for undefined` |
-| 3-9 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
+| 3-17 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
 | 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
-| 3-12 | 골드 나눔 | 4-6 |
 
 ## 6. 보고 형식
 1. 데이터 요약: 프로필·게임 수·기간·난이도 구간·코드 버전(시기), 실행 중 코드 변경 여부.

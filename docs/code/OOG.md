@@ -1,5 +1,10 @@
 # tools/OOG.js
 
+## D2Bot.printToConsole
+
+### 261021 Claude: d2bs 로그에도 남김 (`ab94751`, 옛 handoff 3-9)
+- 콘솔에 찍을 때 `print("[console] " + msg)`도 해서 d2bs 로그에 같은 줄이 남는다. 확인: 261022·261023 로그. 검증 통과(사용자 261023).
+
 ## ControlAction
 
 ### 261001 Claude: 화면 문구 읽기

@@ -28,11 +28,16 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 룬워드: 룬워드는 베이스 품질(노말·슈페리어)을 그대로 가져 노말 이상 줄에 함께 걸린다. 포함해도 오작동·부작용이 없는지, `[flag] != runeword`로 빼도 문제가 없는지 검토(사용자).
   - 재료: 노말·슈페리어 베이스도 tier 줄에 걸려 착용 대상이 된다(착용 판단은 `NTIP.GetScore`로 tier 목록을 따로 봄). 착용 중인 베이스는 지금 룬워드·펀치 재료로 쓰이지 않는 문제가 커진다 → 2-15(착용품을 빼서 룬워드·펀치 재료로 사용)가 들어가면 해소될 것으로 봄(사용자).
 
+### 1-13. desync 때 늦게 온 프로필의 이유 (옛 3-1에서 분리, 사용자 261023)
+- **문제**: okCount 이름 수집으로 desync 때 안 온 프로필은 남지만, 그 프로필이 그동안 무엇을 했는지 기록이 없다.
+- **확인된 것**(261023 로그, 119게임 중 3게임): Pz-14 a7이 TRIST에 머묾(23:09:55~23:15:11, 다른 7명은 23:12:54 JAIL), Pz-42 a4가 메피 포털을 타지 않음(02:28:33 마을 정리 뒤 기록 없음, `bossGuard on` 없음), Pz-6 BLOOD 8명 모두 6분 기록 없음(22:06~22:12, a5·a6 빠짐). 세 곳이 다르고 공통점이 없다. 메피 팔로워 경로의 `while (!Pather.usePortal(102, null))`는 끝나는 조건·trace가 없는 루프지만, 리더 포털이 있었고 다른 7명은 타서 a4가 여기서 막혔다는 근거는 없다.
+- **판단에 필요한 것**: 더 돌려 같은 구간이 반복되는지 본다(사용자 261023). 반복되면 그 구간만 겨냥한 판별 로그를 설계한다.
+
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
 
-### 2-1. 팀 싱크 확장 (`AutoSmurf` readyCount·buffCount·syncBO·카우, 3-1 검증 뒤)
-- **구현안**: okCount(3-1)가 검증되면 readyCount·buffCount·syncBO(답장 BOCount·BOReady 대신 도착 이름)·카우(`msgFollower`)를 `teamNames`로. 한 단계로 둬도 됨(같은 이름이 연달아 불리지 않음). 확장 뒤 싱크 변수·플래그·메시지 이름 통일(`teamOk`/`teamReady`/`teamBuff`/`BOReady`, `imReady`/`myBuff`, `msgLeader`/`msgFollower`, 메시지 이름과 변수·함수 이름 겹침) (사용자 지시 261021).
-- **선행 조건**: 3-1 검증.
+### 2-1. 팀 싱크 확장 (`AutoSmurf` readyCount·buffCount·syncBO·카우)
+- **구현안**: okCount 이름 수집(`docs/code/AutoSmurf.md` okCount 261021, 261023 검증 통과)과 같은 방식으로 readyCount·buffCount·syncBO(답장 BOCount·BOReady 대신 도착 이름)·카우(`msgFollower`)를 `teamNames`로. 한 단계로 둬도 됨(같은 이름이 연달아 불리지 않음). 확장 뒤 싱크 변수·플래그·메시지 이름 통일(`teamOk`/`teamReady`/`teamBuff`/`BOReady`, `imReady`/`myBuff`, `msgLeader`/`msgFollower`, 메시지 이름과 변수·함수 이름 겹침) (사용자 지시 261021).
+- **선행 조건**: 없음(옛 3-1 검증 통과, 261023).
 
 ### 2-2. print/trace 중복 정리 (여러 파일, 3절 검증 뒤)
 - **구현안**: 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
@@ -100,33 +105,16 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **구현안**(채택, 사용자 261023): 판별 로그. `chores` 줄 belt 항목에 `cur 시도/실패 put 실패 shift 시도/실패 ui 직전>직후 left N`. `Town.chores` 새 속성 7개 — `beltCur`·`beltCurFail`(toCursor 실패)·`beltPutFail`(toCursor 성공인데 벨트 클릭 뒤 열 변화 없음)·`beltShift`·`beltShiftFail`(클릭 뒤 열 변화 없음)·`beltUI`(첫 빈 열 시도 직전·직후 메뉴 08·인벤토리 창 01)·`beltLeft`(물약 정리 뒤 인벤토리에 남은 물약 수). 성공 판정은 클릭 전후 `checkColumns`. 줄 찍는 조건에 벨트 실패 1건 이상 추가(지금은 10초 초과만). 수정 범위 `libs/Town.js` 한 파일.
 - **검증 방법**: 느린 정리에서 cur 실패 = 클릭 수이고 shift 실패 0이면 가설 맞음(ui 직후 08이면 클릭이 메뉴를 못 닫음). 메뉴가 닫혀 있을 때 cur 실패 0이면 메뉴 원인 확정. 느린 정리에 cur이 없거나 shift 실패가 있으면 가설 틀림 → shift-click 쪽 재검토. 맞으면 수정안(벨트 전에 메뉴 닫기 / 빈 열도 shift-click)을 검토(그 전에 `rejected.md`). 제거 조건: 판정 뒤 7개 속성·조건 삭제(기존 `chores` 줄 삭제 여부도 그때).
 
+### 2-18. 확인용 줄 삭제 (사용자 결정 261023)
+- **구현안**: 검증이 끝난 항목의 확인 줄 삭제. `ToolsThread` `relay N msgs`(옛 3-2), `Pather.moveTo` `[SafeTele] monsters`(옛 3-4), `Town.socketGems` 실패 줄의 `(cursor)` 표시와 `onCursor` 변수(옛 3-15). 골드 `Picking up/Dropping/Retaking`은 유지(사용자 261023). 수정 범위 `threads/ToolsThread.js`·`libs/Pather.js`·`libs/Town.js`.
+- **검증 방법**: 줄이 사라지고 동작이 같은가(문법 확인).
+
+### 2-19. useUnit 클릭 앞 대기를 `me.attacking` 게이트로 (`Pather.useUnit`, 옛 3-20 다음 단계)
+- **확인된 것**: 옛 3-20(계단 클릭 앞 `delay(600)` 등)이 효과 있음 — 261023 timeout 34줄(261022 묶음 2 414줄), 8회 모두 실패 0(`docs/code/Pather.md` useUnit 261022).
+- **구현안**: 효과가 있으면 고정 600ms 대신 `me.attacking` 게이트(시전 끝까지, 상한 600ms)로 바꾼다(사용자 261022). 세부는 구현 검토 때.
+- **검증 방법**: 검토에서 정한다.
+
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
-
-### 3-1. okCount 이름 수집 (`AutoSmurf.okCount`·`teamCount`·`missing`)
-- **바꾼 것**(261021 `eddab3a`): 개수 대신 보낸 프로필 이름(`teamNames`, `this.missing(name)`). 두 단계 유지. ok 이름은 1단계 끝(teamCount 보내기 전)에, teamCount 이름과 teamOk는 2단계 끝에 비운다. 2단계 중 그 프로필의 teamCount보다 먼저 온 okCount는 버린다. 대기 delay 1000 → 200ms. teamOk는 게임 시작 첫 okCount(늦게 들어온 프로필은 앞사람들 ok를 못 받음) 때문에 유지. 근거: 끝 일괄 리셋은 연달아 호출(`okCount; doPrecast(true); okCount`)에서 가장 빠른 프로필의 다음 ok를 모두가 지우면 teamOk도 못 나와 멈출 수 있었다(코드 추론). 같은 사람의 메시지는 보낸 순서대로 도착(`sendCopyData` = 동기 `SendMessage`, 이벤트 큐 FIFO).
-- **검증 방법**: 타임아웃 줄 `[Quit] Party desynced 1/2: missing(okCount|teamCount): 프로필, ... teamOk X`로 안 온 프로필이 남는가. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지(마을행·포털 실패 등) 본다. `log_results.md` desync 분석의 판별 불가 5건(B 실제 지각 / C 리셋 경쟁)을 가르는 용도. 261021 전 로그는 `okCount N teamCount N teamOk X`(개수).
-- **결과**: 261022 한 싸이클 더 본다(사용자 결정).
-  - 261023(10/22 21:43~10/23 15:24, 119게임, `9e10ff6`): desync 3게임 5줄 모두 안 온 프로필 이름이 남음, 셋 다 그 프로필이 실제로 늦음(B), 리셋 경쟁(C) 0 → 이름 수집은 작동. 늦은 이유는 기록이 없어 모름: Pz-14 a7이 TRIST에 머묾(23:09:55~23:15:11, 다른 7명은 23:12:54 JAIL), Pz-42 a4가 메피 포털을 타지 않음(02:28:33 마을 정리 뒤 기록 없음, `bossGuard on` 없음), Pz-6 BLOOD 8명 모두 6분 기록 없음(22:06~22:12, a5·a6 빠짐). 늦은 이유는 더 돌려 같은 구간이 반복되는지 본다(사용자 261023).
-
-### 3-2. 메시지 중계 (`ToolsThread`, `AutoSmurf.onCopyData`)
-- **바꾼 것**(261021 `eddab3a`): 엔진은 멈춘 스크립트의 copydata를 버린다(`Events.cpp:230`). ToolsThread가 default.dbj가 멈춰 있을 때 받은 copydata 55·56을 `relayMsgs`에 쌓았다가, 다시 돌면 `Messaging.sendToScript`로 순서대로 넘긴다(실패하면 남김). AutoSmurf 처리 본문은 `onCopyData`로 빼서 copydata·scriptmsg에서 부른다. 감수: 재개 직후 수 ms 틈의 유실, 같은 틈의 중복(이름·플래그는 무해, 아직 개수인 readyCount·buffCount·BOCount는 넘칠 수 있음 → 2-1 확장 때 해소).
-- **검증 방법**: okCount 대기 중 마을행(TownChicken·Pause)이 있었던 게임에서 desync 타임아웃이 없는가.
-- **결과**: 261022 통과(`relay` 6건 중 마을 다녀온 직후 5건, 그 게임 desync 없음). 사례가 적어 한 싸이클 더 관찰 후 이변 없으면 코드 노트로.
-
-### 3-4. SafeTele 몹 목록 범위 (`Pather` safeCheckNode)
-- **바꾼 것**(261021 수정분 `eddab3a`·`ab94751` 중, 개별 커밋 미확인): 몹 목록을 내 위치에서 `max(teleDistance, 노드 거리) + SafeTele.Range` 안으로(후보는 내 위치 35 안, 몹은 후보 Range 안만 셈 → 결과 같음).
-- **검증 방법**: SafeTele 동작이 이전과 같은가(텔레 이동 중 멈칫·되돌아감 없음, 작동).
-- **결과**: 261022 `[SafeTele] monsters`로 거르기 양 확인(a1 평균 26마리 → 12마리). 결과가 같은 것은 거리 관계로 보장. 한 싸이클 더 본다.
-
-### 3-5. Town check 직접 처리 (`Misc.townCheck`, `Town.visitTown`)
-- **바꾼 것**(261021 `ab94751`·`3c31a5a`): default.dbj면 `visitTown` 직접(멈춤 없음). `visitTown`이 `goToTown` 동안 `Config.TownCheck`를 꺼(끝나면 원래 값) 포털로 가는 moveTo 안의 재진입을 막음(직접 호출·화살통 경로 모두). TownChicken(visitTown 안에서만 부름)·MapHelper(default와 동시에 움직임)는 기존 메시지.
-- **검증 방법**: `Town check` 마을행이 정상 왕복하는가, 재진입(마을행 중 또 마을행) 없음.
-- **결과**: 261022 통과(58건, 중첩 0). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로.
-
-### 3-9. 콘솔·trace 추가
-- **바꾼 것**(261021 `ab94751`): 눈·심장·뇌 콘솔(getQuestItem 성공, 리더), `D2Bot.printToConsole`이 `print("[console] " + msg)`도 함, `[useUnit] timeout`에 id·target·unit 좌표, 팔로워 파티 수락 trace `party accept: 이름`, Life Chicken `mode`·`near` 삭제(`nearMonsters` 함수 삭제).
-- **검증 방법**: 줄이 형식대로 찍히는가.
-- **결과**: 261022 통과(눈·심장·뇌 콘솔 중복은 사용자 업로드 `d8af14f`에서 정리). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로.
 
 ### 3-10. 라다먼트 `radamentOff`·`forceTombs` (`AutoSmurf.radament`·`tombs`)
 - **바꾼 것**
@@ -135,51 +123,15 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **검증 방법**: 북 분실 뒤 N+2 게임에서 콘솔 줄과 10분 퇴장, tombs가 실제로 돈다(구간 헤더 `=== [TOMBS] ===`와 이동 줄), N+3에서 북 획득.
 - **결과**: 기록 없음.
 
-### 3-12. 골드 나눔 (`AutoSmurf.giveGold`·`pickGold`, 사용자)
-- **바꾼 것**
-  - 261020 사용자: 주는 양 = 골드 − LowGold, 그것이 1000 미만이면 골드 − 5000. 리더가 골드를 받는 것이 LowGold보다 우선(사용자 의도). 예전 식은 LowGold 아래 팔로워의 양이 음수가 되어 실제로 주고받지 못했음. trace `Picking up/Dropping/Retaking N Gold`.
-  - 261022 사용자 `bb94fac`·`284a5aa`: `pickGold` 반복 15회 × 1초 → 50회 × `ping*2+100`, 시작 때 보관함 넣기 삭제, 보관함 넣기 조건 골드 있음 → `charlvl × 10000` 이상, `giveGold` 대기 15초 → 10초(다시 줍기 `i >= 9`), 그 밖 `ping*2+500` → `ping*2+200`.
-- **검증 방법**: 리더가 모든 더미를 받는가(`Picking up` 수 = `Dropping` 수), 음수 없음. 확인 뒤 줄 삭제. 그래도 문제면 재논의.
-- **결과**: 261022(사용자 수정 전 코드): 음수 없음. 리더가 00:16 게임 7더미 중 3, 02:41 게임 8더미 중 5만 받음. 리더는 더미마다 `delay(1000)` → 줍기 → 보관함 넣기를 반복해 더미당 4~9초, 팔로워는 버린 뒤 15초에 `Retaking`. 시각이 맞는 설명이나 원인 확정 아님(02:41 게임 리더 19초 빈 곳은 원인 모름). 사용자 수정 뒤 결과는 아직 없음.
-
 ### 3-13. 라다먼트 북 버리기 (`AutoSmurf.start`, `dropping radament book`)
 - **바꾼 것**(`47816e6`): 시작 단계 북 버리기 무한 루프 수정. 버릴 때마다 trace `dropping radament book`.
 - **검증 방법**: 북을 가진 채 시작한 게임에서 이 줄 뒤 정상 진행(무한 반복 없음). 확인 뒤 줄 삭제.
 - **결과**: 아직 미검증.
 
-### 3-15. 소켓 보석 (`Pickit.checkItem`·`socketTargets`·`pickItem`, `Town.socketGems`·`doChores`, `Misc.itemLogger`·`logItem`)
-- **바꾼 것**(사용자 결정, 커밋 `02662d5`·`8730a5b`·`132bc5e`·`e9279d9`, 최종 상태)
-  - 대상(`Pickit.socketTargets`): 내 장착 칸 1(머리: 투구·바바·드루 전용·서클릿)·3(몸)·4·5(양손 칸은 종류로: 방패류 2·69·70이면 방패, 그 밖은 무기 — 활·지팡이·양손 무기·바바 두 번째 무기가 칸 5에 있어서) 중 티어가 있고(`NTIP.GetScore > 0`) 빈 소켓이 있으며 룬워드 베이스 재료가 아닌 것(`Config.RunewordRecipe`에서 classid 같고 `getBase` 참). 용병 제외. 부위별 보석 `Config.SocketRecipe`(261023 값은 아래)(itemType 96~102 = 전 등급, classid 557~601 = 그 등급만, 빌드에서 덮어씀). 보석 관문은 96~102 전체. 무기 레벨 18 제한 제거.
-  - 줍기(`checkItem` 결과 5, Cubing 판정 앞): 바닥·인벤토리 보석만, 보석 레벨 제한 ≤ 캐릭 레벨. 인벤토리 보석(자기 제외, gid 순)을 대상 순서대로 미리 배정하고, 빈칸이 남은 대상이 이 보석을 받으면 5. nip 무관, 스태시로 가지 않음. 필요 없어지면 기존 판정. 줍기 직후 overhead `(Ingredient)`, ItemLog `Ingredient {가진 개수}`.
-  - 장착(`Town.socketGems`, `doChores`의 `stash()` 뒤): 보관함을 열지 않고 `sendPacket(1, 0x28, 4, 보석 gid, 4, 장비 gid)`. 성공 시 ItemLog `Socketed {nip 라인}`(넣은 뒤 `NTIP.Evaluate`), 매니저 아이템 로그 `Misc.logItem("Socketed", 장비, 라인)`(지역 포함), 매니저 콘솔 `[Socket] 보석 베이스 (찬/전체)`(261023 전 `# [Gem]`) 색 5(베이스는 `getLocaleString(getBaseStat(0, classid, "namestr"))`), print `equipped: [칸] 티어`(`Equip.updateTier`). 실패 시 커서 보석은 인벤토리로, 안 되면 `Packet.dropItem` 뒤 `Pickit.pickItems()`, trace `socketGems failed: <보석> -> [칸] <장비>`(`(dropped)`, `(cursor)`).
-  - 261023 사용자: 이름 통일(Config `ing` 스위치 + `*Recipe`). `Gemmed` → `Socketing`(ItemLog·매니저 아이템 로그, `Misc.itemLogger` case·`logItem` match) — 노멀 아이템은 이름에 이미 `Gemmed`가 붙어 콘솔에 `Gemmed Gemmed …`로 두 번 찍혔다. 스위치 `Config.Socketing: true` 신설(`Pickit.socketTargets`가 꺼져 있으면 빈 목록 → 장착·보석 줍기 모두 안 함, 보석은 nip 판정). `Config.SocketGems` → `Config.SocketRecipe`, 자리는 `//Cubing` 바로 위, 기본값 `{Head: [100, 99], Body: [100, 99], Shield: [97], Weapon: [101, 98, 99, 100]}`(머리·몸 사파이어 추가, 무기 순서 변경). 함께 `Config.Recipes` → `CubeRecipe`, `Config.Runewords` → `RunewordRecipe`, `Config.MakeRunewords` → `Runewording`(빌드 14개 push 포함).
-  - 261023 사용자(2차): ItemLog·매니저 아이템 로그 `Socketing` → `Socketed`(로그는 `ed` 형태로 통일). 콘솔 `# [Gem]` → `[Socket]`. 큐빙 소켓 레시피를 `Punch`로(`RecipeName` `[Socket]` → `[Punch]`, `Recipe.Socket.*` → `Recipe.Punch.*`, Config `CubeRecipe` 포함) — 소켓 보석 줄과 겹치지 않게. 큐빙 `[Rune]` → `[Upgrade]`(뒤에 룬 이름이 붙음). 콘솔 앞 기호 삭제: 큐빙 `@`, 룬워드 `# [Runeword]`·`# [Reset]`, 보석 `# [Gem]`의 `#`.
-  - 경위(261021 사용자 로그): 장착 칸 클릭 `clickItem(0, 칸)`은 창을 닫아도·보관함을 열어도 `(cursor)` 실패 → 창 가설 틀림. 패킷 0x28은 보관함을 연 채(5건)·열지 않고도(a6 Wolf Head 2건) 성공. D2MOO 0x28 처리의 상호작용 조건(`PlrMsg.cpp:2543-2556`, 1.10f 재구성)은 1.14d와 다르거나 재구성 차이(추정). 참고: kolbot-SoloPlay도 0x28을 씀.
-- **검증 방법**
-  - ItemLog `Ingredient`로 빈 소켓 수만큼만 줍는가.
-  - `Socketed`(261023 전 로그는 `Gemmed`)가 남고 매니저 콘솔에 `Gemmed`가 한 번만 찍히며, 옵션에 보석 효과가 바로 보이며 티어가 오르는가(노멀은 고정일 수 있음).
-  - 콘솔 `[Socket]`의 베이스 이름이 접두·접미 없이 나오는가, 매니저 아이템 로그에 그림·옵션·라인·지역이 다른 로그처럼 나오는가.
-  - `socketGems failed` 빈도와 이유, `(dropped)` 뒤 다시 주웠는가. `(cursor)`(Claude 추가 261021): 다음 로그 묶음도 0x28 실패 0건이면 삭제(사용자 결정 261022).
-  - 룬워드 베이스·티어 없는 장비에는 넣지 않는가.
-  - 261023 이름 바꾼 뒤: 큐빙(`CubeRecipe`)·룬워드(`RunewordRecipe`, 빌드 push 포함)가 이전처럼 돈다(Transmuted·Runeworded 줄). `Socketing: false`면 `Socketed`·`[Socket]`·보석 `Ingredient`가 없다. 콘솔 줄 앞 `@`·`#`가 없고 큐빙이 `[Punch] 베이스`, 룬 합성이 `[Upgrade] Tal Rune` 모양으로 찍힌다.
-- **결과**: 261022 통과(0x28 `Socketed` 23건, 실패 0). 한 싸이클 더 관찰 후 이변 없으면 코드 노트로. a1 머리 칸 사파이어(23:58)가 코드 버전 차이인지는 사용자 확인 전.
-- 나중(사용자 결정, 이 항목 밖): 빌드별 보석 종류 Config 값, 무기 룬 확장, 용병.
-
-### 3-16. 스태프 콘솔 줄 (`AutoSmurf.getQuestItem`)
-- **바꾼 것**(261022 사용자 `8a7ff56`): `d8af14f`에서 넣은 `if (classid === 356)`은 상자 id(356)를 봐서 참이 될 수 없었다(호출은 `getQuestItem(92, 356)`, 92 = Staff of Kings) → 조건 `classid === 92`.
-- **검증 방법**: 스태프를 주우면 리더 콘솔에 `=== STAFF ===`.
-- **결과**: 기록 없음.
-
 ### 3-17. MoveToSlot 실패 원인 판별 (`Storage` MoveToSlot, `PartyThread` 파티 수락, 옛 1-6)
 - **바꾼 것**: 실패 줄 유지, `inv:` 필드 삭제(261020). 판별 trace `party accept: 이름`(261021 `ab94751`, 팔로워 `PartyThread`). 실패 34건 중 33건 `closed`·1건 `-`이고 창을 여는 코드가 없어 성공도 `closed`일 것 → 창 상태로는 판별 불가라 수락 시각으로 가른다.
 - **검증 방법**: 실패 줄 `[MoveToSlot] ... FAILED`와 같은 시각(같은 초)에 수락이 있으면 수락 클릭이 옮기던 물약을 방해한 것(가설). 겹침이 없으면 가설은 틀림.
 - **결과**: 261022 `party accept` 579줄, MoveToSlot 실패 0건(65게임) → 판정할 사례 없음. 실패가 다시 나오면 판정.
-
-### 3-20. useUnit 조정 (`Pather.useUnit`, 옛 2-4 ④)
-- **바꾼 것**(261022 `482171b`, 사용자 확정): 계단 타일(type 5) 클릭 앞 `delay(600)`(오브젝트는 그대로), 클릭 뒤 대기에 걷기 가드(모드 2·3·6이면 상한 4초), 회차 7 → 8, 유닛 위로 붙이는 판정 `> 5` → `> 7`, timeout 뒤 무작위 걸음(내 위치 ±3칸) 대신 유닛 좌표 기준 4방향(±x, ±y) 4칸 자리를 차례로(막힌 자리·내 위치 2칸 이하 자리 건너뜀, 텔레 `teleportTo(x, y, 2)` / 걷기 `walkTo(x, y, 2)`). timeout 직후 이미 넘어갔으면 옆 이동 없이 return(Claude 추가: 옛 지역 좌표로 텔레 반복 방지). 첫 클릭은 지금 자리에서.
-- **근거**(`log_results.md` 261022 묶음 2): timeout 414줄 중 a1 350줄, 걷는 프로필은 39연속 중 36개가 1회 뒤 성공(유닛에 0~2칸 붙어 있어도) → "붙어서 안 먹힘"보다 "텔레 직후 클릭이 무시됨"(추정)에 가까움. 원본 kolbot은 클릭 앞 300ms, 대기 3000ms. 소서 시전 FCR 0 기준 13프레임 약 0.52초. 계단 id = LvlWarp `Id`(외부 `d2data`, `ExitWalk`는 진입 방향과 무관). `moveToExit`의 `getNearestWalkable(출구, 10, 2)`(원본 5, 1)는 같거나 더 먼 자리만 고름.
-- **검증 방법**: 텔레 캐릭터(a1)의 `[useUnit] timeout` 수와 0회차 timeout 비율(첫 클릭 실패 빈도), 8회 모두 실패 건수. 효과가 있으면 다음에 `me.attacking` 게이트(시전 끝까지, 상한 600ms)로 바꾼다(사용자 261022).
-- **결과**: 기록 없음.
 
 ### 3-22. getQuestItem 사라짐 확인 위치 (`AutoSmurf.getQuestItem`, 옛 2-10)
 - **바꾼 것**(261022 `482171b`): `item.sizex === undefined` 확인을 `CanFit` 앞에서 `CanFit` 실패 뒤(`canMakeRoom` 앞)로. `CanFit`이 인벤토리를 다시 읽는 동안 유닛이 사라지면 크기가 undefined라 `CanFit`이 false가 되고 `Not enough room for undefined`로 끝나던 경우(261022 a1 하수구 3층)를 vanished로 받음.
