@@ -193,20 +193,20 @@
 //============================================================================================================================================================================================
 
 // [Smoke]
-([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 @ [type] == armor && ([quality] == normal || [quality] == superior) # (([sockets] == 2 && [frw] == 0) || [maxhp] == 50) # [qty] < 1	//261023 keep qty -> hold, Stealth excluded by frw
+([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 @ (([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior)) || ([type] == armor && [flag] == runeword) # (([sockets] == 2 && [frw] == 0) || [maxhp] == 50) # [qty] < 1	//261023 keep qty -> hold, Stealth excluded by frw	//261024 hold: base names || runeword
 
 // [Lionheart]
-([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ [type] == armor && ([quality] == normal || [quality] == superior) # [sockets] == 3 # [qty] < 1	//261023 keep qty -> hold
+([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ (([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior)) || ([type] == armor && [flag] == runeword) # [sockets] == 3 # [qty] < 1	//261023 keep qty -> hold	//261024 hold: base names || runeword
 
 // [AncientsPledge]
-([name] == largeshield || [name] == kiteshield || [name] == gothicshield) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ (([name] == roundshield && [quality] == unique) || ([type] == shield && ([quality] == normal || [quality] == superior))) # ([sockets] == 3 || [fireresist] >= 45) # [qty] < 1	//261023 keep qty -> hold, gothic unique removed
+([name] == largeshield || [name] == kiteshield || [name] == gothicshield) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ (([name] == roundshield && [quality] == unique) || ((([name] == largeshield || [name] == kiteshield || [name] == gothicshield) && ([quality] == normal || [quality] == superior)) || ([type] == shield && [flag] == runeword))) # ([sockets] == 3 || [fireresist] >= 45) # [qty] < 1	//261023 keep qty -> hold, gothic unique removed	//261024 hold: base names || runeword
 
 // [Moser]
 [name] == roundshield && [quality] == unique && [flag] != ethereal # [sockets] == 2 # [qty] == 1
 
 // [Spirit Sword]
-([name] == crystalsword || [name] == broadsword) && [quality] == normal && [level] >= 26 # [sockets] == 0 @ (([name] == flail && [flag] == runeword) || ([type] == sword && ([quality] == normal || [quality] == superior))) # ([sockets] == 0 || [sockets] == 4) # [qty] < 1	//261023 keep qty -> hold
-([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 @ (([name] == flail && [flag] == runeword) || ([type] == sword && ([quality] == normal || [quality] == superior))) # [sockets] == 4 # [qty] < 1	//261023 keep qty -> hold
+([name] == crystalsword || [name] == broadsword) && [quality] == normal && [level] >= 26 # [sockets] == 0 @ (([name] == flail && [flag] == runeword) || ((([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior)) || ([type] == sword && [flag] == runeword))) # ([sockets] == 0 || [sockets] == 4) # [qty] < 1	//261023 keep qty -> hold	//261024 hold: base names || runeword
+([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 @ (([name] == flail && [flag] == runeword) || ((([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior)) || ([type] == sword && [flag] == runeword))) # [sockets] == 4 # [qty] < 1	//261023 keep qty -> hold	//261024 hold: base names || runeword
 
 // [HeartoftheOak]
 [name] == flail && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 1 && [tiered] == 0	//261023 HotO base, like B.WCRY

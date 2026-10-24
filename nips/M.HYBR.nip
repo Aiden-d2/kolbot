@@ -188,10 +188,10 @@
 //============================================================================================================================================================================================
 
 // [Smoke]
-([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 @ [type] == armor && ([quality] == normal || [quality] == superior) # (([sockets] == 2 && [frw] == 0) || [fhr] == 40) # [qty] < 1	//261023 keep qty -> hold, Stealth excluded by frw
+([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 2 @ (([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior)) || ([type] == armor && [flag] == runeword) # (([sockets] == 2 && [frw] == 0) || [fhr] == 40) # [qty] < 1	//261023 keep qty -> hold, Stealth excluded by frw	//261024 hold: base names || runeword
 
 // [Duress]
-([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ [type] == armor && ([quality] == normal || [quality] == superior) # [sockets] == 3 # [qty] < 1	//261023 keep qty -> hold
+([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ (([name] == lightplate || [name] == mageplate) && ([quality] == normal || [quality] == superior)) || ([type] == armor && [flag] == runeword) # [sockets] == 3 # [qty] < 1	//261023 keep qty -> hold	//261024 hold: base names || runeword
 [name] == mageplate && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ (([name] == mageplate && ([quality] == normal || [quality] == superior)) || ([type] == armor && [flag] == runeword)) # [sockets] == 3 # [qty] < 1	//261023 keep qty -> hold, Duress on any base stops
 
 // [Zephyr & Edge]

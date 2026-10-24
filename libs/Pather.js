@@ -1147,7 +1147,12 @@ ModeLoop:
 			}
 
 			if (type === 5) {
-				delay(600);	//261022 let the cast (teleport right before) finish: a click during it is dropped (original kolbot waits 300, sorc cast at 0 FCR is about 0.52s)
+				tick = getTickCount();	//261024 was a fixed delay(600): wait only while the cast is on (teleportTo returns once in range, before the cast ends), up to 600ms
+
+				while (me.attacking && getTickCount() - tick < 600) {	//261024 let the cast (teleport right before) finish: a click during it is dropped (original kolbot waits 300, sorc cast at 0 FCR is about 0.52s)
+					delay(20);
+				}
+
 				Misc.click(0, 0, unit);
 			} else {
 				sendPacket(1, 0x13, 4, unit.type, 4, unit.gid);
