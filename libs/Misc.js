@@ -2256,6 +2256,45 @@ var Misc = {
 		return true;
 	},
 
+	// Take an equipped runeword/punch base (player or merc) off into the inventory, then refresh that slot's tier cache. tag: "[Runeword]" or "[Cube]"	//261024 2-15
+	takeOff: function (item, merc, tag) {	//261024
+		var cursorItem,
+			bodyLoc = item.bodylocation,
+			name = item.name,
+			reason = "";
+
+		if (!Storage.Inventory.CanFit(item)) {	//261024 no room: leave it equipped
+			reason = "no room";
+		} else if (merc) {
+			clickItem(4, bodyLoc);	//261024 merc slot to cursor, as Grant.removeItems
+			delay(me.ping * 2 + 500);
+
+			cursorItem = getUnit(100);
+
+			if (!cursorItem) {
+				reason = "still equipped";
+			} else if (!Storage.Inventory.MoveTo(cursorItem)) {
+				reason = "stuck on cursor";
+			}
+		} else if (!Storage.Inventory.MoveTo(item)) {	//261024 toCursor picks an equipped item from its slot
+			reason = "still equipped";
+		}
+
+		if (me.itemoncursor) {	//261024 failed halfway: inventory > stash > drop
+			this.cursorCheck();
+		}
+
+		if (merc) {
+			Grant.updateTier(bodyLoc, true);	//261024 any equip change refreshes the tier cache
+		} else {
+			Equip.updateTier(bodyLoc, true);	//261024
+		}
+
+		this.trace(tag + " takeOff [" + Config.Gear[bodyLoc] + "] " + name + " (" + (merc ? "merc" : "player") + "): " + (reason ? "fail (" + reason + ")" : "ok"));	//261024 removed after one ok each for runeword and punch with no fail
+
+		return !reason;
+	},
+
 	// Log someone's gear
 	spy: function (name) {
 		if (!isIncluded("tools/OOG.js")) {

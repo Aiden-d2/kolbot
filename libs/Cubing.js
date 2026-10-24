@@ -942,7 +942,62 @@ IngredientLoop:
 			return false;
 		}
 
-		var i, j, items, string, result, tempArray, logType, recipeIndex;	//260909
+		var i, j, items, string, result, tempArray, logType, recipeIndex,	//260909
+			k, r, n, worn, have, merc, recipe;	//261024
+
+		// An equipped punch base (player or merc) whose other ingredients are all owned is taken off first, so the usual flow below uses it	//261024 2-15
+		worn = (me.findItems(-1, 1) || []).filter(function (item) {	//261024 head, body, both arms
+			return [1, 3, 4, 5].indexOf(item.bodylocation) > -1;
+		}).map(function (item) {
+			return {unit: item, merc: false};
+		});
+		merc = me.getMerc();
+
+		if (merc) {
+			(merc.getItems() || []).forEach(function (item) {	//261024 merc gear counts for the hold too
+				if (item.location === 1) {
+					worn.push({unit: item, merc: true});
+				}
+			});
+		}
+
+		have = me.findItems(-1, 0) || [];	//261024 ingredients in storage, used up per taken base
+
+		for (i = 0; i < worn.length; i += 1) {
+			for (j = 0; j < this.recipes.length; j += 1) {
+				recipe = this.recipes[j];
+
+				if (recipe.Index < Recipe.Punch.Shield || recipe.Index > Recipe.Punch.Helm || recipe.Ingredients[0] !== worn[i].unit.classid ||
+						worn[i].unit.quality !== 2 || worn[i].unit.getStat(194) !== 0 ||
+						(recipe.Ethereal === 1 && !worn[i].unit.getFlag(0x400000)) || (recipe.Ethereal === 2 && worn[i].unit.getFlag(0x400000))) {	//261024 same base check as validItem punch
+					continue;
+				}
+
+				n = have.slice();
+
+				for (k = 1; k < recipe.Ingredients.length; k += 1) {
+					for (r = 0; r < n.length; r += 1) {
+						if (n[r].classid === recipe.Ingredients[k] && Runewords.validGids.indexOf(n[r].gid) === -1) {	//261024 not a rune kept for a runeword (validItem's rune check needs recipe.Enabled, set only with a base in storage)
+							break;
+						}
+					}
+
+					if (r === n.length) {
+						break;
+					}
+
+					n.splice(r, 1);
+				}
+
+				if (k === recipe.Ingredients.length) {	//261024 all other ingredients owned
+					if (Misc.takeOff(worn[i].unit, worn[i].merc, "[Cube]")) {
+						have = n;
+					}
+
+					break;
+				}
+			}
+		}
 
 		this.update();
 		// Randomize the recipe array to prevent recipe blocking (multiple caster items etc.)

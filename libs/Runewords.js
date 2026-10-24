@@ -351,7 +351,58 @@ RuneLoop:
 			return false;
 		}
 
-		var i, items, parts, logString;	//260831
+		var i, items, parts, logString,	//260831
+			j, k, r, n, worn, have, merc;	//261024
+
+		// An equipped base (player or merc) whose runes are all owned is taken off first, so the usual flow below uses it	//261024 2-15
+		worn = (me.findItems(-1, 1) || []).filter(function (item) {	//261024 head, body, both arms
+			return [1, 3, 4, 5].indexOf(item.bodylocation) > -1;
+		}).map(function (item) {
+			return {unit: item, merc: false};
+		});
+		merc = me.getMerc();
+
+		if (merc) {
+			(merc.getItems() || []).forEach(function (item) {	//261024 merc gear counts for the hold too
+				if (item.location === 1) {
+					worn.push({unit: item, merc: true});
+				}
+			});
+		}
+
+		have = me.findItems(-1, 0) || [];	//261024 runes in storage, used up per taken base
+
+		for (i = 0; i < worn.length; i += 1) {
+			for (j = 0; j < Config.RunewordRecipe.length; j += 1) {
+				if (!Config.RunewordRecipe[j][0] || Config.RunewordRecipe[j][1] !== worn[i].unit.classid || !this.getBase(Config.RunewordRecipe[j][0], worn[i].unit, (Config.RunewordRecipe[j][2] || 0))) {	//261024 same base check as storage
+					continue;
+				}
+
+				n = have.slice();
+
+				for (k = 0; k < Config.RunewordRecipe[j][0].length; k += 1) {
+					for (r = 0; r < n.length; r += 1) {
+						if (n[r].classid === Config.RunewordRecipe[j][0][k]) {	//261024 same rune match as checkRunewords
+							break;
+						}
+					}
+
+					if (r === n.length) {
+						break;
+					}
+
+					n.splice(r, 1);
+				}
+
+				if (k === Config.RunewordRecipe[j][0].length) {	//261024 all runes owned
+					if (Misc.takeOff(worn[i].unit, worn[i].merc, "[Runeword]")) {
+						have = n;
+					}
+
+					break;
+				}
+			}
+		}
 
 		while (true) {
 			this.buildLists();
