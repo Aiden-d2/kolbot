@@ -28,6 +28,15 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 261022 노트 정리(`fae6b2b`)에서 1절을 결정 대기만 두던 때 2-9로 옮겼으나 진행 결정·가설·구현안이 없어 1절로 되돌림(사용자 261024).
 - **판단에 필요한 것**: 진행할지. 한다면 원인 후보(10칸 안에서 12회 조회가 모두 실패하는 이유). Pz-50은 d2bs 로그의 `going to nearest WP` 유무로 "프리셋 못 찾음"을 가른다(확인 전).
 
+### 1-15. 상점에서 큐빙 재료(크래프트 매직 베이스 등)를 사지 않음 (`Town.shopItems`, `Pickit.checkItem`, 사용자 261024)
+- **문제**(사용자): 크래프트의 매직 베이스는 상점에서 충분히 살 수 있는데, 상점은 판정 결과 1만 사서 큐빙 재료는 사지 않는다.
+- **확인된 것**(코드)
+  - `Town.shopItems`는 `Pickit.checkItem` 결과가 1인 것만 산다. 노말 난이도는 벨트(itemType 19)만, 나이트메어·헬은 `Config.MiniShopBot`이 켜졌을 때만 산다(기본값 `false`, 빌드에서 바꾸는 곳 없음).
+  - `Pickit.checkItem`은 `Cubing.checkItem`이 참이면 nip 판정보다 먼저 2(큐빙 재료)를 돌려준다 → 크래프트 베이스(nip이 원하지 않는 매직 아이템, `validItem`의 크래프트 조건 `result === 0`)처럼 재료에 해당하는 아이템은 2가 되어 상점이 사지 않는다.
+  - 갬블(`Town.gamble`)·감정(`Town.identify`)은 얻은 아이템이 2이면 `Cubing.update()`를 부른다(재료가 들어오는 자리). 상점에는 재료가 들어오지 않아 업데이트도 없다.
+  - `shopItems`를 부르는 곳: `buyPotions`, `repair`(그 안의 호출 조건은 읽지 않음).
+- **판단에 필요한 것**: 진행할지. 한다면 상점에서 살 큐빙 재료의 범위(크래프트 베이스만인지, 레시피 전체인지), 살 때 골드 조건, 산 뒤 `Cubing.update()`.
+
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
 
 ### 2-1. 팀 싱크 확장 (`AutoSmurf` readyCount·buffCount·syncBO·카우)
@@ -206,7 +215,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - `Misc.wornItems()`(새 함수): 플레이어 머리·몸·양손 + 용병 장착품 목록. `makeRunewords`·`doCubing` 앞단, `Runewords.buildLists`, `Cubing.buildLists` 4곳에서 씀.
   - `Runewords.buildLists`: 입은 장비가 `getBase` 조건에 맞으면 보관품 베이스처럼 룬을 잡아 두고 모자란 룬을 줍는다(다시 굴리기용 Hel 판단 `baseCheck`는 보관품 기준 그대로).
   - `Cubing.buildLists`: 펀치 레시피만, 입은 장비가 베이스 조건(노말·0소켓·이더리얼)에 맞으면 레시피를 켠다 → 재료와 완성 보석 하위 레시피를 줍는다.
-  - `doCubing` 앞단: 직전에 `update`(지금 입은 것 기준으로 레시피 켜짐), 재료 확인을 기존 `validItem`으로 되돌림.
+  - `doCubing` 앞단: 재료 확인을 기존 `validItem`으로 되돌림.
+  - 261024 삭제: `aafbe50`에서 승인 없이 넣은 앞단 직전 `this.update()`. 펀치 베이스는 줍기·도박으로 들어올 때 목록이 다시 만들어져 레시피가 켜지므로(상점은 큐빙 재료를 사지 않음) 실익이 없음(사용자 261024).
   - 확인한 영향: 픽잇이 아이템마다 판정할 때는 목록을 다시 만들지 않는다(큐빙 재료를 주웠을 때·마을·큐빙 중에만, 룬은 `Runewords.update`로 목록만 조정). 방패 펀치의 완성 루비·흠 없는 루비는 소켓 넣기(헬름·몸·무기 루비)와 겹치나, 큐빙이 먼저 쓰는 순서일 뿐 해가 아님(사용자). 보관품 베이스일 때도 같다. `node --check` 통과(3파일).
 - **검증 방법**: trace `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`. ok 뒤 같은 방문에 룬워드면 `[Runeword] 이름`·ItemLog `Runeworded`, 펀치면 `[Punch]`·`Transmuted`, 이어서 그 칸 재장착(ItemLog `Equipped`, 용병은 `Granted`). fail이면 그 장비가 착용 그대로인가. 입은 베이스가 있을 때 그 레시피 재료를 줍는가(ItemLog `Ingredient`, 펀치는 완성 보석·흠 없는 보석, 룬워드는 그 룬). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0이면 trace 삭제.
 - **결과**: 기록 없음.
