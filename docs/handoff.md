@@ -8,7 +8,7 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**지금 돌고 있는 로그**(사용자 261023): main `33d3ae3`(261023 15:23 업로드) 코드로 한 싸이클 더 도는 중. 261023 커밋(소켓 보석 이름 정리 2차 `docs/code/Town.md` socketGems·3-25 nip 재료 줄)이 들어 있고, 그 뒤 수정(`0f6da09` 3-27 벨트 판별 로그·3-28 확인 줄 삭제)은 들어 있지 않다. 다음 로그 분석은 이 버전 기준으로 본다.
+**마지막으로 분석한 로그**: 261024 묶음(main `33d3ae3`, 10/23 15:26 ~ 10/24 09:48, `log_results.md` 261024). `0f6da09`(3-27 벨트 판별 로그·3-28 확인 줄 삭제)는 들어 있지 않았다 → 다음 사이클은 그 뒤 main 코드로 돌아야 3-27·3-28을 판정할 수 있다.
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -142,22 +142,23 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 261021 `ab94751`: N+1 `Radament book reset` 직전 리더 캐시 `radamentOff = true`. N+2 리더가 라다먼트 차례에 읽고 지운 뒤 콘솔 `Radament off: tombs, quit at 10 min` → `me.maxgametime = 10분`(엔진이 게임 시작부터 10분에 나감, 다음 게임에 default.dbj가 원래 값으로) → tombs 한 번. 라다먼트 차례엔 써모너가 끝나 리더는 캐니언 WP가 있고, 없는 팔로워는 리더 포털로 들어감. D2BS는 게임 단위 퀘스트 상태(완료 불가)를 읽는 함수가 없어 캐시 표시로 함.
   - 261022 사용자 `8a7ff56`: N+2의 tombs는 `partyLevel(tombsLvl)`이 참이면 바로 break해 아무것도 안 했다 → `tombs(force)` 인자, 메시지 `forceTombs`(팔로워 `forceTombs` 플래그 → `tombs(true)`), 리더는 라다먼트 꺼짐 때 `forceTombs`를 보내고 `tombs(true)`.
 - **검증 방법**: 북 분실 뒤 N+2 게임에서 콘솔 줄과 10분 퇴장, tombs가 실제로 돈다(구간 헤더 `=== [TOMBS] ===`와 이동 줄), N+3에서 북 획득.
-- **결과**: 기록 없음.
+- **결과**: 261024 케이스 미발견 — 북 분실 0(북 24게임 모두 visible → read). 사유: 일어나는 조건(북 분실)이 없었음. 더 봄.
 
 ### 3-13. 라다먼트 북 버리기 (`AutoSmurf.start`, `dropping radament book`)
 - **바꾼 것**(`47816e6`): 시작 단계 북 버리기 무한 루프 수정. 버릴 때마다 trace `dropping radament book`.
 - **검증 방법**: 북을 가진 채 시작한 게임에서 이 줄 뒤 정상 진행(무한 반복 없음). 확인 뒤 줄 삭제.
-- **결과**: 아직 미검증.
+- **결과**: 261024 케이스 미발견 — `dropping radament book` 0. 사유: 북을 가진 채 시작한 게임이 없었음. 더 봄.
 
 ### 3-17. MoveToSlot 실패 원인 판별 (`Storage` MoveToSlot, `PartyThread` 파티 수락, 옛 1-6)
 - **바꾼 것**: 실패 줄 유지, `inv:` 필드 삭제(261020). 판별 trace `party accept: 이름`(261021 `ab94751`, 팔로워 `PartyThread`). 실패 34건 중 33건 `closed`·1건 `-`이고 창을 여는 코드가 없어 성공도 `closed`일 것 → 창 상태로는 판별 불가라 수락 시각으로 가른다.
 - **검증 방법**: 실패 줄 `[MoveToSlot] ... FAILED`와 같은 시각(같은 초)에 수락이 있으면 수락 클릭이 옮기던 물약을 방해한 것(가설). 겹침이 없으면 가설은 틀림.
 - **결과**: 261022 `party accept` 579줄, MoveToSlot 실패 0건(65게임) → 판정할 사례 없음. 실패가 다시 나오면 판정.
+  - 261024 케이스 미발견 — `party accept` 918줄, 실패 0(105게임). 사유: 세 묶음(289게임) 연속 0. 그 사이 관련 코드 변경은 `82ede23`(사용자 업로드 10/20 09:57, 큐브·TP 칸 옮기기를 게임 입장 직후에서 `doChores` 뒤로) 하나. 이 변경으로 사라졌는지는 옛 로그(261013·261020)가 남아 있지 않아 확인할 수 없음. 실패 줄에 아이템 이름·시각이 있어 다시 나오면 그대로 판정 가능. 더 봄(사용자 261024).
 
 ### 3-22. getQuestItem 사라짐 확인 위치 (`AutoSmurf.getQuestItem`, 옛 2-10)
 - **바꾼 것**(261022 `482171b`): `item.sizex === undefined` 확인을 `CanFit` 앞에서 `CanFit` 실패 뒤(`canMakeRoom` 앞)로. `CanFit`이 인벤토리를 다시 읽는 동안 유닛이 사라지면 크기가 undefined라 `CanFit`이 false가 되고 `Not enough room for undefined`로 끝나던 경우(261022 a1 하수구 3층)를 vanished로 받음.
 - **검증 방법**: `quest item vanished`·`<classid> vanished`가 찍히고 `Not enough room for undefined`가 없어지는가. `quest item vanished, retry N`은 사례를 본 뒤 삭제.
-- **결과**: 기록 없음.
+- **결과**: 261024 케이스 미발견 — `vanished`·`Not enough room` 0. 사유: 퀘스트 아이템을 남이 먼저 줍는 일이 없었음(261022에 1건 있었던 드문 일). 더 봄.
 
 ### 3-27. 벨트 물약 넣기 지연 판별 (`Town.clearInventory` 벨트 루프·`doChores`, 옛 3-21·2-17)
 - **확인된 것**
@@ -168,9 +169,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **가설**: 빈 열 경로의 `toCursor`가 메뉴가 열린 동안 3회 모두 실패(3초 + 클릭 뒤 대기 약 0.6초 = 3.6초). 물약이 벨트에 못 들어가 열이 계속 비고, 예비로 인벤토리에 남아 다음 방문에도 되풀이. 클릭이 메뉴를 닫는다면 두 번째 시도는 성공해야 하는데 3.6초라 메뉴도 닫지 못한 것으로 보임(추정).
 - **바꾼 것**(261023 `0f6da09`, 사용자 채택): `chores` 줄 belt 항목 뒤에 `cur 시도/실패 put N shift 시도/실패 ui 직전>직후 remain N`. `Town.chores` 새 속성 7개 — `beltCur`·`beltCurFail`(toCursor 실패)·`beltPutFail`(toCursor 성공인데 벨트 클릭 뒤 벨트 빈칸 합계 변화 없음)·`beltShift`·`beltShiftFail`(shift-click 뒤 빈칸 합계 변화 없음)·`beltUI`(첫 빈 열 시도 직전·직후 NPC 메뉴 `08`·인벤토리 창 `01`, 없으면 `-`)·`beltLeft`(물약 정리 뒤 인벤토리에 남은 물약 수, 줄에는 `remain`). 줄 찍는 조건에 벨트 실패 1건 이상 추가(10초 미만이어도). 수정 `libs/Town.js` 한 파일.
 - **검증 방법**(지금 도는 `33d3ae3` 로그에는 없음, 이 커밋 뒤 로그부터): 느린 정리에서 cur 실패 = 클릭 수이고 shift 실패 0이면 가설 맞음(ui 직후 08이면 클릭이 메뉴를 못 닫음). 메뉴가 닫혀 있을 때 cur 실패 0이면 메뉴 원인 확정. 느린 정리에 cur이 없거나 shift 실패가 있으면 가설 틀림 → shift-click 쪽 재검토. 맞으면 수정안(벨트 전에 메뉴 닫기 / 빈 열도 shift-click)을 검토(그 전에 `rejected.md`). 제거 조건: 판정 뒤 7개 속성·조건 삭제(기존 `chores` 줄 삭제 여부도 그때).
-- **결과**: 기록 없음.
+- **결과**: 261024 이번 로그에 적용되지 않음(`33d3ae3`, chores 줄에 `cur` 0). 옛 형식으로 본 가설 근거는 같음: 느린 정리 34건 클릭당 3.58~3.70초, 모두 시작 때 NPC 메뉴 열림, 닫힘 87건 중 느림 0(`log_results.md` 261024).
 
 ### 3-28. 확인용 줄 삭제 (옛 2-18)
 - **바꾼 것**(261023 `0f6da09`): `ToolsThread` `relay N msgs`(옛 3-2), `Pather.moveTo` `[SafeTele] monsters`와 `monAll`(옛 3-4), `Town.socketGems` 실패 줄의 `(cursor)`와 `onCursor`(옛 3-15) 삭제. 골드 trace는 유지. `node --check` 통과.
 - **검증 방법**: 위 줄이 더는 찍히지 않고, 중계·SafeTele·소켓 보석이 전처럼 돈다(`Socketed`·`[Socket]`, 중계된 게임에 desync 없음).
-- **결과**: 기록 없음.
+- **결과**: 261024 이번 로그에 적용되지 않음(`relay` 7줄·`[SafeTele] monsters`가 끝까지 찍힘).
