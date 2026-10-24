@@ -122,6 +122,19 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **구현안**(방향 사용자 261024): 홀드의 앞 부분을 `[type]` 대신 킵 파트(`@` 앞)의 베이스 이름 조건과 통일한다. 홀드가 함께 세던 것(룬워드 완성품, 각 줄의 "다음 단계" 대체 조건 — 예 N.SUMM `[necromancerskills] == 2`, M.HYBR `[fhr] == 40`, D.FGOM·A.TRAP `[maxhp] == 50`, B.WCRY 유니크 서펜트스킨)은 계속 세어지도록 줄마다 확인한다. 방패 홀드(`[type] == shield && 노말·슈페리어`)도 같은 구조라 함께 본다(사례는 안 봄). 대상: `[type]`으로 세는 갑옷·방패 홀드 줄 약 21줄(nip 14개) + 방패 홀드, 정확한 목록은 구현 검토 때. 새 변수·함수 없음. 고치기 전 `rejected.md` 확인.
 - **검증 방법**: 검토에서 정한다(베이스가 아닌 같은 종류·소켓 아이템을 들고 있어도 베이스를 버리지 않는가).
 
+### 2-21. desync 때 늦게 온 프로필이 실행 중이던 함수 남기기 (`AutoSmurf.okCount`·`onCopyData`, 옛 3-26 검증 실패, 사용자 채택 261024)
+- **확인된 것**
+  - 옛 3-26(관찰만, 바꾼 것 없음): 사용자 기준 "더 돌려 같은 구간이 반복되는지 본다, 반복되면 그 구간만 겨냥한 판별 로그를 설계한다"(261023).
+  - 261023 결과: 261023 로그(119게임 중 3게임). Pz-14 a7이 TRIST에 머묾(23:09:55~23:15:11, 다른 7명은 23:12:54 JAIL), Pz-42 a4가 메피 포털을 타지 않음(02:28:33 마을 정리 뒤 기록 없음, `bossGuard on` 없음), Pz-6 BLOOD 8명 모두 6분 기록 없음(22:06~22:12, a5·a6 빠짐). 세 곳이 다르고 공통점 없음. 메피 팔로워 경로의 `while (!Pather.usePortal(102, null))`는 끝나는 조건·trace가 없는 루프지만, 리더 포털이 있었고 다른 7명은 타서 a4가 여기서 막혔다는 근거는 없다.
+  - 261024 결과(105게임 중 8게임 17줄, `log_results.md` 261024): Pz-5 OUTER a3, Pz-11 CATHEDRAL a6, Pz-23 TRAVINCAL a7, Pz-45 DURIEL a2·a7은 빠진 프로필이 구간 시작 뒤 2~4분 trace·d2bs 기록 없음. Pz-32 `act5+ BO`·Pz-44 `act0 BO`(둘 다 a6)는 `act N BO` print 뒤 okCount 전 기록 없음. Pz-95는 리더 a1이 카오스에서 Town check 마을행 3번(실제 지각). Pz-86은 디아 퀘스트 게이트 경로(handoff 등록 기각, `rejected.md` bossGuard·bossEnd).
+  - 두 묶음 11건 중 9건은 빠진 프로필이 아무 줄도 남기지 않아 하던 일을 알 수 없다 → 관찰만으로는 답이 안 나옴. 반복 구간은 BO 이동(a6 2회).
+  - 프로필 사이 메시지는 `default.dbj`의 `AutoSmurf` `onCopyData`가 받는다. 오류 줄에는 이미 호출 경로가 남는다(예: `Stack: main@townchicken.js:102, Town.visitTown@town.js:2416`, `Misc.errorReport`).
+- **가설**: 없음(어느 함수에 걸려 있는지 모름).
+- **구현안**(사용자 채택 261024): 기다리는 쪽이 okCount에서 60초를 넘기면 빠진 프로필에게 메시지(이름 예: `late`)를 한 번 보낸다. 받은 쪽은 trace 한 줄: 호출 경로(`new Error().stack`), 마을 여부, 동작 모드, 열린 창(NPC 메뉴·거래창), 위치. 수정 `bots/AutoSmurf.js` 한 파일, 새 메시지 1개·송신 1곳·받는 처리 1개.
+  - 확인할 것: 메시지 처리 안에서 만든 호출 경로에 받기 직전까지 돌던 함수가 들어가는지(D2BS 미확인). 안 들어가면 위치·상태만 남는 줄이 된다.
+  - 위치만 붙이는 안(`party has left` 위치)은 마지막 위치일 뿐 하던 일을 알 수 없어 철회, 단계마다 줄을 남기는 안은 줄이 너무 많음.
+- **검증 방법**: desync 때 빠진 프로필에 이 줄이 남는가. 호출 경로의 마지막 함수 = 걸린 구간 → 그 함수 결함을 본다. 줄이 없으면 그 순간 `default.dbj`가 멈춰 있었음(TownChicken, 메시지 버려짐 261013) → TownChicken 쪽. 제거 조건: 원인 구간이 정해지면 삭제.
+
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
 ### 3-10. 라다먼트 `radamentOff`·`forceTombs` (`AutoSmurf.radament`·`tombs`)
@@ -145,11 +158,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **바꾼 것**(261022 `482171b`): `item.sizex === undefined` 확인을 `CanFit` 앞에서 `CanFit` 실패 뒤(`canMakeRoom` 앞)로. `CanFit`이 인벤토리를 다시 읽는 동안 유닛이 사라지면 크기가 undefined라 `CanFit`이 false가 되고 `Not enough room for undefined`로 끝나던 경우(261022 a1 하수구 3층)를 vanished로 받음.
 - **검증 방법**: `quest item vanished`·`<classid> vanished`가 찍히고 `Not enough room for undefined`가 없어지는가. `quest item vanished, retry N`은 사례를 본 뒤 삭제.
 - **결과**: 기록 없음.
-
-### 3-26. desync 때 늦게 온 프로필의 이유 (`AutoSmurf.okCount` 타임아웃 줄, 옛 1-13·3-1에서 분리, 사용자 261023)
-- **바꾼 것**: 없음. okCount 이름 수집(`docs/code/AutoSmurf.md` okCount 261021)의 타임아웃 줄 `[Quit] Party desynced 1/2: missing(...)`으로 관찰한다.
-- **검증 방법**: desync가 날 때 빠진 프로필의 같은 시각 trace·d2bs 기록으로 무엇을 하던 중인지 보고, 같은 구간이 반복되는지 본다. 반복되면 그 구간만 겨냥한 판별 로그를 설계한다.
-- **결과**: 261023 로그(119게임 중 3게임). Pz-14 a7이 TRIST에 머묾(23:09:55~23:15:11, 다른 7명은 23:12:54 JAIL), Pz-42 a4가 메피 포털을 타지 않음(02:28:33 마을 정리 뒤 기록 없음, `bossGuard on` 없음), Pz-6 BLOOD 8명 모두 6분 기록 없음(22:06~22:12, a5·a6 빠짐). 세 곳이 다르고 공통점 없음. 메피 팔로워 경로의 `while (!Pather.usePortal(102, null))`는 끝나는 조건·trace가 없는 루프지만, 리더 포털이 있었고 다른 7명은 타서 a4가 여기서 막혔다는 근거는 없다.
 
 ### 3-27. 벨트 물약 넣기 지연 판별 (`Town.clearInventory` 벨트 루프·`doChores`, 옛 3-21·2-17)
 - **확인된 것**
