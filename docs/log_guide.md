@@ -32,7 +32,7 @@
 ## 3. trace 형식 (시기별)
 | 시기 | 줄 형식 |
 |---|---|
-| 261011 이후 | `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`. 게임 밖은 `(OOG loc N)`. `Misc.trace(msg, true)`인 줄은 위치 없음: 게임 경계, 구간 헤더, `[Error]`, `party has left`(261020 전 로그에는 `[Quit] stopDefault`도) |
+| 261011 이후 | `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`. 게임 밖은 `(OOG loc N)`. `Misc.trace(msg, true)`인 줄은 위치 없음: 게임 경계, 구간 헤더, `[Error]`, `party has left`(261024 `33bd183` 전까지, 261020 전 로그에는 `[Quit] stopDefault`도) |
 | 261001~261010 | `M/D H:M:S [지역 x,y] 내용`(0 채움 없음), 게임 밖 `[OOG loc N]` |
 
 - 게임 경계: `=== [게임이름] ===`(261011 이후), 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다.
@@ -82,8 +82,7 @@
 - `usePortal failed target: owner: unit: pre: tick: tries:<시도:gid sent/click/none/dead@ms> portals:<gid/classid/주인/지역/좌표/mode/거리>` — 내 포털일 때만.
 - `[Quit] Party desynced 1·2: missing(okCount|teamCount): 프로필, ... teamOk X`(261021~, 이름 수집) — 안 온 프로필. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지 본다. 261021 전은 `okCount N teamCount N teamOk X`(개수).
 - `relay N msgs`(261021, Claude 추가) — default.dbj가 멈춘 동안 받은 메시지를 ToolsThread가 넘김. 판정: `Town chicken` 뒤에 찍히고 그 게임에 desync가 없으면 동작. 제거 조건: 동작 확인. **261023 `0f6da09` 삭제**(검증 통과, 261023 이후 코드 로그에는 없음).
-- `party has left: 이름`(위치 없음) — 퇴장할 때까지 100ms마다 반복될 수 있다(의도). 첫 줄만 센다.
-- `party left state: town: mode: ui:` + 위치(261024 `be4f0e2`, Claude 추가, handoff 3-31) — `party has left` 바로 뒤, 그 순간의 마을 여부·동작 모드·열린 창(08 NPC 메뉴, 0C 거래창, 14 웨이 메뉴, 01 인벤토리, 없으면 `-`). desync 낙오 프로필이 다른 프로필들이 이미 끝낸 단계에 아직 있었나(멈춤)를 본다. 제거 조건: 판별.
+- `party has left: 이름 town: mode: ui:` + 위치 — 퇴장할 때까지 100ms마다 반복될 수 있다(의도). 첫 줄만 센다. 261024 `33bd183` 전에는 이름만, 위치 없음. 붙은 상태(Claude 추가 261024, handoff 3-31)는 그 순간의 마을 여부·동작 모드·열린 창(08 NPC 메뉴, 0C 거래창, 14 웨이 메뉴, 01 인벤토리, 없으면 `-`) — desync 낙오 프로필이 다른 프로필들이 이미 끝낸 단계에 아직 있었나(멈춤)를 본다. 제거 조건(상태 부분): 판별. (`be4f0e2`~`33bd183` 사이 코드는 같은 상태를 바로 뒤 `party left state:` 줄로 찍음.)
 - 판정: 늦은 프로필의 바로 앞 줄(무엇을 하던 중인가: 마을·`Town chicken`·포털 실패). 누가 okCount를 안 보냈는지는 지금 로그로 알 수 없다(사용자 수정 계획 0-11 okCount 대기 방식과 함께 다룸).
 
 ### 4-4. 이동·경로 (Pather)
@@ -141,7 +140,7 @@
 | 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
 | 3-29 | useUnit 계단 클릭 앞 대기 게이트 | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42) |
 | 3-30 | 홀드를 베이스 이름 기준으로 | ItemLog `Kept`·`Dropped`·`Sold`(보관 베이스를 버릴 때 같은 종류 비베이스 아이템이 있었나) |
-| 3-31 | desync 낙오 프로필의 상태 | 4-3 `party left state`, `missing(...)` |
+| 3-31 | desync 낙오 프로필의 상태 | 4-3 `party has left` 상태·위치, `missing(...)` |
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.
