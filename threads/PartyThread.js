@@ -123,8 +123,7 @@ function partyInGame () {	//260908
 
 	if (retry > 2) {
 		print("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")));
-		Misc.trace("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")), true);	//261008
-		Misc.trace("party left state: town:" + me.inTown + " mode:" + me.mode + " ui:" + ([0x08, 0x0C, 0x14, 0x01].filter(function (f) {	//261024 handoff 2-21: where I was and in what state when the team left, late or stuck (remove once judged)
+		Misc.trace("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")) + " town:" + me.inTown + " mode:" + me.mode + " ui:" + ([0x08, 0x0C, 0x14, 0x01].filter(function (f) {	//261008	//261024 handoff 3-31: + state and place when the team left, late or stuck (state removed once judged)
 			return getUIFlag(f);
 		}).map(function (f) {
 			return ("0" + f.toString(16).toUpperCase()).slice(-2);	// 08 npc menu, 0C trade, 14 waypoint, 01 inventory
