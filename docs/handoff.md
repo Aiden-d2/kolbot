@@ -8,7 +8,7 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**마지막으로 분석한 로그**: 261024 묶음(main `33d3ae3`, 10/23 15:26 ~ 10/24 09:48, `log_results.md` 261024). **다음 사이클**은 261024 `be4f0e2`(3-29·3-30·3-31) 병합 뒤 main으로 돈다. 그 코드에는 `0f6da09`(3-27 벨트 판별 로그·3-28 확인 줄 삭제)도 들어 있다. 3-32는 `789d80d` 병합 뒤 main으로 돈 로그부터 판정한다.
+**마지막으로 분석한 로그**: 261024 묶음(main `33d3ae3`, 10/23 15:26 ~ 10/24 09:48, `log_results.md` 261024). **다음 사이클**은 261024 `be4f0e2`(3-29·3-30·3-31) 병합 뒤 main으로 돈다. 그 코드에는 `0f6da09`(3-27 벨트 판별 로그·3-28 확인 줄 삭제)도 들어 있다. 3-32는 `aafbe50` 병합 뒤 main으로 돈 로그부터 판정한다.
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -185,7 +185,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 제거 조건: 판별이 되면 삭제.
 - **결과**: 기록 없음.
 
-### 3-32. 착용 중인 베이스로 룬워드·펀치 (`Misc.takeOff`, `Runewords.makeRunewords`, `Cubing.doCubing`, 사용자 261023·261024, 옛 2-15)
+### 3-32. 착용 중인 베이스로 룬워드·펀치 (`Misc.takeOff`·`wornItems`, `Runewords.makeRunewords`·`buildLists`, `Cubing.doCubing`·`buildLists`, 사용자 261023·261024, 옛 2-15)
 - **문제**: 보유 개수(`NTIP.CheckQuantityOwned`)는 보관품·플레이어 착용 장비·용병 장비를 모두 세는데, 룬워드 베이스 찾기(`getBase`, `me.getItem(base, 0)`)와 큐빙 재료(`Cubing.buildLists`, `me.findItems(-1, 0)`)는 보관품만 본다. → 착용 중인 재료 베이스(플레이어 또는 용병)는 홀드를 차지해 새 베이스 줍기를 막으면서 재료로는 쓰이지 않는다. 용병도 헬름·갑옷을 입으므로 플레이어용 재료와 겹친다(사용자).
 - **결정**(사용자 261024)
   - 모든 동작은 현행 그대로, 착용 장비 중 재료 베이스를 빼는 것만 넣는다. 고르는 조건: 레시피 베이스에 해당하고 그 레시피의 나머지 재료가 모두 모였을 때(재료가 없을 때 빼면 쓰지 못하고 다시 입기만 함).
@@ -202,5 +202,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - `Runewords.makeRunewords` 앞: 착용 장비(플레이어 머리·몸·양손, 용병 장착품) 중 `getBase` 조건에 맞고 룬이 보관품에 모두 있는 베이스를 뺀다. 같은 룬을 두 베이스에 세지 않게 뺀 만큼 룬을 차감.
   - `Cubing.doCubing` 앞: 착용 장비 중 펀치 레시피 베이스(노말·0소켓·이더리얼 조건, `validItem` 펀치 조건과 같음)이고 나머지 재료가 보관품에 있는 것을 뺀다. 재료는 classid가 같고 룬워드용으로 잡아 둔 룬(`Runewords.validGids`)이 아닌 것(`validItem`의 룬·보석 조건은 보관품에 베이스가 있어야 켜지는 `recipe.Enabled`에 기대므로 쓰지 않음).
   - 그 뒤 제작·마을 정리(`clearInventory`, 칸이 빈 칸 -1이라 tier 줄에 맞으면 남음)·재장착(`doChores`의 `Equip.autoEquip`·`Grant.autoEquip`)은 기존 동작. `node --check` 통과(3파일).
-- **검증 방법**: trace `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`. ok 뒤 같은 방문에 룬워드면 `[Runeword] 이름`·ItemLog `Runeworded`, 펀치면 `[Punch]`·`Transmuted`, 이어서 그 칸 재장착(ItemLog `Equipped`, 용병은 `Granted`). fail이면 그 장비가 착용 그대로인가. 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0이면 trace 삭제.
+- **후속 수정**(261024 `aafbe50`, 검증 전 결함): 베이스를 입고만 있으면 보관품에 베이스가 없는 것으로 보아 ① 룬워드는 그 레시피 룬을 잡아 두지도(`validGids`) 줍지도(`needList`) 않고 ② 펀치는 레시피가 꺼져(`Enabled`, `Cubing.buildLists`가 보관품 베이스로만 켬) 재료를 줍지 않았다. 완성 보석은 nip이 줍지 않아(Y.nip 주석) 펀치 쪽 빼기가 거의 일어나지 않을 상태였다(추정).
+  - `Misc.wornItems()`(새 함수): 플레이어 머리·몸·양손 + 용병 장착품 목록. `makeRunewords`·`doCubing` 앞단, `Runewords.buildLists`, `Cubing.buildLists` 4곳에서 씀.
+  - `Runewords.buildLists`: 입은 장비가 `getBase` 조건에 맞으면 보관품 베이스처럼 룬을 잡아 두고 모자란 룬을 줍는다(다시 굴리기용 Hel 판단 `baseCheck`는 보관품 기준 그대로).
+  - `Cubing.buildLists`: 펀치 레시피만, 입은 장비가 베이스 조건(노말·0소켓·이더리얼)에 맞으면 레시피를 켠다 → 재료와 완성 보석 하위 레시피를 줍는다.
+  - `doCubing` 앞단: 직전에 `update`(지금 입은 것 기준으로 레시피 켜짐), 재료 확인을 기존 `validItem`으로 되돌림.
+  - 확인한 영향: 픽잇이 아이템마다 판정할 때는 목록을 다시 만들지 않는다(큐빙 재료를 주웠을 때·마을·큐빙 중에만, 룬은 `Runewords.update`로 목록만 조정). 방패 펀치의 완성 루비·흠 없는 루비는 소켓 넣기(헬름·몸·무기 루비)와 겹치나, 큐빙이 먼저 쓰는 순서일 뿐 해가 아님(사용자). 보관품 베이스일 때도 같다. `node --check` 통과(3파일).
+- **검증 방법**: trace `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`. ok 뒤 같은 방문에 룬워드면 `[Runeword] 이름`·ItemLog `Runeworded`, 펀치면 `[Punch]`·`Transmuted`, 이어서 그 칸 재장착(ItemLog `Equipped`, 용병은 `Granted`). fail이면 그 장비가 착용 그대로인가. 입은 베이스가 있을 때 그 레시피 재료를 줍는가(ItemLog `Ingredient`, 펀치는 완성 보석·흠 없는 보석, 룬워드는 그 룬). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0이면 trace 삭제.
 - **결과**: 기록 없음.
