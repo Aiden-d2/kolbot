@@ -2256,6 +2256,26 @@ var Misc = {
 		return true;
 	},
 
+	// Equipped items that can be runeword/punch bases: player head, body, both arms and merc gear, as [{unit, merc}]	//261024 3-32
+	wornItems: function () {	//261024
+		var merc = me.getMerc(),
+			list = (me.findItems(-1, 1) || []).filter(function (item) {	//261024 head, body, both arms
+				return [1, 3, 4, 5].indexOf(item.bodylocation) > -1;
+			}).map(function (item) {
+				return {unit: item, merc: false};
+			});
+
+		if (merc) {
+			(merc.getItems() || []).forEach(function (item) {	//261024 merc gear counts for the hold too
+				if (item.location === 1) {
+					list.push({unit: item, merc: true});
+				}
+			});
+		}
+
+		return list;
+	},
+
 	// Take an equipped runeword/punch base (player or merc) off into the inventory, then refresh that slot's tier cache. tag: "[Runeword]" or "[Cube]"	//261024 2-15
 	takeOff: function (item, merc, tag) {	//261024
 		var cursorItem,

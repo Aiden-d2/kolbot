@@ -135,7 +135,8 @@ var Runewords = {
 	
 	// build a list of needed runes. won't count runes until the base item is found for a given runeword
 	buildLists: function () {
-		var i, j, k, items, hel, baseCheck;
+		var i, j, k, w, items, hel, baseCheck, wornBase,	//261024
+			worn = Misc.wornItems();	//261024 player and merc
 
 		this.validGids = [];
 		this.needList = [];
@@ -146,7 +147,17 @@ var Runewords = {
 				baseCheck = this.getBase(Config.RunewordRecipe[i][0], Config.RunewordRecipe[i][1], (Config.RunewordRecipe[i][2]||0)) || this.getBase(Config.RunewordRecipe[i][0], Config.RunewordRecipe[i][1], (Config.RunewordRecipe[i][2]||0), true);	//261023
 			}
 
-			if (this.getBase(Config.RunewordRecipe[i][0], Config.RunewordRecipe[i][1], (Config.RunewordRecipe[i][2]||0))) {	//261023
+			wornBase = false;	//261024 a worn base counts like one in storage (runes kept and picked)
+
+			for (w = 0; w < worn.length; w += 1) {
+				if (worn[w].unit.classid === Config.RunewordRecipe[i][1] && this.getBase(Config.RunewordRecipe[i][0], worn[w].unit, (Config.RunewordRecipe[i][2]||0))) {	//261024
+					wornBase = true;
+
+					break;
+				}
+			}
+
+			if (wornBase || this.getBase(Config.RunewordRecipe[i][0], Config.RunewordRecipe[i][1], (Config.RunewordRecipe[i][2]||0))) {	//261023	//261024 or worn
 RuneLoop:
 				for (j = 0; j < Config.RunewordRecipe[i][0].length; j += 1) {	//261023
 					for (k = 0; k < items.length; k += 1) {
@@ -352,24 +363,10 @@ RuneLoop:
 		}
 
 		var i, items, parts, logString,	//260831
-			j, k, r, n, worn, have, merc;	//261024
+			j, k, r, n, worn, have;	//261024
 
 		// An equipped base (player or merc) whose runes are all owned is taken off first, so the usual flow below uses it	//261024 2-15
-		worn = (me.findItems(-1, 1) || []).filter(function (item) {	//261024 head, body, both arms
-			return [1, 3, 4, 5].indexOf(item.bodylocation) > -1;
-		}).map(function (item) {
-			return {unit: item, merc: false};
-		});
-		merc = me.getMerc();
-
-		if (merc) {
-			(merc.getItems() || []).forEach(function (item) {	//261024 merc gear counts for the hold too
-				if (item.location === 1) {
-					worn.push({unit: item, merc: true});
-				}
-			});
-		}
-
+		worn = Misc.wornItems();	//261024 player and merc
 		have = me.findItems(-1, 0) || [];	//261024 runes in storage, used up per taken base
 
 		for (i = 0; i < worn.length; i += 1) {

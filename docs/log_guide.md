@@ -117,7 +117,7 @@
 - (261022 `482171b`에서 바뀜) `chores slow: clearInventory|buyPotions Ns`(261021~261022 로그) → `chores Ns: pre heal id inv [npc:<NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`(doChores 전체 10초 초과만, Claude 추가). `buyPotions: buy failed 코드 gold: columns:|buffer`(261021)는 그대로. 판정: 어느 단계가 긴가 — inv의 pots(물약 정리, 261022부터 마시기), belt 클릭 수, buy의 npc(상점 NPC까지 걷기·열기)와 구매 횟수·실패, 시작 시 NPC 메뉴(08)·거래창(0C). 제거 조건: handoff 3-27 판정 뒤 삭제 여부 결정. 261023 `0f6da09`부터 belt 뒤에 `cur 시도/실패 put N shift 시도/실패 ui 직전>직후 remain N`(handoff 3-27)이 붙고, 벨트 실패가 1건이라도 있으면 10초 미만이어도 찍힘. `ui`는 `08`(NPC 메뉴)·`01`(인벤토리 창), 없으면 `-`.
 - `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정.
 - `[Storage.MoveTo] retry / catch`, `moved from cube to drop/sell`, `[TK] talk skipped N npc:`(스페이스 20번 다 씀, 261006·261020에 각 1건, 모두 Greiz 20), `[hire] hiring retry (N/5)`.
-- `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`(261024 `789d80d`, Claude 추가, handoff 3-32) — 착용 중인 재료 베이스를 룬워드·펀치 앞에서 뺐는가. ok 뒤 같은 방문의 `[Runeword]`/`[Punch]`와 ItemLog `Runeworded`/`Transmuted`, 그 칸 재장착(`Equipped`·`Granted`). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0.
+- `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`(261024 `789d80d`, Claude 추가, handoff 3-32) — 착용 중인 재료 베이스를 룬워드·펀치 앞에서 뺐는가. ok 뒤 같은 방문의 `[Runeword]`/`[Punch]`와 ItemLog `Runeworded`/`Transmuted`, 그 칸 재장착(`Equipped`·`Granted`). 261024 `aafbe50`부터 입은 베이스의 재료도 줍는다(ItemLog `Ingredient`). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0.
 - d2bs 로그 `enchant: 이름/classid`(S.SFFW 65레벨부터 아마존·2막 용병·발키리·섀도 워리어·그리즐리).
 
 ### 4-7. 게임 밖 (회색 콘솔 + trace `(OOG loc N)`)

@@ -599,7 +599,8 @@ var Cubing = {
 	subRecipes: [],
 
 	buildLists: function () {
-		var i, j, k, items;
+		var i, j, k, items, w,	//261024
+			worn = Misc.wornItems();	//261024 player and merc
 
 		this.validIngredients = [];
 		this.neededIngredients = [];
@@ -608,6 +609,17 @@ var Cubing = {
 		for (i = 0; i < this.recipes.length; i += 1) {
 			// Set default Enabled property - true if recipe is always enabled, false otherwise
 			this.recipes[i].Enabled = this.recipes[i].hasOwnProperty("AlwaysEnabled");
+
+			if (this.recipes[i].Index >= Recipe.Punch.Shield && this.recipes[i].Index <= Recipe.Punch.Helm) {	//261024 a worn punch base enables the recipe like one in storage (ingredient pickup)
+				for (w = 0; w < worn.length; w += 1) {
+					if (worn[w].unit.classid === this.recipes[i].Ingredients[0] && worn[w].unit.quality === 2 && worn[w].unit.getStat(194) === 0 &&
+							!(this.recipes[i].Ethereal === 1 && !worn[w].unit.getFlag(0x400000)) && !(this.recipes[i].Ethereal === 2 && worn[w].unit.getFlag(0x400000))) {	//261024 same base check as validItem punch
+						this.recipes[i].Enabled = true;
+
+						break;
+					}
+				}
+			}
 
 IngredientLoop:
 			for (j = 0; j < this.recipes[i].Ingredients.length; j += 1) {
@@ -943,24 +955,11 @@ IngredientLoop:
 		}
 
 		var i, j, items, string, result, tempArray, logType, recipeIndex,	//260909
-			k, r, n, worn, have, merc, recipe;	//261024
+			k, r, n, worn, have, recipe;	//261024
 
 		// An equipped punch base (player or merc) whose other ingredients are all owned is taken off first, so the usual flow below uses it	//261024 2-15
-		worn = (me.findItems(-1, 1) || []).filter(function (item) {	//261024 head, body, both arms
-			return [1, 3, 4, 5].indexOf(item.bodylocation) > -1;
-		}).map(function (item) {
-			return {unit: item, merc: false};
-		});
-		merc = me.getMerc();
-
-		if (merc) {
-			(merc.getItems() || []).forEach(function (item) {	//261024 merc gear counts for the hold too
-				if (item.location === 1) {
-					worn.push({unit: item, merc: true});
-				}
-			});
-		}
-
+		this.update();	//261024 recipes enabled for what is worn now (validItem below reads recipe.Enabled)
+		worn = Misc.wornItems();	//261024 player and merc
 		have = me.findItems(-1, 0) || [];	//261024 ingredients in storage, used up per taken base
 
 		for (i = 0; i < worn.length; i += 1) {
@@ -977,7 +976,7 @@ IngredientLoop:
 
 				for (k = 1; k < recipe.Ingredients.length; k += 1) {
 					for (r = 0; r < n.length; r += 1) {
-						if (n[r].classid === recipe.Ingredients[k] && Runewords.validGids.indexOf(n[r].gid) === -1) {	//261024 not a rune kept for a runeword (validItem's rune check needs recipe.Enabled, set only with a base in storage)
+						if (n[r].classid === recipe.Ingredients[k] && this.validItem(n[r], recipe)) {	//261024 same ingredient check as checkRecipe (buildLists enables the recipe for a worn base)
 							break;
 						}
 					}
