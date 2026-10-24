@@ -4,6 +4,9 @@
 
 ## bots/AutoSmurf.js
 
+### this.bossGuard / this.bossEnd
+- **261024 퀘스트 게이트로 가드를 건너뛴 프로필이 bossEnd okCount도 건너뛰는 경로를 handoff 항목으로** — 디아(`getQuest(26, 0)`)·바알(`getQuest(40, 0)`)에서 보스가 죽은 뒤 도착한 프로필은 가드가 켜지지 않아 `bossEnd`가 okCount 전에 끝나고, 나머지는 120초 뒤 desync(근거 `log_results.md` 261024 Pz-86). 이유: 사용자 기각.
+
 ### this.travel
 - **261021 엑트5 travel(9) 진입 조건 확장** — `Leader && !getWaypoint(37)`(118만 봄)에 115·117 웨이도 검사. 이유: 빠진 웨이는 쓰는 시점에 `getWP`가 찍어 오류가 나지 않는다.
 
