@@ -212,3 +212,53 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 사망 4건 모두 a1(`You died` 06:39·12:10·12:25·13:53, 보스가드 밖).
 - `[Error]` 1건: a3 03:33:15 Pit of Acheron `moveTo: Failed to generate path: 12674,7594`(261022 묶음 C유형과 같은 곳 근처).
 - `[teleportTo failed]` 10건(Worldstone Keep Level 2 03:11~03:13에 8건), getWP `menu not opened` 104건(try:0 100, a1 90).
+
+## 261024 묶음 (10/23 15:26 ~ 10/24 09:48, 8프로필 105게임)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog·`_cache`(config 캐시 포함), 매니저 콘솔(사용자 복사본, 이 묶음까지). 새 계정으로 노말부터 파밍까지. 코드는 main `33d3ae3`(10/23 15:23 업로드) — chores 줄 1,833개에 `cur` 0, `relay` 7줄·`[SafeTele] monsters`가 마지막(10/24 09:48:25)까지 있음 → `0f6da09`(3-27 벨트 판별, 3-28 확인 줄 삭제)는 들어 있지 않음. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 판정
+- 3-26 desync: 8게임 17줄(261023 묶음은 119게임 중 3게임).
+
+| 게임 | 빠진 프로필 | 하던 일 |
+|---|---|---|
+| Pz-5 OUTER 16:18, Pz-11 CATHEDRAL 17:12, Pz-23 TRAVINCAL 19:38, Pz-45 DURIEL 00:08 | a3 / a6 / a7 / a2·a7 | 구간 시작 뒤 2~4분 trace·d2bs 기록 없음 → 모름(261023 Pz-6과 같은 모양) |
+| Pz-32 `act5+ BO` 21:20, Pz-44 `act0 BO` 23:44 | a6 / a6 | `act N BO` print 뒤 okCount 전(마을 → 웨이 → 이동) 기록 없음 → 어느 단계인지 모름 |
+| Pz-95 디아 파밍 07:24 | a1(리더) | 카오스에서 `Town check (direct)` 마을행 3번(07:21:55·07:23:28·07:24:22). 먼저 와 있던 a4 혼자 120초 초과 |
+| Pz-86 디아 퀘스트 06:26 | a4 | 아래 경로 |
+
+  - Pz-86: 다른 7명 `bossGuard on` 06:24:36, 디아 last 06:24:48. a4는 06:24:48 별 자리(7795,5294)에서 `visitTown start by:default.dbj`(`Town check` 줄 없음 → 줍기 중 가방 참 `Pickit.js` 경로로 추정), back 06:25:09, `bossGuard on` 없이 06:25:12 `boss not found: 243`(`Attack.clear(0, 243)`, `AutoSmurf.diablo`의 이 호출뿐). 코드: 가드는 `!me.getQuest(26, 0)`일 때만 켜지고, `bossEnd`는 가드가 꺼져 있으면(`guardChicken === null`) okCount 전에 끝남 → a4는 okCount 없이 포털로, a1·a3·a7은 `bossEnd` okCount에서 120초 뒤 desync. a4의 퀘스트 완료(마을에 있는 동안 디아가 죽음)는 추정(퀘스트 상태 줄 없음). 같은 퀘스트 게이트는 디아(26)·바알(40)뿐. handoff 항목으로 올리는 안은 기각(`rejected.md` bossGuard·bossEnd, 사용자 261024).
+  - a6이 8건 중 3건(261023 Pz-6에도 포함). 구간은 다르고 원인 모름.
+- 3-25 nip 재료 줄(일부):
+  - ItemLog `Kept`에 재료(홀드) 줄이 찍힘: 방패·갑옷·바바리안 검·활 베이스(예: a7 18:22:21 Large Shield N.SUMM 219줄).
+  - a8(B.WCRY) 검: 4소켓 Claymore를 주울 때마다 0소켓 Giant Sword 1개씩 버림(02:43:32·04:02:53), 최종 Spirit 착용 + Claymore 1 = 2. 줍고 마을 정리 전까지 잠깐 3(설계대로).
+  - 노말 3소켓 브레스트플레이트 줍기 0(유니크 Venom Ward·매직만).
+  - 상황 없음: 스텔스 만든 프로필 0, X.nip tier 21~25 방패(96~100줄) 착용 0, 용병 폴암 재료 `Kept` 0.
+  - 안 봄: 바바리안 밖 빌드의 한도 1 전체 대조, a7 03:10:15 Chaos Sanctuary 스모크 베이스(Ghost Armor) `Dropped`의 이유.
+- 3-27 벨트(옛 형식으로 가설 근거만): 느린 정리 34건 클릭당 3.58~3.70초, 모두 정리 시작 때 NPC 메뉴(08) 열림. 메뉴 닫힘 87건 중 느림 0. 느린 34건 중 2건은 `pots 5`(261023은 모두 `0/0`). 판별은 `0f6da09` 뒤 로그.
+- 상황 없음: 3-10(`radamentOff` 0, 북 24게임 모두 visible → read), 3-13(`dropping radament book` 0), 3-17(MoveToSlot 실패 0, `party accept` 918줄), 3-22(`vanished`·`Not enough room` 0).
+- 판정 불가(코드 없음): 3-27 판별 줄, 3-28.
+- 이름 정리(PR #74): 콘솔 `[Socket]` 19 = ItemLog `Socketed` 19, `[Runeword]` 8 = `Runeworded` 8, `[Punch]` 1(`Transmuted` 1), 옛 이름(`[Gem]`)·앞 기호(`@ `·`# `) 0.
+
+### 보스가드 (치킨 off HP와 off → last 시간)
+| 보스(pct) | 건수 | chicken off HP 최소/중앙/최대 | off → last 최소/중앙/최대 | 5초 초과 |
+|---|---|---|---|---|
+| 써모너(100) | 24 | 44/100/100 | 0/2.0/7.4초 | 6 |
+| 라다먼트(85) | 24 | 47/76.5/84 | 2.1/10.8/27.0초 | 21 |
+| 앤디(15) | 20 | 10/14/15 | 0/2.7/4.5초 | 0 |
+| 메피(15) | 24 | 11/13/15 | 1.8/3.1/4.6초 | 0 |
+| 이주얼(15) | 24 | 7/14/15 | 0/6.8/7.8초 | 15 |
+| 디아(15) | 18 | 11/14.5/15 | 2.5/3.7/6.6초 | 4 |
+| 쉥크(50) | 23 | 21/47/50 | 0/2.2/5.4초 | 1 |
+| 에인션트(10) | 24 | 1/7/9 | 12.6/15.6/31.7초 | 24 |
+| 바알(15) | 24 | 1/13/15 | 0/2.0/24.4초 | 7 |
+
+- 261023 묶음보다 off → last 중앙값이 긴 것: 에인션트 15.6초(7.0/6.3), 라다먼트 10.8초(4.6), 이주얼 6.8초(3.2). 원인은 보지 않음.
+- 가드 중 사망·시체 회수 첫 사례(성공): a1 Pz-12 앤디 chicken off 17:20:20 → `revive start` 17:20:54 → chicken on 17:20:55 → `corpse picked` 17:21:03. 그 뒤 `[Quit] Not ready for act2`.
+
+### 그 밖
+- 조기 종료 사유: Life Chicken 49(a1 32, a5 5, a6 4, a2·a7 3, a4·a8 1, a3 0), desync 17줄(8게임), Diablo not found 9, Figurine incompleted 6, Not ready for act2 2, Not ready to start Duriel 2, Souls found in Anya 1, Tomb chest not reached 1.
+- 사망: 콘솔 `You died` 1건(a1 00:17:27, 앞 게임 00:17:13 Life Chicken 직후) + 위 가드 중 사망 1건.
+- `[Error]` 1건: a1 04:56:06 Pz-71 `TownChicken.js` `Town.visitTown: Failed to go back from town`(Lut Gholein).
+- `[useUnit] timeout` 42줄, `[teleportTo failed]` 4줄, getWP `menu not opened` 101줄, `Town chicken` 84, `Town check` 165, `relay` 7.
+- 크래시 1건: a7 15:32:13. 매니저 콘솔 `Window has unexpectedly exited`, d2bs `Crash: no entry Cold Plains - wait 5s (loc 9)`와 엔진 재시작 줄.
+- 매니저 콘솔 복사본(1,394줄)과 d2bs `[console]` 줄(1,393줄)은 내용 기준으로 1:1 일치, 콘솔에만 있는 줄은 위 크래시 줄 1개 → 매니저 콘솔은 더 받지 않음(사용자 261024, `log_guide.md` 2절).

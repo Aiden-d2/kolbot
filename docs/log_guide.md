@@ -17,9 +17,11 @@
 | 파일 | 위치(게임 PC) | 용도 |
 |---|---|---|
 | trace | `kolbot/_cache/trace/trace-<프로필>-<YYYYMMDD>.txt` | 분석의 중심. 프로필별·날짜별 |
-| d2bs 로그 | D2BS 로그 폴더 | `print` 진행 기록, 엔진 오류(`Error in ...`), `[Chicken]` print, `enchant:` |
-| 매니저 콘솔 | D2Bot# 콘솔 로그(`consolelog.txt`) | 조기 종료 사유, 치킨·사망(빨강), 오류(회색), 경험치 줄, 크래시(`Window has unexpectedly exited`) |
+| d2bs 로그 | D2BS 로그 폴더 | `print` 진행 기록, 엔진 오류(`Error in ...`), `[Chicken]` print, `enchant:`, 콘솔 줄(`[console] 내용`: 조기 종료 사유, 치킨·사망, 오류, 경험치 줄, 게임 밖 줄) |
 | ItemLog | `kolbot/_cache/ItemLog.txt` | 줍기·구매·판매 |
+
+- 매니저 콘솔은 받지 않는다(사용자 261024). 콘솔 줄은 d2bs 로그의 `[console]` 줄로 본다(261021~). 261024 묶음에서 콘솔 복사본과 `[console]` 줄이 내용 기준 1:1로 맞았고, 콘솔에만 있던 줄은 매니저가 찍는 크래시 줄(`Window has unexpectedly exited`) 하나였다. 색은 어느 쪽에도 남지 않으므로 줄 내용(4-8 정상 종료 판정)으로 가른다. 이 문서의 "콘솔 `…`" 줄은 모두 `[console]` 줄에서 찾는다.
+- 크래시: d2bs 로그의 `Crash: 스크립트 지역 - wait Ns (loc N)`(매니저가 크래시 정보를 남겼을 때) 또는 엔진 재시작 줄(`D2BS Engine startup complete`, 앞 번호가 바뀜). 크래시 때 하던 일·위치는 재시작 직전의 trace·d2bs 마지막 줄로 본다.
 
 - 이전에는 사용자가 `log` 브랜치 `logs/`에 올렸다. 위치를 사용자에게 확인한다.
 - **어느 코드로 돌았는지 먼저 확인한다.** 사용자에게 main 커밋(또는 업로드 시각)을 묻고, 실행 중에 코드가 바뀌었는지도 묻는다(261006 분석 때 실행 중 바뀌었다). trace 형식으로도 시기를 가를 수 있다(3절).
@@ -112,7 +114,6 @@
 - 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`.
 - (261022 `482171b`에서 바뀜) `chores slow: clearInventory|buyPotions Ns`(261021~261022 로그) → `chores Ns: pre heal id inv [npc:<NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`(doChores 전체 10초 초과만, Claude 추가). `buyPotions: buy failed 코드 gold: columns:|buffer`(261021)는 그대로. 판정: 어느 단계가 긴가 — inv의 pots(물약 정리, 261022부터 마시기), belt 클릭 수, buy의 npc(상점 NPC까지 걷기·열기)와 구매 횟수·실패, 시작 시 NPC 메뉴(08)·거래창(0C). 제거 조건: handoff 3-27 판정 뒤 삭제 여부 결정. 261023 `0f6da09`부터 belt 뒤에 `cur 시도/실패 put N shift 시도/실패 ui 직전>직후 remain N`(handoff 3-27)이 붙고, 벨트 실패가 1건이라도 있으면 10초 미만이어도 찍힘. `ui`는 `08`(NPC 메뉴)·`01`(인벤토리 창), 없으면 `-`.
 - `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정.
-- d2bs 로그 `[console] 내용`(261021~) — 콘솔 줄이 d2bs 로그에도 남음.
 - `[Storage.MoveTo] retry / catch`, `moved from cube to drop/sell`, `[TK] talk skipped N npc:`(스페이스 20번 다 씀, 261006·261020에 각 1건, 모두 Greiz 20), `[hire] hiring retry (N/5)`.
 - d2bs 로그 `enchant: 이름/classid`(S.SFFW 65레벨부터 아마존·2막 용병·발키리·섀도 워리어·그리즐리).
 
