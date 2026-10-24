@@ -217,7 +217,10 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 데이터: trace·d2bs·ItemLog·ScriptErrorLog·`_cache`(config 캐시 포함), 매니저 콘솔(사용자 복사본, 이 묶음까지). 새 계정으로 노말부터 파밍까지. 코드는 main `33d3ae3`(10/23 15:23 업로드) — chores 줄 1,833개에 `cur` 0, `relay` 7줄·`[SafeTele] monsters`가 마지막(10/24 09:48:25)까지 있음 → `0f6da09`(3-27 벨트 판별, 3-28 확인 줄 삭제)는 들어 있지 않음. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
 
 ### handoff 3절 판정
-- 3-26 desync: 8게임 17줄(261023 묶음은 119게임 중 3게임).
+- 3-25 nip 재료 줄: **실패 → handoff 2-20.**
+  - 핵심(ItemLog `Kept`에 재료 줄)은 통과: 방패·갑옷·바바리안 검·활 베이스(예: a7 18:22:21 Large Shield N.SUMM 219줄). a8(B.WCRY) 검은 4소켓 Claymore를 주울 때마다 0소켓 Giant Sword 1개씩 버림(02:43:32·04:02:53), 최종 Spirit 착용 + Claymore 1 = 2. 노말 3소켓 브레스트플레이트 줍기 0. 나머지 항목(스텔스·용병 폴암·X.nip tier 21~25 방패·플레일)은 사례 없음, 코드대로면 문제없어 더 보지 않음(사용자 261024).
+  - 실패 사례: a7(N.SUMM) 10/24 03:10 Pz-64 시작 마을 정리에서 보관 중이던 스모크 베이스 Ghost Armor 2소켓을 버림(03:10:15 `Dropped`). 인벤토리의 노말 Trellised Armor 2소켓이 홀드(`[type] == armor && 노말·슈페리어 # [sockets] == 2 && [frw] == 0`)에 세어져 `[qty] < 1`이 거짓이 됨. Trellised Armor는 베이스 이름이 아니라 03:10:23 `Sold`.
+- 3-26 desync: **알 수 없음 → handoff 2-21.** 8게임 17줄(261023 묶음은 119게임 중 3게임).
 
 | 게임 | 빠진 프로필 | 하던 일 |
 |---|---|---|
@@ -228,15 +231,15 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 
   - Pz-86: 다른 7명 `bossGuard on` 06:24:36, 디아 last 06:24:48. a4는 06:24:48 별 자리(7795,5294)에서 `visitTown start by:default.dbj`(`Town check` 줄 없음 → 줍기 중 가방 참 `Pickit.js` 경로로 추정), back 06:25:09, `bossGuard on` 없이 06:25:12 `boss not found: 243`(`Attack.clear(0, 243)`, `AutoSmurf.diablo`의 이 호출뿐). 코드: 가드는 `!me.getQuest(26, 0)`일 때만 켜지고, `bossEnd`는 가드가 꺼져 있으면(`guardChicken === null`) okCount 전에 끝남 → a4는 okCount 없이 포털로, a1·a3·a7은 `bossEnd` okCount에서 120초 뒤 desync. a4의 퀘스트 완료(마을에 있는 동안 디아가 죽음)는 추정(퀘스트 상태 줄 없음). 같은 퀘스트 게이트는 디아(26)·바알(40)뿐. handoff 항목으로 올리는 안은 기각(`rejected.md` bossGuard·bossEnd, 사용자 261024).
   - a6이 8건 중 3건(261023 Pz-6에도 포함). 구간은 다르고 원인 모름.
-- 3-25 nip 재료 줄(일부):
-  - ItemLog `Kept`에 재료(홀드) 줄이 찍힘: 방패·갑옷·바바리안 검·활 베이스(예: a7 18:22:21 Large Shield N.SUMM 219줄).
-  - a8(B.WCRY) 검: 4소켓 Claymore를 주울 때마다 0소켓 Giant Sword 1개씩 버림(02:43:32·04:02:53), 최종 Spirit 착용 + Claymore 1 = 2. 줍고 마을 정리 전까지 잠깐 3(설계대로).
-  - 노말 3소켓 브레스트플레이트 줍기 0(유니크 Venom Ward·매직만).
-  - 상황 없음: 스텔스 만든 프로필 0, X.nip tier 21~25 방패(96~100줄) 착용 0, 용병 폴암 재료 `Kept` 0.
-  - 안 봄: 바바리안 밖 빌드의 한도 1 전체 대조, a7 03:10:15 Chaos Sanctuary 스모크 베이스(Ghost Armor) `Dropped`의 이유.
-- 3-27 벨트(옛 형식으로 가설 근거만): 느린 정리 34건 클릭당 3.58~3.70초, 모두 정리 시작 때 NPC 메뉴(08) 열림. 메뉴 닫힘 87건 중 느림 0. 느린 34건 중 2건은 `pots 5`(261023은 모두 `0/0`). 판별은 `0f6da09` 뒤 로그.
-- 상황 없음: 3-10(`radamentOff` 0, 북 24게임 모두 visible → read), 3-13(`dropping radament book` 0), 3-17(MoveToSlot 실패 0, `party accept` 918줄), 3-22(`vanished`·`Not enough room` 0).
-- 판정 불가(코드 없음): 3-27 판별 줄, 3-28.
+  - 판정할 수 없는 이유: 두 묶음 11건 중 9건은 빠진 프로필이 그동안 아무 줄도 남기지 않아 하던 일을 알 수 없음. 반복 구간은 BO 이동(a6 2회). 개선안은 늦게 온 프로필이 실행 중이던 함수를 남기는 것(2-21).
+- 케이스 미발견(모두 더 봄, 사용자 261024):
+  - 3-10: `radamentOff` 0, 북 24게임 모두 visible → read. 사유: 북 분실 없음.
+  - 3-13: `dropping radament book` 0. 사유: 북을 가진 채 시작한 게임 없음.
+  - 3-17: MoveToSlot 실패 0, `party accept` 918줄. 사유: 세 묶음(289게임) 연속 0. 관련 코드 변경은 `82ede23`(10/20 09:57, 큐브·TP 칸 옮기기를 게임 입장 직후에서 `doChores` 뒤로) 하나, 옛 로그가 없어 그 변경 때문인지는 확인 불가.
+  - 3-22: `vanished`·`Not enough room` 0. 사유: 퀘스트 아이템을 남이 먼저 줍는 일 없음.
+- 이번 로그에 적용되지 않음(`0f6da09` 없음):
+  - 3-27: 옛 형식으로 본 가설 근거만. 느린 정리 34건 클릭당 3.58~3.70초, 모두 정리 시작 때 NPC 메뉴(08) 열림. 메뉴 닫힘 87건 중 느림 0. 느린 34건 중 2건은 `pots 5`(261023은 모두 `0/0`).
+  - 3-28: `relay` 7줄·`[SafeTele] monsters`가 끝까지 찍힘.
 - 이름 정리(PR #74): 콘솔 `[Socket]` 19 = ItemLog `Socketed` 19, `[Runeword]` 8 = `Runeworded` 8, `[Punch]` 1(`Transmuted` 1), 옛 이름(`[Gem]`)·앞 기호(`@ `·`# `) 0.
 
 ### 보스가드 (치킨 off HP와 off → last 시간)
