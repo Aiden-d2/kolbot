@@ -958,7 +958,6 @@ IngredientLoop:
 			k, r, n, worn, have, recipe;	//261024
 
 		// An equipped punch base (player or merc) whose other ingredients are all owned is taken off first, so the usual flow below uses it	//261024 2-15
-		this.update();	//261024 recipes enabled for what is worn now (validItem below reads recipe.Enabled)
 		worn = Misc.wornItems();	//261024 player and merc
 		have = me.findItems(-1, 0) || [];	//261024 ingredients in storage, used up per taken base
 
