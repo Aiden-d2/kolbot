@@ -51,7 +51,7 @@
   - 진행 요약(구간 헤더 `=== X ===`, `!!! BOOK/POTION/SCROLL !!!`, `[Hired]`, 룬워드, 경험치 로그)은 기존대로. 경험치 로그는 치킨 포함 모든 종료에서 남는다.
 - **`print`** (d2bs 로그, 게임 화면 콘솔) = **게임 진행 기록**만: 구간 시작, 구간 결과(`X failed: 이유`), 용병 결과, 장비(`equipped/granted`), 이동·버프 진행, 시작 설정 표시 등. 오류 관련 줄은 넣지 않는다.
 - **`Misc.trace`** (`_cache/trace/trace-<프로필>-<날짜>.txt`) = **분석·검증·오류 상세**: 타임아웃, 재시도, 실패 상세, 판정·측정, 콘솔로 가는 줄 전부(`[Quit]`, `[Error]`), 구간 헤더, 게임 경계(`=== [<게임 이름>] ===`), `Script ended`, `boss not found`.
-  - 형식 `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`(게임 밖은 `(OOG loc N)`). `Misc.trace(msg, true)`는 위치를 붙이지 않는다: 게임 경계, 구간 헤더, `[Error]`, `party has left`.
+  - 형식 `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`(게임 밖은 `(OOG loc N)`). `Misc.trace(msg, true)`는 위치를 붙이지 않는다: 게임 경계, 구간 헤더, `[Error]`.
 - D2BS 엔진 메시지는 d2bs 로그에 남는다(옮길 수 없음).
 
 ## 5. 노트
