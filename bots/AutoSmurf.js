@@ -504,6 +504,7 @@ function AutoSmurf() {
 			}
 			
 			if (me.diff === 0) {	//261014
+				Town.clearBelt();	//261025 belt potions first (moved out of clearInventory)
 				Town.clearInventory();
 				Town.buyPotions();
 			}
@@ -5439,6 +5440,7 @@ function AutoSmurf() {
 			}
 			
 			//260531
+			Town.clearBelt();	//261025 belt potions before the Larzuk menu opens (clearInventory no longer does it, and it fails with a menu open)
 			Town.move("larzuk");
 			larzuk = getUnit(1, "larzuk");
 			

@@ -1768,7 +1768,9 @@ MainLoop:
 
 		var item = me.getItem(-1, 2),
 			clearList = [],
-			bufferList = [];	// 260822
+			bufferList = [],	// 260822
+			col, beltSize, total, path, ui, items, tick,	//261025 belt return and potion cleanup (moved from clearInventory)
+			c = this.chores || {};	//261025 doChores step line (stale object when called outside doChores, not printed)
 
 		if (item) {
 			do {
@@ -1827,6 +1829,140 @@ MainLoop:
 				i += 1;
 			}
 		}
+
+		tick = getTickCount();	//261025 (moved with the block)
+		items = [];	//261025
+
+		// Return potions to belt	//261025 moved from clearInventory: runs before heal (no NPC menu), the heal menu left open made every belt click fail
+		item = me.getItem(-1, 0);
+
+		if (item) {
+			do {
+				if (item.location === 3 && [76, 77, 78].indexOf(item.itemType) > -1) {
+					items.push(copyUnit(item));
+				}
+			} while (item.getNext());
+
+			beltSize = Storage.BeltSize();
+			col = this.checkColumns(beltSize);
+
+			// Sort from HP to RV
+			items.sort(function (a, b) {
+				return a.itemType - b.itemType;
+			});
+
+			while (items.length) {
+				item = items.shift();
+
+				for (i = 0; i < 4; i += 1) {
+					if (item.code.indexOf(Config.BeltColumn[i]) > -1 && col[i] > 0) {
+						total = col[0] + col[1] + col[2] + col[3];	//261023 belt check: free slots before the click
+						path = "shift";	//261023 shift / cur (toCursor failed) / put (on the cursor, belt clicked)
+
+						if (col[i] === beltSize) { // Pick up the potion and put it in belt if the column is empty
+							c.beltCur = (c.beltCur || 0) + 1;	//261023 empty column path
+							path = "cur";	//261023
+							ui = (getUIFlag(0x08) ? "08" : "-") + (getUIFlag(0x01) ? "01" : "");	//261023 NPC menu / inventory panel before the first try
+
+							if (item.toCursor()) {
+								path = "put";	//261023
+								clickItem(0, i, 0, 2);
+							} else {
+								c.beltCurFail = (c.beltCurFail || 0) + 1;	//261023 toCursor failed (3 x 1s)
+							}
+
+							if (c.beltUI === undefined) {	//261023 first empty column try only: did the click close the menu
+								c.beltUI = ui + ">" + (getUIFlag(0x08) ? "08" : "-") + (getUIFlag(0x01) ? "01" : "");
+							}
+						} else {
+							c.beltShift = (c.beltShift || 0) + 1;	//261023 shift-click path
+							clickItem(2, item.x, item.y, item.location); // Shift-click potion
+						}
+
+						c.beltClicks = (c.beltClicks || 0) + 1;	//261022
+						delay(me.ping * 2 + 200);
+
+						col = this.checkColumns(beltSize);
+
+						if (col[0] + col[1] + col[2] + col[3] === total) {	//261023 belt unchanged after the click
+							if (path === "put") {
+								c.beltPutFail = (c.beltPutFail || 0) + 1;	//261023 on the cursor but not in the belt
+							} else if (path === "shift") {
+								c.beltShiftFail = (c.beltShiftFail || 0) + 1;	//261023
+							}
+						} else {
+							break;	//261025 in the belt: no click for the next column of the same kind (mp mp / rv rv clicked the moved potion again)
+						}
+					}
+				}
+			}
+		}
+
+		c.belt = getTickCount() - tick;	//261022
+		tick = getTickCount();	//261022
+
+		// Cleanup remaining potions
+		item = me.getItem(-1, 0);
+
+		if (item) {
+			items = [
+				[], // array for hp
+				[], // array for mp
+				[]  // array for rv	//260901
+			];
+
+			do {
+				if (item.itemType === 76) {
+					items[0].push(copyUnit(item));
+				}
+
+				if (item.itemType === 77) {
+					items[1].push(copyUnit(item));
+				}
+				
+				if (item.itemType === 78) {	//260901
+					if (item.classid === 515) {
+						items[2].unshift(copyUnit(item));
+					} else {
+						items[2].push(copyUnit(item));
+					}
+				}
+			} while (item.getNext());
+
+			// Cleanup healing potions
+			while (items[0].length > Config.HPBuffer) {
+				items[0].shift().drop();	//261022 drop -> drink	//261025 back to drop: runs in clearBelt before heal, no NPC menu
+				c.potCount = (c.potCount || 0) + 1;	//261022
+				delay(200 + me.ping * 2);
+			}
+
+			// Cleanup mana potions
+			while (items[1].length > Config.MPBuffer) {
+				items[1].shift().drop();	//261022 drop -> drink	//261025 back to drop
+				c.potCount = (c.potCount || 0) + 1;	//261022
+				delay(200 + me.ping * 2);
+			}
+			
+			// Cleanup rejuv potions	//260901
+			while (items[2].length > Config.RejuvBuffer) {
+				items[2].shift().drop();	//261022 drop -> drink	//261025 back to drop
+				c.potCount = (c.potCount || 0) + 1;	//261022
+				delay(200 + me.ping * 2);
+			}
+		}
+
+		item = me.getItem(-1, 0);	//261023 belt check: potions left in the inventory after the cleanup (kept as buffer, tried again next visit)
+		c.beltLeft = 0;
+
+		if (item) {
+			do {
+				if (item.location === 3 && [76, 77, 78].indexOf(item.itemType) > -1) {
+					c.beltLeft += 1;
+				}
+			} while (item.getNext());
+		}
+
+		c.pots = getTickCount() - tick;	//261022
 
 		return true;
 	},
@@ -1889,142 +2025,12 @@ MainLoop:
 	},
 
 	clearInventory: function () {
-		var i, col, result, item, beltSize, total, path, ui,	//261023 belt check
+		var i, result,	//261025 belt and potion cleanup moved to clearBelt
 			c = this.chores || {},	//261022 chores stall check (doChores step line)
 			tick = getTickCount(),	//261022
 			items = [];
 
 		c.invNpc = (getInteractedNPC() ? getInteractedNPC().name : "-") + (getUIFlag(0x08) ? " 08" : "") + (getUIFlag(0x0C) ? " 0C" : "");	//261022 NPC menu or trade open when it starts (heal leaves it open)
-
-		// Return potions to belt
-		item = me.getItem(-1, 0);
-
-		if (item) {
-			do {
-				if (item.location === 3 && [76, 77, 78].indexOf(item.itemType) > -1) {
-					items.push(copyUnit(item));
-				}
-			} while (item.getNext());
-
-			beltSize = Storage.BeltSize();
-			col = this.checkColumns(beltSize);
-
-			// Sort from HP to RV
-			items.sort(function (a, b) {
-				return a.itemType - b.itemType;
-			});
-
-			while (items.length) {
-				item = items.shift();
-
-				for (i = 0; i < 4; i += 1) {
-					if (item.code.indexOf(Config.BeltColumn[i]) > -1 && col[i] > 0) {
-						total = col[0] + col[1] + col[2] + col[3];	//261023 belt check: free slots before the click
-						path = "shift";	//261023 shift / cur (toCursor failed) / put (on the cursor, belt clicked)
-
-						if (col[i] === beltSize) { // Pick up the potion and put it in belt if the column is empty
-							c.beltCur = (c.beltCur || 0) + 1;	//261023 empty column path
-							path = "cur";	//261023
-							ui = (getUIFlag(0x08) ? "08" : "-") + (getUIFlag(0x01) ? "01" : "");	//261023 NPC menu / inventory panel before the first try
-
-							if (item.toCursor()) {
-								path = "put";	//261023
-								clickItem(0, i, 0, 2);
-							} else {
-								c.beltCurFail = (c.beltCurFail || 0) + 1;	//261023 toCursor failed (3 x 1s)
-							}
-
-							if (c.beltUI === undefined) {	//261023 first empty column try only: did the click close the menu
-								c.beltUI = ui + ">" + (getUIFlag(0x08) ? "08" : "-") + (getUIFlag(0x01) ? "01" : "");
-							}
-						} else {
-							c.beltShift = (c.beltShift || 0) + 1;	//261023 shift-click path
-							clickItem(2, item.x, item.y, item.location); // Shift-click potion
-						}
-
-						c.beltClicks = (c.beltClicks || 0) + 1;	//261022
-						delay(me.ping * 2 + 200);
-
-						col = this.checkColumns(beltSize);
-
-						if (col[0] + col[1] + col[2] + col[3] === total) {	//261023 belt unchanged after the click
-							if (path === "put") {
-								c.beltPutFail = (c.beltPutFail || 0) + 1;	//261023 on the cursor but not in the belt
-							} else if (path === "shift") {
-								c.beltShiftFail = (c.beltShiftFail || 0) + 1;	//261023
-							}
-						}
-					}
-				}
-			}
-		}
-
-		c.belt = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
-
-		// Cleanup remaining potions
-		item = me.getItem(-1, 0);
-
-		if (item) {
-			items = [
-				[], // array for hp
-				[], // array for mp
-				[]  // array for rv	//260901
-			];
-
-			do {
-				if (item.itemType === 76) {
-					items[0].push(copyUnit(item));
-				}
-
-				if (item.itemType === 77) {
-					items[1].push(copyUnit(item));
-				}
-				
-				if (item.itemType === 78) {	//260901
-					if (item.classid === 515) {
-						items[2].unshift(copyUnit(item));
-					} else {
-						items[2].push(copyUnit(item));
-					}
-				}
-			} while (item.getNext());
-
-			// Cleanup healing potions
-			while (items[0].length > Config.HPBuffer) {
-				items[0].shift().interact();	//261022 drop -> drink (original kolbot): a drop does not go through while the heal NPC menu is open
-				c.potCount = (c.potCount || 0) + 1;	//261022
-				delay(200 + me.ping * 2);
-			}
-
-			// Cleanup mana potions
-			while (items[1].length > Config.MPBuffer) {
-				items[1].shift().interact();	//261022 drop -> drink
-				c.potCount = (c.potCount || 0) + 1;	//261022
-				delay(200 + me.ping * 2);
-			}
-			
-			// Cleanup rejuv potions	//260901
-			while (items[2].length > Config.RejuvBuffer) {
-				items[2].shift().interact();	//261022 drop -> drink
-				c.potCount = (c.potCount || 0) + 1;	//261022
-				delay(200 + me.ping * 2);
-			}
-		}
-
-		item = me.getItem(-1, 0);	//261023 belt check: potions left in the inventory after the cleanup (kept as buffer, tried again next visit)
-		c.beltLeft = 0;
-
-		if (item) {
-			do {
-				if (item.location === 3 && [76, 77, 78].indexOf(item.itemType) > -1) {
-					c.beltLeft += 1;
-				}
-			} while (item.getNext());
-		}
-
-		c.pots = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
 
 		// eom cube clear	//260919
 		items = Storage.Cube.Compare(Config.Cube);
