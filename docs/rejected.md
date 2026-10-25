@@ -129,9 +129,6 @@
 ## threads/TownChicken.js
 - **261021 TownChicken을 ToolsThread로 이관** — 이유: 사용자 기각. 261013·261020 로그에서 TownChicken을 끄면 HP 마을행 146건 중 도착한 95건(65%)이 전투에 남는다(`log_results.md`).
 
-## tools/NTItemParser.dbl
-- **261021 NTIP `Qty`/`.Tier` 게이트** — 이유: 사용자 기각.
-
 ## tools/OOG.js
 
 ### printToConsole

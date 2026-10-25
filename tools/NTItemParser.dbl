@@ -781,6 +781,12 @@ NTIP.ParseLineInt = function (input, info) {
 				return false;
 			}
 		}
+
+		if (p_result[2].TierCheck && (p_result[2].hasOwnProperty("Tier") || p_result[2].hasOwnProperty("Merc"))) {	//261025 tier/merc line: gear tier ignored (GetScore does not see it either), line kept
+			delete p_result[2].TierCheck;	//261025
+			delete p_result[2].TierCheckStr;	//261025
+			Misc.trace("NTIP: gear tier ignored on tier/merc line File: " + info.file + " Line: " + info.line);	//261025
+		}
 	}
 	
 	if (holdPart) {	// 260515
