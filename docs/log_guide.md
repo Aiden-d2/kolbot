@@ -137,12 +137,13 @@
 |---|---|---|
 | 3-22 | 퀘스트 아이템 사라짐 위치 변경 | 4-5 `quest item vanished`, `Not enough room for undefined` |
 | 3-17 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
-| 3-27 | 벨트 넣기 지연 판별 | 4-6 `chores ... cur put shift ui remain` |
+| 3-27 | 벨트 넣기 위치를 heal 앞 `clearBelt`로(`81d5b43`) | 4-6 `chores ... cur put shift ui remain`(`ui ->-`, 실패 0), 마을 물약 다시 줍기 |
 | 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
-| 3-29 | useUnit 계단 클릭 앞 대기 게이트 | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42) |
-| 3-30 | 홀드를 베이스 이름 기준으로 | ItemLog `Kept`·`Dropped`·`Sold`(보관 베이스를 버릴 때 같은 종류 비베이스 아이템이 있었나) |
+| 3-29 | useUnit 계단 클릭 앞 대기 게이트 | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42, 261025 283) |
 | 3-31 | desync 낙오 프로필의 상태 | 4-3 `party has left` 상태·위치, `missing(...)` |
 | 3-32 | 착용 중인 베이스로 룬워드·펀치 | 4-6 `[Runeword] takeOff`·`[Cube] takeOff` |
+| 3-33 | 팀 대기 okCount 통일 | 4-3 `Party desynced 1/2`·`missing(...)`, `act* BO` print |
+| 3-34 | SafeTele 발밑 노드 제외 | 육안, Life Chicken 위치 |
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.
