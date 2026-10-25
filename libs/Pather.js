@@ -161,8 +161,8 @@ var Pather = {
 		// candidates: rings from the tele step down to SafeTele.Min (every Step), arc spacing Step, up to SafeTele.Angle each side	//261003
 		// all are built first and checked nearest to the original node first (ties: the farther ring); 0 monsters is taken at once,
 		// otherwise the fewest (ties: the one checked first)
-		function safeCheckNode(targetNode, monList, fireList, excludedNodes) {	//260807	//260823 order change
-			var i, v, dist, angle, rad, tx, ty, mc, baseline, safeNode, offset, skip, step,	//260627
+		function safeCheckNode(targetNode, monList, fireList) {	//260807	//260823 order change	//261025 excludedNodes removed
+			var i, dist, angle, rad, tx, ty, mc, baseline, safeNode, offset, step,	//260627	//261025 v, skip removed
 				list = [];	//261003
 
 			if (!Config.SafeTele.Enabled) return targetNode;
@@ -199,19 +199,7 @@ var Pather = {
 
 			for (i = 0; i < list.length; i += 1) {	//261003 one pass over the sorted candidates
 				tx = list[i].x;
-				ty = list[i].y;
-				skip = false;
-				
-				for (v = 0; v < excludedNodes.length; v += 1) {
-					if (getDistance(tx, ty, excludedNodes[v].x, excludedNodes[v].y) < 5) {
-						skip = true;
-						break;
-					}
-				}
-				
-				if (skip) {
-					continue;
-				}
+				ty = list[i].y;	//261025 recent-spot exclusion removed
 				
 				mc = Attack.getMonsterCount(tx, ty, Config.SafeTele.Range, monList, fireList);	//260807	//261022 counted first (array math): the landing check below only runs for a candidate that would be taken
 
@@ -243,7 +231,7 @@ var Pather = {
 			return targetNode;
 		}
 		
-		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, excludedNodes, prevNode, orgx, orgy, valid, myx, myy, monRange, //261021	//261023 monAll removed
+		var i, path, adjustedNode, cleared, useTeleport, monList, fireList, checkedNode, prevNode, orgx, orgy, valid, myx, myy, monRange, //261021	//261023 monAll removed	//261025 excludedNodes removed
 			node = {x: x, y: y},
 			fail = 0;
 
@@ -424,11 +412,7 @@ var Pather = {
 			node = path.shift();
 			
 			//eom 260411
-			if (useTeleport && !me.inTown && path.length > 0 && Config.SafeTele.Skip.indexOf(me.area) === -1) {	//260829
-				if (!excludedNodes) {	// 260523
-					excludedNodes = [];
-				}
-				
+			if (useTeleport && !me.inTown && path.length > 0 && getDistance(me, node) > 2 && Config.SafeTele.Skip.indexOf(me.area) === -1) {	//260829	//261025 skip the node under my feet (a re-made path starts at my position)
 				monList = Attack.buildMonsterList();
 				monRange = Math.max(this.teleDistance, getDistance(me, node)) + Config.SafeTele.Range;	//261021 candidates are within teleDistance of me and count monsters within Range of themselves: farther ones never count
 				monList = monList.filter(function (mon) {
@@ -437,15 +421,9 @@ var Pather = {
 
 				fireList = Attack.getFireList();	//260807
 				
-				checkedNode = safeCheckNode(node, monList, fireList, excludedNodes);	// 260829
+				checkedNode = safeCheckNode(node, monList, fireList);	// 260829	//261025 excludedNodes removed
 				
 				if (checkedNode !== node) {
-					excludedNodes.push({x: checkedNode.x, y: checkedNode.y});	// 260823
-					
-					if (excludedNodes.length > 5) {	// 260823
-						excludedNodes.shift();
-					}
-					
 					if (this.teleportTo(checkedNode.x, checkedNode.y)) {
 						path = getPath(me.area, x, y, me.x, me.y, 1, this.teleDistance);	//261007 removed getTeleDistance
 						
