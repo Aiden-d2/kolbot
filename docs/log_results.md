@@ -265,3 +265,53 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - `[useUnit] timeout` 42줄, `[teleportTo failed]` 4줄, getWP `menu not opened` 101줄, `Town chicken` 84, `Town check` 165, `relay` 7.
 - 크래시 1건: a7 15:32:13. 매니저 콘솔 `Window has unexpectedly exited`, d2bs `Crash: no entry Cold Plains - wait 5s (loc 9)`와 엔진 재시작 줄.
 - 매니저 콘솔 복사본(1,394줄)과 d2bs `[console]` 줄(1,393줄)은 내용 기준으로 1:1 일치, 콘솔에만 있는 줄은 위 크래시 줄 1개 → 매니저 콘솔은 더 받지 않음(사용자 261024, `log_guide.md` 2절).
+
+## 261025 묶음 (10/24 13:47 ~ 10/25 08:47, 8프로필 110게임)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog·`_cache`(config 캐시 포함). 새 계정으로 노말부터 헬 파밍까지. 코드는 실행 시작(10/24 13:47) 전까지 병합된 main(`5cbb612` + nip 업로드 `67f30e4`)으로 본다(사용자 261025, 실행 중 파일 변경 없음). 줄 형식 확인: `party has left` 한 줄 상태·위치 772줄(`33bd183`), `chores` 2,049줄 모두 `cur` 필드·`relay`·`[SafeTele] monsters` 0(`0f6da09`). `789d80d`·`aafbe50`(13:57·15:43 병합)과 261025 커밋은 들어 있지 않음. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 판정
+- 3-27 벨트: **가설 확정.** 느린 정리(클릭당 3초 이상) 30건 모두 시작 때 NPC 메뉴(08) 열림, 빈 열 경로만(시도 = 클릭 = 실패), shift 0, `ui 08>08`. 예: a1 10/24 14:18:20 `belt 14.5s/4 cur 4/4 ui 08>08`. 메뉴 닫힘의 빈 열 경로 18건 실패 0, 클릭당 약 1초. 중간(1.5~3초) 9건도 모두 메뉴 열림.
+  - 정리 시작 때 메뉴 열림 1,496/2,049. 메뉴 열림 시작 정리의 shift-click 2,427회 모두 실패(빈칸 합계 변화 없음, 빠른 실패). 메뉴 닫힘 shift 369회 중 실패 160은 `3/1`·`6/3`·`2/1` 모양 → 같은 종류 두 열(a1·a5·a8 `hp mp mp rv`, 나머지 `hp mp rv rv`)에 같은 물약을 다시 클릭한 것(추정, 열 반복문에 멈춤 없음 — 원본 kolbot도 같음).
+  - 메뉴 열림 실패 정리의 shift 시도 수가 남은 물약 수의 2~3배(`8/8 remain 4`, `6/6 remain 3`)이고 마시기 0 → 실패한 물약은 대부분 회춘(회복·마나는 예비 0이라 정리에서 처리, 회춘은 예비 2~4만큼 남음, 추정).
+  - 마시기(`interact`)는 메뉴가 열려 있어도 됨(마시기 있던 21건 중 메뉴 열림 시작도 마신 뒤 `remain 0`, 간접 근거).
+  - 처리: 벨트 넣기·남는 물약 정리를 heal 앞 `clearBelt`로(`81d5b43`, handoff 3-27). heal에서 메뉴를 닫는 안은 기각(`rejected.md` Town heal).
+- 3-28 확인용 줄 삭제: **검증 통과.** `relay` 0, `[SafeTele] monsters` 0, `(cursor)` 0. 콘솔 `[Socket]` 29 = ItemLog `Socketed` 29, `socketGems failed` 0.
+- 3-29 useUnit: **실패 기준에 해당**(사용자: 한 사이클 더 본 뒤 재검토). timeout 283줄(261023 34, 261024 42, 고정 600ms 전 261022 묶음 2 414). a1 210줄(145회), 걷는 프로필 a2~a8 73줄(261023 19). 전 프로필 210회 중 159회는 0회차 timeout 한 번 뒤 넘어감, 8회 모두 실패 2. 많은 곳 a1 Worldstone Keep 2→3층 22회, 3층→Throne 14회. 게임 구성은 앞 묶음과 같음(새 계정, 보스가드 보스별 약 24건).
+  - 8회 모두 실패 2건(게이트와 무관): a1 Pz-14 16:10 Lut Gholein → 궁전(useUnit id 24 → 50) `dist:21` 8회 그대로, `[Error] AutoSmurf.travel: Failed to enter the Palace in Act 2`. 직전 `=== AMULET ===` 완료. 경비병이 막았는지는 추정(확인 안 함), 다음 게임 Pz-15는 통과. a1 Pz-47 22:10 Tal Rasha's Tomb → 두리엘 방(type 2 오브젝트 100) `dist:2~4` 8회, `[Quit] Duriel chamber not entered`, 원인 못 찾음. 둘 다 1절 등록 없음(사용자 261025).
+- 3-30 홀드 이름 기준: **검증 통과**(handoff에서 지움, nip은 코드 노트를 두지 않음 — 사용자 261025). 재료 줄 `Kept` 14건. 보관 베이스 손실은 a8 Giant Sword 1건(01:15:55 `Sold`)으로, Spirit 착용 + 4소켓 이더리얼 Crystal Sword(01:05 `Kept`)로 한도 2 초과 → 0소켓 1개가 빠지는 설계대로. 22:56:08 Claymore 0소켓 `Dropped`도 같음. 같은 종류 비베이스 아이템 때문의 손실 0. 룬워드 11건(에인션트 플레지 7, 제퍼 1, 스피릿 2, 프린시플 1)·펀치 1건(a3 Broad Sword) 모두 보관함 베이스.
+- 3-31 desync 낙오 상태: 5게임 5줄 모두 판별(멈춤 0, 사용자: 한 사이클 더).
+
+| 게임 | 낙오 | 상태(나머지) | 판별 |
+|---|---|---|---|
+| Pz-7 10/24 15:12 Catacombs 2 | a8 | 공격 mode 7, 85칸(6명 웨이 옆 mode 1) | 지각(전투) |
+| Pz-32 19:03 Ancient's Way | a3 | 서 있음 mode 1, 같은 자리(`act5+ BO` 첫 okCount) | 자리에 와 있는데 okCount 미도착(보냄·유실 모름) |
+| Pz-79 10/25 03:32 Chaos | a4 | 마을 Harrogath | 앞서 감 |
+| Pz-99 05:58 Chaos 별 | a1 | 시전 mode 10, 33칸, 직전 75초에 마을 2번 | 지각(마을행·전투) |
+| Pz-100 06:12 Chaos 별 | a3 | 시전 mode 14, 16칸, 직접 마을행 직후 | 지각(마을행) |
+
+  - Pz-79: a4가 03:30:13 마을행(`Town check` 줄 없음) → 03:30:46 복귀, 가드 없이 `boss not found: 243` → okCount 없이 진행. 261024 Pz-86과 같은 경로(`rejected.md` bossGuard·bossEnd). a6·a7·a8도 `boss not found: 243`이지만 가드가 먼저 켜져 자리에 남음.
+- 3-32: 이번 로그에 적용되지 않음(`takeOff` 0).
+- 케이스 미발견(더 봄, 사용자 261025): 3-10(`radamentOff` 0, 북 24게임 visible → read 24), 3-13(`dropping radament book` 0), 3-17(MoveToSlot 실패 0, `party accept` 933줄, 네 묶음 399게임 연속 0), 3-22(`vanished`·`Not enough room` 0).
+
+### 보스가드 (치킨 off HP와 off → last 시간)
+| 보스(pct) | 건수 | chicken off HP 최소/중앙/최대 | off → last 최소/중앙/최대 | 5초 초과 |
+|---|---|---|---|---|
+| 써모너(100) | 24 | 73/99.5/100 | 0/3.1/5.4초 | 1 |
+| 라다먼트(85) | 24 | 43/75/84 | 1.7/3.8/7.0초 | 8 |
+| 앤디(15) | 31 | 2/13/15 | 0/1.7/3.2초 | 0 |
+| 메피(15) | 24 | 9/14/15 | 1.5/2.7/3.3초 | 0 |
+| 이주얼(15) | 24 | 7/13/15 | 0/3.0/6.5초 | 7 |
+| 디아(15) | 20 | 9/13.5/15 | 1.6/3.3/5.2초 | 1 |
+| 쉥크(50) | 23 | 3/42/50 | 0/2.1/4.4초 | 0 |
+| 에인션트(10) | 24 | 5/9/9 | 1.2/3.3/19.5초 | 8 |
+| 바알(15) | 23 | 5/14/15 | 0/3.0/28.0초 | 8 |
+
+- chicken off 없이 끝난 가드 3건(앤디·쉥크·바알 각 1). 가드 중 사망·시체 회수 0. 261024보다 off → last 중앙값이 짧아짐: 라다먼트 10.8 → 3.8초, 이주얼 6.8 → 3.0초, 에인션트 15.6 → 3.3초(원인은 보지 않음).
+
+### 그 밖
+- 조기 종료 사유: Life Chicken 54(a1 40, a2·a7 3, a4·a5·a6 2, a3·a8 1), Diablo not found 8(a1·a2 4), desync 5, Not ready for act 3, Not ready to start Duriel 3, Souls found in Anya 3, Tomb chest not reached 2, Duriel chamber not entered 1, Figurine incompleted 1.
+- 사망 5건 모두 a1(`You died` 10/24 21:53·22:20·22:48·22:51, 10/25 02:49).
+- `[Error]` 2건 = 위 useUnit 8회 실패 2건.
+- 크래시 3건(`Crash: no entry … - wait 5s (loc 9)`): a7 10/25 01:44 Pit of Acheron, a1 04:08 Harrogath, a8 04:57 Rogue Encampment. 분석하지 않음(사용자 261025).
+- buyPotions(사용자 261025, 오작동 지연이 아니면 추적 안 함): 구매 실패 0, 구매 한 번당(상점까지 제외) 중앙 1.15초·상위 10% 2.6초·최대 4.2초. buy 5초 초과 540건 중앙 9.0초, 상점 NPC까지 비율 중앙 71%(261023과 같음). 사지 않았는데 3초 넘은 239건은 모두 Harrogath·Pandemonium의 `MiniShopBot`(켜짐) `shopItems` 경로.
+- `Town chicken` 89, `Town check` 144, getWP `menu not opened` 96, `[teleportTo failed]` 4, 골드 나눔 버림 13·`Retaking` 0.

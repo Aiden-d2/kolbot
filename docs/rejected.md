@@ -109,6 +109,9 @@
 
 ## libs/Town.js
 
+### heal
+- **261025 heal 끝에서 NPC 메뉴 닫기(`me.cancel()` 되살림) / 벨트 루프 직전에만 닫기**(handoff 3-27, 벨트 클릭이 열린 메뉴에서 모두 실패) — 이유: 사용자 반대. `clearInventory`는 다시 상호작용하지 않고, 판매가 heal NPC 상호작용(`PacketShopping && getInteractedNPC()`)에 기대므로 메뉴를 닫으면 팔 것이 버리기로 바뀐다(동작 오염). 대신 벨트 넣기를 heal 앞 `clearBelt`로 옮김(`81d5b43`).
+
 ### repair
 - **261001 shopItems 방문에 골드 검사** — 노멀 2막 이상 `doChores(true)`면 골드와 관계없이 수리 NPC에 가서 벨트를 훑는다. 이유: 사용자 결정 "그대로 둠"(살 수 있는지는 도착 뒤 `shopItems`에서 본다).
 

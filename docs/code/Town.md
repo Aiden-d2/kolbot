@@ -7,7 +7,7 @@
 - 성공: ItemLog `Socketed {nip 라인}`(넣은 뒤 `NTIP.Evaluate`), 매니저 아이템 로그 `Misc.logItem("Socketed", 장비, 라인)`, 매니저 콘솔 `[Socket] 보석 베이스 (찬/전체)` 색 5(베이스는 `getLocaleString(getBaseStat(0, classid, "namestr"))`), print `equipped: [칸] 티어`(`Equip.updateTier`). 261023 전 이름은 `Gemmed`·`# [Gem]`.
 - 실패: 커서 보석은 인벤토리로, 안 되면 `Packet.dropItem` 뒤 `Pickit.pickItems()`, trace `socketGems failed: <보석> -> [칸] <장비>`(`(dropped)`).
 - 경위(261021 사용자 로그): 장착 칸 클릭 `clickItem(0, 칸)`은 창을 닫아도·보관함을 열어도 커서에 남아 실패. 패킷 0x28은 보관함을 연 채·열지 않고도 성공. 참고: kolbot-SoloPlay도 0x28을 씀.
-- 확인: 261022 0x28 성공 23건·261023 14건, 실패 0, 빈 소켓보다 많이 줍지 않음. 검증 통과(사용자 261023). `(cursor)` 표시와 `onCursor`는 261023 `0f6da09`에서 삭제(handoff 3-28 검증 대기). 261023 이름 정리 뒤 모양은 지금 도는 로그(`33d3ae3`)에서 처음 보인다.
+- 확인: 261022 0x28 성공 23건·261023 14건, 실패 0, 빈 소켓보다 많이 줍지 않음. 검증 통과(사용자 261023). `(cursor)` 표시와 `onCursor`는 261023 `0f6da09`에서 삭제(옛 handoff 3-28). 261025 로그에 `(cursor)` 0, 콘솔 `[Socket]` 29 = ItemLog `Socketed` 29(검증 통과 사용자 261025). 261023 이름 정리 뒤 모양은 지금 도는 로그(`33d3ae3`)에서 처음 보인다.
 
 ## heal
 
