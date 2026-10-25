@@ -278,7 +278,7 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 3-28 확인용 줄 삭제: **검증 통과.** `relay` 0, `[SafeTele] monsters` 0, `(cursor)` 0. 콘솔 `[Socket]` 29 = ItemLog `Socketed` 29, `socketGems failed` 0.
 - 3-29 useUnit: **실패 기준에 해당**(사용자: 한 사이클 더 본 뒤 재검토). timeout 283줄(261023 34, 261024 42, 고정 600ms 전 261022 묶음 2 414). a1 210줄(145회), 걷는 프로필 a2~a8 73줄(261023 19). 전 프로필 210회 중 159회는 0회차 timeout 한 번 뒤 넘어감, 8회 모두 실패 2. 많은 곳 a1 Worldstone Keep 2→3층 22회, 3층→Throne 14회. 게임 구성은 앞 묶음과 같음(새 계정, 보스가드 보스별 약 24건).
   - 8회 모두 실패 2건(게이트와 무관): a1 Pz-14 16:10 Lut Gholein → 궁전(useUnit id 24 → 50) `dist:21` 8회 그대로, `[Error] AutoSmurf.travel: Failed to enter the Palace in Act 2`. 직전 `=== AMULET ===` 완료. 경비병이 막았는지는 추정(확인 안 함), 다음 게임 Pz-15는 통과. a1 Pz-47 22:10 Tal Rasha's Tomb → 두리엘 방(type 2 오브젝트 100) `dist:2~4` 8회, `[Quit] Duriel chamber not entered`, 원인 못 찾음. 둘 다 1절 등록 없음(사용자 261025).
-- 3-30 홀드 이름 기준: **검증 통과.** 재료 줄 `Kept` 14건. 보관 베이스 손실은 a8 Giant Sword 1건(01:15:55 `Sold`)으로, Spirit 착용 + 4소켓 이더리얼 Crystal Sword(01:05 `Kept`)로 한도 2 초과 → 0소켓 1개가 빠지는 설계대로. 22:56:08 Claymore 0소켓 `Dropped`도 같음. 같은 종류 비베이스 아이템 때문의 손실 0. 룬워드 11건(에인션트 플레지 7, 제퍼 1, 스피릿 2, 프린시플 1)·펀치 1건(a3 Broad Sword) 모두 보관함 베이스.
+- 3-30 홀드 이름 기준: **검증 통과**(handoff에서 지움, nip은 코드 노트를 두지 않음 — 사용자 261025). 재료 줄 `Kept` 14건. 보관 베이스 손실은 a8 Giant Sword 1건(01:15:55 `Sold`)으로, Spirit 착용 + 4소켓 이더리얼 Crystal Sword(01:05 `Kept`)로 한도 2 초과 → 0소켓 1개가 빠지는 설계대로. 22:56:08 Claymore 0소켓 `Dropped`도 같음. 같은 종류 비베이스 아이템 때문의 손실 0. 룬워드 11건(에인션트 플레지 7, 제퍼 1, 스피릿 2, 프린시플 1)·펀치 1건(a3 Broad Sword) 모두 보관함 베이스.
 - 3-31 desync 낙오 상태: 5게임 5줄 모두 판별(멈춤 0, 사용자: 한 사이클 더).
 
 | 게임 | 낙오 | 상태(나머지) | 판별 |
