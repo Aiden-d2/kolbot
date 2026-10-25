@@ -7,6 +7,9 @@
 //============================================================================================================================================================================================
 
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # # [tier] == 1
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 2
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 3
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 4
 
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[amazonskills]*120-[itemaddskilltab]*30+[bowandcrossbowskilltab]*50+[passiveandmagicskilltab]*70+[frw]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[amazonskills]*120-[itemaddskilltab]*30+[bowandcrossbowskilltab]*50+[passiveandmagicskilltab]*70+[frw]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
@@ -154,6 +157,10 @@
 //============================================================================================================================================================================================
 
 ([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # # [tier] == 21
+([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 1 # [tier] == 22
+([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 2 # [tier] == 23
+([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 3 # [tier] == 24
+([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 4 # [tier] == 25
 
 ([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword)  && [flag] != ethereal # [2]+([21]+[22]+[23]+[24])/2+[116]+[19]/10+[119]+[224]+[136]+[150]+[156]+[115]*20+([127]+[83])*60+[188,0]*20+[188,1]*40+[60]+[62]+[93]+[96]+[99]+([48]+[49]+[50]+[51]+[54]+[55])/6+([9]+[39]+[41]+[43]+[45])/2 >= 20 # [tier] == 31
 ([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword)  && [flag] != ethereal # [2]+([21]+[22]+[23]+[24])/2+[116]+[19]/10+[119]+[224]+[136]+[150]+[156]+[115]*20+([127]+[83])*60+[188,0]*20+[188,1]*40+[60]+[62]+[93]+[96]+[99]+([48]+[49]+[50]+[51]+[54]+[55])/6+([9]+[39]+[41]+[43]+[45])/2 >= 40 # [tier] == 32
@@ -176,9 +183,7 @@
 ([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword)  && [flag] != ethereal # [2]+([21]+[22]+[23]+[24])/2+[116]+[19]/10+[119]+[224]+[136]+[150]+[156]+[115]*20+([127]+[83])*60+[188,0]*20+[188,1]*40+[60]+[62]+[93]+[96]+[99]+([48]+[49]+[50]+[51]+[54]+[55])/6+([9]+[39]+[41]+[43]+[45])/2 >= 380 # [tier] == 49
 ([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword)  && [flag] != ethereal # [2]+([21]+[22]+[23]+[24])/2+[116]+[19]/10+[119]+[224]+[136]+[150]+[156]+[115]*20+([127]+[83])*60+[188,0]*20+[188,1]*40+[60]+[62]+[93]+[96]+[99]+([48]+[49]+[50]+[51]+[54]+[55])/6+([9]+[39]+[41]+[43]+[45])/2 >= 400 # [tier] == 50
 
-//[name] == cedarbow && [quality] == unique && [flag] != ethereal # # [tier] == 51
-//[name] == razorbow && [quality] == unique && [flag] != ethereal # # [tier] == 52
-[name] == ceremonialbow && [quality] == unique && [flag] != ethereal # # [tier] == 53
+[name] == ceremonialbow && [quality] == unique && [flag] != ethereal # # [tier] == 51
 
 [name] == arrows # # [qty] == 2
 
@@ -195,9 +200,13 @@
 [name] == mageplate && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 @ (([name] == mageplate && ([quality] == normal || [quality] == superior)) || ([type] == armor && [flag] == runeword)) # [sockets] == 3 # [qty] < 1	//261023 keep qty -> hold, Duress on any base stops
 
 // [Zephyr & Edge]
-([name] == stagbow || [name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior) # ([sockets] == 2 || [sockets] == 3) @ (([name] == stagbow || [name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior)) || ([type] == amazonbow && ([flag] == runeword || [quality] == unique)) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1	//261023 base upgrade stag -> ashwood -> ceremonial
-([name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior) # ([sockets] == 2 || [sockets] == 3) @ (([name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior)) || ([type] == amazonbow && ([flag] == runeword || [quality] == unique)) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1	//261023 base upgrade stag -> ashwood -> ceremonial
-[name] == ceremonialbow && ([quality] == normal || [quality] == superior) # ([sockets] == 2 || [sockets] == 3) @ ([name] == ceremonialbow && ([quality] == normal || [quality] == superior)) || ([type] == amazonbow && ([flag] == runeword || [quality] == unique)) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1	//261023 base upgrade stag -> ashwood -> ceremonial
+([name] == stagbow || [name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior) # sockets] == 2 @ [type] == amazonbow && ([flag] == runeword || [quality] == unique) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1
+([name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior) # sockets] == 2 @ [type] == amazonbow && ([flag] == runeword || [quality] == unique) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1
+[name] == ceremonialbow && ([quality] == normal || [quality] == superior) # sockets] == 2 @ [type] == amazonbow && ([flag] == runeword || [quality] == unique) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1
+
+([name] == stagbow || [name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior) # sockets] == 3 @ [type] == amazonbow && ([flag] == runeword || [quality] == unique) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1
+([name] == ashwoodbow || [name] == ceremonialbow) && ([quality] == normal || [quality] == superior) # sockets] == 3 @ [type] == amazonbow && ([flag] == runeword || [quality] == unique) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1
+[name] == ceremonialbow && ([quality] == normal || [quality] == superior) # sockets] == 3 @ [type] == amazonbow && ([flag] == runeword || [quality] == unique) # ([sockets] == 2 || [sockets] == 3 || [amazonskills] == 2) # [qty] < 1
 
 
 //============================================================================================================================================================================================
