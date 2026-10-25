@@ -412,7 +412,7 @@ var Pather = {
 			node = path.shift();
 			
 			//eom 260411
-			if (useTeleport && !me.inTown && path.length > 0 && getDistance(me, node) > 2 && Config.SafeTele.Skip.indexOf(me.area) === -1) {	//260829	//261025 skip the node under my feet (a re-made path starts at my position)
+			if (useTeleport && !me.inTown && path.length > 0 && getDistance(me, node) > 5 && Config.SafeTele.Skip.indexOf(me.area) === -1) {	//260829	//261025 skip nodes within 5 (arrival range of teleportTo): a re-made path starts at or near my position
 				monList = Attack.buildMonsterList();
 				monRange = Math.max(this.teleDistance, getDistance(me, node)) + Config.SafeTele.Range;	//261021 candidates are within teleDistance of me and count monsters within Range of themselves: farther ones never count
 				monList = monList.filter(function (mon) {
