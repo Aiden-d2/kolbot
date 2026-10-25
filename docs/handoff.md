@@ -43,19 +43,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **구현안**: 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
 - **선행 조건**: 없음. 처음에는 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤로 했으나(사용자 결정 261021), 남은 3절 항목에 영향이 없다고 보고 가능으로 바꿈(사용자 261023). 남은 3절 항목의 검증 줄도 2-2 정책에 맞춰 바꿔도 된다(줄 모양보다 판단에 필요한 정보가 남는 것이 중요, 사용자 261023). 바꾸면 해당 3절 항목의 검증 방법과 `log_guide.md` 줄 이름을 함께 고친다.
 
-### 2-8. 텔레포트 제자리 / SafeTele 후퇴·제자리 반복 (`Pather.teleportTo`·`moveTo` 안 `safeCheckNode`, 사용자 261022·261023, 옛 1-10·2-14)
-- 2-14와 같은 함수라 합침(사용자 261024).
-- **확인된 것**
-  - 사용자 관찰(261022): 제자리 텔레포트, 또는 두 번에 한 번 씹히며 제자리를 유지. 화면 전환으로 보아 텔레 자체는 되는 것 같다.
-  - 사용자 관찰(261023): 몹 밀집 지역에서 후퇴와 제자리를 반복한다.
-  - 261022 로그: `[teleportTo failed]`(10회 모두 실패) 25건 — a1 Chaos Sanctuary 02:36~02:40 11건, a2 Throne of Destruction 03:12~03:14 10건, a1 Halls of the Dead 1 00:07 3건, a1 Bloody Foothills 1건. 회차마다의 결과는 찍히지 않아 "두 번에 한 번"인지는 모름.
-  - 코드: 방문한 자리 목록은 `excludedNodes`다. `moveTo`가 SafeTele로 고른 자리를 최근 5개까지 쌓고, `safeCheckNode`는 그 5칸 안의 후보를 뺀다(맴돌기 방지, `docs/code/Pather.md` 261003).
-- **가설**: 위치가 거의 바뀌지 않는 좌표로 텔레하거나, 실패해 제자리 착지(사용자). 서버가 West라 핑 차이일 수도 있음(사용자 추정, 핑이면 로그로 안 잡힐 것). 밀집 지역 후퇴·제자리 반복은 가설 없음(검토 전).
-- **구현안**(미정)
-  - 볼 곳: `teleportTo`의 시전·대기(`docs/code/Pather.md` teleportTo 260930), `moveTo` 노드 루프의 SafeTele(`safeCheckNode`가 고른 칸), 노드 간격(`teleDistance` 35), 후보 검사 순서(`docs/code/Pather.md` moveTo 261022).
-  - ① 방문한 자리 제외(`excludedNodes`)가 의도대로 작동하는지 점검 ② 제자리 텔레의 원인 ③ 밀집 지역에서 후퇴·제자리를 반복하는 결함 수정. 원인과 수정 방향을 검토한다.
-- **검증 방법**: 검토에서 정한다.
-
 ### 2-13. MPQ 데이터 완전 추출 (사용자 요청 261022)
 - **확인된 것**: 사용자가 쓴 1.14d listfile(MPQEditor용)에 이름 없는 항목(`File00000127.dc6`, `File00000133.xxx` 등) 약 80개가 있고, excel 목록에 `lvlwarp`·`belts`·`cubemod` 등이 없다. listfile에 이름이 없는 파일은 이름으로 꺼내지지 않는다. 추출본에는 lvlmaze·lvlprest·lvlsub·lvltypes·levels만 있고 LvlWarp가 없다(사용자).
 - **구현안**: 더 완전한 listfile(커뮤니티 listfile 등)로 다시 추출해 excel 전체(`.bin`·`.txt`)를 확보한다. 그 전까지 LvlWarp는 외부 `d2data`로 대신한다.
@@ -230,3 +217,12 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 카우: 팔로워 `followDriver end` 뒤 okCount를 통과하는지.
   - `syncBO timeout`·`Team didn't join the game within 2 minutes`는 더 나오지 않아야 한다(사유 바뀜).
 - **결과**: 아직 없음(`f26ef73` 병합 뒤 main으로 돈 로그부터).
+
+### 3-34. SafeTele 발밑 노드 제외·excludedNodes 삭제 (`Pather.moveTo` 안 `safeCheckNode`, 사용자 261023·261025, 옛 2-8)
+- **바꾼 것**(261025 `d93027d`, `libs/Pather.js`)
+  - SafeTele 발동 조건에 `getDistance(me, node) > 2` 추가. 경로를 처음 만들 때와 옆자리로 텔레한 뒤 다시 만들 때 첫 노드가 내 위치라, 그 노드에서 `safeCheckNode`가 돌면 방향이 `atan2(0, 0)` = 0(동쪽) ±75°, 10칸 링부터 뽑혀 경로와 무관한 옆걸음을 했다(코드 읽음, 로그 미확인). 밀집 지역의 후퇴·재방문 반복(사용자 관찰 261023)의 원인으로 본다(추정).
+  - 최근 5자리 5칸 안 후보 제외(`excludedNodes`) 삭제. 몹이 움직여 예전 자리를 막는 것이 안전 판단이 아니고, 발밑 노드를 막으면 실효가 없다(사용자 결정 261025).
+  - 나은 자리가 없으면 원래 노드로 텔레하는 흐름은 그대로. `node --check` 통과.
+  - 옛 2-8의 제자리 텔레(`[teleportTo failed]`)는 핑 문제일 수 있어 항목에서 삭제(사용자 261025).
+- **검증 방법**: 밀집 지역에서 후퇴·옆걸음 반복이 줄고 앞으로 나아가는지 육안으로 본다(후보를 고른 trace 없음). 치킨 사례가 밀집 지역 텔레 이동 중에 나오는지 본다.
+- **결과**: 아직 없음(`d93027d` 병합 뒤 main으로 돈 로그부터).
