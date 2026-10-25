@@ -39,34 +39,44 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
 
-### 2-1. 팀 싱크 확장 (`AutoSmurf` readyCount·buffCount·syncBO·카우)
-- **구현안**: okCount 이름 수집(`docs/code/AutoSmurf.md` okCount 261021, 261023 검증 통과)과 같은 방식으로 readyCount·buffCount·syncBO(답장 BOCount·BOReady 대신 도착 이름)·카우(`msgFollower`)를 `teamNames`로. 한 단계로 둬도 됨(같은 이름이 연달아 불리지 않음). 확장 뒤 싱크 변수·플래그·메시지 이름 통일(`teamOk`/`teamReady`/`teamBuff`/`BOReady`, `imReady`/`myBuff`, `msgLeader`/`msgFollower`, 메시지 이름과 변수·함수 이름 겹침) (사용자 지시 261021).
+### 2-1. 팀 대기(싱크)를 okCount로 통일 (`AutoSmurf` start·buffCount·syncBO·cows·onCopyData, 사용자 261021·261025)
+- **목표**(사용자 261025): 모든 팀 대기(모두 모일 때까지 기다리는 것)를 okCount(이름 수집·두 단계·120초 퇴장, `docs/code/AutoSmurf.md` okCount 261021, 261023 검증 통과)로 통일한다. 다른 변수·오작동·부작용 영향이 없는 범위.
+- **확인된 것**(코드)
+  - 팀 대기: readyCount(`start`, 개수, 2분 퇴장), buffCount(개수, 타임아웃 없음), syncBO(리더가 BOing/BOed를 반복 송신, 팔로워가 받을 때마다 BOCount 답장 → 답장은 도착이 아니라 수신 확인, BOReady는 개수가 정확히 같을 때, 30초 퇴장), syncBO 안 syncWP 신호 10회 대기, 카우(리더가 msgLeader를 반복 송신, 팔로워 msgFollower 답장, 30초 뒤 기록 없이 진행).
+  - 한 방향 신호(받자마자 행동): tpReady(약 13곳), msgLeader(카우 정상 종료 알림), earlyReturn, 좌표 메시지(id 56), teamFigurine. 나머지(syncBO·syncWP 변수, cube·amulet 등 퀘스트, hireMerc·giveGold·farmingON·ess·key)는 스위치.
+  - syncBO는 연달아 불리는 곳이 있다(5막 흐름 → shenk, barbs → anya). 리더가 BO 상태면 리셋 뒤 바로 끝나 그 사이 okCount가 없다.
+  - teamCount(okCount 2단계)는 연달아 부르는 okCount에서 이른 okCount가 지워지지 않게 하는 데 필요(okCount 261021).
+- **결정**(사용자 261025)
+  - 팀 대기 → okCount: readyCount, buffCount 팀 대기, syncBO(리더는 결정을 한 번 보내고 okCount, 팔로워는 okCount 뒤 결정을 읽음), syncWP 10회 대기, 카우 msgFollower 답장·반복 송신.
+  - 한 방향 신호와 스위치는 그대로. tpReady 유지(okCount면 리더가 위험 지역에서 기다림). msgLeader 유지, 한 번만 보냄.
+  - 메시지 유실이 없으므로(okCount 261021·261023 검증) 반복 송신은 두지 않는다.
+  - syncBO 결정은 `BOed` 변수 하나로 받고 지우지 않는다(`BOing` 메시지 → false, `BOed` → true). 연달아 호출 때 다음 결정이 먼저 와도 사라지지 않음. 남는 위험: 리더 BO가 그 사이(수백 ms)에 꺼질 때(추정).
+  - 이름은 그대로 둔다(메시지·스위치 이름이 해당 함수와 같은 것은 문제 아님). 옛 이름 통일 지시(261021)는 통일로 대상 변수가 사라져 지움.
+- **수정 규모**: `bots/AutoSmurf.js` 1개. 지우는 변수 `imReady`·`readyCount`·`teamReady`·`BOing`·`BOCount`·`BOReady`·`myBuff`·`buffCount`·`teamBuff`·`msgFollower`. 새 변수·함수 없음. 수정 목록은 승인 뒤 확정.
+- **검증 방법**: 수정 목록과 함께 정한다.
 - **선행 조건**: 없음(옛 3-1 검증 통과, 261023).
 
 ### 2-2. print/trace 중복 정리 (여러 파일)
 - **구현안**: 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
 - **선행 조건**: 없음. 처음에는 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤로 했으나(사용자 결정 261021), 남은 3절 항목에 영향이 없다고 보고 가능으로 바꿈(사용자 261023). 남은 3절 항목의 검증 줄도 2-2 정책에 맞춰 바꿔도 된다(줄 모양보다 판단에 필요한 정보가 남는 것이 중요, 사용자 261023). 바꾸면 해당 3절 항목의 검증 방법과 `log_guide.md` 줄 이름을 함께 고친다.
 
-### 2-8. 텔레포트가 제자리에 머묾 / 두 번에 한 번 씹힘 (`Pather.teleportTo`·`moveTo`, 사용자 관찰 261022, 옛 1-10)
+### 2-8. 텔레포트 제자리 / SafeTele 후퇴·제자리 반복 (`Pather.teleportTo`·`moveTo` 안 `safeCheckNode`, 사용자 261022·261023, 옛 1-10·2-14)
+- 2-14와 같은 함수라 합침(사용자 261024).
 - **확인된 것**
-  - 사용자 관찰: 제자리 텔레포트, 또는 두 번에 한 번 씹히며 제자리를 유지. 화면 전환으로 보아 텔레 자체는 되는 것 같다.
+  - 사용자 관찰(261022): 제자리 텔레포트, 또는 두 번에 한 번 씹히며 제자리를 유지. 화면 전환으로 보아 텔레 자체는 되는 것 같다.
+  - 사용자 관찰(261023): 몹 밀집 지역에서 후퇴와 제자리를 반복한다.
   - 261022 로그: `[teleportTo failed]`(10회 모두 실패) 25건 — a1 Chaos Sanctuary 02:36~02:40 11건, a2 Throne of Destruction 03:12~03:14 10건, a1 Halls of the Dead 1 00:07 3건, a1 Bloody Foothills 1건. 회차마다의 결과는 찍히지 않아 "두 번에 한 번"인지는 모름.
-- **가설**: 위치가 거의 바뀌지 않는 좌표로 텔레하거나, 실패해 제자리 착지(사용자). 서버가 West라 핑 차이일 수도 있음(사용자 추정, 핑이면 로그로 안 잡힐 것).
-- **구현안**(미정): 볼 곳 — `teleportTo`의 시전·대기(`docs/code/Pather.md` teleportTo 260930), `moveTo` 노드 루프의 SafeTele(`safeCheckNode`가 고른 칸), 노드 간격(`teleDistance` 35). 원인과 수정 방향을 검토한다.
+  - 코드: 방문한 자리 목록은 `excludedNodes`다. `moveTo`가 SafeTele로 고른 자리를 최근 5개까지 쌓고, `safeCheckNode`는 그 5칸 안의 후보를 뺀다(맴돌기 방지, `docs/code/Pather.md` 261003).
+- **가설**: 위치가 거의 바뀌지 않는 좌표로 텔레하거나, 실패해 제자리 착지(사용자). 서버가 West라 핑 차이일 수도 있음(사용자 추정, 핑이면 로그로 안 잡힐 것). 밀집 지역 후퇴·제자리 반복은 가설 없음(검토 전).
+- **구현안**(미정)
+  - 볼 곳: `teleportTo`의 시전·대기(`docs/code/Pather.md` teleportTo 260930), `moveTo` 노드 루프의 SafeTele(`safeCheckNode`가 고른 칸), 노드 간격(`teleDistance` 35), 후보 검사 순서(`docs/code/Pather.md` moveTo 261022).
+  - ① 방문한 자리 제외(`excludedNodes`)가 의도대로 작동하는지 점검 ② 제자리 텔레의 원인 ③ 밀집 지역에서 후퇴·제자리를 반복하는 결함 수정. 원인과 수정 방향을 검토한다.
 - **검증 방법**: 검토에서 정한다.
 
 ### 2-13. MPQ 데이터 완전 추출 (사용자 요청 261022)
 - **확인된 것**: 사용자가 쓴 1.14d listfile(MPQEditor용)에 이름 없는 항목(`File00000127.dc6`, `File00000133.xxx` 등) 약 80개가 있고, excel 목록에 `lvlwarp`·`belts`·`cubemod` 등이 없다. listfile에 이름이 없는 파일은 이름으로 꺼내지지 않는다. 추출본에는 lvlmaze·lvlprest·lvlsub·lvltypes·levels만 있고 LvlWarp가 없다(사용자).
 - **구현안**: 더 완전한 listfile(커뮤니티 listfile 등)로 다시 추출해 excel 전체(`.bin`·`.txt`)를 확보한다. 그 전까지 LvlWarp는 외부 `d2data`로 대신한다.
 - **검증 방법**: 이름 없는 항목 0개, `LvlWarp.bin`이 있고 `d2data` 값과 같은가.
-
-### 2-14. SafeTele 로직 재점검·수정 (`Pather.moveTo` 안 `safeCheckNode`, 사용자 261023)
-- **확인된 것**
-  - 사용자 관찰: 몹 밀집 지역에서 후퇴와 제자리를 반복한다.
-  - 코드: 방문한 자리 목록은 `excludedNodes`다. `moveTo`가 SafeTele로 고른 자리를 최근 5개까지 쌓고, `safeCheckNode`는 그 5칸 안의 후보를 뺀다(맴돌기 방지, `docs/code/Pather.md` 261003).
-- **가설**: 없음(검토 전).
-- **구현안**(미정): ① 방문한 자리 제외(`excludedNodes`)가 의도대로 작동하는지 점검 ② 밀집 지역에서 후퇴·제자리를 반복하는 결함 수정. 관련: 2-8(제자리 텔레), 후보 검사 순서(`docs/code/Pather.md` moveTo 261022).
-- **검증 방법**: 검토에서 정한다.
 
 ### 2-16. 생추어리 도입 (모저가 최종인 빌드 9개, 사용자 261023)
 - **확인된 것**
