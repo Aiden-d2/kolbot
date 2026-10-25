@@ -28,10 +28,6 @@ function AutoSmurf() {
 		myX = [-5, 0, 5, 5, 5, 0, -5, -5][Team.Profiles.indexOf(me.profile) % 8],	//261022 8 directions around the spot: 1 2 3 / 8 . 4 / 7 6 5 (profile 1 top-left, clockwise)
 		myY = [-5, -5, -5, 0, 5, 5, 5, 0][Team.Profiles.indexOf(me.profile) % 8],	//261022
 		
-		imReady,
-		readyCount = 0,
-		teamReady,
-		
 		doneChores = false,
 		hireMerc = false,
 		
@@ -56,14 +52,7 @@ function AutoSmurf() {
 		syncBO = false,
 		syncWP = false,
 		
-		BOing = false,
-		BOed = false,
-		BOCount = 0,
-		BOReady = false,
-		
-		myBuff = false,
-		buffCount = 0,
-		teamBuff = false,
+		BOing = false,	//261025 BO decision from the leader (sent only when BO is needed); BOed, BOCount, BOReady removed
 		
 		tpReady = false,
 		earlyReturn = false,
@@ -85,8 +74,7 @@ function AutoSmurf() {
 		takeRedPortal = false,
 		
 		msgNode = false,	//260903 for cowlevel
-		msgLeader = false,	//for cowlevel
-		msgFollower = {};	//for cowlevel
+		msgLeader = false;	//for cowlevel	//261025 msgFollower removed
 
 //INITIATING
 	this.checkRole = function () { // Checks Config settings to determine role.
@@ -176,25 +164,7 @@ function AutoSmurf() {
 		//Pather.moveTo(me.x + myX, me.y + myY); // Move off of waypoint so others can reach it.	//260822
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		
-		imReady = true; // Prevents premature teamReady announcment.
-		Messaging.sendToList(Team.Profiles, "readyCount");
-		me.overhead("imReady");
-		
-		if (imReady && Team.Size === 1) {
-			teamReady = true;
-			Messaging.sendToList(Team.Profiles, "teamReady");
-			me.overhead("teamReady");
-		}
-		
-		var tick = getTickCount();
-		
-		while (!teamReady) {
-			if (getTickCount() - tick > 2 * 60 * 1000) { // Quit after 2 minutes of waiting.
-				Misc.quitGame("Team didn't join the game within 2 minutes");	//260930
-			}
-			
-			delay(1000);
-		}
+		this.okCount();	//261025 was readyCount/teamReady
 		
 		this.toggle();	//260828
 		
@@ -583,12 +553,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		myBuff = true;
-		Messaging.sendToList(Team.Profiles, "buffCount");
-
-		while (!teamBuff) {
-			delay(250);
-		}
+		this.okCount();	//261025 was buffCount/teamBuff (no timeout)
 		
 		if (act === 1) {
 			potions = me.findItems(514, -1, 3);
@@ -625,10 +590,6 @@ function AutoSmurf() {
 				tpReady = false;
 			}
 		}
-		
-		myBuff = false;
-		teamBuff = false;
-		buffCount = 0;
 	
 		return true;
 	};
@@ -649,49 +610,18 @@ function AutoSmurf() {
 			return false;
 		}
 		
-		if (Leader) {
-			if (!me.getState(32)) {
-				while (BOCount < Team.Size - 1) {
-					Messaging.sendToList(Team.Profiles, "BOing");
-					BOing = true;
-					delay(me.ping * 2 + 500);
-				}
-			} else {
-				while (BOCount < Team.Size - 1) {
-					Messaging.sendToList(Team.Profiles, "BOed");
-					BOed = true;
-					delay(me.ping * 2 + 500);
-				}
-			}
-		} else {
-			while (!BOed && !BOing) {
-				delay(me.ping * 2 + 500);
-			}
-		}
-	
-		var tick = getTickCount();
-		
-		while (!BOReady) {
-			if (BOCount === Team.Size - 1) {
-				Messaging.sendToList(Team.Profiles, "BOReady");
-				BOReady = true;
-			}
-			
-			delay(500);
-			
-			if (getTickCount() - tick > 30 * 1000) { // Quit after 30s of waiting.
-				Misc.quitGame("syncBO timeout");	//260930
-			}
+		if (Leader && !me.getState(32)) {	//261025 the decision is sent once, only when BO is needed (was BOing/BOed repeated until BOCount)
+			BOing = true;
+			Messaging.sendToList(Team.Profiles, "BOing");
 		}
 		
-		BOing = false;
-		BOCount = 0;
-		BOReady = false;
+		this.okCount();	//261025 was BOCount/BOReady: the leader's BOing comes before its teamCount, so it is in by now
 		
-		if (BOed) {
-			BOed = false;
+		if (!BOing) {	//261025
 			return false;
 		}
+		
+		BOing = false;	//261025 reset after reading
 		
 		var destination, home, msg;
 		
@@ -776,13 +706,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		for (var i = 0 ; i < 10 ; i += 1) {
-			if (!syncWP) {
-				delay(me.ping * 2 + 200);
-			} else {
-				break;
-			}
-		}
+		this.okCount();	//261025 was a 10-try wait: a syncWP sent before its sender's okCount is in by now
 		
 		if (syncWP) {
 			this.syncWP(destination, home, true);
@@ -6787,16 +6711,7 @@ function AutoSmurf() {
 				return true;
 			}
 
-			var tick = getTickCount();
-			
-			while (Object.keys(msgFollower).length < Team.Size - 1) {
-				Messaging.sendToList(Team.Profiles, "msgLeader");
-				delay(me.ping * 2 + 500);
-				
-				if (getTickCount() - tick > 30 * 1000) {
-					break;
-				}
-			}
+			Messaging.sendToList(Team.Profiles, "msgLeader");	//261025 sent once (was repeated until msgFollower, 30s); the okCount below waits for the team
 		} else {
 			if (!followDriver()) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
@@ -6847,7 +6762,6 @@ function AutoSmurf() {
 		
 		msgNode = false;	//260903
 		msgLeader = false;
-		msgFollower = {};
 		earlyReturn = false;
 		
 		return true;
@@ -7401,14 +7315,6 @@ function AutoSmurf() {
 			return;
 		}
 		
-		if (imReady && Team.Size === 1) {
-			teamReady = true;
-
-			me.overhead("teamReady");
-
-			Messaging.sendToList(Team.Profiles, "teamReady");
-		}
-		
 		if (id == 56) {	//260903
 			if (msg && typeof msg === "object" && typeof msg.x === "number" && typeof msg.y === "number") {
 				msgNode = [msg.x, msg.y];
@@ -7419,26 +7325,6 @@ function AutoSmurf() {
 		
 		if (id == 55) {
 			switch (msg) {
-			case "readyCount":
-				readyCount += 1;
-
-				me.overhead("readyCount " + readyCount);
-				
-				if (imReady && readyCount === Team.Size - 1) { // Doesn't count my ready because my messages are ignored. Subtract one from Team to account for this.
-					if (!teamReady) { // Only need to change teamReady to true once.
-						teamReady = true;
-						Messaging.sendToList(Team.Profiles, "teamReady");
-						me.overhead("teamReady");
-					}
-				}
-				break;
-			case "teamReady":
-				if (!teamReady) { // Only need to change teamReady to true once.
-					teamReady = true;
-					me.overhead("teamReady");
-				}
-				break;
-
 			case "hireMerc":
 				if (!hireMerc) {
 					hireMerc = true;
@@ -7510,37 +7396,7 @@ function AutoSmurf() {
 				break;
 				
 			case "BOing":
-				BOing = true;
-				Messaging.sendToList(Team.Profiles, "BOCount");
-				break;
-			case "BOed":
-				BOed = true;
-				Messaging.sendToList(Team.Profiles, "BOCount");
-				break;
-			case "BOCount":
-				BOCount += 1;
-				break;
-			case "BOReady":
-				BOReady = true;
-				break;
-				
-			case "buffCount":
-				buffCount += 1;
-				me.overhead("buffCount " + buffCount);
-				
-				if (myBuff && buffCount === Team.Size - 1) {	//eom 260412
-					if (!teamBuff) {
-						teamBuff = true;
-						Messaging.sendToList(Team.Profiles, "teamBuff");
-						me.overhead("teamBuff");
-					}
-				}
-				break;
-			case "teamBuff":
-				if (!teamBuff) { // Only need to change teamReady to true once.
-					teamBuff = true;
-					me.overhead("teamBuff");
-				}
+				BOing = true;	//261025 no BOCount reply; BOed, BOCount, BOReady, buffCount, teamBuff removed
 				break;
 				
 			case "tpReady":
@@ -7594,12 +7450,7 @@ function AutoSmurf() {
 				
 			case "msgLeader":
 				msgLeader = true;
-				me.overhead("msgLeader");
-				Messaging.sendToList(Team.Profiles, "msgFollower");
-				break;
-			case "msgFollower":
-				msgFollower[nick] = true;
-				me.overhead("msgFollower");
+				me.overhead("msgLeader");	//261025 no msgFollower reply
 				break;
 			}
 		}
