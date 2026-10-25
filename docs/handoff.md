@@ -178,7 +178,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 앞서 감 1: Pz-79 a4 Harrogath(디아 가드 건너뜀 경로, `rejected.md` bossGuard·bossEnd와 같음).
   - 한 사이클 더 봄, 로그 변경 없음(사용자 261025). 다음 사이클은 3-33(okCount 통일)이 들어간 코드.
 
-### 3-32. 착용 중인 베이스로 룬워드·펀치 (`Misc.takeOff`·`wornItems`, `Runewords.makeRunewords`·`buildLists`, `Cubing.doCubing`·`buildLists`, 사용자 261023·261024, 옛 2-15)
+### 3-32. 착용 중인 베이스로 룬워드·펀치 (`Misc.takeOff`·`wornItems`, `Runewords.makeRunewords`·`buildLists`, `Cubing.doCubing`·`buildLists`, 사용자 261023·261024·261025, 옛 2-15)
 - **문제**: 보유 개수(`NTIP.CheckQuantityOwned`)는 보관품·플레이어 착용 장비·용병 장비를 모두 세는데, 룬워드 베이스 찾기(`getBase`, `me.getItem(base, 0)`)와 큐빙 재료(`Cubing.buildLists`, `me.findItems(-1, 0)`)는 보관품만 본다. → 착용 중인 재료 베이스(플레이어 또는 용병)는 홀드를 차지해 새 베이스 줍기를 막으면서 재료로는 쓰이지 않는다. 용병도 헬름·갑옷을 입으므로 플레이어용 재료와 겹친다(사용자).
 - **결정**(사용자 261024)
   - 모든 동작은 현행 그대로, 착용 장비 중 재료 베이스를 빼는 것만 넣는다. 고르는 조건: 레시피 베이스에 해당하고 그 레시피의 나머지 재료가 모두 모였을 때(재료가 없을 때 빼면 쓰지 못하고 다시 입기만 함).
@@ -202,6 +202,10 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - `doCubing` 앞단: 재료 확인을 기존 `validItem`으로 되돌림.
   - 261024 삭제: `aafbe50`에서 승인 없이 넣은 앞단 직전 `this.update()`. 펀치 베이스는 줍기·도박으로 들어올 때 목록이 다시 만들어져 레시피가 켜지므로(상점은 큐빙 재료를 사지 않음) 실익이 없음(사용자 261024).
   - 확인한 영향: 픽잇이 아이템마다 판정할 때는 목록을 다시 만들지 않는다(큐빙 재료를 주웠을 때·마을·큐빙 중에만, 룬은 `Runewords.update`로 목록만 조정). 방패 펀치의 완성 루비·흠 없는 루비는 소켓 넣기(헬름·몸·무기 루비)와 겹치나, 큐빙이 먼저 쓰는 순서일 뿐 해가 아님(사용자). 보관품 베이스일 때도 같다. `node --check` 통과(3파일).
+- **후속 수정 2**(261025 `9c0d445`, PR #98, 인게임 오류): `aafbe50`의 `Misc.wornItems` 용병 부분 `(merc.getItems() || []).forEach(...)`가 게임에서 작동하지 않았다 — `Error in AutoSmurf (misc.js #2269) [].forEach is not a function`(a4·a5 같은 시각, Pz-3, 1막 마을), 바로 뒤 경험치 줄로 그 게임이 끝남. 설계 때 `merc.getItems()`가 배열을 돌려준다고 가정했고, 저장소에서 용병 장비를 읽는 기존 방식(`getItem`/`getNext`, `length` 반복)과 대조하지 않았다. `node --check`는 문법만 본다.
+  - 원인은 확정하지 못함: 공개 소스 `noah-/d2bs`(f4b99bb, SpiderMonkey 1.8.5)의 `unit_getItems`는 진짜 배열 또는 값 없음(`undefined`)을 돌려주므로 이 오류가 나지 않아야 한다. kolbot에 화살표 함수가 있어 사용 중인 D2BS는 이 소스와 다른 버전으로 추정. 사용 중인 버전의 소스는 확인하지 못함.
+  - 수정: 용병 장비를 `merc.getItem()` + `getNext()`로 하나씩 읽음(`Grant.getEquippedItem`과 같은 방식). `getNext`가 같은 객체를 다음 아이템으로 바꾸므로 목록에는 `copyUnit`으로 복사해 넣음. 새 변수 `mercItem`. 고르는 조건(`location === 1`)과 목록 형태는 그대로.
+  - 인게임 검증(261025, 사용자가 임시 trace `[Worn] merc:`를 `default.dbj`에 넣어 게임당 1번 기록, 저장소에는 넣지 않음): 장비 0개 → 빈칸, 1개 → `[Body] Hard Leather Armor of Thorns`, 2개(a1) → `[Body]`·`[Head]`, 3개(a5) → `[Body] Quilted Armor, [Head] Cap, [ArmR] Short Bow`. 실제 장비와 일치(사용자 확인), 같은 아이템 반복 없음. 오류 재발 없음. trace 제거 조건(한 게임 이상 실제와 일치) 충족.
 - **검증 방법**: trace `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`. ok 뒤 같은 방문에 룬워드면 `[Runeword] 이름`·ItemLog `Runeworded`, 펀치면 `[Punch]`·`Transmuted`, 이어서 그 칸 재장착(ItemLog `Equipped`, 용병은 `Granted`). fail이면 그 장비가 착용 그대로인가. 입은 베이스가 있을 때 그 레시피 재료를 줍는가(ItemLog `Ingredient`, 펀치는 완성 보석·흠 없는 보석, 룬워드는 그 룬). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0이면 trace 삭제.
 - **결과**: 261025 이번 로그에 적용되지 않음(실행 시작 10/24 13:47이 `789d80d` 병합 13:57보다 앞, 실행 중 파일 변경 없음 — 사용자). `takeOff` 0, 룬워드 11·펀치 1 모두 보관함 베이스.
 
