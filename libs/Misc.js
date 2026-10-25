@@ -2258,7 +2258,8 @@ var Misc = {
 
 	// Equipped items that can be runeword/punch bases: player head, body, both arms and merc gear, as [{unit, merc}]	//261024 3-32
 	wornItems: function () {	//261024
-		var merc = me.getMerc(),
+		var mercItem,	//261025 merc gear walked with getItem/getNext
+			merc = me.getMerc(),
 			list = (me.findItems(-1, 1) || []).filter(function (item) {	//261024 head, body, both arms
 				return [1, 3, 4, 5].indexOf(item.bodylocation) > -1;
 			}).map(function (item) {
@@ -2266,11 +2267,15 @@ var Misc = {
 			});
 
 		if (merc) {
-			(merc.getItems() || []).forEach(function (item) {	//261024 merc gear counts for the hold too
-				if (item.location === 1) {
-					list.push({unit: item, merc: true});
-				}
-			});
+			mercItem = merc.getItem();	//261025 merc.getItems() result had no forEach (Error in AutoSmurf misc.js #2269), same walk as Grant.getEquippedItem
+
+			if (mercItem) {
+				do {
+					if (mercItem.location === 1) {	//261024 merc gear counts for the hold too
+						list.push({unit: copyUnit(mercItem), merc: true});	//261025
+					}
+				} while (mercItem.getNext());
+			}
 		}
 
 		return list;
