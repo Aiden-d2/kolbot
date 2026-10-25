@@ -6,10 +6,9 @@
 // [Helm] 40Fresi 30resi // 40life 10/15ener
 //============================================================================================================================================================================================
 
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # # [tier] == 1
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 2
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 3
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 4
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 1
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 2
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 3
 
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[amazonskills]*120-[itemaddskilltab]*30+[bowandcrossbowskilltab]*50+[passiveandmagicskilltab]*70+[frw]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= magic && [flag] != ethereal # [itemallskills]*60-[itemaddclassskills]*60+[amazonskills]*120-[itemaddskilltab]*30+[bowandcrossbowskilltab]*50+[passiveandmagicskilltab]*70+[frw]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
@@ -156,11 +155,10 @@
 // [itemallskills]=127 // [itemaddclassskills]=83 // [itemaddskilltab]=188
 //============================================================================================================================================================================================
 
-([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # # [tier] == 21
-([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 1 # [tier] == 22
-([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 2 # [tier] == 23
-([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 3 # [tier] == 24
-([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 4 # [tier] == 25
+([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 1 # [tier] == 21
+([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 2 # [tier] == 22
+([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 3 # [tier] == 23
+([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword) && [flag] != ethereal # [sockets] == 4 # [tier] == 24
 
 ([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword)  && [flag] != ethereal # [2]+([21]+[22]+[23]+[24])/2+[116]+[19]/10+[119]+[224]+[136]+[150]+[156]+[115]*20+([127]+[83])*60+[188,0]*20+[188,1]*40+[60]+[62]+[93]+[96]+[99]+([48]+[49]+[50]+[51]+[54]+[55])/6+([9]+[39]+[41]+[43]+[45])/2 >= 20 # [tier] == 31
 ([type] == bow || [type] == amazonbow) && ([quality] >= normal || [flag] == runeword)  && [flag] != ethereal # [2]+([21]+[22]+[23]+[24])/2+[116]+[19]/10+[119]+[224]+[136]+[150]+[156]+[115]*20+([127]+[83])*60+[188,0]*20+[188,1]*40+[60]+[62]+[93]+[96]+[99]+([48]+[49]+[50]+[51]+[54]+[55])/6+([9]+[39]+[41]+[43]+[45])/2 >= 40 # [tier] == 32

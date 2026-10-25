@@ -6,10 +6,9 @@
 // [Helm] 40Fresi 30resi // 40life 10/15ener
 //============================================================================================================================================================================================
 
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # # [tier] == 1
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 2
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 3
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 4
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 1
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 2
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 3
 
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= magic && [flag] != ethereal # [itemallskills]*70-[itemaddclassskills]*60+[necromancerskills]*130-[itemaddskilltab]*30+[necromancersummoningskilltab]*60+[poisonandboneskilltab]*55+[cursesskilltab]*45+[frw]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= magic && [flag] != ethereal # [itemallskills]*70-[itemaddclassskills]*60+[necromancerskills]*130-[itemaddskilltab]*30+[necromancersummoningskilltab]*60+[poisonandboneskilltab]*55+[cursesskilltab]*45+[frw]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
@@ -182,9 +181,8 @@
 // [Voodooheads] 20mana 30resi 20/30A-resi // 40/60life
 //============================================================================================================================================================================================
 
-[type] == voodooheads && [quality] >= normal && [flag] != ethereal # # [tier] == 1
-[type] == voodooheads && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 2
-[type] == voodooheads && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 3
+[type] == voodooheads && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 1
+[type] == voodooheads && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 2
 
 [type] == voodooheads && [quality] >= normal && [flag] != ethereal # [necromancerskills]*70+[necromancersummoningskilltab]*30+[poisonandboneskilltab]*25+[cursesskilltab]*15+[skillskeletonmastery]*10+[skillraiseskeleton]*10+[skillrevive]*10+[skillbonearmor]*10+[skillcorpseexplosion]*15+[skilllowerresist]*15+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
 [type] == voodooheads && [quality] >= normal && [flag] != ethereal # [necromancerskills]*70+[necromancersummoningskilltab]*30+[poisonandboneskilltab]*25+[cursesskilltab]*15+[skillskeletonmastery]*10+[skillraiseskeleton]*10+[skillrevive]*10+[skillbonearmor]*10+[skillcorpseexplosion]*15+[skilllowerresist]*15+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12

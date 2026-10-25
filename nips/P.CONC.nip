@@ -6,10 +6,9 @@
 // [Helm] 40Fresi 30resi // 40life 10/15ener
 //============================================================================================================================================================================================
 
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # # [tier] == 1
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 2
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 3
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 4
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 1
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 2
+([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 3
 
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= magic && [flag] != ethereal # [itemallskills]*45-[itemaddclassskills]*60+[paladinskills]*105-[itemaddskilltab]*30+[palicombatskilltab]*60+[offensiveaurasskilltab]*45+[frw]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= magic && [flag] != ethereal # [itemallskills]*45-[itemaddclassskills]*60+[paladinskills]*105-[itemaddskilltab]*30+[palicombatskilltab]*60+[offensiveaurasskilltab]*45+[frw]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
@@ -156,11 +155,10 @@
 // [Auricshields] 20mana 30resi 20/30A-resi // 40/60life
 //============================================================================================================================================================================================
 
-[type] == auricshields && [quality] >= normal && [flag] != ethereal # # [tier] == 1
-[type] == auricshields && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 2
-[type] == auricshields && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 3
-[type] == auricshields && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 4
-[type] == auricshields && [quality] >= normal && [flag] != ethereal # [sockets] == 4 # [tier] == 5
+[type] == auricshields && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 1
+[type] == auricshields && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 2
+[type] == auricshields && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 3
+[type] == auricshields && [quality] >= normal && [flag] != ethereal # [sockets] == 4 # [tier] == 4
 
 [type] == auricshields && [quality] >= normal && [flag] != ethereal # [paladinskills]*45+[palicombatskilltab]*30+[offensiveaurasskilltab]*15+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
 [type] == auricshields && [quality] >= normal && [flag] != ethereal # [paladinskills]*45+[palicombatskilltab]*30+[offensiveaurasskilltab]*15+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
