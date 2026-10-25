@@ -39,23 +39,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
 
-### 2-1. 팀 대기(싱크)를 okCount로 통일 (`AutoSmurf` start·buffCount·syncBO·cows·onCopyData, 사용자 261021·261025)
-- **목표**(사용자 261025): 모든 팀 대기(모두 모일 때까지 기다리는 것)를 okCount(이름 수집·두 단계·120초 퇴장, `docs/code/AutoSmurf.md` okCount 261021, 261023 검증 통과)로 통일한다. 다른 변수·오작동·부작용 영향이 없는 범위.
-- **확인된 것**(코드)
-  - 팀 대기: readyCount(`start`, 개수, 2분 퇴장), buffCount(개수, 타임아웃 없음), syncBO(리더가 BOing/BOed를 반복 송신, 팔로워가 받을 때마다 BOCount 답장 → 답장은 도착이 아니라 수신 확인, BOReady는 개수가 정확히 같을 때, 30초 퇴장), syncBO 안 syncWP 신호 10회 대기, 카우(리더가 msgLeader를 반복 송신, 팔로워 msgFollower 답장, 30초 뒤 기록 없이 진행).
-  - 한 방향 신호(받자마자 행동): tpReady(약 13곳), msgLeader(카우 정상 종료 알림), earlyReturn, 좌표 메시지(id 56), teamFigurine. 나머지(syncBO·syncWP 변수, cube·amulet 등 퀘스트, hireMerc·giveGold·farmingON·ess·key)는 스위치.
-  - syncBO는 연달아 불리는 곳이 있다(5막 흐름 → shenk, barbs → anya). 리더가 BO 상태면 리셋 뒤 바로 끝나 그 사이 okCount가 없다.
-  - teamCount(okCount 2단계)는 연달아 부르는 okCount에서 이른 okCount가 지워지지 않게 하는 데 필요(okCount 261021).
-- **결정**(사용자 261025)
-  - 팀 대기 → okCount: readyCount, buffCount 팀 대기, syncBO(리더는 결정을 한 번 보내고 okCount, 팔로워는 okCount 뒤 결정을 읽음), syncWP 10회 대기, 카우 msgFollower 답장·반복 송신.
-  - 한 방향 신호와 스위치는 그대로. tpReady 유지(okCount면 리더가 위험 지역에서 기다림). msgLeader 유지, 한 번만 보냄.
-  - 메시지 유실이 없으므로(okCount 261021·261023 검증) 반복 송신은 두지 않는다.
-  - syncBO 결정은 `BOed` 변수 하나로 받고 지우지 않는다(`BOing` 메시지 → false, `BOed` → true). 연달아 호출 때 다음 결정이 먼저 와도 사라지지 않음. 남는 위험: 리더 BO가 그 사이(수백 ms)에 꺼질 때(추정).
-  - 이름은 그대로 둔다(메시지·스위치 이름이 해당 함수와 같은 것은 문제 아님). 옛 이름 통일 지시(261021)는 통일로 대상 변수가 사라져 지움.
-- **수정 규모**: `bots/AutoSmurf.js` 1개. 지우는 변수 `imReady`·`readyCount`·`teamReady`·`BOing`·`BOCount`·`BOReady`·`myBuff`·`buffCount`·`teamBuff`·`msgFollower`. 새 변수·함수 없음. 수정 목록은 승인 뒤 확정.
-- **검증 방법**: 수정 목록과 함께 정한다.
-- **선행 조건**: 없음(옛 3-1 검증 통과, 261023).
-
 ### 2-2. print/trace 중복 정리 (여러 파일)
 - **구현안**: 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
 - **선행 조건**: 없음. 처음에는 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤로 했으나(사용자 결정 261021), 남은 3절 항목에 영향이 없다고 보고 가능으로 바꿈(사용자 261023). 남은 3절 항목의 검증 줄도 2-2 정책에 맞춰 바꿔도 된다(줄 모양보다 판단에 필요한 정보가 남는 것이 중요, 사용자 261023). 바꾸면 해당 3절 항목의 검증 방법과 `log_guide.md` 줄 이름을 함께 고친다.
@@ -230,3 +213,17 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 확인한 영향: 픽잇이 아이템마다 판정할 때는 목록을 다시 만들지 않는다(큐빙 재료를 주웠을 때·마을·큐빙 중에만, 룬은 `Runewords.update`로 목록만 조정). 방패 펀치의 완성 루비·흠 없는 루비는 소켓 넣기(헬름·몸·무기 루비)와 겹치나, 큐빙이 먼저 쓰는 순서일 뿐 해가 아님(사용자). 보관품 베이스일 때도 같다. `node --check` 통과(3파일).
 - **검증 방법**: trace `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`. ok 뒤 같은 방문에 룬워드면 `[Runeword] 이름`·ItemLog `Runeworded`, 펀치면 `[Punch]`·`Transmuted`, 이어서 그 칸 재장착(ItemLog `Equipped`, 용병은 `Granted`). fail이면 그 장비가 착용 그대로인가. 입은 베이스가 있을 때 그 레시피 재료를 줍는가(ItemLog `Ingredient`, 펀치는 완성 보석·흠 없는 보석, 룬워드는 그 룬). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0이면 trace 삭제.
 - **결과**: 기록 없음.
+
+### 3-33. 팀 대기(싱크)를 okCount로 통일 (`AutoSmurf` start·buffCount·syncBO·cows·onCopyData, 사용자 261021·261025, 옛 2-1)
+- **바꾼 것**(`f26ef73`, `bots/AutoSmurf.js`)
+  - 팀 대기를 `this.okCount()`로: `start`(readyCount·teamReady, 2분 퇴장), `buffCount`(buffCount·teamBuff, 타임아웃 없음), `syncBO`(BOCount·BOReady, 30초 퇴장), `syncBO` 안 syncWP 10회 대기.
+  - syncBO 결정: 리더는 BO가 필요할 때(`!me.getState(32)`)만 `BOing`을 한 번 보내고 okCount. 모두 okCount 뒤 `BOing`이 아니면 `return false`, 맞으면 `BOing = false`로 지우고 진행. `BOed` 변수·메시지 삭제. 리더의 BOing은 리더의 teamCount보다 먼저 오므로 okCount가 끝나면 도착해 있다(같은 사람 메시지는 순서대로).
+  - 카우: 리더는 `msgLeader`를 한 번만 보냄(반복·msgFollower 답장 삭제). 팀 대기는 뒤의 기존 okCount.
+  - 지운 변수: `imReady`·`readyCount`·`teamReady`·`BOed`·`BOCount`·`BOReady`·`myBuff`·`buffCount`·`teamBuff`·`msgFollower`. 한 방향 신호(tpReady·msgLeader·earlyReturn·좌표·teamFigurine)와 스위치는 그대로. 이름은 그대로(옛 이름 통일 지시는 대상이 사라져 지움).
+  - 알려진 위험(추정): 5막처럼 syncBO가 연달아 불릴 때 리더 BO가 그 사이(수백 ms)에 꺼지면 다음 회차 BOing이 앞 회차에 읽힐 수 있다. 팀원 간 `partyLevel`·퀘스트 상태가 다르면 지금도 어긋나며, 바뀐 뒤에는 그 자리 okCount에서 120초 퇴장한다.
+- **검증 방법**
+  - 각 싱크 자리에서 `Party desynced 1/2`가 없는지, 있으면 안 온 이름과 자리(start·buffCount·syncBO·syncWP·cows).
+  - syncBO: `act* BO` print가 팀 전원에 나오는지(BO가 필요한 회차), 리더 BO 상태에서 팀 전원이 바로 넘어가는지.
+  - 카우: 팔로워 `followDriver end` 뒤 okCount를 통과하는지.
+  - `syncBO timeout`·`Team didn't join the game within 2 minutes`는 더 나오지 않아야 한다(사유 바뀜).
+- **결과**: 아직 없음(`f26ef73` 병합 뒤 main으로 돈 로그부터).

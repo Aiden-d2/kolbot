@@ -393,7 +393,7 @@ loadScripts()
 
 | mode | 내용 |
 |---|---|
-| 55 | 문자열 신호. 준비: `readyCount` `teamReady` `okCount` `teamOk` `teamCount` / 버프·이동: `syncBO` `BOing` `BOed` `BOCount` `BOReady` `buffCount` `teamBuff` `syncWP` `tpReady` `earlyReturn` / 준비물: `hireMerc` `giveGold` `farmingON` `essA` `essM` `keyT` `keyH` `keyD` `getCube` / 퀘스트: `cube` `amulet` `summoner` `tombs` `radament` `duriel` `figurine` `teamFigurine` `travincal` `mephisto` `takeRedPortal` / 소 레벨: `msgLeader` `msgFollower` |
+| 55 | 문자열 신호. 준비: `okCount` `teamOk` `teamCount` / 버프·이동: `syncBO` `BOing` `syncWP` `tpReady` `earlyReturn` / 준비물: `hireMerc` `giveGold` `farmingON` `essA` `essM` `keyT` `keyH` `keyD` `getCube` / 퀘스트: `cube` `amulet` `summoner` `tombs` `radament` `duriel` `figurine` `teamFigurine` `travincal` `mephisto` `takeRedPortal` / 소 레벨: `msgLeader` |
 | 56 | 좌표 객체 `{x, y}`. 소 레벨에서 리더가 이동 노드를 공유 (`msgNode`) |
 
 ---
@@ -739,7 +739,7 @@ start()                      큐브(0,0)·TP 책(0,2) 슬롯 고정 → 진행�
                              preparation() → Town.doChores(true) → 회복포션 슬롯 정리 →
                              (mercLvl) Merc.hire, 실패 시 hireMerc 브로드캐스트 →
                              웨이포인트 활성화 → 대기 오프셋(myX, myY)으로 이동 →
-                             readyCount 브로드캐스트 → teamReady 대기(2분 초과 시 quit) →
+                             okCount →
                              toggle() → 골드 수수
 preparation()                잔여 퀘스트템 사용(책·포션·스크롤), MiniShopBot/farmingON/UseMerc 결정,
                              리더 골드 부족(레벨 18+, 5000 미만) 시 giveGold 요청
@@ -750,7 +750,7 @@ teamCount(range)             teamCount 를 뿌리고 전원 응답까지 대기
 playerIn(area) / partyAct()
 partyLevel(level)            → bool   파티 전원이 level 이상인가 (getParty 30회 재시도)
 syncBO(act)                  Team.Boer 없음 / 파티에 24 미만 있음 → 즉시 false.
-                             리더가 BOing/BOed 를 뿌리고 BOReady 까지 대기(30초 초과 시 quit)
+                             BO가 필요하면 리더가 BOing 을 한 번 뿌림 → okCount → BOing 이 아니면 false
 syncWP(destination, home, oneway) / buffCount(act)
 pickGold() / giveGold()
 setLifeChicken(value)        Config.LifeChicken 변경 → 캐시 json 재기록 → {lifeChicken} 브로드캐스트
