@@ -268,6 +268,11 @@ NTIP.EvaluateItem = function (item, list) {	//260804
 				}
 			}
 
+			//gate1b - gear tier	//261025
+			if (rule && rule.TierCheck && !eval(rule.TierCheck)) {	//261025 [body] < 21 etc, cached tier only
+				continue;
+			}
+
 			//gate2 - sec0
 			if (sec0 && sec0.length > 0) {
 				if (!eval(sec0)) {
@@ -390,7 +395,8 @@ NTIP.EvaluateItem = function (item, list) {	//260804
 					(rule && rule.Tier) ? rule.Tier : 0,
 					(rule && rule.hasOwnProperty("Qty")) ? rule.Qty : null,
 					(rule && rule.hasOwnProperty("Tiered")) ? rule.Tiered : null,
-					(rule && rule.TieredNegate) ? true : false)
+					(rule && rule.TieredNegate) ? true : false,
+					(rule && rule.TierCheckStr) ? rule.TierCheckStr : null)	//261025
 			};
 		} catch (e) {
 			continue;
@@ -450,7 +456,7 @@ NTIP.Evaluate = function (item) {	//260807
 	return result;
 };
 
-NTIP.buildLineStr = function (sa, merc, tier, qty, tiered, tieredNegate) {
+NTIP.buildLineStr = function (sa, merc, tier, qty, tiered, tieredNegate, tierCheck) {	//261025 tierCheck added
     if (!sa) {
 		return null;
 	}
@@ -472,7 +478,11 @@ NTIP.buildLineStr = function (sa, merc, tier, qty, tiered, tieredNegate) {
 	if (tiered !== null) {
 		str += " / " + (tieredNegate ? "(!Tiered)" : "(Tiered)") + "#" + tiered;
 	}
-	
+
+	if (tierCheck) {	//261025 e.g. / (ArmR<41)
+		str += " / " + tierCheck;
+	}
+
     return str;
 };
 
@@ -726,6 +736,45 @@ NTIP.ParseLineInt = function (input, info) {
 				
 				p_result[2].Tiered = value;
 				p_result[2].TieredNegate = p_section[i].indexOf("!=") > -1;
+				break;
+			case "head":	//261025 gear tier gate: [body] < 21 = cached Config.TierNow, [mercbody] < 21 = cached Config.TierMerc
+			case "neck":
+			case "body":
+			case "armr":
+			case "arml":
+			case "ringr":
+			case "ringl":
+			case "belt":
+			case "boots":
+			case "mitts":
+			case "merchead":
+			case "mercbody":
+			case "mercarmr":
+				opVal = p_section[i].substring(p_end + 1).match(/^(<=|>=|==|<|>)(\d+)/);	//261025
+
+				if (!opVal) {	//261025
+					Misc.errorReport("Unknown gear tier value: " + p_section[i] + " File: " + info.file + " Line: " + info.line);
+					return false;
+				}
+
+				var isMercGear = p_keyword.indexOf("merc") === 0,	//261025
+					gearList = isMercGear ? Config.TierMerc : Config.TierNow,	//261025
+					gearKey = null;	//261025
+
+				for (var g in gearList) {	//261025 lower-case keyword -> Config gear name (ArmR etc)
+					if (gearList.hasOwnProperty(g) && g.toLowerCase() === (isMercGear ? p_keyword.substring(4) : p_keyword)) {
+						gearKey = g;
+					}
+				}
+
+				if (!gearKey) {	//261025
+					Misc.errorReport("Unknown gear: " + p_keyword + " File: " + info.file + " Line: " + info.line);
+					return false;
+				}
+
+				p_result[2].TierCheck = (p_result[2].TierCheck ? p_result[2].TierCheck + "&&" : "") +
+					(isMercGear ? "Config.UseMerc&&Config.TierMerc." + gearKey + ".merc" : "Config.TierNow." + gearKey + ".tier") + opVal[1] + opVal[2];	//261025 merc: skip line without merc
+				p_result[2].TierCheckStr = (p_result[2].TierCheckStr || "") + "(" + (isMercGear ? "Merc" : "") + gearKey + opVal[1] + opVal[2] + ")";	//261025 item log
 				break;
 			default:
 				Misc.errorReport("Unknown rule: " + p_keyword + " File: " + info.file + " Line: " + info.line);
