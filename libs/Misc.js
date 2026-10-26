@@ -1809,7 +1809,7 @@ var Misc = {
 			break;
 		}
 
-		return this.fileAction("_cache/ItemLog.txt", 2, dateString + " <" + me.profile + "> <" + action + "> <" + lastArea + "> (" + Pickit.itemQualityToName(unit.quality) + ") " + desc + (text ? " {" + text + "}" : "") + "\n");
+		return this.fileAction("_cache/trace/ItemLog.txt", 2, dateString + " <" + me.profile + "> <" + action + "> <" + lastArea + "> (" + Pickit.itemQualityToName(unit.quality) + ") " + desc + (text ? " {" + text + "}" : "") + "\n");
 	},
 
 	// Log kept item stats in the manager.
@@ -2483,7 +2483,7 @@ MainLoop:
 		}
 
 		this.trace("[Error] " + oogmsg.trim(), true);	//260930 was showConsole() + print(msg): errors go to the console and the trace, print keeps the game flow
-		this.fileAction("_cache/ScriptErrorLog.txt", 2, filemsg);
+		this.fileAction("_cache/trace/ScriptErrorLog.txt", 2, filemsg);
 
 		if (this.screenshotErrors) {
 			takeScreenshot();
