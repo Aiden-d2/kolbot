@@ -1812,7 +1812,7 @@ MainLoop:
 
 				if (item.itemType === 76 ? Config.HPBuffer > this.myPotion("hp") : item.itemType === 77 ? Config.MPBuffer > this.myPotion("mp") : Config.RejuvBuffer > this.myPotion("rv")) {
 					Storage.Inventory.MoveTo(item);
-					delay(me.ping * 2 + 1000);
+					delay(me.ping * 2 + 200);	//261026
 				} else {
 					clearList.push(item);
 				}
@@ -1825,7 +1825,7 @@ MainLoop:
 				if (me.charlvl >= 17 && me.charlvl <= 19) {	//260917
 				}
 				clearList.shift().drop();	//260901
-				delay(me.ping * 2 + 1000);
+				delay(me.ping * 2 + 200);	//261026
 				i += 1;
 			}
 		}
