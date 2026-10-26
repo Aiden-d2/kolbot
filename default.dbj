@@ -46,11 +46,20 @@ function main() {
 	Misc.trace("=== [" + me.gamename + "] ===", true);	//261011
 
 	// Initialize libs - load config variables, build pickit list, attacks, containers and cubing and runeword recipes
-	Config.init(true);
-	Attack.init();
-	Storage.Init();
-	Runewords.init();
-	Cubing.init();
+	try {	//261026 an error here killed default.dbj silently and the game stood until max game time; a restart runs the same code, so stop (handoff 2-24)
+		Config.init(true);
+		Attack.init();
+		Storage.Init();
+		Runewords.init();
+		Cubing.init();
+	} catch (initError) {	//261026
+		Misc.errorReport(initError, "default.dbj");	//261026 error detail: grey console + [Error] trace
+		D2Bot.printToConsole("Init failed in default.dbj. Stopping", 9);	//261026 stop: red console, no location
+		Misc.trace("Init failed in default.dbj. Stopping", true);	//261026
+		D2Bot.stop();	//261026
+
+		return false;	//261026
+	}
 
 	me.maxgametime = Config.MaxGameTime * 1000;
 	stats = DataFile.getStats();

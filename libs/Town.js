@@ -78,6 +78,8 @@ var Town = {
 		var c = this.chores = {start: getTickCount()},	//261022 chores stall check: step times, one trace line when the whole chores take over 10s (remove after the next log analysis)
 			tick = getTickCount();
 
+		scriptBroadcast("chores:pre");	//261026 step for the PartyThread party left line (handoff 2-26)
+
 		if (shopItems) {
 			this.gamble();
 			if (Config.UseKeys) {	//260928 top up keys on regular visits only (never a reason to go to town)
@@ -95,30 +97,38 @@ var Town = {
 		c.pre = getTickCount() - tick;	//261022
 		tick = getTickCount();	//261022
 		
+		scriptBroadcast("chores:heal");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.clearBelt();
 		this.heal();
 		c.heal = getTickCount() - tick;	//261022
 		tick = getTickCount();	//261022
+		scriptBroadcast("chores:id");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.identify();
 		c.id = getTickCount() - tick;	//261022
 		tick = getTickCount();	//261022
 
+		scriptBroadcast("chores:inv");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.clearInventory();
 		c.inv = getTickCount() - tick;	//261022 was the "chores slow: clearInventory" line (261021)
 		tick = getTickCount();	//261022
 
+		scriptBroadcast("chores:tome");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.fillTome(518);
 		c.tome = getTickCount() - tick;	//261022
 		tick = getTickCount();	//261022
 		
+		scriptBroadcast("chores:buy");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.buyPotions(shopItems);
 		c.buy = getTickCount() - tick;	//261022 was the "chores slow: buyPotions" line (261021)
 		tick = getTickCount();	//261022
 
+		scriptBroadcast("chores:repair");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.repair(shopItems);
 		c.repair = getTickCount() - tick;	//261022
 		tick = getTickCount();	//261022
 		
+		scriptBroadcast("chores:rest");	//261026 step for the PartyThread party left line (handoff 2-26)
+
 		var i,
 			cancelFlags = [0x01, 0x02, 0x04, 0x08, 0x14, 0x16, 0x0c, 0x0f, 0x19, 0x1a];
 
@@ -141,12 +151,15 @@ var Town = {
 		c.rest = getTickCount() - tick;	//261022 cancel, pickItems, autoEquip
 		tick = getTickCount();	//261022
 
+		scriptBroadcast("chores:stash");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.stash();
 		c.stash = getTickCount() - tick;	//261022
 		tick = getTickCount();	//261022
 
+		scriptBroadcast("chores:gems");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.socketGems();	//261021
 		c.gems = getTickCount() - tick;	//261022
+		scriptBroadcast("chores:end");	//261026 step for the PartyThread party left line (handoff 2-26)
 
 		if (getTickCount() - c.start > 10000 || c.beltCurFail || c.beltPutFail || c.beltShiftFail) {	//261022 one line per slow chores	//261023 or any belt failure
 			Misc.trace("chores " + ((getTickCount() - c.start) / 1000).toFixed(1) + "s: pre " + (c.pre / 1000).toFixed(1) + " heal " + (c.heal / 1000).toFixed(1) + " id " + (c.id / 1000).toFixed(1)
@@ -233,6 +246,7 @@ var Town = {
 
 			if (done) {
 				Equip.updateTier(t.bodyLoc);	// Config.TierNow is the cache for field pickup checks	//261021 print the new tier (same line as after equipping)
+				Cubing.update();	//261026 sockets changed: rebuild the socket gem recipes now (handoff 2-27)
 			}
 		}
 
@@ -1770,6 +1784,7 @@ MainLoop:
 			clearList = [],
 			bufferList = [],	// 260822
 			col, beltSize, total, path, ui, items, tick,	//261025 belt return and potion cleanup (moved from clearInventory)
+			shiftFails = [],	//261026 shift-click fails: late (ping) or real (handoff 3-27, remove after 3 judged)
 			c = this.chores || {};	//261025 doChores step line (stale object when called outside doChores, not printed)
 
 		if (item) {
@@ -1889,6 +1904,11 @@ MainLoop:
 								c.beltPutFail = (c.beltPutFail || 0) + 1;	//261023 on the cursor but not in the belt
 							} else if (path === "shift") {
 								c.beltShiftFail = (c.beltShiftFail || 0) + 1;	//261023
+								shiftFails.push({gid: item.gid, code: item.code, col: i, codes: (me.findItems(-1, 2) || []).filter(function (p) {	//261026 the column's potions now
+									return p.x % 4 === i;
+								}).map(function (p) {
+									return p.code;
+								}).join(" "), ping: me.ping});
 							}
 						} else {
 							break;	//261025 in the belt: no click for the next column of the same kind (mp mp / rv rv clicked the moved potion again)
@@ -1896,6 +1916,11 @@ MainLoop:
 					}
 				}
 			}
+		}
+
+		for (i = 0; i < shiftFails.length; i += 1) {	//261026 after the loop: still in the inventory = real fail, gone = the click landed late
+			item = me.getItem(-1, -1, shiftFails[i].gid);
+			Misc.trace("belt shift fail: " + shiftFails[i].code + " col:" + shiftFails[i].col + " [" + shiftFails[i].codes + "] ping:" + shiftFails[i].ping + " inv:" + (!!item && item.mode === 0));	//261026
 		}
 
 		c.belt = getTickCount() - tick;	//261022
@@ -2435,6 +2460,7 @@ MainLoop:
 
 		Misc.trace("visitTown start by:" + getScript(true).name + " tick:" + getTickCount());	//261004 who goes (default.dbj / TownChicken) and when
 
+		scriptBroadcast("town:go");	//261026 step for the PartyThread party left line (handoff 2-26)
 		Config.TownCheck = false;	//261021 a moveTo in goToTown (walking to my portal) must not start another town trip (default calls visitTown directly: town check, quiver)
 
 		try { // not an essential function -> handle thrown errors
@@ -2451,12 +2477,15 @@ MainLoop:
 			this.goToTown(preAct);
 		}
 
+		scriptBroadcast("town:portalspot");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.move("portalspot");
 
+		scriptBroadcast("town:portal");	//261026 step for the PartyThread party left line (handoff 2-26)
 		if (!Pather.usePortal(preArea, me.name)) { // this part is essential
 			throw new Error("Town.visitTown: Failed to go back from town");
 		}
 
+		scriptBroadcast("town:back");	//261026 step for the PartyThread party left line (handoff 2-26)
 		Misc.trace("visitTown back tick:" + getTickCount());	//261004 portal reuse is blocked for 1-2s after this
 
 		return true;

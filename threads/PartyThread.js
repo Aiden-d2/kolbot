@@ -18,7 +18,8 @@ Config.init();
 var teamFormed = false,
 	retry = 0,
 	teamNames = [],
-	lost = [];
+	lost = [],	//261026
+	lastStep = "-";	//261026 last chores/visitTown step broadcast by default.dbj (handoff 2-26, remove once the stuck step is found)
 
 function partyCheck () {	//260907
 	var party;
@@ -127,12 +128,18 @@ function partyInGame () {	//260908
 			return getUIFlag(f);
 		}).map(function (f) {
 			return ("0" + f.toString(16).toUpperCase()).slice(-2);	// 08 npc menu, 0C trade, 14 waypoint, 01 inventory
-		}).join("/") || "-"));
+		}).join("/") || "-") + " step:" + lastStep);	//261026 + step
 		scriptBroadcast("quit");
 	}
 };
 
 function main () {
+	addEventListener("scriptmsg", function (msg) {	//261026 handoff 2-26
+		if (typeof msg === "string" && (msg.indexOf("chores:") === 0 || msg.indexOf("town:") === 0)) {
+			lastStep = msg;
+		}
+	});
+
 	while (true) {
 		try {
 			partyCheck();
