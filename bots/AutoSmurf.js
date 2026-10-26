@@ -5309,7 +5309,7 @@ function AutoSmurf() {
 		if (!me.getQuest(37, 1)) {
 			if (Leader) {
 				if (me.diff === 2 && farmingON) {
-					Config.SafeTele.Soul = true;
+					//Config.SafeTele.Soul = true;	//261026
 				}
 				
 				Pather.useWaypoint(113); 
@@ -5329,7 +5329,7 @@ function AutoSmurf() {
 					anya = getUnit(2, 558);	
 				}
 				
-				Config.SafeTele.Soul = false;	//261020
+				//Config.SafeTele.Soul = false;	//261020
 				
 				Pather.makePortal();
 				
