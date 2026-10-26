@@ -5351,16 +5351,16 @@ function AutoSmurf() {
 			
 			Pather.teleport = false;	//260920
 			
-			Attack.clear(20);	//261002
+			unit = getPresetUnit(me.area, 2, 460); //261026
+			
+			Attack.clear(0, {x1: unit.roomx * 5 + unit.x - 15, x2: unit.roomx * 5 + unit.x + 15, y1: unit.roomy * 5 + unit.y - 15, y2: unit.roomy * 5 + unit.y + 15});	//261026
 			
 			Pather.teleport = true;	//260920
 			
-			unit = getPresetUnit(me.area, 2, 460); // don't delete this // eom
-			Pather.moveToUnit(unit);	//260929
-			
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveToUnit(unit, 0, 0, false, false, true);	//261026
 			
 			anya = getUnit(2, 558);
+			
 			if (anya) {
 				if (Leader) {
 					delay(500);
