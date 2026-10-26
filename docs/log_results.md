@@ -315,3 +315,38 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 크래시 3건(`Crash: no entry … - wait 5s (loc 9)`): a7 10/25 01:44 Pit of Acheron, a1 04:08 Harrogath, a8 04:57 Rogue Encampment. 분석하지 않음(사용자 261025).
 - buyPotions(사용자 261025, 오작동 지연이 아니면 추적 안 함): 구매 실패 0, 구매 한 번당(상점까지 제외) 중앙 1.15초·상위 10% 2.6초·최대 4.2초. buy 5초 초과 540건 중앙 9.0초, 상점 NPC까지 비율 중앙 71%(261023과 같음). 사지 않았는데 3초 넘은 239건은 모두 Harrogath·Pandemonium의 `MiniShopBot`(켜짐) `shopItems` 경로.
 - `Town chicken` 89, `Town check` 144, getWP `menu not opened` 96, `[teleportTo failed]` 4, 골드 나눔 버림 13·`Retaking` 0.
+
+## 261026 묶음 (10/25 13:34 ~ 10/26 10:21, 8프로필, a1 117게임)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 계정으로 노말부터 헬 파밍까지(a1 레벨 2 → 76). 실행 중 코드가 바뀜: 13:34 시작 main(`81d5b43`·`f26ef73`·`d93027d`·`aafbe50` 포함) → 13:56 Pz-3부터 `[].forEach is not a function`(3-32 후속 수정 2의 오류), Pz-4~8은 용병이 있는 a1·a4·a5·a6의 default.dbj가 시작부에서 죽어 30분짜리 빈 게임 5개(handoff 2-24) → 16:18 Pz-9부터 오류 없음(로컬 수정), 16:47~17:00 `[Worn]` 임시 trace → 20:36 전 프로필 재시작부터 최종 main(`13ebf32`·`9c0d445`·nip `1483695`, 사용자). 판정은 20:36 이후(Pz-29~117, 89게임) 기준. 10/26 09:52~ 업로드(아냐·ItemLog 경로)가 마지막 게임에 들어갔는지는 모름. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 판정
+- 3-22: **검증 통과**(→ `docs/code/AutoSmurf.md` getQuestItem). `quest item vanished, retry 1` 3건(a8 10/25 22:00:49, a7·a5 10/26 02:32:21~22, Sewers Level 3), 모두 뒤에 `!!! [BOOK] !!!`. `Not enough room` 0.
+- 3-27: 정리 시작 메뉴 08 0, cur 실패 0, 느린 정리 0. shift 771회 중 실패 3(a1 02:29·02:39·02:41, `shift 3/1`). 한 사이클 더 + 판별 로그(사용자).
+- 3-29: timeout 275줄(a1 215, 걷는 프로필 60), 8회 모두 실패 2(a1 Spider Forest → Spider Cave, Flayer Dungeon 1 → 2, 둘 다 다시 불러 통과). 보류(아시아 서버, 사용자).
+- 3-32: 룬워드 검증(a1 10/25 20:36:27 takeOff ok → 20:36:45 Steel → 20:36:52 재장착). 펀치 0(보관함 베이스 포함). 착용 펀치 베이스는 있었으나(a4 Targe, a2 Broad Sword, a1 Crystal Sword) 완성 자수정·루비 0(흠 없는 자수정 프로필당 최대 2, 흠 없는 루비는 판매).
+- 3-33: **실패** → handoff 2-25. 리더 웨이 모으기 중 팔로워 120초 퇴장 6게임(Pz-40·59·65·66·90·91). 나머지 확인 항목(desync 2 0, `syncBO timeout`·`Team didn't join` 0, `act* BO` 91회 전원, 카우 2게임)은 정상.
+- 3-31: 낙오 증상 7게임 → handoff 2-26(증상만, 사용자).
+- 3-34: 육안 큰 개선 모름, 치킨 조금 준 듯(사용자). Life Chicken 46.
+- 케이스 미발견(계속 관찰): 3-10(`radamentOff` 0, 북 visible → read 24줄), 3-13(`dropping radament book` 0), 3-17(MoveToSlot 실패 0, `party accept` 1,044줄, 다섯 묶음 연속 0).
+
+### 보스가드 (20:36 이후, 마지막 표 — 이후 예외가 없으면 분석하지 않음, 사용자 261026)
+| 보스(pct) | 건수 | chicken off HP 최소/중앙/최대 | off → last 최소/중앙/최대 | 5초 초과 |
+|---|---|---|---|---|
+| 라다먼트(85) | 24 | 52/80/84 | 1.8/7.3/28.1초 | 16 |
+| 이주얼(15) | 24 | 13/14/15 | 1.8/4.5/10.3초 | 9 |
+| 에인션트(10) | 24 | 1/6.5/9 | 3.4/11.3/23.3초 | 23 |
+| 바알(15) | 24 | 3/14.5/15 | 0/3.6/20.7초 | 8 |
+| 메피(15) | 24 | 6/15/15 | 0/3.3/4.4초 | 0 |
+| 디아(15) | 21 | 7/14/15 | 0/3.2/10.4초 | 6 |
+| 쉥크(50) | 16 | 12/43/50 | 0/1.9/3.3초 | 0 |
+| 써모너(100) | 16 | 41/99.5/100 | 0/2.1/5.1초 | 1 |
+| 앤디(15) | 13 | 6/10/15 | 0/1.0/1.2초 | 0 |
+
+- chicken off 없이 끝난 가드: 쉥크 8, 앤디 3, 디아 2. 가드 중 사망·시체 회수 0. 261025보다 라다먼트(3.8 → 7.3초)·에인션트(3.3 → 11.3초) off → last 중앙값이 길어짐(원인은 보지 않음).
+
+### 그 밖
+- 조기 종료 사유(전체): Life Chicken 46(a1 30, a3 5, a5 4, a2 3, a7 2, a4·a6 1, a1은 Frozen River 9·Crystalline Passage 3), desync 52줄(오류 구간 Pz-4~8 20줄 포함), Souls found in Anya 6, Diablo not found 5, Tomb chest not reached 4, Figurine incompleted 4(Pz-61~64 Travincal 정상 종료), moveToExit failed 3, Qual-Kehk talk failed·Not ready to start Duriel·Not ready for act2 각 1.
+- 사망 1(a7 `You died in last game` 10/26 09:17:55). 크래시 5(`Crash: no entry`: a2 Lut Gholein, a3·a5 Harrogath, a7 Chaos 2), 분석 안 함(사용자).
+- `[Error]` 7: forEach 2(Pz-3), `useWaypoint: Failed to use waypoint` 5(Pz-22 Catacombs Level 2, 8명 모두 `wp.area:null` 87줄 → handoff 2-23). 그 밖 웨이 사례: a1 07:22 Durance of Hate 2(`waypoint unit not found`, 9초 뒤 Life Chicken), a1 06:59 Sewers Level 2(진행).
+- 경로 줄(`log_guide.md` 4-4): `no adjusted path` 10회 2건(a3 Abaddon, a7 Infernal Pit), 뒤에 throw 줄 없이 다음 구간.
+- `Town chicken` 62, `Town check` 126, getWP `menu not opened` 102, `[teleportTo failed]` 3, 골드 나눔 버림 13·`Retaking` 0.

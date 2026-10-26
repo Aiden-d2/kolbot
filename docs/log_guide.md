@@ -20,10 +20,10 @@
 |---|---|---|
 | trace | `kolbot/_cache/trace/trace-<프로필>-<YYYYMMDD>.txt` | 분석의 중심. 프로필별·날짜별 |
 | d2bs 로그 | D2BS 로그 폴더 | `print` 진행 기록, 엔진 오류(`Error in ...`), `[Chicken]` print, `enchant:`, 콘솔 줄(`[console] 내용`: 조기 종료 사유, 치킨·사망, 오류, 경험치 줄, 게임 밖 줄) |
-| ItemLog | `kolbot/_cache/ItemLog.txt` | 줍기·구매·판매 |
+| ItemLog | `kolbot/_cache/ItemLog.txt` (10/26 업로드 `941ac63`부터 `kolbot/_cache/trace/ItemLog.txt`, `ScriptErrorLog.txt`도 같은 폴더) | 줍기·구매·판매 |
 
 - 매니저 콘솔은 받지 않는다(사용자 261024). 콘솔 줄은 d2bs 로그의 `[console]` 줄로 본다(261021~). 261024 묶음에서 콘솔 복사본과 `[console]` 줄이 내용 기준 1:1로 맞았고, 콘솔에만 있던 줄은 매니저가 찍는 크래시 줄(`Window has unexpectedly exited`) 하나였다. 색은 어느 쪽에도 남지 않으므로 줄 내용(4-8 정상 종료 판정)으로 가른다. 이 문서의 "콘솔 `…`" 줄은 모두 `[console]` 줄에서 찾는다.
-- 크래시: d2bs 로그의 `Crash: 스크립트 지역 - wait Ns (loc N)`(매니저가 크래시 정보를 남겼을 때) 또는 엔진 재시작 줄(`D2BS Engine startup complete`, 앞 번호가 바뀜). 크래시 때 하던 일·위치는 재시작 직전의 trace·d2bs 마지막 줄로 본다.
+- 크래시: d2bs 로그의 `Crash: 스크립트 지역 - wait Ns (loc N)`(매니저가 크래시 정보를 남겼을 때) 또는 엔진 재시작 줄(`D2BS Engine startup complete`, 앞 번호가 바뀜). 크래시 때 하던 일·위치는 재시작 직전의 trace·d2bs 마지막 줄로 본다. 크래시는 분석하지 않는다(로그로 원인을 알 수 없음, 사용자 261025·261026). 개수와 지역만 적는다.
 
 - 이전에는 사용자가 `log` 브랜치 `logs/`에 올렸다. 위치를 사용자에게 확인한다.
 - **어느 코드로 돌았는지 먼저 확인한다.** 사용자에게 main 커밋(또는 업로드 시각)을 묻고, 실행 중에 코드가 바뀌었는지도 묻는다(261006 분석 때 실행 중 바뀌었다). trace 형식으로도 시기를 가를 수 있다(3절).
@@ -65,6 +65,7 @@
   - `bossGuard seen: 이름 첫HP%@t0-끝HP%@t1, ... (end@초)` — 시각은 **가드 온 기준**. 가드 온 시각 = 이 줄 시각 − end. 치킨이 꺼져 있던 시간은 (가드 온 시각 + t1) − chicken off 줄 시각(초 단위 오차).
   - `bossEnd chicken back: N` / `bossEnd chicken stayed: N (boss never at pct)` / `bossEnd revive: start` / `bossEnd revived: Ns` / `bossEnd portal` / `bossEnd reopen portal` / `bossEnd corpse: at N` / `bossEnd corpse: picked`
 - 판정할 것: 보스별 치킨 off HP%와 off→킬 시간 분포, 그 사이 사망·치킨 수(써모너 pct 100이 과한지, 쉥크 50, 에인션트 10·2마리), 시체 회수 성공률과 실패 사유. **pct 값 변경은 제안까지만.**
+- **261026부터 분석하지 않는다**(사용자 261026): 특별한 예외(못 켜진 가드, 가드 중 사망 등)가 보이지 않으면 표를 내지 않는다. trace는 그대로 둔다. 마지막 표는 `log_results.md` 261026.
 
 ### 4-2. 치킨·사망 원인 (261006~261007)
 목적: 치킨 순간 무엇에 맞았나, 치킨 뒤 사망(종료 지연), 타운치킨과 치킨의 관계.
@@ -80,18 +81,19 @@
 목적: 누가 어느 단계에서 늦었나. 보스가드가 못 켜진 원인(`log_results.md` 261006 못 켜진 13건의 2·3·4·13번: 코드상 설명 안 됨 / River of Flame 1분 기록 없음 / 원인 불명).
 - (261020 삭제, 사용자 결정) `syncBO start/end`, `syncWP start/end`, `tpReady received`, `usePortal ok` — Claude가 261006에 합류 분석용으로 넣은 줄. 261020 전 로그에만 있다. syncBO는 노멀 조기 반환(`me.diff === 0`)에 end가 찍히지 않아 start만 있어도 멈춘 것이 아니었다.
 - `usePortal failed target: owner: unit: pre: tick: tries:<시도:gid sent/click/none/dead@ms> portals:<gid/classid/주인/지역/좌표/mode/거리>` — 내 포털일 때만.
-- `[Quit] Party desynced 1·2: missing(okCount|teamCount): 프로필, ... teamOk X`(261021~, 이름 수집) — 안 온 프로필. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지 본다. 261021 전은 `okCount N teamCount N teamOk X`(개수).
+- `[Quit] Party desynced 1·2: missing(okCount|teamCount): 프로필, ... teamOk X`(261021~, 이름 수집) — 안 온 프로필. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지 본다. 261021 전은 `okCount N teamCount N teamOk X`(개수). `d87cfcb`부터 `Party desynced 1` 상세 끝에 `travel true/false`(리더가 웨이를 모으는 중이라 그 okCount만 600초였는가, handoff 3-36).
 - `relay N msgs`(261021, Claude 추가) — default.dbj가 멈춘 동안 받은 메시지를 ToolsThread가 넘김. 판정: `Town chicken` 뒤에 찍히고 그 게임에 desync가 없으면 동작. 제거 조건: 동작 확인. **261023 `0f6da09` 삭제**(검증 통과, 261023 이후 코드 로그에는 없음).
-- `party has left: 이름 town: mode: ui:` + 위치 — 퇴장할 때까지 100ms마다 반복될 수 있다(의도). 첫 줄만 센다. 261024 `33bd183` 전에는 이름만, 위치 없음. 붙은 상태(Claude 추가 261024, handoff 3-31)는 그 순간의 마을 여부·동작 모드·열린 창(08 NPC 메뉴, 0C 거래창, 14 웨이 메뉴, 01 인벤토리, 없으면 `-`) — desync 낙오 프로필이 다른 프로필들이 이미 끝낸 단계에 아직 있었나(멈춤)를 본다. 제거 조건(상태 부분): 판별. (`be4f0e2`~`33bd183` 사이 코드는 같은 상태를 바로 뒤 `party left state:` 줄로 찍음.)
+- `party has left: 이름 town: mode: ui:` + 위치 — 퇴장할 때까지 100ms마다 반복될 수 있다(의도). 첫 줄만 센다. 261024 `33bd183` 전에는 이름만, 위치 없음. 붙은 상태(Claude 추가 261024, handoff 3-31)는 그 순간의 마을 여부·동작 모드·열린 창(08 NPC 메뉴, 0C 거래창, 14 웨이 메뉴, 01 인벤토리, 없으면 `-`) — desync 낙오 프로필이 다른 프로필들이 이미 끝낸 단계에 아직 있었나(멈춤)를 본다. 제거 조건(상태 부분): 판별. (`be4f0e2`~`33bd183` 사이 코드는 같은 상태를 바로 뒤 `party left state:` 줄로 찍음.) `d87cfcb`부터 줄 끝에 `step:단계` — default.dbj가 보낸 마지막 정리·마을 단계(`chores:pre/heal/id/inv/tome/buy/repair/rest/stash/gems/end`, `town:go/portalspot/portal/back`, 없으면 `-`). 정리가 끝나지 않은 낙오의 멈춘 단계를 본다(handoff 3-37, 제거 조건: 멈춘 단계 확인).
 - 판정: 늦은 프로필의 바로 앞 줄(무엇을 하던 중인가: 마을·`Town chicken`·포털 실패). 누가 okCount를 안 보냈는지는 지금 로그로 알 수 없다(사용자 수정 계획 0-11 okCount 대기 방식과 함께 다룸).
 
 ### 4-4. 이동·경로 (Pather)
 목적: **아케인 등 getPath 오류(사용자가 따로 보기로 한 핵심)**, 텔레포트·유닛·웨이 실패.
-- 빈 경로 처리(261020 최종): `moveTo no random path -> x,y in 지역 adjusting...`(random 오프셋 목표에 경로 없음 → 원좌표로) → `moveTo no path -> x,y in 지역 adjusting...` → `moveTo adjusted path -> x,y in 지역`(보정 칸으로 경로가 나왔을 때만) → `invalid path -> 내x,내y in 지역 random move...`(랜덤 걸음, 최대 10회, 10번째 실패면 `[Error] ... moveTo: Failed to generate path`). 앞 세 줄은 콘솔(기본색)에도 찍힌다(사용자 임시 확인용, 정상 종료 판정에서 조기 종료 줄로 착각하지 않는다).
-  - **이 형식은 main `72a1980`(261020 15:40) 이후다.** 그 전 코드(261007~261020 오전)는 보정 조건·랜덤 걸음 괄호가 달랐다(`47816e6`에서 사용자가 고친 결함). 로그가 언제 코드인지 먼저 본다.
-  - 아케인 사례 판정: 같은 좌표로 `moveTo no path`가 반복되는가, `adjusted`가 있는가, `invalid path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 1-4)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
+- 빈 경로 처리(`Pather.moveTo`, 261026 로그·코드로 확인한 형식): `no random path -> x,y in 지역 reverting...`(random 오프셋 목표에 경로 없음 → 원좌표로) → 원좌표 경로가 있으면 `original path -> x,y in 지역` / 없으면 `no original path -> x,y in 지역 adjusting...` → 보정 칸으로 경로가 나오면 `adjusted path -> x,y in 지역` / 없으면 `no adjusted path -> 내x,내y in 지역 fixing...`(내 주변 5칸 걷기, 최대 10회, trace만) → 경로가 나오면 `fixed path -> x,y in 지역`, 10번째도 없으면 throw `moveTo: Failed to generate path: x,y in 지역`. `no adjusted path`를 뺀 줄은 콘솔(기본색)에도 찍힌다(사용자 임시 확인용, 정상 종료 판정에서 조기 종료 줄로 착각하지 않는다).
+  - 옛 형식: main `72a1980`(261020 15:40)~261021 전은 `moveTo no random path … adjusting...` → `moveTo no path …` → `moveTo adjusted path …` → `invalid path -> … random move...`. 그 전 코드(261007~261020 오전)는 보정 조건·랜덤 걸음 괄호가 달랐다(`47816e6`에서 사용자가 고친 결함). 로그가 언제 코드인지 먼저 본다.
+  - 261026 묶음: `no random path` 26, `original path` 26, `no original path` 27, `adjusted path` 25, `no adjusted path` 20(a3 10/26 00:29 Abaddon, a7 03:37 Infernal Pit 각 10회), `fixed path` 0, throw 줄 0(두 건 모두 뒤에 다음 구간 헤더).
+  - 아케인 사례 판정: 같은 좌표로 `no original path`가 반복되는가, `adjusted path`가 있는가, `no adjusted path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 1-4)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
 - (261020 삭제) `moveTo entered town` — 5건 정상.
-- throw 전파: 랜덤 걸음 10번째의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
+- throw 전파: `no adjusted path` 10번째(옛 랜덤 걸음 10번째)의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
 - `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms(261024 `be4f0e2`부터 시전 중일 때만 최대 600ms, handoff 3-29), 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(`docs/code/Pather.md` useUnit 261022). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
@@ -104,7 +106,7 @@
 - 소울 게이트(261020): 헬 파밍의 아냐·바알에서 리더가 소울을 보면 `[Quit] Souls found in Anya` / print `Baal failed: souls found`(d2bs 로그). 바알은 `earlyReturn`으로 팀이 마을로.
 
 ### 4-5. 퀘스트
-- 라다먼트 북(261004·261012): `dropping radament book`(게임 시작에 가진 북을 버림) / `radament gate: 9,0 9,1 9,5 book` / `radament atma: ...`(분실 뒤 리더 아트마 대화, N+1) / `radament book visible: true/false 9,5` / `!!! [BOOK] !!!` / `radament book read: 9,5 false`(false = 읽음). 실패: `[Quit] Radament quest item not found`(누가 못 봄), `[Quit] getQuestItem failed`(줍기 실패), `[Quit] Radament book reset`. getQuestItem 줄: `Trying to make room for 이름`, `Not enough room for 이름`, `<classid> not found`, (261021~) `quest item vanished, retry N` / `<classid> vanished`(유닛이 사라짐: 남이 주움 추정, 제거 조건: 발생 확인). 눈·심장·뇌는 `!!! [EYE|HEART|BRAIN] !!!`(261021~, trace·print). 261022 사용자 수정(`d8af14f`)부터 trace·print 없이 리더 콘솔만 `===EYE===`·`===HEART===`·`===BRAIN===`, 스태프는 `=== STAFF ===`(조건 `classid === 92`, `8a7ff56`).
+- 라다먼트 북(261004·261012): `dropping radament book`(게임 시작에 가진 북을 버림) / `radament gate: 9,0 9,1 9,5 book` / `radament atma: ...`(분실 뒤 리더 아트마 대화, N+1) / `radament book visible: true/false 9,5` / `!!! [BOOK] !!!` / `radament book read: 9,5 false`(false = 읽음). 실패: `[Quit] Radament quest item not found`(누가 못 봄), `[Quit] getQuestItem failed`(줍기 실패), `[Quit] Radament book reset`. getQuestItem 줄: `Trying to make room for 이름`, `Not enough room for 이름`, `<classid> not found`, (261021~) `quest item vanished, retry N` / `<classid> vanished`(유닛이 사라짐: 남이 주움 추정). `quest item vanished, retry N`은 261026 로그 3건으로 제거 조건을 채워 삭제(사용자 261026, `d87cfcb`), `<classid> vanished`는 남김. 눈·심장·뇌는 `!!! [EYE|HEART|BRAIN] !!!`(261021~, trace·print). 261022 사용자 수정(`d8af14f`)부터 trace·print 없이 리더 콘솔만 `===EYE===`·`===HEART===`·`===BRAIN===`, 스태프는 `=== STAFF ===`(조건 `classid === 92`, `8a7ff56`).
 - 라다먼트 꺼짐(261021~): N+1 `radamentOff set` → N+2 `radamentOff -> tombs` + 콘솔 `Radament off: tombs, quit at 10 min (지역 x,y)` → 10분에 엔진이 나감(퇴장 줄 없음). 제거 조건(set/read 줄): 확인.
   - 판정: 정상 경로(visible → read) 비율, 분실 복구 N+1(atma 9,0 true 9,1 false) → N+2(visible false, 퀘스트 꺼짐) → N+3(획득)이 실제로 이어지는가.
 - (261020 삭제) `ancients loop` — 48/48 1회.
@@ -115,6 +117,7 @@
 - 감정: `identify failed / slow: 이름 (scroll|tome, Nms)`, `identify stopped: no ID scroll`. (261020 삭제) `sold unid` — 13건 동작.
 - 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`.
 - (261022 `482171b`에서 바뀜) `chores slow: clearInventory|buyPotions Ns`(261021~261022 로그) → `chores Ns: pre heal id inv [npc:<NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`(doChores 전체 10초 초과만, Claude 추가). `buyPotions: buy failed 코드 gold: columns:|buffer`(261021)는 그대로. 판정: 어느 단계가 긴가 — inv의 pots(물약 정리, 261022부터 마시기), belt 클릭 수, buy의 npc(상점 NPC까지 걷기·열기)와 구매 횟수·실패, 시작 시 NPC 메뉴(08)·거래창(0C). 제거 조건: handoff 3-27 판정 뒤 삭제 여부 결정. 261023 `0f6da09`부터 belt 뒤에 `cur 시도/실패 put N shift 시도/실패 ui 직전>직후 remain N`(handoff 3-27)이 붙고, 벨트 실패가 1건이라도 있으면 10초 미만이어도 찍힘. `ui`는 `08`(NPC 메뉴)·`01`(인벤토리 창), 없으면 `-`.
+- `belt shift fail: 코드 col:N [열 물약 코드] ping:N inv:true/false`(`d87cfcb`, handoff 3-27) — 벨트 넣기 shift-click 실패마다 정리 안에서 찍힘. inv false = 클릭이 늦게 반영됨(핑), inv true = 실제 실패(물약 코드와 열 코드 비교). 제거 조건: 3건 이상 분류.
 - `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정.
 - `[Storage.MoveTo] retry / catch`, `moved from cube to drop/sell`, `[TK] talk skipped N npc:`(스페이스 20번 다 씀, 261006·261020에 각 1건, 모두 Greiz 20), `[hire] hiring retry (N/5)`.
 - `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`(261024 `789d80d`, Claude 추가, handoff 3-32) — 착용 중인 재료 베이스를 룬워드·펀치 앞에서 뺐는가. ok 뒤 같은 방문의 `[Runeword]`/`[Punch]`와 ItemLog `Runeworded`/`Transmuted`, 그 칸 재장착(`Equipped`·`Granted`). 261024 `aafbe50`부터 입은 베이스의 재료도 줍는다(ItemLog `Ingredient`). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0.
@@ -128,22 +131,24 @@
 
 ### 4-8. 기본 기록 (관찰용 아님, 게임 흐름 파악에 씀)
 게임 경계, 구간 헤더, `[Quit] 사유: 상세`, `[Error] 구간: 메시지 (파일 #줄)`, `Script ended`(조기 종료가 없을 때만), `boss not found: id`, `AttackSkill[N] not learned`, `!!! POTION/SCROLL/BOOK !!!`, `[Quit] High ping / Mana·Iron Golem·Merc Chicken`, `undefined item`, `[DBG] drop`, `Couldn't give the potion to merc`.
-- 정상 종료 판정(CLAUDE.md): 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상. 단 4-4의 `moveTo ... path` 콘솔 줄(검정)은 조기 종료 줄이 아니다.
+- 정상 종료 판정(CLAUDE.md): 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상. 단 4-4의 경로 콘솔 줄(`no random path`·`original path`·`no original path`·`adjusted path`·`fixed path`, 검정)은 조기 종료 줄이 아니다.
 - 이유 없이 끝난 게임은 `log_results.md` 261006 "이유 없이 끝난 게임"처럼 분류한다(크래시, 마지막 게임, 30분 시간 초과, 매니저 일시정지, 원인 불명).
 
 ## 5. 이번 로그로 볼 확인 항목
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
-| 3-22 | 퀘스트 아이템 사라짐 위치 변경 | 4-5 `quest item vanished`, `Not enough room for undefined` |
 | 3-17 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
-| 3-27 | 벨트 넣기 위치를 heal 앞 `clearBelt`로(`81d5b43`) | 4-6 `chores ... cur put shift ui remain`(`ui ->-`, 실패 0), 마을 물약 다시 줍기 |
+| 3-27 | 벨트 넣기 위치를 heal 앞 `clearBelt`로(`81d5b43`) | 4-6 `chores ... cur put shift ui remain`(`ui ->-`, 실패 0), 판별 로그(수정 뒤) `belt shift fail: … inv:` |
 | 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
-| 3-29 | useUnit 계단 클릭 앞 대기 게이트 | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42, 261025 283) |
-| 3-31 | desync 낙오 프로필의 상태 | 4-3 `party has left` 상태·위치, `missing(...)` |
-| 3-32 | 착용 중인 베이스로 룬워드·펀치 | 4-6 `[Runeword] takeOff`·`[Cube] takeOff` |
-| 3-33 | 팀 대기 okCount 통일 | 4-3 `Party desynced 1/2`·`missing(...)`, `act* BO` print |
-| 3-34 | SafeTele 발밑 노드 제외 | 육안, Life Chicken 위치 |
+| 3-13 | 라다먼트 북 버리기 | 4-5 `dropping radament book` |
+| 3-29 | useUnit 계단 클릭 앞 대기 게이트(보류, 아시아 서버 결과로 다시 봄) | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42, 261025 283, 261026 275) |
+| 3-32 | 착용 중인 베이스로 룬워드·펀치(룬워드 확정, 펀치 미발견) | 4-6 `[Runeword] takeOff`·`[Cube] takeOff` |
+| 3-34 | SafeTele 발밑 노드 제외 | 육안, Life Chicken 수·위치 |
+| 3-35 | default.dbj 시작부 오류를 멈춤으로 | 콘솔·trace `Init failed in default.dbj. Stopping`, 앞의 `[Error]`, 30분짜리 빈 게임 없음 |
+| 3-36 | okCount 통일과 리더 웨이 모으기 중 10분 | 4-3 `Party desynced 1/2`·`missing(...)`·상세 끝 `travel`, `Traveling to` 뒤 퇴장 유무, `act* BO` |
+| 3-37 | desync 낙오 프로필의 멈춘 단계 | 4-3 `party has left … step:` |
+| 3-38 | 소켓용 완성 보석 큐빙(설정에 완성 보석 번호를 넣은 뒤) | ItemLog `Ingredient` 흠 없는 보석 → `Transmuted` → `Socketed` |
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.
