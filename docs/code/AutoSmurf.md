@@ -70,6 +70,10 @@
 - 261022 사용자 `8a7ff56`: 스태프 조건 `classid === 356`(상자 id라 참이 될 수 없었음, 호출은 `getQuestItem(92, 356)`) → `classid === 92`.
 - 확인: 261023 로그 눈·심장·뇌 각 3건 한 번씩, STAFF 3건. 검증 통과(사용자 261023).
 
+### 261022 Claude: 사라짐 확인 위치 (`482171b`, 옛 handoff 2-10·3-22)
+- `item.sizex === undefined` 확인을 `CanFit` 앞에서 `CanFit` 실패 뒤(`canMakeRoom` 앞)로. `CanFit`이 인벤토리를 다시 읽는 동안 유닛이 사라지면 크기가 undefined라 `CanFit`이 false가 되어 `Not enough room for undefined`로 끝나던 경우(261022 a1 하수구 3층)를 사라짐으로 받아 다시 찾는다(3회 넘으면 `<classid> vanished`).
+- 확인: 261026 로그 `quest item vanished, retry 1` 3건(a8 10/25 22:00:49, a7·a5 10/26 02:32:21~22, 모두 Sewers Level 3 라다먼트 북), 3건 모두 그 뒤 `!!! [BOOK] !!!`. `Not enough room` 0. 검증 통과(사용자 261026). `quest item vanished, retry N` trace는 제거 조건(사례 확인)을 채워 삭제(사용자 261026, `d87cfcb`).
+
 ## this.den
 
 ### 260928 Claude: `Attack.clearLevel` → den 내부 `clearDen`

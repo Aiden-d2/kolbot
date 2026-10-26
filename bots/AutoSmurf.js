@@ -45,6 +45,7 @@ function AutoSmurf() {
 		
 		teamNames = {},	//261021 team sync: message name -> {profile (lower case): true} (was okCount/teamCount counters)
 		teamOk = false,
+		leaderTravel = false,	//261026 the leader is collecting waypoints (travel message): the next okCount waits 10 min instead of 2 (handoff 2-25)
 		guardChicken = null,	//261004 bossGuard: LifeChicken saved while the boss guard is on (null = guard off)
 		guardSeen = null,	//261006 bossGuard: boss units seen while the guard is on (gid -> name, last HP and ms), traced at bossEnd	//261020 last scan only
 		guardStart = 0,	//261020 bossGuard: when the first boss was found (0 = not yet); the chicken off / last times count from it
@@ -413,11 +414,12 @@ function AutoSmurf() {
 				Messaging.sendToList(Team.Profiles, "teamOk");
 			}
 			
-			if (getTickCount() - tick > 120 * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)
-				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "missing(okCount): " + this.missing("okCount").join(", ") + " teamOk " + teamOk);	//260930	//261021 who did not come
+			if (getTickCount() - tick > (leaderTravel ? 600 : 120) * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)	//261026 600s while the leader travels
+				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "missing(okCount): " + this.missing("okCount").join(", ") + " teamOk " + teamOk + " travel " + leaderTravel);	//261026 + travel	//260930	//261021 who did not come
 			}
 		}
 
+		leaderTravel = false;	//261026 one okCount only
 		delete teamNames.okCount;	//261021 clear at the phase end, before sending teamCount: a fast one's next okCount comes only after my teamCount, so it is never cleared
 
 		this.teamCount(range);
@@ -1212,6 +1214,8 @@ function AutoSmurf() {
 		me.overhead("Travel course: " + target.course);
 
 		if (nextAreaIndex < areaIDs.length) { // If next area index is invalid, return true.
+			Messaging.sendToList(Team.Profiles, "travel");	//261026 actually traveling: the team's next okCount waits for me up to 10 min (handoff 2-25)
+
 			if (me.inTown && wpAreas.indexOf(target.course[0]) > -1 && Pather.wpAreas.indexOf(target.course[0]) > -1 && getWaypoint(Pather.wpAreas.indexOf(target.course[0]))) {
 				Pather.useWaypoint(target.course[0]);
 			}
@@ -1616,7 +1620,6 @@ function AutoSmurf() {
 					delay(me.ping * 2 + 500);
 				} else if (item.sizex === undefined) {	//261021 the unit is gone (its properties read undefined): look again instead of "Not enough room"	//261022 moved after CanFit: it can vanish while CanFit reloads the inventory (size reads undefined there, CanFit false)
 					vanished += 1;
-					Misc.trace("quest item vanished, retry " + vanished);	//261021 check: does this happen (remove once seen)
 
 					if (vanished > 3) {
 						Misc.trace(classid + " vanished");	//261021
@@ -7383,6 +7386,9 @@ function AutoSmurf() {
 				}
 
 				(teamNames.okCount = teamNames.okCount || {})[nick.toLowerCase()] = true;	//261021 names (was okCount += 1)
+				break;
+			case "travel":	//261026 handoff 2-25
+				leaderTravel = true;
 				break;
 			case "teamOk":
 				if (!teamOk) {

@@ -592,6 +592,14 @@ var Cubing = {
 				break;
 			}
 		}
+
+		[561, 566, 571, 576, 581, 586, 601].forEach(function (perfect) {	//261026 a perfect gem classid in Config.SocketRecipe: flawless x3 -> perfect for the sockets (handoff 2-27). gem types (any grade) are not used
+			if (Object.keys(Config.SocketRecipe || {}).some(function (part) {
+				return Config.SocketRecipe[part] && Config.SocketRecipe[part].indexOf(perfect) > -1;
+			})) {
+				this.recipes.push({Ingredients: [perfect - 1, perfect - 1, perfect - 1], Index: Recipe.Gem, Socket: perfect});	//261026
+			}
+		}, this);
 	},
 
 	validIngredients: [], // What we have
@@ -606,9 +614,39 @@ var Cubing = {
 		this.neededIngredients = [];
 		items = me.findItems(-1, 0);	//260829
 
+		for (i = 0; i < this.recipes.length; i += 1) {	//261026 socket gem recipes first (handoff 2-27): the inventory perfect gems the empty sockets take stay out of the other recipes; the recipe runs only while sockets are left
+			if (this.recipes[i].hasOwnProperty("Socket")) {
+				w = 0;	// empty sockets taking this perfect gem
+				j = 0;	// inventory perfect gems kept for them
+
+				Pickit.socketTargets().forEach(function (t) {
+					if (t.gems.indexOf(this.recipes[i].Socket) > -1) {
+						w += t.empty;
+					}
+				}, this);
+
+				for (k = 0; k < items.length && j < w; k += 1) {
+					if (items[k].classid === this.recipes[i].Socket && items[k].location === 3) {
+						items.splice(k, 1);
+
+						k -= 1;
+						j += 1;
+					}
+				}
+
+				this.recipes[i].Enabled = w > j;
+			}
+		}
+
 		for (i = 0; i < this.recipes.length; i += 1) {
-			// Set default Enabled property - true if recipe is always enabled, false otherwise
-			this.recipes[i].Enabled = this.recipes[i].hasOwnProperty("AlwaysEnabled");
+			if (this.recipes[i].hasOwnProperty("Socket")) {	//261026 Enabled set above: skip when the sockets are covered (no flawless pickup)
+				if (!this.recipes[i].Enabled) {
+					continue;
+				}
+			} else {
+				// Set default Enabled property - true if recipe is always enabled, false otherwise
+				this.recipes[i].Enabled = this.recipes[i].hasOwnProperty("AlwaysEnabled");	//261026 in the else
+			}
 
 			if (this.recipes[i].Index >= Recipe.Punch.Shield && this.recipes[i].Index <= Recipe.Punch.Helm) {	//261024 a worn punch base enables the recipe like one in storage (ingredient pickup)
 				for (w = 0; w < worn.length; w += 1) {
