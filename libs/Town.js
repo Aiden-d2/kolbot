@@ -246,7 +246,10 @@ var Town = {
 
 			if (done) {
 				Equip.updateTier(t.bodyLoc);	// Config.TierNow is the cache for field pickup checks	//261021 print the new tier (same line as after equipping)
-				Cubing.update();	//261026 sockets changed: rebuild the socket gem recipes now (handoff 2-27)
+				
+				if (Config.Cubing) {	//261026 sockets changed: rebuild the socket gem recipes now (handoff 2-27)
+					Cubing.update();
+				}
 			}
 		}
 
