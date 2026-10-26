@@ -5349,6 +5349,7 @@ function AutoSmurf() {
 				tpReady = false;
 			}
 			
+			Config.Dodge.Enabled = false;	//261026
 			Pather.teleport = false;	//260920
 			
 			unit = getPresetUnit(me.area, 2, 460); //261026
@@ -5358,6 +5359,8 @@ function AutoSmurf() {
 			Pather.teleport = true;	//260920
 			
 			Pather.moveToUnit(unit, 0, 0, false, false, true);	//261026
+			
+			Config.Dodge.Enabled = true;	//261026
 			
 			anya = getUnit(2, 558);
 			
