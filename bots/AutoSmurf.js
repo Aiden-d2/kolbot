@@ -6065,12 +6065,14 @@ function AutoSmurf() {
 			}
 		}
 
+		Config.Dodge.Enabled = false;	//261026
 		Pather.teleport = false;
 
 		Attack.clear(20, getLocaleString(2875));	//260929	//261003 15 -> 20 (Countess)
 		
-		Pather.moveToPreset(me.area, 2, 580);	//260929	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveToPreset(me.area, 2, 580, 0, 0, false, false, true);	//261026
+		
+		Config.Dodge.Enabled = true;	//261026
 		
 		this.okCount(15);
 
