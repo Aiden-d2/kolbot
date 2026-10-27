@@ -192,14 +192,14 @@
 [name] == mageplate && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 3 # [qty] == 1 && [body] < 32
 
 // [Zephyr]
-([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 2 # [armr] < 15 @ ([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) # [sockets] == 2 && [bowandcrossbowskilltab] > 1 # [qty] < 1
-([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 2 && [bowandcrossbowskilltab] > 1 # [armr] < 16 @ ([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) # [sockets] == 2 && [bowandcrossbowskilltab] > 2 # [qty] < 1
-([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 2 && [bowandcrossbowskilltab] > 2 # [armr] < 17
+([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 2 # [qty] == 1 && [armr] < 15 @ ([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) # [sockets] == 2 && [bowandcrossbowskilltab] > 1 # [qty] < 1
+([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 2 && [bowandcrossbowskilltab] > 1 # [qty] == 1 && [armr] < 16 @ ([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) # [sockets] == 2 && [bowandcrossbowskilltab] > 2 # [qty] < 1
+([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 2 && [bowandcrossbowskilltab] > 2 # [qty] == 1 && [armr] < 17
 
 // [Edge]
-([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 3 # [armr] < 13 @ ([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) # [sockets] == 3 && [bowandcrossbowskilltab] > 1 # [qty] < 1
-([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 3 && [bowandcrossbowskilltab] > 1 # [armr] < 14 @ ([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) # [sockets] == 3 && [bowandcrossbowskilltab] > 2 # [qty] < 1
-([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 3 && [bowandcrossbowskilltab] > 2 # [armr] < 15
+([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 3 # [qty] == 1 && [armr] < 13 @ ([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) # [sockets] == 3 && [bowandcrossbowskilltab] > 1 # [qty] < 1
+([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 3 && [bowandcrossbowskilltab] > 1 # [qty] == 1 && [armr] < 14 @ ([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) # [sockets] == 3 && [bowandcrossbowskilltab] > 2 # [qty] < 1
+([name] == stagbow || [name] == ashwoodbow) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 3 && [bowandcrossbowskilltab] > 2 # [qty] == 1 && [armr] < 15
 
 
 //============================================================================================================================================================================================
