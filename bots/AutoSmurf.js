@@ -3275,6 +3275,8 @@ function AutoSmurf() {
 				Town.goToTown();
 			}
 		}
+		
+		this.okCount();	//261027
 
 		Town.move("cain");	//260728
 		cain = getUnit(1, NPC.Cain);
@@ -3396,7 +3398,7 @@ function AutoSmurf() {
 		}
 		
 		Pather.goWP(me.area);	//260611
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		
 
 		this.okCount();
 		
@@ -3404,12 +3406,8 @@ function AutoSmurf() {
 		
 		Pather.teleport = true;
 		
-		if (me.diff === 0) {
-			delay(me.ping * 2 + 200);
-			Pather.useWaypoint(40);
-			
-			delay(me.ping * 2 + 200);	//261008
-			Pather.useWaypoint(46);
+		if (me.diff === 0) {	//261027
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//261027
 			this.okCount();
 		} else {
 			if (Leader) {
@@ -3770,21 +3768,6 @@ function AutoSmurf() {
 
 			this.getQuestItem(552);
 			
-			book = me.findItem(552);
-			
-			if (book) {
-				this.okCount();
-				clickItem(1, book);
-				print("ÿc8!!! [BOOK] !!!");	Misc.trace("!!! [BOOK] !!!");	//261002
-				D2Bot.printToConsole("!!! BOOK !!!", 8);
-			} else {
-				Misc.quitGame("getQuestItem failed");	//261012
-			}
-
-			sendPacket(1, 0x40);	//261004 fresh quest state for the trace
-			delay(me.ping * 2 + 500);
-			Misc.trace("radament book read: 9,5 " + me.getQuest(9, 5));	//261004 false = read
-			
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
 					Pather.makePortal();
@@ -3802,9 +3785,24 @@ function AutoSmurf() {
 					break;
 				}
 			}
+			
+			book = me.findItem(552);
+			
+			if (book) {
+				this.okCount();
+				clickItem(1, book);
+				print("ÿc8!!! [BOOK] !!!");	Misc.trace("!!! [BOOK] !!!");	//261002
+				D2Bot.printToConsole("!!! BOOK !!!", 8);
+			} else {
+				Misc.quitGame("getQuestItem failed");	//261012
+			}
+
+			sendPacket(1, 0x40);	//261004 fresh quest state for the trace
+			delay(me.ping * 2 + 500);
+			Misc.trace("radament book read: 9,5 " + me.getQuest(9, 5));	//261004 false = read
 		}
 		
-		this.okCount();
+		//this.okCount();
 
 		if (Leader) {
 			D2Bot.printToConsole("=== RADAMENT ===", 7);
@@ -3816,7 +3814,7 @@ function AutoSmurf() {
 	};
 
 	this.duriel = function () {
-		var i, cain, orifice, hole, npc;
+		var i, atma, orifice, hole, npc;	//261027
 		
 		print("ÿc4=== [DURIEL] ===");	Misc.trace("=== [DURIEL] ===", true);	//260930
 
@@ -3830,12 +3828,6 @@ function AutoSmurf() {
 			Town.goToTown(2);
 		}
 		
-		Town.move("cain");	//261018
-		cain = getUnit(1, NPC.Cain);
-		if (cain && cain.openMenu()) {
-			me.cancel();
-		}
-
 		if (!me.getQuest(14, 1) && !me.getQuest(14, 3) && !me.getQuest(14, 4)) {
 			if (Leader) {
 				Town.move("waypoint");
@@ -3949,7 +3941,16 @@ function AutoSmurf() {
 					Town.goToTown();
 				}
 				
-				delay(me.ping * 2 + 1000);
+				//delay(me.ping * 2 + 1000);
+				
+				Town.move(NPC.Atma);	//261027
+				atma = getUnit(1, NPC.Atma);
+
+				if (atma && atma.openMenu()) {
+					me.cancel();
+				}
+
+				Town.move("portalspot");
 				
 				this.okCount();
 				

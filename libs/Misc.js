@@ -592,6 +592,10 @@ var Equip = {
 
 		switch (item.itemType) {
 		case 2: // shield
+			if (Attack.usingBow() || Attack.usingTwoHand()) {
+				return false;
+			}
+			
 			bodyLoc = 5;
 
 			break;
@@ -600,11 +604,11 @@ var Equip = {
 
 			break;
 		case 5: // arrows
-			bodyLoc = 4;
+			bodyLoc = 5;
 
 			break;
 		case 6: // bolts
-			bodyLoc = 4;
+			bodyLoc = 5;
 
 			break;
 		case 10: // ring
@@ -637,39 +641,18 @@ var Equip = {
 
 			break;
 		case 26: // staff
-			bodyLoc = 5;
+			bodyLoc = 4;
 
 			break;
 		case 27: // bow
-			bodyLoc = 5;
+			bodyLoc = 4;
 
 			break;
 		case 28: // axe
-			if (me.classid === 4) {
+			if (me.classid === 4 && !Attack.usingTwoHand()) {
 				bodyLoc = [4, 5];
 			} else {
-				switch (item.classid) {
-				case 5: // largeaxe
-				case 6: // broadaxe
-				case 7: // battleaxe
-				case 8: // greataxe
-				case 9: // giantaxe
-				case 98: // militaryaxe
-				case 99: // beardedaxe
-				case 100: // tabar
-				case 101: // gothicaxe
-				case 102: // ancientaxe
-				case 201: // feralaxe
-				case 202: // silveredgedaxe
-				case 203: // decapitator
-				case 204: // championaxe
-				case 205: // gloriousaxe
-					bodyLoc = 5;
-					
-					break;
-				default:
-					bodyLoc = 4;
-				}
+				bodyLoc = 4;
 			}
 			
 			break;
@@ -685,31 +668,15 @@ var Equip = {
 			if (me.classid === 4) {
 				bodyLoc = [4, 5];
 			} else {
-				switch (item.classid) {
-				case 232: // championsword
-					bodyLoc = 5;
-					
-					break;
-				default:
-					bodyLoc = 4;
-				}
+				bodyLoc = 4;
 			}
 			
 			break;
 		case 31: // hammer
-			if (me.classid === 4) {
+			if (me.classid === 4 && !Attack.usingTwoHand()) {
 				bodyLoc = [4, 5];
 			} else {
-				switch (item.classid) {
-				case 23: // maul
-				case 24: // greatmaul
-				case 116: // warclub
-					bodyLoc = 5;
-					
-					break;
-				default:
-					bodyLoc = 4;
-				}
+				bodyLoc = 4;
 			}
 			
 			break;
@@ -724,7 +691,7 @@ var Equip = {
 		case 33: // spear
 		case 34: // polearm
 		case 35: // crossbow
-			bodyLoc = 5;
+			bodyLoc = 4;
 
 			break;
 		case 36: // mace
@@ -749,7 +716,7 @@ var Equip = {
 			}
 
 			break;
-		case 67: // Handtohand
+		case 67: // handtohand
 			bodyLoc = 4;
 			
 			break;
@@ -769,7 +736,7 @@ var Equip = {
 
 			break;
 		case 85: // amazonbow
-			bodyLoc = 5;
+			bodyLoc = 4;
 
 			break;
 		case 86: // amazonspear
@@ -778,30 +745,6 @@ var Equip = {
 
 			break;
 		case 88: // assassinclaw
-			/*switch (item.classid) {	//eom *need to validate
-				case 175: // 
-				case 176: // 
-				case 177: // 
-				case 178: // 
-				case 179: // 
-				case 180: // 
-				case 181: // 
-				case 182: // 
-				case 183: // 
-				case 184: // 
-				case 185: // 
-				case 186: // 
-				case 187: // 
-				case 188: // 
-				case 189: // 
-				case 190: // 
-				case 191: // 
-				case 192: // 
-				case 193: // 
-				case 194: // 
-				case 195: // 
-					bodyLoc = 4;
-			}*/
 			bodyLoc = 4;
 			
 			break;

@@ -23,7 +23,6 @@ var AutoBuildTemplate = {
 			{stat: 0, target: 60},			// Strength
 			{stat: 2, target: 35},			// Dexterity
 			{stat: 3, target: 200},			// Vitality
-			{stat: 2, target: 75},			// Dexterity
 			{stat: 3, target: "max"},		// Vitality
 		],
 		
@@ -98,9 +97,9 @@ var AutoBuildTemplate = {
 				
 				Config.TierGoal.Head = 15;
 				Config.TierGoal.Neck = 17;
-				Config.TierGoal.Body = 21;
+				Config.TierGoal.Body = 31;
 				Config.TierGoal.ArmR = 31;
-				Config.TierGoal.ArmL = 41;
+				Config.TierGoal.ArmL = 31;
 				Config.TierGoal.RingR = 14;
 				Config.TierGoal.RingL = 14;
 				Config.TierGoal.Belt = 16;

@@ -98,9 +98,9 @@ var AutoBuildTemplate = {
 				
 				Config.TierGoal.Head = 15;
 				Config.TierGoal.Neck = 17;
-				Config.TierGoal.Body = 21;
-				Config.TierGoal.ArmR = 35;
-				Config.TierGoal.ArmL = 35;
+				Config.TierGoal.Body = 31;
+				Config.TierGoal.ArmR = 31;
+				Config.TierGoal.ArmL = 31;
 				Config.TierGoal.RingR = 14;
 				Config.TierGoal.RingL = 14;
 				Config.TierGoal.Belt = 16;

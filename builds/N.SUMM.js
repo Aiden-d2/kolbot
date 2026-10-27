@@ -105,9 +105,9 @@ var AutoBuildTemplate = {
 				
 				Config.TierGoal.Head = 15;
 				Config.TierGoal.Neck = 17;
-				Config.TierGoal.Body = 21;
+				Config.TierGoal.Body = 31;
 				Config.TierGoal.ArmR = 31;
-				Config.TierGoal.ArmL = 21;
+				Config.TierGoal.ArmL = 25;
 				Config.TierGoal.RingR = 14;
 				Config.TierGoal.RingL = 14;
 				Config.TierGoal.Belt = 16;
@@ -128,7 +128,6 @@ var AutoBuildTemplate = {
 	6:	{
 			Update: function () {
 				Config.AttackSkill = [-1, 67, -1, 67, -1, -1, -1];
-				Config.LowManaSkill = [-1, -1];
 				Config.Golem = "Clay";
 			}
 		},
@@ -146,6 +145,7 @@ var AutoBuildTemplate = {
 				Config.TownHP = 40;
 				Config.HPBuffer = 0;		
 				Config.UseMP = 30;
+				Config.LowManaSkill = [-1, -1];
 				Config.PacketCasting = 1;								// 0 = disable, 1 = packet teleport, 2 = full packet casting.
 				
 				Config.AttackSkill = [-1, 500, -1, 500, -1, -1, -1];
