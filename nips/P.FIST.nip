@@ -197,7 +197,7 @@
 ([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armr] < 31
 
 // [HeartoftheOak]
-[name] == flail && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armr] < 41
+[name] == flail && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armr] < 41 && [tiered] == 0
 
 
 //============================================================================================================================================================================================
