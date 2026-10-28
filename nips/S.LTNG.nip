@@ -162,7 +162,7 @@
 ([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armg] < 31	//261028 gear key renamed
 
 // [HeartoftheOak]
-[name] == flail && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armg] < 41 && [tiered] == 0	//261028 gear key renamed
+[name] == flail && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armg] < 41 && [tiered]	//261028 gear key renamed, tiered marker
 
 
 //============================================================================================================================================================================================

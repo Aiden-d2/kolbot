@@ -180,7 +180,7 @@ NTIP.GetScore = function (item, key) {	//2608010
 
 		try {
 			//tiered
-			if (rule && rule.hasOwnProperty("Tiered") && !Config.Tiered) {	//261028 [tiered] == 0 only
+			if (rule && rule.hasOwnProperty("Tiered") && !Config.Tiered) {	//261028 [tiered] marker
 				continue;
 			}
 
@@ -256,7 +256,7 @@ NTIP.EvaluateItem = function (item, list) {	//260804
 
 		try {
 			//gate1 - tiered
-			if (rule && rule.hasOwnProperty("Tiered") && !Config.Tiered) {	//261028 [tiered] == 0 only
+			if (rule && rule.hasOwnProperty("Tiered") && !Config.Tiered) {	//261028 [tiered] marker
 				continue;
 			}
 
@@ -466,7 +466,7 @@ NTIP.buildLineStr = function (sa, merc, tier, qty, tiered, tierCheck) {	//261025
 		str += " / (Qty)#" + qty;
 	}
 	
-	if (tiered) {	//261028 [tiered] == 0 only
+	if (tiered) {	//261028 [tiered] marker
 		str += " / (Tiered)";
 	}
 
@@ -477,9 +477,6 @@ NTIP.buildLineStr = function (sa, merc, tier, qty, tiered, tierCheck) {	//261025
     return str;
 };
 
-NTIP.IsSyntaxInt = function (ch) {
-	return (ch === '!' || ch === '%' || ch === '&' || (ch >= '(' && ch <= '+') || ch === '-' || ch === '/' || (ch >= ':' && ch <= '?') || ch === '|');
-};
 NTIP.ParseLineInt = function (input, info) {	//261028 rewritten: one reader per section, syntax check, hold [owned], gear goal
 	var p_end, nipParts, mainSec, holdSec, p_result;
 
@@ -715,6 +712,16 @@ NTIP.ParseRule = function (sec, hold, info) {	//261028
 		where = " File: " + info.file + " Line: " + info.line;
 
 	for (i = 0; i < parts.length; i += 1) {
+		if (parts[i] === "[tiered]" && !hold) {	// marker: all gear at TierGoal (Config.Tiered)
+			if (seen.tiered) {	// shown only
+				Misc.errorReport("Duplicate rule key: [tiered]" + where);
+			}
+
+			seen.tiered = true;
+			rule.Tiered = true;
+			continue;
+		}
+
 		m = parts[i].match(/^\[([a-z0-9]+)\](==|!=|<=|>=|<|>)([a-z0-9]+)$/);
 
 		if (!m) {
@@ -759,13 +766,8 @@ NTIP.ParseRule = function (sec, hold, info) {	//261028
 			rule[key === "tier" ? "Tier" : key === "merc" ? "Merc" : "Qty"] = Number(value);
 			break;
 		case "tiered":
-			if (op !== "==" || value !== "0") {
-				Misc.errorReport("Bad tiered value: " + parts[i] + " (only == 0)" + where);
-				return false;
-			}
-
-			rule.Tiered = 0;
-			break;
+			Misc.errorReport("[tiered] is a marker, write it without op and value: " + parts[i] + where);
+			return false;
 		default:	// gear tier gate: [armor] < 21 = cached Config.TierNow, [mercarmor] < 21 = cached Config.TierMerc, value goal = Config.TierGoal
 			isMerc = key.indexOf("merc") === 0;
 			gearList = isMerc ? Config.TierMerc : Config.TierNow;

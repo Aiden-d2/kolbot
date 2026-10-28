@@ -2,27 +2,27 @@
 // [Tiered]
 //############################################################################################################################################################################################
 
-[name] == shako && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered] == 0
-[type] == amulet && [quality] == unique # [strength] == 12 && [fireResist] >= 15 # [qty] == 1 && [tiered] == 0
-[name] == boneknife && [quality] == unique # # [qty] == 1 && [tiered] == 0
-[type] == ring && [quality] == unique # [maxhp] == 40 && [magicdamagereduction] >= 1 # [qty] == 1 && [tiered] == 0
-[type] == ring && [quality] == unique # [tohit] >= 150 && [dexterity] >= 15 # [qty] == 1 && [tiered] == 0
-[name] == warbelt && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered] == 0
-[name] == battleboots && [quality] == set # # [qty] == 1 && [tiered] == 0
-[name] == heavygloves && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered] == 0
+[name] == shako && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered]	//261028 tiered marker
+[type] == amulet && [quality] == unique # [strength] == 12 && [fireResist] >= 15 # [qty] == 1 && [tiered]	//261028 tiered marker
+[name] == boneknife && [quality] == unique # # [qty] == 1 && [tiered]	//261028 tiered marker
+[type] == ring && [quality] == unique # [maxhp] == 40 && [magicdamagereduction] >= 1 # [qty] == 1 && [tiered]	//261028 tiered marker
+[type] == ring && [quality] == unique # [tohit] >= 150 && [dexterity] >= 15 # [qty] == 1 && [tiered]	//261028 tiered marker
+[name] == warbelt && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered]	//261028 tiered marker
+[name] == battleboots && [quality] == set # # [qty] == 1 && [tiered]	//261028 tiered marker
+[name] == heavygloves && [quality] == unique && [flag] != ethereal # # [qty] == 1 && [tiered]	//261028 tiered marker
 
-//[name] == breastplate && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 # [qty] == 1 && [tiered] == 0	//261023 Enigma off: no base
+//[name] == breastplate && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 3 # [qty] == 1 && [tiered]	//261023 Enigma off: no base	//261028 tiered marker
 
-[name] == crystalsword && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 5 # [qty] == 1 && [tiered] == 0
+[name] == crystalsword && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 5 # [qty] == 1 && [tiered]	//261028 tiered marker
 
-//[name] == flail && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 1 && [tiered] == 0
+//[name] == flail && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 1 && [tiered]	//261028 tiered marker
 
-[name] == sacredtarge && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 1 && [tiered] == 0
-[name] == sacredtarge && [quality] == normal && [flag] != ethereal # ([sockets] == 0 || [sockets] == 4) && [fireresist] >= 20 # [qty] == 1 && [tiered] == 0
+[name] == sacredtarge && ([quality] == normal || [quality] == superior) && [flag] != ethereal # [sockets] == 4 # [qty] == 1 && [tiered]	//261028 tiered marker
+[name] == sacredtarge && [quality] == normal && [flag] != ethereal # ([sockets] == 0 || [sockets] == 4) && [fireresist] >= 20 # [qty] == 1 && [tiered]	//261028 tiered marker
 
-[name] == keyofterror # # [qty] == 3 && [tiered] == 0
-[name] == keyofhate # # [qty] == 3 && [tiered] == 0
-[name] == keyofdestruction # # [qty] == 3 && [tiered] == 0
+[name] == keyofterror # # [qty] == 3 && [tiered]	//261028 tiered marker
+[name] == keyofhate # # [qty] == 3 && [tiered]	//261028 tiered marker
+[name] == keyofdestruction # # [qty] == 3 && [tiered]	//261028 tiered marker
 
 
 //############################################################################################################################################################################################
