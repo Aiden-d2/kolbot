@@ -673,7 +673,7 @@ GetScore(item, key)        → Number   key = "Tier" | "Merc"
                            힘·민첩 요구치 미달(Tier 는 내 스탯, Merc 는 Config.MercStat)이면 0
 IsBroken(item)             → bool   내구도 0 && 최대 내구도 > 0 && 무한 내구 아님
 CheckQuantityOwned(item_type, item_stats, selfGid) → 보유 수량
-ParseLineInt(input, info) / IsSyntaxInt(ch) / buildLineStr(...)
+ParseLineInt(input, info) / ParseExpr(sec, kind, info) / ParseRule(sec, hold, info) / buildLineStr(...)   (261028 IsSyntaxInt 삭제)
 ```
 
 ### OOG.js
@@ -1013,7 +1013,7 @@ Pickit.init(notify)
 |---|---|
 | `X.nip` | 공용 장비 tier 공식(투구·갑옷 등), 포션, 일부 수량 제한 규칙 |
 | `Y.nip` | 크래프트·룬워드 소재 등 대량 규칙 |
-| `Z.nip` | 고정 유니크·룬워드 완성품 (`[tiered] == 0` 조건 위주) |
+| `Z.nip` | 고정 유니크·룬워드 완성품 (`[tiered]` 조건 위주) |
 | `V.nip` | 용병 무기(`[merc]` 점수), 룬워드 베이스 폴암 |
 | 빌드코드 NIP | 해당 빌드 전용 장비 규칙 |
 
@@ -1037,11 +1037,12 @@ Pickit.checkItem(unit)
 
 | 게이트 | 내용 |
 |---|---|
-| tiered | `Config.Tiered` 또는 `Config.TieredGear[...]`로 규칙 활성 여부 판정 |
+| tiered | 끝 칸 `[tiered]` 표시가 있으면 `Config.Tiered`(게임 시작 때 전 칸 `TierGoal` 도달)일 때만 통과 |
+| 기어 조건 | 끝 칸 `[armg] < 31`·`[armb] < goal` 등: `Config.TierNow`(착용 때마다 갱신)를 숫자나 `Config.TierGoal`과 비교, 용병 칸은 `Config.TierMerc` |
 | 속성 | `[name] [type] [quality] [flag]` 등 속성 조건 평가 |
 | 미감정 | 스탯 조건이 있는데 미감정이면 즉시 `result -1` |
 | 스탯 | 스탯 조건 평가 |
-| hold | 홀드 파트가 있으면 `CheckQuantityOwned`로 보유 수량 비교 |
+| hold | 홀드 파트가 있으면 `CheckQuantityOwned`로 홀드 조건에 맞는 보유 개수를 `[owned]`(없으면 `< 1`)로 비교 |
 | tier | `Equip.getBodyLoc` → 부서진 아이템 제외 → `Config.TierNow[...]`의 tier/str/dex 비교 |
 | merc | `Config.UseMerc` 가드 → `Grant.getBodyLoc` → 부서진 아이템 제외 → `Config.TierMerc[...]` 비교 + `Grant.canEquip` |
 | qty | `CheckQuantityOwned`가 규칙 수량 이상이면 탈락 |
@@ -1076,7 +1077,7 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | `NoSkipArea` `DetourPath` | `Attack.clear` / `setPosition`, `Paladin.getHammerPosition` |
 | `SafeTele{Enabled Range Angle Step Min Skip}` (261001 Count 삭제) | `Pather.moveTo`의 `safeCheckNode` |
 | `Dodge{Enabled Range MinSkillRange}` | `Attack.setPosition`. `Enabled`는 `AutoSmurf.duriel` 안(탈라샤 무덤 오리피스 박스 정리 동안)에서 잠시 끄고 다시 켬. 포탈 집결 직후 붙은 몹부터 정리하려는 것 (260930 HP·Step·Max·Count 삭제). 261002: War Cry·Shock Wave·Armageddon은 직업 파일 게이트로 회피 없음 |
-| `Gear` `Tiered` `TieredGear` `TierGoal` `TierNow` | `NTIP.EvaluateItem` / `GetScore`, `Equip` 계열, `AutoSmurf.preparation`(`Tiered`) |
+| `Gear` `Tiered` `TierGoal` `TierNow` | `NTIP.EvaluateItem` / `GetScore`, `Equip` 계열, `AutoSmurf.preparation`(`Tiered`). 칸 이름 `Helm Amulet Armor ArmG ArmB RingG RingB Belt Boots Gloves`(261028, `TieredGear` 삭제) |
 | `TierMerc` `MercStat` | `NTIP` merc 게이트·`GetScore`, `Grant`, `ToolsThread` |
 | `MercSkill` | `AutoSmurf` → `Merc.hire` |
 | `UseMerc` `UseMercHP` `UseMercRejuv` `MercChicken` | `ToolsThread`, `Town`, `NTIP` merc 게이트, `AutoSmurf.preparation`(설정) |

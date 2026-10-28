@@ -1,5 +1,11 @@
 # tools/NTItemParser.dbl
 
+## GetScore
+
+### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
+- 홀드 판정은 `holdRule.Owned`(옛 `Qty`)를 `eval(보유 개수 + Owned)`로 본다.
+- tiered 판정: 규칙에 `Tiered`가 있으면 `Config.Tiered`가 참일 때만 통과(부위별 `Config.TieredGear`·반대 형태 삭제).
+
 ## EvaluateItem
 
 ### 261025 사용자: 기어 tier 게이트 (`[body] < 21`, `[mercbody] < 21`)
@@ -7,10 +13,21 @@
 - 동작: `[tiered]` 게이트 바로 다음(gate1b)에서 규칙의 `TierCheck`(비교식)를 계산해, 거짓이면 그 줄을 건너뛴다. 맞은 줄의 결과 줄 글자에 `TierCheckStr`를 넘긴다.
 - `GetScore`(tier·용병 점수)에는 넣지 않는다. 점수는 착용 칸 tier 갱신(`Equip.updateTier` → `getEquippedItem` → `GetScore`)에도 쓰이므로, 자기 칸을 보는 조건이 들어가면 직전 저장값에 따라 결과가 바뀌며 되풀이된다.
 
+### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
+- tiered 게이트는 `Config.Tiered`만 본다. 홀드 게이트(gate5)는 `holdRule.Owned`. 기어 조건 게이트(gate1b)는 그대로이며 값이 `goal`이면 식이 `Config.TierGoal.<칸>`과 비교한다(실시간 `TierNow`와 빌드 목표).
+
 ## buildLineStr
 
 ### 261025 사용자: 기어 tier 게이트 (`[body] < 21`, `[mercbody] < 21`)
 - 인자 `tierCheck` 추가. 값이 있으면 줄 끝에 ` / (ArmR<41)` 모양으로 붙인다. 조건이 여럿이면 `(Body<=20)(RingL>=3)`, 용병은 `(MercBody<21)`. 맞은 줄에만 찍힌다.
+
+### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
+- 인자 `tieredNegate` 삭제. `[tiered]` 줄이면 ` / (Tiered)`. 기어 조건 표시는 새 칸 이름(` / (ArmG<goal)`).
+
+## IsSyntaxInt
+
+### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
+- 삭제(새 읽기 함수는 쓰지 않음).
 
 ## ParseLineInt
 
@@ -25,3 +42,28 @@
 - 확인: node로 예시 줄 파싱·게이트 켜짐/꺼짐·`UseMerc` 꺼짐·tier/merc 줄에서 빠짐(키 순서 무관)·수량 줄은 유지, nip 전체 6351줄 파싱 결과가 수정 전과 같음. 인게임 검증은 nip 줄을 바꾼 뒤.
 - 이전 `[tiered] == N`(칸 번호, `TierGoal` 도달 여부)은 그대로 둔다. nip에서 N ≠ 0으로 쓰는 줄은 없다.
 
+### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
+- 줄을 `@`로 본문·홀드, `#`로 속성·스탯·끝 칸으로 나누고, 속성·스탯 칸은 `NTIP.ParseExpr`, 끝 칸은 `NTIP.ParseRule`로 읽는다. 홀드도 같은 함수(홀드용 복사 코드 삭제).
+- `@` 뒤가 비면 홀드 없음(기존과 같음). `@` 2개 이상, `#` 3개 이상이면 `Misc.errorReport`로 표시만 하고 넘친 부분은 기존처럼 버린다.
+- 함수 하나라도 `false`면 줄을 버린다(오류 내용은 각 함수가 `Misc.errorReport`로 남김: 회색 콘솔, trace `[Error]`, `ScriptErrorLog.txt`).
+- 반환 형태(`[속성식, 스탯식, 규칙, 홀드 속성식, 홀드 스탯식, 홀드 규칙]`)는 그대로. 확인: 수정 전후 nip 전체 파싱 결과가 같음(이름·`[owned]`·`[tiered]` 정규화 뒤).
+- 바뀐 경계: 1~4글자짜리 속성·스탯 칸도 읽는다(옛 코드는 무시). `[prefix]`·`[suffix]`에 숫자 값도 식이 된다(옛 코드는 괄호가 닫히지 않아 조용히 무시됨).
+
+## ParseExpr
+
+### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
+- 새 함수. 속성 칸(`kind` "property")·스탯 칸("stat")을 식으로 바꾸고 문법을 검사한다. 빈 칸은 `""`.
+- 속성 칸: `[키워드] 연산자 값`. 키워드 `color type name class quality flag level prefix suffix`, 연산자 `== != < <= > >=`(`flag`·`prefix`·`suffix`는 `==`·`!=`만, `!=`면 `!item.getFlag(…)`), 값은 별칭 또는 숫자(`prefix`·`suffix`는 이름 문자열).
+- 스탯 칸: `[별칭]`·`[번호]`·`[번호,번호]` → `item.getStatEx(…)`.
+- 키워드 밖 글자는 허용 목록만: `&& || == != >= <= > < ( ) + - * /`, 숫자, 이름(`me.diff` 등). `=` 하나, `&`·`|` 하나, `===`, `^`, `%`, `~`, `!`, `;` 등은 오류.
+- 같은 괄호 높이(또는 괄호 밖)에 `&&`와 `||`가 같이 있으면 오류. 닫히지 않은 `(`, 남는 `)`는 오류.
+- 마지막에 `new Function`으로 컴파일 검사.
+
+## ParseRule
+
+### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
+- 새 함수. 끝 칸(본문·홀드 공통)을 `[키] 연산자 값` 조각으로 `&&`로만 이어 읽는다(앞뒤 남는 글자, `||`, `[` 빠짐은 오류).
+- 본문 키: `[tier]`·`[merc]`·`[qty]`는 `==` 정수. `[tiered]`는 연산자·값 없이 표시만(`Tiered: true`), `[tiered] == 0` 등 옛 형태는 오류. 기어 조건 `[helm] [amulet] [armor] [armg] [armb] [ringg] [ringb] [belt] [boots] [gloves]`, 용병 `[merchelm] [mercarmor] [mercarmg]`는 `< <= > >= ==` 정수 또는 `goal`(용병 칸 `goal`은 오류), 식은 `Config.TierNow.<칸>.tier 연산자 값`(용병은 `Config.UseMerc&&Config.TierMerc.<칸>.merc …`).
+- 홀드 키: `[owned]`만, `< <= > >= ==` 정수 → `Owned: "<1"` 모양. 없으면 `< 1`(홀드 조건에 맞는 아이템을 1개 이상 가지면 건너뜀). 홀드에 다른 키(`[qty]` 포함)는 오류.
+- 같은 키가 두 번 나오면 `Duplicate rule key` 표시만(값 키는 뒤 값, 기어 조건은 두 조건 모두 적용 — 기존과 같음).
+- tier·merc 줄의 기어 조건은 기존처럼 빼고 trace `NTIP: gear tier ignored on tier/merc line`.

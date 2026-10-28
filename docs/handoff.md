@@ -64,6 +64,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 261023 코드 확인: `Config.Tiered`는 매 게임 시작 때 빌드 1레벨 Update의 `Equip.updateTiers()`에서 정해지고(모든 칸이 `TierGoal` 이상), 그 뒤 `Runewords.init()`이 레시피를 읽는다(`default.dbj` `Config.init` → `Runewords.init`). 빌드 24레벨이 이미 `if (!Config.Tiered)`로 큐빙 레시피를 나눈다(S.COLD). 에인션트 플레지·생추어리 레시피는 빌드가 아니라 `Config.js` 공통 `RunewordRecipe`에 있고 팔라딘 빌드 3개도 에인션트 플레지를 쓴다(nip 16줄씩).
   - 룬: Ral·Ort·Tal은 `[qty] == 1 && [tiered] != 0`(파서상 `!=`는 티어드가 아닐 때만 켜짐, `NTItemParser.dbl` tiered 게이트) → 티어드 전에만 줍는다. Ko 줄은 주석, Mal 이상은 늘 줍는다.
   - 홀드: `NTIP.CheckQuantityOwned`는 보관품과 착용 장비(mode 1)·용병 장비를 센다. 지금 3소켓 베이스 줄 홀드(`@ (유니크 라운드 쉴드 || 노말·슈페리어 방패) # (3소켓 || 화염 저항 ≥ 45) # [qty] < 1`, S.COLD.nip)는 착용 중인 에인션트 플레지·모저를 세어 베이스를 줍지 않는다.
+  - 261028 nip 문법 변경(3-39): `[tiered]`는 연산자·값 없는 표시(전 칸 `TierGoal` 도달 = `Config.Tiered`)만 남고 `[tiered] != 0`·부위 번호 형태는 없어짐 → "티어드 전에만"은 기어 조건(`[armb] < goal` 등)으로 쓴다. 홀드 끝 칸 `[qty]`는 `[owned]`(없으면 `< 1`). 칸 이름 `ArmL` → `ArmB`(`TierGoal.ArmB`, 261027 사용자 업로드에서 9개 빌드 모두 25). 아래 구현안의 줄 모양은 옛 문법이다.
   - 9개 빌드 모두 `TierGoal.ArmL = 21`(X.nip 매직·레어 방패 tier 21~25)이라 에인션트 플레지(26) 없이도 티어드가 될 수 있다.
 - **구현안**(방향 사용자 261023, 옛 A·B·C 안 대체)
   - 레시피: 대상 빌드 9개의 24레벨 Update에서 티어드 전에는 에인션트 플레지만, 티어드 뒤에는 생추어리만 남긴다(`Config.RunewordRecipe`에서 다른 쪽을 거름. 공통 목록은 팔라딘도 쓰므로 `Config.js`는 그대로).
@@ -74,36 +75,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 생추어리 tier 줄 추가.
   - 수정 규모: 빌드 9개, nip 9개. 새 변수·함수 없음.
   - **남은 결정**: ① 생추어리 tier 번호(모저 41과 같은 급 이상) ② ArmL 목표 21 그대로(tier 21~25 방패로 티어드가 되면 에인션트 플레지를 건너뛰고 생추어리를 기다림) / 26으로 올림(티어드에 묶인 MiniShopBot·farmingON·큐빙 레시피도 늦어짐) ③ tier 줄 옵션(맞을 때 회복 20·민첩 20은 게임 지식, 확인 필요).
-- **검증 방법**: 검토에서 정한다.
-
-### 2-22. 소켓 우선 tier와 tier 줄 품질 하한 노말 이상 (X.nip·빌드 nip tier 줄, 사용자 261023·261024, 옛 1-12)
-- **문제**(사용자): 소켓 보석(`docs/code/Pickit.md` socketTargets)으로 노말 장비에 보석을 넣으면 실제로는 tier가 높아지는데, 지금은 판정할 수 없다.
-- **사용자 설계**(261024, 진행 결정. 구현 논의는 남음)
-  - 소켓 tier는 능력치가 아니라 우선순위다. 처음엔 아무 장비나 입고(tier 1), 소켓이 있는 것을 먼저 입어 보석 작업으로 능력치를 올리고 tier 11 이상으로 간다. 소켓 + 능력치로 tier 11을 주는 것은 아니다.
-  - 소켓 수마다 tier 하나. 최대 소켓: 헬름 3, 아머 4, 방패 4, 무기 6.
-  - tier 11 이상은 지금 능력치 줄 그대로 두고 품질 하한만 `[quality] >= magic` → `[quality] >= normal`.
-  - 대상: X.nip 헬름·아머·방패, 빌드 nip 무기·클래스 전용 아이템. 소켓이 없는 벨트·장갑·부츠·반지·목걸이는 대상 아님.
-  - tier 번호는 로직만 정한다. 기존 번호와 겹치면 한 단계 미루는 식이고, 구조는 나중에 바꿀 수 있다.
-  - 3-32(옛 2-15, 착용 중인 베이스로 룬워드·펀치)와 같이 작업한다. 소켓이 많은 룬워드 베이스를 입으면 보석 대상에서 빠지고(`socketTargets`가 룬워드 베이스 제외) 재료로도 쓰이지 않아 빈 소켓으로 착용만 하게 되기 때문.
-- **확인된 것**
-  - 판정: tier 목록은 tier 높은 순으로 정렬되고(`NTItemParser.dbl` `NTIP_Lists.tier.sort`) 맞는 첫 줄을 쓴다 → 맞는 줄 중 가장 높은 tier. 소켓 줄과 능력치 줄을 같이 둘 수 있다.
-  - `[sockets]`(stat 194, 전체 소켓 수)는 nip에서 쓸 수 있다(`NTItemAlias.dbl`).
-  - 보석 능력치는 아이템 능력치에 합산된다(사용자 확인 261024).
-  - 지금 tier 구조: 장비 종류마다 tier 1만 `[quality] >= normal`, tier 11부터 `[quality] >= magic`. 예외로 B.WCRY 무기 tier 11~20은 `[quality] >= normal`.
-  - 지금 tier 2~10을 쓰는 줄: X.nip 벨트 2·3(베이스 이름). 빌드 nip 무기는 노말 이상을 데미지 점수로 tier 1~5(P.FIST 1~10). B.WCRY·M.HYBR는 2~10 없음.
-  - 요구 힘·민첩이 모자라면 tier 0(`NTIP.GetScore`, 판정의 tier 단계).
-- **구현 논의 필요**(Claude 정리, 결정 아님)
-  1. tier 구조와 단계: 부위별 소켓 tier 번호(소켓 0 = tier 1부터 헬름 4단계, 아머·방패 5단계, 무기 7단계). 무기 7단계와 비워 둘 칸. 번호를 미루면 tier 11 이상, 빌드 파일의 `TierGoal`, `[tier] == N`을 직접 쓰는 룬워드·유니크 줄도 같이 밀리는지.
-  2. 무기 묶음: 빌드 무기는 이미 노말 이상을 데미지 점수 tier 1~10으로 나눈다. 소켓 우선과 데미지 점수 중 무엇을 먼저 볼지, 아니면 묶음(데미지 단계 × 소켓 수)으로 할지.
-  3. 클래스 전용 아이템 범위: 빌드별 목록(오브·완드, 클로, 바바리안 헬름, 드루이드 펠트, 네크로맨서 머리, 팔라딘 방패, 아마존 활·재블린 등)과 각 종류의 최대 소켓 수.
-  4. 소켓 줄 품질: `>= normal`이면 능력치 점수가 낮은 매직·레어도 소켓 tier를 받는다. 노말·슈페리어만 둘지.
-  5. 룬워드: 소켓 줄에 `[flag] != runeword`를 넣을지(룬워드 전용 tier 줄이 없는 룬워드가 소켓 tier를 받음). 옛 1-12의 룬워드 검토(사용자)와 같은 내용.
-  6. 줍기 증가: 소켓 줄에는 능력치 조건이 없어 tier 1을 입고 있으면 소켓 있는 노말 장비를 모두 주워 입는다(재료 베이스 포함). 옛 3-30 홀드(베이스 이름 기준, 261025 검증 통과)와의 관계.
-  7. 용병 줄(`[merc]`)은 이 설계 범위 밖인지.
-- **구현안**: 위 논의 뒤 정한다. 수정은 nip만(X.nip + tier 줄이 있는 빌드 nip 14개), 줄 수는 구조가 정해진 뒤.
-- **같이 할 것**(사용자 261025): 기어 tier 게이트(`[body] < 21`, `[mercbody] < 21`, `docs/code/NTItemParser.md`, PR #90·#91)로 nip 재료 줄을 바꾸는 작업을 이 nip 수정에 같이 한다. 기어 기능의 인게임 검증도 이때 3절에 넣는다.
-  - 재료 줄의 기어 조건 숫자(`< 21`, `< 41` 등)는 tier 번호다 → 위 1번에서 tier 번호를 미루면 같이 고친다.
-  - 기어 조건은 재료 줄(일반·수량 묶음)에만 쓴다. tier·용병 줄에 쓰면 조건이 빠지고 trace `NTIP: gear tier ignored on tier/merc line`이 남는다.
 - **검증 방법**: 검토에서 정한다.
 
 ### 2-23. 웨이 유닛 못 찾음 (`Pather.getWP`·`useWaypoint`, 옛 1-14·2-9·1-11·3-7 실패 2건)
@@ -278,4 +249,27 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **확인된 것**(코드 읽음): 큐빙 결과물은 인벤토리로 감(`Cubing.emptyCube`). `Town.stash`는 판정 1~3이나 큐빙·룬워드 보관 대상(`keepItem`)만 보관함으로 → 다른 레시피(펀치 등) 재료로 잡힌 완성 보석은 보관함으로 가고 `socketGems`(인벤토리 보석만)는 못 쓴다. `clearInventory`는 판정 0·4만 버리거나 팔아 소켓 보석(판정 5)은 남는다. `me.findItems`는 엔진이 넘겨주는 순서의 배열(정렬 없음, `Prototypes.js`). `socketGems`는 큐빙 목록을 갱신하지 않는다(처음부터 없음). 보관함 보석은 보존하고 소켓에 쓰지 않는다(사용자).
 - **바꾼 것**(261026 `d87cfcb`): ① `buildRecipes`: `Config.SocketRecipe`에 완성 보석 번호(561·566·571·576·581·586·601)가 있을 때만 흠 없는 보석 3개 → 완성 레시피 추가(새 속성 `Socket`). 보석 종류 번호(아무 등급)는 대상 아님. ② `buildLists`: 완성 보석별 "그 번호를 받는 빈 소켓 수 − 인벤토리 보유 수"만큼 인벤토리 완성 보석을 다른 레시피 후보에서 빼고, 0 이하이면 소켓 레시피를 건너뜀(줍기 안 함). ③ `socketGems`: 넣은 것이 있으면 끝에서 `Cubing.update()`. (261026 사용자 `30c9b4e`) `Config.Cubing`일 때만 부름 — 큐빙이 꺼져 있으면 `Cubing.init`이 레시피를 만들지 않아 갱신할 것이 없다. 수정 `libs/Cubing.js`·`libs/Town.js`.
 - **검증 방법**: 빌드가 `Config.SocketRecipe`에 완성 보석 번호를 넣은 경우에만 해당. 빈 소켓이 있을 때 ItemLog `Ingredient` 흠 없는 보석 → `Transmuted` 완성 보석 → 콘솔 `[Socket]`·ItemLog `Socketed`. 소켓이 찬 뒤에는 그 흠 없는 보석 `Ingredient`가 없어야 한다. 지금 빌드 설정에는 완성 보석 번호가 없음(`Config.js` 기본은 종류 번호) → 설정을 바꾼 뒤부터.
+- **결과**: 아직 없음.
+
+### 3-39. 소켓 우선 tier·기어 조건 nip, NTIP 파서 읽기 통일·문법 검사 (nip 전부, `NTItemParser.dbl`, `Config.js`, `builds/*.js`, 사용자 261023~261028, 옛 2-22)
+- **바꾼 것**
+  - 사용자 업로드(261027 `723a581`·`5bf237c`·`8a162f8`·`19a2d70`·`c999fab`, 261028 `8144c74`, PR #103으로 main 병합)
+    - 소켓 tier: 소켓 1개부터 소켓 수마다 tier 1씩. 헬름(빌드 14개)·바바리안 헬름·드루이드 펠트 1~3, X.nip 아머 1~3, X.nip 방패 1~2, 팔라딘 방패 1~4, 네크로맨서 머리 1~2. 소켓 0개 tier 줄은 없음. 무기는 M.HYBR 활만(tier 1 아무 활, 2~5 데미지 또는 소켓 1~4), 다른 빌드 무기 소켓 줄 없음.
+    - tier 11 이상 점수 줄 품질 하한 `>= normal`: 헬름(빌드 14개), X.nip 아머·방패, 클래스 전용 아이템. 장갑·부츠·벨트·반지·목걸이와 일부 무기 점수 줄은 `>= magic` 그대로.
+    - 유니크·룬워드 tier를 31 이상으로(룬워드 아머 31·32, 무기 31, HotO 41 등), 점수 tier는 X.nip 25·빌드 30까지. 일부 유니크·룬워드 tier 줄 삭제.
+    - 재료 줄을 기어 조건(옛 이름 `[body] < 31`, `[armr] < 31`, `[arml] < 25` 등)으로 교체, 빌드 `TierGoal` 숫자 변경.
+    - 같은 업로드에 `Attack.usingTwoHand` 추가·`Equip.getBodyLoc` 무기 칸 변경, `AutoSmurf.js`·`Misc.js` 수정이 함께 들어감(이 항목 밖).
+  - Claude 261028 `4a1738d` 외(PR #103 이후 커밋 포함, 노트는 `docs/code/NTItemParser.md`·`Config.md`·`Misc.md`·`builds.md`·`nips.md`)
+    - 파서 `ParseLineInt` 재작성: 속성·스탯 칸 `NTIP.ParseExpr`, 끝 칸 `NTIP.ParseRule`(본문·홀드 공통). 틀린 줄은 `Misc.errorReport` 후 버림, `#` 3개 이상·`@` 2개 이상·끝 칸 키 중복은 표시만.
+    - 홀드 끝 칸 `[owned]`(없으면 `< 1`), 기어 조건 값 `goal`(`Config.TierGoal.<칸>`, 용병 칸은 오류), `[tiered]`는 표시(`Config.Tiered`)만.
+    - 칸 이름 `Helm Amulet Armor ArmG ArmB RingG RingB Belt Boots Gloves`(nip 키는 소문자, 용병 `[merchelm]`·`[mercarmor]`·`[mercarmg]`), `Config.TieredGear` 삭제.
+    - nip: 홀드 `[qty] < 1` 29곳 삭제·3곳 `[owned]`, 기어 키 201줄, `[tiered] == 0` → `[tiered]` 28줄(주석 2 포함), P.FIST 주석 줄 `[tiered] != 0` 삭제.
+  - 확인(node, 게임 아님): 수정 전후 파서로 nip 전체 6012줄 파싱 결과 비교 차이 0(이름 변경·`[owned]`·`[tiered]` 정규화 뒤), 로드 오류 0. 틀린 줄 시험 71줄 기대와 불일치 0. 가짜 아이템으로 `EvaluateItem`의 `[tiered]`·`goal`·홀드 기본값 판정 확인.
+- **검증 방법**
+  - 로드: 게임 시작 때 회색 콘솔·`_cache/trace/ScriptErrorLog.txt`에 nip 오류(`Unknown …`, `Bad rule`, `Syntax error`, `Unexpected symbol`, `Missing ]`, `Unclosed (` 등) 0. 표시 줄(`Duplicate rule key`, `More than two #`, `More than one @`)도 0.
+  - 칸 이름: print `equipped: [ArmG] N` 등 새 이름으로 찍힘.
+  - 소켓 tier: 소켓 있는 노말 장비 ItemLog `Equipped [1~4]`, 보석을 넣은 뒤 같은 장비가 tier 11 이상으로 다시 찍힘(노말 헬름 포함).
+  - 기어 조건: 재료 줄 ItemLog 줄 끝 `(ArmG<31)` 등이 찍히고, 그 칸 tier가 기준 이상이 된 뒤에는 같은 재료를 줍지 않음.
+  - 홀드 기본값: `[qty] < 1`을 지운 29줄이 지금처럼 홀드 대상을 가졌을 때 베이스를 줍지 않음.
+  - `[tiered]`: print `Tiered: true` 게임에서만 HotO 베이스 등 그 줄이 켜짐(ItemLog 줄 끝 `(Tiered)`).
 - **결과**: 아직 없음.

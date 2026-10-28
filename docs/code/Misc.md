@@ -18,6 +18,11 @@
 ### 260928 Claude: 캐시 제거
 - 매번 현재 스킬 레벨로 계산한다.
 
+## Equip.updateTiers
+
+### 261028 사용자: 기어 칸 이름·`TieredGear` 삭제 (handoff 3-39)
+- `Config.TieredGear`(부위별 도달) 설정 2줄 삭제. 전 칸이 `TierGoal` 이상이면 `Config.Tiered = true`는 그대로(게임 시작 때 빌드 1레벨 Update에서 부름). 칸 이름은 `Config.Gear`를 따라 `equipped: [ArmG] N`처럼 찍힌다.
+
 ## Misc.openChests
 
 ### 260928 Claude: 갈 수 있는지 검사
