@@ -3509,7 +3509,7 @@ function AutoSmurf() {
 			chest = getPresetUnit(me.area, 2, 397);
 			
 			if (chest) {
-				for (j = 0; j < 3 && getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 25; j += 1) {	//261022 was an endless while: 3 tries
+				for (j = 0; j < 10 && getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 25; j += 1) {	//261028
 					try {
 						Pather.moveTo(chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y, 3, true);	//260822	//261002 no offset
 					} catch (e) {
@@ -7641,8 +7641,8 @@ function AutoSmurf() {
 				}
 				
 				if (syncBO) {
+					syncBO = false;	//261028
 					this.syncBO();
-					syncBO = false;
 				}
 
 				delay(250);
@@ -7740,8 +7740,8 @@ function AutoSmurf() {
 				}
 
 				if (syncBO) {
+					syncBO = false;	//261028
 					this.syncBO();
-					syncBO = false;
 				}
 
 				delay(250);
