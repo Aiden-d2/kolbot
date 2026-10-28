@@ -734,7 +734,11 @@ NTIP.ParseRule = function (sec, hold, info) {	//261028
 		value = m[3];
 
 		if (seen[key]) {	// shown only, same result as before
-			Misc.errorReport("Duplicate rule key: [" + key + "]" + where);
+			if (!hold && ["tier", "merc", "qty", "tiered"].indexOf(key) === -1) {	//261028 gear key (range etc): trace only
+				Misc.trace("NTIP: duplicate gear key [" + key + "]" + where);
+			} else {
+				Misc.errorReport("Duplicate rule key: [" + key + "]" + where);
+			}
 		}
 
 		seen[key] = true;
