@@ -20,6 +20,9 @@
 - **Pather `moveTo` 안의 대체 좌표** — 이유: setPosition 등 다른 이동까지 바뀐다.
 - **`getNearestWalkable`로 흩어질 대체 칸 찾기** — 이유: 걸을 수 있는지만 보고 닿을 수 있는지는 보지 않는다.
 
+### 팔로워 포탈 대기 tpReady (여러 함수)
+- **261028 tpReady 없이 `usePortal(지역, null)`로 기다리는 곳 전부에 tpReady 넣기** — 특정 지역 포탈 대기 25곳(리더가 그 지역 안에서 움직인 뒤 여는 곳: andy·farmingAndy 37, travincal 83, mephisto·farmingMephisto 102, farmingCountess 25, farmingCows 39 / 도착 즉시 여는 곳 / 일부러 아무 포탈이나 타는 보정·복구). 이유: 고대인 말고는 위험 대상이 아님(사용자). 고대인만 수정(`handoff.md` 3-46).
+
 ## libs/Attack.js
 
 ### clear

@@ -544,7 +544,7 @@ initNPC(task, reason) → unit | false   Town.tasks 로 NPC 확보 후 메뉴 �
 heal() / needHealing() / identify() / identifyItem() / repair(shopItems) / needRepair()
 buyPotions(shopItems) / checkColumns / getPotion / fillTome(code) / checkScrolls
 stash(stashGold) / canStash(item) / needStash() / openStash()
-reviveMerc()          Config.MercMinGold 미만이면 false. 3막에서는 하지 않음
+reviveMerc()          Config.LowGold 미만이면 false(261028, 전 MercMinGold). 3막에서는 하지 않음
 needMerc() / gamble() / needGamble() / shopItems()
 buyKeys() / checkKeys() / wantKeys()   Config.UseKeys 경로
 clearBelt() / clearInventory() / ignoredCheck(item)
@@ -738,7 +738,7 @@ checkRole()                  Team.Leader === me.profile → Leader, Team.Boer ==
 start()                      큐브(0,0)·TP 책(0,2) 슬롯 고정 → 진행도에 맞는 액트로 이동 →
                              preparation() → Town.doChores(true) → 회복포션 슬롯 정리 →
                              (mercLvl) Merc.hire, 실패 시 hireMerc 브로드캐스트 →
-                             웨이포인트 활성화 → 대기 오프셋(myX, myY)으로 이동 →
+                             웨이포인트 활성화 → 대기 오프셋(Pather.moveTo random, 261028)으로 이동 →
                              okCount →
                              toggle() → 골드 수수
 preparation()                잔여 퀘스트템 사용(책·포션·스크롤), MiniShopBot/farmingON/UseMerc 결정,
@@ -1082,7 +1082,6 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | `MercSkill` | `AutoSmurf` → `Merc.hire` |
 | `UseMerc` `UseMercHP` `UseMercRejuv` `MercChicken` | `ToolsThread`, `Town`, `NTIP` merc 게이트, `AutoSmurf.preparation`(설정) |
 | `MercWatch` | `Town`, 클래스 공격 파일 |
-| `MercMinGold` | `Town.reviveMerc` |
 | `MinGameTime` `MaxGameTime` | `default.dbj` |
 | `LifeChicken` | `ToolsThread`, `default.dbj`(사망 판정), `AutoSmurf.setLifeChicken` |
 | `ManaChicken` `IronGolemChicken` | `ToolsThread` |
@@ -1090,7 +1089,7 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | `TownCheck` | `Misc.townCheck`, `Pather.moveTo`, `Attack.clear` |
 | `UseHP` `UseMP` `UseRejuvHP` `UseRejuvMP` | `ToolsThread` |
 | `HealStatus` `HealHP` `HealMP` | `Town.needHealing` |
-| `LowGold` `StashGold` | `Pickit.checkItem`, `Town`, `AutoSmurf.giveGold` |
+| `LowGold` `StashGold` | `Pickit.checkItem`, `Town`(`reviveMerc`·MiniShopBot 호출 조건, 261028), `AutoSmurf.giveGold` |
 | `Stash` `Inventory` `Cube` | `Storage` 격자 마스크 비교 (`Town`, `Pickit`, `Cubing`) |
 | `HPBuffer` `MPBuffer` `RejuvBuffer` `BeltColumn` `MinColumn` | `Town.buyPotions` / `checkColumns`, `Misc.townCheck`, `Pickit` |
 | `PingQuit` | `ToolsThread.checkPing` → `scriptBroadcast("pingquit")` → `D2BotLead` |

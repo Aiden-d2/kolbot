@@ -273,3 +273,41 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 홀드 기본값: `[qty] < 1`을 지운 29줄이 지금처럼 홀드 대상을 가졌을 때 베이스를 줍지 않음.
   - `[tiered]`: print `Tiered: true` 게임에서만 HotO 베이스 등 그 줄이 켜짐(ItemLog 줄 끝 `(Tiered)`).
 - **결과**: 아직 없음.
+
+### 3-40. 인챈트 대상을 빌드 이름으로 (`Precast.enchant`, `Build.getBuildType`, 사용자 261028)
+- **바꾼 것**(261028 `dfc884b`): `Build.getBuildType(profile)`(Settings.js, 인자 없으면 `me.profile`). `Config.Enchant.Player`는 직업 번호 → 빌드 이름(S.SFFW 65레벨 `["M.HYBR"]`). `Precast.enchant`가 처음 부를 때 한 번만 `Team.Profiles` 중 빌드가 목록에 있는 프로필의 `Profile(p).character`로 `Precast.enchantNames`(새 속성)를 만들고, 플레이어는 이 이름만 인챈트. 용병·소환수는 그대로(40칸 안 파티원 전원의 용병·소환수).
+- **검증 방법**: S.SFFW 65레벨 이상 게임에서 print `enchant: <M.HYBR 캐릭터 이름>`만 찍히고(다른 플레이어 이름 없음) 오류 0. 용병·소환수 `enchant: <classid>`는 전과 같음.
+- **결과**: 아직 없음.
+
+### 3-41. 랜덤무브를 moveTo 계열 random 인자로 통일 (`AutoSmurf` 41곳, `Pather.moveTo` random, 사용자 261028)
+- **바꾼 것**(261028 `dfc884b`): `Pather.moveTo(me.x + myX, me.y + myY)` 41곳을 random 인자로. 고정 지점 이동 바로 뒤의 흩어지기 11곳은 앞 이동(`moveTo`/`moveToPreset`)에 random을 주고 흩어지기 줄을 지움, 제자리 흩어지기 30곳은 `moveTo(me.x, me.y, 3, false, false, true)`(기존 261007 4곳과 같음). `AutoSmurf`의 `myX`·`myY` 삭제 → 오프셋은 `Pather.myX/myY`(reflection 유지). 프로필별 자리는 Pather 표 순서로 바뀜.
+- **검증 방법**: 웨이·포탈 자리·보스 대기 자리에서 팀이 흩어져 서는가(육안). 오류(`moveTo` throw) 증가 없음. 막힌 오프셋은 `no random path` → `original path`(콘솔 줄, 곧 삭제 예정 — 사용자).
+- **결과**: 아직 없음.
+
+### 3-42. 아마존 활이 없을 때 활 스킬 → 일반 공격 (`Amazon.doAttack`, 사용자 261028)
+- **바꾼 것**(261028 `dfc884b`): 새 속성 `ClassAttack.bowSkills`(6·7·11·12·16·21·22·26·27·31, alias `Amazon skills`·skills.txt 이름 대조), 쓰이지 않던 `bowCheck` 삭제. `doAttack`에서 스킬 선택(로우마나 포함) 뒤 `!Attack.usingBow()`이면 활 스킬을 0(일반 공격)으로. 면역 검사 없음(극초반 대비, -1이면 몹을 건너뜀 — 사용자).
+- **검증 방법**: M.HYBR가 활 없이 Cold Arrow 단계(6레벨~)일 때 일반 공격으로 싸우는가(육안). 활을 든 뒤에는 전과 같음.
+- **결과**: 아직 없음.
+
+### 3-43. 써모너 일지 전원 1회 읽기·듀리엘 Atma 대화 삭제 (`AutoSmurf.summoner`·`duriel`, 1단계, 사용자 261028)
+- **문제**(사용자 관찰): 듀리엘에서 일부 팔로워(간헐적으로 1명 또는 여럿)가 오리피스 무덤 포탈(첫 포탈)을 못 탄다. 퀘스트 창은 캐니언 웨이를 찍고 마을에 오면 끝나 있는데도 못 타고, 그때 멈추고 수동으로 NPC 대화를 하면 탈 수 있다. 일지를 직접 읽지 않은 프로필로 추정(사용자). `quest_flags.md` 12번 bit0(일지 조작 = 2막 파티원에게도 설정)과 다른 결과다.
+- **확인된 것**(코드): 써모너 일지 반복은 46번 포탈이 이미 있으면 바로 끝나 리더가 연 뒤에는 팔로워가 일지를 누르지 않았다. 261027 Atma 대화는 무덤에 들어간 뒤(두리엘 방 포탈 대기 전)라 첫 포탈과 무관했다.
+- **바꾼 것**(261028 `dfc884b`): `summoner` 일지 반복 앞에 일지 1회 누르기(포탈 유무 무관). `duriel` 팔로워 Atma 대화 삭제.
+- **검증 방법**: 못 탄 팔로워는 마을에서 끝없이 기다리므로 리더의 구멍 앞 okCount에서 DURIEL 구간 `Party desynced`와 그 프로필의 `party has left … town:true`가 남는다. 이 사례가 없어지면 일지가 원인. 그대로면 2단계(리더가 무덤에 도착한 시점에 NPC 대화).
+- **결과**: 아직 없음.
+
+### 3-44. 소켓 로그: 매니저 아이템 로그는 tier가 오를 때만, ItemLog 소켓 상태 (`Town.socketGems`, 사용자 261028)
+- **바꾼 것**(261028 `dfc884b`): 보석마다 넣기 전 tier(`NTIP.GetScore`, 새 지역 변수 `tierBefore`)와 넣은 뒤 tier(`Equip.getEquippedItem(칸).tier`)를 비교해 올랐을 때만 `Misc.logItem("Socketed")`. 콘솔 `[Socket]`·print·ItemLog는 보석마다 그대로. ItemLog `Socketed` 줄 끝 `{nip 줄 / (찬/전체)}`(매칭 줄 없으면 `{(찬/전체)}`).
+- **검증 방법**: ItemLog `Socketed` 줄 끝 `(n/m)`이 콘솔 `[Socket] … (n/m)`과 같고, 두 수가 같다. 매니저 아이템 로그 `Socketed`는 tier가 오른 넣기에만(같은 시각 print `equipped: [칸] N`이 전보다 큼).
+- **결과**: 아직 없음.
+
+### 3-45. MiniShopBot·용병 부활을 LowGold로 (`Town.buyPotions`·`repair`·`reviveMerc`, 사용자 261028)
+- **바꾼 것**(261028 `dfc884b`): `MiniShopBot` 호출 조건 4곳(`buyPotions` 2, `repair` 2)에 `me.gold >= Config.LowGold`(노말 벨트 쇼핑 조건은 그대로). `reviveMerc`의 `Config.MercMinGold`(20만) → `Config.LowGold`, `MercMinGold` 삭제. 목적: 나이트메어 끝~헬은 용병 사용 구간이라 부활 골드를 남겨 둠. 45레벨부터 `LowGold = charlvl × 3000`(70레벨 21만, 빌드 14개 같음).
+- **검증 방법**: 골드가 `LowGold` 미만인 나이트메어·헬 방문에서 `MiniShopBot: Scanning` 머리 글자·ItemLog `Shopped`가 없고, 용병이 죽었을 때 골드 `LowGold` 이상이면 부활(`[Hired]`/용병 장비 그대로).
+- **결과**: 아직 없음.
+
+### 3-46. 고대인 팔로워 tpReady 대기 (`AutoSmurf.ancients`, 사용자 261028)
+- **문제**(사용자): 시체 회수 때문에 포탈을 정상 앞(118)에서 열게 바꾼 뒤(261004) 팔로워가 tpReady 없이 118로 가는 아무 포탈이나 타서, 리더의 타운치킨 포탈에 합류했다.
+- **바꾼 것**(261028 `dfc884b`): 리더 `makePortal` 뒤 `tpReady` 전송, 팔로워는 `while (me.inTown) { if (tpReady) usePortal(118, null) }` 뒤 `tpReady = false`(다른 보스와 같은 방식). 나머지 tpReady 없는 대기 목록은 기각(`rejected.md`).
+- **검증 방법**: 고대인 구간에서 팔로워가 리더 포탈 뒤에만 118에 들어가고(리더 타운치킨 중 합류 없음), 정상 진입·킬이 전과 같다.
+- **결과**: 아직 없음.
