@@ -8,7 +8,6 @@
 
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 1
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 2
-([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 3
 
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [itemallskills]*65-[itemaddclassskills]*60+[druidskills]*125-[itemaddskilltab]*30+[druidsummoningskilltab]*60+[elementalskilltab]*65+[damageresist]+[itemcannotbefrozen]*20+[fhr]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
 ([type] == helm || ([name] >= 418 && [name] <= 421)) && [quality] >= normal && [flag] != ethereal # [itemallskills]*65-[itemaddclassskills]*60+[druidskills]*125-[itemaddskilltab]*30+[druidsummoningskilltab]*60+[elementalskilltab]*65+[damageresist]+[itemcannotbefrozen]*20+[fhr]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
@@ -149,7 +148,6 @@
 
 [type] == pelt && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 1
 [type] == pelt && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 2
-[type] == pelt && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 3
 
 [type] == pelt && [quality] >= normal && [flag] != ethereal # [druidskills]*65+[druidsummoningskilltab]*30+[elementalskilltab]*35+[skilloaksage]*20+[skillsummongrizzly]*10+[skillcyclonearmor]*10+[skilltornado]*15+[skillhurricane]*10+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
 [type] == pelt && [quality] >= normal && [flag] != ethereal # [druidskills]*65+[druidsummoningskilltab]*30+[elementalskilltab]*35+[skilloaksage]*20+[skillsummongrizzly]*10+[skillcyclonearmor]*10+[skilltornado]*15+[skillhurricane]*10+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
