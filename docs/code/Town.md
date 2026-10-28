@@ -39,6 +39,17 @@
 - `getCorpse(true)`면 실패 시 프로필 정지 대신 false를 돌려준다(`AutoSmurf.bossEnd`가 퇴장 처리). 인자 없이 부르는 곳은 예전대로 정지.
 - 확인: `AutoSmurf.md` bossEnd 항목.
 
+## clearBelt
+
+### 261025 Claude: 벨트 넣기·남는 물약 정리를 `clearBelt` 끝으로 (`81d5b43`, 사용자 승인, 옛 handoff 3-21·2-17·3-27)
+- 원인(261022~261025 판별): heal이 연 NPC 메뉴(08)가 열린 채 `clearInventory`의 벨트 넣기로 넘어가, 빈 열 넣기(`toCursor`)가 3회 모두 실패(클릭당 약 3.6초)하고 shift-click도 모두 실패했다. heal에서 메뉴를 닫는 안은 기각(`rejected.md`, 판매가 heal NPC 상호작용에 기댐).
+- 동작: 벨트 넣기와 남는 물약 정리를 `clearInventory` 앞에서 `clearBelt` 끝으로 그대로 옮김(`doChores`에서 heal 앞이라 메뉴 없음). 물약이 들어가면(빈칸 합계가 줄면) 그 물약의 열 반복을 멈춤(`break`). 남는 물약 정리는 마시기(261022) → 버리기(원래 사용자 코드). 단독 `clearInventory` 호출 2곳 앞에 `Town.clearBelt()`(`AutoSmurf.md` buffCount·anya). `AutoSmurf.travel`(마을 도착 뒤 `clearBelt`만 부름)도 넣기·버리기를 한다. 물약 등급 구분은 원래 동작대로(handoff 1-16).
+- 판별 로그(검증용): `chores` 줄 belt 항목 `cur 시도/실패 put N shift 시도/실패 ui 직전>직후 remain N`(261023 `0f6da09`, `Town.chores` 속성 7개), `belt shift fail: 코드 col:N [열 코드] ping:N inv:true/false`(261026 `d87cfcb`).
+- 확인: 정리 시작 때 메뉴 열림(`ui 08`) 261026 0/1,680·261027 0/2,921·261028 0/1,631. 빈 열 넣기 실패 261026 0/77·261027 2건(a2 `cur 4/3` belt 12.0초, a5 `cur 2/1 put 1`, 둘 다 `ui ->-`, 원인 모름)·261028 0/58, 클릭당 최대 1.5~1.7초.
+- 남은 shift 실패(원인 모름, 영향은 다음 방문까지 인벤토리에 남음): 261026 3(a1), 261027 17(`inv:false` 8 = 결국 벨트로 감, `inv:true` 10 = 정리 4번, a1·a3·a5는 3줄 벨트로 바꾼 직후 포함), 261028 10(`inv:false` 3, `inv:true` 7은 모두 Pz-13 입장 3~4초 뒤 핑 281~312 한 순간, 같은 프로필의 다음 정리부터 실패 0·남은 물약 줄어듦).
+- 버린 물약 다시 줍기(코드 읽음): 버리기는 인벤토리 물약이 예비 수보다 많을 때만이고, 그 종류 열에 빈칸이 있으면 넣기를 먼저 시도한다. `Pickit.canPick`은 그 종류 열이 다 차 있고 인벤토리 예비도 차 있으면 줍지 않으므로, 다시 줍는 것은 "빈칸이 있는데 넣기가 실패한 채 버린" 경우뿐. 261028에서 버린 정리 16번은 모두 그 정리의 벨트 실패 0. 물약은 ItemLog에 남지 않아 게임으로는 보지 못함.
+- 검증 통과(사용자 261028). 판별 로그는 삭제 결정(handoff 2-30).
+
 ## visitTown
 
 ### 261004 Claude: Arreat Summit(120)에서 거부

@@ -127,6 +127,11 @@
 ### socketGems
 - **261022 아이템 작업 콘솔 줄을 `[종류] 공식 -> 베이스`로 통일**(룬워드·리셋·큐빙·젬드) — 이유: 사용자 기각(원안 유지). 큐빙 `[Socket]`·`[Rune]`·`[Token Of Absolution]`은 공식 이름이 없어 일부 줄만 화살표 모양이 되고, `CLAUDE.md` 4절 "진행 요약은 기존대로"와도 부딪힌다. 젬드는 기존 형식 `# [Gem] 보석 베이스 (n/m)`.
 
+## threads/PartyThread.js
+
+### 파티 퇴장 감지 (`party has left`)
+- **261028 desync 낙오 프로필의 멈춘 단계 추적(옛 handoff 3-37, 옛 2-21·3-26·3-31·2-26)** — 낙오가 지각인지 멈춤인지 가르려고 퇴장 trace에 상태(`town:`·`mode:`·`ui:`, 261024 `be4f0e2`·`33bd183`)와 `default.dbj` 단계(`step:`, `Town.doChores`·`visitTown`의 `scriptBroadcast`, 261026 `d87cfcb`)를 붙였고, 다음 단계로 진단 줄 2개(`Town.move` 실패 trace, `Pather.usePortal` 로딩 대기 10초 초과 trace, Claude 제안 261028)를 냈다. 이유: 사용자 기각, 추적 중단(261028). 단계까지는 나왔으나 원인은 모든 로그에서 불명이고, 진단 줄도 원인이 아니라 두 자리 중 하나로 좁히는 데 그치며 근거는 위치 겹침(Harrogath Malah 근처) 하나뿐. 빈도: 멈춤으로 보이는 낙오가 261026 3~4건(117게임), 261027 약 5건(146게임, stash 2·pre 1·다른 프로필이 끝낸 단계 2), 261028 2~4건(105게임, stash 1·portal 1·떨어져 서 있음 2), 한 건마다 그 게임이 120초 뒤 끝남. 표시는 삭제 결정(handoff 2-30). 사례는 `log_results.md` 261023~261028.
+
 ## threads/ToolsThread.js
 
 ### togglePause

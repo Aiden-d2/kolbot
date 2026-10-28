@@ -381,3 +381,29 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 사망 4(모두 a1, `You died in last game`). 보스가드 중 사망·시체 회수 0. 크래시 6(`Crash: no entry`: Harrogath 4, Lut Gholein 1, Chaos 1), 분석 안 함.
 - `[Error]` 5: `moveTo: Failed to generate path` 2(a6 Pz-6 Stony Field, a7 Pz-55 Abaddon `usePortal → moveToUnit`, 둘 다 `no adjusted path` 10회 뒤 `[Error]`가 찍힘 — handoff 1-17의 오류 줄 없는 사례와 다른 호출 자리), a1 Pz-47 Durance of Hate 2 도착 직후 `[getWP] waypoint unit not found` → `[WP] wp.area:null` 12회 → `useWaypoint: Failed to use waypoint`(handoff 2-23 사례), a1 Pz-70 `Failed to enter the Palace in Act 2`, a1 Pz-72 `Town.goToTown: Failed to take TP`(Life Chicken과 같은 초).
 - 경로 줄: `no random path` 23, `original path` 22, `no original path` 34, `adjusted path` 32, `no adjusted path` 20(위 2건 각 10회), `fixed path` 0.
+
+## 261028 묶음 (10/27 18:54 ~ 10/28 13:07, 8프로필 각 105게임)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 캐릭터로 레벨 7 → 81. 코드는 사용자 업로드 `8144c74`까지(사용자 261028). 10/28 09:51:12 전 프로필 재시작, 마지막 게임(13:01:58)까지 print `equipped: [ArmL]`·ItemLog `(ArmL<25)` 옛 이름이라 3-39 파서(`4a1738d` 외)는 없음. 핑 170~310. 22:05~22:06 a5 `Reloading default.dbj` 2회와 22:07 a2·a8 퇴장(`missing` 빈칸, `teamOk true`)은 사용자 수동 조작이라 제외. 261027 묶음 판정도 이번에 함께 handoff에 반영(사용자 261028).
+
+### handoff 3절 결과
+- 3-27(→ 확정, `docs/code/Town.md` clearBelt): 정리 줄 1,631개 중 시작 때 메뉴 08 0(`ui -` 1,584, `ui ->-` 47). cur 58회 실패 0, put 실패 0, 클릭당 최대 1.7초. shift 702회 중 실패 10, `belt shift fail` 10줄: `inv:false` 3(a1 02:05:11·04:33:19 Harrogath 핑 171~187, a3 10/27 21:10:24), `inv:true` 7(모두 10/27 21:10:23~25 Pz-13 입장 3~4초 뒤 Rogue Encampment, a1·a2·a4 2·a6·a7 2, 핑 187~312. 넣는 물약과 열 물약 등급이 다른 것 2: a1 hp2→[hp1], a4 hp1→[hp2]). 같은 프로필의 다음 정리부터 Pz-15까지 shift 실패 0, `remain` 3~7 → 0~1. 버린 정리(`pots N>0`) 16번은 모두 그 정리의 벨트 실패 0.
+- 3-36(→ handoff 2-28): 웨이 모으기 10분 — Pz-32 리더 Ancient's Way 웨이 모으기 221초(23:58:06 → 00:01:47 SHENK) 뒤 shenk syncBO에서 8명 모두 00:02:13 `act5 BO`. `travel true` 0, `Party desynced 2`·`syncBO timeout`·`Team didn't join` 0. 실패: Kurast Docktown 10게임 연속(Pz-76~81 08:29~08:44, Pz-82 09:20, Pz-84~86 09:26~09:33) 리더 `act3 BO` → `Traveling to Travincal`(웨이 있음, 이동 없음) → 121~122초 뒤 `Party desynced 1`. 빠진 이름 a4·a5 / a8 / a4·a7 / a4·a7 / a4·a5 / a4·a8 / a6·a7 / a4·a5 / a4·a5·a6·a7 / a8, 모두 마을 웨이 자리(5161,5051)에 서 있음. Pz-83(TOME 09:21:54)·Pz-87(BRAIN 09:34:12)은 통과. 코드: 팔로워 루프 `this.syncBO(); syncBO = false;` 순서(handoff 2-28).
+- 3-37(→ 기각, `rejected.md` PartyThread): desync 퇴장 줄 기준 낙오 —
+  - 지각: 10/27 20:01 a4 Black Marsh(달리는 중, 약 100칸), 10/28 08:11 Pz-70 a8(두리엘 중 `Town check (direct)` 2번, `step:chores:heal`).
+  - 정리 안 끝남: 01:21 a8 Harrogath(5073,5022) 달리는 중 `step:chores:stash` 2분, 그 사이 ItemLog `Stashed` 0(골드 보관 `openStash` 길).
+  - 포탈 단계: 05:59 a4 Harrogath(5079,5024) 서 있음 `step:town:portal`, 05:58:08 정리 끝 뒤 `visitTown back`·`usePortal failed` 없음.
+  - 다른 프로필이 지난 단계에 남음: 06:08 a4(타운치킨 3회 뒤 Abaddon으로 돌아감, 팀은 06:06:40 POA 시작), 12:46 a7 Durance of Hate Level 3(17600,8069) 서 있음·나머지 Pandemonium, 11:04 a7 Chaos(7714,5303)에 다른 프로필과 약 60칸 떨어져 서 있음.
+  - 두리엘 마을: 03:46 Pz-50(빠진 이름 a3), 08:07 Pz-69(a7). 두 게임 모두 팔로워 7명 모두 무덤 안 trace 0, 퇴장 순간 Lut Gholein 포탈 자리 → 리더 포탈을 못 타서 합류 못 함(사용자 261028). 리더 퇴장 줄의 빠진 이름이 1명인 이유는 확인 안 함.
+  - 09:45 Pz-90 Figurine: a2만 먼저(물약 09:43:15) okCount에 들어가 나머지 6명 미도착, 원인 미확인.
+- 3-29: timeout 260줄(a1 198, 걷는 프로필 62), 회차 0 172·1 62·2 12·3 6·4 4·5 3·6 1, 8회 모두 실패 0.
+- 3-32: 룬워드 `takeOff` ok 1(a3 00:05:18 `[Body] Breast Plate` → 00:05:27 `Runeworded` Stealth → 00:05:36 `Equipped`), fail 0. 펀치 2(a8 04:44:51, a7 07:40:58 Crystal Sword, 콘솔 `[Punch]`)는 모두 보관함 베이스(`Stashed` 00:20:32·01:05:04), `[Cube] takeOff` 0.
+- 3-39(사용자 업로드 부분, → `docs/code/nips.md`): 노말 헬름 소켓 tier 1~2 착용 6건, 보석을 넣은 뒤 tier 11~17(`Socketed` 49줄 중 34줄에 tier 표시), 기어 조건 표시 99줄, nip 로드 오류 0.
+- 3-34: Life Chicken 46(a1 27, a2 4, a5 4, a4 3, a3·a6·a7·a8 각 2).
+- 케이스 미발견: 3-10(`radamentOff` 0, 북 visible → read 24줄), 3-13(0), 3-17(MoveToSlot 실패 0, `party accept` 923줄), 3-35(`Init failed` 0), 3-38(설정에 완성 보석 번호 없음).
+
+### 그 밖
+- 조기 종료 사유: Life Chicken 46, desync 퇴장 75줄(20게임, Kurast Docktown 10게임 포함, 수동 조작 Pz-17 2줄 제외), Tomb chest not reached 4(10/27 22:04·22:31 a3, 22:15·23:01 a6, 앞에 `[Error]`·경로 보정 줄 없음 → handoff 2-29), Diablo not found 2(a1·a2 11:42), Not ready for act2 1, Figurine incompleted 1, moveToExit failed(Outer Cloister → Barracks) 1.
+- 사망 1(a1, 03:26 `You died in last game`). 보스가드 중 사망 3(a3 Arcane 21:37, a3 Chaos 23:57, a4 Arreat Summit 10:24), 시체 회수 3/3 성공. 크래시 2(a2 22:27 Lut Gholein, a4 03:18 Den of Evil), 분석 안 함.
+- `[Error]` 1: a1 Pz-49 03:31 Catacombs Level 2(22648,6513) `waypoint unit not found` → `wp.area:null` 12회 → `useWaypoint: Failed to use waypoint`(handoff 2-23).
+- 경로 줄: `no random path` 40, `original path` 61, `no original path` 21, `adjusted path` 21, `no adjusted path` 0, `fixed path` 0.
+- `Town chicken` 57, `Town check` 133, `visitTown refused: Arreat Summit` 38, `[teleportTo failed]` 2.

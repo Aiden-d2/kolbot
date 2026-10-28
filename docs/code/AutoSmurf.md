@@ -27,6 +27,11 @@
 - 타임아웃 줄 `[Quit] Party desynced 1/2: missing(okCount|teamCount): 프로필, ... teamOk X`.
 - 확인: 261022·261023 로그. desync 때 안 온 프로필 이름이 남고, 261023 3게임 모두 그 프로필이 실제로 늦음(리셋 경쟁 0). 검증 통과(사용자 261023). 늦은 이유는 다른 증상으로 `handoff.md` 3-26.
 
+## this.buffCount
+
+### 261025 Claude: 벨트 넣기·남는 물약 정리를 `clearBelt` 끝으로 (`81d5b43`, 사용자 승인, 옛 handoff 3-21·2-17·3-27)
+- 노멀에서 해독 물약을 산 뒤 부르는 단독 `Town.clearInventory()` 앞에 `Town.clearBelt()`(벨트 넣기가 `clearBelt`로 옮겨 감, `Town.md` clearBelt). 검증 통과(사용자 261028).
+
 ## this.pickGold / this.giveGold
 
 ### 261020·261022 사용자: 골드 나눔 (`bb94fac`·`284a5aa`, 옛 handoff 3-12)
@@ -106,6 +111,11 @@
 ### 261003 Claude: 봉인 보스는 `clear(35, 이름)` 한 번
 - 최대 50 × 200ms 동안 보스 대기. 보이면 `Attack.clear(35, 이름)`(1단계 호출 위치 35 정리 → 2단계 기준점은 보스, `Attack.md` clear), 끝내 없으면 `Attack.clear(35)`.
 - 경위: 260927 보스 지정 호출로 바뀐 뒤, 보스가 25칸 밖이면 목줄로 보스를 대상으로 바꿔 원거리 팔로워가 소환몹 한가운데로 들어감 → 261003 `clear(35)` 선행 호출을 넣었다가 같은 날 2단계 clear가 같은 역할을 해 지움.
+
+## this.anya
+
+### 261025 Claude: 벨트 넣기·남는 물약 정리를 `clearBelt` 끝으로 (`81d5b43`, 사용자 승인, 옛 handoff 3-21·2-17·3-27)
+- 끝의 단독 `Town.clearInventory()` 앞(Larzuk 메뉴를 열기 전)에 `Town.clearBelt()`. 전에는 메뉴가 열린 채라 벨트 넣기가 실패. 검증 통과(사용자 261028).
 
 ## this.ancients
 

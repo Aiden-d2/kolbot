@@ -139,16 +139,16 @@
 | handoff | 항목 | 로그 |
 |---|---|---|
 | 3-17 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
-| 3-27 | 벨트 넣기 위치를 heal 앞 `clearBelt`로(`81d5b43`) | 4-6 `chores ... cur put shift ui remain`(`ui ->-`, 실패 0), 판별 로그(수정 뒤) `belt shift fail: … inv:` |
 | 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
 | 3-13 | 라다먼트 북 버리기 | 4-5 `dropping radament book` |
-| 3-29 | useUnit 계단 클릭 앞 대기 게이트(보류, 아시아 서버 결과로 다시 봄) | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42, 261025 283, 261026 275) |
+| 3-29 | useUnit 계단 클릭 앞 대기 게이트(보류, 아시아 서버 결과로 다시 봄) | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42, 261025 283, 261026 275, 261027 526, 261028 260) |
 | 3-32 | 착용 중인 베이스로 룬워드·펀치(룬워드 확정, 펀치 미발견) | 4-6 `[Runeword] takeOff`·`[Cube] takeOff` |
 | 3-34 | SafeTele 발밑 노드 제외 | 육안, Life Chicken 수·위치 |
 | 3-35 | default.dbj 시작부 오류를 멈춤으로 | 콘솔·trace `Init failed in default.dbj. Stopping`, 앞의 `[Error]`, 30분짜리 빈 게임 없음 |
-| 3-36 | okCount 통일과 리더 웨이 모으기 중 10분 | 4-3 `Party desynced 1/2`·`missing(...)`·상세 끝 `travel`, `Traveling to` 뒤 퇴장 유무, `act* BO` |
-| 3-37 | desync 낙오 프로필의 멈춘 단계 | 4-3 `party has left … step:` |
 | 3-38 | 소켓용 완성 보석 큐빙(설정에 완성 보석 번호를 넣은 뒤) | ItemLog `Ingredient` 흠 없는 보석 → `Transmuted` → `Socketed` |
+| 3-39 | NTIP 파서 읽기 통일·문법 검사(`4a1738d` 외, 261028 로그에는 없음) | 회색 콘솔·`ScriptErrorLog.txt` nip 오류 0, print `equipped: [ArmG]` 새 칸 이름, ItemLog `(ArmG<31)`·`(Tiered)` |
+
+- 사용자 수정이 들어간 뒤 3절로 옮겨 볼 것(261028): handoff 2-28(3막 `Traveling to Travincal` 직후 desync 0), 2-29(`Tomb chest not reached` 수). 2-30 삭제 뒤에는 `chores`·`belt shift fail`·`buy failed`·`party has left`의 상태·`step:` 줄이 없다.
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.
