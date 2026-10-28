@@ -464,11 +464,8 @@ var Equip = {
 		for (var i = 1; i <= 10; i += 1) {
 			this.updateTier(i);
 
-			if (Config.TierNow[Config.Gear[i]].tier < Config.TierGoal[Config.Gear[i]]) {
-				Config.TieredGear[Config.Gear[i]] = false;	//260815
+			if (Config.TierNow[Config.Gear[i]].tier < Config.TierGoal[Config.Gear[i]]) {	//261028 TieredGear out
 				goal = false;
-			} else {
-				Config.TieredGear[Config.Gear[i]] = true;	//260805
 			}
 		}
 

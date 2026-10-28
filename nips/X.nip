@@ -122,7 +122,7 @@
 // [Amulet] 90/120mana 40resi 20A-resi // 60/100life 20/30ener
 //============================================================================================================================================================================================
 
-[type] == amulet && [quality] == set # [poisonresist] == 30 # [tier] == 18 @ [name] == crown && [quality] == set && [flag] != ethereal # [lightresist] == 30 # [qty] == 1
+[type] == amulet && [quality] == set # [poisonresist] == 30 # [tier] == 18 @ [name] == crown && [quality] == set && [flag] != ethereal # [lightresist] == 30 # [owned] == 1	//261028 hold [qty] -> [owned]
 
 [type] == amulet && [quality] == unique # [itemallskills] == 2 && [fireresist] >= 20 # [tier] == 31
 

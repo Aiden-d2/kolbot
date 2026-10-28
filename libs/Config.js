@@ -92,47 +92,34 @@ var Config = {
 	},
 	
 	//Gear
-	Gear: {1: "Head", 2: "Neck", 3: "Body", 4: "ArmR", 5: "ArmL", 6: "RingR", 7: "RingL", 8: "Belt", 9: "Boots", 10: "Mitts"},  //260804
+	Gear: {1: "Helm", 2: "Amulet", 3: "Armor", 4: "ArmG", 5: "ArmB", 6: "RingG", 7: "RingB", 8: "Belt", 9: "Boots", 10: "Gloves"},  //260804	//261028 names: nip gear keys [helm] [armg] etc
 
 	Tiered: false,
 	
-	TieredGear: {	//260805
-		Head: false,
-		Neck: false,
-		Body: false,
-		ArmR: false,
-		ArmL: false,
-		RingR: false,
-		RingL: false,
-		Belt: false,
-		Boots: false,
-		Mitts: false
-	},
-
 	TierGoal: {
-		Head: 0,
-		Neck: 0,
-		Body: 0,
-		ArmR: 0,
-		ArmL: 0,
-		RingR: 0,
-		RingL: 0,
+		Helm: 0,	//261028 renamed
+		Amulet: 0,	//261028 renamed
+		Armor: 0,	//261028 renamed
+		ArmG: 0,	//261028 renamed
+		ArmB: 0,	//261028 renamed
+		RingG: 0,	//261028 renamed
+		RingB: 0,	//261028 renamed
 		Belt: 0,
 		Boots: 0,
-		Mitts: 0
+		Gloves: 0	//261028 renamed
 	},
 
 	TierNow: {
-		Head: {tier: 0, str: 0, dex: 0},   //260804
-		Neck: {tier: 0, str: 0, dex: 0},
-		Body: {tier: 0, str: 0, dex: 0},
-		ArmR: {tier: 0, str: 0, dex: 0},
-		ArmL: {tier: 0, str: 0, dex: 0},
-		RingR: {tier: 0, str: 0, dex: 0},
-		RingL: {tier: 0, str: 0, dex: 0},
+		Helm: {tier: 0, str: 0, dex: 0},   //260804	//261028 renamed
+		Amulet: {tier: 0, str: 0, dex: 0},	//261028 renamed
+		Armor: {tier: 0, str: 0, dex: 0},	//261028 renamed
+		ArmG: {tier: 0, str: 0, dex: 0},	//261028 renamed
+		ArmB: {tier: 0, str: 0, dex: 0},	//261028 renamed
+		RingG: {tier: 0, str: 0, dex: 0},	//261028 renamed
+		RingB: {tier: 0, str: 0, dex: 0},	//261028 renamed
 		Belt: {tier: 0, str: 0, dex: 0},
 		Boots: {tier: 0, str: 0, dex: 0},
-		Mitts: {tier: 0, str: 0, dex: 0}
+		Gloves: {tier: 0, str: 0, dex: 0}	//261028 renamed
 	},
 
 	//Merc
@@ -161,9 +148,9 @@ var Config = {
 										// "Bash": 126 (Act5)
 	
 	TierMerc: {
-		Head: {merc: 0, str: 0, dex: 0},   //260804
-		Body: {merc: 0, str: 0, dex: 0},
-		ArmR: {merc: 0, str: 0, dex: 0}
+		Helm: {merc: 0, str: 0, dex: 0},   //260804	//261028 renamed
+		Armor: {merc: 0, str: 0, dex: 0},	//261028 renamed
+		ArmG: {merc: 0, str: 0, dex: 0}	//261028 renamed
 	},
 	
 	//Time

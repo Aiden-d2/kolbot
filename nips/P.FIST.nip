@@ -182,22 +182,22 @@
 //============================================================================================================================================================================================
 
 // [Smoke]
-([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 2 # [qty] == 1 && [body] < 31
+([name] == ghostarmor || [name] == serpentskinarmor || [name] == demonhidearmor || [name] == mageplate) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 2 # [qty] == 1 && [armor] < 31	//261028 gear key renamed
 
 // [AncientsPledge]
-([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 3 # [qty] == 1 && [arml] < 25 @ ([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) # [sockets] == 3 && [fireresist] >= 10 # [qty] < 1
-([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 3 && [fireresist] >= 10 # [qty] == 1 && [arml] < 28
+([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 3 # [qty] == 1 && [armb] < 25 @ ([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) # [sockets] == 3 && [fireresist] >= 10	//261028 gear key renamed, hold [qty] < 1 out (default)
+([name] == targe || [name] == rondache || [name] == heraldicshield || [name] == aerinshield || [name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 3 && [fireresist] >= 10 # [qty] == 1 && [armb] < 28	//261028 gear key renamed
 
 // [Spirit Shield]
-([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [arml] < 31 @ ([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) # [sockets] == 4 && [fireresist] >= 10 # [qty] < 1
-([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 4 && [fireresist] >= 10 # [qty] == 1 && [arml] < 32
+([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armb] < 31 @ ([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) # [sockets] == 4 && [fireresist] >= 10	//261028 gear key renamed, hold [qty] < 1 out (default)
+([name] == akarantarge || [name] == akaranrondache) && ([quality] == normal || [quality] == superior) && [flag] != ethereal && [flag] != runeword # [sockets] == 4 && [fireresist] >= 10 # [qty] == 1 && [armb] < 32	//261028 gear key renamed
 
 // [Spirit Sword]
-([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) && [flag] != runeword && [level] >= 26 # [sockets] == 0 # [qty] == 1 && [armr] < 31 @ ([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4 # [qty] < 1
-([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armr] < 31
+([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) && [flag] != runeword && [level] >= 26 # [sockets] == 0 # [qty] == 1 && [armg] < 31 @ ([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4	//261028 gear key renamed, hold [qty] < 1 out (default)
+([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armg] < 31	//261028 gear key renamed
 
 // [HeartoftheOak]
-[name] == flail && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armr] < 41 && [tiered] == 0
+[name] == flail && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [armg] < 41 && [tiered] == 0	//261028 gear key renamed
 
 
 //============================================================================================================================================================================================
@@ -205,22 +205,22 @@
 //============================================================================================================================================================================================
 
 //[name] == elrune # # [qty] == 1
-//[name] == eldrune # # [qty] == 1 && [tiered] != 0
+//[name] == eldrune # # [qty] == 1	//261028 tiered != 0 out
 //[name] == tirrune # # [qty] == 1
-[name] == nefrune # # [qty] == 1 && [body] < 31
+[name] == nefrune # # [qty] == 1 && [armor] < 31	//261028 gear key renamed
 //[name] == ethrune # # [qty] == 1
 //[name] == ithrune # # [qty] == 1
-[name] == talrune # # [qty] == 1 && [arml] < 31 && [armr] < 31
-[name] == ralrune # # [qty] == 1 && [arml] < 25
-[name] == ortrune # # [qty] == 1 && [arml] < 31 && [armr] < 31
-[name] == thulrune # # [qty] == 1 && [arml] < 31 && [armr] < 31
-[name] == amnrune # # [qty] == 1 && [arml] < 31 && [armr] < 31
+[name] == talrune # # [qty] == 1 && [armb] < 31 && [armg] < 31	//261028 gear key renamed
+[name] == ralrune # # [qty] == 1 && [armb] < 25	//261028 gear key renamed
+[name] == ortrune # # [qty] == 1 && [armb] < 31 && [armg] < 31	//261028 gear key renamed
+[name] == thulrune # # [qty] == 1 && [armb] < 31 && [armg] < 31	//261028 gear key renamed
+[name] == amnrune # # [qty] == 1 && [armb] < 31 && [armg] < 31	//261028 gear key renamed
 //[name] == solrune # # [qty] == 1
 //[name] == shaelrune # # [qty] == 1
 //[name] == dolrune # # [qty] == 1
 //[name] == helrune # # [qty] == 1
 //[name] == iorune # # [qty] == 1
-[name] == nefrune # # [qty] == 1 && [body] < 31
+[name] == nefrune # # [qty] == 1 && [armor] < 31	//261028 gear key renamed
 //[name] == korune # # [qty] == 1
 //[name] == falrune # # [qty] == 1
 //[name] == lemrune # # [qty] == 1
