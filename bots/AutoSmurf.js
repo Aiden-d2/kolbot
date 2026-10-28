@@ -160,7 +160,6 @@ function AutoSmurf() {
 
 		Pather.useWaypoint(null); // Will walk to and interact with waypoint.
 
-		//Pather.moveTo(me.x + myX, me.y + myY); // Move off of waypoint so others can reach it.	//260822
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		
 		this.okCount();	//261025 was readyCount/teamReady
@@ -732,7 +731,6 @@ function AutoSmurf() {
 		} else {
 			Pather.useWaypoint(destination);
 			delay(me.ping * 2 + 200);
-			//Pather.moveTo(me.x + myX, me.y + myY);	//260822
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		}
 		
@@ -2420,7 +2418,6 @@ function AutoSmurf() {
 		}
 		
 		Pather.useWaypoint(4);
-		//Pather.moveTo(me.x + myX, me.y + myY);	//260822
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		this.okCount();	//260922
 		Precast.doPrecast(true);
@@ -2428,13 +2425,11 @@ function AutoSmurf() {
 		Pather.teleport = false;
 
 		Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true, true);	//261007
-		//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);
 		//Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true);	//260822	//261002 no offset
 		
 		Attack.clear(20);	//261002
 		
 		Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true, true);	//261007
-		//Pather.moveToPreset(me.area, 1, 737, myX, myY, true, true);
 		//Pather.moveToPreset(me.area, 1, 737, 0, 0, true); //260719	//260822	//260929	//261002 no offset
 
 		for (i = 0; i < 5; i += 1) {
@@ -3298,7 +3293,7 @@ function AutoSmurf() {
 	};
 
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
-		var journal, i;	//261004 chicken -> bossGuard
+		var journal, i, tick, talked;	//261004 chicken -> bossGuard	//261028 tick, talked: journal dialog watch
 
 		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===", true);	//260930
 		
@@ -3375,7 +3370,21 @@ function AutoSmurf() {
 		
 		if (journal) {	//261028 everyone reads the journal once, portal or not (a profile that did not read it could not take the tomb portal at Duriel)
 			sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
-			delay(me.ping * 2 + 1000);
+
+			tick = getTickCount();	//261028 same wait as the delay, watching for the journal dialog (shown only to the one who read it; not cancelled)
+			talked = -1;
+
+			while (getTickCount() - tick < me.ping * 2 + 1000) {
+				if (talked < 0 && getIsTalkingNPC()) {
+					talked = getTickCount() - tick;
+				}
+
+				delay(10);
+			}
+
+			Misc.trace("[Summoner] journal: " + (talked > -1 ? "dialog at " + talked + "ms" : "no dialog") + " dist:" + Math.round(getDistance(me, journal)));	//261028 remove after one Duriel portal failure is judged, or 2 cycles with none (handoff 3-43)
+		} else {
+			Misc.trace("[Summoner] journal: none");	//261028
 		}
 		
 		for (i = 0; i < 3; i += 1) {
