@@ -148,7 +148,7 @@
 | 3-38 | 소켓용 완성 보석 큐빙(설정에 완성 보석 번호를 넣은 뒤) | ItemLog `Ingredient` 흠 없는 보석 → `Transmuted` → `Socketed` |
 | 3-39 | NTIP 파서 읽기 통일·문법 검사(`4a1738d` 외, 261028 로그에는 없음) | 회색 콘솔·`ScriptErrorLog.txt` nip 오류 0, print `equipped: [ArmG]` 새 칸 이름, ItemLog `(ArmG<31)`·`(Tiered)` |
 
-- 사용자 수정이 들어간 뒤 3절로 옮겨 볼 것(261028): handoff 2-28(3막 `Traveling to Travincal` 직후 desync 0), 2-29(`Tomb chest not reached` 수). 2-30 삭제 뒤에는 `chores`·`belt shift fail`·`buy failed`·`party has left`의 상태·`step:` 줄이 없다.
+- 261028 추가: handoff 3-40~3-46(`dfc884b`·`9c48f56`)은 각 항목 검증 방법, 3-47(3막 `Traveling to Travincal` 직후 desync 0), 3-48(`Tomb chest not reached` 수), 3-49(`chores`·`belt shift fail`·`buy failed` 줄과 `party has left`의 상태·`step:` 0).
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.

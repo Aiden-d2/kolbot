@@ -387,7 +387,7 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 
 ### handoff 3절 결과
 - 3-27(→ 확정, `docs/code/Town.md` clearBelt): 정리 줄 1,631개 중 시작 때 메뉴 08 0(`ui -` 1,584, `ui ->-` 47). cur 58회 실패 0, put 실패 0, 클릭당 최대 1.7초. shift 702회 중 실패 10, `belt shift fail` 10줄: `inv:false` 3(a1 02:05:11·04:33:19 Harrogath 핑 171~187, a3 10/27 21:10:24), `inv:true` 7(모두 10/27 21:10:23~25 Pz-13 입장 3~4초 뒤 Rogue Encampment, a1·a2·a4 2·a6·a7 2, 핑 187~312. 넣는 물약과 열 물약 등급이 다른 것 2: a1 hp2→[hp1], a4 hp1→[hp2]). 같은 프로필의 다음 정리부터 Pz-15까지 shift 실패 0, `remain` 3~7 → 0~1. 버린 정리(`pots N>0`) 16번은 모두 그 정리의 벨트 실패 0.
-- 3-36(→ handoff 2-28): 웨이 모으기 10분 — Pz-32 리더 Ancient's Way 웨이 모으기 221초(23:58:06 → 00:01:47 SHENK) 뒤 shenk syncBO에서 8명 모두 00:02:13 `act5 BO`. `travel true` 0, `Party desynced 2`·`syncBO timeout`·`Team didn't join` 0. 실패: Kurast Docktown 10게임 연속(Pz-76~81 08:29~08:44, Pz-82 09:20, Pz-84~86 09:26~09:33) 리더 `act3 BO` → `Traveling to Travincal`(웨이 있음, 이동 없음) → 121~122초 뒤 `Party desynced 1`. 빠진 이름 a4·a5 / a8 / a4·a7 / a4·a7 / a4·a5 / a4·a8 / a6·a7 / a4·a5 / a4·a5·a6·a7 / a8, 모두 마을 웨이 자리(5161,5051)에 서 있음. Pz-83(TOME 09:21:54)·Pz-87(BRAIN 09:34:12)은 통과. 코드: 팔로워 루프 `this.syncBO(); syncBO = false;` 순서(handoff 2-28).
+- 3-36(→ handoff 3-47): 웨이 모으기 10분 — Pz-32 리더 Ancient's Way 웨이 모으기 221초(23:58:06 → 00:01:47 SHENK) 뒤 shenk syncBO에서 8명 모두 00:02:13 `act5 BO`. `travel true` 0, `Party desynced 2`·`syncBO timeout`·`Team didn't join` 0. 실패: Kurast Docktown 10게임 연속(Pz-76~81 08:29~08:44, Pz-82 09:20, Pz-84~86 09:26~09:33) 리더 `act3 BO` → `Traveling to Travincal`(웨이 있음, 이동 없음) → 121~122초 뒤 `Party desynced 1`. 빠진 이름 a4·a5 / a8 / a4·a7 / a4·a7 / a4·a5 / a4·a8 / a6·a7 / a4·a5 / a4·a5·a6·a7 / a8, 모두 마을 웨이 자리(5161,5051)에 서 있음. Pz-83(TOME 09:21:54)·Pz-87(BRAIN 09:34:12)은 통과. 코드: 팔로워 루프 `this.syncBO(); syncBO = false;` 순서(handoff 3-47).
 - 3-37(→ 기각, `rejected.md` PartyThread): desync 퇴장 줄 기준 낙오 —
   - 지각: 10/27 20:01 a4 Black Marsh(달리는 중, 약 100칸), 10/28 08:11 Pz-70 a8(두리엘 중 `Town check (direct)` 2번, `step:chores:heal`).
   - 정리 안 끝남: 01:21 a8 Harrogath(5073,5022) 달리는 중 `step:chores:stash` 2분, 그 사이 ItemLog `Stashed` 0(골드 보관 `openStash` 길).
@@ -402,7 +402,7 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 케이스 미발견: 3-10(`radamentOff` 0, 북 visible → read 24줄), 3-13(0), 3-17(MoveToSlot 실패 0, `party accept` 923줄), 3-35(`Init failed` 0), 3-38(설정에 완성 보석 번호 없음).
 
 ### 그 밖
-- 조기 종료 사유: Life Chicken 46, desync 퇴장 75줄(20게임, Kurast Docktown 10게임 포함, 수동 조작 Pz-17 2줄 제외), Tomb chest not reached 4(10/27 22:04·22:31 a3, 22:15·23:01 a6, 앞에 `[Error]`·경로 보정 줄 없음 → handoff 2-29), Diablo not found 2(a1·a2 11:42), Not ready for act2 1, Figurine incompleted 1, moveToExit failed(Outer Cloister → Barracks) 1.
+- 조기 종료 사유: Life Chicken 46, desync 퇴장 75줄(20게임, Kurast Docktown 10게임 포함, 수동 조작 Pz-17 2줄 제외), Tomb chest not reached 4(10/27 22:04·22:31 a3, 22:15·23:01 a6, 앞에 `[Error]`·경로 보정 줄 없음 → handoff 3-48), Diablo not found 2(a1·a2 11:42), Not ready for act2 1, Figurine incompleted 1, moveToExit failed(Outer Cloister → Barracks) 1.
 - 사망 1(a1, 03:26 `You died in last game`). 보스가드 중 사망 3(a3 Arcane 21:37, a3 Chaos 23:57, a4 Arreat Summit 10:24), 시체 회수 3/3 성공. 크래시 2(a2 22:27 Lut Gholein, a4 03:18 Den of Evil), 분석 안 함.
 - `[Error]` 1: a1 Pz-49 03:31 Catacombs Level 2(22648,6513) `waypoint unit not found` → `wp.area:null` 12회 → `useWaypoint: Failed to use waypoint`(handoff 2-23).
 - 경로 줄: `no random path` 40, `original path` 61, `no original path` 21, `adjusted path` 21, `no adjusted path` 0, `fixed path` 0.
