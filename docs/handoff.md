@@ -8,7 +8,7 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**마지막으로 분석한 로그**: 261026 묶음(10/25 13:34 ~ 10/26 10:21, `log_results.md` 261026). 실행 중 코드가 바뀜: 13:34 시작 main(`81d5b43`·`f26ef73`·`d93027d`·`aafbe50` 포함) → 16:18쯤 wornItems 로컬 수정·17:00까지 `[Worn]` 시험 → 20:36 전 프로필 재시작부터 최종 main(`13ebf32`·`9c0d445`·nip `1483695`, 사용자). 10/26 09:52~ 업로드(아냐·ItemLog 경로)가 마지막 게임에 들어갔는지는 모름. **다음 사이클**은 `d87cfcb`(3-35 시작부 오류 멈춤, 3-36 웨이 모으기 10분, 3-37 정리 단계 표시, 3-38 소켓용 완성 보석, 3-27 shift 실패 판별, 3-22 trace 삭제) 병합 뒤 main으로 돈다.
+**마지막으로 분석한 로그**: 261027 묶음(10/26 14:24 ~ 10/27 18:49, main `152e5ea`)과 261028 묶음(10/27 18:54 ~ 10/28 13:07, 사용자 업로드 `8144c74`까지, 10/28 09:51 전 프로필 재시작), `log_results.md` 261027·261028. 261027의 handoff 판정은 261028과 함께 반영(사용자 261028). **다음 사이클**은 3-39 파서(`4a1738d` 외), 3-40~3-46(`dfc884b`·`9c48f56`), 3-47 syncBO 순서·3-48 상자 재시도(`68483de`), 3-49 판별 줄 삭제가 들어간 코드로 돈다.
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -42,6 +42,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **확인된 것**
   - 사례: a3 10/26 00:29:09~00:29:22 Abaddon(목표 12659,6098, 10회 모두 12645,6106 부근) → 00:29:29 `=== [POA] ===`. a7 03:37:10~03:37:23 Infernal Pit(목표 12660,9099) → 03:37:29 `=== [DIABLO] ===`. 두 건 모두 `fixed path`·`[Error]`·`Failed to generate path` 0.
   - 코드: `Attack.js`에 `Pather.moveTo` throw를 trace 없이 받는 catch가 3곳(잃은 목표 마지막 위치로 이동 `searches = 99`, 자리 잡기 이동 `moved = false` 2곳). 이번 2건이 어느 호출부였는지는 로그로 모름. CLAUDE.md 4절: 잡힌 오류는 `Misc.caughtError`.
+  - 261027 로그: `no adjusted path` 10회 2건은 모두 `[Error] moveTo: Failed to generate path`가 찍힘(a6 Pz-6 Stony Field, a7 Pz-55 Abaddon `usePortal → moveToUnit`) — 오류 줄 없는 위 2건과 다른 호출 자리. 261028 로그: `no adjusted path` 0.
 - **판단에 필요한 것**: 진행할지. 한다면 조용한 catch 3곳에 `Misc.caughtError`를 넣을지(콘솔은 게임당 자리별 1회).
 
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
@@ -86,6 +87,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 261022 노트 정리(`fae6b2b`)에서 1절을 결정 대기만 두던 때 2-9로 옮겼으나 진행 결정·가설·구현안이 없어 1절로 되돌림(사용자 261024).
   - 261026 로그(새 사례 3건): Pz-22 10/25 17:50 8명 모두 Catacombs Level 2의 거의 같은 자리(22519,6639 부근)에서 `going to nearest WP` 뒤 `[WP] wp.area:null me.area:35 target:1` 87줄 → a1·a2·a3·a4·a6 `[Error] useWaypoint: Failed to use waypoint`(한 프로필의 일시적 조회 실패로는 설명되지 않음). a1 10/26 07:22 Durance of Hate Level 2 `waypoint unit not found` + `wp.area:null` 8줄, 9초 뒤 그 자리에서 Life Chicken. a1 06:59 Sewers Level 2 `waypoint unit not found` 1줄(오류 없이 진행).
   - 진행 확정(사용자 261026) → 1절에서 2절로.
+  - 261027 로그: a1 Pz-47 Durance of Hate Level 2 도착 직후 `waypoint unit not found` → `wp.area:null` 12회 → `[Error] useWaypoint`. 261028 로그: a1 Pz-49 10/28 03:31 Catacombs Level 2(22648,6513) `waypoint unit not found` → `wp.area:null` 12회 → `[Error] useWaypoint`로 게임 종료(261022 사례와 게임 번호·지역이 같음).
 - **가설**: 없음(검토에서 정한다).
 - **구현안**: 검토에서 정한다.
 - **검증 방법**: 검토에서 정한다.
@@ -100,6 +102,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **결과**: 261024 케이스 미발견 — 북 분실 0(북 24게임 모두 visible → read). 사유: 일어나는 조건(북 분실)이 없었음. 더 봄.
   - 261025 케이스 미발견 — `radamentOff` 0, 북 24게임 모두 visible → read. 더 봄(사용자 261025).
   - 261026 케이스 미발견 — `radamentOff` 0, 북 24줄 모두 visible → read. 케이스가 나올 때까지 계속 관찰(사용자 261026).
+  - 261027·261028 케이스 미발견 — `radamentOff` 0, 북 24줄씩 모두 visible → read.
 
 ### 3-13. 라다먼트 북 버리기 (`AutoSmurf.start`, `dropping radament book`)
 - **바꾼 것**(`47816e6`): 시작 단계 북 버리기 무한 루프 수정. 버릴 때마다 trace `dropping radament book`.
@@ -107,6 +110,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **결과**: 261024 케이스 미발견 — `dropping radament book` 0. 사유: 북을 가진 채 시작한 게임이 없었음. 더 봄.
   - 261025 케이스 미발견 — `dropping radament book` 0. 더 봄(사용자 261025).
   - 261026 케이스 미발견 — `dropping radament book` 0. 케이스가 나올 때까지 계속 관찰(사용자 261026).
+  - 261027·261028 케이스 미발견 — `dropping radament book` 0.
 
 ### 3-17. MoveToSlot 실패 원인 판별 (`Storage` MoveToSlot, `PartyThread` 파티 수락, 옛 1-6)
 - **바꾼 것**: 실패 줄 유지, `inv:` 필드 삭제(261020). 판별 trace `party accept: 이름`(261021 `ab94751`, 팔로워 `PartyThread`). 실패 34건 중 33건 `closed`·1건 `-`이고 창을 여는 코드가 없어 성공도 `closed`일 것 → 창 상태로는 판별 불가라 수락 시각으로 가른다.
@@ -115,34 +119,14 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 261024 케이스 미발견 — `party accept` 918줄, 실패 0(105게임). 사유: 세 묶음(289게임) 연속 0. 그 사이 관련 코드 변경은 `82ede23`(사용자 업로드 10/20 09:57, 큐브·TP 칸 옮기기를 게임 입장 직후에서 `doChores` 뒤로) 하나. 이 변경으로 사라졌는지는 옛 로그(261013·261020)가 남아 있지 않아 확인할 수 없음. 실패 줄에 아이템 이름·시각이 있어 다시 나오면 그대로 판정 가능. 더 봄(사용자 261024).
   - 261025 케이스 미발견 — 실패 0, `party accept` 933줄(110게임). 네 묶음 399게임 연속 0. 더 봄(사용자 261025).
   - 261026 케이스 미발견 — 실패 0, `party accept` 1,044줄(117게임). 다섯 묶음 연속 0. 케이스가 나올 때까지 계속 관찰(사용자 261026).
-
-### 3-27. 벨트 물약 넣기 지연 판별과 넣기 위치 (`Town.clearBelt`·`clearInventory` 벨트 루프·`doChores`, 옛 3-21·2-17)
-- **확인된 것**
-  - 옛 3-21(261022 `482171b`, 물약 정리 마시기 + `chores` 단계별 줄)의 261023 결과(1,729줄): 물약 정리(pots)는 15회 최대 3.9초 → 느린 원인 아님. buy 5초 초과 458건은 시간의 중앙값 75%가 상점 NPC까지(걷기·열기), 구매 실패 합계 2. inv 5초 초과 202건 중 104건은 80% 이상이 벨트 넣기.
-  - 벨트 클릭 663건이 둘로 갈림: 느림 56건은 클릭당 3.6~3.8초이고 한 정리 안의 클릭이 모두 느림, 56건 모두 정리 시작 때 NPC 메뉴(08) 열림. 빠름은 메뉴 열림 444건·닫힘 96건(닫힘에서 느림 0). 같은 프로필이 연달아 반복(a1 00:00~00:06 Lut Gholein 5회 연속 6클릭, a7 16회). 느린 56건 모두 `pots 0/0`.
-  - 코드: 벨트 열이 비면 `toCursor()`(클릭 뒤 1초 × 3회, 실패하면 false) → 벨트 클릭, 열에 물약이 있으면 shift-click. 남은 물약 정리는 `HPBuffer` 등 예비 수를 넘는 것만 마심.
-  - 사용자: 메뉴가 열려 있으면 클릭은 안 되는 게 맞다(클릭이 메뉴를 닫음).
-- **가설**: 빈 열 경로의 `toCursor`가 메뉴가 열린 동안 3회 모두 실패(3초 + 클릭 뒤 대기 약 0.6초 = 3.6초). 물약이 벨트에 못 들어가 열이 계속 비고, 예비로 인벤토리에 남아 다음 방문에도 되풀이. 클릭이 메뉴를 닫는다면 두 번째 시도는 성공해야 하는데 3.6초라 메뉴도 닫지 못한 것으로 보임(추정).
-- **바꾼 것**(261023 `0f6da09`, 사용자 채택): `chores` 줄 belt 항목 뒤에 `cur 시도/실패 put N shift 시도/실패 ui 직전>직후 remain N`. `Town.chores` 새 속성 7개 — `beltCur`·`beltCurFail`(toCursor 실패)·`beltPutFail`(toCursor 성공인데 벨트 클릭 뒤 벨트 빈칸 합계 변화 없음)·`beltShift`·`beltShiftFail`(shift-click 뒤 빈칸 합계 변화 없음)·`beltUI`(첫 빈 열 시도 직전·직후 NPC 메뉴 `08`·인벤토리 창 `01`, 없으면 `-`)·`beltLeft`(물약 정리 뒤 인벤토리에 남은 물약 수, 줄에는 `remain`). 줄 찍는 조건에 벨트 실패 1건 이상 추가(10초 미만이어도). 수정 `libs/Town.js` 한 파일.
-- **검증 방법**(지금 도는 `33d3ae3` 로그에는 없음, 이 커밋 뒤 로그부터): 느린 정리에서 cur 실패 = 클릭 수이고 shift 실패 0이면 가설 맞음(ui 직후 08이면 클릭이 메뉴를 못 닫음). 메뉴가 닫혀 있을 때 cur 실패 0이면 메뉴 원인 확정. 느린 정리에 cur이 없거나 shift 실패가 있으면 가설 틀림 → shift-click 쪽 재검토. 맞으면 수정안(벨트 전에 메뉴 닫기 / 빈 열도 shift-click)을 검토(그 전에 `rejected.md`). 제거 조건: 판정 뒤 7개 속성·조건 삭제(기존 `chores` 줄 삭제 여부도 그때).
-- **결과**: 261024 이번 로그에 적용되지 않음(`33d3ae3`, chores 줄에 `cur` 0). 옛 형식으로 본 가설 근거는 같음: 느린 정리 34건 클릭당 3.58~3.70초, 모두 시작 때 NPC 메뉴 열림, 닫힘 87건 중 느림 0(`log_results.md` 261024).
-  - 261025 **가설 확정**(chores 2,049줄): 느린 정리(클릭당 3초 이상) 30건 모두 시작 때 메뉴 열림, cur 시도 = 클릭 수 = cur 실패, shift 0, `ui 08>08`(실패 뒤에도 메뉴 열림). 메뉴 닫힘 cur 18건 실패 0, 클릭당 약 1초. 기존 결론과 다른 것: 메뉴가 열린 채 시작한 정리의 shift-click은 2,427회 모두 실패(빠른 실패, 옛 "메뉴 열림 빠름 444건"도 정상이 아니었음). 메뉴 닫힘 shift 실패 160/369는 같은 종류 두 열(`mp mp`·`rv rv`)에 같은 물약을 다시 클릭한 것(추정, 실패 수가 `3/1`·`6/3` 모양). 실패한 물약은 대부분 회춘(회복·마나는 예비 0이라 뒤 정리에서 처리됨, 회춘은 예비 2~4만큼 인벤토리에 남음).
-  - 원인 위치: heal이 연 NPC 메뉴가 열린 채 `clearInventory`로 넘어감(261021 heal 끝 `me.cancel()` 삭제, `docs/code/Town.md` heal). heal에서 닫는 안은 기각 — `clearInventory` 판매가 heal NPC 상호작용(`PacketShopping`)에 기대므로 팔 것이 버리기로 바뀜(사용자 261025, `rejected.md`).
-- **바꾼 것**(261025 `81d5b43`, 사용자 승인, `libs/Town.js`·`bots/AutoSmurf.js`)
-  - 벨트 넣기와 남는 물약 정리를 `clearInventory` 앞에서 `clearBelt` 끝으로 그대로 옮김(판별 속성 포함). `doChores`에서 heal 앞이라 메뉴가 없다. `clearBelt`가 잘못 꽂힌 벨트 물약을 빼고 바로 이어 넣는 흐름.
-  - 벨트 넣기: 물약이 들어가면(빈칸 합계가 줄면) 그 물약의 열 반복을 멈춤(`break`). 실패하면 다음 열을 계속 시도.
-  - 남는 물약 정리 3개 루프 `interact()`(마시기, 261022) → `drop()`(버리기, 원래 사용자 코드). 마시기로 바꾼 이유(메뉴가 열려 있으면 버리기가 안 먹힘)가 메뉴 없는 자리로 옮겨 사라짐. 다른 플레이어가 쓸 수 있음(사용자).
-  - 단독 `clearInventory` 호출 2곳 앞에 `Town.clearBelt()`: `AutoSmurf.buffCount` 노멀(해독 물약 구매 뒤), `AutoSmurf.anya` 끝(Larzuk 메뉴를 열기 전, 전에는 메뉴가 열린 채라 벨트 넣기가 실패).
-  - 달라지는 곳: `AutoSmurf.travel`(마을 도착 뒤 `clearBelt`만 부름)도 벨트 넣기·남는 물약 버리기를 한다. `chores` 줄의 belt·pots 시간은 heal 구간 시간에 섞인다(항목 자리는 그대로). 물약 등급 구분은 원래 동작대로 둠(1-16). `node --check` 통과(2파일).
-- **검증 방법**(`81d5b43` 뒤 로그): `chores` 줄 `ui`가 `->-`(첫 빈 열 시도 직전 메뉴 없음), cur·shift 실패 0, 정리 시작이 `npc:… 08`이어도 벨트 실패 0. 버린 물약을 마을에서 다시 줍지 않는가(`Pickit.canPick`은 벨트 칸이 비었거나 예비가 모자랄 때만 물약을 주움, 코드 읽음, 게임 확인 전 — ItemLog·print에 마을 물약 줍기). 제거 조건: 검증 통과 뒤 판별 속성 7개·`chores` 줄 전체와 `buyPotions: buy failed` trace를 함께 정리(사용자 261025).
-  - 261026(`81d5b43` 들어간 첫 로그, chores 1,680줄): 정리 시작 `ui` 08 0(`ui -` 1,620·`ui ->-` 60), cur 77회 실패 0, 클릭당 최대 1.5초(느린 정리 0). shift 771회 중 실패 3 — 모두 a1(나이트메어, 벨트 `hp mp mp rv`) 10/26 02:29:12·02:39:14·02:41:59, 세 번 다 `belt 1.8s/3 … shift 3/1 ui -`. 그 시각 a1 핑 187~282(useUnit 줄). 마을 물약 다시 줍기는 기록이 없어 로그로 못 봄.
-  - 한 사이클 더 보고 확정(사용자 261026). 지금 테스트 서버가 아시아가 아니라 핑이 높아, 예외가 핑 문제인지 코드 문제인지 가르기 위해 판별 로그를 넣었다(261026 `d87cfcb`): `clearBelt` 벨트 넣기에서 shift 실패 때 물약 gid·코드·열 번호·그 열 물약 코드·핑을 모아, 루프 뒤 실패마다 trace `belt shift fail: 코드 col:N [열 코드] ping:N inv:true/false`(inv = 그 gid가 아직 인벤토리에 있음). 판정: inv false = 늦은 반영(핑), inv true = 실제 실패(열 코드와 비교). 새 지역 배열 1개. 제거 조건: 3건 이상 분류.
+  - 261027 케이스 미발견 — 실패 0, `party accept` 1,276줄(146게임). 261028 케이스 미발견 — 실패 0, `party accept` 923줄(105게임). 일곱 묶음 연속 0.
 
 ### 3-29. useUnit 계단 클릭 앞 대기를 `me.attacking` 게이트로 (`Pather.useUnit`, 옛 2-19·3-20 다음 단계)
 - **바꾼 것**(261024 `be4f0e2`): 계단(type 5) 클릭 앞 고정 `delay(600)` → 시전 중(`me.attacking`)일 때만 최대 600ms 대기. 걷는 캐릭터·시전이 끝난 경우는 기다리지 않음. 근거: `teleportTo`는 목표 거리 안에 들면 시전 동작이 끝나기 전에도 true를 돌려준다(코드 읽음). 옛 3-20(고정 600ms)의 효과: 261023 timeout 34줄(261022 묶음 2 414줄), 261024 42줄, 8회 모두 실패 0.
 - **검증 방법**: `[useUnit] timeout` 줄 수를 261023(34)·261024(42)와 비교, 8회 모두 실패 0인가. 크게 늘면 600ms 효과가 시전 때문이 아니었던 것(가설 틀림) → 고정 600ms로 되돌림.
 - **결과**: 261025 실패 기준에 해당 — timeout 283줄(a1 210줄·145회, 걷는 프로필 a2~a8 73줄, 261023 걷는 프로필 19줄). 많은 곳 a1 Worldstone Keep 2→3층 22회·3층→Throne 14회. 걷는 프로필은 바뀐 뒤 기다리지 않는데 함께 늘어 600ms 효과가 시전 때문만은 아니었던 것으로 보임(추정). 8회 모두 실패 2건은 게이트와 무관(a1 Pz-14 Lut Gholein → 궁전 `dist:21` 그대로 도달 못 함, a1 Pz-47 Tal Rasha's Tomb → 두리엘 방 오브젝트 type 2). 로그로 모르는 것: 텔레 직후 `me.attacking`이 참이 되는지. 한 사이클 더 보고 같은 결과면 고정 600ms로 되돌리는 것을 재검토(사용자 261025). 로그 변경 없음(대기 ms를 붙여도 결론이 같은 재검토로 감).
   - 261026 timeout 275줄(a1 215, 걷는 프로필 60), 8회 모두 실패 2(a1 Spider Forest → Spider Cave, Flayer Dungeon 1 → 2, 둘 다 다시 불러 통과) — 261025와 같은 수준. **보류**(사용자 261026): 핑 관련이 높아 보이고 계단(층 변경) 대기가 길어 보이는데, 지금 테스트 서버가 아시아가 아니라서인 것으로 봄. 아시아 서버 결과로 다시 본다.
+  - 261027 timeout 526줄(a1 461, 걷는 프로필 75), 8회 모두 실패 3줄(a1 Black Marsh → Forgotten Tower). 261028 260줄(a1 198, 걷는 프로필 62), 8회 모두 실패 0. 두 묶음 모두 핑 150~340(아시아 서버 아님) → 보류 유지.
 
 ### 3-32. 착용 중인 베이스로 룬워드·펀치 (`Misc.takeOff`·`wornItems`, `Runewords.makeRunewords`·`buildLists`, `Cubing.doCubing`·`buildLists`, 사용자 261023·261024·261025, 옛 2-15)
 - **문제**: 보유 개수(`NTIP.CheckQuantityOwned`)는 보관품·플레이어 착용 장비·용병 장비를 모두 세는데, 룬워드 베이스 찾기(`getBase`, `me.getItem(base, 0)`)와 큐빙 재료(`Cubing.buildLists`, `me.findItems(-1, 0)`)는 보관품만 본다. → 착용 중인 재료 베이스(플레이어 또는 용병)는 홀드를 차지해 새 베이스 줍기를 막으면서 재료로는 쓰이지 않는다. 용병도 헬름·갑옷을 입으므로 플레이어용 재료와 겹친다(사용자).
@@ -176,6 +160,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **결과**: 261025 이번 로그에 적용되지 않음(실행 시작 10/24 13:47이 `789d80d` 병합 13:57보다 앞, 실행 중 파일 변경 없음 — 사용자). `takeOff` 0, 룬워드 11·펀치 1 모두 보관함 베이스.
   - 261026 룬워드 확정: a1 10/25 20:36:27 `[Runeword] takeOff [ArmR] Double Axe (player): ok` → 20:36:45 ItemLog `Runeworded` Steel → 20:36:52 `Equipped`. fail 0. 펀치 케이스 미발견: takeOff 0, `Transmuted` 0(보관함 베이스 포함 펀치 자체가 0). 착용한 펀치 베이스는 있었음(a4 Targe, a2 Broad Sword, a1 Crystal Sword). 재료의 완성 자수정·루비가 한 번도 없었음(ItemLog 0, 흠 없는 자수정은 프로필당 최대 2개 — 완성에 3개 필요, 흠 없는 루비는 판매됨).
   - trace는 펀치 확인 전까지 그대로 둔다(사용자 261026, 나중에 지움).
+  - 261027 `takeOff` 0, 펀치 1(보관함 베이스, a3 Crystal Sword). 261028 룬워드 `takeOff` ok 1(a3 00:05:18 `[Body] Breast Plate` → 00:05:27 ItemLog `Runeworded` Stealth → 00:05:36 `Equipped`), fail 0. 펀치 2(a8 04:44:51·a7 07:40:58 Crystal Sword)는 모두 보관함 베이스(`Stashed` 00:20:32·01:05:04), `[Cube] takeOff` 0 → 착용 베이스 펀치는 케이스 미발견.
 
 ### 3-34. SafeTele 발밑 노드 제외·excludedNodes 삭제 (`Pather.moveTo` 안 `safeCheckNode`, 사용자 261023·261025, 옛 2-8)
 - **바꾼 것**(261025 `d93027d`, `libs/Pather.js`)
@@ -188,6 +173,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **검증 방법**: 밀집 지역에서 후퇴·안전 좌표 텔레 반복이 줄고 앞으로 나아가는지 육안으로 본다(후보를 고른 trace 없음). 치킨 사례가 밀집 지역 텔레 이동 중에 나오는지 본다.
 - **결과**: 아직 없음(`d93027d`·`13ebf32` 병합 뒤 main으로 돈 로그부터).
   - 261026: 육안으로 크게 나아졌는지는 모르겠고 치킨은 조금 준 것 같음(사용자). 계속 관찰(사용자 261026). 참고: Life Chicken 46(a1 30), 261025는 54(a1 40).
+  - 261027 Life Chicken 47(a1 26), 261028 46(a1 27).
 
 ### 3-35. default.dbj 시작부 오류를 멈춤으로 (`default.dbj` main, 사용자 261026, 옛 2-24)
 - **문제**: `Config.init`·`Runewords.init`·`Cubing.init`(default.dbj main, `Loader.init` 앞)은 try 밖이라 여기서 오류가 나면 default.dbj만 죽고 trace·콘솔에 아무것도 남지 않은 채 게임이 최대 게임 시간(30분)까지 서 있다.
@@ -196,53 +182,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **바꾼 것**(261026 `d87cfcb`): `default.dbj` main의 `Config.init`~`Cubing.init` 5줄을 try로 감싸고, catch에서 `Misc.errorReport(e, "default.dbj")`(회색 콘솔 + `[Error]` trace) → 빨강 콘솔 `Init failed in default.dbj. Stopping`(위치 없음) + trace → `D2Bot.stop()` → `return false`.
 - **검증 방법**: 시작부 오류가 나면 빨강 `Init failed … Stopping`과 매니저 멈춤(30분 서 있지 않음).
 - **결과**: 아직 없음.
-
-### 3-36. 팀 대기 okCount 통일과 리더 웨이 모으기 중 10분 (`AutoSmurf` okCount·travel·onCopyData, 사용자 261021·261025·261026, 옛 2-1·3-33·2-25)
-- **바꾼 것**(`f26ef73`, `bots/AutoSmurf.js`)
-  - 팀 대기를 `this.okCount()`로: `start`(readyCount·teamReady, 2분 퇴장), `buffCount`(buffCount·teamBuff, 타임아웃 없음), `syncBO`(BOCount·BOReady, 30초 퇴장), `syncBO` 안 syncWP 10회 대기.
-  - syncBO 결정: 리더는 BO가 필요할 때(`!me.getState(32)`)만 `BOing`을 한 번 보내고 okCount. 모두 okCount 뒤 `BOing`이 아니면 `return false`, 맞으면 `BOing = false`로 지우고 진행. `BOed` 변수·메시지 삭제. 리더의 BOing은 리더의 teamCount보다 먼저 오므로 okCount가 끝나면 도착해 있다(같은 사람 메시지는 순서대로).
-  - 카우: 리더는 `msgLeader`를 한 번만 보냄(반복·msgFollower 답장 삭제). 팀 대기는 뒤의 기존 okCount.
-  - 지운 변수: `imReady`·`readyCount`·`teamReady`·`BOed`·`BOCount`·`BOReady`·`myBuff`·`buffCount`·`teamBuff`·`msgFollower`. 한 방향 신호(tpReady·msgLeader·earlyReturn·좌표·teamFigurine)와 스위치는 그대로. 이름은 그대로(옛 이름 통일 지시는 대상이 사라져 지움).
-  - 알려진 위험(추정): 5막처럼 syncBO가 연달아 불릴 때 리더 BO가 그 사이(수백 ms)에 꺼지면 다음 회차 BOing이 앞 회차에 읽힐 수 있다. 팀원 간 `partyLevel`·퀘스트 상태가 다르면 지금도 어긋나며, 바뀐 뒤에는 그 자리 okCount에서 120초 퇴장한다.
-- **검증 방법**
-  - 각 싱크 자리에서 `Party desynced 1/2`가 없는지, 있으면 안 온 이름과 자리(start·buffCount·syncBO·syncWP·cows).
-  - syncBO: `act* BO` print가 팀 전원에 나오는지(BO가 필요한 회차), 리더 BO 상태에서 팀 전원이 바로 넘어가는지.
-  - 카우: 팔로워 `followDriver end` 뒤 okCount를 통과하는지.
-  - `syncBO timeout`·`Team didn't join the game within 2 minutes`는 더 나오지 않아야 한다(사유 바뀜).
-- **결과**: 261026 **실패**(최종 코드 구간).
-  - 정상: `Party desynced 2` 0, `syncBO timeout`·`Team didn't join` 0, 버프 맞추기 91회 모두 8명이 같은 분에 `act* BO`, 카우 2게임 정상 종료.
-  - 실패 사례 6게임: 리더가 웨이를 모으는(`travel`) 동안 팔로워가 다음 okCount에서 120초 퇴장 — Pz-40 22:33(travel 9), Pz-59 02:19(travel 2 → `buffCount(1)`), Pz-65 03:12·Pz-66 03:15·Pz-90 07:54·Pz-91 08:09(travel 9 → `shenk` 안 `syncBO`). 바뀌기 전(`f26ef73^`)에는 팔로워가 `buffCount`의 `teamBuff`, `syncBO`의 `while (!BOed && !BOing)`에서 타임아웃 없이 기다렸다(코드 읽음). Ancient's Way 웨이 모으기가 난이도마다 3~4게임에 걸쳐 끝남(조각 합계 약 5~5분 45초).
-  - 다른 낙오 사례는 3-37.
-- **확인된 것**(261026 코드 읽음): `travel` 호출 10곳 중 팔로워의 다음 대기가 리더를 기다리는 okCount인 곳은 travel(2)(`buffCount(1)`)·(5)(`buffCount(2)`)·(8)(`izual` 안 `syncBO`)·(9)(`shenk` 안 `syncBO`)·(10)(`baal` 안 `syncBO`). 나머지(1·3 포탈 대기, 4 팔로워 안 감, 6·7 3막 메시지 대기)는 타임아웃 없는 대기.
-- **바꾼 것 2**(261026 `d87cfcb`, 안 A, `bots/AutoSmurf.js`): 새 변수 `leaderTravel`, `travel`의 실제 이동 분기(`nextAreaIndex < areaIDs.length`) 첫 줄에서 메시지 `travel` 보냄, onCopyData `case "travel"`, `okCount` 타임아웃 `leaderTravel ? 600 : 120`초, 퇴장 상세에 `travel` 값, okCount 단계 끝에서 `leaderTravel = false`. 받은 표시는 다음 okCount 하나에만 쓰인다 → 타임아웃 없는 대기 뒤(1·3·4·6·7)에는 웨이 모으기 뒤 첫 okCount 하나가 10분(리더가 실제로 웨이를 모으는 게임만).
-- **검증 방법 2**: 리더가 웨이를 모으는 게임(`Traveling to` 뒤 `[getWP]`·`going to nearest WP`)에서 120초 퇴장이 없는가. `Party desynced 1`이 나오면 상세 끝 `travel true/false`.
-
-### 3-37. desync 낙오 프로필의 상태와 멈춘 단계 (`PartyThread` 파티 퇴장, `Town.doChores`·`visitTown`, 옛 2-21·3-26·3-31·2-26)
-- **목적**(사용자 261024): okCount는 지각을 걸러내는 장치다. 낙오가 진짜 지각(정상 흐름)인지, 다른 사유로 멈춰 있었는지 가른다.
-- **확인된 것**: desync 두 묶음 11건 중 9건은 낙오 프로필이 그동안 trace·d2bs 0줄(`log_results.md` 261023·261024). 정상 진행 중인 행동은 trace를 남기지 않고(`chores`는 정리가 끝날 때만, 이동·웨이는 실패·재시도·보정 때만), `Pather.useWaypoint` 메뉴·이동 재시도(최대 12회)는 머리 위 글자만, 끝없는 대기(메피 팔로워 `while (!Pather.usePortal(102, null))` 2곳, 두리엘 팔로워 `tpReady` 대기)도 있다 → 로그 없음만으로는 지각과 멈춤을 가를 수 없다.
-- **바꾼 것**(261024 `be4f0e2`, `33bd183`): `PartyThread` 파티 퇴장 감지의 trace `party has left: 이름`에 `town:true/false mode:N ui:08/0C/14/01 또는 -` + 위치를 붙임(`be4f0e2`에서는 바로 뒤 `party left state:` 줄, `33bd183`에서 한 줄로 합침, CLAUDE.md 4절 위치 없는 줄 목록에서 제외 사용자 261024). 같은 순간의 게임 상태라 신호 없이 `PartyThread`가 직접 읽음. 퇴장 전 몇 줄 반복될 수 있음(첫 줄을 봄).
-  - 대신 고려한 것: `default.dbj`의 호출 경로(실행 중이던 함수)를 남기는 안(프로필 사이 메시지 `late` / 같은 프로필 안 신호 `partyLeft`). 한 순간 기록이라 지각·멈춤 판별은 상태와 같고, 신호 유실·D2BS 호출 경로 미확인이 있어 판별 목적엔 상태로 충분하다고 봄. 멈춤으로 판별되면 그 단계만 겨냥해 다음 줄을 설계한다.
-- **검증 방법**: desync 때 낙오 프로필의 이 줄을 다른 프로필들의 같은 시각 위치·구간과 비교한다. 판별 기준은 "다른 프로필들이 이미 끝낸 단계에 아직 있는가".
-  - 이미 끝난 단계(예: 다른 프로필은 목적지인데 아직 마을, 웨이 메뉴 `ui:14`)에 있으면 멈춤 → 그 단계를 본다.
-  - 목적지 okCount 자리에 와 있으면 okCount를 보내지 못한 쪽 결함.
-  - 정상 단계 중간(이동 중)이면 진짜 지각 → 늦는 이유(걷기·텔레 차이 등)를 본다. 이 경우 한 순간 기록으로는 "그 안에서 맴돎"과 가를 수 없음(한계).
-  - 제거 조건: 판별이 되면 삭제.
-- **결과**: 261025 5게임 5줄 모두 판별됨. 멈춤(다른 프로필이 끝낸 단계에 남음) 0.
-  - 진짜 지각 3: Pz-7 a8 Catacombs 2 공격 중(mode 7) 85칸, Pz-99 a1 카오스 별에서 33칸 시전 중(mode 10)·직전 75초에 마을 2번(직접 마을행·타운치킨), Pz-100 a3 별에서 16칸 시전 중(mode 14)·직접 마을행 직후.
-  - 자리에 와 있는데 okCount 미도착 1: Pz-32 a3 Ancient's Way 다른 6명과 같은 자리 서 있음(mode 1, `act5+ BO` syncBO 첫 okCount). 보내지 않았는지 유실인지는 이 줄로 모름. 1절 등록 없음(사용자 261025).
-  - 앞서 감 1: Pz-79 a4 Harrogath(디아 가드 건너뜀 경로, `rejected.md` bossGuard·bossEnd와 같음).
-  - 한 사이클 더 봄, 로그 변경 없음(사용자 261025). 다음 사이클은 3-33(okCount 통일)이 들어간 코드.
-  - 261026(최종 코드 구간 13게임, 리더 웨이 모으기 6게임은 3-36): 증상만 적는다(원인은 추정뿐, 사용자 261026).
-    - Pz-30 a8 Tombs: 나머지 7명은 Tal Rasha's Tomb #1 안, a8은 Canyon of the Magi에서 달리는 중(mode 3).
-    - Pz-31 a3: 게임 입장 실패(`Join game failed` → `Game full - skip`), 시작 okCount에서 나머지 퇴장.
-    - Pz-53 a8 POA: 마을 Harrogath 서 있음(mode 5). POA 시작 01:15:45 뒤 ItemLog 판매가 01:16:00까지 있고(정리 15초 이상) `chores` 줄 없음 → 정리(`doChores`)가 끝나지 않음.
-    - Pz-58 a5 1막 버프 자리(`act0 BO` 뒤): 같은 자리에서 시전 중(mode 10) → 지각(사냥 중, 사용자 261026).
-    - Pz-69 a6 디아블로: 마을 Pandemonium 서 있음(mode 5). 시작 04:13:24 뒤 판매 04:13:38·보관 04:13:52, `chores` 줄 없음 → 정리가 끝나지 않음.
-    - Pz-71 a5 POA: 직전 구간(Abaddon)에서 직접 마을행 04:44:24, 정리 끝 04:44:39 뒤 `visitTown back`·`usePortal failed` 없이 2분간 Harrogath 포탈 자리(5078,5023)에서 달림(mode 3). 복귀는 자기 포탈만 탄다(`Pather.usePortal(preArea, me.name)`, 코드 읽음).
-    - Pz-72 a3 Chaos: 다른 7명(세이스 자리 7780,5160 부근)과 떨어진 7770,5263에 서 있음(mode 1). 그 게임 a3 경로 실패 줄 0.
-  - 정리가 끝나지 않은 2건: `chores` 줄은 정리 끝에서만 찍혀 멈춘 단계를 모른다. 판매 뒤 단계의 Town.js 반복문은 모두 시간·횟수 제한이 있고, 제한 없는 곳은 `Pickit.pickItems`의 `while (!me.idle)` 2곳(서 있을 때 `me.idle` 값은 확인 안 함). 이전 결론(끝난 정리의 지연 = 벨트 물약)과는 다른 현상(끝나지 않은 정리)이다.
-- **바꾼 것 2**(261026 `d87cfcb`): 단계 표시. `Town.doChores` 각 단계 시작에 `scriptBroadcast("chores:단계")`(pre heal id inv tome buy repair rest stash gems, 끝 `chores:end`), `Town.visitTown` 마을 가기·포탈 자리·포탈 타기·복귀에 `town:단계`. `PartyThread`에 scriptmsg 받기(새로 만듦)와 마지막 단계 변수 1개, `party has left` 줄 끝에 `step:단계`. 다른 스레드의 scriptmsg 받기는 이 문자열을 무시함(ToolsThread JSON 파싱 실패로 반환 등, 코드 읽음). 수정 `libs/Town.js`·`threads/PartyThread.js`.
-- **검증 방법**: desync 낙오 프로필의 `step`. 같은 단계가 반복되면 그 단계 안의 대기를 본다. `chores:end`인데 okCount 미도착이면 정리 밖. 제거 조건: 멈춘 단계 확인.
+  - 261027·261028 케이스 미발견 — `Init failed` 0, 시작부 오류 없음.
 
 ### 3-38. 소켓용 완성 보석 큐빙 (`Cubing.buildRecipes`·`buildLists`, `Town.socketGems`, 사용자 261026, 옛 2-27)
 - **문제**: 소켓 설정(`Config.SocketRecipe`)에 완성 보석을 넣어도 흠 없는 보석 3개를 모아 완성 보석을 만드는 연결이 없다(소켓 줍기와 큐빙은 별개).
@@ -250,15 +190,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **바꾼 것**(261026 `d87cfcb`): ① `buildRecipes`: `Config.SocketRecipe`에 완성 보석 번호(561·566·571·576·581·586·601)가 있을 때만 흠 없는 보석 3개 → 완성 레시피 추가(새 속성 `Socket`). 보석 종류 번호(아무 등급)는 대상 아님. ② `buildLists`: 완성 보석별 "그 번호를 받는 빈 소켓 수 − 인벤토리 보유 수"만큼 인벤토리 완성 보석을 다른 레시피 후보에서 빼고, 0 이하이면 소켓 레시피를 건너뜀(줍기 안 함). ③ `socketGems`: 넣은 것이 있으면 끝에서 `Cubing.update()`. (261026 사용자 `30c9b4e`) `Config.Cubing`일 때만 부름 — 큐빙이 꺼져 있으면 `Cubing.init`이 레시피를 만들지 않아 갱신할 것이 없다. 수정 `libs/Cubing.js`·`libs/Town.js`.
 - **검증 방법**: 빌드가 `Config.SocketRecipe`에 완성 보석 번호를 넣은 경우에만 해당. 빈 소켓이 있을 때 ItemLog `Ingredient` 흠 없는 보석 → `Transmuted` 완성 보석 → 콘솔 `[Socket]`·ItemLog `Socketed`. 소켓이 찬 뒤에는 그 흠 없는 보석 `Ingredient`가 없어야 한다. 지금 빌드 설정에는 완성 보석 번호가 없음(`Config.js` 기본은 종류 번호) → 설정을 바꾼 뒤부터.
 - **결과**: 아직 없음.
+  - 261027·261028 케이스 미발견 — 소켓 설정에 완성 보석 번호 없음(`Config.js` 기본값 종류 번호, 빌드에서 바꾸는 곳 없음).
 
-### 3-39. 소켓 우선 tier·기어 조건 nip, NTIP 파서 읽기 통일·문법 검사 (nip 전부, `NTItemParser.dbl`, `Config.js`, `builds/*.js`, 사용자 261023~261028, 옛 2-22)
+### 3-39. NTIP 파서 읽기 통일·문법 검사 (`NTItemParser.dbl`, nip 문법, `Config.js`, `builds/*.js`, 사용자 261028, 옛 2-22)
 - **바꾼 것**
-  - 사용자 업로드(261027 `723a581`·`5bf237c`·`8a162f8`·`19a2d70`·`c999fab`, 261028 `8144c74`, PR #103으로 main 병합)
-    - 소켓 tier: 소켓 1개부터 소켓 수마다 tier 1씩. 헬름(빌드 14개)·바바리안 헬름·드루이드 펠트 1~3, X.nip 아머 1~3, X.nip 방패 1~2, 팔라딘 방패 1~4, 네크로맨서 머리 1~2. 소켓 0개 tier 줄은 없음. 무기는 M.HYBR 활만(tier 1 아무 활, 2~5 데미지 또는 소켓 1~4), 다른 빌드 무기 소켓 줄 없음.
-    - tier 11 이상 점수 줄 품질 하한 `>= normal`: 헬름(빌드 14개), X.nip 아머·방패, 클래스 전용 아이템. 장갑·부츠·벨트·반지·목걸이와 일부 무기 점수 줄은 `>= magic` 그대로.
-    - 유니크·룬워드 tier를 31 이상으로(룬워드 아머 31·32, 무기 31, HotO 41 등), 점수 tier는 X.nip 25·빌드 30까지. 일부 유니크·룬워드 tier 줄 삭제.
-    - 재료 줄을 기어 조건(옛 이름 `[body] < 31`, `[armr] < 31`, `[arml] < 25` 등)으로 교체, 빌드 `TierGoal` 숫자 변경.
-    - 같은 업로드에 `Attack.usingTwoHand` 추가·`Equip.getBodyLoc` 무기 칸 변경, `AutoSmurf.js`·`Misc.js` 수정이 함께 들어감(이 항목 밖).
+  - (같은 항목이던 사용자 업로드 261027~261028 소켓 우선 tier·기어 조건 nip은 검증 통과로 `docs/code/nips.md`로 옮김, 사용자 261028)
   - Claude 261028 `4a1738d` 외(PR #103 이후 커밋 포함, 노트는 `docs/code/NTItemParser.md`·`Config.md`·`Misc.md`·`builds.md`·`nips.md`)
     - 파서 `ParseLineInt` 재작성: 속성·스탯 칸 `NTIP.ParseExpr`, 끝 칸 `NTIP.ParseRule`(본문·홀드 공통). 틀린 줄은 `Misc.errorReport` 후 버림, `#` 3개 이상·`@` 2개 이상·값 키 중복은 표시만(`Misc.errorReport`), 기어 키 중복(범위 등)은 trace `NTIP: duplicate gear key`만.
     - 홀드 끝 칸 `[owned]`(없으면 `< 1`), 기어 조건 값 `goal`(`Config.TierGoal.<칸>`, 용병 칸은 오류), `[tiered]`는 표시(`Config.Tiered`)만.
@@ -268,11 +204,10 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **검증 방법**
   - 로드: 게임 시작 때 회색 콘솔·`_cache/trace/ScriptErrorLog.txt`에 nip 오류(`Unknown …`, `Bad rule`, `Syntax error`, `Unexpected symbol`, `Missing ]`, `Unclosed (` 등) 0. 표시 줄(`Duplicate rule key`, `More than two #`, `More than one @`)도 0. 기어 키 범위 줄의 trace `NTIP: duplicate gear key`는 정상.
   - 칸 이름: print `equipped: [ArmG] N` 등 새 이름으로 찍힘.
-  - 소켓 tier: 소켓 있는 노말 장비 ItemLog `Equipped [1~4]`, 보석을 넣은 뒤 같은 장비가 tier 11 이상으로 다시 찍힘(노말 헬름 포함).
   - 기어 조건: 재료 줄 ItemLog 줄 끝 `(ArmG<31)` 등이 찍히고, 그 칸 tier가 기준 이상이 된 뒤에는 같은 재료를 줍지 않음.
   - 홀드 기본값: `[qty] < 1`을 지운 29줄이 지금처럼 홀드 대상을 가졌을 때 베이스를 줍지 않음.
   - `[tiered]`: print `Tiered: true` 게임에서만 HotO 베이스 등 그 줄이 켜짐(ItemLog 줄 끝 `(Tiered)`).
-- **결과**: 아직 없음.
+- **결과**: 261028 이번 로그에 적용되지 않음 — 실행 코드가 `8144c74`까지(사용자 261028), 마지막 게임(13:01:58)까지 print `equipped: [ArmL]`·ItemLog `(ArmL<25)` 옛 이름.
 
 ### 3-40. 인챈트 대상을 빌드 이름으로 (`Precast.enchant`, `Build.getBuildType`, 사용자 261028)
 - **바꾼 것**(261028 `dfc884b`): `Build.getBuildType(profile)`(Settings.js, 인자 없으면 `me.profile`). `Config.Enchant.Player`는 직업 번호 → 빌드 이름(S.SFFW 65레벨 `["M.HYBR"]`). `Precast.enchant`가 처음 부를 때 한 번만 `Team.Profiles` 중 빌드가 목록에 있는 프로필의 `Profile(p).character`로 `Precast.enchantNames`(새 속성)를 만들고, 플레이어는 이 이름만 인챈트. 용병·소환수는 그대로(40칸 안 파티원 전원의 용병·소환수).
@@ -313,3 +248,45 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **바꾼 것**(261028 `dfc884b`): 리더 `makePortal` 뒤 `tpReady` 전송, 팔로워는 `while (me.inTown) { if (tpReady) usePortal(118, null) }` 뒤 `tpReady = false`(다른 보스와 같은 방식). 나머지 tpReady 없는 대기 목록은 기각(`rejected.md`).
 - **검증 방법**: 고대인 구간에서 팔로워가 리더 포탈 뒤에만 118에 들어가고(리더 타운치킨 중 합류 없음), 정상 진입·킬이 전과 같다.
 - **결과**: 아직 없음.
+
+### 3-47. 팀 대기 okCount 통일·리더 웨이 모으기 10분, 팔로워 syncBO 신호 유실 (`AutoSmurf` okCount·travel·onCopyData·2·3막 팔로워 루프, 사용자 261021·261025·261026·261028, 옛 3-36)
+- **바꾼 것**(`f26ef73`, `bots/AutoSmurf.js`)
+  - 팀 대기를 `this.okCount()`로: `start`(readyCount·teamReady, 2분 퇴장), `buffCount`(buffCount·teamBuff, 타임아웃 없음), `syncBO`(BOCount·BOReady, 30초 퇴장), `syncBO` 안 syncWP 10회 대기.
+  - syncBO 결정: 리더는 BO가 필요할 때(`!me.getState(32)`)만 `BOing`을 한 번 보내고 okCount. 모두 okCount 뒤 `BOing`이 아니면 `return false`, 맞으면 `BOing = false`로 지우고 진행. `BOed` 변수·메시지 삭제. 리더의 BOing은 리더의 teamCount보다 먼저 오므로 okCount가 끝나면 도착해 있다(같은 사람 메시지는 순서대로).
+  - 카우: 리더는 `msgLeader`를 한 번만 보냄(반복·msgFollower 답장 삭제). 팀 대기는 뒤의 기존 okCount.
+  - 지운 변수: `imReady`·`readyCount`·`teamReady`·`BOed`·`BOCount`·`BOReady`·`myBuff`·`buffCount`·`teamBuff`·`msgFollower`. 한 방향 신호(tpReady·msgLeader·earlyReturn·좌표·teamFigurine)와 스위치는 그대로. 이름은 그대로(옛 이름 통일 지시는 대상이 사라져 지움).
+  - 알려진 위험(추정): 5막처럼 syncBO가 연달아 불릴 때 리더 BO가 그 사이(수백 ms)에 꺼지면 다음 회차 BOing이 앞 회차에 읽힐 수 있다. 팀원 간 `partyLevel`·퀘스트 상태가 다르면 지금도 어긋나며, 바뀐 뒤에는 그 자리 okCount에서 120초 퇴장한다.
+- **검증 방법**
+  - 각 싱크 자리에서 `Party desynced 1/2`가 없는지, 있으면 안 온 이름과 자리(start·buffCount·syncBO·syncWP·cows).
+  - syncBO: `act* BO` print가 팀 전원에 나오는지(BO가 필요한 회차), 리더 BO 상태에서 팀 전원이 바로 넘어가는지.
+  - 카우: 팔로워 `followDriver end` 뒤 okCount를 통과하는지.
+  - `syncBO timeout`·`Team didn't join the game within 2 minutes`는 더 나오지 않아야 한다(사유 바뀜).
+- **결과**: 261026 **실패**(최종 코드 구간).
+  - 정상: `Party desynced 2` 0, `syncBO timeout`·`Team didn't join` 0, 버프 맞추기 91회 모두 8명이 같은 분에 `act* BO`, 카우 2게임 정상 종료.
+  - 실패 사례 6게임: 리더가 웨이를 모으는(`travel`) 동안 팔로워가 다음 okCount에서 120초 퇴장 — Pz-40 22:33(travel 9), Pz-59 02:19(travel 2 → `buffCount(1)`), Pz-65 03:12·Pz-66 03:15·Pz-90 07:54·Pz-91 08:09(travel 9 → `shenk` 안 `syncBO`). 바뀌기 전(`f26ef73^`)에는 팔로워가 `buffCount`의 `teamBuff`, `syncBO`의 `while (!BOed && !BOing)`에서 타임아웃 없이 기다렸다(코드 읽음). Ancient's Way 웨이 모으기가 난이도마다 3~4게임에 걸쳐 끝남(조각 합계 약 5~5분 45초).
+  - 다른 낙오 사례는 옛 3-37(261028 기각, `rejected.md` PartyThread).
+- **확인된 것**(261026 코드 읽음): `travel` 호출 10곳 중 팔로워의 다음 대기가 리더를 기다리는 okCount인 곳은 travel(2)(`buffCount(1)`)·(5)(`buffCount(2)`)·(8)(`izual` 안 `syncBO`)·(9)(`shenk` 안 `syncBO`)·(10)(`baal` 안 `syncBO`). 나머지(1·3 포탈 대기, 4 팔로워 안 감, 6·7 3막 메시지 대기)는 타임아웃 없는 대기.
+- **바꾼 것 2**(261026 `d87cfcb`, 안 A, `bots/AutoSmurf.js`): 새 변수 `leaderTravel`, `travel`의 실제 이동 분기(`nextAreaIndex < areaIDs.length`) 첫 줄에서 메시지 `travel` 보냄, onCopyData `case "travel"`, `okCount` 타임아웃 `leaderTravel ? 600 : 120`초, 퇴장 상세에 `travel` 값, okCount 단계 끝에서 `leaderTravel = false`. 받은 표시는 다음 okCount 하나에만 쓰인다 → 타임아웃 없는 대기 뒤(1·3·4·6·7)에는 웨이 모으기 뒤 첫 okCount 하나가 10분(리더가 실제로 웨이를 모으는 게임만).
+- **검증 방법 2**: 리더가 웨이를 모으는 게임(`Traveling to` 뒤 `[getWP]`·`going to nearest WP`)에서 120초 퇴장이 없는가. `Party desynced 1`이 나오면 상세 끝 `travel true/false`.
+- **결과 2**
+  - 261027: 리더가 실제로 웨이를 모은 게임 21개에서 그 뒤 120초 퇴장 0(Ancient's Way Pz-26·50·51·52·80·81 포함), 퇴장 25줄 모두 `travel false`, `Party desynced 2`·`syncBO timeout` 0, `act* BO` 8명 모두 135회. Pz-73·74에 아래 실패와 같은 모양(Kurast Docktown 웨이 자리 낙오).
+  - 261028: 웨이 모으기 10분 통과 — Pz-32 리더 Ancient's Way 웨이 모으기 221초(23:58:06 → 00:01:47 SHENK) 뒤 shenk syncBO에서 8명 모두 00:02:13 `act5 BO`(261026 실패 유형). `travel true` 0, `Party desynced 2`·`syncBO timeout`·`Team didn't join` 0.
+  - 261028 **실패**: Kurast Docktown 10게임 연속(Pz-76~82·84~86, 08:29~09:33). 리더 `act3 BO` → `Traveling to Travincal`(웨이가 이미 있어 이동 없음) → 121~122초 뒤 `Party desynced 1`. 빠진 팔로워(a4 8회, a5·a7·a8·a6)는 모두 마을 웨이 자리(5161,5051)에 서 있음(`town:true`).
+- **확인된 것 2**(261028 코드 읽음): 2·3막 팔로워 루프가 `if (syncBO) { this.syncBO(); syncBO = false; }` 순서라, 팔로워가 앞 syncBO의 끝(웨이로 마을 복귀 + 대기)을 도는 동안 받은 다음 `syncBO` 신호를 끝난 뒤 지운다. 리더는 travel(6)이 바로 돌아오면 앞 syncBO 복귀 1초 안팎에 다음 신호를 보낸다(퇴장이 `Traveling` 뒤 121~122초). 옛 코드(`f26ef73^`)는 `BOing`·`BOed`를 받는 메시지 처리에서 바로 `BOCount`로 답해 팔로워가 syncBO 안에 없어도 리더가 넘어갔다.
+- **가설**: 위 순서로 신호가 지워져 팔로워가 두 번째 syncBO의 okCount에 오지 않는다(신호 도착 시각은 로그에 없음).
+- **바꾼 것 3**(261028 `68483de`, 사용자 수정): `bots/AutoSmurf.js` 2·3막 팔로워 루프 2곳을 `syncBO = false; this.syncBO();` 순서로. 새 변수·함수·로그 없음. 부작용 검토(코드 읽음): 신호는 리더가 자기 syncBO 직전에 한 번만 보내고(2막 1곳·3막 6곳), 다른 구간(duriel·shenk·izual)은 신호 없이 syncBO를 직접 부른다. 리더가 BO 상태면 다음 syncBO는 okCount만 하고 끝난다.
+- **검증 방법 3**: 웨이를 이미 가진 게임의 3막 `Traveling to Travincal` 직후 desync 0. 위 검증 방법(싱크 자리별 desync, `act* BO` 전원, 웨이 모으기 10분)도 함께 본다.
+
+### 3-48. 탈라샤 무덤 상자 이동 재시도 (`AutoSmurf.tombs`, 사용자 261028)
+- **문제**: 무덤 안에서 상자까지 못 가 `[Quit] Tomb chest not reached` — 261023 4건, 261027 4건, 261028 4건(10/27 22:04·22:31 a3, 22:15·23:01 a6).
+- **확인된 것**: `exitTo`로 무덤에 들어가 okCount 뒤 상자 프리셋까지 `Pather.moveTo(…, 3, true)`(경로 이동 실패 때 경로를 3번까지 다시 만듦)를 최대 3번, 그래도 25칸 넘게 남으면 퇴장. `482171b`(261022)에서 무한 while을 3회 상한으로 바꾼 자리(`docs/code/AutoSmurf.md` exitTo). 261028 4건 모두 앞에 `[Error]`·경로 보정 줄 없음 → `moveTo`가 오류 없이 도착하지 못한 채 3번 돌아옴. 남은 거리는 줄에 없음. 261023 판정: 미로형 지역에서 8명 동선이 꼬여 다시 시도가 많은 탓(사용자).
+- **바꾼 것**(261028 `68483de`, 사용자 수정): 바깥 반복 `j < 3` → `j < 10`(최대 `moveTo` 10번 × 경로 재시도 3 = 30). 같은 3회 상한의 다른 5곳(Arcane·Cube chest·Radament chest·Orifice·Red portal)은 그대로.
+- **검증 방법**: `Tomb chest not reached` 수. 상자 다음에는 대기가 없고 다음 무덤 입구 okCount(120초)에서 기다리므로, 늘어난 시간으로 퇴장 사유가 desync로 바뀌는지 함께 본다.
+
+### 3-49. 판별 줄 삭제 (옛 3-27 벨트·`chores` 판별, 옛 3-37 상태·단계 표시, 사용자 261028)
+- **결정**: 3-27 검증 통과로 판별 줄 삭제(사용자 261028, 경위는 `docs/code/Town.md` clearBelt), 옛 3-37 기각으로 표시 삭제(사용자 261028, `rejected.md` PartyThread).
+- **바꾼 것**(261028 `4e6087b`, Claude, 사용자 요청. `node --check` 2파일 통과, 남긴 줄은 원래 형태 — `pot.buy` 호출, 넣기 성공 뒤 `break` 조건은 같은 뜻으로 `!== total`)
+  - `libs/Town.js`: `Town.chores` 객체(`doChores`의 `c`)와 `doChores`·`buyPotions`·`clearBelt`·`clearInventory`의 기록 줄 전부, `chores N.Ns: …` trace, `buyPotions: buy failed` trace 4줄, `clearBelt`의 `shiftFails`와 `belt shift fail` trace. `clearBelt` 넣기 성공 뒤 `break`(261025, 동작)와 그 판정용 빈칸 합계 비교는 남긴다.
+  - `libs/Town.js`: `scriptBroadcast("chores:…")` 11줄(`doChores`), `scriptBroadcast("town:…")` 4줄(`visitTown`).
+  - `threads/PartyThread.js`: `lastStep`, `scriptmsg` 리스너(3-37 때 새로 만듦), `party has left` trace의 `town:`·`mode:`·`ui:`·`step:`(위치는 남김, 사용자 261024).
+- **검증 방법**: 삭제 뒤 로그에 `chores`·`belt shift fail`·`buy failed`·`step:` 줄 0, 벨트 넣기·정리 동작 변화 없음.

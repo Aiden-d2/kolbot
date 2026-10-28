@@ -18,8 +18,7 @@ Config.init();
 var teamFormed = false,
 	retry = 0,
 	teamNames = [],
-	lost = [],	//261026
-	lastStep = "-";	//261026 last chores/visitTown step broadcast by default.dbj (handoff 2-26, remove once the stuck step is found)
+	lost = [];	//261026	//261028 lastStep removed (handoff 3-49)
 
 function partyCheck () {	//260907
 	var party;
@@ -124,22 +123,12 @@ function partyInGame () {	//260908
 
 	if (retry > 2) {
 		print("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")));
-		Misc.trace("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")) + " town:" + me.inTown + " mode:" + me.mode + " ui:" + ([0x08, 0x0C, 0x14, 0x01].filter(function (f) {	//261008	//261024 handoff 3-31: + state and place when the team left, late or stuck (state removed once judged)
-			return getUIFlag(f);
-		}).map(function (f) {
-			return ("0" + f.toString(16).toUpperCase()).slice(-2);	// 08 npc menu, 0C trade, 14 waypoint, 01 inventory
-		}).join("/") || "-") + " step:" + lastStep);	//261026 + step
+		Misc.trace("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")));	//261008	//261024 + place	//261028 state and step removed (handoff 3-49)
 		scriptBroadcast("quit");
 	}
 };
 
 function main () {
-	addEventListener("scriptmsg", function (msg) {	//261026 handoff 2-26
-		if (typeof msg === "string" && (msg.indexOf("chores:") === 0 || msg.indexOf("town:") === 0)) {
-			lastStep = msg;
-		}
-	});
-
 	while (true) {
 		try {
 			partyCheck();

@@ -75,11 +75,6 @@ var Town = {
 			this.goToTown();
 		}
 
-		var c = this.chores = {start: getTickCount()},	//261022 chores stall check: step times, one trace line when the whole chores take over 10s (remove after the next log analysis)
-			tick = getTickCount();
-
-		scriptBroadcast("chores:pre");	//261026 step for the PartyThread party left line (handoff 2-26)
-
 		if (shopItems) {
 			this.gamble();
 			if (Config.UseKeys) {	//260928 top up keys on regular visits only (never a reason to go to town)
@@ -94,40 +89,13 @@ var Town = {
 			Runewords.makeRunewords();
 		}
 
-		c.pre = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
-		
-		scriptBroadcast("chores:heal");	//261026 step for the PartyThread party left line (handoff 2-26)
-		this.clearBelt();
+		this.clearBelt();	//261028 chores step times, chores line and step broadcasts removed (handoff 3-49)
 		this.heal();
-		c.heal = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
-		scriptBroadcast("chores:id");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.identify();
-		c.id = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
-
-		scriptBroadcast("chores:inv");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.clearInventory();
-		c.inv = getTickCount() - tick;	//261022 was the "chores slow: clearInventory" line (261021)
-		tick = getTickCount();	//261022
-
-		scriptBroadcast("chores:tome");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.fillTome(518);
-		c.tome = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
-		
-		scriptBroadcast("chores:buy");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.buyPotions(shopItems);
-		c.buy = getTickCount() - tick;	//261022 was the "chores slow: buyPotions" line (261021)
-		tick = getTickCount();	//261022
-
-		scriptBroadcast("chores:repair");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.repair(shopItems);
-		c.repair = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
-		
-		scriptBroadcast("chores:rest");	//261026 step for the PartyThread party left line (handoff 2-26)
 
 		var i,
 			cancelFlags = [0x01, 0x02, 0x04, 0x08, 0x14, 0x16, 0x0c, 0x0f, 0x19, 0x1a];
@@ -148,28 +116,8 @@ var Town = {
 		Equip.autoEquip();
 		Grant.autoEquip();
 		
-		c.rest = getTickCount() - tick;	//261022 cancel, pickItems, autoEquip
-		tick = getTickCount();	//261022
-
-		scriptBroadcast("chores:stash");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.stash();
-		c.stash = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
-
-		scriptBroadcast("chores:gems");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.socketGems();	//261021
-		c.gems = getTickCount() - tick;	//261022
-		scriptBroadcast("chores:end");	//261026 step for the PartyThread party left line (handoff 2-26)
-
-		if (getTickCount() - c.start > 10000 || c.beltCurFail || c.beltPutFail || c.beltShiftFail) {	//261022 one line per slow chores	//261023 or any belt failure
-			Misc.trace("chores " + ((getTickCount() - c.start) / 1000).toFixed(1) + "s: pre " + (c.pre / 1000).toFixed(1) + " heal " + (c.heal / 1000).toFixed(1) + " id " + (c.id / 1000).toFixed(1)
-				+ " inv " + (c.inv / 1000).toFixed(1) + " [npc:" + c.invNpc + " belt " + ((c.belt || 0) / 1000).toFixed(1) + "s/" + (c.beltClicks || 0)
-				+ " cur " + (c.beltCur || 0) + "/" + (c.beltCurFail || 0) + " put " + (c.beltPutFail || 0) + " shift " + (c.beltShift || 0) + "/" + (c.beltShiftFail || 0) + " ui " + (c.beltUI || "-") + " remain " + (c.beltLeft || 0)	//261023 belt check (handoff 2-17)
-				+ " pots " + ((c.pots || 0) / 1000).toFixed(1) + "s/" + (c.potCount || 0)
-				+ " cube " + ((c.cube || 0) / 1000).toFixed(1) + "s/" + (c.cubeCount || 0) + " stash " + ((c.stashInv || 0) / 1000).toFixed(1) + "s/" + (c.stashCount || 0) + " left " + ((c.left || 0) / 1000).toFixed(1) + "s/" + (c.leftCount || 0) + "]"
-				+ " tome " + (c.tome / 1000).toFixed(1) + " buy " + (c.buy / 1000).toFixed(1) + " [npc " + ((c.buyNpc || 0) / 1000).toFixed(1) + "s buys " + (c.buys || 0) + " shift " + (c.shift || 0) + " fail " + (c.buyFail || 0) + "]"
-				+ " repair " + (c.repair / 1000).toFixed(1) + " rest " + (c.rest / 1000).toFixed(1) + " stash " + (c.stash / 1000).toFixed(1) + " gems " + (c.gems / 1000).toFixed(1));
-		}
 
 		return true;
 	},
@@ -395,8 +343,6 @@ var Town = {
 		}
 
 		var i, j, npc, useShift, col, beltSize, pot,
-			c = this.chores || {},	//261022 chores stall check (doChores step line)
-			tick = getTickCount(),	//261022
 			needPots = false,
 			needBuffer = false,	//260525
 			buffer = {
@@ -462,7 +408,6 @@ var Town = {
 		}
 
 		npc = this.initNPC("Shop", "buyPotions");
-		c.buyNpc = getTickCount() - tick;	//261022 walk to the shop NPC (act 4 trip in normal) and open it
 
 		if (!npc) {
 			return false;
@@ -477,23 +422,11 @@ var Town = {
 
 					// Shift+buy will trigger if there's no empty columns or if only the current column is empty
 					if (useShift) {
-						c.buys = (c.buys || 0) + 1;	//261022
-						c.shift = (c.shift || 0) + 1;	//261022
-
-						if (!pot.buy(true)) {
-							c.buyFail = (c.buyFail || 0) + 1;	//261022
-							Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " columns:" + col.join(","));	//261021 chores stall check: remove once the cause is found
-						}
-
+						pot.buy(true);	//261028 buy failed trace and chores counters removed (handoff 3-49)
 						delay(me.ping * 2 + 200);
 					} else {
 						for (j = 0; j < col[i]; j += 1) {
-							c.buys = (c.buys || 0) + 1;	//261022
-
-							if (!pot.buy(false)) {
-								c.buyFail = (c.buyFail || 0) + 1;	//261022
-								Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " columns:" + col.join(","));	//261021
-							}
+							pot.buy(false);
 						}
 					}
 				}
@@ -506,8 +439,8 @@ var Town = {
 			for (i = 0; i < Config.HPBuffer - buffer.hp; i += 1) {
 				pot = this.getPotion(npc, "hp");
 
-				if (Storage.Inventory.CanFit(pot) && !pot.buy(false)) {
-					Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " buffer");	//261021
+				if (Storage.Inventory.CanFit(pot)) {
+					pot.buy(false);
 				}
 			}
 		}
@@ -516,8 +449,8 @@ var Town = {
 			for (i = 0; i < Config.MPBuffer - buffer.mp; i += 1) {
 				pot = this.getPotion(npc, "mp");
 
-				if (Storage.Inventory.CanFit(pot) && !pot.buy(false)) {
-					Misc.trace("buyPotions: buy failed " + pot.code + " gold:" + me.gold + " buffer");	//261021
+				if (Storage.Inventory.CanFit(pot)) {
+					pot.buy(false);
 				}
 			}
 		}
@@ -1791,9 +1724,7 @@ MainLoop:
 		var item = me.getItem(-1, 2),
 			clearList = [],
 			bufferList = [],	// 260822
-			col, beltSize, total, path, ui, items, tick,	//261025 belt return and potion cleanup (moved from clearInventory)
-			shiftFails = [],	//261026 shift-click fails: late (ping) or real (handoff 3-27, remove after 3 judged)
-			c = this.chores || {};	//261025 doChores step line (stale object when called outside doChores, not printed)
+			col, beltSize, total, items;	//261025 belt return and potion cleanup (moved from clearInventory)	//261028 judge vars removed (handoff 3-49)
 
 		if (item) {
 			do {
@@ -1853,7 +1784,6 @@ MainLoop:
 			}
 		}
 
-		tick = getTickCount();	//261025 (moved with the block)
 		items = [];	//261025
 
 		// Return potions to belt	//261025 moved from clearInventory: runs before heal (no NPC menu), the heal menu left open made every belt click fail
@@ -1879,46 +1809,21 @@ MainLoop:
 
 				for (i = 0; i < 4; i += 1) {
 					if (item.code.indexOf(Config.BeltColumn[i]) > -1 && col[i] > 0) {
-						total = col[0] + col[1] + col[2] + col[3];	//261023 belt check: free slots before the click
-						path = "shift";	//261023 shift / cur (toCursor failed) / put (on the cursor, belt clicked)
+						total = col[0] + col[1] + col[2] + col[3];	//261023 free slots before the click
 
 						if (col[i] === beltSize) { // Pick up the potion and put it in belt if the column is empty
-							c.beltCur = (c.beltCur || 0) + 1;	//261023 empty column path
-							path = "cur";	//261023
-							ui = (getUIFlag(0x08) ? "08" : "-") + (getUIFlag(0x01) ? "01" : "");	//261023 NPC menu / inventory panel before the first try
-
 							if (item.toCursor()) {
-								path = "put";	//261023
 								clickItem(0, i, 0, 2);
-							} else {
-								c.beltCurFail = (c.beltCurFail || 0) + 1;	//261023 toCursor failed (3 x 1s)
-							}
-
-							if (c.beltUI === undefined) {	//261023 first empty column try only: did the click close the menu
-								c.beltUI = ui + ">" + (getUIFlag(0x08) ? "08" : "-") + (getUIFlag(0x01) ? "01" : "");
 							}
 						} else {
-							c.beltShift = (c.beltShift || 0) + 1;	//261023 shift-click path
 							clickItem(2, item.x, item.y, item.location); // Shift-click potion
 						}
 
-						c.beltClicks = (c.beltClicks || 0) + 1;	//261022
 						delay(me.ping * 2 + 200);
 
 						col = this.checkColumns(beltSize);
 
-						if (col[0] + col[1] + col[2] + col[3] === total) {	//261023 belt unchanged after the click
-							if (path === "put") {
-								c.beltPutFail = (c.beltPutFail || 0) + 1;	//261023 on the cursor but not in the belt
-							} else if (path === "shift") {
-								c.beltShiftFail = (c.beltShiftFail || 0) + 1;	//261023
-								shiftFails.push({gid: item.gid, code: item.code, col: i, codes: (me.findItems(-1, 2) || []).filter(function (p) {	//261026 the column's potions now
-									return p.x % 4 === i;
-								}).map(function (p) {
-									return p.code;
-								}).join(" "), ping: me.ping});
-							}
-						} else {
+						if (col[0] + col[1] + col[2] + col[3] !== total) {	//261028 belt judge counters removed (handoff 3-49), was === total with the counters
 							break;	//261025 in the belt: no click for the next column of the same kind (mp mp / rv rv clicked the moved potion again)
 						}
 					}
@@ -1926,13 +1831,6 @@ MainLoop:
 			}
 		}
 
-		for (i = 0; i < shiftFails.length; i += 1) {	//261026 after the loop: still in the inventory = real fail, gone = the click landed late
-			item = me.getItem(-1, -1, shiftFails[i].gid);
-			Misc.trace("belt shift fail: " + shiftFails[i].code + " col:" + shiftFails[i].col + " [" + shiftFails[i].codes + "] ping:" + shiftFails[i].ping + " inv:" + (!!item && item.mode === 0));	//261026
-		}
-
-		c.belt = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
 
 		// Cleanup remaining potions
 		item = me.getItem(-1, 0);
@@ -1965,37 +1863,21 @@ MainLoop:
 			// Cleanup healing potions
 			while (items[0].length > Config.HPBuffer) {
 				items[0].shift().drop();	//261022 drop -> drink	//261025 back to drop: runs in clearBelt before heal, no NPC menu
-				c.potCount = (c.potCount || 0) + 1;	//261022
 				delay(200 + me.ping * 2);
 			}
 
 			// Cleanup mana potions
 			while (items[1].length > Config.MPBuffer) {
 				items[1].shift().drop();	//261022 drop -> drink	//261025 back to drop
-				c.potCount = (c.potCount || 0) + 1;	//261022
 				delay(200 + me.ping * 2);
 			}
 			
 			// Cleanup rejuv potions	//260901
 			while (items[2].length > Config.RejuvBuffer) {
 				items[2].shift().drop();	//261022 drop -> drink	//261025 back to drop
-				c.potCount = (c.potCount || 0) + 1;	//261022
 				delay(200 + me.ping * 2);
 			}
 		}
-
-		item = me.getItem(-1, 0);	//261023 belt check: potions left in the inventory after the cleanup (kept as buffer, tried again next visit)
-		c.beltLeft = 0;
-
-		if (item) {
-			do {
-				if (item.location === 3 && [76, 77, 78].indexOf(item.itemType) > -1) {
-					c.beltLeft += 1;
-				}
-			} while (item.getNext());
-		}
-
-		c.pots = getTickCount() - tick;	//261022
 
 		return true;
 	},
@@ -2058,16 +1940,11 @@ MainLoop:
 	},
 
 	clearInventory: function () {
-		var i, result,	//261025 belt and potion cleanup moved to clearBelt
-			c = this.chores || {},	//261022 chores stall check (doChores step line)
-			tick = getTickCount(),	//261022
+		var i, result,	//261025 belt and potion cleanup moved to clearBelt	//261028 chores step record removed (handoff 3-49)
 			items = [];
-
-		c.invNpc = (getInteractedNPC() ? getInteractedNPC().name : "-") + (getUIFlag(0x08) ? " 08" : "") + (getUIFlag(0x0C) ? " 0C" : "");	//261022 NPC menu or trade open when it starts (heal leaves it open)
 
 		// eom cube clear	//260919
 		items = Storage.Cube.Compare(Config.Cube);
-		c.cubeCount = items ? items.length : 0;	//261022
 		
 		for (i = 0; !!items && i < items.length; i += 1) {
 			if (this.ignoredCheck(items[i])) {
@@ -2102,12 +1979,9 @@ MainLoop:
 			}
 		}
 		
-		c.cube = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
 
 		// eom stash clear
 		items = Storage.Stash.Compare(Config.Stash);
-		c.stashCount = items ? items.length : 0;	//261022
 		
 		for (i = 0; !!items && i < items.length; i += 1) {
 			if (this.ignoredCheck(items[i])) {
@@ -2140,12 +2014,9 @@ MainLoop:
 			}
 		}
 		
-		c.stashInv = getTickCount() - tick;	//261022
-		tick = getTickCount();	//261022
 
 		// Any leftover items from a failed ID (crashed game, disconnect etc.)
 		items = Storage.Inventory.Compare(Config.Inventory);
-		c.leftCount = items ? items.length : 0;	//261022
 		
 		for (i = 0; !!items && i < items.length; i += 1) {
 			if (this.ignoredCheck(items[i])) {
@@ -2185,8 +2056,6 @@ MainLoop:
 				}
 			}
 		}
-
-		c.left = getTickCount() - tick;	//261022
 
 		return true;
 	},
@@ -2468,7 +2337,6 @@ MainLoop:
 
 		Misc.trace("visitTown start by:" + getScript(true).name + " tick:" + getTickCount());	//261004 who goes (default.dbj / TownChicken) and when
 
-		scriptBroadcast("town:go");	//261026 step for the PartyThread party left line (handoff 2-26)
 		Config.TownCheck = false;	//261021 a moveTo in goToTown (walking to my portal) must not start another town trip (default calls visitTown directly: town check, quiver)
 
 		try { // not an essential function -> handle thrown errors
@@ -2485,15 +2353,12 @@ MainLoop:
 			this.goToTown(preAct);
 		}
 
-		scriptBroadcast("town:portalspot");	//261026 step for the PartyThread party left line (handoff 2-26)
 		this.move("portalspot");
 
-		scriptBroadcast("town:portal");	//261026 step for the PartyThread party left line (handoff 2-26)
 		if (!Pather.usePortal(preArea, me.name)) { // this part is essential
 			throw new Error("Town.visitTown: Failed to go back from town");
 		}
 
-		scriptBroadcast("town:back");	//261026 step for the PartyThread party left line (handoff 2-26)
 		Misc.trace("visitTown back tick:" + getTickCount());	//261004 portal reuse is blocked for 1-2s after this
 
 		return true;
