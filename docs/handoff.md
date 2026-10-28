@@ -260,13 +260,13 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
     - 재료 줄을 기어 조건(옛 이름 `[body] < 31`, `[armr] < 31`, `[arml] < 25` 등)으로 교체, 빌드 `TierGoal` 숫자 변경.
     - 같은 업로드에 `Attack.usingTwoHand` 추가·`Equip.getBodyLoc` 무기 칸 변경, `AutoSmurf.js`·`Misc.js` 수정이 함께 들어감(이 항목 밖).
   - Claude 261028 `4a1738d` 외(PR #103 이후 커밋 포함, 노트는 `docs/code/NTItemParser.md`·`Config.md`·`Misc.md`·`builds.md`·`nips.md`)
-    - 파서 `ParseLineInt` 재작성: 속성·스탯 칸 `NTIP.ParseExpr`, 끝 칸 `NTIP.ParseRule`(본문·홀드 공통). 틀린 줄은 `Misc.errorReport` 후 버림, `#` 3개 이상·`@` 2개 이상·끝 칸 키 중복은 표시만.
+    - 파서 `ParseLineInt` 재작성: 속성·스탯 칸 `NTIP.ParseExpr`, 끝 칸 `NTIP.ParseRule`(본문·홀드 공통). 틀린 줄은 `Misc.errorReport` 후 버림, `#` 3개 이상·`@` 2개 이상·값 키 중복은 표시만(`Misc.errorReport`), 기어 키 중복(범위 등)은 trace `NTIP: duplicate gear key`만.
     - 홀드 끝 칸 `[owned]`(없으면 `< 1`), 기어 조건 값 `goal`(`Config.TierGoal.<칸>`, 용병 칸은 오류), `[tiered]`는 표시(`Config.Tiered`)만.
     - 칸 이름 `Helm Amulet Armor ArmG ArmB RingG RingB Belt Boots Gloves`(nip 키는 소문자, 용병 `[merchelm]`·`[mercarmor]`·`[mercarmg]`), `Config.TieredGear` 삭제.
     - nip: 홀드 `[qty] < 1` 29곳 삭제·3곳 `[owned]`, 기어 키 201줄, `[tiered] == 0` → `[tiered]` 28줄(주석 2 포함), P.FIST 주석 줄 `[tiered] != 0` 삭제.
   - 확인(node, 게임 아님): 수정 전후 파서로 nip 전체 6012줄 파싱 결과 비교 차이 0(이름 변경·`[owned]`·`[tiered]` 정규화 뒤), 로드 오류 0. 틀린 줄 시험 71줄 기대와 불일치 0. 가짜 아이템으로 `EvaluateItem`의 `[tiered]`·`goal`·홀드 기본값 판정 확인.
 - **검증 방법**
-  - 로드: 게임 시작 때 회색 콘솔·`_cache/trace/ScriptErrorLog.txt`에 nip 오류(`Unknown …`, `Bad rule`, `Syntax error`, `Unexpected symbol`, `Missing ]`, `Unclosed (` 등) 0. 표시 줄(`Duplicate rule key`, `More than two #`, `More than one @`)도 0.
+  - 로드: 게임 시작 때 회색 콘솔·`_cache/trace/ScriptErrorLog.txt`에 nip 오류(`Unknown …`, `Bad rule`, `Syntax error`, `Unexpected symbol`, `Missing ]`, `Unclosed (` 등) 0. 표시 줄(`Duplicate rule key`, `More than two #`, `More than one @`)도 0. 기어 키 범위 줄의 trace `NTIP: duplicate gear key`는 정상.
   - 칸 이름: print `equipped: [ArmG] N` 등 새 이름으로 찍힘.
   - 소켓 tier: 소켓 있는 노말 장비 ItemLog `Equipped [1~4]`, 보석을 넣은 뒤 같은 장비가 tier 11 이상으로 다시 찍힘(노말 헬름 포함).
   - 기어 조건: 재료 줄 ItemLog 줄 끝 `(ArmG<31)` 등이 찍히고, 그 칸 tier가 기준 이상이 된 뒤에는 같은 재료를 줍지 않음.
