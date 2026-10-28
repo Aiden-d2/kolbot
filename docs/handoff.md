@@ -280,7 +280,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **결과**: 아직 없음.
 
 ### 3-41. 랜덤무브를 moveTo 계열 random 인자로 통일 (`AutoSmurf` 41곳, `Pather.moveTo` random, 사용자 261028)
-- **바꾼 것**(261028 `dfc884b`): `Pather.moveTo(me.x + myX, me.y + myY)` 41곳을 random 인자로. 고정 지점 이동 바로 뒤의 흩어지기 11곳은 앞 이동(`moveTo`/`moveToPreset`)에 random을 주고 흩어지기 줄을 지움, 제자리 흩어지기 30곳은 `moveTo(me.x, me.y, 3, false, false, true)`(기존 261007 4곳과 같음). `AutoSmurf`의 `myX`·`myY` 삭제 → 오프셋은 `Pather.myX/myY`(reflection 유지). 프로필별 자리는 Pather 표 순서로 바뀜.
+- **바꾼 것**(261028 `dfc884b`): `Pather.moveTo(me.x + myX, me.y + myY)` 41곳을 random 인자로. 고정 지점 이동 바로 뒤의 흩어지기 11곳은 앞 이동(`moveTo`/`moveToPreset`)에 random을 주고 흩어지기 줄을 지움, 제자리 흩어지기 30곳은 `moveTo(me.x, me.y, 3, false, false, true)`(기존 261007 4곳과 같음). `AutoSmurf`의 `myX`·`myY` 삭제(이를 쓰던 옛 주석 줄 5개도 261028 삭제) → 오프셋은 `Pather.myX/myY`(reflection 유지). 프로필별 자리는 Pather 표 순서로 바뀜.
 - **검증 방법**: 웨이·포탈 자리·보스 대기 자리에서 팀이 흩어져 서는가(육안). 오류(`moveTo` throw) 증가 없음. 막힌 오프셋은 `no random path` → `original path`(콘솔 줄, 곧 삭제 예정 — 사용자).
 - **결과**: 아직 없음.
 
@@ -294,6 +294,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **확인된 것**(코드): 써모너 일지 반복은 46번 포탈이 이미 있으면 바로 끝나 리더가 연 뒤에는 팔로워가 일지를 누르지 않았다. 261027 Atma 대화는 무덤에 들어간 뒤(두리엘 방 포탈 대기 전)라 첫 포탈과 무관했다.
 - **바꾼 것**(261028 `dfc884b`): `summoner` 일지 반복 앞에 일지 1회 누르기(포탈 유무 무관). `duriel` 팔로워 Atma 대화 삭제.
 - **검증 방법**: 못 탄 팔로워는 마을에서 끝없이 기다리므로 리더의 구멍 앞 okCount에서 DURIEL 구간 `Party desynced`와 그 프로필의 `party has left … town:true`가 남는다. 이 사례가 없어지면 일지가 원인. 그대로면 2단계(리더가 무덤에 도착한 시점에 NPC 대화).
+- **바꾼 것 2**(261028, 판별 trace): 일지를 누른 뒤의 대기(`me.ping * 2 + 1000`)를 같은 시간 동안 10ms마다 `getIsTalkingNPC()`를 보는 대기로 바꿈(대사는 끊지 않음, 동작 같음). trace `[Summoner] journal: dialog at Nms dist:D` / `no dialog dist:D` / `none`(일지 유닛 없음). 퀘스트 플래그(12번 bit0)는 파티원에게도 켜져 직접 읽었는지 가르지 못하므로, 그 프로필 화면에 일지 대사가 떴는지(상호작용 성공)로 본다. 근거: 260929 `[OD]` a8 일지 대사가 누른 뒤 약 922ms에 떠서 약 78ms 만에 닫힘(`crash_analysis.md` 유형 B, 관찰 1건). 새 지역 변수 `tick`·`talked`.
+- **판정**: DURIEL 실패 프로필의 그 게임 써모너 줄이 `dialog at`이면 읽었는데도 못 들어감(가설 틀림) → 2단계. `no dialog`·`none`이면 못 읽음(가설 맞음) → 일지 앞으로 다가가 누르게 고침. 제거 조건: 실패 1건 판정, 또는 두 사이클 실패 0.
 - **결과**: 아직 없음.
 
 ### 3-44. 소켓 로그: 매니저 아이템 로그는 tier가 오를 때만, ItemLog 소켓 상태 (`Town.socketGems`, 사용자 261028)
