@@ -176,7 +176,7 @@ var Town = {
 
 	// Socket inventory gems into equipped tiered items (targets and order from Pickit.socketTargets)	//261021
 	socketGems: function () {
-		var i, j, t, gems, gem, name, base, result, filled, tick, done, cursorItem, dropped,	//261022 before/after tier removed, base name for the console	//261023 onCursor removed
+		var i, j, t, gems, gem, name, base, result, filled, tick, done, cursorItem, dropped, tierBefore,	//261022 before/after tier removed, base name for the console	//261023 onCursor removed	//261028 tierBefore: manager item log only when the tier goes up
 			targets = Pickit.socketTargets();
 
 		if (!targets.length) {
@@ -203,6 +203,7 @@ var Town = {
 				gem = gems[0];
 				name = gem.name.replace(/ÿc[0-9!"+<:;.*]/g, "");
 				filled = t.item.getItems().length;
+				tierBefore = NTIP.GetScore(t.item, "Tier");	//261028
 
 				if (gem.toCursor()) {
 					sendPacket(1, 0x28, 4, gem.gid, 4, t.item.gid);	//261021 insert socket item (cursor gem -> equipped item): clickItem(0, bodyLoc) left the gem on the cursor
@@ -239,8 +240,12 @@ var Town = {
 				result = NTIP.Evaluate(t.item);	//261022 line after socketing (same as Equipped)
 				base = getLocaleString(getBaseStat(0, t.item.classid, "namestr")).trim();	//261022 base name only (no affixes), same as the cubing console line
 				D2Bot.printToConsole("[Socket] " + name + " " + base + " (" + (filled + 1) + "/" + t.item.getStat(194) + ")", 5);	//261023 "# [Gem]" -> "[Socket]"
-				Misc.itemLogger("Socketed", t.item, result.line);	//261023 Gemmed -> Socketed (normal items already have "Gemmed" in the name), nip line like the other logs
-				Misc.logItem("Socketed", t.item, result.line);	//261023 Gemmed -> Socketed, manager item log
+				Misc.itemLogger("Socketed", t.item, (result.line ? result.line + " / " : "") + "(" + (filled + 1) + "/" + t.item.getStat(194) + ")");	//261023 Gemmed -> Socketed (normal items already have "Gemmed" in the name), nip line like the other logs	//261028 socket state at the end
+
+				if (Equip.getEquippedItem(t.bodyLoc).tier > tierBefore) {	//261028 manager item log only when the real tier went up (console, print and ItemLog keep every gem)
+					Misc.logItem("Socketed", t.item, result.line);	//261023 Gemmed -> Socketed, manager item log
+				}
+
 				done = true;
 			}
 
@@ -437,7 +442,7 @@ var Town = {
 		
 		// No columns to fill
 		if (!needPots && !needBuffer) {
-			if ((me.act === 4 || me.act === 5) && Config.MiniShopBot && shopItems) {	//eom
+			if ((me.act === 4 || me.act === 5) && Config.MiniShopBot && me.gold >= Config.LowGold && shopItems) {	//eom	//261028 keep LowGold (merc revive)
 				npc = this.initNPC("Shop", "shopItems");
 				
 				if (!npc) {
@@ -517,7 +522,7 @@ var Town = {
 			}
 		}
 		
-		if ((me.act === 4 || me.act === 5) && Config.MiniShopBot && shopItems) {	//eom
+		if ((me.act === 4 || me.act === 5) && Config.MiniShopBot && me.gold >= Config.LowGold && shopItems) {	//eom	//261028 keep LowGold (merc revive)
 			npc = this.initNPC("Shop", "shopItems");
 			
 			if (!npc) {
@@ -1196,7 +1201,7 @@ CursorLoop:
 				return true;
 			}
 
-			if (((me.act !== 1 && me.diff === 0) || ((me.act === 4 || me.act === 5) && Config.MiniShopBot)) && shopItems) {	//260712
+			if (((me.act !== 1 && me.diff === 0) || ((me.act === 4 || me.act === 5) && Config.MiniShopBot && me.gold >= Config.LowGold)) && shopItems) {	//260712	//261028 MiniShopBot keeps LowGold (merc revive)
 				npc = this.initNPC("Repair", "shopItems");
 				
 				if (!npc) {
@@ -1315,7 +1320,7 @@ CursorLoop:
 			}
 		}
 		
-		if (((me.act !== 1 && me.diff === 0) || ((me.act === 4 || me.act === 5) && Config.MiniShopBot)) && shopItems) {	//260712
+		if (((me.act !== 1 && me.diff === 0) || ((me.act === 4 || me.act === 5) && Config.MiniShopBot && me.gold >= Config.LowGold)) && shopItems) {	//260712	//261028 MiniShopBot keeps LowGold (merc revive)
 			if (me.act === 3) {	// Hratli
 				return true;
 			}
@@ -1457,7 +1462,7 @@ CursorLoop:
 	},
 
 	reviveMerc: function () {
-		if (me.gold < Config.MercMinGold) {	//260919
+		if (me.gold < Config.LowGold) {	//260919	//261028 MercMinGold -> LowGold
 			return false;
 		}
 		

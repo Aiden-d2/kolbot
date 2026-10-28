@@ -43,8 +43,8 @@ var Team = {
 };
 
 var Build = {
-	getBuildType: function () {
-		switch (me.profile) {	//261007
+	getBuildType: function (profile) {	//261028 profile: another profile's build (Precast.enchant), default me.profile
+		switch (profile || me.profile) {	//261007	//261028
 		case profiles[0]:	//profile name
 			return "S.SFFW";	//build type
 			

@@ -9,6 +9,7 @@ var Precast = new function () {
 	this.BODuration = 0;
 	this.BOTick = 0;
 	this.bestSlot = {};
+	this.enchantNames = null;	//261028 character names of the profiles whose build is in Config.Enchant.Player (built once)
 
 	this.precastCTA = function (force) {
 		if (!force && me.getState(32)) {
@@ -456,6 +457,14 @@ var Precast = new function () {
 
 		Attack.weaponSwitch(this.getBetterSlot(52));
 
+		if (!this.enchantNames) {	//261028 build names -> character names, once
+			this.enchantNames = Team.Profiles.filter(function (profile) {
+				return Config.Enchant.Player.indexOf(Build.getBuildType(profile)) > -1;
+			}).map(function (profile) {
+				return Profile(profile).character;
+			});
+		}
+
 		// Player
 		unit = getUnit(0);
 
@@ -463,7 +472,7 @@ var Precast = new function () {
 			do {
 				if (!unit.dead && Misc.inMyParty(unit.name) && getDistance(me, unit) <= 40) {
 					//if ((Config.Enchant.Player.indexOf(unit.classid) > -1 || unit.name === me.name) && !unit.getState(16)) {	//261020
-					if (Config.Enchant.Player.indexOf(unit.classid) > -1 && !unit.getState(16)) {	//261020
+					if (this.enchantNames.indexOf(unit.name) > -1 && !unit.getState(16)) {	//261020	//261028 build names (was classid)
 						Skill.cast(52, 0, unit);
 						print("enchant: " + unit.name);
 					}
