@@ -96,16 +96,16 @@ var AutoBuildTemplate = {
 					Config.PublicMode = 3;									// 1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
 				}
 				
-				Config.TierGoal.Head = 15;
-				Config.TierGoal.Neck = 17;
-				Config.TierGoal.Body = 21;
-				Config.TierGoal.ArmR = 35;
-				Config.TierGoal.ArmL = 35;
-				Config.TierGoal.RingR = 14;
-				Config.TierGoal.RingL = 14;
+				Config.TierGoal.Helm = 15;	//261028 renamed
+				Config.TierGoal.Amulet = 17;	//261028 renamed
+				Config.TierGoal.Armor = 31;	//261028 renamed
+				Config.TierGoal.ArmG = 31;	//261028 renamed
+				Config.TierGoal.ArmB = 31;	//261028 renamed
+				Config.TierGoal.RingG = 14;	//261028 renamed
+				Config.TierGoal.RingB = 14;	//261028 renamed
 				Config.TierGoal.Belt = 16;
 				Config.TierGoal.Boots = 13;
-				Config.TierGoal.Mitts = 13;
+				Config.TierGoal.Gloves = 13;	//261028 renamed
 				
 				Equip.updateTiers();
 				Grant.updateTiers();

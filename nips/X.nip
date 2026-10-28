@@ -14,18 +14,22 @@
 [type] == armor && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 1
 [type] == armor && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 2
 [type] == armor && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 3
-[type] == armor && [quality] >= normal && [flag] != ethereal # [sockets] == 4 # [tier] == 4
 
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
-[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*30+[fhr]+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 110 # [tier] == 21
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [tier] == 22
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 130 # [tier] == 23
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [tier] == 24
+[type] == armor && [quality] >= normal && [flag] != ethereal # [itemallskills]*50+[fhr]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 150 # [tier] == 25
 
 
 //============================================================================================================================================================================================
@@ -34,16 +38,16 @@
 
 [type] == gloves && [quality] >= normal && [flag] != ethereal # # [tier] == 1
 
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
-[type] == gloves && [quality] >= magic && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
+[type] == gloves && [quality] >= magic && [flag] != ethereal # [itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
 
 
 //============================================================================================================================================================================================
@@ -52,16 +56,16 @@
 
 [type] == boots && [quality] >= normal && [flag] != ethereal # # [tier] == 1
 
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
-[type] == boots && [quality] >= magic && [flag] != ethereal # [dexterity]*0.5+[itempoisonlengthresist]*0.4+[fhr]+[itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
+[type] == boots && [quality] >= magic && [flag] != ethereal # [itemmaxmanapercent]+[manarecoverybonus]*0.5+[frw]*0.5+[fhr]*0.5+[itempoisonlengthresist]*0.4+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
 
 
 //============================================================================================================================================================================================
@@ -73,16 +77,21 @@
 
 ([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= normal && [flag] != ethereal # # [tier] == 3
 
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
-([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 110 # [tier] == 21
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [tier] == 22
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 130 # [tier] == 23
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [tier] == 24
+([name] == platedbelt || ([type] == belt && [class] >= exceptional)) && [quality] >= magic && [flag] != ethereal # [fhr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 150 # [tier] == 25
 
 
 //============================================================================================================================================================================================
@@ -91,26 +100,29 @@
 
 [type] == shield && [quality] >= normal && [flag] != ethereal # [sockets] == 1 # [tier] == 1
 [type] == shield && [quality] >= normal && [flag] != ethereal # [sockets] == 2 # [tier] == 2
-[type] == shield && [quality] >= normal && [flag] != ethereal # [sockets] == 3 # [tier] == 3
-[type] == shield && [quality] >= normal && [flag] != ethereal # [sockets] == 4 # [tier] == 4
 
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
-[type] == shield && [quality] >= normal && [flag] != ethereal # [maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [tier] == 11
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [tier] == 12
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [tier] == 13
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [tier] == 14
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [tier] == 15
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [tier] == 16
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [tier] == 17
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 110 # [tier] == 21
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [tier] == 22
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 130 # [tier] == 23
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [tier] == 24
+[type] == shield && [quality] >= normal && [flag] != ethereal # [itemdamagetomana]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 150 # [tier] == 25
 
 
 //============================================================================================================================================================================================
 // [Amulet] 90/120mana 40resi 20A-resi // 60/100life 20/30ener
 //============================================================================================================================================================================================
 
-[type] == amulet && [quality] == set # [poisonresist] == 30 # [tier] == 18 @ [name] == crown && [quality] == set && [flag] != ethereal # [lightresist] == 30 # [qty] == 1
+[type] == amulet && [quality] == set # [poisonresist] == 30 # [tier] == 18 @ [name] == crown && [quality] == set && [flag] != ethereal # [lightresist] == 30 # [owned] == 1	//261028 hold [qty] -> [owned]
 
 [type] == amulet && [quality] == unique # [itemallskills] == 2 && [fireresist] >= 20 # [tier] == 31
 
@@ -129,12 +141,14 @@
 [type] == ring && [quality] >= magic # [fcr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [tier] == 18
 [type] == ring && [quality] >= magic # [fcr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [tier] == 19
 [type] == ring && [quality] >= magic # [fcr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [tier] == 20
+[type] == ring && [quality] >= magic # [fcr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 110 # [tier] == 21
+[type] == ring && [quality] >= magic # [fcr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [tier] == 22
+[type] == ring && [quality] >= magic # [fcr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 130 # [tier] == 23
+[type] == ring && [quality] >= magic # [fcr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [tier] == 24
+[type] == ring && [quality] >= magic # [fcr]*0.5+[manarecoverybonus]*0.5+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 150 # [tier] == 25
 
-[type] == ring && [quality] == unique # [maxhp] == 20 && [hpregen] >= 1 && [manaleech] >= 1 # [tier] == 13
-[type] == ring && [quality] == unique # [maxhp] == 40 && [magicdamagereduction] >= 1 # [tier] == 15 && [qty] == 1
-
-[type] == ring && [quality] == unique # [maxstamina] == 50 # [tier] == 21
-[type] == ring && [quality] == unique # [itemmaxmanapercent] == 25 # [tier] == 22
+[type] == ring && [quality] == unique # [maxstamina] == 50 # [tier] == 26
+[type] == ring && [quality] == unique # [itemmaxmanapercent] == 25 # [tier] == 27
 
 
 //============================================================================================================================================================================================

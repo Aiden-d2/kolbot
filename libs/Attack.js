@@ -1393,10 +1393,10 @@ AuraLoop: // Skip monsters with auras
 			do {
 				if (item.bodylocation === 4 || item.bodylocation === 5) {
 					switch (item.itemType) {
-					case 27: // Bows
-					case 85: // Amazon Bows
+					case 27: // bow
+					case 85: // amazonbow
 						return "bow";
-					case 35: // Crossbows
+					case 35: // crossbow
 						return "crossbow";
 					}
 				}
@@ -1406,4 +1406,73 @@ AuraLoop: // Skip monsters with auras
 		return false;
 	},
 	
+	// Detect use of 2-handed weapons
+	usingTwoHand: function () {	//261027
+		var item;
+
+		item = me.getItem(-1, 1);
+
+		if (item) {
+			do {
+				if (item.bodylocation === 4 || item.bodylocation === 5) {
+					switch (item.itemType) {
+					case 26: // staff
+						return "staff";
+					case 33: // spear
+					case 86: // amazonspear
+						return "spear";
+					case 34: // polearm
+						return "polearm";
+					}
+					
+					switch (item.classid) {
+					case 5: // largeaxe
+					case 6: // broadaxe
+					case 7: // battleaxe
+					case 8: // greataxe
+					case 9: // giantaxe
+					case 98: // militaryaxe
+					case 99: // beardedaxe
+					case 100: // tabar
+					case 101: // gothicaxe
+					case 102: // ancientaxe
+					case 201: // feralaxe
+					case 202: // silveredgedaxe
+					case 203: // decapitator
+					case 204: // championaxe
+					case 205: // gloriousaxe
+						return "axe";
+					case 33: // twohandedsword
+					case 34: // claymore
+					case 35: // giantsword
+					case 36: // bastardsword
+					case 37: // flamberge
+					case 38: // greatsword
+					case 126: // espandon
+					case 127: // dacianfalx
+					case 128: // tusksword
+					case 129: // gothicsword
+					case 130: // zweihander
+					case 131: // executionersword
+					case 229: // legendsword
+					case 230: // highlandblade
+					case 231: // balrogblade
+					case 232: // championsword
+					case 233: // colossussword
+					case 234: // colossusblade
+						return me.classid === 4 ? false : "sword";
+					case 23: // maul
+					case 24: // greatmaul
+					case 116: // warclub
+					case 117: // marteldefer
+					case 219: // ogremaul
+					case 220: // thundermaul
+						return "hammer";
+					}
+				}
+			} while (item.getNext());
+		}
+
+		return false;
+	}
 };
