@@ -15,6 +15,13 @@
 ### 261021 Claude: `clearToExit` 삭제
 - 20곳은 `moveToExit` 한 번 + 실패 시 `quitGame("moveToExit failed: A -> B")`(moveTo throw는 잡지 않음). 지역 확인(`me.area === A`)은 유지. 옛 바깥 while 4곳(언더패스 10→5, Jail 29→30·30→31·31→32)은 뒤에 보정 구간(목표 층이 아니면 마을 → 목표 층 포털, `Area reversed` 대기)이 있어 퇴장 없이 한 번 시도(throw도 잡음)하고 보정에 맡김. 이 4곳의 catch는 handoff 2-4 ① 대상.
 
+## 흩어지기 (여러 함수의 `moveTo` random 인자)
+
+### 261028 Claude: 랜덤무브를 moveTo 계열 random 인자로 통일 (`dfc884b`, 사용자 요청, 옛 handoff 3-41)
+- `Pather.moveTo(me.x + myX, me.y + myY)` 41곳을 random 인자로. 고정 지점 이동 바로 뒤의 흩어지기 11곳은 앞 이동(`moveTo`/`moveToPreset`)에 random을 주고 흩어지기 줄을 지움, 제자리 흩어지기 30곳은 `moveTo(me.x, me.y, 3, false, false, true)`(기존 261007 4곳과 같음).
+- `AutoSmurf`의 `myX`·`myY` 삭제(이를 쓰던 옛 주석 줄 5개도 삭제) → 오프셋은 `Pather.myX/myY`(reflection 유지). 프로필별 자리는 Pather 표 순서로 바뀜. 막힌 오프셋은 `no random path` → 원래 좌표.
+- 확인: 사용자 육안 검증 통과(261028).
+
 ## this.okCount / this.teamCount
 
 ### 261004 Claude: 죽은 사람도 타임아웃, 타임아웃 상세
@@ -126,6 +133,11 @@
 - 리더가 118의 120 출구 앞에서 포탈을 열고 전원 들어감(팔로워 `usePortal(118)` → `moveToExit(120)`). 제단을 누르면 정상의 TP가 모두 닫히고, 전투 중 120에서 TP를 열면 고대인이 리셋된다.
 - 루프 끝(okCount 뒤)에 `sendPacket(1, 0x40)` + 대기: 죽은 사람의 마지막 퀘스트 갱신이 킬 전이라 루프 조건이 낡은 값을 볼 수 있음(추정, 보험).
 - 확인: 261013·261020 로그에서 루프 1회.
+
+### 261028 Claude: 팔로워 tpReady 대기 (`dfc884b`, 사용자 요청, 옛 handoff 3-46)
+- 시체 회수 때문에 포탈을 정상 앞(118)에서 열게 바꾼 뒤(261004) 팔로워가 tpReady 없이 118로 가는 아무 포탈이나 타서 리더의 타운치킨 포탈에 합류했다.
+- 리더는 `makePortal` 뒤 `tpReady` 전송, 팔로워는 `while (me.inTown) { if (tpReady) usePortal(118, null) }` 뒤 `tpReady = false`. 다른 보스와 같은 방식. 나머지 tpReady 없는 대기 목록은 기각(`rejected.md`).
+- 확인: 다른 보스와 같은 기존 로직이라 검증 통과로 처리(사용자 261028).
 
 
 ## this.farmingCows (followDriver)

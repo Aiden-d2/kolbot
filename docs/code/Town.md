@@ -14,6 +14,12 @@
 ### 261021 Claude: 끝의 `me.cancel()` 삭제
 - 260908 사용자가 넣은 heal 끝 `me.cancel()`을 지움(chores 멈춤 판별 정리 때). 다른 cancel은 유지(`stash` 시작의 cancel은 원본에도 있음). 261022 로그까지 문제 보고 없음.
 
+## buyPotions
+
+### 261028 Claude: MiniShopBot·용병 부활을 LowGold로 (`dfc884b`, 사용자 요청, 옛 handoff 3-45)
+- MiniShopBot 호출 조건 2곳에 `me.gold >= Config.LowGold`(노말 벨트 쇼핑 조건은 그대로). 목적: 나이트메어 끝~헬은 용병 사용 구간이라 부활 골드를 남겨 둔다. 45레벨부터 `LowGold = charlvl × 3000`(70레벨 21만, 빌드 14개 같음).
+- 확인: 그 방문의 골드가 로그에 없어 로그로는 판정하지 않음. 바꾼 것이 조건 비교뿐이라 사용자 판단으로 검증 통과(261028).
+
 ## fillTome
 
 ### 261001 Claude: TP 책 골드 게이트
@@ -33,6 +39,18 @@
 - 동작: ID 스크롤이 없고 레벨 25 미만, 상점에 ID 스크롤(530)이 있고 `me.gold < getItemCost(0)`이면 미감정으로 팔고 다음 물건으로. 그 밖은 `identify stopped` 후 중단. 유니크·세트 제외 조건은 없음.
 - 확인: 261006·261013 로그 통과.
 
+## repair
+
+### 261028 Claude: MiniShopBot·용병 부활을 LowGold로 (`dfc884b`, 사용자 요청, 옛 handoff 3-45)
+- MiniShopBot 호출 조건 2곳에 `me.gold >= Config.LowGold`(노말 벨트 쇼핑 조건은 그대로). 목적은 `buyPotions` 항목과 같음.
+- 확인: 그 방문의 골드가 로그에 없어 로그로는 판정하지 않음. 바꾼 것이 조건 비교뿐이라 사용자 판단으로 검증 통과(261028).
+
+## reviveMerc
+
+### 261028 Claude: MiniShopBot·용병 부활을 LowGold로 (`dfc884b`, 사용자 요청, 옛 handoff 3-45)
+- 첫 골드 조건 `Config.MercMinGold`(20만) → `Config.LowGold`, `MercMinGold` 삭제. 목적은 `buyPotions` 항목과 같음.
+- 확인: 그 방문의 골드가 로그에 없어 로그로는 판정하지 않음. 바꾼 것이 조건 비교뿐이라 사용자 판단으로 검증 통과(261028).
+
 ## getCorpse
 
 ### 261004 Claude: `quitOnFail` 인자 (보스 보호 시체 회수)
@@ -50,6 +68,11 @@
 - 버린 물약 다시 줍기(코드 읽음): 버리기는 인벤토리 물약이 예비 수보다 많을 때만이고, 그 종류 열에 빈칸이 있으면 넣기를 먼저 시도한다. `Pickit.canPick`은 그 종류 열이 다 차 있고 인벤토리 예비도 차 있으면 줍지 않으므로, 다시 줍는 것은 "빈칸이 있는데 넣기가 실패한 채 버린" 경우뿐. 261028에서 버린 정리 16번은 모두 그 정리의 벨트 실패 0. 물약은 ItemLog에 남지 않아 게임으로는 보지 못함.
 - 검증 통과(사용자 261028). 판별 로그는 삭제 결정(handoff 3-49).
 
+### 261028 Claude: 판별 줄 삭제 (`4e6087b`, 사용자 요청, 옛 handoff 3-49)
+- 위 판별 로그를 지움: `Town.chores` 객체(`doChores`의 `c`)와 `doChores`·`buyPotions`·`clearBelt`·`clearInventory`의 기록 줄 전부, `chores N.Ns: …` trace, `buyPotions: buy failed` trace 4줄, `clearBelt`의 `shiftFails`와 `belt shift fail` trace, `doChores`의 `scriptBroadcast("chores:…")` 11줄(옛 handoff 3-37 단계 표시, `rejected.md` PartyThread).
+- 남긴 동작: `pot.buy` 호출, `clearBelt` 넣기 성공 뒤 `break`와 그 판정용 빈칸 합계 비교(같은 뜻으로 `!== total`).
+- 확인: 코드에 지운 줄이 남지 않음(261028 grep). 동작은 바꾸지 않아 인게임 검증 없이 통과(사용자 261028).
+
 ## visitTown
 
 ### 261004 Claude: Arreat Summit(120)에서 거부
@@ -58,3 +81,6 @@
 ### 261021 Claude: Town check 직접 처리 (`ab94751`·`3c31a5a`, 옛 handoff 3-5)
 - `goToTown` 동안 `Config.TownCheck`를 꺼(끝나면 원래 값) 포털로 가는 moveTo 안의 재진입을 막음(직접 호출·화살통 경로 모두). 호출 쪽은 `Misc.md` townCheck.
 - 확인: 261022 58건·261023 114건 모두 바로 출발, 마을행 중 또 마을행 0. 검증 통과(사용자 261023). 261023에 직접 마을행 중 TownChicken(HP)도 출발한 3건은 모두 0~7초 안에 Life Chicken으로 끝남(TownChicken은 별도 스레드).
+
+### 261028 Claude: 판별 줄 삭제 (`4e6087b`, 사용자 요청, 옛 handoff 3-49)
+- `scriptBroadcast("town:…")` 4줄 삭제(옛 handoff 3-37 단계 표시, `rejected.md` PartyThread). 확인은 `clearBelt` 같은 항목.
