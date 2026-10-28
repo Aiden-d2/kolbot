@@ -132,6 +132,16 @@
 ## threads/TownChicken.js
 - **261021 TownChicken을 ToolsThread로 이관** — 이유: 사용자 기각. 261013·261020 로그에서 TownChicken을 끄면 HP 마을행 146건 중 도착한 95건(65%)이 전투에 남는다(`log_results.md`).
 
+## tools/NTItemParser.dbl
+
+### ParseExpr
+- **261028 허용 이름 목록(키워드 밖 이름은 `me.diff`·`me.act`·`me.charlvl`만)** — `me.dif` 같은 오타를 잡으려던 Claude 제안. 이유: 다른 `me.` 값을 쓸 수 있어 그때마다 목록에 추가할 수 없음(사용자).
+
+### ParseRule
+- **261028 끝 칸 값 범위 검사(`[tier]`·`[merc]`·`[qty]` 1 이상)** — 이유: 0이어도 기존 동작 그대로이고, 정수가 아닌 값은 형식 검사가 이미 거름(사용자 지적, Claude 철회).
+- **261028 `[all]` 기어 키(10칸 모두 `goal` 도달)** — 이유: 사용자 철회. 전 칸 도달은 `[tiered]`(게임 시작 값).
+- **261028 `[tiered]` 실시간 판정(판정 때마다 `TierNow`·`TierGoal` 비교)** — 이유: 필요 없음, 지금처럼 게임 시작 값(사용자). 칸별 실시간 판정은 기어 조건 `goal`로.
+
 ## tools/OOG.js
 
 ### printToConsole
