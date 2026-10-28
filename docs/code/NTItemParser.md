@@ -65,5 +65,5 @@
 - 새 함수. 끝 칸(본문·홀드 공통)을 `[키] 연산자 값` 조각으로 `&&`로만 이어 읽는다(앞뒤 남는 글자, `||`, `[` 빠짐은 오류).
 - 본문 키: `[tier]`·`[merc]`·`[qty]`는 `==` 정수. `[tiered]`는 연산자·값 없이 표시만(`Tiered: true`), `[tiered] == 0` 등 옛 형태는 오류. 기어 조건 `[helm] [amulet] [armor] [armg] [armb] [ringg] [ringb] [belt] [boots] [gloves]`, 용병 `[merchelm] [mercarmor] [mercarmg]`는 `< <= > >= ==` 정수 또는 `goal`(용병 칸 `goal`은 오류), 식은 `Config.TierNow.<칸>.tier 연산자 값`(용병은 `Config.UseMerc&&Config.TierMerc.<칸>.merc …`).
 - 홀드 키: `[owned]`만, `< <= > >= ==` 정수 → `Owned: "<1"` 모양. 없으면 `< 1`(홀드 조건에 맞는 아이템을 1개 이상 가지면 건너뜀). 홀드에 다른 키(`[qty]` 포함)는 오류.
-- 같은 키가 두 번 나오면 `Duplicate rule key` 표시만(값 키는 뒤 값, 기어 조건은 두 조건 모두 적용 — 기존과 같음).
+- 같은 키가 두 번 나오면: 값 키(`[tier]`·`[merc]`·`[qty]`·`[tiered]`·`[owned]`)는 뒤 값이 덮어쓰는 실수라 `Duplicate rule key`를 `Misc.errorReport`로 표시(줄은 남김). 기어 키는 조건이 모두 `&&`로 적용되어 범위(`[armg] > 10 && [armg] < 31`)로 쓸 수 있으므로 trace `NTIP: duplicate gear key [키]`만 남김(`a599048`).
 - tier·merc 줄의 기어 조건은 기존처럼 빼고 trace `NTIP: gear tier ignored on tier/merc line`.
