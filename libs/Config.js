@@ -129,7 +129,6 @@ var Config = {
 	
 	MercWatch: false,
 	MercChicken: 0,
-	MercMinGold: 200000,
 	
 	MercStat: {id: null, str: 0, dex: 0, lvl: 0},  //260804
 	
@@ -542,7 +541,7 @@ var Config = {
 	StaticList: [],
 	Enchant: {	//261019
 		Enabled: false,
-		Player: [],			// 0=ama, 1=sor, 2=nec, 3=pal, 4=bar, 5=dru, 6=ass
+		Player: [],			// build names (Settings.js), ex. ["M.HYBR"]	//261028 was class ids
 		Merc: [],			// 271=act1, 338=act2, 561=act5
 		Pet: [],
 							// 289=claygolem, 290=bloodgolem, 291=irongolem, 292=firegolem

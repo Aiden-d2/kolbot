@@ -5,7 +5,7 @@
 */
 
 var ClassAttack = {
-	bowCheck: false,
+	bowSkills: [6, 7, 11, 12, 16, 21, 22, 26, 27, 31],	//261028 bow and crossbow skills (Magic, Fire, Cold, Multiple Shot, Exploding, Ice, Guided, Strafe, Immolation, Freezing). bowCheck removed (unused)
 	lightFuryTick: 0,
 	decoyPosition: {},
 
@@ -81,6 +81,17 @@ var ClassAttack = {
 		// Low mana untimed skill
 		if (Config.LowManaSkill[1] > -1 && Skill.getManaCost(untimedSkill) > me.mp && Attack.checkResist(unit, Config.LowManaSkill[1])) {
 			untimedSkill = Config.LowManaSkill[1];
+		}
+
+		// no bow yet (early levels): a bow skill does nothing, use the normal attack	//261028
+		if (!Attack.usingBow()) {
+			if (this.bowSkills.indexOf(timedSkill) > -1) {
+				timedSkill = 0;
+			}
+
+			if (this.bowSkills.indexOf(untimedSkill) > -1) {
+				untimedSkill = 0;
+			}
 		}
 
 		// base range: the shorter of the two picked skills, so both stand at one distance and a long one does not back off between casts of a short one	//261003

@@ -25,8 +25,6 @@ function AutoSmurf() {
 // -------- Other Settings ----------------
 		Leader = false,
 		Boer = false,
-		myX = [-5, 0, 5, 5, 5, 0, -5, -5][Team.Profiles.indexOf(me.profile) % 8],	//261022 8 directions around the spot: 1 2 3 / 8 . 4 / 7 6 5 (profile 1 top-left, clockwise)
-		myY = [-5, -5, -5, 0, 5, 5, 5, 0][Team.Profiles.indexOf(me.profile) % 8],	//261022
 		
 		doneChores = false,
 		hireMerc = false,
@@ -515,7 +513,7 @@ function AutoSmurf() {
 				Town.move("waypoint");
 			} else {
 				Town.move("portalspot");
-				Pather.moveTo(me.x + myX, me.y + myY);	//260912
+				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260912	//261028 random signature (was me.x + myX)
 			}
 		}
 
@@ -552,7 +550,7 @@ function AutoSmurf() {
 				Town.move("waypoint");
 			} else {
 				Town.move("portalspot");
-				Pather.moveTo(me.x + myX, me.y + myY);	//260912
+				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260912	//261028 random signature (was me.x + myX)
 			}
 		}
 		
@@ -1922,7 +1920,7 @@ function AutoSmurf() {
 					this.okCount();	//260922
 
 					Pather.goWP(me.area, true);
-					Pather.moveTo(me.x + myX, me.y + myY);	//260822
+					Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 					
 					this.okCount();
 					
@@ -2057,7 +2055,7 @@ function AutoSmurf() {
 			print("ÿc4=== [BLOOD] ===");	Misc.trace("=== [BLOOD] ===", true);	//260930
 			
 			Pather.useWaypoint(3);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
@@ -2090,7 +2088,7 @@ function AutoSmurf() {
 			
 			if (me.inTown) {
 				Pather.useWaypoint(3);
-				Pather.moveTo(me.x + myX, me.y + myY);	//260822
+				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 				this.okCount();	//260922
 				Precast.doPrecast(true);
 			}
@@ -2102,7 +2100,7 @@ function AutoSmurf() {
 			Precast.doPrecast(true);
 
 			Pather.goWP(me.area, true);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 			this.okCount();
 			
@@ -2153,7 +2151,7 @@ function AutoSmurf() {
 				me.overhead("Getting waypoint...");
 				
 				Pather.useWaypoint(4);
-				Pather.moveTo(me.x + myX, me.y + myY);	//260822
+				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 				this.okCount();	//260922
 				Precast.doPrecast(true);
 
@@ -2195,7 +2193,7 @@ function AutoSmurf() {
 				Precast.doPrecast(true);
 	
 				Pather.goWP(me.area, true);
-				Pather.moveTo(me.x + myX, me.y + myY);	//260822
+				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 				this.okCount();
 				
@@ -2220,7 +2218,7 @@ function AutoSmurf() {
 				
 				if (me.diff === 0) {	//260812
 					Pather.useWaypoint(5); //dark wood
-					Pather.moveTo(me.x + myX, me.y + myY);	//260822
+					Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 					
 					this.okCount();	//260922
 					Precast.doPrecast(true);
@@ -2278,7 +2276,7 @@ function AutoSmurf() {
 			
 			if (me.diff === 0) {
 				Pather.useWaypoint(4); //stoney field
-				Pather.moveTo(me.x + myX, me.y + myY);	//260822
+				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			} else {
 				if (Leader) {
 					Pather.useWaypoint(4); //stoney field
@@ -2318,7 +2316,7 @@ function AutoSmurf() {
 					Misc.openChest(stoneE, true);
 				}
 			} else {
-				Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread, then hold this spot while waiting
+				Pather.moveTo(me.x, me.y, 3, false, false, true);	//261002 spread, then hold this spot while waiting	//261028 random signature (was me.x + myX)
 				spot = {x: me.x, y: me.y};	//261002
 				
 				while (!Pather.getPortal(38)) {
@@ -2500,7 +2498,7 @@ function AutoSmurf() {
 		
 		if (!getWaypoint(4)) { // black marsh
 			Pather.useWaypoint(5);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			this.okCount();	//260922
 			Precast.doPrecast(true);
 			
@@ -2511,14 +2509,14 @@ function AutoSmurf() {
 			Precast.doPrecast(true);
 		
 			Pather.goWP(me.area, true);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 			this.okCount();
 			
 			Pather.getWP();	//261021 was clickWP
 		} else {
 			Pather.useWaypoint(6);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			this.okCount();	//260922
 		}
 		
@@ -2541,7 +2539,7 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 	
 		Pather.goWP(me.area, true);
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 		this.okCount();
 		
@@ -2569,7 +2567,7 @@ function AutoSmurf() {
 			}
 			
 			Pather.useWaypoint(27);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			this.okCount();	//260922
 		}
 		
@@ -2603,8 +2601,7 @@ function AutoSmurf() {
 			return false;
 		}
 		
-		Pather.moveTo(smith.roomx * 5 + smith.x, smith.roomy * 5 + smith.y, 3, true);	//260822	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveTo(smith.roomx * 5 + smith.x, smith.roomy * 5 + smith.y, 3, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 		
 		this.okCount();
 		
@@ -2633,7 +2630,7 @@ function AutoSmurf() {
 				}
 			}
 			
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			
 			this.malus();
 			
@@ -2719,7 +2716,7 @@ function AutoSmurf() {
 		if (me.area !== 28) {
 			if (me.area === 27) {
 				Pather.goWP(me.area, true);
-				Pather.moveTo(me.x + myX, me.y + myY);	//260822
+				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 				this.okCount();
 			} else {
 				Town.goToTown();
@@ -2729,7 +2726,7 @@ function AutoSmurf() {
 				}
 				
 				Pather.useWaypoint(27);
-				Pather.moveTo(me.x + myX, me.y + myY);	//260822
+				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 				this.okCount();	//260922
 			}
 			
@@ -2749,7 +2746,7 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 
 		Pather.goWP(me.area, true);
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 		this.okCount();
 		
@@ -2776,7 +2773,7 @@ function AutoSmurf() {
 			}
 			
 			Pather.useWaypoint(29);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			this.okCount();	//260922
 		}
 		
@@ -2887,7 +2884,7 @@ function AutoSmurf() {
 		this.okCount();	//260922
 
 		Pather.goWP(me.area, true);
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 		this.okCount();
 		
@@ -2914,7 +2911,7 @@ function AutoSmurf() {
 			}
 			
 			Pather.useWaypoint(32);
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			this.okCount();	//260922
 		}
 		
@@ -2941,7 +2938,7 @@ function AutoSmurf() {
 		Precast.doPrecast(true);
 		
 		Pather.goWP(me.area, true);
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 		this.okCount();
 		
@@ -3376,6 +3373,11 @@ function AutoSmurf() {
 		
 		journal = getUnit(2, 357);
 		
+		if (journal) {	//261028 everyone reads the journal once, portal or not (a profile that did not read it could not take the tomb portal at Duriel)
+			sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
+			delay(me.ping * 2 + 1000);
+		}
+		
 		for (i = 0; i < 3; i += 1) {
 			if (Pather.getPortal(46)) {
 				break;
@@ -3471,7 +3473,7 @@ function AutoSmurf() {
 				Pather.getWP();	//261021 was clickWP
 			}
 			
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			
 			this.okCount();	//260922
 			Precast.doPrecast(true);
@@ -3582,7 +3584,7 @@ function AutoSmurf() {
 		
 		Pather.teleport = true;
 		
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 		
 		this.okCount();
 		
@@ -3814,7 +3816,7 @@ function AutoSmurf() {
 	};
 
 	this.duriel = function () {
-		var i, atma, orifice, hole, npc;	//261027
+		var i, orifice, hole, npc;	//261027	//261028 atma removed (the talk had no effect on the first portal)
 		
 		print("ÿc4=== [DURIEL] ===");	Misc.trace("=== [DURIEL] ===", true);	//260930
 
@@ -3943,13 +3945,6 @@ function AutoSmurf() {
 				
 				//delay(me.ping * 2 + 1000);
 				
-				Town.move(NPC.Atma);	//261027
-				atma = getUnit(1, NPC.Atma);
-
-				if (atma && atma.openMenu()) {
-					me.cancel();
-				}
-
 				Town.move("portalspot");
 				
 				this.okCount();
@@ -4110,7 +4105,7 @@ function AutoSmurf() {
 			Town.move("figurine");
 			Town.move("ormus");
 			Town.move("portalspot");
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 		}
 
 		this.okCount();
@@ -4313,7 +4308,7 @@ function AutoSmurf() {
 			}
 			
 			me.cancel();
-			Pather.moveTo(me.x + myX, me.y + myY);	//260822
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 		}
 		
 		this.okCount();
@@ -4356,8 +4351,7 @@ function AutoSmurf() {
 		Attack.clear(0, {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 81});	//260929 boxes 1-4 (their exact union)
 		Attack.clear(0, {x1: presetUnit.roomx * 5 + presetUnit.x + 63, x2: presetUnit.roomx * 5 + presetUnit.x + 140, y1: presetUnit.roomy * 5 + presetUnit.y - 81, y2: presetUnit.roomy * 5 + presetUnit.y - 65});	//260929 box 5
 
-		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109, presetUnit.roomy * 5 + presetUnit.y - 95);	//260822	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109, presetUnit.roomy * 5 + presetUnit.y - 95, 3, false, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 		
 		this.okCount();
 
@@ -4414,7 +4408,7 @@ function AutoSmurf() {
 		}
 
 		Town.move("cain");
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 		this.okCount();
 		
@@ -4497,8 +4491,7 @@ function AutoSmurf() {
 			}
 
 			if (!takeRedPortal) {	//260919
-				Pather.moveTo(17566, 8069);	// reportal bridge	//261002 no offset, spread on arrival
-				Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+				Pather.moveTo(17566, 8069, 3, false, false, true);	// reportal bridge	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 				this.okCount();
 				
 				Pather.teleport = true;
@@ -5017,15 +5010,13 @@ function AutoSmurf() {
 
 		this.seisSeal();
 		
-		Pather.moveTo(7790, 5290, 5, true);	//260822	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveTo(7790, 5290, 5, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 
 		this.okCount();
 		
 		this.infectorSeal();
 		
-		Pather.moveTo(7790, 5290, 5, true);	//260822	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveTo(7790, 5290, 5, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 
 		this.okCount();
 		
@@ -5514,7 +5505,7 @@ function AutoSmurf() {
 		}
 		
 		Town.move("waypoint");
-		Pather.moveTo(me.x + myX, me.y + myY);	//260822
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 		if (Leader) {
 			D2Bot.printToConsole("=== ANYA ===", 7);
@@ -5539,6 +5530,10 @@ function AutoSmurf() {
 			Pather.useWaypoint(118);
 			Pather.moveToExit(120, false);	//261004 portal in front of the summit: the altar closes every TP on the summit (the corpse run needs this one)
 			Pather.makePortal();	//261008
+
+			me.overhead("tpReady");	//261028 the portal opens before the summit now (corpse run): a town chicken portal on the way must not be taken
+			Messaging.sendToList(Team.Profiles, "tpReady");	//261028
+
 			this.exitTo(120);	//261022 result checked
 		} else {
 			if (me.act !== 5 || !me.inTown) {
@@ -5546,17 +5541,23 @@ function AutoSmurf() {
 			}
 			
 			Town.move("portalspot");
-			while(!Pather.usePortal(118, null)) {	//261004 was 120
-				delay(1000);
+
+			while (me.inTown) {	//261028 wait for tpReady like the other bosses
+				if (tpReady) {
+					Pather.usePortal(118, null);	//261004 was 120
+				}
+
+				delay(250);
 			}
+
+			tpReady = false;	//261028
 
 			this.exitTo(120);	//261004	//261022 result checked
 		}
 
 		delay(me.ping * 2 + 1000);
 		
-		Pather.moveTo(10048, 12634);	//260822	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveTo(10048, 12634, 3, false, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 	
 		Precast.doPrecast(true);
 		
@@ -5593,8 +5594,7 @@ function AutoSmurf() {
 				sendPacket(1, 0x40); //fresh Quest state.
 			}
 			
-			Pather.moveTo(10048, 12634);	//260822	//261002 no offset, spread on arrival
-			Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+			Pather.moveTo(10048, 12634, 3, false, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 			
 			Precast.doPrecast(true);
 			
@@ -6206,8 +6206,7 @@ function AutoSmurf() {
 		
 		delay(me.ping * 2 + 2000); // Wait for minions to die.
 		
-		Pather.moveTo(22549, 9520);	//260822	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveTo(22549, 9520, 3, false, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 		
 		this.okCount();
 		
@@ -6934,8 +6933,7 @@ function AutoSmurf() {
 		Pather.moveTo(17515, 8061, 3, true);	//260822	//261002 no offset
 		Attack.clear(35)
 		
-		Pather.moveTo(17566, 8069); // reportal bridge	//260822	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveTo(17566, 8069, 3, false, false, true); // reportal bridge	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 		
 		this.okCount();
 
@@ -7279,8 +7277,7 @@ function AutoSmurf() {
 		}
 		
 		
-		Pather.moveToPreset(me.area, 2, 462, 0, 0, true);	//260822	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveToPreset(me.area, 2, 462, 0, 0, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 
 		this.okCount();
 	
@@ -7659,8 +7656,7 @@ function AutoSmurf() {
 		
 		me.automap = true;	//260904
 		
-		Pather.moveTo(5148, 5066, 5);	//260813	//260822	//261002 no offset, spread on arrival
-		Pather.moveTo(me.x + myX, me.y + myY);	//261002 spread
+		Pather.moveTo(5148, 5066, 5, false, false, true);	//260813	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 
 		if (Leader) { // I am the Teleporting Sorc
 			if (figurine) { // Someone has the Jade Figurine!
