@@ -350,3 +350,34 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - `[Error]` 7: forEach 2(Pz-3), `useWaypoint: Failed to use waypoint` 5(Pz-22 Catacombs Level 2, 8명 모두 `wp.area:null` 87줄 → handoff 2-23). 그 밖 웨이 사례: a1 07:22 Durance of Hate 2(`waypoint unit not found`, 9초 뒤 Life Chicken), a1 06:59 Sewers Level 2(진행).
 - 경로 줄(`log_guide.md` 4-4): `no adjusted path` 10회 2건(a3 Abaddon, a7 Infernal Pit), 뒤에 throw 줄 없이 다음 구간.
 - `Town chicken` 62, `Town check` 126, getWP `menu not opened` 102, `[teleportTo failed]` 3, 골드 나눔 버림 13·`Retaking` 0.
+
+## 261027 묶음 (10/26 14:24 ~ 10/27 18:49, 8프로필 각 146게임)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 계정으로 노말부터 헬 파밍까지(레벨 1 → 87). 코드는 main `152e5ea`(`d87cfcb`·`30c9b4e` 포함, 병합 13:02 뒤 시작, 사용자). `step:`·`belt shift fail`·퇴장 상세 `travel`이 찍혀 들어간 것을 확인. 핑 156~344(아시아 서버 아님). 판정에 따른 handoff 이동은 다음 사이클에 다시 리뷰(사용자 261028). 이 절은 근거만 둔다.
+
+### handoff 3절 결과
+- 3-27: 정리 줄 2,921개 중 시작 때 메뉴 08 0(`ui -` 2,869, `ui ->-` 52). shift 752회 중 실패 17, `belt shift fail` 18줄:
+  - `inv:false` 8(a1 16:29:28·16:37:21·00:00:39·00:45:01·10:43:56, a5 16:36:39 2줄·17:36:48) — 물약이 결국 벨트로 감. shift-click은 열을 고르지 않고 같은 물약을 열마다 다시 클릭하는 코드라(`Town.clearBelt`), 늦은 반영과 다음 클릭 성공을 가르지 못함.
+  - `inv:true` 10(물약 5개 남음, 정리 4번: a3 16:36:34 2줄·a5 16:36:38~39 6줄 같은 게임 Lut Gholein, a1 07:37:10 Harrogath `rvs`, a1 18:38:36 Rogue Encampment `rvl`). 모두 같은 종류 물약 열에 빈칸이 있을 때. a1·a3·a5는 16:25~16:29에 3줄 벨트(Belt)로 바꾼 뒤였음. 원인 모름.
+  - 메뉴 닫힘 cur 실패 2건(a2 17:24:58 `cur 4/3` belt 12.0초, a5 14:44:35 `cur 2/1 put 1`, 둘 다 `ui ->-`) — 261026 결론(메뉴 닫힘 cur 실패 0)과 다름. 원인 모름.
+- 3-36: 리더가 실제로 웨이를 모은 게임(`Traveling to` 뒤 `going to nearest WP`) 21개에서 그 뒤 120초 퇴장 0(Ancient's Way Pz-26·50·51·52·80·81 포함). 퇴장 25줄 모두 `travel false`(웨이를 모은 Pz-42·71의 퇴장은 그 뒤 여러 대기를 지난 두리엘). `Party desynced 2`·`syncBO timeout` 0, `act* BO` 8명 모두 135회. 10분 한도가 실제로 쓰였는지는 대기 시간 줄이 없어 모름.
+- 3-37: desync 13게임(25줄). 낙오 프로필의 퇴장 줄 상태:
+  - 정리 stash 단계 2: Pz-84 a4(PIT, ItemLog 05:05:45 `Stashed` Viridian Sharkskin Belt → 다음 게임 05:08:18 같은 아이템 다시 `Stashed`), Pz-101 a6(PIT, 08:43:27 `Stashed` Tal Rune → 다음 게임 08:46:13 다시). `Stashed`는 옮기기 전에 찍혀 옮기기가 끝나지 않은 것. `[Storage.MoveTo] retry/catch` 0, stash 안 어디서 멈췄는지 모름.
+  - 정리 pre 단계 1: Pz-67 a7(CAIN). 다음 게임 시작 6초에 pre에서 Ancients' Pledge 룬워드(03:01:05). Pz-67에서 무엇이 걸렸는지 모름.
+  - 다른 프로필이 끝낸 단계에 남음 2: Pz-144 a2(다른 7명은 4막 마을, a2는 Durance 3 17600,8069 서 있음, 레드 포털 반복 `while (me.area === 102)`에 로그 없음), Pz-42 a7(팔로워는 마을로 가야 하는데 오리피스 옆 22698,9786).
+  - 대기 자리에 와 있는데 okCount 미도착 2: Pz-103 a3(Ancient's Way 버프 자리), Pz-117 a6(Catacombs 4). 유실·단계 어긋남·아직 부르지 않음 중 무엇인지 로그로 모름. 보내기는 `sendCopyData` 한 번, 결과 확인·재전송 없음(코드 읽음, 엔진 전달은 못 봄).
+  - 두리엘 마을 2: Pz-42 a2, Pz-71 a6(다른 6명과 18칸 떨어짐). 첫 대기(tpReady)인지 두 번째 okCount인지 모름.
+  - 리더 지각 2: Pz-100 a1(Chaos에서 달리는 중, 20칸), Pz-134 a1(`Town check (direct)` 다녀온 직후, 90칸).
+  - Pz-73·74: a4(Pz-73은 a8도)가 Kurast Docktown 웨이 자리(5161,5051)에 서 있음, 퇴장 줄 없음. 두 게임 모두 리더가 syncBO 뒤 `Traveling to Travincal`(웨이 이동 없음) 약 2초 뒤 다음 syncBO, TOME 구간에 못 들어감. 코드: 2·3막 팔로워 반복문이 `this.syncBO(); syncBO = false;` 순서라 syncBO를 도는 동안 받은 요청을 끝난 뒤 지움. 원인 판정은 안 함.
+  - Pz-27: BARBS(진입 조건 `!me.getQuest(36, 0)`)를 a1·a7만 돌고 나머지 6명은 아냐로 감 → a1·a7의 BARBS okCount가 6명의 아냐 okCount로 채워지고 a7이 아냐 okCount에서 120초 퇴장. 앞 게임 Pz-26은 8명 모두 BARBS 중 a1 크래시(18:55). a7이 퀘스트 완료를 못 받은 이유, 퀘스트 36 완료 시점은 모름.
+  - `step` 값이 틀린 사례 1: Pz-27 a1은 18:57:23 정리 줄(= `chores:end` 보낸 뒤)이 찍혔는데 18:59:04 퇴장 줄은 `step:chores:gems`.
+- 3-29: timeout 526줄(a1 461, 걷는 프로필 75), 8회 모두 실패 3줄(Black Marsh → Forgotten Tower: a1 14:25:44, 17:37:12·17:37:26 같은 유닛). 보류 중(아시아 서버).
+- 3-32: `takeOff` 0. 펀치 1건은 보관함 베이스(a3 07:35:50 Crystal Sword `Transmuted` → 14:04:23 Spirit 룬워드·장착). 착용 베이스 펀치 미발견.
+- 3-34: Life Chicken 47(a1 26).
+- 3-38: 소켓 설정에 완성 보석 번호 없음(`Config.js` 기본값 종류 번호, 빌드에서 바꾸는 곳 없음) → 조건 없음.
+- 케이스 미발견: 3-10(`radamentOff` 0, 북 visible → read 24줄), 3-13(`dropping radament book` 0), 3-17(MoveToSlot 실패 0, `party accept` 1,276줄, 여섯 묶음 연속 0), 3-35(`Init failed` 0, 25분 넘은 게임 3개 Pz-28·42·83은 줄이 많은 정상 진행).
+
+### 그 밖
+- 조기 종료 사유: Life Chicken 47(a1 26, a3 6, a7 5, a4 4, a5 3, a2 2, a6 1, a8 0), desync 25줄(13게임), Diablo not found 6, Tomb chest not reached 4, Figurine incompleted 2, moveToExit failed·Not ready to start Duriel·Not ready for act2 각 1.
+- 사망 4(모두 a1, `You died in last game`). 보스가드 중 사망·시체 회수 0. 크래시 6(`Crash: no entry`: Harrogath 4, Lut Gholein 1, Chaos 1), 분석 안 함.
+- `[Error]` 5: `moveTo: Failed to generate path` 2(a6 Pz-6 Stony Field, a7 Pz-55 Abaddon `usePortal → moveToUnit`, 둘 다 `no adjusted path` 10회 뒤 `[Error]`가 찍힘 — handoff 1-17의 오류 줄 없는 사례와 다른 호출 자리), a1 Pz-47 Durance of Hate 2 도착 직후 `[getWP] waypoint unit not found` → `[WP] wp.area:null` 12회 → `useWaypoint: Failed to use waypoint`(handoff 2-23 사례), a1 Pz-70 `Failed to enter the Palace in Act 2`, a1 Pz-72 `Town.goToTown: Failed to take TP`(Life Chicken과 같은 초).
+- 경로 줄: `no random path` 23, `original path` 22, `no original path` 34, `adjusted path` 32, `no adjusted path` 20(위 2건 각 10회), `fixed path` 0.
