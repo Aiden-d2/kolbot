@@ -5,6 +5,7 @@
 ### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
 - 홀드 판정은 `holdRule.Owned`(옛 `Qty`)를 `eval(보유 개수 + Owned)`로 본다.
 - tiered 판정: 규칙에 `Tiered`가 있으면 `Config.Tiered`가 참일 때만 통과(부위별 `Config.TieredGear`·반대 형태 삭제).
+- 확인: 261029 로그 — nip 로드 오류·표시 줄 0(ScriptErrorLog·회색 콘솔), print `equipped:` 새 칸 이름만, ItemLog 기어 조건 표시 124줄(그중 100줄을 그 시각 착용 tier와 대조, 기준 이상이 된 뒤 줍기 0). `[tiered]`(ItemLog `(Tiered)` 0)·홀드 기본값은 사례를 확인하지 않음. 검증 통과(사용자 261029, 같은 헤더 항목 공통).
 
 ## EvaluateItem
 

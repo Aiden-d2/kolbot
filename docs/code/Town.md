@@ -9,6 +9,10 @@
 - 경위(261021 사용자 로그): 장착 칸 클릭 `clickItem(0, 칸)`은 창을 닫아도·보관함을 열어도 커서에 남아 실패. 패킷 0x28은 보관함을 연 채·열지 않고도 성공. 참고: kolbot-SoloPlay도 0x28을 씀.
 - 확인: 261022 0x28 성공 23건·261023 14건, 실패 0, 빈 소켓보다 많이 줍지 않음. 검증 통과(사용자 261023). `(cursor)` 표시와 `onCursor`는 261023 `0f6da09`에서 삭제(옛 handoff 3-28). 261025 로그에 `(cursor)` 0, 콘솔 `[Socket]` 29 = ItemLog `Socketed` 29(검증 통과 사용자 261025). 261023 이름 정리 뒤 모양은 지금 도는 로그(`33d3ae3`)에서 처음 보인다.
 
+### 261028 Claude: 매니저 아이템 로그는 tier가 오를 때만, ItemLog 소켓 상태 (`dfc884b`, 사용자 요청, 옛 handoff 3-44)
+- 보석마다 넣기 전 tier(`NTIP.GetScore`, 새 지역 변수 `tierBefore`)와 넣은 뒤 tier(`Equip.getEquippedItem(칸).tier`)를 비교해 올랐을 때만 `Misc.logItem("Socketed")`. 콘솔 `[Socket]`·print·ItemLog는 보석마다 그대로. ItemLog `Socketed` 줄 끝 `{nip 줄 / (찬/전체)}`(매칭 줄 없으면 `{(찬/전체)}`).
+- 확인: 261029 로그 ItemLog `Socketed` 52줄 = 콘솔 `[Socket]` 52줄, `(찬/전체)` 모두 일치. 매니저 아이템 로그 쪽은 로그를 받지 않아 보지 않음. 검증 통과(사용자 261029).
+
 ## heal
 
 ### 261021 Claude: 끝의 `me.cancel()` 삭제

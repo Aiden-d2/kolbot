@@ -118,7 +118,7 @@
 - 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`.
 - (261022 `482171b`에서 바뀜) `chores slow: clearInventory|buyPotions Ns`(261021~261022 로그) → `chores Ns: pre heal id inv [npc:<NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`(doChores 전체 10초 초과만, Claude 추가). `buyPotions: buy failed 코드 gold: columns:|buffer`(261021)는 그대로. 판정: 어느 단계가 긴가 — inv의 pots(물약 정리, 261022부터 마시기), belt 클릭 수, buy의 npc(상점 NPC까지 걷기·열기)와 구매 횟수·실패, 시작 시 NPC 메뉴(08)·거래창(0C). 제거 조건: handoff 3-27 판정 뒤 삭제 여부 결정. 261023 `0f6da09`부터 belt 뒤에 `cur 시도/실패 put N shift 시도/실패 ui 직전>직후 remain N`(handoff 3-27)이 붙고, 벨트 실패가 1건이라도 있으면 10초 미만이어도 찍힘. `ui`는 `08`(NPC 메뉴)·`01`(인벤토리 창), 없으면 `-`.
 - `belt shift fail: 코드 col:N [열 물약 코드] ping:N inv:true/false`(`d87cfcb`, handoff 3-27) — 벨트 넣기 shift-click 실패마다 정리 안에서 찍힘. inv false = 클릭이 늦게 반영됨(핑), inv true = 실제 실패(물약 코드와 열 코드 비교). 제거 조건: 3건 이상 분류.
-- `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정.
+- `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정. **261029 삭제**(가설 틀림 판정, handoff 1-18).
 - `[Storage.MoveTo] retry / catch`, `moved from cube to drop/sell`, `[TK] talk skipped N npc:`(스페이스 20번 다 씀, 261006·261020에 각 1건, 모두 Greiz 20), `[hire] hiring retry (N/5)`.
 - `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`(261024 `789d80d`, Claude 추가, handoff 3-32) — 착용 중인 재료 베이스를 룬워드·펀치 앞에서 뺐는가. ok 뒤 같은 방문의 `[Runeword]`/`[Punch]`와 ItemLog `Runeworded`/`Transmuted`, 그 칸 재장착(`Equipped`·`Granted`). 261024 `aafbe50`부터 입은 베이스의 재료도 줍는다(ItemLog `Ingredient`). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0.
 - d2bs 로그 `enchant: 이름/classid`(S.SFFW 65레벨부터 아마존·2막 용병·발키리·섀도 워리어·그리즐리).
@@ -138,17 +138,14 @@
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
-| 3-17 | MoveToSlot 실패와 파티 수락 시각이 겹치나(1-6) | 4-6 `party accept` |
 | 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
 | 3-13 | 라다먼트 북 버리기 | 4-5 `dropping radament book` |
-| 3-29 | useUnit 계단 클릭 앞 대기 게이트(보류, 아시아 서버 결과로 다시 봄) | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42, 261025 283, 261026 275, 261027 526, 261028 260) |
-| 3-32 | 착용 중인 베이스로 룬워드·펀치(룬워드 확정, 펀치 미발견) | 4-6 `[Runeword] takeOff`·`[Cube] takeOff` |
-| 3-34 | SafeTele 발밑 노드 제외 | 육안, Life Chicken 수·위치 |
+| 3-29 | useUnit 계단 클릭 앞 대기 게이트 | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42, 261025 283, 261026 275, 261027 526, 261028 260, 261029 아시아 45) |
 | 3-35 | default.dbj 시작부 오류를 멈춤으로 | 콘솔·trace `Init failed in default.dbj. Stopping`, 앞의 `[Error]`, 30분짜리 빈 게임 없음 |
 | 3-38 | 소켓용 완성 보석 큐빙(설정에 완성 보석 번호를 넣은 뒤) | ItemLog `Ingredient` 흠 없는 보석 → `Transmuted` → `Socketed` |
-| 3-39 | NTIP 파서 읽기 통일·문법 검사(`4a1738d` 외, 261028 로그에는 없음) | 회색 콘솔·`ScriptErrorLog.txt` nip 오류 0, print `equipped: [ArmG]` 새 칸 이름, ItemLog `(ArmG<31)`·`(Tiered)` |
-
-- 261028 추가: handoff 3-40~3-46(`dfc884b`·`9c48f56`)은 각 항목 검증 방법, 3-47(3막 `Traveling to Travincal` 직후 desync 0), 3-48(`Tomb chest not reached` 수), 3-49(`chores`·`belt shift fail`·`buy failed` 줄과 `party has left`의 상태·`step:` 0).
+| 3-43 | 듀리엘 시작 Atma 대화(2단계, `59bf6c8`) | 나이트메어·헬 DURIEL 구멍 앞 `Party desynced 1`, 빠진 프로필 Lut Gholein |
+| 3-50 | moveTo 계열 random 복원 | `no random path` 지점·수, 육안 |
+| 3-51 | 피겨린 파티 사냥·포털 리셋 | `Figurine incompleted` 수, 콘솔 `=== FIGURINE ===` 위치, `portalReset` 뒤 desync |
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.
@@ -163,5 +160,5 @@
    - 판정에 걸리는 이상한 사례는 원인이 나올 때까지 따라간 뒤 판정한다. "안 봄"으로 남기지 않는다. 끝까지 못 가면 알 수 없음으로 두고 이유를 적는다.
 3. **기존 결정·결론이 흔들리는 사례는 따로 알린다.** handoff·코드 노트·`rejected.md`·`log_results.md`의 앞선 결정이나 결론과 맞지 않는 사례(반증, 다른 원인, 조건이 달라짐)를 "기존 결론과 다른 것"으로 분리해 근거와 함께 보고한다.
 4. **그 밖 관찰**(4-1~4-7): 결과 나옴 / 상황 없음 / 원인 못 찾음 표, 숫자마다 근거 줄 예시. 새 문제는 사실만 적고 handoff 1절 후보로 낸다.
-5. **보고 순서**: ① 데이터 요약 ② 3절 판정표 ③ 기존 결론과 다른 것 ④ 그 밖 관찰 ⑤ 결정이 필요한 것(사실과 선택지, Claude 제안은 "제안"으로 표시하고 규모: 파일 수, 새 변수·키·로그) ⑥ 로그 정리 후보(목적을 다해 삭제 / 실패 때만 남김 / 새로 필요(승인 필요) / 실패 기록용 유지, 사용자 지시 261006).
+5. **보고 순서**: ① 데이터 요약 ② 3절 판정표(사용자 지시 261029: 항목마다 한 행, 열은 `항목 | 확인할 사항 | 이전까지 확인된 것 | 미확인 | 이번 로그에서 확인된 것 | 성공/실패 | 개선안`. 성공/실패 칸에는 확정·실패·케이스 미발견·알 수 없음·이번 로그에 적용되지 않음 중 하나) ③ 기존 결론과 다른 것 ④ 그 밖 관찰 ⑤ 결정이 필요한 것(사실과 선택지, Claude 제안은 "제안"으로 표시하고 규모: 파일 수, 새 변수·키·로그) ⑥ 로그 정리 후보(목적을 다해 삭제 / 실패 때만 남김 / 새로 필요(승인 필요) / 실패 기록용 유지, 사용자 지시 261006).
 6. **handoff 정리**: 사용자가 판정과 다음 할 일을 정하면 handoff(3절 정리, 2절 이동), 코드 노트, `log_results.md`(묶음 결과), 이 문서 5절 표를 고친다. 커밋·푸시는 묻고 한다(CLAUDE.md 1절). 여기까지가 로그 분석이다.
