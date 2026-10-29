@@ -537,8 +537,10 @@ var Config = {
 
 	//Sorceress
 	UseTelekinesis: false,
-	CastStatic: false,
-	StaticList: [],
+	CastStatic: false,		// true = Static Field before the attack skills (any build that has it), false = off	//261029 switch only
+	StaticHP: [25, 33, 50],		// stop at this hp % on other monsters [normal, nightmare, hell]	//261029
+	StaticBossHP: [10, 33, 50],	// stop at this hp % on bosses (spectype & 0x7, the AttackSkill boss slot) [normal, nightmare, hell]	//261029
+	StaticList: [],			// names or classids; empty = every monster	//261029
 	Enchant: {	//261019
 		Enabled: false,
 		Player: [],			// build names (Settings.js), ex. ["M.HYBR"]	//261028 was class ids

@@ -118,24 +118,6 @@ var AutoBuildTemplate = {
 			}
 		},
 
-	6:	{
-			Update: function () {
-				/*if (me.diff === 0) {
-					if (me.charlvl < 25) {
-						Config.CastStatic = 25;	//no limits
-					} else {
-						Config.CastStatic = 10;	//no limits
-					}
-				} else if (me.diff === 1) {
-					Config.CastStatic = 33;	//33%
-				} else {
-					Config.CastStatic = 50;	//50%
-				}
-				
-				Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];*/
-			}
-		},
-
 	12:	{
 			Update: function () {
 				Config.AttackSkill = [-1, 47, -1, 47, -1, -1, -1];			// Fire Ball
@@ -171,6 +153,13 @@ var AutoBuildTemplate = {
 	25:	{
 			Update: function () {
 				Config.Dodge.Enabled = true;	//261002 18 -> 25
+			}
+		},
+
+	46:	{
+			Update: function () {
+				Config.CastStatic = true;	//261029 Static Field logic (ClassAttack)
+				Config.StaticList = [];	//261029 every monster
 			}
 		},
 
