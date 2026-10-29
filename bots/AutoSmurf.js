@@ -414,7 +414,7 @@ function AutoSmurf() {
 			}
 			
 			if (getTickCount() - tick > (leaderTravel ? 600 : 120) * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)	//261026 600s while the leader travels
-				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "missing(okCount): " + this.missing("okCount").join(", ") + " teamOk " + teamOk + " travel " + leaderTravel);	//261026 + travel	//260930	//261021 who did not come
+				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "missing(okCount): " + this.missing("okCount").join(", ") + " teamOk " + teamOk);	//261029 travel removed (handoff 3-47 judged)	//260930	//261021 who did not come
 			}
 		}
 
@@ -3314,7 +3314,7 @@ function AutoSmurf() {
 	};
 
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
-		var journal, i, tick, talked;	//261004 chicken -> bossGuard	//261028 tick, talked: journal dialog watch
+		var journal, i, tick;	//261004 chicken -> bossGuard	//261029 talked removed (journal trace gone)
 
 		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===", true);	//260930
 		

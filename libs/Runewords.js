@@ -392,7 +392,7 @@ RuneLoop:
 				}
 
 				if (k === Config.RunewordRecipe[j][0].length) {	//261024 all runes owned
-					if (Misc.takeOff(worn[i].unit, worn[i].merc, "[Runeword]")) {
+					if (Misc.takeOff(worn[i].unit, worn[i].merc)) {
 						have = n;
 					}
 

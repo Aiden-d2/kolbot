@@ -50,6 +50,9 @@
 - 이유: 리더가 웨이를 모으는(`travel`) 동안 팔로워가 다음 okCount에서 120초 퇴장(261026 6게임). 바뀌기 전(`f26ef73^`)에는 `buffCount`·`syncBO` 대기에 타임아웃이 없었다.
 - 확인: 웨이 모으기 뒤 120초 퇴장 0 — 261027 웨이 모은 21게임, 261028 Pz-32 Ancient's Way 221초 모으기 뒤 shenk syncBO 8명 통과. 261029 `travel true` 퇴장 0. 검증 통과(사용자 261029).
 
+### 261029 Claude: 퇴장 상세의 `travel` 삭제 (사용자 요청)
+- 검증 통과(옛 handoff 3-47)로 `Party desynced 1` 상세 끝 ` travel true/false` 삭제. `leaderTravel`(10분 대기)은 그대로.
+
 ## this.buffCount
 
 ### 261025 Claude: 벨트 넣기·남는 물약 정리를 `clearBelt` 끝으로 (`81d5b43`, 사용자 승인, 옛 handoff 3-21·2-17·3-27)
@@ -127,6 +130,10 @@
 
 ### 261004 Claude: 공통 보스 보호로 교체
 - 기존 `setLifeChicken(0)`·죽음 퇴장·치킨 복구를 `bossGuard(0)`·`bossEnd(10)`으로 교체, `okCount(10)` 유지.
+
+### 261029 사용자·Claude: 일지 판별 trace와 잔재 삭제 (`59bf6c8`, 옛 handoff 3-43 바꾼 것 2)
+- 사용자 `59bf6c8`: `[Summoner] journal` trace와 1회 누르기 삭제, 일지 반복은 "누르기 → 46번 포탈이 있으면 끝"(최대 3번). 듀리엘 쪽 변경은 handoff 3-43.
+- Claude(사용자 요청): 선언에 남은 지역 변수 `talked` 삭제(쓰는 곳 없음). `tick`은 팔로워 포탈 대기에서 씀.
 
 ## this.tombs
 
