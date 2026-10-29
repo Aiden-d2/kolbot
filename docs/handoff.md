@@ -56,6 +56,13 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **구현안**: 검토에서 정한다.
 - **검증 방법**: 검토에서 정한다.
 
+### 2-28. 0이 될 수 있는 delay 정리 (여러 파일, 2-2 연장, 사용자 261029)
+- **문제**(사용자): `me.ping`만 쓰는 delay는 서버 상태에 따라 0이 되어 strict 경고가 난다. delay 값이 0이거나 0이 될 수 있는 곳을 정리한다.
+- **확인된 것**(261029 main, 글자 그대로 찾은 결과만): `delay(me.ping)` 0곳(`Misc.js` 1곳은 주석), `delay(me.ping * 2)` 2곳(`Unit.prototype.openMenu`), `delay(0)` 0곳, 인자를 그대로 넘기는 곳 2곳(`Misc.poll`의 sleep 기본 40, `Packet.flash`의 wait 기본 `300 + 2 * me.ping`, 호출 쪽에서 넘기는 값은 안 봄). 다른 계산식(뺄셈·변수 조합)으로 만든 delay는 찾지 않았다.
+- **가설**: 없음.
+- **구현안**: 검토에서 정한다(찾을 범위, 0을 막는 방식).
+- **검증 방법**: 검토에서 정한다.
+
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
 ### 3-10. 라다먼트 `radamentOff`·`forceTombs` (`AutoSmurf.radament`·`tombs`)
