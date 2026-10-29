@@ -27,16 +27,16 @@ var AutoBuildTemplate = {
 		],
 		
 		Skills: [
+			{id: 123, target: 1, from: 42},	// Conviction
 			{id: 117, target: 1},			// Holy Shield
-			{id: 120, target: 1, from: 46},	// Meditation
+			{id: 115, target: 1},			// Vigor
 			{id: 112, target: 20},			// Blessed Hammer
 			{id: 113, target: 20},			// Concentration
-			{id: 115, target: 20},			// Vigor
-			{id: 108, target: 20, from: 51},// Blessed Aim
+			{id: 115, target: 20, from: 42},// Vigor
+			{id: 108, target: 20, from: 42},// Blessed Aim
 			{id: 101, target: 1},			// Holy Bolt
 			{id: 98, target: 1},			// Might
-			{id: 120, target: 1},			// Meditation
-			{id: 123, target: 17},			// Conviction
+			{id: 123, target: 18},			// Conviction
 		]
 	},
 
@@ -161,12 +161,6 @@ var AutoBuildTemplate = {
 		},
 
 	46:	{
-			Update: function () {
-				Config.Meditation = true;
-			}
-		},
-
-	83:	{
 			Update: function () {
 				Config.AttackSkill = [-1, 112, 123, 112, 113, 101, 123];	// Conviction
 			}
