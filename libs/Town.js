@@ -702,7 +702,7 @@ MainLoop:
 					if (me.charlvl < 25) {
 						Misc.itemLogger("Sold", item);
 						item.sell();
-						delay(me.ping * 2);	//260411
+						delay(me.ping * 2 + 100);	//261029
 
 						break;
 					}
@@ -731,11 +731,11 @@ MainLoop:
 									tpTomePos = {x: tpTome.x, y: tpTome.y};
 
 									tpTome.sell();
-									delay(me.ping * 2);	//260411
+									delay(me.ping * 2 + 100);	//261029
 								}
 							}
 
-							delay(me.ping * 2);	//260411
+							delay(me.ping * 2 + 100);	//261029
 
 							if (Storage.Inventory.CanFit(scroll)) {
 								scroll.buy();
@@ -749,7 +749,7 @@ MainLoop:
 						if (me.charlvl < 25 && npc.getItem(530) && me.gold < npc.getItem(530).getItemCost(0)) {	//261004 below lvl 25 with no gold for an ID scroll -> sell unid and go on
 							Misc.itemLogger("Sold", item);
 							item.sell();
-							delay(me.ping * 2);
+							delay(me.ping * 2 + 100);	//261029
 
 							continue;
 						}
@@ -792,7 +792,7 @@ MainLoop:
 					default:
 						Misc.itemLogger("Sold", item, result.line);
 						item.sell();
-						delay(me.ping * 2);	//260411
+						delay(me.ping * 2 + 100);	//261029
 						
 						break;
 					}
@@ -829,7 +829,7 @@ CursorLoop:
 					break CursorLoop;
 				}
 
-				delay(me.ping);	//260411
+				delay(me.ping * 2 + 100);	//261029
 			}
 		}
 
@@ -848,12 +848,12 @@ CursorLoop:
 
 			while (getTickCount() - tick < 500) {
 				if (unit.getFlag(0x10)) {
-					delay(me.ping * 2);	//260411
+					delay(me.ping * 2 + 100);	//261029
 
 					return true;
 				}
 
-				delay(me.ping);	//260411
+				delay(me.ping * 2 + 100);	//261029
 			}
 
 			delay(me.ping * 2 + 200);	//260411
@@ -916,7 +916,7 @@ CursorLoop:
 							return true;
 						}
 						
-						delay(me.ping + 100);	//eom
+						delay(me.ping * 2 + 100);	//eom
 					}
 				} catch (e) {
 					Misc.caughtError("Town.shopItems", e);	//260930
