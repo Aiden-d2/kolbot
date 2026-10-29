@@ -407,3 +407,34 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - `[Error]` 1: a1 Pz-49 03:31 Catacombs Level 2(22648,6513) `waypoint unit not found` → `wp.area:null` 12회 → `useWaypoint: Failed to use waypoint`(handoff 2-23).
 - 경로 줄: `no random path` 40, `original path` 61, `no original path` 21, `adjusted path` 21, `no adjusted path` 0, `fixed path` 0.
 - `Town chicken` 57, `Town check` 133, `visitTown refused: Arreat Summit` 38, `[teleportTo failed]` 2.
+
+## 261029 묶음 (10/28 15:55 ~ 10/29 12:20, 8프로필 각 109게임, 아시아 서버)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 캐릭터로 노말부터 헬 파밍까지. 코드는 main 10/28 15:48까지(3-39 파서, `dfc884b`, `68483de`, `4e6087b` 포함), 실행 중 올라간 것은 nip(`e0bdccd`·`8c2e6ff`)뿐. 핑 16~94(trace 58줄, 중앙 47, 이전 묶음 150~340). 20:46~20:53(Pz-35 Throne 동시 크래시 7프로필, Pz-36 a7 퇴장 7줄, Pz-37 길찾기 오류 8건·핑 531~547·a3 퇴장 1줄)은 사용자 PC 부하(다른 컴파일 작업)로 제외(사용자 261029). 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 결과
+- 검증 통과(사용자 261029, → 코드 노트): 3-32 룬워드 takeOff ok 1(a2 18:05:57 `[ArmG] Double Axe` → Steel → 재장착), 펀치 3은 모두 보관함 베이스 / 3-39 nip 로드 오류 0, 새 칸 이름, 기어 조건 124줄 중 100줄 대조 위반 0 / 3-40 플레이어 인챈트 aozo-ie(M.HYBR)만 90회 / 3-44 `Socketed` 52 = `[Socket]` 52 / 3-47 `Traveling to Travincal` 16회 뒤 Kurast Docktown 퇴장 0, `act* BO` 8명 각 20회 / 3-48 `Tomb chest not reached` 0.
+- 3-17: 실패 24건, 수락 겹침 0 → 가설 틀림, 판별 trace `party accept` 삭제, 문제는 `handoff.md` 1-18로(사용자 261029).
+- 3-29: timeout 45줄(a1 16, 걷는 프로필 29), 회차 0 40·1 5, 8회 모두 실패 0.
+- 3-43: 1단계 실패(DURIEL desync Pz-53 나이트메어 4명, Pz-72 헬 1명). 상세는 `handoff.md` 3-43.
+- 케이스 미발견: 3-10, 3-13, 3-35, 3-38. 적용되지 않음: 3-50, 3-51.
+- 정정(261029): 분석 중 "`Config.Tiered`를 true로 만드는 코드가 없다"고 했으나 틀림 — `Equip.updateTiers`(`libs/Misc.js`)가 전 칸이 `TierGoal` 이상이면 켠다. 이번 로그 ItemLog `(Tiered)` 0.
+
+### 핑·타임아웃 (사용자 요청 관점)
+| 묶음 | 핑 | 게임 | Life Chicken (a1 / 나머지) | useUnit timeout (a1 / 걷는 프로필) | Town chicken | teleportTo failed | 사망 |
+|---|---|---|---|---|---|---|---|
+| 261025 | – | 110 | 54 (40 / 14) | 283 (210 / 73) | 89 | 4 | 5 |
+| 261026 | – | 117 | 46 (30 / 16) | 275 (215 / 60) | 62 | 3 | 1 |
+| 261027 | 156~344 | 146 | 47 (26 / 21) | 526 (461 / 75) | – | – | 4 |
+| 261028 | 170~310 | 105 | 46 (27 / 19) | 260 (198 / 62) | 57 | 2 | 1 |
+| 261029 | 16~94 | 109 | 31 (6 / 25) | 45 (16 / 29) | 54 | 13 | 0 |
+- 치킨이 준 것은 a1뿐. 31건 중 23건이 `Town chicken` 0~3초 뒤(a1 Town chicken 10회 중 5회). 치킨 판정·TownChicken·Pather·Attack·치킨 설정은 261028 묶음과 같은 코드(git diff), 랜덤무브 통일(`dfc884b`)은 들어감 → 핑만 바뀐 비교는 아님.
+- teleportTo failed 13: a1 2막 이동 17:45~17:48 6건, Durance of Hate Level 3 17592,8069 근처 6건(a1·a2), Plains of Despair 1건(1초 뒤 a1 치킨). 핑 31~94.
+- getWP `menu not opened` 104(이전 96~104), `High ping` 퇴장 0.
+
+### 그 밖
+- 조기 종료 사유(제외 구간 뺌): Life Chicken 31, desync 12줄(9게임), Figurine incompleted 7, Not ready for act2 3, Not ready to start Duriel 2, moveToExit failed 2(Tamoe → Monastery Gate, Outer Cloister → Barracks). `Diablo not found` 0.
+- desync에서 a3가 빠진 게임 6(Pz-40 POA Harrogath, Pz-72 두리엘 마을, Chaos 4: 04:38·06:09·09:31·12:15). Chaos 4게임은 퇴장 순간 a3와 퇴장한 프로필의 거리 4~27칸(04:38 4, 06:09 27, 09:31 22, 12:15 16), 그 앞 150초 a3 trace 줄 없음(06:09만 87초 전 `Town check (direct)` 다녀옴). Pz-27(19:41) Travincal a6는 `Town check (direct)` 다녀온 뒤 okCount 미도착.
+- 사망 0. 보스가드 중 사망·시체 회수 0. 크래시 2(a5 21:19 Harrogath, a8 22:32 Pit of Acheron), 분석 안 함. Realm down 02:07 7프로필 동시.
+- `[Error]` 2: a8 Pz-22 19:24 Lut Gholein `usePortal → moveToUnit` 길찾기 실패(목표 22576,15601, `no adjusted path` 10회 뒤, 261027 a7 Pz-55와 같은 호출 자리), a1 Pz-66 02:29:50 Throne `precast.js #490 unit.getParent(...) is undefined`(소환수 인챈트 줄, 261028 전부터 있던 코드, 그 게임이 끝남).
+- 경로 줄: `no random path` 48, `original path` 48, `no original path` 9, `adjusted path` 1, `no adjusted path` 10, `fixed path` 0.
+- `Town chicken` 54, `Town check` 245(이전 126~144, a2 65·a8 59), `Transmuted Fail` 4.

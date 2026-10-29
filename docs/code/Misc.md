@@ -22,6 +22,7 @@
 
 ### 261028 사용자: 기어 칸 이름·`TieredGear` 삭제 (handoff 3-39)
 - `Config.TieredGear`(부위별 도달) 설정 2줄 삭제. 전 칸이 `TierGoal` 이상이면 `Config.Tiered = true`는 그대로(게임 시작 때 빌드 1레벨 Update에서 부름). 칸 이름은 `Config.Gear`를 따라 `equipped: [ArmG] N`처럼 찍힌다.
+- 확인: 261029 로그 — nip 로드 오류·표시 줄 0(ScriptErrorLog·회색 콘솔), print `equipped:` 새 칸 이름만, ItemLog 기어 조건 표시 124줄(그중 100줄을 그 시각 착용 tier와 대조, 기준 이상이 된 뒤 줍기 0). `[tiered]`(ItemLog `(Tiered)` 0)·홀드 기본값은 사례를 확인하지 않음. 검증 통과(사용자 261029, 같은 헤더 항목 공통).
 
 ## Misc.openChests
 
@@ -42,6 +43,15 @@
 
 ### 261021 Claude: default.dbj는 직접 마을행 (`ab94751`, 옛 handoff 3-5)
 - default.dbj면 `Town.visitTown`을 직접 부른다(멈춤 없음, trace `Town check (direct)`). TownChicken(visitTown 안에서만 부름)·MapHelper(default와 동시에 움직임)는 기존 메시지. 재진입 막기는 `Town.md` visitTown. 검증 통과(사용자 261023).
+
+## Misc.wornItems / Misc.takeOff
+
+### 261024 Claude: 착용 중인 재료 베이스로 룬워드·펀치 (`789d80d`·`aafbe50`·`9c0d445`, 사용자 결정 261023·261024·261025, 옛 handoff 3-32)
+- 문제: 보유 개수(`NTIP.CheckQuantityOwned`)는 보관품·플레이어 착용·용병 장비를 모두 세는데, 룬워드 베이스 찾기(`getBase`)와 큐빙 재료(`Cubing.buildLists`)는 보관품만 봐서 착용 중인 재료 베이스가 홀드를 차지하면서 재료로는 쓰이지 않았다.
+- `Misc.takeOff(item, merc, tag)`(새 함수, 룬워드·큐빙 공통): 인벤토리 자리 확인 → 빼기(플레이어 `Storage.Inventory.MoveTo`, 용병 `clickItem(4, 칸)` → 커서 → 인벤토리) → 커서에 남으면 `cursorCheck` → `Equip.updateTier`/`Grant.updateTier` → trace `[Runeword|Cube] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`. 자리가 없으면 빼지 않는다.
+- `Misc.wornItems()`(새 함수, `aafbe50`): 플레이어 머리·몸·양손 + 용병 장착품 목록. 용병 장비는 `merc.getItem()` + `getNext()`로 하나씩 읽고 `copyUnit`으로 복사(`9c0d445`, `merc.getItems().forEach`가 게임에서 `[].forEach is not a function`).
+- 다시 입기는 기존 `doChores`의 `Equip.autoEquip`·`Grant.autoEquip`.
+- 확인: 룬워드 takeOff ok 3건 — 261026 a1 `[ArmR] Double Axe` → Steel, 261028 a3 `[Body] Breast Plate` → Stealth, 261029 a2 `[ArmG] Double Axe` → Steel(18:05:57 → 18:06:08 `Runeworded` → 18:06:32 `Equipped`), fail 0. 착용 베이스 펀치는 사례 없음(펀치는 모두 보관함 베이스). 검증 통과(사용자 261029). trace `[Runeword] takeOff`·`[Cube] takeOff`는 코드에 남아 있음.
 
 ## Packet.openMenu
 

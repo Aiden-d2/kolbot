@@ -50,7 +50,6 @@ function partyCheck () {	//260907
 			}
 		} else {	// Accept invites
 			if (party.partyflag === 2) {
-				Misc.trace("party accept: " + party.name);	//261021 MoveToSlot check: does a failed slot move line up with this click (remove once judged)
 				clickParty(party, 2);
 				delay(100);
 			}

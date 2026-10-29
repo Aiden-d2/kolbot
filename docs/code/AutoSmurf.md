@@ -22,6 +22,12 @@
 - `AutoSmurf`의 `myX`·`myY` 삭제(이를 쓰던 옛 주석 줄 5개도 삭제) → 오프셋은 `Pather.myX/myY`(reflection 유지). 프로필별 자리는 Pather 표 순서로 바뀜. 막힌 오프셋은 `no random path` → 원래 좌표.
 - 확인: 사용자 육안 검증 통과(261028).
 
+## this.start
+
+### 261025 Claude: 팀 대기를 okCount로 통일 (`f26ef73`, 옛 handoff 3-36·3-47)
+- 게임 시작 대기(readyCount·teamReady)를 `this.okCount()`로(2분 퇴장). 지운 변수 `imReady`·`readyCount`·`teamReady`.
+- 확인: 261026·261027·261028·261029 로그 `Party desynced 2`·`syncBO timeout`·`Team didn't join` 0(261029 Pz-36 크래시 직후 1건은 사용자 PC 부하로 제외), `act* BO` 팀 전원 같은 회수(261029 8명 각 20회), 카우 정상 종료. 검증 통과(사용자 261029).
+
 ## this.okCount / this.teamCount
 
 ### 261004 Claude: 죽은 사람도 타임아웃, 타임아웃 상세
@@ -34,10 +40,30 @@
 - 타임아웃 줄 `[Quit] Party desynced 1/2: missing(okCount|teamCount): 프로필, ... teamOk X`.
 - 확인: 261022·261023 로그. desync 때 안 온 프로필 이름이 남고, 261023 3게임 모두 그 프로필이 실제로 늦음(리셋 경쟁 0). 검증 통과(사용자 261023). 늦은 이유는 다른 증상으로 `handoff.md` 3-26.
 
+### 261025 Claude: 팀 대기를 okCount로 통일 (`f26ef73`, 옛 handoff 3-36·3-47)
+- `start`(readyCount·teamReady, 2분 퇴장), `buffCount`(buffCount·teamBuff, 타임아웃 없음), `syncBO`(BOCount·BOReady, 30초 퇴장), `syncBO` 안 syncWP 10회 대기를 모두 `this.okCount()`로. 한 방향 신호(tpReady·msgLeader·earlyReturn·좌표·teamFigurine)와 스위치는 그대로.
+- 알려진 위험(추정, 당시 기록): 5막처럼 syncBO가 연달아 불릴 때 리더 BO가 그 사이에 꺼지면 다음 회차 BOing이 앞 회차에 읽힐 수 있다. 팀원 간 `partyLevel`·퀘스트 상태가 다르면 그 자리 okCount에서 120초 퇴장한다.
+- 확인: 261026·261027·261028·261029 로그 `Party desynced 2`·`syncBO timeout`·`Team didn't join` 0(261029 Pz-36 크래시 직후 1건은 사용자 PC 부하로 제외), `act* BO` 팀 전원 같은 회수(261029 8명 각 20회), 카우 정상 종료. 검증 통과(사용자 261029).
+
+### 261026 Claude: 리더 웨이 모으기 중 okCount 10분 (`d87cfcb`, 옛 handoff 3-36·3-47)
+- 새 변수 `leaderTravel`(onCopyData `case "travel"`에서 켬). 타임아웃 `leaderTravel ? 600 : 120`초, 퇴장 상세 끝에 `travel true/false`, okCount 단계 끝에서 `leaderTravel = false`(다음 okCount 하나에만 쓰임).
+- 이유: 리더가 웨이를 모으는(`travel`) 동안 팔로워가 다음 okCount에서 120초 퇴장(261026 6게임). 바뀌기 전(`f26ef73^`)에는 `buffCount`·`syncBO` 대기에 타임아웃이 없었다.
+- 확인: 웨이 모으기 뒤 120초 퇴장 0 — 261027 웨이 모은 21게임, 261028 Pz-32 Ancient's Way 221초 모으기 뒤 shenk syncBO 8명 통과. 261029 `travel true` 퇴장 0. 검증 통과(사용자 261029).
+
 ## this.buffCount
 
 ### 261025 Claude: 벨트 넣기·남는 물약 정리를 `clearBelt` 끝으로 (`81d5b43`, 사용자 승인, 옛 handoff 3-21·2-17·3-27)
 - 노멀에서 해독 물약을 산 뒤 부르는 단독 `Town.clearInventory()` 앞에 `Town.clearBelt()`(벨트 넣기가 `clearBelt`로 옮겨 감, `Town.md` clearBelt). 검증 통과(사용자 261028).
+
+### 261025 Claude: 팀 대기를 okCount로 통일 (`f26ef73`, 옛 handoff 3-36·3-47)
+- buffCount·teamBuff 대기를 `this.okCount()`로(타임아웃 없던 대기 → 120초). 지운 변수 `myBuff`·`buffCount`·`teamBuff`.
+- 확인: `this.okCount` 같은 헤더 항목. 검증 통과(사용자 261029).
+
+## this.syncBO
+
+### 261025 Claude: 팀 대기를 okCount로 통일 (`f26ef73`, 옛 handoff 3-36·3-47)
+- 리더는 BO가 필요할 때(`!me.getState(32)`)만 `BOing`을 한 번 보내고 okCount. 모두 okCount 뒤 `BOing`이 아니면 `return false`, 맞으면 `BOing = false`로 지우고 진행. `BOed` 변수·메시지 삭제. syncWP 10회 대기도 okCount.
+- 확인: 261026·261027·261028·261029 로그 `Party desynced 2`·`syncBO timeout`·`Team didn't join` 0(261029 Pz-36 크래시 직후 1건은 사용자 PC 부하로 제외), `act* BO` 팀 전원 같은 회수(261029 8명 각 20회), 카우 정상 종료. 검증 통과(사용자 261029).
 
 ## this.pickGold / this.giveGold
 
@@ -75,6 +101,12 @@
 - throw가 아닌 quitGame인 이유: throw는 Loader에서 `MinGameTime` 300초 대기 후 종료라 다른 조기 종료와 어긋남(사용자 결정 261022).
 - 확인: 261023 로그(119게임) 사유 줄로 끝남 6건(`moveToExit failed` 1, `Tomb chest not reached` 4, `Cube chest not reached` 1), `[Error] AutoSmurf.exitTo` 0. 무덤 4/10게임 퇴장은 미로형 지역에서 8명 동선이 꼬여 다시 시도가 많은 탓으로 봄(사용자) → 작동 통과(사용자 261023).
 
+## this.travel
+
+### 261026 Claude: 리더 웨이 모으기 중 okCount 10분 (`d87cfcb`, 옛 handoff 3-36·3-47)
+- 실제 이동 분기(`nextAreaIndex < areaIDs.length`) 첫 줄에서 메시지 `travel`을 보낸다(웨이가 이미 있어 이동하지 않으면 안 보냄).
+- 확인: 웨이 모으기 뒤 120초 퇴장 0 — 261027 웨이 모은 21게임, 261028 Pz-32 Ancient's Way 221초 모으기 뒤 shenk syncBO 8명 통과. 261029 `travel true` 퇴장 0. 검증 통과(사용자 261029).
+
 ## this.getQuestItem
 
 ### 261021·261022: 퀘스트 아이템 콘솔 (`ab94751`·`d8af14f`·`8a7ff56`, 옛 handoff 3-9·3-16)
@@ -95,6 +127,13 @@
 
 ### 261004 Claude: 공통 보스 보호로 교체
 - 기존 `setLifeChicken(0)`·죽음 퇴장·치킨 복구를 `bossGuard(0)`·`bossEnd(10)`으로 교체, `okCount(10)` 유지.
+
+## this.tombs
+
+### 261028 사용자: 무덤 상자 이동 재시도 3 → 10 (`68483de`, 옛 handoff 3-48)
+- 무덤 안 상자 프리셋까지 `Pather.moveTo(…, 3, true)` 바깥 반복 `j < 3` → `j < 10`(최대 moveTo 10번 × 경로 재시도 3). 그래도 25칸 넘으면 `[Quit] Tomb chest not reached`. 같은 3회 상한의 다른 5곳(Arcane·Cube chest·Radament chest·Orifice·Red portal)은 그대로.
+- 이유: 261023·261027·261028 묶음마다 `Tomb chest not reached` 4건, 앞에 `[Error]`·경로 보정 줄 없음.
+- 확인: 261029 로그 `Tomb chest not reached` 0, 무덤 구간 desync 1건(18:30 a8 Tomb #3, 그 시각 a8 trace 줄 없음). 검증 통과(사용자 261029).
 
 ## this.radament
 
@@ -139,15 +178,29 @@
 - 리더는 `makePortal` 뒤 `tpReady` 전송, 팔로워는 `while (me.inTown) { if (tpReady) usePortal(118, null) }` 뒤 `tpReady = false`. 다른 보스와 같은 방식. 나머지 tpReady 없는 대기 목록은 기각(`rejected.md`).
 - 확인: 다른 보스와 같은 기존 로직이라 검증 통과로 처리(사용자 261028).
 
-
 ## this.farmingCows (followDriver)
 
 ### 260928 사용자: followDriver 교체
 - 드라이버(리더)가 보이면 거리 > 30 → moveTo(clear 없이 따라붙기) + BO, 15~30 → `moveTo(..., 3, true)`(경로 노드마다 clear, `"killMonsters"`면 false), 15 이하 → `Attack.clear(25)`. 안 보이고 msgNode가 있으면 같은 규칙으로 msgNode 기준, 둘 다 없으면 `Attack.clear(15)`.
 - 사용자 원문의 msgNode 분기 `getDistance(me, driver) > 15`는 driver가 없는 분기라 `getDistance(me, msgNode[0], msgNode[1]) > 15`로 고쳐 반영(Claude).
 
+### 261025 Claude: 팀 대기를 okCount로 통일 (`f26ef73`, 옛 handoff 3-36·3-47)
+- 리더는 `msgLeader`를 한 번만 보냄(반복·`msgFollower` 답장 삭제). 팀 대기는 뒤의 기존 okCount.
+- 확인: `this.okCount` 같은 헤더 항목. 검증 통과(사용자 261029).
+
 ## onCopyData (main의 copydata 처리)
 
 ### 261021 Claude: ToolsThread 중계 받기 (`eddab3a`, 옛 handoff 3-2)
 - 처리 본문을 `onCopyData`로 빼서 copydata와 scriptmsg(`{relay: true, id, data}`, ToolsThread가 넘김)에서 부른다. 중계 쪽은 `ToolsThread.md`.
 - 확인: 261022·261023 로그. 검증 통과(사용자 261023).
+
+### 261026 Claude: 리더 웨이 모으기 중 okCount 10분 (`d87cfcb`, 옛 handoff 3-36·3-47)
+- `case "travel"`: `leaderTravel = true`(`this.okCount` 참고).
+- 확인: 웨이 모으기 뒤 120초 퇴장 0 — 261027 웨이 모은 21게임, 261028 Pz-32 Ancient's Way 221초 모으기 뒤 shenk syncBO 8명 통과. 261029 `travel true` 퇴장 0. 검증 통과(사용자 261029).
+
+## main 2·3막 팔로워 루프
+
+### 261028 사용자: 2·3막 팔로워 syncBO 신호를 먼저 지움 (`68483de`, 옛 handoff 3-47)
+- `if (syncBO) { this.syncBO(); syncBO = false; }` → `syncBO = false; this.syncBO();` 2곳(2막·3막). 새 변수·함수·로그 없음.
+- 이유(261028 코드 읽음): 팔로워가 앞 syncBO의 끝(웨이로 마을 복귀 + 대기)을 도는 동안 받은 다음 `syncBO` 신호를 끝난 뒤 지웠다. 리더는 웨이가 이미 있으면 travel이 바로 돌아와 1초 안팎에 다음 신호를 보낸다(261028 Kurast Docktown 10게임 퇴장, `Traveling to Travincal` 뒤 121~122초).
+- 확인: 261029 로그 `Traveling to Travincal` 16회 뒤 Kurast Docktown 웨이 자리 퇴장 0(261028 10게임 연속). 검증 통과(사용자 261029).

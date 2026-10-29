@@ -7,6 +7,7 @@
 - `TierMerc` 칸: `Helm`, `Armor`, `ArmG`.
 - nip 기어 조건 키는 이 이름의 소문자(`[armg]`, 용병 `[mercarmg]`), 값 `goal`은 `TierGoal.<칸>`(`NTItemParser.md` ParseRule).
 - 로그 칸 이름도 이 이름(`equipped: [ArmG]`, takeOff·socketGems trace, 아이템 로그 `(ArmG<41)`).
+- 확인: 261029 로그 — nip 로드 오류·표시 줄 0(ScriptErrorLog·회색 콘솔), print `equipped:` 새 칸 이름만, ItemLog 기어 조건 표시 124줄(그중 100줄을 그 시각 착용 tier와 대조, 기준 이상이 된 뒤 줍기 0). `[tiered]`(ItemLog `(Tiered)` 0)·홀드 기본값은 사례를 확인하지 않음. 검증 통과(사용자 261029, 같은 헤더 항목 공통).
 
 ## TieredGear
 
