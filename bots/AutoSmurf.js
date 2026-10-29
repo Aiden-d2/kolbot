@@ -2066,7 +2066,7 @@ function AutoSmurf() {
 			
 			burial = getPresetUnit(17, 1, 805);
 			
-			Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true, true);
+			Pather.moveTo(burial.roomx * 5 + burial.x, burial.roomy * 5 + burial.y, 15, true, true, true);	//261029 random
 			
 			try {
 				Attack.clear(0, getLocaleString(3111)); // Blood Raven //260929	//261003 10 -> 0: her minions die with her, so the end pickit (range 0 -> 25) gets their drops
@@ -2221,11 +2221,11 @@ function AutoSmurf() {
 					this.okCount();	//260922
 					Precast.doPrecast(true);
 					
-					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true); //move to tree
+					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true, true); //move to tree	//261029 random
 					
 					Attack.clear(20);	//261002
 					
-					Pather.moveToPreset(me.area, 1, 738, 5, 5, true); //move to tree	//260929
+					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, false, true); //move to tree	//260929	//261029 random
 					
 					if (Leader) {
 						if (!Pather.getPortal(null, null)) {
@@ -2293,11 +2293,11 @@ function AutoSmurf() {
 			
 			Pather.teleport = false;
 
-			Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true);	//260822	//261002 no offset
+			Pather.moveToPreset(me.area, 1, 737, 0, 0, true, true, true);	//260822	//261002 no offset	//261029 random
 			
 			Attack.clear(20);	//261002
 			
-			Pather.moveToPreset(me.area, 1, 737, 0, 0, true);	//260822	//260929	//261002 no offset
+			Pather.moveToPreset(me.area, 1, 737, 0, 0, true, false, true);	//260822	//260929	//261002 no offset	//261029 random
 			
 			if (!me.getQuest(4, 4) && me.findItem(525)) {	//redportal already open
 				stoneA = getUnit(2, 17);
@@ -2582,7 +2582,7 @@ function AutoSmurf() {
 					break;
 				}
 				
-				Pather.moveTo(smith.roomx * 5 + smith.x, smith.roomy * 5 + smith.y, 3, true);	//260822	//261002 no offset
+				Pather.moveTo(smith.roomx * 5 + smith.x, smith.roomy * 5 + smith.y, 3, true, false, true);	//260822	//261002 no offset	//261029 random
 			}
 			
 			if (getUnit(1, 402)) {
@@ -2914,11 +2914,11 @@ function AutoSmurf() {
 		
 		Precast.doPrecast(true);
 
-		Pather.moveTo(20047, 4898, 10, true);
+		Pather.moveTo(20047, 4898, 10, true, false, true);	//261029 random
 		
 		Attack.clear(30);	//261004
 		
-		Pather.moveTo(20007, 4898, 10, true);	//261004
+		Pather.moveTo(20007, 4898, 10, true, false, true);	//261004	//261029 random
 		
 		if (me.area === 33 && Pather.moveToExit(34, true, true) !== true) {	//261021 was clearToExit(33, 34) (endless retry): one try, then quit
 			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(33) + " -> " + Pather.getAreaName(34));
@@ -3002,10 +3002,10 @@ function AutoSmurf() {
 				this.okCount();	//260922
 				Precast.doPrecast(true);
 
-				Pather.moveTo(22594, 9641, 10, true);
-				Pather.moveTo(22564, 9629, 10, true);
-				Pather.moveTo(22533, 9641, 10, true);
-				Pather.moveTo(22547, 9619, 10, true);	//261008
+				Pather.moveTo(22594, 9641, 10, true, false, true);	//261029 random
+				Pather.moveTo(22564, 9629, 10, true, false, true);	//261029 random
+				Pather.moveTo(22533, 9641, 10, true, false, true);	//261029 random
+				Pather.moveTo(22547, 9619, 10, true, false, true);	//261008	//261029 random
 			
 				if (Leader) {	//261008
 					Pather.makePortal();
@@ -3015,7 +3015,7 @@ function AutoSmurf() {
 
 				Precast.doPrecast(true);
 			
-				Pather.moveTo(22548, 9582, 5, true);
+				Pather.moveTo(22548, 9582, 5, true, false, true);	//261029 random
 			} else {
 				if (Leader) {
 					this.travel(2);
@@ -3146,7 +3146,7 @@ function AutoSmurf() {
 
 		for (i = 0; i < 3 && getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 10; i += 1) {	//261022 was an endless while: 3 tries
 			try {
-				Pather.moveToPreset(60, 2, 354, 0, 0, true);	//260929
+				Pather.moveToPreset(60, 2, 354, 0, 0, true, false, true);	//260929	//261029 random
 			} catch (e) {
 				Misc.caughtError("AutoSmurf.cube", e);	//260930
 			}
@@ -3501,7 +3501,7 @@ function AutoSmurf() {
 			if (chest) {
 				for (j = 0; j < 10 && getDistance(me.x, me.y, chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y) > 25; j += 1) {	//261028
 					try {
-						Pather.moveTo(chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y, 3, true);	//260822	//261002 no offset
+						Pather.moveTo(chest.roomx * 5 + chest.x, chest.roomy * 5 + chest.y, 3, true, false, true);	//260822	//261002 no offset	//261029 random
 					} catch (e) {
 						Misc.caughtError("AutoSmurf.tombs", e);	//260930
 					}
@@ -3892,7 +3892,7 @@ function AutoSmurf() {
 			
 			Attack.clear(0, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25});	//260727 //260926	//260929
 		
-			Pather.moveToUnit(orifice);
+			Pather.moveToUnit(orifice, 0, 0, false, false, true);	//261029 random
 
 			Precast.doPrecast(true);
 			
@@ -3912,7 +3912,7 @@ function AutoSmurf() {
 				Attack.clear(0, {x1: orifice.roomx * 5 + orifice.x - 16, x2: orifice.roomx * 5 + orifice.x + 25, y1: orifice.roomy * 5 + orifice.y - 16, y2: orifice.roomy * 5 + orifice.y + 25});	//260926	//260929
 				
 				if (getDistance(me, orifice) > 8) {
-					Pather.moveToUnit(orifice);
+					Pather.moveToUnit(orifice, 0, 0, false, false, true);	//261029 random
 				}
 				
 				delay(500);
@@ -4378,7 +4378,7 @@ function AutoSmurf() {
 
 				Attack.clear(0, {x1: presetUnit.roomx * 5 + presetUnit.x + 68, x2: presetUnit.roomx * 5 + presetUnit.x + 129, y1: presetUnit.roomy * 5 + presetUnit.y - 102, y2: presetUnit.roomy * 5 + presetUnit.y - 86});	//260926	//260929
 
-				Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109, presetUnit.roomy * 5 + presetUnit.y - 95);
+				Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109, presetUnit.roomy * 5 + presetUnit.y - 95, 3, false, false, true);	//261029 random
 				
 				delay(1000);
 			}
@@ -4474,7 +4474,7 @@ function AutoSmurf() {
 
 			this.bossEnd();	//261004
 			
-			Pather.moveTo(17515, 8061, 3, true);	//260822	//261002 no offset
+			Pather.moveTo(17515, 8061, 3, true, false, true);	//260822	//261002 no offset	//261029 random
 			Attack.clear(35);
 		}
 
@@ -4724,11 +4724,11 @@ function AutoSmurf() {
 			this.okCount();
 			
 			if (this.seisLayout === 1) {
-				Pather.moveTo(7815, 5160, 5, true);	//260623
-				Pather.moveTo(7815, 5195, 5, true);	//260623
-				Pather.moveTo(7775, 5200, 5, true);	//260623
+				Pather.moveTo(7815, 5160, 5, true, false, true);	//260623	//261029 random
+				Pather.moveTo(7815, 5195, 5, true, false, true);	//260623	//261029 random
+				Pather.moveTo(7775, 5200, 5, true, false, true);	//260623	//261029 random
 			} else {
-				Pather.moveTo(7775, 5160, 5, true); //(7798, 5186); (7798, 5206)
+				Pather.moveTo(7775, 5160, 5, true, false, true); //(7798, 5186); (7798, 5206)	//261029 random
 			}
 			
 			if (Leader) {
@@ -4783,9 +4783,9 @@ function AutoSmurf() {
 				Pather.teleport = false;
 			} else {
 				if (this.infLayout === 1) {
-					Pather.moveTo(7890, 5295, 5, true);
+					Pather.moveTo(7890, 5295, 5, true, false, true);	//261029 random
 				} else {
-					Pather.moveTo(7935, 5295, 5, true);
+					Pather.moveTo(7935, 5295, 5, true, false, true);	//261029 random
 				}
 			}
 			
@@ -4821,9 +4821,9 @@ function AutoSmurf() {
 				Pather.teleport = false;
 			} else {
 				if (this.vizLayout === 1) {
-					Pather.moveTo(7680, 5295, 5, true);
+					Pather.moveTo(7680, 5295, 5, true, false, true);	//261029 random
 				} else {
-					Pather.moveTo(7675, 5315, 5, true);
+					Pather.moveTo(7675, 5315, 5, true, false, true);	//261029 random
 				}
 			}
 			
@@ -5966,7 +5966,7 @@ function AutoSmurf() {
 		while (getUnit(1, 543)) {
 			Attack.clear(0, {x1:15072, x2:15118, y1:5002, y2:5074});	//260926	//260929
 			delay(me.ping * 2 + 200);
-			Pather.moveTo(15092, 5028);	//260926
+			Pather.moveTo(15092, 5028, 3, false, false, true);	//260926	//261029 random
 		}
 		
 		var tick = getTickCount();
@@ -5987,7 +5987,7 @@ function AutoSmurf() {
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 		
-		Pather.moveTo(15134, 5923);
+		Pather.moveTo(15134, 5923, 3, false, false, true);	//261029 random
 		
 		if (Leader) {	//261008
 			Pather.makePortal();
@@ -6146,12 +6146,12 @@ function AutoSmurf() {
 		this.okCount();	//260922
 		Precast.doPrecast(true);
 
-		Pather.moveTo(7548, 14429, 5, true);	//260628
-		Pather.moveTo(7558, 14465, 5, true);
-		Pather.moveTo(7585, 14445, 5, true);
-		Pather.moveTo(7575, 14401, 5, true);
-		Pather.moveTo(7607, 14420, 5, true);
-		Pather.moveTo(7600, 14431, 5, true);
+		Pather.moveTo(7548, 14429, 5, true, false, true);	//260628	//261029 random
+		Pather.moveTo(7558, 14465, 5, true, false, true);	//261029 random
+		Pather.moveTo(7585, 14445, 5, true, false, true);	//261029 random
+		Pather.moveTo(7575, 14401, 5, true, false, true);	//261029 random
+		Pather.moveTo(7607, 14420, 5, true, false, true);	//261029 random
+		Pather.moveTo(7600, 14431, 5, true, false, true);	//261029 random
 		
 		this.okCount();
 		
@@ -6340,13 +6340,13 @@ function AutoSmurf() {
 					me.overhead("driver: " + driver.x + "." + driver.y + " distance: " + Math.round(getDistance(me, driver)));
 					
 					if (getDistance(me, driver) > 30) {
-						Pather.moveTo(driver.x, driver.y);	//261002 no offset
+						Pather.moveTo(driver.x, driver.y, 3, false, false, true);	//261002 no offset	//261029 random
 						
 						if (Boer && me.getSkill(149, 1)) {
 							Skill.cast(149, 0); // Battle Orders
 						}
 					} else if (getDistance(me, driver) > 15) {
-						result = Pather.moveTo(driver.x, driver.y, 3, true);	//261002 no offset
+						result = Pather.moveTo(driver.x, driver.y, 3, true, false, true);	//261002 no offset	//261029 random
 						
 						if (result === "killMonsters") {
 							return false;
@@ -6360,13 +6360,13 @@ function AutoSmurf() {
 					me.overhead("msgNode: " + msgNode[0] + "." + msgNode[1] + " distance: " + Math.round(getDistance(me, msgNode[0], msgNode[1])));
 					
 					if (getDistance(me, msgNode[0], msgNode[1]) > 30) {
-						Pather.moveTo(msgNode[0], msgNode[1]);	//261002 no offset
+						Pather.moveTo(msgNode[0], msgNode[1], 3, false, false, true);	//261002 no offset	//261029 random
 						
 						if (Boer && me.getSkill(149, 1)) {
 							Skill.cast(149, 0); // Battle Orders
 						}
 					} else if (getDistance(me, msgNode[0], msgNode[1]) > 15) {	//260928
-						result = Pather.moveTo(msgNode[0], msgNode[1], 3, true);	//261002 no offset
+						result = Pather.moveTo(msgNode[0], msgNode[1], 3, true, false, true);	//261002 no offset	//261029 random
 						
 						if (result === "killMonsters") {
 							return false;
@@ -6386,7 +6386,7 @@ function AutoSmurf() {
 			}
 			
 			if (msgNode && getDistance(me, msgNode[0], msgNode[1]) > 15) {
-				Pather.moveTo(msgNode[0], msgNode[1]);	//261002 no offset
+				Pather.moveTo(msgNode[0], msgNode[1], 3, false, false, true);	//261002 no offset	//261029 random
 			}
 			
 			me.overhead("followDriver end");
@@ -6942,7 +6942,7 @@ function AutoSmurf() {
 			Misc.caughtError("AutoSmurf.farmingMephisto", e);	//260930
 		}
 		
-		Pather.moveTo(17515, 8061, 3, true);	//260822	//261002 no offset
+		Pather.moveTo(17515, 8061, 3, true, false, true);	//260822	//261002 no offset	//261029 random
 		Attack.clear(35)
 		
 		Pather.moveTo(17566, 8069, 3, false, false, true); // reportal bridge	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
@@ -7026,7 +7026,7 @@ function AutoSmurf() {
 				break;
 			}
 			
-			Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 3, true);	//260822	//261002 no offset
+			Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 3, true, false, true);	//260822	//261002 no offset	//261029 random
 			delay(me.ping * 2 + 200);
 		}
 		
@@ -7109,7 +7109,7 @@ function AutoSmurf() {
 				break;
 			}
 			
-			Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 3, true);	//260822	//261002 no offset
+			Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 3, true, false, true);	//260822	//261002 no offset	//261029 random
 			delay(me.ping * 2 + 200);
 		}
 		
@@ -7192,7 +7192,7 @@ function AutoSmurf() {
 				break;
 			}
 			
-			Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 3, true);	//260822	//261002 no offset
+			Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 3, true, false, true);	//260822	//261002 no offset	//261029 random
 			delay(me.ping * 2 + 200);
 		}
 		
