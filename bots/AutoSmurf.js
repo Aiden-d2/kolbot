@@ -249,6 +249,7 @@ function AutoSmurf() {
 
 			figurine = true;
 			teamFigurine = true;
+			leaderFigurine = true;	//261029
 		}
 		
 		if (me.diff === 2) {
@@ -414,7 +415,7 @@ function AutoSmurf() {
 			}
 			
 			if (getTickCount() - tick > (leaderTravel ? 600 : 120) * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)	//261026 600s while the leader travels
-				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "missing(okCount): " + this.missing("okCount").join(", ") + " teamOk " + teamOk);	//261029 travel removed (handoff 3-47 judged)	//260930	//261021 who did not come
+				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "missing(okCount): " + this.missing("okCount").join(", ") + " teamOk " + teamOk + " travel " + leaderTravel);	//261026 + travel	//260930	//261021 who did not come
 			}
 		}
 
@@ -3314,7 +3315,7 @@ function AutoSmurf() {
 	};
 
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
-		var journal, i, tick;	//261004 chicken -> bossGuard	//261029 talked removed (journal trace gone)
+		var journal, i, tick, talked;	//261004 chicken -> bossGuard	//261028 tick, talked: journal dialog watch
 
 		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===", true);	//260930
 		
@@ -4061,6 +4062,8 @@ function AutoSmurf() {
 			Town.goToTown(3);
 		}
 		
+		this.okCount();	//261029
+		
 		Town.move("cain");
 		
 		if (me.findItem(546)) { // Have A Jade Figurine.			
@@ -4141,7 +4144,169 @@ function AutoSmurf() {
 		return true;
 	};
 
+	this.heart = function () {
+		var presetUnit;
+		
+		print("ÿc4=== [HEART] ===");	Misc.trace("=== [HEART] ===", true);	//260930
+
+		if (!doneChores) {
+			Town.doChores(true);
+		}
+		
+		if (!me.inTown) {
+			Town.goToTown();
+		}
+
+		Pather.useWaypoint(80);
+		Precast.doPrecast(true);
+		this.exitTo([92, 93]);	//261022 result checked
+
+		presetUnit = getPresetUnit(93, 2, 405);
+
+		if (!presetUnit) {
+			return false;
+		}
+
+		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 15);
+
+		this.getQuestItem(554, 405);
+
+		Town.goToTown();
+
+		doneChores = false;
+		
+		return true;
+	};
+
+	this.brain = function () {
+		var presetUnit;
+		
+		print("ÿc4=== [BRAIN] ===");	Misc.trace("=== [BRAIN] ===", true);	//260930
+
+		if (!doneChores) {
+			Town.doChores(true);
+		}
+		
+		if (!me.inTown) {
+			Town.goToTown();
+		}
+
+		Pather.useWaypoint(78);
+		Precast.doPrecast(true);
+		this.exitTo([88, 89, 91]);	//261022 result checked (a failed move went to the level 3 preset from level 1)
 	
+		presetUnit = getPresetUnit(91, 2, 406);
+
+		if (!presetUnit) {
+			return false;
+		}
+
+		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 15);
+	
+		this.getQuestItem(555, 406);
+
+		Town.goToTown();
+
+		doneChores = false;
+		
+		return true;
+	};
+
+	this.eye = function (fig) {	//261029 fig: figurine hunt, the team kills Sszark
+		var presetUnit, tick;
+
+		print("ÿc4=== [EYE] ===");	Misc.trace("=== [EYE] ===", true);	//260930
+
+		if (!doneChores) {
+			Town.doChores(true);
+		}
+
+		if (fig) {	//261029
+			this.portalReset();
+			this.okCount();
+		}
+
+		if (!fig || Leader) {	//261029 the team waits for the leader's portal
+			if (!me.inTown) {
+				Town.goToTown();
+			}
+
+			Pather.useWaypoint(76);
+			Precast.doPrecast(true);
+			this.exitTo(85);	//261022 result checked
+
+			presetUnit = getPresetUnit(85, 2, 407);
+
+			if (!presetUnit) {
+				return false;
+			}
+
+			Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 15);
+
+			if (!fig || (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(553))) {	//261029 fig: eye once
+				this.getQuestItem(553, 407);
+			}
+
+			if (!fig) {	//261029
+				Town.goToTown();
+
+				doneChores = false;
+
+				return true;
+			}
+
+			Pather.makePortal();	//261029
+
+			me.overhead("tpReady");
+			Messaging.sendToList(Team.Profiles, "tpReady");
+		} else {	//261029
+			Town.move("portalspot");
+
+			while (me.inTown) {
+				if (tpReady) {
+					Pather.usePortal(85, null);
+				}
+
+				delay(250);
+			}
+
+			tpReady = false;
+		}
+
+		Attack.clear(10);	//261029 next to the portal
+		Attack.clear(25, getLocaleString(2868));	//261029 Sszark the Burning
+
+		if (me.findItem(546) || me.findItem(547)) { // Have A Jade Figurine or The Golden Bird. Tell the Teleporting Sorc so she gets us to process it.	//261029
+			Messaging.sendToList(Team.Profiles, "figurine");
+
+			figurine = true;
+			teamFigurine = true;
+			leaderFigurine = true;
+		}
+
+		if (Leader) {	//261029
+			if (!Pather.getPortal(null, null)) {
+				Pather.makePortal();
+			}
+		}
+
+		tick = getTickCount();	//261029
+
+		while (!Pather.usePortal(null, null)) {
+			delay(me.ping * 2 + 200);
+
+			if (getTickCount() - tick > 3 * 1000) {
+				Town.goToTown();
+				delay(me.ping * 2 + 100);
+				break;
+			}
+		}
+
+		doneChores = false;
+
+		return true;
+	};
+
 	this.tome = function (fig) { // Teleporting Sorc walks over to Alkor and completes the quest for everyone via exploit.	//261029 fig: figurine hunt with the team
 		var i, alkor, target, tick;
 
@@ -4290,169 +4455,6 @@ function AutoSmurf() {
 		return true;
 	};
 
-	this.eye = function (fig) {	//261029 fig: figurine hunt, the team kills Sszark
-		var presetUnit, tick;
-
-		print("ÿc4=== [EYE] ===");	Misc.trace("=== [EYE] ===", true);	//260930
-
-		if (!doneChores) {
-			Town.doChores(true);
-		}
-
-		if (fig) {	//261029
-			this.portalReset();
-			this.okCount();
-		}
-
-		if (!fig || Leader) {	//261029 the team waits for the leader's portal
-			if (!me.inTown) {
-				Town.goToTown();
-			}
-
-			Pather.useWaypoint(76);
-			Precast.doPrecast(true);
-			this.exitTo(85);	//261022 result checked
-
-			presetUnit = getPresetUnit(85, 2, 407);
-
-			if (!presetUnit) {
-				return false;
-			}
-
-			Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 15);
-
-			if (!fig || (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(553))) {	//261029 fig: eye once
-				this.getQuestItem(553, 407);
-			}
-
-			if (!fig) {	//261029
-				Town.goToTown();
-
-				doneChores = false;
-
-				return true;
-			}
-
-			Pather.makePortal();	//261029
-
-			me.overhead("tpReady");
-			Messaging.sendToList(Team.Profiles, "tpReady");
-		} else {	//261029
-			Town.move("portalspot");
-
-			while (me.inTown) {
-				if (tpReady) {
-					Pather.usePortal(85, null);
-				}
-
-				delay(250);
-			}
-
-			tpReady = false;
-		}
-
-		Attack.clear(10);	//261029 next to the portal
-		Attack.clear(25, getLocaleString(2868));	//261029 Sszark the Burning
-
-		if (me.findItem(546) || me.findItem(547)) { // Have A Jade Figurine or The Golden Bird. Tell the Teleporting Sorc so she gets us to process it.	//261029
-			Messaging.sendToList(Team.Profiles, "figurine");
-
-			figurine = true;
-			teamFigurine = true;
-			leaderFigurine = true;
-		}
-
-		if (Leader) {	//261029
-			if (!Pather.getPortal(null, null)) {
-				Pather.makePortal();
-			}
-		}
-
-		tick = getTickCount();	//261029
-
-		while (!Pather.usePortal(null, null)) {
-			delay(me.ping * 2 + 200);
-
-			if (getTickCount() - tick > 3 * 1000) {
-				Town.goToTown();
-				delay(me.ping * 2 + 100);
-				break;
-			}
-		}
-
-		doneChores = false;
-
-		return true;
-	};
-
-	this.heart = function () {
-		var presetUnit;
-		
-		print("ÿc4=== [HEART] ===");	Misc.trace("=== [HEART] ===", true);	//260930
-
-		if (!doneChores) {
-			Town.doChores(true);
-		}
-		
-		if (!me.inTown) {
-			Town.goToTown();
-		}
-
-		Pather.useWaypoint(80);
-		Precast.doPrecast(true);
-		this.exitTo([92, 93]);	//261022 result checked
-
-		presetUnit = getPresetUnit(93, 2, 405);
-
-		if (!presetUnit) {
-			return false;
-		}
-
-		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 15);
-
-		this.getQuestItem(554, 405);
-
-		Town.goToTown();
-
-		doneChores = false;
-		
-		return true;
-	};
-
-	this.brain = function () {
-		var presetUnit;
-		
-		print("ÿc4=== [BRAIN] ===");	Misc.trace("=== [BRAIN] ===", true);	//260930
-
-		if (!doneChores) {
-			Town.doChores(true);
-		}
-		
-		if (!me.inTown) {
-			Town.goToTown();
-		}
-
-		Pather.useWaypoint(78);
-		Precast.doPrecast(true);
-		this.exitTo([88, 89, 91]);	//261022 result checked (a failed move went to the level 3 preset from level 1)
-	
-		presetUnit = getPresetUnit(91, 2, 406);
-
-		if (!presetUnit) {
-			return false;
-		}
-
-		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 15);
-	
-		this.getQuestItem(555, 406);
-
-		Town.goToTown();
-
-		doneChores = false;
-		
-		return true;
-	};
-
 	this.travincal = function () {
 		var cain, presetUnit;
 		
@@ -4581,7 +4583,7 @@ function AutoSmurf() {
 		Town.move("cain");
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-		this.okCount();
+		//this.okCount();	//261029
 		
 		doneChores = false;
 		
