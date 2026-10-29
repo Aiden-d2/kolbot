@@ -176,3 +176,17 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 팔로워 루프: `figurineEye`·`figurineTome` 플래그로 `eye(true)`·`tome(true)`. 팔로워도 두 함수 맨 앞의 `doChores`를 탄다.
 - **검증 방법**: `Figurine incompleted` 수. 콘솔 `=== FIGURINE ===`이 Travincal 전(EYE·TOME 뒤)에 나오는지. `portalReset` 뒤 okCount에서 `Party desynced 1`(missing(okCount))이 늘지 않는지. eye(true)에서 Sszark가 범위 25 안에서 잡히는지(사용자 육안). 사원 걷기 이동이 10회 안에 제단에 닿는지.
 - **결과**: 아직 없음.
+
+### 3-52. 스태틱 필드 로직 통합 (`Sorceress.js` `doAttack`·`doCast`, `Attack.setPosition`·`checkResist`, `Config.js`, S.SFFW·S.FIRE, 사용자 261029)
+- **문제**(사용자): 스태틱이 두 경로로 나뉘어 있었다. ① 컨피그 선시전 루프(`CastStatic` %까지 스태틱만 반복, `StaticList` 대상만, 빌드는 노멀 보스 6만) ② 어택스킬 칸 42(`checkResist`의 42 게이트가 `CastStatic`으로 % 판정, `CastStatic`이 `false`인 나이트메어·헬은 "HP% > 0"이라 % 없이 계속 씀).
+- **확인된 것**: 스태틱 반경 mpq `skills.txt` `aurarangecalc = ln12`, Param1 5·Param2 1 → 레벨 + 4(좌표 거리). 게임 화면 야드 = × 2/3(Might·Resist Fire·Holy Shock의 ln12 값과 위키 야드 대조). 텔레 도착 판정은 `teleportTo`의 `maxRange`(기본 5), `setPosition`의 `minDist`는 걷기에만 쓰였다.
+- **바꾼 것**(261029, 사용자 요청·승인):
+  - `Sorceress.js` `doAttack`: 선시전 루프 삭제. 언타임드를 고른 뒤·로우마나 판정 앞에서 `CastStatic === true`, 스태틱 습득, 대상(`StaticList`가 비면 전체, 아니면 이름·classid 일치), 번개 면역 아님(`checkResist(unit, "lightning")`), `unit.hp × 100 / 128 > (보스 ? StaticBossHP : StaticHP)[me.diff]`이면 `untimedSkill = 42`. 보스 = `index === 1`(`spectype & 0x7`, 어택스킬 보스 칸과 같은 판정). 타임드는 기존 어택스킬 그대로라 `doCast`가 타임드(딜레이 없을 때) ↔ 스태틱을 번갈아 쓴다. 스태틱을 쓰는 동안 기준 거리 = min(타임드 사거리, 레벨 + 2).
+  - `doCast`: 언타임드가 42면 타임드·언타임드 두 `setPosition`에 도착 오차 2.
+  - `Attack.setPosition`: 호출부가 `minDist`를 넘기면 텔레(`teleportTo`)에도 도착 오차로 넘긴다(안 넘기면 5 그대로). 레벨 + 2와 오차 2로 실제 거리 ≤ 레벨 + 4.
+  - `Attack.checkResist`: 42 게이트(`// Static handler`) 삭제.
+  - `Config.js`: `CastStatic` = `true`/`false` 스위치. 새 키 `StaticHP: [25, 33, 50]`(일반), `StaticBossHP: [10, 33, 50]`(보스), [노멀, 나이트메어, 헬].
+  - S.SFFW: 18레벨 노멀 `CastStatic = true`(보스 6 리스트 유지). 46레벨 `AttackSkill = [-1, 51, -1, 51, -1, -1, 43]`, `CastStatic = true`, `StaticList = []`(전 난이도 전체).
+  - S.FIRE: 6레벨의 주석 블록(옛 `CastStatic` %) 삭제, 46레벨 `CastStatic = true`, `StaticList = []`(세부 조정은 사용자).
+- **검증 방법**: S.SFFW 46레벨 이상에서 스태틱 → %(노멀 일반 25·보스 10, 나이트메어 33, 헬 50) 도달 뒤 파이어월·텔레키네시스로 넘어가는지, 스태틱 사이에 파이어월(타임드)이 나가는지, 번개 면역 몹에 스태틱을 쓰지 않는지(사용자 육안). 스태틱이 사거리 밖에서 나가는 미스캐스팅이 없는지(낮은 스킬 레벨). trace `[teleportTo failed]` 수가 늘지 않는지(도착 오차 2). 노멀 18~45레벨 보스 6에서만 스태틱.
+- **결과**: 아직 없음.

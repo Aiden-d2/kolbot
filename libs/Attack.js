@@ -552,6 +552,8 @@ var Attack = {
 			return false;
 		}
 
+		var teleArrival = (typeof minDist === "number" && minDist > 0) ? minDist : undefined;	//261029 a caller's minDist is the teleport arrival too (none: teleportTo's 5)
+
 		minDist = (typeof minDist === "number" && minDist > 0) ? minDist : 3;	//261008
 
 		var i, k, r, c, step, offset, radii, useTele, monList, fireList, choice, pathCand, moved, tier, count,	//261008
@@ -733,7 +735,7 @@ var Attack = {
 				if (!useTele) {
 					moved = Pather.walkTo(choice.x, choice.y, minDist);
 				} else if (getDistance(me.x, me.y, choice.x, choice.y) <= Pather.teleDistance) {	//260930 maxTeleDistance removed
-					moved = Pather.teleportTo(choice.x, choice.y);
+					moved = Pather.teleportTo(choice.x, choice.y, teleArrival);	//261029 teleArrival
 				} else {
 					moved = Pather.moveTo(choice.x, choice.y, 1);	// several hops
 				}
@@ -1127,11 +1129,6 @@ AuraLoop: // Skip monsters with auras
 
 		if (maxres === undefined) {
 			maxres = 100;
-		}
-
-		// Static handler
-		if (val === 42 && this.getResist(unit, damageType) < 100) {
-			return (unit.hp * 100 / 128) > Config.CastStatic;
 		}
 
 		if (this.infinity && ["fire", "lightning", "cold"].indexOf(damageType) > -1 && unit.getState) { // baal in throne room doesn't have getState

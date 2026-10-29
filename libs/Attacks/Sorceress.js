@@ -30,46 +30,6 @@ var ClassAttack = {
 			timedSkill = -1,
 			untimedSkill = -1;
 
-		// Static
-		if (Config.CastStatic < 100 && me.getSkill(42, 1) && Attack.checkResist(unit, "lightning") && Config.StaticList.some(
-				function (id) {
-					if (unit) {
-						switch (typeof id) {
-						case "number":
-							if (unit.classid && unit.classid === id) {
-								return 1;
-							}
-
-							break;
-						case "string":
-							if (unit.name && unit.name.toLowerCase() === id.toLowerCase()) {
-								return 1;
-							}
-
-							break;
-						default:
-							throw new Error("Bad Config.StaticList settings.");
-						}
-					}
-
-					return 0;
-				}
-			) && Math.round(unit.hp * 100 / unit.hpmax) > Config.CastStatic) {
-			staticRange = Math.floor((me.getSkill(42, 1) + 4) * 2 / 3);	//260929
-
-			while (!me.dead && Math.round(unit.hp * 100 / unit.hpmax) > Config.CastStatic && Attack.checkMonster(unit)) {
-				if (getDistance(me, unit) > staticRange || checkCollision(me, unit, 0x4)) {
-					if (!Attack.setPosition(unit, staticRange, 0x4, 1)) {	//261008
-						return 0;
-					}
-				}
-
-				if (!Skill.cast(42, 0)) {
-					break;
-				}
-			}
-		}
-
 		index = ((unit.spectype & 0x7) || unit.type === 0) ? 1 : 3;
 
 		// Get timed skill
@@ -98,6 +58,35 @@ var ClassAttack = {
 			untimedSkill = Config.AttackSkill[6];
 		}
 
+		// Static: replaces the untimed skill until the hp % for its difficulty (boss / other), then the attack skills take over	//261029
+		if (Config.CastStatic === true && me.getSkill(42, 1) && Attack.checkResist(unit, "lightning") && (!Config.StaticList.length || Config.StaticList.some(	//261029 empty list = every monster
+				function (id) {
+					if (unit) {
+						switch (typeof id) {
+						case "number":
+							if (unit.classid && unit.classid === id) {
+								return 1;
+							}
+
+							break;
+						case "string":
+							if (unit.name && unit.name.toLowerCase() === id.toLowerCase()) {
+								return 1;
+							}
+
+							break;
+						default:
+							throw new Error("Bad Config.StaticList settings.");
+						}
+					}
+
+					return 0;
+				}
+			)) && unit.hp * 100 / 128 > (index === 1 ? Config.StaticBossHP : Config.StaticHP)[me.diff]) {	//261029 hp / 128
+			untimedSkill = 42;	//261029
+			staticRange = me.getSkill(42, 1) + 2;	//261029 range level + 4, less the arrival margin 2
+		}
+
 		// Low mana timed skill
 		if (Config.LowManaSkill[0] > -1 && Skill.getManaCost(timedSkill) > me.mp && Attack.checkResist(unit, Config.LowManaSkill[0])) {
 			timedSkill = Config.LowManaSkill[0];
@@ -109,7 +98,7 @@ var ClassAttack = {
 		}
 
 		// base range: the shorter of the two picked skills, so both stand at one distance and a long one does not back off between casts of a short one	//261003
-		baseRange = Math.min(timedSkill > -1 ? Skill.getRange(timedSkill) : 99, untimedSkill > -1 ? Skill.getRange(untimedSkill) : 99);
+		baseRange = Math.min(timedSkill > -1 ? Skill.getRange(timedSkill) : 99, untimedSkill === 42 ? staticRange : untimedSkill > -1 ? Skill.getRange(untimedSkill) : 99);	//261029 static: level + 2
 
 		result = this.doCast(unit, timedSkill, untimedSkill, baseRange);	//261003
 
@@ -122,7 +111,8 @@ var ClassAttack = {
 
 	// Returns: 0 - fail, 1 - success, 2 - no valid attack skills
 	doCast: function (unit, timedSkill, untimedSkill, baseRange) {	//261003
-		var i;
+		var i,
+			arrival = untimedSkill === 42 ? 2 : undefined;	//261029 static: arrival within 2 (teleport too), both skills stand on it
 
 		// No valid skills can be found
 		if (timedSkill < 0 && untimedSkill < 0) {
@@ -136,7 +126,7 @@ var ClassAttack = {
 
 				// Allow short-distance walking for melee skills
 
-				if (!Attack.setPosition(unit, baseRange, 0x4)) {	//260826	//261003 base range
+				if (!Attack.setPosition(unit, baseRange, 0x4, arrival)) {	//260826	//261003 base range	//261029 arrival
 					return 0;
 				}
 
@@ -154,7 +144,7 @@ var ClassAttack = {
 			
 				// Allow short-distance walking for melee skills
 
-				if (!Attack.setPosition(unit, baseRange, 0x4)) {	//260826	//261003 base range (static/telek exception removed)
+				if (!Attack.setPosition(unit, baseRange, 0x4, arrival)) {	//260826	//261003 base range (static/telek exception removed)	//261029 arrival
 					return 0;
 				}
 
