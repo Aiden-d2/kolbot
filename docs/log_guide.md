@@ -81,7 +81,7 @@
 목적: 누가 어느 단계에서 늦었나. 보스가드가 못 켜진 원인(`log_results.md` 261006 못 켜진 13건의 2·3·4·13번: 코드상 설명 안 됨 / River of Flame 1분 기록 없음 / 원인 불명).
 - (261020 삭제, 사용자 결정) `syncBO start/end`, `syncWP start/end`, `tpReady received`, `usePortal ok` — Claude가 261006에 합류 분석용으로 넣은 줄. 261020 전 로그에만 있다. syncBO는 노멀 조기 반환(`me.diff === 0`)에 end가 찍히지 않아 start만 있어도 멈춘 것이 아니었다.
 - `usePortal failed target: owner: unit: pre: tick: tries:<시도:gid sent/click/none/dead@ms> portals:<gid/classid/주인/지역/좌표/mode/거리>` — 내 포털일 때만.
-- `[Quit] Party desynced 1·2: missing(okCount|teamCount): 프로필, ... teamOk X`(261021~, 이름 수집) — 안 온 프로필. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지 본다. 261021 전은 `okCount N teamCount N teamOk X`(개수). `d87cfcb`부터 `Party desynced 1` 상세 끝에 `travel true/false`(리더가 웨이를 모으는 중이라 그 okCount만 600초였는가, handoff 3-36).
+- `[Quit] Party desynced 1·2: missing(okCount|teamCount): 프로필, ... teamOk X`(261021~, 이름 수집) — 안 온 프로필. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지 본다. 261021 전은 `okCount N teamCount N teamOk X`(개수). `d87cfcb`~261029 `Party desynced 1` 상세 끝에 `travel true/false`(리더가 웨이를 모으는 중이라 그 okCount만 600초였는가, handoff 3-36). **261029 삭제**(3-47 검증 통과).
 - `relay N msgs`(261021, Claude 추가) — default.dbj가 멈춘 동안 받은 메시지를 ToolsThread가 넘김. 판정: `Town chicken` 뒤에 찍히고 그 게임에 desync가 없으면 동작. 제거 조건: 동작 확인. **261023 `0f6da09` 삭제**(검증 통과, 261023 이후 코드 로그에는 없음).
 - `party has left: 이름 town: mode: ui:` + 위치 — 퇴장할 때까지 100ms마다 반복될 수 있다(의도). 첫 줄만 센다. 261024 `33bd183` 전에는 이름만, 위치 없음. 붙은 상태(Claude 추가 261024, handoff 3-31)는 그 순간의 마을 여부·동작 모드·열린 창(08 NPC 메뉴, 0C 거래창, 14 웨이 메뉴, 01 인벤토리, 없으면 `-`) — desync 낙오 프로필이 다른 프로필들이 이미 끝낸 단계에 아직 있었나(멈춤)를 본다. 제거 조건(상태 부분): 판별. (`be4f0e2`~`33bd183` 사이 코드는 같은 상태를 바로 뒤 `party left state:` 줄로 찍음.) `d87cfcb`부터 줄 끝에 `step:단계` — default.dbj가 보낸 마지막 정리·마을 단계(`chores:pre/heal/id/inv/tome/buy/repair/rest/stash/gems/end`, `town:go/portalspot/portal/back`, 없으면 `-`). 정리가 끝나지 않은 낙오의 멈춘 단계를 본다(handoff 3-37, 제거 조건: 멈춘 단계 확인).
 - 판정: 늦은 프로필의 바로 앞 줄(무엇을 하던 중인가: 마을·`Town chicken`·포털 실패). 누가 okCount를 안 보냈는지는 지금 로그로 알 수 없다(사용자 수정 계획 0-11 okCount 대기 방식과 함께 다룸).
@@ -120,7 +120,7 @@
 - `belt shift fail: 코드 col:N [열 물약 코드] ping:N inv:true/false`(`d87cfcb`, handoff 3-27) — 벨트 넣기 shift-click 실패마다 정리 안에서 찍힘. inv false = 클릭이 늦게 반영됨(핑), inv true = 실제 실패(물약 코드와 열 코드 비교). 제거 조건: 3건 이상 분류.
 - `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정. **261029 삭제**(가설 틀림 판정, handoff 1-18).
 - `[Storage.MoveTo] retry / catch`, `moved from cube to drop/sell`, `[TK] talk skipped N npc:`(스페이스 20번 다 씀, 261006·261020에 각 1건, 모두 Greiz 20), `[hire] hiring retry (N/5)`.
-- `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`(261024 `789d80d`, Claude 추가, handoff 3-32) — 착용 중인 재료 베이스를 룬워드·펀치 앞에서 뺐는가. ok 뒤 같은 방문의 `[Runeword]`/`[Punch]`와 ItemLog `Runeworded`/`Transmuted`, 그 칸 재장착(`Equipped`·`Granted`). 261024 `aafbe50`부터 입은 베이스의 재료도 줍는다(ItemLog `Ingredient`). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0.
+- `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`(261024 `789d80d`, Claude 추가, handoff 3-32) — 착용 중인 재료 베이스를 룬워드·펀치 앞에서 뺐는가. ok 뒤 같은 방문의 `[Runeword]`/`[Punch]`와 ItemLog `Runeworded`/`Transmuted`, 그 칸 재장착(`Equipped`·`Granted`). 261024 `aafbe50`부터 입은 베이스의 재료도 줍는다(ItemLog `Ingredient`). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0. **261029 삭제**(3-32 검증 통과, 사용자).
 - d2bs 로그 `enchant: 이름/classid`(S.SFFW 65레벨부터 아마존·2막 용병·발키리·섀도 워리어·그리즐리).
 
 ### 4-7. 게임 밖 (회색 콘솔 + trace `(OOG loc N)`)

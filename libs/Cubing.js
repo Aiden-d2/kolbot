@@ -1026,7 +1026,7 @@ IngredientLoop:
 				}
 
 				if (k === recipe.Ingredients.length) {	//261024 all other ingredients owned
-					if (Misc.takeOff(worn[i].unit, worn[i].merc, "[Cube]")) {
+					if (Misc.takeOff(worn[i].unit, worn[i].merc)) {
 						have = n;
 					}
 

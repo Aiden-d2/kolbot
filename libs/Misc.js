@@ -2221,11 +2221,10 @@ var Misc = {
 		return list;
 	},
 
-	// Take an equipped runeword/punch base (player or merc) off into the inventory, then refresh that slot's tier cache. tag: "[Runeword]" or "[Cube]"	//261024 2-15
-	takeOff: function (item, merc, tag) {	//261024
+	// Take an equipped runeword/punch base (player or merc) off into the inventory, then refresh that slot's tier cache	//261024 2-15	//261029 tag removed with the takeOff trace
+	takeOff: function (item, merc) {	//261024	//261029 tag removed
 		var cursorItem,
-			bodyLoc = item.bodylocation,
-			name = item.name,
+			bodyLoc = item.bodylocation,	//261029 name removed (trace only)
 			reason = "";
 
 		if (!Storage.Inventory.CanFit(item)) {	//261024 no room: leave it equipped
@@ -2254,8 +2253,6 @@ var Misc = {
 		} else {
 			Equip.updateTier(bodyLoc, true);	//261024
 		}
-
-		this.trace(tag + " takeOff [" + Config.Gear[bodyLoc] + "] " + name + " (" + (merc ? "merc" : "player") + "): " + (reason ? "fail (" + reason + ")" : "ok"));	//261024 removed after one ok each for runeword and punch with no fail
 
 		return !reason;
 	},
