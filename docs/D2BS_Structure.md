@@ -393,7 +393,7 @@ loadScripts()
 
 | mode | 내용 |
 |---|---|
-| 55 | 문자열 신호. 준비: `okCount` `teamOk` `teamCount` / 버프·이동: `syncBO` `BOing` `syncWP` `tpReady` `earlyReturn` / 준비물: `hireMerc` `giveGold` `farmingON` `essA` `essM` `keyT` `keyH` `keyD` `getCube` / 퀘스트: `cube` `amulet` `summoner` `tombs` `radament` `duriel` `figurine` `teamFigurine` `travincal` `mephisto` `takeRedPortal` / 소 레벨: `msgLeader` |
+| 55 | 문자열 신호. 준비: `okCount` `teamOk` `teamCount` / 버프·이동: `syncBO` `BOing` `syncWP` `tpReady` `earlyReturn` / 준비물: `hireMerc` `giveGold` `farmingON` `essA` `essM` `keyT` `keyH` `keyD` `getCube` / 퀘스트: `cube` `amulet` `summoner` `tombs` `radament` `duriel` `figurine` `teamFigurine` `figurineEye` `figurineTome` `travincal` `mephisto` `takeRedPortal` / 소 레벨: `msgLeader` |
 | 56 | 좌표 객체 `{x, y}`. 소 레벨에서 리더가 이동 노드를 공유 (`msgNode`) |
 
 ---
@@ -901,9 +901,12 @@ start()                       타운 정비 + 팀 준비 동기화
 액트 2   !getQuest(15,0)        goToTown(2), Hell 이면 Merc.hire
                                 리더: syncBO → cube/amulet/summoner/tombs/staff/cubeStaff/radament/duriel
                                 팔로워: 브로드캐스트 플래그를 보고 해당 함수 실행 (250ms 대기 루프)
-액트 3   !getQuest(23,0)        리더: figurine → travel(6) → tome → eye·heart·brain → travincal
+액트 3   !getQuest(23,0)        리더: figurine → travel(6) → heart·brain → eye → tome → travincal
                                      → figurine → travel(7) → mephisto
-                                팔로워: travincal / figurine / mephisto / takeRedPortal / syncBO 플래그 대기
+                                     피겨린 미완료(!getQuest(20,0) && !figurine)면 eye·tome 대신
+                                     figurineEye·figurineTome 신호 + eye(true)·tome(true)(파티 사냥), 뒤에 figurine
+                                     eye(true)·tome(true)·travincal 앞에 portalReset(자기 포탈 있으면 WP46 포탈 → WP75, 6초)
+                                팔로워: travincal / figurineEye / figurineTome / figurine / mephisto / takeRedPortal / syncBO 플래그 대기
                                 (주요 단계 전에 리더가 syncBO 브로드캐스트)
 액트 4   getQuest(23,0)         리더: partyAct 로 최저 타운 확인, 3막이면 takeRedPortal → mephisto(true)
                                 → okCount → syncBO → travel(8) → izual → diablo → changeAct(5)
@@ -928,7 +931,7 @@ start()                       타운 정비 + 팀 준비 동기화
 
 리더는 이동·퀘스트 개시를 주도하고, 팔로워는 `copydata` 플래그를 받아 대응 함수를 실행하는 구조다. 팀 이탈 감시는 PartyThread가 맡는다(4-2절).
 
-AutoSmurf 퀘스트·파밍 함수 목록: `den`(내부 `clearDen`) `blood` `cain` `trist` `outer` `smith` `malus` `jail` `inner` `cathedral` `andy` / `cube` `amulet` `summoner` `tombs` `staff` `cubeStaff` `placeStaff` `radament` `duriel` / `figurine` `tome` `eye` `heart` `brain` `travincal` `cubeFlail` `equipFlail` `placeFlail` `offEquip` `mephisto` / `izual` `diablo`(`getLayout` `initLayout` `openSeal` `getBoss` `seisSeal` `infectorSeal` `vizierSeal` `diabloPrep` `followPath`) / `shenk` `barbs` `anya` `ancients` `baal`(`preattack` `checkHydra`) / `farmingCountess` `farmingPit` `farmingAndy` `farmingCows`(내부 `buildCowRooms` `getDriverName` `getDriverUnit` `followDriver` `clearCowLevel`) `farmingSummoner` `farmingMephisto` `farmingAbaddon` `farmingPOA` `farmingInfernal` `farmingNihlathak` / 이동 보조 `travel` `clearToExit` `changeAct` `clickWP` `getQuestItem`
+AutoSmurf 퀘스트·파밍 함수 목록: `den`(내부 `clearDen`) `blood` `cain` `trist` `outer` `smith` `malus` `jail` `inner` `cathedral` `andy` / `cube` `amulet` `summoner` `tombs` `staff` `cubeStaff` `placeStaff` `radament` `duriel` / `figurine` `portalReset` `tome` `eye` `heart` `brain` `travincal` `cubeFlail` `equipFlail` `placeFlail` `offEquip` `mephisto` / `izual` `diablo`(`getLayout` `initLayout` `openSeal` `getBoss` `seisSeal` `infectorSeal` `vizierSeal` `diabloPrep` `followPath`) / `shenk` `barbs` `anya` `ancients` `baal`(`preattack` `checkHydra`) / `farmingCountess` `farmingPit` `farmingAndy` `farmingCows`(내부 `buildCowRooms` `getDriverName` `getDriverUnit` `followDriver` `clearCowLevel`) `farmingSummoner` `farmingMephisto` `farmingAbaddon` `farmingPOA` `farmingInfernal` `farmingNihlathak` / 이동 보조 `travel` `clearToExit` `changeAct` `clickWP` `getQuestItem`
 
 ### 7-3. 전투 1회 사이클
 
