@@ -8,7 +8,7 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**마지막으로 분석한 로그**: 261027 묶음(10/26 14:24 ~ 10/27 18:49, main `152e5ea`)과 261028 묶음(10/27 18:54 ~ 10/28 13:07, 사용자 업로드 `8144c74`까지, 10/28 09:51 전 프로필 재시작), `log_results.md` 261027·261028. 261027의 handoff 판정은 261028과 함께 반영(사용자 261028). **다음 사이클**은 3-39 파서(`4a1738d` 외), 3-40~3-46(`dfc884b`·`9c48f56`), 3-47 syncBO 순서·3-48 상자 재시도(`68483de`), 3-49 판별 줄 삭제가 들어간 코드로 돈다.
+**마지막으로 분석한 로그**: 261027 묶음(10/26 14:24 ~ 10/27 18:49, main `152e5ea`)과 261028 묶음(10/27 18:54 ~ 10/28 13:07, 사용자 업로드 `8144c74`까지, 10/28 09:51 전 프로필 재시작), `log_results.md` 261027·261028. 261027의 handoff 판정은 261028과 함께 반영(사용자 261028). **다음 사이클**은 3-39 파서(`4a1738d` 외), 3-40~3-46(`dfc884b`·`9c48f56`), 3-47 syncBO 순서·3-48 상자 재시도(`68483de`), 3-49 판별 줄 삭제, 3-50 random 복원(`f23417c`)이 들어간 코드로 돈다.
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -212,3 +212,12 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **확인된 것**: `exitTo`로 무덤에 들어가 okCount 뒤 상자 프리셋까지 `Pather.moveTo(…, 3, true)`(경로 이동 실패 때 경로를 3번까지 다시 만듦)를 최대 3번, 그래도 25칸 넘게 남으면 퇴장. `482171b`(261022)에서 무한 while을 3회 상한으로 바꾼 자리(`docs/code/AutoSmurf.md` exitTo). 261028 4건 모두 앞에 `[Error]`·경로 보정 줄 없음 → `moveTo`가 오류 없이 도착하지 못한 채 3번 돌아옴. 남은 거리는 줄에 없음. 261023 판정: 미로형 지역에서 8명 동선이 꼬여 다시 시도가 많은 탓(사용자).
 - **바꾼 것**(261028 `68483de`, 사용자 수정): 바깥 반복 `j < 3` → `j < 10`(최대 `moveTo` 10번 × 경로 재시도 3 = 30). 같은 3회 상한의 다른 5곳(Arcane·Cube chest·Radament chest·Orifice·Red portal)은 그대로.
 - **검증 방법**: `Tomb chest not reached` 수. 상자 다음에는 대기가 없고 다음 무덤 입구 okCount(120초)에서 기다리므로, 늘어난 시간으로 퇴장 사유가 desync로 바뀌는지 함께 본다.
+
+### 3-50. moveTo 계열 random 복원·moveToUnit 프리셋 분기 random 전달 (`AutoSmurf` 여러 함수, `Pather.moveToUnit`, 사용자 261029)
+- **문제**(사용자 지적): 261028 random 통일(`dfc884b`)은 `me.x + myX` 줄만 바꿔, 261002(`f7d9337`)에 오프셋만 뺀 `no offset` 줄(farmingCows followDriver 등)이 오프셋 없이 남았다.
+- **바꾼 것**(261029 `f23417c`, PR #113):
+  - `AutoSmurf` 44줄에 random 인자. ① `no offset` 14곳: farmingCows followDriver 5, cain 737 2, smith, tombs, mephisto, farmingMephisto, farmingAbaddon·POA·Infernal. ② 대기 중 복귀: duriel 오리피스(8칸 넘으면), baal 왕좌 대기 `15092,5028`. ③ 경로·집결: cathedral 2, andy 노멀 5, travincal 팔로워, seis 4(전원), infector·vizier 팔로워 각 2, baal 챔버 입장 뒤 `15134,5923`, farmingPit 6. ④ 오브젝트 접근: blood 무덤, cain 나무 2, cube 상자, duriel 오리피스 첫 도착.
+  - `Pather.moveToUnit`: PresetUnit 분기에서 `pop`·`random`을 `moveTo`로 넘김. 전에는 버려져 프리셋을 넘긴 random 호출(anya 5365 `moveToUnit(프리셋 460, …, true)`, 261026)에 random이 적용되지 않았다.
+  - 그대로 둔 것(사용자 결정): 다음 동작이 대화·상호작용인 이동(anya 물약 가진 사람의 앤야 접근, farmingSummoner 일지, duriel 티리얼, mephisto·farmingMephisto 빨간 포탈), okCount·teamCount(들어갈 때 자리로 복귀, 앞 이동의 random으로 충분), checkHydra·baal·diablo 직업별 자리, 리더 전용 이동, `Town.move`·`moveToExit`.
+- **검증 방법**: 위 지점에서 팀이 한 칸에 겹쳐 서지 않는지(사용자 육안), 앤야 프리셋·듀리엘 오리피스에서 흩어지는지. trace·콘솔 `no random path -> x,y in 지역 reverting...` 줄의 지점과 수(막힌 오프셋 → 원래 좌표). 반복 안에 넣은 곳(followDriver, smith·tombs·Abaddon·POA·Infernal 거리 반복, duriel 오리피스 대기, baal 왕좌 대기)은 부를 때마다 오프셋 방향이 바뀌므로(`reflection`) 왕복·지연이 없는지.
+- **결과**: 아직 없음.
