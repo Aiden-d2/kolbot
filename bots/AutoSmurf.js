@@ -3368,34 +3368,15 @@ function AutoSmurf() {
 		
 		journal = getUnit(2, 357);
 		
-		if (journal) {	//261028 everyone reads the journal once, portal or not (a profile that did not read it could not take the tomb portal at Duriel)
-			sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
-
-			tick = getTickCount();	//261028 same wait as the delay, watching for the journal dialog (shown only to the one who read it; not cancelled)
-			talked = -1;
-
-			while (getTickCount() - tick < me.ping * 2 + 1000) {
-				if (talked < 0 && getIsTalkingNPC()) {
-					talked = getTickCount() - tick;
-				}
-
-				delay(10);
-			}
-
-			Misc.trace("[Summoner] journal: " + (talked > -1 ? "dialog at " + talked + "ms" : "no dialog") + " dist:" + Math.round(getDistance(me, journal)));	//261028 remove after one Duriel portal failure is judged, or 2 cycles with none (handoff 3-43)
-		} else {
-			Misc.trace("[Summoner] journal: none");	//261028
-		}
-		
-		for (i = 0; i < 3; i += 1) {
-			if (Pather.getPortal(46)) {
-				break;
-			}
-			
+		for (i = 0; i < 3; i += 1) {	//261029
 			if (journal) {
 				sendPacket(1, 0x13, 4, journal.type, 4, journal.gid);
 
 				delay(me.ping * 2 + 1000);	//261006 watchDialog log removed	//260929 Misc.click(0, 0) removed: world click, does not close dialogs
+			}
+			
+			if (Pather.getPortal(46)) {
+				break;
 			}
 		}
 
@@ -3655,6 +3636,7 @@ function AutoSmurf() {
 		// the game after drops the book again for everyone who has 9,5 and no book. Only the game maker gets the reset, so only the leader talks
 		if (Leader && me.getQuest(9, 1) && me.getQuest(9, 5) && !me.findItem(552)) {	//261004
 			Town.move(NPC.Atma);
+			
 			atma = getUnit(1, NPC.Atma);
 
 			if (atma && atma.openMenu()) {
@@ -3837,6 +3819,14 @@ function AutoSmurf() {
 		
 		if (me.act !== 2 || !me.inTown) {
 			Town.goToTown(2);
+		}
+		
+		Town.move(NPC.Atma);	//261029
+		
+		npc = getUnit(1, NPC.Atma);
+
+		if (npc && npc.openMenu()) {
+			me.cancel();
 		}
 		
 		if (!me.getQuest(14, 1) && !me.getQuest(14, 3) && !me.getQuest(14, 4)) {
