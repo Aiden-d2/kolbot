@@ -784,7 +784,7 @@ ModeLoop:
 		}
 
 		if (unit instanceof PresetUnit) {
-			return this.moveTo(unit.roomx * 5 + unit.x + offX, unit.roomy * 5 + unit.y + offY, 3, clearPath);
+			return this.moveTo(unit.roomx * 5 + unit.x + offX, unit.roomy * 5 + unit.y + offY, 3, clearPath, pop, random);	//261029 pass pop/random (a preset unit dropped them)
 		}
 
 		if (!useTeleport) {
