@@ -33,11 +33,11 @@ var AutoBuildTemplate = {
 			{id: 226, target: 20},			// Oak Sage
 			{id: 250, target: 1},			// Hurricane
 			{id: 224, target: 1, from: 42},	// Shape Shifting
-			{id: 243, target: 6, from: 42},	// Shock Wave
+			{id: 243, target: 5, from: 42},	// Shock Wave
 			{id: 249, target: 20},			// Armageddon
 			{id: 244, target: 20},			// Volcano
 			{id: 229, target: 20},			// Molten Boulder
-			{id: 225, target: 10, from: 42},// Firestorm
+			{id: 225, target: 11, from: 42},// Firestorm
 		]
 	},
 
