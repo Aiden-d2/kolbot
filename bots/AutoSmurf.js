@@ -68,6 +68,8 @@ function AutoSmurf() {
 		figurine = false,
 		teamFigurine = false,
 		leaderFigurine = false,
+		figurineEye = false,	//261029 figurine hunt: the leader calls eye(true), the team joins
+		figurineTome = false,	//261029 figurine hunt: the leader calls tome(true), the team joins
 		travincal = false,
 		mephisto = false,
 		takeRedPortal = false,
@@ -1831,6 +1833,25 @@ function AutoSmurf() {
 		}
 
 		D2Bot.printToConsole("=== TRAVINCAL ===", 7);
+
+		return true;
+	};
+
+	this.portalReset = function () {	//261029 my old Act 3 portal keeps its room active, so a Jade Figurine boss there is never released: a new portal (Act 2) removes it, then wait for the release
+		if (me.act !== 3 || !me.inTown) {
+			Town.goToTown(3);
+		}
+
+		Town.move("portalspot");
+
+		if (!Pather.getPortal(null, me.name)) {
+			return true;
+		}
+
+		Pather.useWaypoint(46);
+		Pather.makePortal();
+		Pather.useWaypoint(75);
+		delay(6000);
 
 		return true;
 	};
@@ -4121,12 +4142,100 @@ function AutoSmurf() {
 	};
 
 	
-	this.tome = function () { // Teleporting Sorc walks over to Alkor and completes the quest for everyone via exploit.
-		var alkor, target;
+	this.tome = function (fig) { // Teleporting Sorc walks over to Alkor and completes the quest for everyone via exploit.	//261029 fig: figurine hunt with the team
+		var i, alkor, target, tick;
 
 		print("ÿc4=== [TOME] ===");	Misc.trace("=== [TOME] ===", true);	//260930
 
-		if (!me.findItem(548)) {	//260910
+		if (fig) {	//261029 figurine hunt: the team walks to the altar, killing on the way
+			if (!doneChores) {
+				Town.doChores(true);
+			}
+
+			this.portalReset();
+			this.okCount();
+
+			if (Leader) {
+				if (!Pather.useWaypoint(80)) {
+					throw new Error("Lam Essen quest failed");
+				}
+
+				Precast.doPrecast(true);
+
+				if (!Pather.moveToExit(94, true)) {
+					throw new Error("Lam Essen quest failed");
+				}
+
+				Pather.makePortal();
+
+				me.overhead("tpReady");
+				Messaging.sendToList(Team.Profiles, "tpReady");
+			} else {
+				Town.move("portalspot");
+
+				while (me.inTown) {
+					if (tpReady) {
+						Pather.usePortal(94, null);
+					}
+
+					delay(250);
+				}
+
+				tpReady = false;
+			}
+
+			Pather.teleport = false;
+
+			for (i = 0; i < 10; i += 1) {	//261029 walking with the team: up to 10 x 3 path retries
+				if (Pather.moveToPreset(94, 2, 193, 0, 0, true)) {
+					break;
+				}
+			}
+
+			Pather.teleport = true;
+
+			if (Leader && !me.getQuest(17, 0) && !me.findItem(548)) { // book once
+				target = getUnit(2, 193);
+
+				Misc.openChest(target);
+				delay(300);
+
+				target = getUnit(4, 548);
+				Pickit.pickItem(target);
+			}
+
+			if (me.findItem(546) || me.findItem(547)) { // Have A Jade Figurine or The Golden Bird. Tell the Teleporting Sorc so she gets us to process it.
+				Messaging.sendToList(Team.Profiles, "figurine");
+
+				figurine = true;
+				teamFigurine = true;
+				leaderFigurine = true;
+			}
+
+			if (Leader) {
+				if (!Pather.getPortal(null, null)) {
+					Pather.makePortal();
+				}
+			}
+
+			tick = getTickCount();
+
+			while (!Pather.usePortal(null, null)) {
+				delay(me.ping * 2 + 200);
+
+				if (getTickCount() - tick > 3 * 1000) {
+					Town.goToTown();
+					delay(me.ping * 2 + 100);
+					break;
+				}
+			}
+
+			if (!Leader || me.getQuest(17, 0)) { // Alkor once
+				doneChores = false;
+
+				return true;
+			}
+		} else if (!me.findItem(548)) {	//260910
 			if (!doneChores) {
 				Town.doChores(true);
 			}
@@ -4181,37 +4290,98 @@ function AutoSmurf() {
 		return true;
 	};
 
-	this.eye = function () {
-		var presetUnit;
-		
+	this.eye = function (fig) {	//261029 fig: figurine hunt, the team kills Sszark
+		var presetUnit, tick;
+
 		print("ÿc4=== [EYE] ===");	Misc.trace("=== [EYE] ===", true);	//260930
 
 		if (!doneChores) {
 			Town.doChores(true);
 		}
-		
-		if (!me.inTown) {
-			Town.goToTown();
+
+		if (fig) {	//261029
+			this.portalReset();
+			this.okCount();
 		}
 
-		Pather.useWaypoint(76);
-		Precast.doPrecast(true);
-		this.exitTo(85);	//261022 result checked
+		if (!fig || Leader) {	//261029 the team waits for the leader's portal
+			if (!me.inTown) {
+				Town.goToTown();
+			}
 
-		presetUnit = getPresetUnit(85, 2, 407);
+			Pather.useWaypoint(76);
+			Precast.doPrecast(true);
+			this.exitTo(85);	//261022 result checked
 
-		if (!presetUnit) {
-			return false;
+			presetUnit = getPresetUnit(85, 2, 407);
+
+			if (!presetUnit) {
+				return false;
+			}
+
+			Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 15);
+
+			if (!fig || (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(553))) {	//261029 fig: eye once
+				this.getQuestItem(553, 407);
+			}
+
+			if (!fig) {	//261029
+				Town.goToTown();
+
+				doneChores = false;
+
+				return true;
+			}
+
+			Pather.makePortal();	//261029
+
+			me.overhead("tpReady");
+			Messaging.sendToList(Team.Profiles, "tpReady");
+		} else {	//261029
+			Town.move("portalspot");
+
+			while (me.inTown) {
+				if (tpReady) {
+					Pather.usePortal(85, null);
+				}
+
+				delay(250);
+			}
+
+			tpReady = false;
 		}
 
-		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 15);
+		Attack.clear(10);	//261029 next to the portal
+		Attack.clear(25, getLocaleString(2868));	//261029 Sszark the Burning
 
-		this.getQuestItem(553, 407);
+		if (me.findItem(546) || me.findItem(547)) { // Have A Jade Figurine or The Golden Bird. Tell the Teleporting Sorc so she gets us to process it.	//261029
+			Messaging.sendToList(Team.Profiles, "figurine");
 
-		Town.goToTown();
+			figurine = true;
+			teamFigurine = true;
+			leaderFigurine = true;
+		}
+
+		if (Leader) {	//261029
+			if (!Pather.getPortal(null, null)) {
+				Pather.makePortal();
+			}
+		}
+
+		tick = getTickCount();	//261029
+
+		while (!Pather.usePortal(null, null)) {
+			delay(me.ping * 2 + 200);
+
+			if (getTickCount() - tick > 3 * 1000) {
+				Town.goToTown();
+				delay(me.ping * 2 + 100);
+				break;
+			}
+		}
 
 		doneChores = false;
-		
+
 		return true;
 	};
 
@@ -4297,7 +4467,9 @@ function AutoSmurf() {
 		if (me.act !== 3 || !me.inTown) {
 			Town.goToTown(3);
 		}
-		
+
+		this.portalReset();	//261029 figurine: release a boss kept by my old portal
+
 		if (!me.getQuest(21, 0)) {
 			while (!cain || !cain.openMenu()) { // Try more than once to interact with Deckard Cain.
 				Packet.flash(me.gid);
@@ -7461,6 +7633,12 @@ function AutoSmurf() {
 			case "teamFigurine":
 				teamFigurine = true;
 				break;
+			case "figurineEye":	//261029
+				figurineEye = true;
+				break;
+			case "figurineTome":	//261029
+				figurineTome = true;
+				break;
 			case "travincal":
 				travincal = true;
 				break;
@@ -7680,32 +7858,52 @@ function AutoSmurf() {
 		
 			this.travel(6); // Travel to all waypoints up to and including Travincal if I don't have them.
 
-			if (!me.getQuest(17, 0)) { // Haven't completed Lam Esen's Tome.
-				Messaging.sendToList(Team.Profiles, "syncBO");
-				this.syncBO();
-				
-				this.tome();
-			}
-
-			if (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(553)) { // Don't have Eye and don't have Khalim's Will and haven't completed Khalim's Will.
-				Messaging.sendToList(Team.Profiles, "syncBO");
-				this.syncBO();
-				
-				this.eye();
-			}
-
 			if (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(554)) { // Don't have Heart and don't have Khalim's Will and haven't completed Khalim's Will.
 				Messaging.sendToList(Team.Profiles, "syncBO");
 				this.syncBO();
-				
+
 				this.heart();
 			}
 
 			if (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(555)) { // Don't have Brain and don't have Khalim's Will and haven't completed Khalim's Will.
 				Messaging.sendToList(Team.Profiles, "syncBO");
 				this.syncBO();
-				
+
 				this.brain();
+			}
+
+			if (!me.getQuest(20, 0) && !figurine) { // Golden Bird not done and nobody has the figurine: hunt it with the team	//261029 order heart -> brain -> eye -> tome
+				Messaging.sendToList(Team.Profiles, "syncBO");
+				this.syncBO();
+
+				Messaging.sendToList(Team.Profiles, "figurineEye");
+				this.eye(true);
+
+				if (figurine) { // Someone has the Jade Figurine! (the team is in figurine() now)	//261029
+					this.figurine();
+				}
+			} else if (!me.getQuest(18, 0) && !me.findItem(174) && !me.findItem(553)) { // Don't have Eye and don't have Khalim's Will and haven't completed Khalim's Will.
+				Messaging.sendToList(Team.Profiles, "syncBO");
+				this.syncBO();
+
+				this.eye();
+			}
+
+			if (!me.getQuest(20, 0) && !figurine) { // still no figurine	//261029
+				Messaging.sendToList(Team.Profiles, "syncBO");
+				this.syncBO();
+
+				Messaging.sendToList(Team.Profiles, "figurineTome");
+				this.tome(true);
+
+				if (figurine) { // Someone has the Jade Figurine!	//261029
+					this.figurine();
+				}
+			} else if (!me.getQuest(17, 0)) { // Haven't completed Lam Esen's Tome.
+				Messaging.sendToList(Team.Profiles, "syncBO");
+				this.syncBO();
+
+				this.tome();
 			}
 
 			if (!me.getQuest(21, 0) || !me.getQuest(20, 0) || me.findItem(174) || (me.findItem(553) && me.findItem(554) && me.findItem(555))) { // Have Khalim's Will or have Eye, Heart, and Brain, or Golden Bird isn't complete, or The Blackened Temple isn't complete.
@@ -7735,6 +7933,16 @@ function AutoSmurf() {
 				if (travincal) {
 					this.travincal();
 					travincal = false;
+				}
+
+				if (figurineEye) {	//261029
+					this.eye(true);
+					figurineEye = false;
+				}
+
+				if (figurineTome) {	//261029
+					this.tome(true);
+					figurineTome = false;
 				}
 
 				if (figurine) {
