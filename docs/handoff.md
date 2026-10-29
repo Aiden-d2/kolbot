@@ -8,7 +8,7 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**마지막으로 분석한 로그**: 261027 묶음(10/26 14:24 ~ 10/27 18:49, main `152e5ea`)과 261028 묶음(10/27 18:54 ~ 10/28 13:07, 사용자 업로드 `8144c74`까지, 10/28 09:51 전 프로필 재시작), `log_results.md` 261027·261028. 261027의 handoff 판정은 261028과 함께 반영(사용자 261028). **다음 사이클**은 3-39 파서(`4a1738d` 외), 3-40~3-46(`dfc884b`·`9c48f56`), 3-47 syncBO 순서·3-48 상자 재시도(`68483de`), 3-49 판별 줄 삭제, 3-50 random 복원(`f23417c`)이 들어간 코드로 돈다.
+**마지막으로 분석한 로그**: 261027 묶음(10/26 14:24 ~ 10/27 18:49, main `152e5ea`)과 261028 묶음(10/27 18:54 ~ 10/28 13:07, 사용자 업로드 `8144c74`까지, 10/28 09:51 전 프로필 재시작), `log_results.md` 261027·261028. 261027의 handoff 판정은 261028과 함께 반영(사용자 261028). **다음 사이클**은 3-39 파서(`4a1738d` 외), 3-40~3-46(`dfc884b`·`9c48f56`), 3-47 syncBO 순서·3-48 상자 재시도(`68483de`), 3-49 판별 줄 삭제, 3-50 random 복원(`f23417c`), 3-51 피겨린 파티 사냥·포털 리셋이 들어간 코드로 돈다.
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -220,4 +220,20 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - `Pather.moveToUnit`: PresetUnit 분기에서 `pop`·`random`을 `moveTo`로 넘김. 전에는 버려져 프리셋을 넘긴 random 호출(anya 5365 `moveToUnit(프리셋 460, …, true)`, 261026)에 random이 적용되지 않았다.
   - 그대로 둔 것(사용자 결정): 다음 동작이 대화·상호작용인 이동(anya 물약 가진 사람의 앤야 접근, farmingSummoner 일지, duriel 티리얼, mephisto·farmingMephisto 빨간 포탈), okCount·teamCount(들어갈 때 자리로 복귀, 앞 이동의 random으로 충분), checkHydra·baal·diablo 직업별 자리, 리더 전용 이동, `Town.move`·`moveToExit`.
 - **검증 방법**: 위 지점에서 팀이 한 칸에 겹쳐 서지 않는지(사용자 육안), 앤야 프리셋·듀리엘 오리피스에서 흩어지는지. trace·콘솔 `no random path -> x,y in 지역 reverting...` 줄의 지점과 수(막힌 오프셋 → 원래 좌표). 반복 안에 넣은 곳(followDriver, smith·tombs·Abaddon·POA·Infernal 거리 반복, duriel 오리피스 대기, baal 왕좌 대기)은 부를 때마다 오프셋 방향이 바뀌므로(`reflection`) 왕복·지연이 없는지.
+- **결과**: 아직 없음.
+
+### 3-51. 피겨린 파티 사냥·포털 리셋 (`AutoSmurf.eye`·`tome`·`travincal`·`portalReset`, Act 3 리더 흐름·팔로워 루프, 사용자 261029)
+- **문제**: Travincal 뒤 `[Quit] Figurine incompleted`(261006~261028 묶음마다 1~6건). 피겨린이 나오는 곳을 찾으려고 Travincal을 반복.
+- **확인된 것**(D2MOO 1.10f 복원 소스, 1.14d 미대조):
+  - 지정: Act 3에서 유니크·챔피언·슈퍼유니크가 생성·복원될 때(`MONSTERUNIQUE_SpawnUniqueMonster` → `QUESTS_SetJadeFigurineBoss`) 자리가 비어 있으면 그 몹 하나가 지정된다. 날아다니는 몹(`monstats` flying)·기드빈 페티시 보스 제외, 게임당 1개. 지정 몹을 잡으면 100% 드랍(`ACT3Q4_Callback08_MonsterKilled`). 게임 만든 사람이 완료(bit0)·보상 대기(bit1)면 지정 없음, 잡은 사람(용병·소환수는 주인)이 완료했으면 드랍 없이 끝남.
+  - 해제: 지정 몹의 방이 클라이언트 없이 12프레임 검사 11회(약 5.3초) 지나 해제(untile)되면 지정이 풀린다(`GAME_UpdateProgress` → `SUNITINACTIVE_CompressUnitIfNeeded` → `QUESTS_SetGoldenBirdSpawn`). **포털이 있는 방은 해제되지 않아** 그 방의 지정 몹은 계속 지정된 채 남는다(`DRLGACTIVATE_TestRoomCanUnTile`). 마을 밖에서 새 포털을 열면 옛 포털이 지워진다(`PLAYER_RemoveTownPortal`). Act 3가 아닌 몹은 지정 대상이 아니다.
+  - 지역: Spider Cavern은 16×16 타일 방 약 4개(`lvlmaze`), 헬 보스 Sszark 포함 4~5(levels MonUMin/Max 4/5). 사원은 8×8 방 9칸, 헬 보스 2.
+- **바꾼 것**(261029, 사용자 요청·승인):
+  - `portalReset`(새 함수, `//SUPPORTING` 끝): Act 3 마을 포털 자리에서 자기 이름 포털(`Pather.getPortal(null, me.name)`)이 있으면 웨이포인트 46 → 포털만 열기 → 웨이포인트 75 → 6초 대기. 없으면 아무것도 안 함.
+  - `eye(fig)`: 전원 `portalReset` → okCount. 리더가 Cavern 상자 근처에서 눈(없을 때만) → 포털 → `tpReady`, 팔로워는 `usePortal(85)`. 전원 `Attack.clear(10)` → `Attack.clear(25, getLocaleString(2868))`(Sszark, 번호는 blizzhackers/kolbot `LocaleStringID.js`, 2852·2875·22435 일치로 대조) → 피겨린 알림 → 포털 귀환. `fig` 없으면 기존 그대로.
+  - `tome(fig)`: 전원 `portalReset` → okCount. 리더가 사원 도착 즉시 포털 → `tpReady`, 팔로워 `usePortal(94)`. 전원 걷기로 `moveToPreset(94, 2, 193, 0, 0, true)` 최대 10회(경로 재시도 3 → 최대 30). 책·Alkor는 처음 1회만(리더). 이동 실패는 기존과 같은 throw. 피겨린 알림 → 포털 귀환.
+  - `travincal`: Cain 대화 앞에 `portalReset`.
+  - 리더 Act 3 순서: heart → brain → eye → tome → travincal. `!getQuest(20,0) && !figurine`이면 `figurineEye`·`figurineTome` 신호 + `eye(true)`·`tome(true)`, 뒤에 `figurine`이면 바로 `this.figurine()`. 아니면 기존 조건으로 `eye()`·`tome()`.
+  - 팔로워 루프: `figurineEye`·`figurineTome` 플래그로 `eye(true)`·`tome(true)`. 팔로워도 두 함수 맨 앞의 `doChores`를 탄다.
+- **검증 방법**: `Figurine incompleted` 수. 콘솔 `=== FIGURINE ===`이 Travincal 전(EYE·TOME 뒤)에 나오는지. `portalReset` 뒤 okCount에서 `Party desynced 1`(missing(okCount))이 늘지 않는지. eye(true)에서 Sszark가 범위 25 안에서 잡히는지(사용자 육안). 사원 걷기 이동이 10회 안에 제단에 닿는지.
 - **결과**: 아직 없음.
