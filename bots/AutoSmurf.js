@@ -4884,15 +4884,15 @@ function AutoSmurf() {
 							diabloTrap = ClassAttack.checkTraps({x: 7793, y: 5293});
 
 							if (diabloTrap) {
-								ClassAttack.placeTraps({x: 7783, y: 5290}, 1);
+								ClassAttack.placeTraps({x: 7783, y: 5290}, 1);	//1
 								delay(150);
-								ClassAttack.placeTraps({x: 7787, y: 5300}, 1);
+								ClassAttack.placeTraps({x: 7787, y: 5300}, 1);	//5
 								delay(150);
-								ClassAttack.placeTraps({x: 7799, y: 5301}, 1);
+								ClassAttack.placeTraps({x: 7799, y: 5301}, 1);	//4
 								delay(150);
-								ClassAttack.placeTraps({x: 7802, y: 5289}, 1);
+								ClassAttack.placeTraps({x: 7802, y: 5289}, 1);	//3
 								delay(150);
-								ClassAttack.placeTraps({x: 7793, y: 5282}, 1);
+								ClassAttack.placeTraps({x: 7793, y: 5282}, 1);	//2
 
 								break;
 							}
@@ -4928,7 +4928,7 @@ function AutoSmurf() {
 				
 			for (i = 0; i < path.length; i += 2) {
 				//Pather.moveTo(path[i], path[i + 1], 3, true);	//260822	//261002 no offset
-				Pather.moveTo(path[i], path[i + 1], 3, true, false, true);	//261007
+				Pather.moveTo(path[i], path[i + 1], 10, true, false, true);	//261029
 			}
 		};
 
@@ -5009,13 +5009,13 @@ function AutoSmurf() {
 
 		this.seisSeal();
 		
-		Pather.moveTo(7790, 5290, 5, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
+		Pather.moveTo(7793, 5293, 10, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 
 		this.okCount();
 		
 		this.infectorSeal();
 		
-		Pather.moveTo(7790, 5290, 5, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
+		Pather.moveTo(7793, 5293, 10, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 
 		this.okCount();
 		
@@ -5023,23 +5023,36 @@ function AutoSmurf() {
 
 		Pather.teleport = true;
 		
-		switch (me.classid) {
-		case 1:
-			Pather.moveTo(7778, 5292, 5, true);
-			if (getDistance(me.x, me.y, 7778, 5292) > 20) {
-				Pather.walkTo(7778, 5292);
+		if (me.diff === 0) {	//261029
+			Pather.moveTo(7793, 5293, 5, false, false, true);
+		} else {
+			switch (me.classid) {
+			case 0:	//ama
+				Pather.moveTo(7793, 5282, 5);	//2
+				break;
+			case 1:	//sor
+				if (rand(0, 1)) {
+					Pather.moveTo(7802, 5289, 5);	//3
+				} else {
+					Pather.moveTo(7799, 5301, 5);	//4
+				}
+				break;
+			case 2:	//nec
+				Pather.moveTo(7787, 5300, 5);	//5
+				break;
+			case 3:	//pal
+				Pather.moveTo(7793, 5295, 5);
+				break;
+			case 4:	//bar
+				Pather.moveTo(7798, 5296, 5);
+				break;
+			case 5: //dru
+				Pather.moveTo(7789, 5289, 5);
+				break;
+			case 6:	//ass
+				Pather.moveTo(7783, 5290, 5);	//1
+				break;
 			}
-			break;
-		case 2:
-		case 6:
-			Pather.moveTo(7798, 5292, 5, true);
-			break;
-		case 3:
-			Pather.moveTo(7791, 5297, 5, true);
-			break;
-		default:
-			Pather.moveTo(7788, 5292, 5, true);
-			break;
 		}
 		
 		Pather.teleport = false;
