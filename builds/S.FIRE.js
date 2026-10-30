@@ -135,8 +135,8 @@ var AutoBuildTemplate = {
 				Config.PacketCasting = 1;									// 0 = disable, 1 = packet teleport, 2 = full packet casting.
 				
 				//Config.CastStatic = true;
-				//StaticHP = [25, 33, 50];
-				//StaticBossHP = [10, 33, 50];
+				//Config.StaticHP = [25, 33, 50];	//261030 Config.
+				//Config.StaticBossHP = [10, 33, 50];	//261030 Config.
 				//Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];
 			}
 		},
@@ -164,8 +164,8 @@ var AutoBuildTemplate = {
 	46:	{
 			Update: function () {
 				//Config.CastStatic = true;
-				//StaticHP = [25, 33, 50];
-				//StaticBossHP = [10, 33, 50];
+				//Config.StaticHP = [25, 33, 50];	//261030 Config.
+				//Config.StaticBossHP = [10, 33, 50];	//261030 Config.
 				//Config.StaticList = [];
 			}
 		},
