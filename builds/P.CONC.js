@@ -29,6 +29,7 @@ var AutoBuildTemplate = {
 		Skills: [
 			{id: 123, target: 1, from: 42},	// Conviction
 			{id: 117, target: 1},			// Holy Shield
+			{id: 110, target: 1, from: 25},	// Resist Lightning
 			{id: 115, target: 1},			// Vigor
 			{id: 112, target: 20},			// Blessed Hammer
 			{id: 113, target: 20},			// Concentration
@@ -36,7 +37,7 @@ var AutoBuildTemplate = {
 			{id: 108, target: 20, from: 42},// Blessed Aim
 			{id: 101, target: 1},			// Holy Bolt
 			{id: 98, target: 1},			// Might
-			{id: 123, target: 18},			// Conviction
+			{id: 123, target: 17},			// Conviction
 		]
 	},
 

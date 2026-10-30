@@ -38,8 +38,6 @@ var AutoBuildTemplate = {
 			{id: 51, target: 20},				// Fire Wall
 			{id: 42, target: 16, from: 18},		// Static Field
 			{id: 61, target: 20},				// Fire Mastery
-			//{id: 58, target: 7, from: 50},		// Energy Shield
-			//{id: 43, target: 16, from: 50},		// Telekinesis
 			{id: 52, target: 20, from: 50},		// Enchant
 			{id: 37, target: 20, from: 50},		// Warmth
 		]
