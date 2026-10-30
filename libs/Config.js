@@ -214,9 +214,6 @@ var Config = {
 	
 	PingQuit: [{Ping: 0, Duration: 0}],
 	
-	//Party
-	PublicMode: 2,
-	
 	//Town
 	Gamble: false,
 	GambleItems: [520, 522],

@@ -1136,7 +1136,6 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | `Town.clearScrolls` `checkQuestItems` `needKeys` | 호출부 0곳 |
 | `CollMap.getTelePoint` | 호출부 0곳 |
 | `Config.BossPriority` | 읽는 곳 없음 |
-| `Config.PublicMode` | 빌드 템플릿 13종이 설정하지만 읽는 곳 없음. 파티 초대·수락은 `PartyThread`가 `Team.Leader` 기준으로 한다 |
 | `Config.AvoidDolls` | `Paladin.js:82`가 읽지만 `Config.js`에 정의가 없어 항상 undefined |
 
 ### 10-2. 비활성 — 코드는 온전하고 스위치만 꺼짐

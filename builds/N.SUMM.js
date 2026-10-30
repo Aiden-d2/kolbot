@@ -94,10 +94,6 @@ var AutoBuildTemplate = {
 					Config.RejuvBuffer = 2;
 				}
 				
-				if (me.profile === Team.Leader) {
-					Config.PublicMode = 3;									// 1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
-				}
-				
 				Config.Skeletons = "max";
 				Config.SkeletonMages = "max";
 				Config.Revives = "max";
