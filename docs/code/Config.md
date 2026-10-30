@@ -13,3 +13,9 @@
 
 ### 261028 사용자: 기어 칸 이름·`TieredGear` 삭제 (handoff 3-39)
 - 삭제. 읽던 곳은 nip `[tiered] == 1~10`·`!= N` 판정뿐이었고, 그 형태가 없어짐(`[tiered]`는 `Config.Tiered`만 봄).
+
+## PublicMode
+
+### 261030 사용자: `PublicMode` 삭제
+- `//Party` 주석과 `PublicMode: 2` 삭제. 읽는 곳이 없었다(261030 `.js`·`.dbj` grep: 이 기본값과 빌드 14개의 대입뿐). 파티 초대·수락은 `PartyThread` partyCheck가 `Team.Leader` 기준으로 한다(리더: 초대만, 그 밖: 수락만).
+- 동작은 바꾸지 않음.

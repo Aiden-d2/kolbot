@@ -97,10 +97,6 @@ var AutoBuildTemplate = {
 					Config.MercSkill = "Prayer";
 				}
 				
-				if (me.profile === Team.Leader) {
-					Config.PublicMode = 3;								// 1 = invite and accept, 2 = accept only, 3 = invite only, 0 = disable
-				}
-				
 				Config.TierGoal.Helm = 15;	//261028 renamed
 				Config.TierGoal.Amulet = 17;	//261028 renamed
 				Config.TierGoal.Armor = 31;	//261028 renamed
