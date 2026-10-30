@@ -59,7 +59,8 @@ var ClassAttack = {
 		}
 
 		// Static: replaces the untimed skill until the hp % for its difficulty (boss / other), then the attack skills take over	//261029
-		if (Config.CastStatic === true && me.getSkill(42, 1) && Attack.checkResist(unit, "lightning") && (!Config.StaticList.length || Config.StaticList.some(	//261029 empty list = every monster
+		// an empty untimed slot with a timed skill on the monster: static fills the cooldown whatever the hp % or lightning immunity (it still hits the monsters around)	//261030
+		if (Config.CastStatic === true && me.getSkill(42, 1) && (!Config.StaticList.length || Config.StaticList.some(	//261029 empty list = every monster	//261030 lightning test moved below
 				function (id) {
 					if (unit) {
 						switch (typeof id) {
@@ -82,7 +83,7 @@ var ClassAttack = {
 
 					return 0;
 				}
-			)) && unit.hp * 100 / 128 > (index === 1 ? Config.StaticBossHP : Config.StaticHP)[me.diff]) {	//261029 hp / 128
+			)) && ((checkSkill === -1 && timedSkill > -1) || (Attack.checkResist(unit, "lightning") && unit.hp * 100 / 128 > (index === 1 ? Config.StaticBossHP : Config.StaticHP)[me.diff]))) {	//261029 hp / 128	//261030 empty untimed slot + timed skill: no hp / immunity test
 			untimedSkill = 42;	//261029
 			staticRange = me.getSkill(42, 1) + 2;	//261029 range level + 4, less the arrival margin 2
 		}
