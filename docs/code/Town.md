@@ -13,6 +13,10 @@
 - 보석마다 넣기 전 tier(`NTIP.GetScore`, 새 지역 변수 `tierBefore`)와 넣은 뒤 tier(`Equip.getEquippedItem(칸).tier`)를 비교해 올랐을 때만 `Misc.logItem("Socketed")`. 콘솔 `[Socket]`·print·ItemLog는 보석마다 그대로. ItemLog `Socketed` 줄 끝 `{nip 줄 / (찬/전체)}`(매칭 줄 없으면 `{(찬/전체)}`).
 - 확인: 261029 로그 ItemLog `Socketed` 52줄 = 콘솔 `[Socket]` 52줄, `(찬/전체)` 모두 일치. 매니저 아이템 로그 쪽은 로그를 받지 않아 보지 않음. 검증 통과(사용자 261029).
 
+### 261026 Claude·사용자: 넣은 뒤 큐빙 목록 갱신 (`d87cfcb`·`30c9b4e`, 옛 handoff 2-27·3-38)
+- 넣은 것이 있으면 끝에서 `Cubing.update()`(소켓용 최상급 보석 후보를 다시 계산). 사용자 `30c9b4e`: `Config.Cubing`일 때만 부름(큐빙이 꺼져 있으면 레시피가 없다).
+- 확인: `Cubing.md` buildRecipes 261026과 같다(사용자 확정 261030).
+
 ## heal
 
 ### 261021 Claude: 끝의 `me.cancel()` 삭제

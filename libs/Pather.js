@@ -300,24 +300,15 @@ var Pather = {
 			throw new Error("moveTo: Failed to generate path. area:" + me.area + " x:" + x + " y:" + y);	//260509
 		}
 		
-		if (random && !path.length) {	//261007
-			Misc.trace("no random path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " reverting...");
-			D2Bot.printToConsole("no random path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " reverting...");
-			
+		if (random && !path.length) {	//261007	//261030 revert trace and console removed (handoff 3-50 judged)
 			x = orgx;
 			y = orgy;
 			
 			path = getPath(me.area, x, y, me.x, me.y, useTeleport ? 1 : 0, useTeleport ? this.teleDistance : this.walkDistance);	//261007
-		
-			if (path.length > 0) {
-				Misc.trace("original path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
-				D2Bot.printToConsole("original path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
-			}
 		}
 		
 		if (!path.length) {	//261007 adjusting empty path (target not reachable from here)
-			Misc.trace("no original path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
-			D2Bot.printToConsole("no original path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");
+			Misc.trace("no original path -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " adjusting...");	//261030 console removed (trace kept for unreachable targets)
 			
 			valid = this.getNearestWalkable(x, y, 15, 2, 0x1);	//261012
 			
@@ -328,8 +319,7 @@ var Pather = {
 					x = valid[0];
 					y = valid[1];
 					
-					Misc.trace("adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
-					D2Bot.printToConsole("adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
+					Misc.trace("adjusted path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));	//261030 console removed
 				}
 			}
 		}
@@ -348,8 +338,7 @@ var Pather = {
 				}
 				
 				if (path.length > 0) {
-					Misc.trace("fixed path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
-					D2Bot.printToConsole("fixed path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));
+					Misc.trace("fixed path -> " + x + "," + y + " in " + Pather.getAreaName(me.area));	//261030 console removed
 					break;
 				}
 				
@@ -1072,6 +1061,7 @@ ModeLoop:
 	*/
 	useUnit: function (type, id, targetArea) {
 		var i, j, tick, unit, spot,
+			start = getTickCount(),	//261030 success time: reset at the first click below (handoff 3-29)
 			side = 0,	//261022 next side of the unit to try after a timeout
 			dirs = [[4, 0], [0, 4], [-4, 0], [0, -4]],	//261022 stairs open toward one of +x, +y, -x, -y (isometric map): spots 4 tiles out
 			preArea = me.area;
@@ -1096,6 +1086,7 @@ ModeLoop:
 
 		for (i = 0; i < 8; i += 1) {	//260903	//261022 7 -> 8: the 4 sides twice
 			if (moved()) {	//260930 moved in right after the last wait: the unit is in the old area now, do not walk or click it
+				Misc.trace("[useUnit] ok " + (getTickCount() - start) + "ms iter:" + (i - 1) + " type:" + type + " id:" + id + " target:" + targetArea);	//261030 the last click worked (handoff 3-29, remove once judged)
 				delay(100);
 
 				return true;
@@ -1103,6 +1094,10 @@ ModeLoop:
 
 			if (getDistance(me, unit) > 7) {	//261022 5 -> 7: a side spot (4 tiles + 2 arrival) is not pulled back onto the unit
 				this.moveToUnit(unit);
+			}
+
+			if (i === 0) {	//261030 measure from the first click's wait, after the walk to the unit (handoff 3-29)
+				start = getTickCount();
 			}
 
 			if (type === 2 && unit.mode === 0) {
@@ -1141,6 +1136,7 @@ ModeLoop:
 			// about 1s like usePortal, and while an area loads (act change portal) keep waiting instead of walking and clicking again	//260930 was ping*2+300
 			while (getTickCount() - tick < Math.max(1000, me.ping * 2 + 300) || !me.gameReady || ([2, 3, 6].indexOf(me.mode) > -1 && getTickCount() - tick < 4000)) {	//261022 still walking in after the click: keep waiting (up to 4s)
 				if (moved()) {
+					Misc.trace("[useUnit] ok " + (getTickCount() - start) + "ms iter:" + i + " type:" + type + " id:" + id + " target:" + targetArea);	//261030 (handoff 3-29, remove once judged)
 					delay(100);
 					return true;
 				}
@@ -1151,6 +1147,7 @@ ModeLoop:
 			Misc.trace("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area + " id:" + id + " target:" + targetArea + " unit:" + unit.x + "," + unit.y);	//260622	//260930 print -> trace (diagnostic)	//261021 id, target, unit spot (which exit it took)
 			
 			if (moved()) {	//261022 moved in right at the timeout: no side step on the old area's spot
+				Misc.trace("[useUnit] ok " + (getTickCount() - start) + "ms iter:" + i + " type:" + type + " id:" + id + " target:" + targetArea);	//261030 (handoff 3-29, remove once judged)
 				delay(100);
 
 				return true;

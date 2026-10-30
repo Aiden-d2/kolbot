@@ -88,7 +88,7 @@
 
 ### 4-4. 이동·경로 (Pather)
 목적: **아케인 등 getPath 오류(사용자가 따로 보기로 한 핵심)**, 텔레포트·유닛·웨이 실패.
-- 빈 경로 처리(`Pather.moveTo`, 261026 로그·코드로 확인한 형식): `no random path -> x,y in 지역 reverting...`(random 오프셋 목표에 경로 없음 → 원좌표로) → 원좌표 경로가 있으면 `original path -> x,y in 지역` / 없으면 `no original path -> x,y in 지역 adjusting...` → 보정 칸으로 경로가 나오면 `adjusted path -> x,y in 지역` / 없으면 `no adjusted path -> 내x,내y in 지역 fixing...`(내 주변 5칸 걷기, 최대 10회, trace만) → 경로가 나오면 `fixed path -> x,y in 지역`, 10번째도 없으면 throw `moveTo: Failed to generate path: x,y in 지역`. `no adjusted path`를 뺀 줄은 콘솔(기본색)에도 찍힌다(사용자 임시 확인용, 정상 종료 판정에서 조기 종료 줄로 착각하지 않는다).
+- 빈 경로 처리(`Pather.moveTo`, 261026 로그·코드로 확인한 형식): `no random path -> x,y in 지역 reverting...`(random 오프셋 목표에 경로 없음 → 원좌표로) → 원좌표 경로가 있으면 `original path -> x,y in 지역` / 없으면 `no original path -> x,y in 지역 adjusting...` → 보정 칸으로 경로가 나오면 `adjusted path -> x,y in 지역` / 없으면 `no adjusted path -> 내x,내y in 지역 fixing...`(내 주변 5칸 걷기, 최대 10회, trace만) → 경로가 나오면 `fixed path -> x,y in 지역`, 10번째도 없으면 throw `moveTo: Failed to generate path: x,y in 지역`. `no adjusted path`를 뺀 줄은 콘솔(기본색)에도 찍힌다(사용자 임시 확인용, 정상 종료 판정에서 조기 종료 줄로 착각하지 않는다). **261030부터**(사용자 요청, 3-50 검증 통과): 콘솔 줄 모두 삭제, `no random path`·`original path` trace 삭제. 남은 trace는 `no original path` → `adjusted path` / `no adjusted path` → `fixed path` → throw(아케인 등 목표에 길이 없는 경우 추적).
   - 옛 형식: main `72a1980`(261020 15:40)~261021 전은 `moveTo no random path … adjusting...` → `moveTo no path …` → `moveTo adjusted path …` → `invalid path -> … random move...`. 그 전 코드(261007~261020 오전)는 보정 조건·랜덤 걸음 괄호가 달랐다(`47816e6`에서 사용자가 고친 결함). 로그가 언제 코드인지 먼저 본다.
   - 261026 묶음: `no random path` 26, `original path` 26, `no original path` 27, `adjusted path` 25, `no adjusted path` 20(a3 10/26 00:29 Abaddon, a7 03:37 Infernal Pit 각 10회), `fixed path` 0, throw 줄 0(두 건 모두 뒤에 다음 구간 헤더).
   - 아케인 사례 판정: 같은 좌표로 `no original path`가 반복되는가, `adjusted path`가 있는가, `no adjusted path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 1-4)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
@@ -97,6 +97,7 @@
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
 - `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms(261024 `be4f0e2`부터 시전 중일 때만 최대 600ms, handoff 3-29), 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(`docs/code/Pather.md` useUnit 261022). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
+- `[useUnit] ok Nms iter:i type:t id: target:`(261030, Claude 추가, handoff 3-29) — useUnit이 지역을 넘어간 순간. N = 회차 0 접근 이동 뒤 클릭 앞 대기 직전부터 넘어간 순간까지, iter = 먹힌 클릭의 회차, type 5 계단 타일·2 오브젝트. 판정: 같은 출구(id)끼리 사이클 사이 분포 비교(timeout 수는 보지 않음). 제거 조건: handoff 3-29 2차 비교 판정.
 - (261022 삭제) `[exit] 26 -> 27 type: exit:x,y dest:x,y` — H1(Monastery Gate 동선). 좌표는 `handoff.md` 1-2.
 - `[SafeTele] monsters N near M`(261021, Claude 추가) — 45 거르기로 빠진 몹 수. 제거 조건: 확인. **261023 `0f6da09` 삭제**.
 - `[Quit] moveToExit failed: A -> B`(261021~, 기본색 콘솔) — 옛 `clearToExit` 무한 재시도 대신 한 번 실패로 퇴장. 261022 `482171b`부터 `AutoSmurf.exitTo`(3회 실패)도 같은 줄, throw는 `[Error] AutoSmurf.exitTo: ...`로 먼저 찍힘. 거리 while 3회 실패 사유: `Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`, `Duriel chamber not entered`(`docs/code/AutoSmurf.md` exitTo).
@@ -106,8 +107,8 @@
 - 소울 게이트(261020): 헬 파밍의 아냐·바알에서 리더가 소울을 보면 `[Quit] Souls found in Anya` / print `Baal failed: souls found`(d2bs 로그). 바알은 `earlyReturn`으로 팀이 마을로.
 
 ### 4-5. 퀘스트
-- 라다먼트 북(261004·261012): `dropping radament book`(게임 시작에 가진 북을 버림) / `radament gate: 9,0 9,1 9,5 book` / `radament atma: ...`(분실 뒤 리더 아트마 대화, N+1) / `radament book visible: true/false 9,5` / `!!! [BOOK] !!!` / `radament book read: 9,5 false`(false = 읽음). 실패: `[Quit] Radament quest item not found`(누가 못 봄), `[Quit] getQuestItem failed`(줍기 실패), `[Quit] Radament book reset`. getQuestItem 줄: `Trying to make room for 이름`, `Not enough room for 이름`, `<classid> not found`, (261021~) `quest item vanished, retry N` / `<classid> vanished`(유닛이 사라짐: 남이 주움 추정). `quest item vanished, retry N`은 261026 로그 3건으로 제거 조건을 채워 삭제(사용자 261026, `d87cfcb`), `<classid> vanished`는 남김. 눈·심장·뇌는 `!!! [EYE|HEART|BRAIN] !!!`(261021~, trace·print). 261022 사용자 수정(`d8af14f`)부터 trace·print 없이 리더 콘솔만 `===EYE===`·`===HEART===`·`===BRAIN===`, 스태프는 `=== STAFF ===`(조건 `classid === 92`, `8a7ff56`).
-- 라다먼트 꺼짐(261021~): N+1 `radamentOff set` → N+2 `radamentOff -> tombs` + 콘솔 `Radament off: tombs, quit at 10 min (지역 x,y)` → 10분에 엔진이 나감(퇴장 줄 없음). 제거 조건(set/read 줄): 확인.
+- 라다먼트 북(261004·261012): `dropping radament book`(게임 시작에 가진 북을 버림) / `radament gate: 9,0 9,1 9,5 book` / `radament atma: ...`(분실 뒤 리더 아트마 대화, N+1) / `radament book visible: true/false 9,5` / `!!! [BOOK] !!!` / `radament book read: 9,5 false`(false = 읽음). 실패: `[Quit] Radament quest item not found`(누가 못 봄), `[Quit] getQuestItem failed`(줍기 실패), `[Quit] Radament book reset`. getQuestItem 줄: `Trying to make room for 이름`, `Not enough room for 이름`, `<classid> not found`, (261021~) `quest item vanished, retry N` / `<classid> vanished`(유닛이 사라짐: 남이 주움 추정). `quest item vanished, retry N`은 261026 로그 3건으로 제거 조건을 채워 삭제(사용자 261026, `d87cfcb`), `<classid> vanished`는 남김. 눈·심장·뇌는 `!!! [EYE|HEART|BRAIN] !!!`(261021~, trace·print). 261022 사용자 수정(`d8af14f`)부터 trace·print 없이 리더 콘솔만 `===EYE===`·`===HEART===`·`===BRAIN===`, 스태프는 `=== STAFF ===`(조건 `classid === 92`, `8a7ff56`). **261030 삭제**: `radament book visible`·`radament book read`(3-10·3-13 확정, 사용자). 남은 줄: `dropping radament book`, `radament gate`, `radament atma`, 실패 `[Quit]`.
+- 라다먼트 꺼짐(261021~): N+1 `radamentOff set` → N+2 `radamentOff -> tombs` + 콘솔 `Radament off: tombs, quit at 10 min (지역 x,y)` → 10분에 엔진이 나감(퇴장 줄 없음). 제거 조건(set/read 줄): 확인. **261030** `radamentOff set` 삭제(바로 뒤 `[Quit] Radament book reset`이 같은 사실). `radamentOff -> tombs`와 콘솔은 남김.
   - 판정: 정상 경로(visible → read) 비율, 분실 복구 N+1(atma 9,0 true 9,1 false) → N+2(visible false, 퀘스트 꺼짐) → N+3(획득)이 실제로 이어지는가.
 - (261020 삭제) `ancients loop` — 48/48 1회.
 
@@ -131,21 +132,16 @@
 
 ### 4-8. 기본 기록 (관찰용 아님, 게임 흐름 파악에 씀)
 게임 경계, 구간 헤더, `[Quit] 사유: 상세`, `[Error] 구간: 메시지 (파일 #줄)`, `Script ended`(조기 종료가 없을 때만), `boss not found: id`, `AttackSkill[N] not learned`, `!!! POTION/SCROLL/BOOK !!!`, `[Quit] High ping / Mana·Iron Golem·Merc Chicken`, `undefined item`, `[DBG] drop`, `Couldn't give the potion to merc`.
-- 정상 종료 판정(CLAUDE.md): 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상. 단 4-4의 경로 콘솔 줄(`no random path`·`original path`·`no original path`·`adjusted path`·`fixed path`, 검정)은 조기 종료 줄이 아니다.
+- 정상 종료 판정(CLAUDE.md): 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상. 단 4-4의 경로 콘솔 줄(`no random path`·`original path`·`no original path`·`adjusted path`·`fixed path`, 검정)은 조기 종료 줄이 아니다(261030 전 로그만, 261030부터 콘솔에서 삭제).
 - 이유 없이 끝난 게임은 `log_results.md` 261006 "이유 없이 끝난 게임"처럼 분류한다(크래시, 마지막 게임, 30분 시간 초과, 매니저 일시정지, 원인 불명).
 
 ## 5. 이번 로그로 볼 확인 항목
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
-| 3-10 | 라다먼트 꺼짐 게임: set → read → tombs → 10분 퇴장 | 4-5 `radamentOff`, 콘솔 `Radament off` |
-| 3-13 | 라다먼트 북 버리기 | 4-5 `dropping radament book` |
-| 3-29 | useUnit 계단 클릭 앞 대기 게이트 | 4-4 `[useUnit] timeout` 줄 수(261023 34, 261024 42, 261025 283, 261026 275, 261027 526, 261028 260, 261029 아시아 45) |
-| 3-35 | default.dbj 시작부 오류를 멈춤으로 | 콘솔·trace `Init failed in default.dbj. Stopping`, 앞의 `[Error]`, 30분짜리 빈 게임 없음 |
-| 3-38 | 소켓용 완성 보석 큐빙(설정에 완성 보석 번호를 넣은 뒤) | ItemLog `Ingredient` 흠 없는 보석 → `Transmuted` → `Socketed` |
+| 3-29 | useUnit 성공 시간 비교(1차: 클릭 뒤 최소 대기, 2차: 클릭 앞 게이트 ↔ 600ms) | 4-4 `[useUnit] ok` 같은 출구 분포. 참고 timeout 줄 수(261023 34, 261024 42, 261025 283, 261026 275, 261027 526, 261028 260, 261029 아시아 45, 261030 아시아 52) |
 | 3-43 | 듀리엘 시작 Atma 대화(2단계, `59bf6c8`) | 나이트메어·헬 DURIEL 구멍 앞 `Party desynced 1`, 빠진 프로필 Lut Gholein |
-| 3-50 | moveTo 계열 random 복원 | `no random path` 지점·수, 육안 |
-| 3-51 | 피겨린 파티 사냥·포털 리셋 | `Figurine incompleted` 수, 콘솔 `=== FIGURINE ===` 위치, `portalReset` 뒤 desync |
+| 3-52 | 스태틱 필드 로직 통합 | 육안(스태틱 → % 뒤 넘어감, 번개 면역 제외), `[teleportTo failed]` 수 |
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.

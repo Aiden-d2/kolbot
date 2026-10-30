@@ -22,11 +22,20 @@
 - `AutoSmurf`의 `myX`·`myY` 삭제(이를 쓰던 옛 주석 줄 5개도 삭제) → 오프셋은 `Pather.myX/myY`(reflection 유지). 프로필별 자리는 Pather 표 순서로 바뀜. 막힌 오프셋은 `no random path` → 원래 좌표.
 - 확인: 사용자 육안 검증 통과(261028).
 
+### 261029 Claude: moveTo 계열 random 복원 (`f23417c`, PR #113, 사용자 요청, 옛 handoff 3-50)
+- 44줄에 random 인자. ① 261002 `no offset` 14곳: farmingCows followDriver 5, cain 737 2, smith, tombs, mephisto, farmingMephisto, farmingAbaddon·POA·Infernal. ② 대기 중 복귀: duriel 오리피스(8칸 넘으면), baal 왕좌 대기 `15092,5028`. ③ 경로·집결: cathedral 2, andy 노멀 5, travincal 팔로워, seis 4(전원), infector·vizier 팔로워 각 2, baal 챔버 입장 뒤 `15134,5923`, farmingPit 6. ④ 오브젝트 접근: blood 무덤, cain 나무 2, cube 상자, duriel 오리피스 첫 도착. `Pather.moveToUnit` 쪽은 `Pather.md` moveToUnit.
+- 그대로 둔 것(사용자 결정): 다음 동작이 대화·상호작용인 이동(anya 물약 가진 사람의 앤야 접근, farmingSummoner 일지, duriel 티리얼, mephisto·farmingMephisto 빨간 포탈), okCount·teamCount(들어갈 때 자리로 복귀), checkHydra·baal·diablo 직업별 자리, 리더 전용 이동, `Town.move`·`moveToExit`.
+- 확인: 261030 로그(10/29 12:54~10/30 08:58, 91게임) `no random path` 206·`original path` 207(Moo Moo Farm 178, 카우 2게임), 경로 throw 0, 카우 콘솔 정상(사용자). 검증 통과(사용자 261030). 확인용 줄 삭제는 `Pather.md` moveTo 261030.
+
 ## this.start
 
 ### 261025 Claude: 팀 대기를 okCount로 통일 (`f26ef73`, 옛 handoff 3-36·3-47)
 - 게임 시작 대기(readyCount·teamReady)를 `this.okCount()`로(2분 퇴장). 지운 변수 `imReady`·`readyCount`·`teamReady`.
 - 확인: 261026·261027·261028·261029 로그 `Party desynced 2`·`syncBO timeout`·`Team didn't join` 0(261029 Pz-36 크래시 직후 1건은 사용자 PC 부하로 제외), `act* BO` 팀 전원 같은 회수(261029 8명 각 20회), 카우 정상 종료. 검증 통과(사용자 261029).
+
+### 261020 사용자: 시작 단계 북 버리기 반복 수정 (`47816e6`, 옛 handoff 3-13)
+- 가진 라다먼트 북(552)을 버리는 `while (book)`에서 버린 뒤 다시 찾는다(`book = me.findItem(552)`). 버릴 때마다 trace `dropping radament book`.
+- 확인: 261024~261030 로그 `dropping radament book` 0(북을 가진 채 시작한 게임 없음). 사용자 확정(261030): 앞 수정들로 북이 어긋날 조건을 거의 없앴다. trace는 재발 추적용으로 남김.
 
 ## this.okCount / this.teamCount
 
@@ -121,6 +130,13 @@
 - `item.sizex === undefined` 확인을 `CanFit` 앞에서 `CanFit` 실패 뒤(`canMakeRoom` 앞)로. `CanFit`이 인벤토리를 다시 읽는 동안 유닛이 사라지면 크기가 undefined라 `CanFit`이 false가 되어 `Not enough room for undefined`로 끝나던 경우(261022 a1 하수구 3층)를 사라짐으로 받아 다시 찾는다(3회 넘으면 `<classid> vanished`).
 - 확인: 261026 로그 `quest item vanished, retry 1` 3건(a8 10/25 22:00:49, a7·a5 10/26 02:32:21~22, 모두 Sewers Level 3 라다먼트 북), 3건 모두 그 뒤 `!!! [BOOK] !!!`. `Not enough room` 0. 검증 통과(사용자 261026). `quest item vanished, retry N` trace는 제거 조건(사례 확인)을 채워 삭제(사용자 261026, `d87cfcb`).
 
+## this.portalReset
+
+### 261029 Claude: 새 함수 (`dcd7c78`, PR #115, 사용자 요청·승인, 옛 handoff 3-51)
+- Act 3 마을 포털 자리에서 자기 이름 포털(`Pather.getPortal(null, me.name)`)이 있으면 웨이포인트 46 → 포털만 열기 → 웨이포인트 75 → 6초 대기. 없으면 아무것도 안 함. `eye(fig)`·`tome(fig)` 시작과 `travincal`의 Cain 대화 앞에서 부른다.
+- 이유(D2MOO 1.10f 복원 소스, 1.14d 미대조): 피겨린 지정 몹은 그 방이 클라이언트 없이 약 5.3초 지나 해제될 때 지정이 풀리는데, 포털이 있는 방은 해제되지 않는다(`DRLGACTIVATE_TestRoomCanUnTile`). 마을 밖에서 새 포털을 열면 옛 포털이 지워진다(`PLAYER_RemoveTownPortal`).
+- 확인: 261030 로그 `portalReset` 뒤 okCount desync 0(포털 리셋 자체는 trace 없음). 검증 통과(사용자 261030).
+
 ## this.den
 
 ### 260928 Claude: `Attack.clearLevel` → den 내부 `clearDen`
@@ -137,6 +153,10 @@
 
 ## this.tombs
 
+### 261022 사용자: `tombs(force)` (`8a7ff56`, 옛 handoff 3-10)
+- 라다먼트 꺼짐 게임(N+2)의 tombs는 `partyLevel(tombsLvl)`이 참이면 바로 끝나 아무것도 안 했다 → `force` 인자로 돈다. 리더는 `forceTombs` 메시지를 보내고 `tombs(true)`, 팔로워는 `forceTombs` 플래그로 `tombs(true)`(main 2막 팔로워 루프).
+- 확인: 261024~261030 케이스 미발견(`radamentOff` 0). 사용자 확정(261030).
+
 ### 261028 사용자: 무덤 상자 이동 재시도 3 → 10 (`68483de`, 옛 handoff 3-48)
 - 무덤 안 상자 프리셋까지 `Pather.moveTo(…, 3, true)` 바깥 반복 `j < 3` → `j < 10`(최대 moveTo 10번 × 경로 재시도 3). 그래도 25칸 넘으면 `[Quit] Tomb chest not reached`. 같은 3회 상한의 다른 5곳(Arcane·Cube chest·Radament chest·Orifice·Red portal)은 그대로.
 - 이유: 261023·261027·261028 묶음마다 `Tomb chest not reached` 4건, 앞에 `[Error]`·경로 보정 줄 없음.
@@ -147,17 +167,57 @@
 ### 261004 Claude: 북 확인·읽기와 분실 복구
 - 게이트 `(!9,1 && !9,0) || (9,5 && 북 없음)`(`radament` 안과 리더 쪽). bossEnd 뒤 북이 보이는지 한 번 확인(약 2초, 못 보면 `Radament quest item not found`) → okCount → 줍기·읽기. 누구 하나 못 보면 아무도 줍지 않고 나가 전원이 같은 상태가 된다.
 - 복구: 리더가 `9,1 && 9,5 && 북 없음`이면 radament 시작에서 아트마와 대화(9,1 → 9,0) 후 `Radament book reset`으로 퇴장(N+1) → N+2는 퀘스트가 꺼져 북이 안 나옴 → N+3에 북이 필요한 전원에게 드롭.
-- 확인: 261006 로그 정상 경로 통과, 261013 로그 분실 복구 경로(Pz-54~58) 통과. 261012에 사용자가 북 확인을 바닥(`getUnit(4, 552)`)만으로 바꿈, 261021 `radamentOff`는 `handoff.md` 3-10(검증 대기).
+- 확인: 261006 로그 정상 경로 통과, 261013 로그 분실 복구 경로(Pz-54~58) 통과. 261012에 사용자가 북 확인을 바닥(`getUnit(4, 552)`)만으로 바꿈, 261021 `radamentOff`는 아래.
+
+### 261021 Claude: `radamentOff` (`ab94751`, 옛 handoff 3-10)
+- N+1 `Radament book reset` 직전 리더 캐시 `radamentOff = true`. N+2 리더가 라다먼트 차례(main 2막 리더)에 읽고 지운 뒤 콘솔 `Radament off: tombs, quit at 10 min` → `me.maxgametime = 10분`(엔진이 게임 시작부터 10분에 나감, 다음 게임에 default.dbj가 원래 값으로) → `forceTombs` + `tombs(true)`. D2BS는 게임 단위 퀘스트 상태(완료 불가)를 읽는 함수가 없어 캐시 표시로 함.
+- 확인: 261024~261030 로그 `radamentOff` 0, 북은 묶음마다 24게임 모두 visible → read(케이스 미발견). 사용자 확정(261030).
+
+### 261030 Claude: 정상 경로 확인 trace 삭제 (사용자 요청)
+- 삭제: `radamentOff set`(바로 뒤 `[Quit] Radament book reset`이 같은 사실을 남김), `radament book visible`, `radament book read`, 옛 `visible` 주석 줄. 읽기 trace용 `sendPacket(1, 0x40)`·대기는 그대로.
+- 남김(재발 추적): `radament gate`(시작 퀘스트 상태), `radament atma`(리셋 때), `radamentOff -> tombs`(콘솔 `Radament off`와 짝), `dropping radament book`(`this.start`). 실패는 `[Quit] Radament quest item not found`·`getQuestItem failed`·`Radament book reset`으로 남는다.
 
 ## this.duriel
 
 ### 260812 사용자: 탈라샤 무덤 회피 토글
 - 포탈로 파티가 모인 직후 회피가 붙은 몹 사이로 자리를 잡다 치킨이 나서, 오리피스 박스를 먼저 정리한 뒤 회피를 켠다. 박스 울타리로는 막히지 않음. 유지(261002). 되돌릴 때 무조건 `true`지만 `this.duriel`은 파티 전원 25레벨 이상에서만 실행되므로(리더는 `this.tombs` 끝에서 `partyLevel(tombsLvl 25)`까지 대기·미달이면 quit, 팔로워는 리더의 `duriel` 메시지로 진입) 빌드의 25레벨 회피 켜기와 어긋나지 않는다.
 
+## this.figurine
+
+### 261029 사용자: 시작 okCount (`c178f72`)
+- Act 3 마을 도착 뒤 `this.okCount()`, Travincal 끝 okCount는 주석으로.
+
+### 261030 사용자: 시작 okCount 삭제 (`29b677a`)
+- 시작 okCount를 지우고 끝 okCount를 `eye(fig)`·`tome(fig)`·`travincal` 끝으로(각 함수 절). 시작의 `Town.move("cain")`은 주석으로.
+
+## this.eye
+
+### 261029 Claude: `fig` 인자, 피겨린 파티 사냥 (`dcd7c78`, PR #115, 사용자 요청·승인, 옛 handoff 3-51)
+- 전원 `portalReset` → okCount. 리더가 Cavern 상자 근처에서 눈(없을 때만) → 포털 → `tpReady`, 팔로워는 `usePortal(85)`. 전원 `Attack.clear(10)` → `Attack.clear(25, getLocaleString(2868))`(Sszark, 번호는 blizzhackers/kolbot `LocaleStringID.js`, 2852·2875·22435 일치로 대조) → 피겨린이면 `figurine` 알림 → 포털 귀환. `fig` 없으면 기존 그대로.
+- 확인: 261030 로그 노말 Pz-23·나이트메어 Pz-38은 피겨린이 Spider Cavern에서 나와 EYE → FIGURINE(Sszark 처치), 헬 Pz-55는 못 찾고 TOME으로. 검증 통과(사용자 261030).
+
+### 261030 사용자: fig 분기 끝 okCount (`29b677a`)
+- 포털 귀환 뒤 제자리 random 이동 + `this.okCount()`. 주운 사람은 `figurine` 메시지를 보낸 뒤 okCount에 들어가므로 리더는 okCount를 지난 뒤 신호를 본다(같은 송신자 메시지의 도착 순서는 D2BS에서 확인하지 않음). 전에는 귀환 직후 한 번 확인했고, 261030 로그 Pz-23·Pz-38에서 리더와 주운 사람의 FIGURINE 시작이 같은 초였다.
+
+## this.tome
+
+### 261029 Claude: `fig` 인자, 피겨린 파티 사냥 (`dcd7c78`, PR #115, 사용자 요청·승인, 옛 handoff 3-51)
+- 전원 `doChores` → `portalReset` → okCount. 리더가 웨이 80 → 사원 출구 → 도착 즉시 포털 → `tpReady`, 팔로워 `usePortal(94)`. 전원 걷기로 `moveToPreset(94, 2, 193, 0, 0, true)` 최대 10회(경로 재시도 3 → 최대 30). 책·Alkor는 처음 1회만(리더). 이동 실패는 기존과 같은 throw. 피겨린이면 알림 → 포털 귀환.
+- 확인: 261030 로그 헬 Pz-55 사원에서 피겨린(a6 00:32:26) → FIGURINE, 이동 실패·`Lam Essen quest failed` 0. 검증 통과(사용자 261030).
+
+### 261030 사용자: fig 분기 끝 okCount (`29b677a`)
+- 포털 귀환 뒤 제자리 random 이동 + `this.okCount()`(리더의 책 Alkor 앞). 이유는 `this.eye` 261030과 같다.
+
 ## this.travincal
 
 ### 260929 Claude: 평의회 배열 must → 박스 2개
 - `[345, 346, 347]` → 박스 1~4(정확한 합집합) 먼저, 박스 5 나중에. MUST는 끝까지 쫓아 이동 불가 타일 너머까지 추적한다. 지형: 1~3은 벽으로 막힌 연결 방, 4는 2번에서 이어지는 계단 통로, 5는 4 너머의 트인 마당. 5가 같은 목록에 있으면 0x1 너머 우회로 4를 지나 5로 나갈 수 있다.
+
+### 261029 Claude: Cain 대화 앞 `portalReset` (`dcd7c78`, PR #115, 옛 handoff 3-51)
+- 확인은 `this.portalReset`과 같다.
+
+### 261029·261030 사용자: 끝 okCount (`c178f72`·`29b677a`)
+- `c178f72`에서 끝 okCount를 주석으로(피겨린 시작으로 옮김), `29b677a`에서 되살리고 그 앞 `Town.move("cain")`은 주석으로. 주운 사람은 들판 okCount 뒤 `figurine`을 보내고, 리더는 이 끝 okCount를 지난 뒤 신호를 본다.
 
 ## this.diablo (getBoss)
 
@@ -201,13 +261,31 @@
 - 처리 본문을 `onCopyData`로 빼서 copydata와 scriptmsg(`{relay: true, id, data}`, ToolsThread가 넘김)에서 부른다. 중계 쪽은 `ToolsThread.md`.
 - 확인: 261022·261023 로그. 검증 통과(사용자 261023).
 
+### 261022 사용자: `case "forceTombs"` (`8a7ff56`, 옛 handoff 3-10)
+- `forceTombs = true`(`this.tombs` 261022 참고). 사용자 확정(261030).
+
 ### 261026 Claude: 리더 웨이 모으기 중 okCount 10분 (`d87cfcb`, 옛 handoff 3-36·3-47)
 - `case "travel"`: `leaderTravel = true`(`this.okCount` 참고).
 - 확인: 웨이 모으기 뒤 120초 퇴장 0 — 261027 웨이 모은 21게임, 261028 Pz-32 Ancient's Way 221초 모으기 뒤 shenk syncBO 8명 통과. 261029 `travel true` 퇴장 0. 검증 통과(사용자 261029).
 
+### 261029 Claude: `case "figurineEye"`·`case "figurineTome"` (`dcd7c78`, PR #115, 옛 handoff 3-51)
+- 각 플래그를 켠다(main 3막 팔로워 루프가 `eye(true)`·`tome(true)`). 검증 통과(사용자 261030).
+
+## main 3막 리더
+
+### 261029 Claude: heart → brain → eye → tome → travincal, 피겨린 사냥 (`dcd7c78`, PR #115, 사용자 요청·승인, 옛 handoff 3-51)
+- `!getQuest(20,0) && !figurine`이면 syncBO → `figurineEye` + `eye(true)`, 뒤에 `figurine`이면 바로 `this.figurine()`. 아직 없으면 syncBO → `figurineTome` + `tome(true)` → `figurine`이면 `this.figurine()`. 아니면 기존 조건으로 `eye()`·`tome()`. 뒤는 기존(travincal → `figurine`이면 `figurine()` → `Figurine incompleted`).
+- 확인: 261030 로그 `Figurine incompleted` 0(261006~261029 묶음마다 1~7), 콘솔 `=== FIGURINE ===` 3번(노말·나이트메어·헬) 모두 Travincal 앞. 검증 통과(사용자 261030).
+
 ## main 2·3막 팔로워 루프
+
+### 261022 사용자: 2막 `forceTombs` 플래그 (`8a7ff56`, 옛 handoff 3-10)
+- `forceTombs`면 `tombs(true)` 후 플래그를 끈다. 사용자 확정(261030).
 
 ### 261028 사용자: 2·3막 팔로워 syncBO 신호를 먼저 지움 (`68483de`, 옛 handoff 3-47)
 - `if (syncBO) { this.syncBO(); syncBO = false; }` → `syncBO = false; this.syncBO();` 2곳(2막·3막). 새 변수·함수·로그 없음.
 - 이유(261028 코드 읽음): 팔로워가 앞 syncBO의 끝(웨이로 마을 복귀 + 대기)을 도는 동안 받은 다음 `syncBO` 신호를 끝난 뒤 지웠다. 리더는 웨이가 이미 있으면 travel이 바로 돌아와 1초 안팎에 다음 신호를 보낸다(261028 Kurast Docktown 10게임 퇴장, `Traveling to Travincal` 뒤 121~122초).
 - 확인: 261029 로그 `Traveling to Travincal` 16회 뒤 Kurast Docktown 웨이 자리 퇴장 0(261028 10게임 연속). 검증 통과(사용자 261029).
+
+### 261029 Claude: 3막 `figurineEye`·`figurineTome` (`dcd7c78`, PR #115, 옛 handoff 3-51)
+- 3막 루프 순서 travincal → `figurineEye`(`eye(true)`) → `figurineTome`(`tome(true)`) → `figurine` → mephisto …. 팔로워도 두 함수 맨 앞의 `doChores`를 탄다. 검증 통과(사용자 261030).

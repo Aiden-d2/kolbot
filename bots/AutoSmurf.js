@@ -3668,8 +3668,7 @@ function AutoSmurf() {
 			sendPacket(1, 0x40); // fresh quest state
 			delay(me.ping * 2 + 500);
 			Misc.trace("radament atma: 9,0 " + me.getQuest(9, 0) + " 9,1 " + me.getQuest(9, 1) + " 9,5 " + me.getQuest(9, 5));
-			DataFile.updateStats("radamentOff", true);	//261021 the next game I make has quest 9 off (no book): skip Radament there
-			Misc.trace("radamentOff set");	//261021 check: set and read (remove once seen)
+			DataFile.updateStats("radamentOff", true);	//261021 the next game I make has quest 9 off (no book): skip Radament there	//261030 set trace removed (handoff 3-10 judged)
 			Misc.quitGame("Radament book reset");
 
 			while (true) {
@@ -3767,11 +3766,8 @@ function AutoSmurf() {
 				delay(40);
 			}
 
-			//Misc.trace("radament book visible: " + !!(me.findItem(552) || getUnit(4, 552)) + " 9,5 " + me.getQuest(9, 5));	//261004
-			Misc.trace("radament book visible: " + !!getUnit(4, 552) + " 9,5 " + me.getQuest(9, 5));	//261012
-
 			//if (!me.findItem(552) && !getUnit(4, 552)) {
-			if (!getUnit(4, 552)) {	//261012
+			if (!getUnit(4, 552)) {	//261012	//261030 visible trace removed (handoff 3-10 judged)
 				Misc.quitGame("Radament quest item not found");	//260930
 
 				while (true) {	//261004
@@ -3812,9 +3808,8 @@ function AutoSmurf() {
 				Misc.quitGame("getQuestItem failed");	//261012
 			}
 
-			sendPacket(1, 0x40);	//261004 fresh quest state for the trace
+			sendPacket(1, 0x40);	//261004 fresh quest state for the trace	//261030 read trace removed (handoff 3-10 judged)
 			delay(me.ping * 2 + 500);
-			Misc.trace("radament book read: 9,5 " + me.getQuest(9, 5));	//261004 false = read
 		}
 		
 		//this.okCount();
