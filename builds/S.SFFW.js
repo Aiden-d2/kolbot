@@ -141,8 +141,8 @@ var AutoBuildTemplate = {
 				Config.AttackSkill = [-1, 51, -1, 51, -1, -1, -1];			// Fire Wall
 				
 				Config.CastStatic = true;	//261030
-				//StaticHP = [25, 33, 50];
-				//StaticBossHP = [10, 33, 50];
+				//Config.StaticHP = [25, 33, 50];	//261030 Config.
+				//Config.StaticBossHP = [10, 33, 50];	//261030 Config.
 				Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];
 			}
 		},
@@ -171,8 +171,8 @@ var AutoBuildTemplate = {
 			Update: function () {
 				Config.AttackSkill = [-1, 51, -1, 51, -1, -1, 43];			// Fire Wall + Telekinesis	//261029 42 out: Static Field by CastStatic
 				Config.CastStatic = true;	//261030
-				//StaticHP = [25, 33, 50];
-				//StaticBossHP = [10, 33, 50];
+				//Config.StaticHP = [25, 33, 50];	//261030 Config.
+				//Config.StaticBossHP = [10, 33, 50];	//261030 Config.
 				Config.StaticList = [];	//every monster
 			}
 		},
