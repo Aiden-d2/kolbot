@@ -4062,9 +4062,8 @@ function AutoSmurf() {
 			Town.goToTown(3);
 		}
 		
-		this.okCount();	//261029
-		
-		Town.move("cain");
+		//Town.move("cain");
+		//Pather.moveTo(me.x, me.y, 3, false, false, true);	//261029
 		
 		if (me.findItem(546)) { // Have A Jade Figurine.			
 			Town.move("meshif");
@@ -4301,9 +4300,13 @@ function AutoSmurf() {
 				break;
 			}
 		}
+		
+		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261030
+
+		this.okCount();	//261030
 
 		doneChores = false;
-
+		
 		return true;
 	};
 
@@ -4394,6 +4397,10 @@ function AutoSmurf() {
 					break;
 				}
 			}
+			
+			Pather.moveTo(me.x, me.y, 3, false, false, true);	//261030
+
+			this.okCount();	//261030
 
 			if (!Leader || me.getQuest(17, 0)) { // Alkor once
 				doneChores = false;
@@ -4580,10 +4587,10 @@ function AutoSmurf() {
 			Equip.autoEquip(); // For Leader to re-equip her weapon.
 		}
 
-		Town.move("cain");
+		//Town.move("cain");
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-		//this.okCount();	//261029
+		this.okCount();	//261030
 		
 		doneChores = false;
 		
