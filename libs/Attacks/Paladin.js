@@ -31,9 +31,6 @@ var ClassAttack = {
 		if (Attack.getCustomAttack(unit)) {
 			attackSkill = Attack.getCustomAttack(unit)[0];
 			aura = Attack.getCustomAttack(unit)[1];
-		//} else if (me.area === 39 && me.getSkill(123, 1)) {
-			//attackSkill = 500;
-			//aura = 123;
 		} else {
 			attackSkill = Config.AttackSkill[index];
 			aura = Config.AttackSkill[index + 1];
@@ -57,7 +54,11 @@ var ClassAttack = {
 			attackSkill = Config.LowManaSkill[0];
 			aura = Config.LowManaSkill[1];
 		}
-
+		
+		if (me.diff === 0 && unit.classid === 243 && me.getSkill(110, 1)) {	//261030 Diablo: Resist Lightning aura
+			aura = 110;
+		}
+		
 		result = this.doCast(unit, attackSkill, aura);
 
 		return result;
