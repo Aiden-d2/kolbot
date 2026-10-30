@@ -133,6 +133,11 @@ var AutoBuildTemplate = {
 				Config.UseMP = 50;
 				Config.LowManaSkill = [-1, -1];
 				Config.PacketCasting = 1;									// 0 = disable, 1 = packet teleport, 2 = full packet casting.
+				
+				//Config.CastStatic = true;
+				//StaticHP = [25, 33, 50];
+				//StaticBossHP = [10, 33, 50];
+				//Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];
 			}
 		},
 
@@ -158,8 +163,10 @@ var AutoBuildTemplate = {
 
 	46:	{
 			Update: function () {
-				Config.CastStatic = true;	//261029 Static Field logic (ClassAttack)
-				Config.StaticList = [];	//261029 every monster
+				//Config.CastStatic = true;
+				//StaticHP = [25, 33, 50];
+				//StaticBossHP = [10, 33, 50];
+				//Config.StaticList = [];
 			}
 		},
 
