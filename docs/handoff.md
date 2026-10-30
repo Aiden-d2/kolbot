@@ -8,7 +8,7 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**마지막으로 분석한 로그**: 261029 묶음(10/28 15:55 ~ 10/29 12:20, 8프로필 각 109게임, main 10/28 15:48까지 + 실행 중 nip 업로드, 아시아 서버), `log_results.md` 261029. 20:46~20:53(Pz-35~37)은 사용자 PC 부하(다른 컴파일 작업)로 제외. **다음 사이클**은 3-43 2단계(`59bf6c8`), 3-50 random 복원(`f23417c`), 3-51 피겨린 파티 사냥·포털 리셋이 들어간 코드로 돈다.
+**마지막으로 분석한 로그**: 261030 묶음(10/29 12:54 ~ 10/30 08:58, 8프로필 각 91게임, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261030. 게임 PC 코드는 main과 달랐다(PR #119·#121 일부 미반영, PR #122 스태틱 반영 여부 미확인). **다음 사이클**은 main `ed9ba4b` + 261030 수정(3-29 성공 시간 trace)으로 돈다.
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -59,6 +59,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **문제(사례)**: 261029 — a3 Chaos Sanctuary 4게임(10/29 04:38·06:09·09:31·12:15, 퇴장한 프로필과 4~27칸, 그 앞 150초 a3 trace 줄 없음, 06:09만 87초 전 `Town check (direct)` 다녀옴), a6 Pz-27 Travincal(10/28 19:41, 120초 전 `Town check (direct)` 다녀온 뒤). 261027에도 같은 모양(Pz-103 a3 Ancient's Way, Pz-117 a6 Catacombs 4).
 - **확인된 것**: okCount 보내기는 `sendCopyData` 한 번, 결과 확인·재전송 없음(261027 코드 읽음). 지금 로그로는 보내지 않았는지·유실됐는지·단계가 어긋났는지 모름.
 - **결정**(사용자 261029): 한 사이클 더 본다. 그래도 나오면 어디서 빠지는지 검증 방법을 세운다.
+- **261030 사례**(91게임, desync 10게임 중 피겨린 Pz-38·무덤 안 Pz-21을 뺀 8게임): 퇴장 순간 빠진 프로필과 퇴장한 프로필의 거리, 그 앞 5분 trace.
+  - 마을 다녀오기 관련 3: Pz-55 a6 Travincal 9칸(00:36:15 `Town check (direct)` → 00:36:33 복귀, 그 뒤 2분 20초 trace 없이 거의 제자리), Pz-49 a3 Harrogath 8칸(23:21:03 Pit of Acheron에서 `visitTown start`, `back` 없음), Pz-64 a5 Chaos 16~26칸(상대가 기다린 지 91초 뒤 마을행, 퇴장 6초 전 복귀).
+  - 그 밖 5: Pz-25 a6 Harrogath 3칸, Pz-47 a4 Harrogath 4칸, Pz-58 a7 Ancient's Way 9칸, Pz-59 리더 a1 Rogue Encampment 0칸(3분 반 전 Worldstone Chamber `Town check` 뒤 COUNTESS·PIT 정상 진행), Pz-71 a3 Rogue Encampment(퇴장한 둘과 72칸, okCount를 보낸 다른 5명과 같은 자리). 모두 그 앞 5분 trace에 마을 다녀오기 없음.
 
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
 
@@ -89,52 +92,17 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
-### 3-10. 라다먼트 `radamentOff`·`forceTombs` (`AutoSmurf.radament`·`tombs`)
-- **바꾼 것**
-  - 261021 `ab94751`: N+1 `Radament book reset` 직전 리더 캐시 `radamentOff = true`. N+2 리더가 라다먼트 차례에 읽고 지운 뒤 콘솔 `Radament off: tombs, quit at 10 min` → `me.maxgametime = 10분`(엔진이 게임 시작부터 10분에 나감, 다음 게임에 default.dbj가 원래 값으로) → tombs 한 번. 라다먼트 차례엔 써모너가 끝나 리더는 캐니언 WP가 있고, 없는 팔로워는 리더 포털로 들어감. D2BS는 게임 단위 퀘스트 상태(완료 불가)를 읽는 함수가 없어 캐시 표시로 함.
-  - 261022 사용자 `8a7ff56`: N+2의 tombs는 `partyLevel(tombsLvl)`이 참이면 바로 break해 아무것도 안 했다 → `tombs(force)` 인자, 메시지 `forceTombs`(팔로워 `forceTombs` 플래그 → `tombs(true)`), 리더는 라다먼트 꺼짐 때 `forceTombs`를 보내고 `tombs(true)`.
-- **검증 방법**: 북 분실 뒤 N+2 게임에서 콘솔 줄과 10분 퇴장, tombs가 실제로 돈다(구간 헤더 `=== [TOMBS] ===`와 이동 줄), N+3에서 북 획득.
-- **결과**: 261024 케이스 미발견 — 북 분실 0(북 24게임 모두 visible → read). 사유: 일어나는 조건(북 분실)이 없었음. 더 봄.
-  - 261025 케이스 미발견 — `radamentOff` 0, 북 24게임 모두 visible → read. 더 봄(사용자 261025).
-  - 261026 케이스 미발견 — `radamentOff` 0, 북 24줄 모두 visible → read. 케이스가 나올 때까지 계속 관찰(사용자 261026).
-  - 261027·261028 케이스 미발견 — `radamentOff` 0, 북 24줄씩 모두 visible → read.
-  - 261029 케이스 미발견 — `radamentOff` 0, 북 24줄 모두 visible → read.
-
-### 3-13. 라다먼트 북 버리기 (`AutoSmurf.start`, `dropping radament book`)
-- **바꾼 것**(`47816e6`): 시작 단계 북 버리기 무한 루프 수정. 버릴 때마다 trace `dropping radament book`.
-- **검증 방법**: 북을 가진 채 시작한 게임에서 이 줄 뒤 정상 진행(무한 반복 없음). 확인 뒤 줄 삭제.
-- **결과**: 261024 케이스 미발견 — `dropping radament book` 0. 사유: 북을 가진 채 시작한 게임이 없었음. 더 봄.
-  - 261025 케이스 미발견 — `dropping radament book` 0. 더 봄(사용자 261025).
-  - 261026 케이스 미발견 — `dropping radament book` 0. 케이스가 나올 때까지 계속 관찰(사용자 261026).
-  - 261027·261028 케이스 미발견 — `dropping radament book` 0.
-  - 261029 케이스 미발견 — `dropping radament book` 0.
-
 ### 3-29. useUnit 계단 클릭 앞 대기를 `me.attacking` 게이트로 (`Pather.useUnit`, 옛 2-19·3-20 다음 단계)
 - **바꾼 것**(261024 `be4f0e2`): 계단(type 5) 클릭 앞 고정 `delay(600)` → 시전 중(`me.attacking`)일 때만 최대 600ms 대기. 걷는 캐릭터·시전이 끝난 경우는 기다리지 않음. 근거: `teleportTo`는 목표 거리 안에 들면 시전 동작이 끝나기 전에도 true를 돌려준다(코드 읽음). 옛 3-20(고정 600ms)의 효과: 261023 timeout 34줄(261022 묶음 2 414줄), 261024 42줄, 8회 모두 실패 0.
-- **검증 방법**: `[useUnit] timeout` 줄 수를 261023(34)·261024(42)와 비교, 8회 모두 실패 0인가. 크게 늘면 600ms 효과가 시전 때문이 아니었던 것(가설 틀림) → 고정 600ms로 되돌림.
+- **검증 방법**(261030까지, 아래 판정 기준으로 바뀜): `[useUnit] timeout` 줄 수를 261023(34)·261024(42)와 비교, 8회 모두 실패 0인가.
 - **결과**: 261025 실패 기준에 해당 — timeout 283줄(a1 210줄·145회, 걷는 프로필 a2~a8 73줄, 261023 걷는 프로필 19줄). 많은 곳 a1 Worldstone Keep 2→3층 22회·3층→Throne 14회. 걷는 프로필은 바뀐 뒤 기다리지 않는데 함께 늘어 600ms 효과가 시전 때문만은 아니었던 것으로 보임(추정). 8회 모두 실패 2건은 게이트와 무관(a1 Pz-14 Lut Gholein → 궁전 `dist:21` 그대로 도달 못 함, a1 Pz-47 Tal Rasha's Tomb → 두리엘 방 오브젝트 type 2). 로그로 모르는 것: 텔레 직후 `me.attacking`이 참이 되는지. 한 사이클 더 보고 같은 결과면 고정 600ms로 되돌리는 것을 재검토(사용자 261025). 로그 변경 없음(대기 ms를 붙여도 결론이 같은 재검토로 감).
   - 261026 timeout 275줄(a1 215, 걷는 프로필 60), 8회 모두 실패 2(a1 Spider Forest → Spider Cave, Flayer Dungeon 1 → 2, 둘 다 다시 불러 통과) — 261025와 같은 수준. **보류**(사용자 261026): 핑 관련이 높아 보이고 계단(층 변경) 대기가 길어 보이는데, 지금 테스트 서버가 아시아가 아니라서인 것으로 봄. 아시아 서버 결과로 다시 본다.
   - 261027 timeout 526줄(a1 461, 걷는 프로필 75), 8회 모두 실패 3줄(a1 Black Marsh → Forgotten Tower). 261028 260줄(a1 198, 걷는 프로필 62), 8회 모두 실패 0. 두 묶음 모두 핑 150~340(아시아 서버 아님) → 보류 유지.
   - 261029(아시아 서버, 핑 16~94) timeout 45줄(a1 16, 걷는 프로필 29), 회차 0 40·1 5, 8회 모두 실패 0 — 261023(34)·261024(42, 고정 600ms)과 같은 수준. 아시아 서버에서 고정 600ms는 돌려 보지 않음.
-
-### 3-35. default.dbj 시작부 오류를 멈춤으로 (`default.dbj` main, 사용자 261026, 옛 2-24)
-- **문제**: `Config.init`·`Runewords.init`·`Cubing.init`(default.dbj main, `Loader.init` 앞)은 try 밖이라 여기서 오류가 나면 default.dbj만 죽고 trace·콘솔에 아무것도 남지 않은 채 게임이 최대 게임 시간(30분)까지 서 있다.
-- **확인된 것**: 261026 로그 10/25 13:57~16:18 Pz-4~8. 용병이 있는 a1·a4·a5·a6이 게임마다 d2bs 로그에만 `[Error] Code(22) … misc.js:2269 TypeError: [].forEach is not a function`(3-32 후속 수정 2의 오류)을 남기고 멈춤 → 5게임 × 30분. 콘솔은 플레이 시간 요약뿐(퇴장 사유 줄 없음). 나머지 프로필은 120초 뒤 `Party desynced 1`. 다시 시작해도 같은 코드라 복구되지 않는다.
-- **결정**(사용자 261026): 이 구간의 오류는 재시작이 아니라 멈춤(`D2Bot.stop`, CLAUDE.md 4절 멈춤 = 빨강 콘솔 + trace)으로 뺀다.
-- **바꾼 것**(261026 `d87cfcb`): `default.dbj` main의 `Config.init`~`Cubing.init` 5줄을 try로 감싸고, catch에서 `Misc.errorReport(e, "default.dbj")`(회색 콘솔 + `[Error]` trace) → 빨강 콘솔 `Init failed in default.dbj. Stopping`(위치 없음) + trace → `D2Bot.stop()` → `return false`.
-- **검증 방법**: 시작부 오류가 나면 빨강 `Init failed … Stopping`과 매니저 멈춤(30분 서 있지 않음).
-- **결과**: 아직 없음.
-  - 261027·261028 케이스 미발견 — `Init failed` 0, 시작부 오류 없음.
-  - 261029 케이스 미발견 — `Init failed` 0.
-
-### 3-38. 소켓용 완성 보석 큐빙 (`Cubing.buildRecipes`·`buildLists`, `Town.socketGems`, 사용자 261026, 옛 2-27)
-- **문제**: 소켓 설정(`Config.SocketRecipe`)에 완성 보석을 넣어도 흠 없는 보석 3개를 모아 완성 보석을 만드는 연결이 없다(소켓 줍기와 큐빙은 별개).
-- **확인된 것**(코드 읽음): 큐빙 결과물은 인벤토리로 감(`Cubing.emptyCube`). `Town.stash`는 판정 1~3이나 큐빙·룬워드 보관 대상(`keepItem`)만 보관함으로 → 다른 레시피(펀치 등) 재료로 잡힌 완성 보석은 보관함으로 가고 `socketGems`(인벤토리 보석만)는 못 쓴다. `clearInventory`는 판정 0·4만 버리거나 팔아 소켓 보석(판정 5)은 남는다. `me.findItems`는 엔진이 넘겨주는 순서의 배열(정렬 없음, `Prototypes.js`). `socketGems`는 큐빙 목록을 갱신하지 않는다(처음부터 없음). 보관함 보석은 보존하고 소켓에 쓰지 않는다(사용자).
-- **바꾼 것**(261026 `d87cfcb`): ① `buildRecipes`: `Config.SocketRecipe`에 완성 보석 번호(561·566·571·576·581·586·601)가 있을 때만 흠 없는 보석 3개 → 완성 레시피 추가(새 속성 `Socket`). 보석 종류 번호(아무 등급)는 대상 아님. ② `buildLists`: 완성 보석별 "그 번호를 받는 빈 소켓 수 − 인벤토리 보유 수"만큼 인벤토리 완성 보석을 다른 레시피 후보에서 빼고, 0 이하이면 소켓 레시피를 건너뜀(줍기 안 함). ③ `socketGems`: 넣은 것이 있으면 끝에서 `Cubing.update()`. (261026 사용자 `30c9b4e`) `Config.Cubing`일 때만 부름 — 큐빙이 꺼져 있으면 `Cubing.init`이 레시피를 만들지 않아 갱신할 것이 없다. 수정 `libs/Cubing.js`·`libs/Town.js`.
-- **검증 방법**: 빌드가 `Config.SocketRecipe`에 완성 보석 번호를 넣은 경우에만 해당. 빈 소켓이 있을 때 ItemLog `Ingredient` 흠 없는 보석 → `Transmuted` 완성 보석 → 콘솔 `[Socket]`·ItemLog `Socketed`. 소켓이 찬 뒤에는 그 흠 없는 보석 `Ingredient`가 없어야 한다. 지금 빌드 설정에는 완성 보석 번호가 없음(`Config.js` 기본은 종류 번호) → 설정을 바꾼 뒤부터.
-- **결과**: 아직 없음.
-  - 261027·261028 케이스 미발견 — 소켓 설정에 완성 보석 번호 없음(`Config.js` 기본값 종류 번호, 빌드에서 바꾸는 곳 없음).
-  - 261029 케이스 미발견 — 같은 이유.
+  - 261030(아시아 서버, 핑 15~125) timeout 52줄(a1 17, 걷는 프로필 35), 회차 0 47·1 5, 8회 모두 실패 0. **알 수 없음**: timeout 수로는 판정할 수 없다. 414 → 34(261022 `482171b`)에는 600ms 말고도 옆 자리 이동·붙는 판정 5 → 7·걷는 중 대기가 같이 들어갔고, 묶음마다 서버·핑이 달랐으며, 성공한 호출의 시간은 남지 않았다.
+- **판정 기준(사용자 261030)**: 목적은 출구를 지나는 데 드는 시간. timeout 빈도가 아니라 성공까지의 시간으로 판정한다. 대기를 줄여 timeout이 늘어도 성공 시간이 줄면 성공, 늘면 실패. 클릭 뒤 걷는 중 대기 4초 상한은 그대로(그 이상 걸으면 timeout이 맞다).
+- **측정**(261030 Claude, 사용자 승인): `useUnit`이 지역을 넘어간 순간 trace `[useUnit] ok Nms iter:i type:t id: target:`. N = 회차 0 접근 이동 뒤 클릭 앞 대기 직전부터. 새 지역 변수 `start`. 제거 조건: 아래 2차 비교 판정.
+- **비교 순서**(사용자 261030): ① 이번 사이클 지금 코드 그대로(클릭 뒤 최소 대기 `max(1000, 핑×2+300)`, 클릭 앞 게이트) → ② 클릭 뒤 최소 대기(재시도까지)를 200ms로 바꿔 한 사이클(값은 ① 결과를 보고 다시 정함, 핑이 높으면 300ms, 또는 200ms 뒤 중간값) → 같은 출구(id)끼리 성공 시간 비교 → 끝나면 2차로 클릭 앞 `me.attacking` 게이트 ↔ 600ms 비교(type 5만).
 
 ### 3-43. 듀리엘 첫 포탈 못 탐: 써모너 일지 전원 1회 읽기(1단계) → 듀리엘 시작 때 Atma 대화(2단계) (`AutoSmurf.summoner`·`duriel`, 사용자 261028·261029)
 - **문제**(사용자 관찰): 듀리엘에서 일부 팔로워(간헐적으로 1명 또는 여럿)가 오리피스 무덤 포탈(첫 포탈)을 못 탄다. 퀘스트 창은 캐니언 웨이를 찍고 마을에 오면 끝나 있는데도 못 타고, 그때 멈추고 수동으로 NPC 대화를 하면 탈 수 있다. 일지를 직접 읽지 않은 프로필로 추정(사용자). `quest_flags.md` 12번 bit0(일지 조작 = 2막 파티원에게도 설정)과 다른 결과다.
@@ -151,31 +119,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 같은 커밋에서 `summoner`의 판별 trace(`[Summoner] journal`)와 1단계 1회 누르기를 지우고, 일지 반복을 "누르기 → 46번 포탈이 있으면 끝"(최대 3번)으로 바꿈. 남은 지역 변수 `talked`는 261029 삭제.
 - **판단**(사용자 261029): 노말은 써모너와 두리엘 사이에 tombs가 끼어 있어 대부분 그 사이 NPC를 이미 만난다. 나이트메어·헬은 써모너 뒤 다른 작업 없이 리더가 스태프를 구하고 라다먼트가 끝나면 바로 두리엘에 들어가 NPC 대화를 하지 않았을 수 있다.
 - **검증 방법 3**: 다음 사이클 나이트메어·헬 DURIEL 같은 시점(리더 무덤 구멍 앞 okCount)에서 `Party desynced 1`과 빠진 프로필이 Lut Gholein에 남는 사례가 없는가.
-
-### 3-50. moveTo 계열 random 복원·moveToUnit 프리셋 분기 random 전달 (`AutoSmurf` 여러 함수, `Pather.moveToUnit`, 사용자 261029)
-- **문제**(사용자 지적): 261028 random 통일(`dfc884b`)은 `me.x + myX` 줄만 바꿔, 261002(`f7d9337`)에 오프셋만 뺀 `no offset` 줄(farmingCows followDriver 등)이 오프셋 없이 남았다.
-- **바꾼 것**(261029 `f23417c`, PR #113):
-  - `AutoSmurf` 44줄에 random 인자. ① `no offset` 14곳: farmingCows followDriver 5, cain 737 2, smith, tombs, mephisto, farmingMephisto, farmingAbaddon·POA·Infernal. ② 대기 중 복귀: duriel 오리피스(8칸 넘으면), baal 왕좌 대기 `15092,5028`. ③ 경로·집결: cathedral 2, andy 노멀 5, travincal 팔로워, seis 4(전원), infector·vizier 팔로워 각 2, baal 챔버 입장 뒤 `15134,5923`, farmingPit 6. ④ 오브젝트 접근: blood 무덤, cain 나무 2, cube 상자, duriel 오리피스 첫 도착.
-  - `Pather.moveToUnit`: PresetUnit 분기에서 `pop`·`random`을 `moveTo`로 넘김. 전에는 버려져 프리셋을 넘긴 random 호출(anya 5365 `moveToUnit(프리셋 460, …, true)`, 261026)에 random이 적용되지 않았다.
-  - 그대로 둔 것(사용자 결정): 다음 동작이 대화·상호작용인 이동(anya 물약 가진 사람의 앤야 접근, farmingSummoner 일지, duriel 티리얼, mephisto·farmingMephisto 빨간 포탈), okCount·teamCount(들어갈 때 자리로 복귀, 앞 이동의 random으로 충분), checkHydra·baal·diablo 직업별 자리, 리더 전용 이동, `Town.move`·`moveToExit`.
-- **검증 방법**: 위 지점에서 팀이 한 칸에 겹쳐 서지 않는지(사용자 육안), 앤야 프리셋·듀리엘 오리피스에서 흩어지는지. trace·콘솔 `no random path -> x,y in 지역 reverting...` 줄의 지점과 수(막힌 오프셋 → 원래 좌표). 반복 안에 넣은 곳(followDriver, smith·tombs·Abaddon·POA·Infernal 거리 반복, duriel 오리피스 대기, baal 왕좌 대기)은 부를 때마다 오프셋 방향이 바뀌므로(`reflection`) 왕복·지연이 없는지.
-- **결과**: 아직 없음.
-
-### 3-51. 피겨린 파티 사냥·포털 리셋 (`AutoSmurf.eye`·`tome`·`travincal`·`portalReset`, Act 3 리더 흐름·팔로워 루프, 사용자 261029)
-- **문제**: Travincal 뒤 `[Quit] Figurine incompleted`(261006~261028 묶음마다 1~6건). 피겨린이 나오는 곳을 찾으려고 Travincal을 반복.
-- **확인된 것**(D2MOO 1.10f 복원 소스, 1.14d 미대조):
-  - 지정: Act 3에서 유니크·챔피언·슈퍼유니크가 생성·복원될 때(`MONSTERUNIQUE_SpawnUniqueMonster` → `QUESTS_SetJadeFigurineBoss`) 자리가 비어 있으면 그 몹 하나가 지정된다. 날아다니는 몹(`monstats` flying)·기드빈 페티시 보스 제외, 게임당 1개. 지정 몹을 잡으면 100% 드랍(`ACT3Q4_Callback08_MonsterKilled`). 게임 만든 사람이 완료(bit0)·보상 대기(bit1)면 지정 없음, 잡은 사람(용병·소환수는 주인)이 완료했으면 드랍 없이 끝남.
-  - 해제: 지정 몹의 방이 클라이언트 없이 12프레임 검사 11회(약 5.3초) 지나 해제(untile)되면 지정이 풀린다(`GAME_UpdateProgress` → `SUNITINACTIVE_CompressUnitIfNeeded` → `QUESTS_SetGoldenBirdSpawn`). **포털이 있는 방은 해제되지 않아** 그 방의 지정 몹은 계속 지정된 채 남는다(`DRLGACTIVATE_TestRoomCanUnTile`). 마을 밖에서 새 포털을 열면 옛 포털이 지워진다(`PLAYER_RemoveTownPortal`). Act 3가 아닌 몹은 지정 대상이 아니다.
-  - 지역: Spider Cavern은 16×16 타일 방 약 4개(`lvlmaze`), 헬 보스 Sszark 포함 4~5(levels MonUMin/Max 4/5). 사원은 8×8 방 9칸, 헬 보스 2.
-- **바꾼 것**(261029, 사용자 요청·승인):
-  - `portalReset`(새 함수, `//SUPPORTING` 끝): Act 3 마을 포털 자리에서 자기 이름 포털(`Pather.getPortal(null, me.name)`)이 있으면 웨이포인트 46 → 포털만 열기 → 웨이포인트 75 → 6초 대기. 없으면 아무것도 안 함.
-  - `eye(fig)`: 전원 `portalReset` → okCount. 리더가 Cavern 상자 근처에서 눈(없을 때만) → 포털 → `tpReady`, 팔로워는 `usePortal(85)`. 전원 `Attack.clear(10)` → `Attack.clear(25, getLocaleString(2868))`(Sszark, 번호는 blizzhackers/kolbot `LocaleStringID.js`, 2852·2875·22435 일치로 대조) → 피겨린 알림 → 포털 귀환. `fig` 없으면 기존 그대로.
-  - `tome(fig)`: 전원 `portalReset` → okCount. 리더가 사원 도착 즉시 포털 → `tpReady`, 팔로워 `usePortal(94)`. 전원 걷기로 `moveToPreset(94, 2, 193, 0, 0, true)` 최대 10회(경로 재시도 3 → 최대 30). 책·Alkor는 처음 1회만(리더). 이동 실패는 기존과 같은 throw. 피겨린 알림 → 포털 귀환.
-  - `travincal`: Cain 대화 앞에 `portalReset`.
-  - 리더 Act 3 순서: heart → brain → eye → tome → travincal. `!getQuest(20,0) && !figurine`이면 `figurineEye`·`figurineTome` 신호 + `eye(true)`·`tome(true)`, 뒤에 `figurine`이면 바로 `this.figurine()`. 아니면 기존 조건으로 `eye()`·`tome()`.
-  - 팔로워 루프: `figurineEye`·`figurineTome` 플래그로 `eye(true)`·`tome(true)`. 팔로워도 두 함수 맨 앞의 `doChores`를 탄다.
-- **검증 방법**: `Figurine incompleted` 수. 콘솔 `=== FIGURINE ===`이 Travincal 전(EYE·TOME 뒤)에 나오는지. `portalReset` 뒤 okCount에서 `Party desynced 1`(missing(okCount))이 늘지 않는지. eye(true)에서 Sszark가 범위 25 안에서 잡히는지(사용자 육안). 사원 걷기 이동이 10회 안에 제단에 닿는지.
-- **결과**: 아직 없음.
+- **결과 3**: 261030 나이트메어 Pz-38(20:44)·헬 Pz-54(00:22) DURIEL desync 0, 8명 모두 3막으로(노말 Pz-22도 0). 한 사이클 더 본다(사용자 261030).
 
 ### 3-52. 스태틱 필드 로직 통합 (`Sorceress.js` `doAttack`·`doCast`, `Attack.setPosition`·`checkResist`, `Config.js`, S.SFFW·S.FIRE, 사용자 261029)
 - **문제**(사용자): 스태틱이 두 경로로 나뉘어 있었다. ① 컨피그 선시전 루프(`CastStatic` %까지 스태틱만 반복, `StaticList` 대상만, 빌드는 노멀 보스 6만) ② 어택스킬 칸 42(`checkResist`의 42 게이트가 `CastStatic`으로 % 판정, `CastStatic`이 `false`인 나이트메어·헬은 "HP% > 0"이라 % 없이 계속 씀).

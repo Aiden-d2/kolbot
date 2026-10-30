@@ -47,11 +47,21 @@
 - 원래 노드로 이동하는 조건(`getDistance(me, node) > 2`)과 나은 자리가 없으면 원래 노드로 텔레하는 흐름은 그대로.
 - 확인: 사용자 육안 검증 통과(261028). 261026~261028 Life Chicken 46·47·46(261025 54).
 
+### 261030 Claude: 경로 콘솔 줄·random 되돌림 trace 삭제 (사용자 요청, 옛 handoff 3-50)
+- 콘솔 5줄 삭제(`no random path`, `original path`, `no original path`, `adjusted path`, `fixed path`, 사용자 임시 확인용이었음). random 되돌림 trace `no random path`·`original path`와 trace만 있던 `if` 블록 삭제(3-50 검증 통과, 되돌림 동작은 그대로).
+- 남김(trace만): 원래 좌표에도 경로가 없을 때의 사슬 `no original path` → `adjusted path` / `no adjusted path` → `fixed path` → throw. 아케인처럼 목표에 길이 없는 경우를 추적한다(사용자 261030).
+
 ## teleportTo
 
 ### 260930 Claude: 시전 동작 기준 대기
 - 고정 대기 대신 `me.attacking` 기준: max(200, ping×2) 안에 시전 동작이 안 시작되면 바로 재시전, 시작됐으면 끝날 때까지 기다리고(겹쳐 시전 안 함), 끝났는데 제자리면 바로 재시전. 회차당 최대 2초 × 10회. maxTeleDistance(45) 검사 삭제.
 - 근거: 서버가 받아들인 요청도 1초 가까이 걸릴 수 있어, 짧은 대기는 느린 요청을 겹쳐 보내게 만들었다.
+
+## moveToUnit
+
+### 261029 Claude: PresetUnit 분기 random 전달 (`f23417c`, PR #113, 사용자 요청, 옛 handoff 3-50)
+- PresetUnit 분기에서 `pop`·`random`을 `moveTo`로 넘긴다. 전에는 버려져 프리셋을 넘긴 random 호출(anya `moveToUnit(프리셋 460, …, true)`)에 random이 적용되지 않았다.
+- 확인은 `AutoSmurf.md` 흩어지기 261029와 같다. 검증 통과(사용자 261030).
 
 ## useUnit
 

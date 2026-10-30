@@ -438,3 +438,22 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - `[Error]` 2: a8 Pz-22 19:24 Lut Gholein `usePortal → moveToUnit` 길찾기 실패(목표 22576,15601, `no adjusted path` 10회 뒤, 261027 a7 Pz-55와 같은 호출 자리), a1 Pz-66 02:29:50 Throne `precast.js #490 unit.getParent(...) is undefined`(소환수 인챈트 줄, 261028 전부터 있던 코드, 그 게임이 끝남).
 - 경로 줄: `no random path` 48, `original path` 48, `no original path` 9, `adjusted path` 1, `no adjusted path` 10, `fixed path` 0.
 - `Town chicken` 54, `Town check` 245(이전 126~144, a2 65·a8 59), `Transmuted Fail` 4.
+
+## 261030 묶음 (10/29 12:54 ~ 10/30 08:58, 8프로필 각 91게임, 아시아 서버)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 캐릭터로 노말(Pz-1~) → 나이트메어(Pz-38~) → 헬(Pz-54~) → 헬 파밍. 13:18 8프로필 엔진 재시작. 핑 15~125(중앙 47). 게임 PC 코드는 main과 달랐다: PR #119에서 지운 `party accept`, PR #121에서 지운 `travel` 상세가 끝까지 찍힘, PR #122(스태틱, 16:52) 반영 여부는 줄로 가를 수 없음. 사용자 업로드 `c178f72`(17:22, 피겨린 시작 okCount)는 Pz-23(17:08) 뒤부터. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 결과
+- 확정(사용자 261030, → 코드 노트): 3-10·3-13(`radamentOff` 0, `dropping radament book` 0, 북 24게임 모두 visible → read), 3-35(`Init failed` 0), 3-38(설정 없음, 코드 읽음으로), 3-50(`no random path` 206·`original path` 207, Moo Moo Farm 178, `no original path`·`adjusted path` 각 1(a3 21:46 Abaddon), `no adjusted path`·경로 throw 0, 카우 정상), 3-51(아래).
+- 3-51: `Figurine incompleted` 0. 피겨린 4게임 — Pz-23 노말(눈 사냥, a2 17:10:15 Spider Cavern), Pz-38 나이트메어(눈 사냥, a6 20:51:25), Pz-39(시작 `getQuest(20,1)`), Pz-55 헬(눈 사냥 못 찾음 → 사원 사냥, a6 00:32:26 Ruined Temple). 콘솔 `=== FIGURINE ===` 3번 모두 Travincal 앞. 사원 이동 실패 0. `boss not found: Sszark` 3줄(a8 Pz-38, a4·a5 Pz-55).
+  - Pz-38 desync: 주운 a6가 20:52:01 Alkor 자리(5085,5011)에서 피겨린 끝 okCount에 들어가 20:54:01 퇴장(missing 7명). 나머지 7명은 Cain 자리(5155~5162, 5067~5073)에서 시간 초과 없이 대기. a6만 Pz-38 `!!! [POTION] !!!` 없음, Pz-39 시작 `preparation()`에서 물약 마심(20:54:18) → a6가 `if (!me.getQuest(20, 0))` 블록(물약·`teamFigurine`)을 건너뜀. 같은 a6가 Pz-55에서는 블록을 탐(00:33:45), 갈림 조건 모름. 리더는 8명과 같은 때(20:51:28) 피겨린에 들어가 단계 밀림 없음. 재발하면 다시 본다(사용자 261030).
+  - 눈 사냥 뒤 리더와 주운 사람의 FIGURINE 시작이 두 게임 모두 같은 초(Pz-23 17:10:18, Pz-38 20:51:28) — 리더가 귀환 직후 한 번만 신호를 보던 구조라 여유가 1~2초 안쪽. 사용자가 `29b677a`(261030)로 끝 okCount를 eye·tome·travincal로 옮김.
+- 3-29: timeout 52줄(a1 17, 걷는 프로필 35), 회차 0 47·1 5, 8회 모두 실패 0, 거리 0~2칸 33줄. 알 수 없음 — timeout 수로는 판정 불가, 성공 시간 측정으로(handoff 3-29).
+- 3-43: 나이트메어 Pz-38·헬 Pz-54 DURIEL desync 0. 한 사이클 더(사용자).
+- 3-52: 판정 안 함(PC 적용 여부 미확인, 빌드 수정 뒤 다음 사이클, 사용자).
+
+### 그 밖
+- 조기 종료: Life Chicken 23(a1 8, a5 5, a4 4, a3·a7·a8 2), desync 14줄(10게임), Not ready for act2 2, Not ready to start Duriel 2, Qual-Kehk talk failed 1. 사망 0, High ping 0.
+- desync 10게임: Pz-21 Canyon(a8 Tal Rasha's Tomb #3 안), Pz-25·47·49 Harrogath, Pz-38 피겨린, Pz-55 Travincal, Pz-58 Ancient's Way, Pz-59·71 Rogue Encampment, Pz-64 Chaos. 리더 신호 밀림(3막 피겨린 경로)으로 설명되는 것 0. 빠진 프로필의 거리·마을 다녀오기는 `handoff.md` 1-19.
+- 크래시 2(a8 21:41 Abaddon, a8 08:27 Harrogath), 분석 안 함.
+- `[Error]` 2: Pz-11 15:04 Area 35 `useWaypoint` 실패(5프로필), a1 Pz-22 17:08 Flayer Dungeon 3 TP 실패.
+- `Town chicken` 56, `Town check` 194, getWP `menu not opened` 98, `[teleportTo failed]` 6, `Transmuted Fail` 3, `Socketed` 45.
