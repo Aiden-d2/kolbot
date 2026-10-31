@@ -457,3 +457,26 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 크래시 2(a8 21:41 Abaddon, a8 08:27 Harrogath), 분석 안 함.
 - `[Error]` 2: Pz-11 15:04 Area 35 `useWaypoint` 실패(5프로필), a1 Pz-22 17:08 Flayer Dungeon 3 TP 실패.
 - `Town chicken` 56, `Town check` 194, getWP `menu not opened` 98, `[teleportTo failed]` 6, `Transmuted Fail` 3, `Socketed` 45.
+
+## 261031 묶음 (10/30 11:16 ~ 10/31 05:51, 8프로필 각 95게임, 아시아 서버)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 캐릭터로 노말(Pz-1~) → 나이트메어(Pz-44~) → 헬(Pz-60~) → 헬 파밍(23:48~). 05:51 8프로필 Realm down으로 끝. 핑 31~94. 코드는 main `fa95b5d`(10/30 10:45)까지, 실행 중 사용자 업로드 `1cf523e`(11:07, P.CONC·S.SFFW 빌드)·`9013311`(12:30, `Paladin.js`). `Pather.js`는 `a867855` 그대로. a1 10/31 23:34 `53453dfg` 1게임은 사이클 밖. 이 절은 근거만 두고, 판정에 따른 이동은 다음 사이클 분석 때 함께 정리한다(사용자 261031).
+
+### handoff 3절 결과
+- 3-29: 1차 기준값(`[useUnit] ok`)은 `handoff.md` 3-29 ① 결과. timeout 55줄(a1 16, 걷는 프로필 39), 8회 모두 실패 0. 2차(`75834fc`)는 이 로그 뒤.
+- 3-43: 나이트메어 Pz-44(18:58)·헬 Pz-60(22:45) DURIEL 뒤 팔로워 7명 모두 Kurast Docktown, desync 0(노말 Pz-26도 0). 두 사이클 연속 0.
+- 3-52: `[teleportTo failed]` 7줄(a1 5, a2 2: Halls of the Dead 1·2층 3(SafeTele 동반), Arcane 1, Durance 3층 17591,8069 근처 3). 육안 항목은 사용자 확인.
+
+### 피겨린
+- Pz-26 노말: a4가 Spider Cavern에서 주움(ItemLog 15:18:46) → 15:21:28 a4만 Alkor 자리(5084,5011)에서 `Party desynced 1: missing` 7명. a4는 그 게임 `!!! [POTION] !!!` 없음, Pz-27 시작 15:21:44 콘솔 `!!! POTION !!!`(`preparation`의 `findItem(545)`) → Pz-26에서 물약을 받은 채 `if (!me.getQuest(20, 0))` 블록을 건너뜀(FIGURINE 시작 약 25초 뒤 okCount, 코드 기준). 261030 Pz-38 a6와 같은 모양. Pz-27은 a3 크래시(15:22:19 Kurast Docktown).
+- Pz-44 나이트메어: a5가 Travincal에서 주움(19:10:05), 리더 19:11:14 퇴장 줄 없이 끝(게임 시작 18:41:15부터 30분). Pz-45에서 8명 모두 블록 안에서 마심.
+- Pz-61 헬: Sszark 못 찾음(`boss not found` 8줄) → 사원에서도 없음 → `Figurine incompleted`. Pz-63: a4가 Ruined Temple에서 주움(23:04:53), a4 포함 8명 모두 블록 안에서 마심(a4 23:05:37 첫 번째).
+
+### 그 밖
+- 조기 종료: Life Chicken 31(a1 11, a4 7, a2 5, a8 3, a5·a6 2, a3 1), desync 17줄(10게임), Not ready to start Duriel 3(노말 TOMBS), Not ready for act2 1, Cube chest not reached 1(a4 13:16 Halls of the Dead 3층, 같은 게임 a1 SafeTele 실패 3), Figurine incompleted 1. 사망 0, High ping 0.
+- desync 10게임(피겨린 Pz-26 제외 9): Chaos a3 Pz-73(27칸)·Pz-86(16~23칸, 퇴장 1분 안 `Town check (direct)` 2번)·Pz-89(23칸, 51초 전 Town check), a8 Pz-78(37칸, 48초 전 Town check). Ancient's Way Pz-66 a3 12칸·Pz-77 a7 9칸(게임 시작 2~3분, 앞 trace 없음). Pz-81 a4 Throne에 남음(리더 Worldstone Chamber, 5분 안 Town chicken 2·Town check 3, 마지막 복귀 13초 뒤 퇴장). Pz-1 a6·a7 Burial Grounds에 못 들어가고 Cold Plains(3분 trace 없음). Pz-10 a8 Catacombs 2층 도착 자리 근처 3분 반(퇴장한 a3과 271칸).
+- MoveToSlot 실패 21: Rejuvenation·Full 20(Harrogath 19, Kurast Docktown 1), TP 책 1(a7 Pz-2). 그중 `dropped:none item:loc 0 mode 3` 4(a3 22:13, a6 21:33, a8 20:29·03:00), `undefined … item:gone` 2(a8 20:29:42·20:46:18) — 261029(모두 `dropped:<물약> mode 5`)와 다른 모양.
+- 크래시 3(a3 12:02 Rogue Encampment, a3 15:22 Kurast Docktown, a7 18:05 Harrogath), 분석 안 함. `[Error]` 1: a1 Pz-28 15:27 `useWaypoint` 실패 Area 101.
+- 경로 줄: a8 17:49 Pit of Acheron `no original path` → `adjusted path` 1쌍, `no adjusted path`·throw 0.
+- `Town chicken` 52, `Town check` 227, getWP `menu not opened` 97(a1 88).
+- Life Chicken 31: 노말 18·나이트메어 3·헬 10, 구간 CATHEDRAL·DIABLO 각 6, CAIN·ANYA·JAIL·TOMBS 각 3. 16건이 같은 프로필 `Town chicken` 0~3초 뒤(a1 11건 중 7).
+- 그 밖 확인(0 또는 정상): 라다먼트 `radament gate` 24줄(3게임 × 8), `radamentOff`·북 실패 0. `[TK] talk skipped 20 npc:Greiz` 2(a1 21:45). 사망·시체 회수 0. 게임 밖 줄은 05:51 Realm down 뒤에만(Create character timeout 2, Character name taken "Server Down" 2, Unhandled location 1).

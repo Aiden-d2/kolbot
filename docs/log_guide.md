@@ -124,6 +124,8 @@
 - `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`(261024 `789d80d`, Claude 추가, handoff 3-32) — 착용 중인 재료 베이스를 룬워드·펀치 앞에서 뺐는가. ok 뒤 같은 방문의 `[Runeword]`/`[Punch]`와 ItemLog `Runeworded`/`Transmuted`, 그 칸 재장착(`Equipped`·`Granted`). 261024 `aafbe50`부터 입은 베이스의 재료도 줍는다(ItemLog `Ingredient`). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0. **261029 삭제**(3-32 검증 통과, 사용자).
 - d2bs 로그 `enchant: 이름/classid`(S.SFFW 65레벨부터 아마존·2막 용병·발키리·섀도 워리어·그리즐리).
 
+- `[openMenu] retry i:N keys:K npc:이름`(261101, Claude 추가, handoff 3-53) — `Packet.openMenu`가 메뉴를 못 보고 다시 상호작용하기 직전. K = 그때까지 보낸 스페이스 수. 판정: 피겨린 주운 사람이 블록을 건너뛴 게임(`!!! [POTION] !!!` 없이 다음 게임 시작 콘솔 `!!! POTION !!!`)의 Alkor 줄. 제거 조건: 3-53 판정.
+
 ### 4-7. 게임 밖 (회색 콘솔 + trace `(OOG loc N)`)
 - `Team wait: a3, a5 - wait`(리더, 팔로워가 5초 넘게 안 들어올 때), `Rest: N games - wait Nm`
 - `Create account failed: 계정 "문구"` — 팝업 문구가 읽히는가(`(no text)`면 좌표가 틀림, 261006은 모두 `(timeout)`)
@@ -142,6 +144,7 @@
 | 3-29 | useUnit 성공 시간 비교(1차: 클릭 뒤 최소 대기, 2차: 클릭 앞 게이트 ↔ 600ms) | 4-4 `[useUnit] ok` 같은 출구 분포. 참고 timeout 줄 수(261023 34, 261024 42, 261025 283, 261026 275, 261027 526, 261028 260, 261029 아시아 45, 261030 아시아 52) |
 | 3-43 | 듀리엘 시작 Atma 대화(2단계, `59bf6c8`) | 나이트메어·헬 DURIEL 구멍 앞 `Party desynced 1`, 빠진 프로필 Lut Gholein |
 | 3-52 | 스태틱 필드 로직 통합 | 육안(스태틱 → % 뒤 넘어감, 번개 면역 제외), `[teleportTo failed]` 수 |
+| 3-53 | 피겨린 주운 사람 블록 건너뜀 | 4-6 `[openMenu] retry` — 건너뛴 사례의 주운 사람 Alkor 줄 |
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.

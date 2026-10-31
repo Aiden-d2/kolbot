@@ -2706,6 +2706,10 @@ var Packet = {
 				Pather.moveToUnit(unit);
 			}
 
+			if (i > 0) {	//261101 re-interact after the menu was not seen: keys = spaces sent so far (handoff 3-53, remove once judged)
+				Misc.trace("[openMenu] retry i:" + i + " keys:" + talk.keys + " npc:" + unit.name);
+			}
+
 			sendPacket(1, 0x13, 4, 1, 4, unit.gid);
 			tick = getTickCount();
 
