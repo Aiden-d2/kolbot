@@ -1134,7 +1134,7 @@ ModeLoop:
 			tick = getTickCount();
 
 			// about 1s like usePortal, and while an area loads (act change portal) keep waiting instead of walking and clicking again	//260930 was ping*2+300
-			while (getTickCount() - tick < Math.max(1000, me.ping * 2 + 300) || !me.gameReady || ([2, 3, 6].indexOf(me.mode) > -1 && getTickCount() - tick < 4000)) {	//261022 still walking in after the click: keep waiting (up to 4s)
+			while (getTickCount() - tick < 200 || !me.gameReady || ([2, 3, 6].indexOf(me.mode) > -1 && getTickCount() - tick < 4000)) {	//261022 still walking in after the click: keep waiting (up to 4s)	//261031 min wait max(1000, ping*2+300) -> 200 (handoff 3-29 compare step 2)
 				if (moved()) {
 					Misc.trace("[useUnit] ok " + (getTickCount() - start) + "ms iter:" + i + " type:" + type + " id:" + id + " target:" + targetArea);	//261030 (handoff 3-29, remove once judged)
 					delay(100);
