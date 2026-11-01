@@ -339,6 +339,12 @@ Loop:
 			return false;
 		}
 
+		if (!(target.location === this.location && target.mode === 0) && target.mode !== 4) {	//261101 not in this container and not on the cursor (stale item object found another unit, e.g. equipped gear): leave it (handoff 3-59)
+			Misc.trace("[MoveToSlot] skip " + item.fname + " gid:" + item.gid + " got:" + target.fname + " loc " + target.location + " mode " + target.mode + " at " + target.x + "," + target.y);	//261101 (handoff 3-59, remove once judged)
+
+			return false;
+		}
+
 		if (target.x === col && target.y === row) {
 			return true;
 		}

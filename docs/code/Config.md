@@ -19,3 +19,9 @@
 ### 261030 사용자: `PublicMode` 삭제
 - `//Party` 주석과 `PublicMode: 2` 삭제. 읽는 곳이 없었다(261030 `.js`·`.dbj` grep: 이 기본값과 빌드 14개의 대입뿐). 파티 초대·수락은 `PartyThread` partyCheck가 `Team.Leader` 기준으로 한다(리더: 초대만, 그 밖: 수락만).
 - 동작은 바꾸지 않음.
+
+## CastStatic / StaticHP / StaticBossHP / StaticList
+
+### 261029 사용자·Claude: 스태틱 필드 로직 통합 (`0b06f24`·`63f59af`, PR #122·#124, 옛 handoff 3-52)
+- `CastStatic` = `true`/`false` 스위치(옛 % 값 겸용 삭제). 새 키 `StaticHP: [25, 33, 50]`(일반 몹), `StaticBossHP: [10, 33, 50]`(보스), [노멀, 나이트메어, 헬] — 이 %까지 스태틱. `StaticList`가 비면 전체.
+- 확인: 261031·261101 로그 `[teleportTo failed]` 7·4(261029 13, 261030 6, 늘지 않음), 동작은 사용자 육안. 검증 통과(사용자 261101).
