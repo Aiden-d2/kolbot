@@ -459,7 +459,7 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - `Town chicken` 56, `Town check` 194, getWP `menu not opened` 98, `[teleportTo failed]` 6, `Transmuted Fail` 3, `Socketed` 45.
 
 ## 261031 묶음 (10/30 11:16 ~ 10/31 05:51, 8프로필 각 95게임, 아시아 서버)
-데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 캐릭터로 노말(Pz-1~) → 나이트메어(Pz-44~) → 헬(Pz-60~) → 헬 파밍(23:48~). 05:51 8프로필 Realm down으로 끝. 핑 31~94. 코드는 main `fa95b5d`(10/30 10:45)까지, 실행 중 사용자 업로드 `1cf523e`(11:07, P.CONC·S.SFFW 빌드)·`9013311`(12:30, `Paladin.js`). `Pather.js`는 `a867855` 그대로. a1 10/31 23:34 `53453dfg` 1게임은 사이클 밖. 이 절은 근거만 두고, 판정에 따른 이동은 다음 사이클 분석 때 함께 정리한다(사용자 261031).
+데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 캐릭터로 노말(Pz-1~) → 나이트메어(Pz-44~) → 헬(Pz-59~, 261101 정정: 전에 Pz-60으로 적음) → 헬 파밍(23:48~). 05:51 8프로필 Realm down으로 끝. 핑 31~94. 코드는 main `fa95b5d`(10/30 10:45)까지, 실행 중 사용자 업로드 `1cf523e`(11:07, P.CONC·S.SFFW 빌드)·`9013311`(12:30, `Paladin.js`). `Pather.js`는 `a867855` 그대로. a1 10/31 23:34 `53453dfg` 1게임은 사이클 밖. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다(261101 정리: 3-43 확정, 3-52 확정(사용자 261101), 1-18 → 3-59).
 
 ### handoff 3절 결과
 - 3-29: 1차 기준값(`[useUnit] ok`)은 `handoff.md` 3-29 ① 결과. timeout 55줄(a1 16, 걷는 프로필 39), 8회 모두 실패 0. 2차(`75834fc`)는 이 로그 뒤.
@@ -478,5 +478,49 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 크래시 3(a3 12:02 Rogue Encampment, a3 15:22 Kurast Docktown, a7 18:05 Harrogath), 분석 안 함. `[Error]` 1: a1 Pz-28 15:27 `useWaypoint` 실패 Area 101.
 - 경로 줄: a8 17:49 Pit of Acheron `no original path` → `adjusted path` 1쌍, `no adjusted path`·throw 0.
 - `Town chicken` 52, `Town check` 227, getWP `menu not opened` 97(a1 88).
-- Life Chicken 31: 노말 18·나이트메어 3·헬 10, 구간 CATHEDRAL·DIABLO 각 6, CAIN·ANYA·JAIL·TOMBS 각 3. 16건이 같은 프로필 `Town chicken` 0~3초 뒤(a1 11건 중 7).
+- Life Chicken 31, 16건이 같은 프로필 `Town chicken` 0~3초 뒤(a1 11건 중 7). 프로필 × 난이도:
+
+| 프로필 | 노말 | 나이트메어 | 헬 | 합 |
+|---|---|---|---|---|
+| a1 | Underground Passage Level 1(1)<br>Stony Field(1)<br>Catacombs Level 2(1)<br>Halls Of The Dead Level 1(1)<br>Arcane Sanctuary(1) | Chaos Sanctuary(1)<br>Frozen River(1) | Dark Wood(1)<br>Flayer Dungeon Level 3(1)<br>City Of The Damned(1)<br>Chaos Sanctuary(1) | 11 |
+| a2 | Barracks(1)<br>Cathedral(1)<br>Catacombs Level 2(1) | - | Frozen River(1)<br>Throne Of Destruction(1) | 5 |
+| a3 | Jail Level 1(1) | - | - | 1 |
+| a4 | Cathedral(1)<br>Tal Rashas Tomb #1(1)<br>Tal Rashas Tomb #2(1) | - | Chaos Sanctuary(2)<br>Spider Cavern(1)<br>Frozen River(1) | 7 |
+| a5 | Tal Rashas Tomb #3(1)<br>Chaos Sanctuary(1) | - | - | 2 |
+| a6 | Barracks(1) | - | Chaos Sanctuary(1) | 2 |
+| a7 | - | - | - | 0 |
+| a8 | Jail Level 1(1)<br>Catacombs Level 1(1)<br>Cathedral(1) | - | - | 3 |
+| 합 | 18 | 2 | 11 | 31 |
+
 - 그 밖 확인(0 또는 정상): 라다먼트 `radament gate` 24줄(3게임 × 8), `radamentOff`·북 실패 0. `[TK] talk skipped 20 npc:Greiz` 2(a1 21:45). 사망·시체 회수 0. 게임 밖 줄은 05:51 Realm down 뒤에만(Create character timeout 2, Character name taken "Server Down" 2, Unhandled location 1).
+
+## 261101 묶음 (11/01 00:24 ~ 12:17, 8프로필 각 63게임, 아시아 서버)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 캐릭터로 노말(Pz-1~) → 나이트메어(Pz-43~) → 헬(Pz-57~) → 헬 파밍(11:55~). 핑 15~109(중간 47). 코드: `[openMenu] retry` 줄 있음(#129), useUnit 재시도 성공 최소 281ms(1초 대기 때 최소 1,078ms) → 200ms(#128) 적용. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 결과
+- 3-29 2차(200ms): **실패**(사용자 261101). 출구 하나 평균 a1 계단 135 → 237ms, 걷는 프로필 계단 312 → 456ms, 같은 출구 비교에서 200ms가 빠른 곳 a1 9곳 중 4·걷는 프로필 21곳 중 7. 첫 클릭 성공 a1 91%(227/250), 걷는 프로필 71%(330/464). 8회 모두 실패 5, 새 지역에서 옛 좌표 `teleportTo failed` 2. timeout 479줄(a1 76). 상세는 `handoff.md` 3-29. → 1초로 되돌리고 한 사이클 더(재현성).
+- 3-43: 노말·나이트메어·헬 DURIEL desync 0(세 사이클 연속) → 확정(코드 노트 `AutoSmurf.md` duriel).
+- 3-52: `[teleportTo failed]` 4줄(a1: Arcane 1, 무덤 #1 1(SafeTele), 위 3-29 옛 좌표 2), 육안 사용자 → 확정(사용자 261101).
+- 3-53: 케이스 미발견. 피겨린 3게임(주운 사람 a6·a6·a8) 모두 8명 블록 안에서 물약. `[openMenu] retry` 119줄 모두 `keys:0`(Malah 33, Larzuk 18, Fara 16, Akara 13, Warriv 10 …). 발견될 때까지 유지.
+
+### 치킨
+- Life Chicken 24, 14건이 같은 프로필 `Town chicken` 0~3초 뒤. 프로필 × 난이도:
+
+| 프로필 | 노말 | 나이트메어 | 헬 | 합 |
+|---|---|---|---|---|
+| a1 | Flayer Jungle(2)<br>Flayer Dungeon Level 3(2)<br>Underground Passage Level 1(1)<br>Dark Wood(1)<br>Arcane Sanctuary(1)<br>Tal Rashas Tomb #1(1)<br>Travincal(1) | Flayer Dungeon Level 3(1) | Claw Viper Temple Level 2(1)<br>Plains Of Despair(1) | 12 |
+| a2 | Barracks(2)<br>Dark Wood(1)<br>Catacombs Level 1(1)<br>Catacombs Level 4(1)<br>Catacombs Level 3(1)<br>Tal Rashas Tomb #7(1) | Frozen River(1) | - | 8 |
+| a3 | Jail Level 1(1)<br>Travincal(1) | - | - | 2 |
+| a4 | - | - | Tower Cellar Level 5(1) | 1 |
+| a5 | Travincal(1) | - | - | 1 |
+| a6 | - | - | - | 0 |
+| a7 | - | - | - | 0 |
+| a8 | - | - | - | 0 |
+| 합 | 19 | 2 | 3 | 24 |
+
+### 그 밖
+- 조기 종료: Life Chicken 24, desync 8줄(5게임), Not ready to start Duriel 3, Not ready for act2 1, moveToExit failed 4(Blood Moor → Den 2는 3-29, a8 Stony Field → Underground Passage 1·a3 Monastery Gate → Outer Cloister 1은 useUnit 줄 없음). 사망 0.
+- desync 5게임: `handoff.md` 1-19 261101 사례.
+- MoveToSlot 실패 21(회복 물약 15, Horadric Cube 2(a4·a5 02:29 Lut Gholein, 바로 다시 주움), `undefined … item:gone` 3, 반지 1). a1 Pz-56 착용 반지가 빠져 판매됨: `handoff.md` 3-59.
+- 경로: a6 10:13 Pit of Acheron `no adjusted path` 10회 → 오류 줄 없이 다음 구간(1-17 모양), a8 05:06 Harrogath `[Error] Failed to generate path`.
+- `[Error]` 2(위 경로, a1 Pz-58 궁전 진입 실패), 크래시 1(a4 11:57 Ancient's Way). `Town chicken` 39, `Town check` 109, getWP `menu not opened` 101, `boss not found` 28(Grand Vizier of Chaos 13, Lord De Seis 7, Sszark 6).

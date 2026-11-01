@@ -76,6 +76,7 @@
 - `goToTown take TP failed start tick: made:` — TP 실패 기록(추적은 중단됨, 실패 기록용).
 - 콘솔 `You died in last game`(빨강) — 다음 게임 시작에 찍힘(사망한 게임은 그 앞 게임).
 - 판정: `log_results.md` 261006 치킨과 같은 표(구간별 게임·치킨·게임당, 장소, 프로필), 치킨이 타운치킨 발동 몇 초 뒤인가, 지역 진입 몇 초 안인가(구간 헤더 기준. 261020 전 로그는 `usePortal ok`), near 몹 종류·거리.
+- **치킨 표**(사용자 지시 261101, 매 분석에 넣는다): 프로필을 행(a1~a8), 난이도를 열(노말·나이트메어·헬, 헬 파밍은 헬)로, 칸 안에 `지역(횟수)`를 여러 건이면 줄을 바꿔(`<br>`) 적고 행·열 합을 붙인다. 지역은 `[Quit] Life Chicken` 줄 끝 위치, 난이도 경계는 리더의 난이도 첫 게임(첫 `=== [DEN] ===`가 든 게임). 표 위에 총수와 `Town chicken` 0~3초 뒤 건수. `log_results.md` 묶음마다 넣는다.
 
 ### 4-3. 합류·동기화 (261006)
 목적: 누가 어느 단계에서 늦었나. 보스가드가 못 켜진 원인(`log_results.md` 261006 못 켜진 13건의 2·3·4·13번: 코드상 설명 안 됨 / River of Flame 1분 기록 없음 / 원인 불명).
@@ -97,7 +98,7 @@
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
 - `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms(261024 `be4f0e2`부터 시전 중일 때만 최대 600ms, handoff 3-29), 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(`docs/code/Pather.md` useUnit 261022). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
-- `[useUnit] ok Nms iter:i type:t id: target:`(261030, Claude 추가, handoff 3-29) — useUnit이 지역을 넘어간 순간. N = 회차 0 접근 이동 뒤 클릭 앞 대기 직전부터 넘어간 순간까지, iter = 먹힌 클릭의 회차, type 5 계단 타일·2 오브젝트. 판정: 같은 출구(id)끼리 사이클 사이 분포 비교(timeout 수는 보지 않음). 제거 조건: handoff 3-29 2차 비교 판정.
+- `[useUnit] ok Nms iter:i type:t id: target:`(261030, Claude 추가, handoff 3-29) — useUnit이 지역을 넘어간 순간. N = 회차 0 접근 이동 뒤 클릭 앞 대기 직전부터 넘어간 순간까지, iter = 먹힌 클릭의 회차, type 5 계단 타일·2 오브젝트. 판정: 같은 출구(id)끼리 사이클 사이 분포 비교(timeout 수는 보지 않음). 제거 조건: 1초 재현 확인(handoff 3-29, 사용자 261101). 261031 1초·261101 200ms 결과는 `log_results.md`. 판정 팁: timeout 줄 바로 뒤 `ok … iter:0`은 늦게 먹힌 첫 클릭(옆 이동 중 넘어감), `iter:1` 이상은 다시 클릭해서 넘어감.
 - (261022 삭제) `[exit] 26 -> 27 type: exit:x,y dest:x,y` — H1(Monastery Gate 동선). 좌표는 `handoff.md` 1-2.
 - `[SafeTele] monsters N near M`(261021, Claude 추가) — 45 거르기로 빠진 몹 수. 제거 조건: 확인. **261023 `0f6da09` 삭제**.
 - `[Quit] moveToExit failed: A -> B`(261021~, 기본색 콘솔) — 옛 `clearToExit` 무한 재시도 대신 한 번 실패로 퇴장. 261022 `482171b`부터 `AutoSmurf.exitTo`(3회 실패)도 같은 줄, throw는 `[Error] AutoSmurf.exitTo: ...`로 먼저 찍힘. 거리 while 3회 실패 사유: `Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`, `Duriel chamber not entered`(`docs/code/AutoSmurf.md` exitTo).
@@ -116,7 +117,7 @@
 - 화살통(261014~261019, 활 직업 = M.HYBR): `interact closed`(상점 창이 열려 있어 스페이스로 닫음) → `not enough quiver: 장착 + 예비` → 3막 `equipQuiver moved` / 그 밖 `equipQuiver dropped`, `invQuiver dropped` → 3막 `equipQuiver sold`, `invQuiver sold`(Ormus에게 팔고 350개짜리로 되사기) → `equipQuiver`, `invQuiver`(구매 성공) → `equipQuiver N / invQuiver N`(결과). 판정: 구매 실패(결과 줄이 `no quiver`)·같은 게임 반복 방문.
 - 골드 나눔(261010): 리더 골드 < 5000(18레벨 이상)이면 팔로워가 `Dropping N Gold`, 리더가 `Picking up N Gold`, 15초 안에 안 주우면 `Retaking N Gold`. 줄 안의 goldPile은 유닛 객체 문자열일 수 있다.
 - 감정: `identify failed / slow: 이름 (scroll|tome, Nms)`, `identify stopped: no ID scroll`. (261020 삭제) `sold unid` — 13건 동작.
-- 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`.
+- 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`. 261101부터(handoff 3-59) 다시 찾은 유닛이 인벤토리 안도 커서도 아니면(착용·바닥) `[MoveToSlot] skip <이름> gid: got: loc L mode M at x,y`를 남기고 끝난다(`undefined FAILED` 줄은 줄어들 것으로 예상). 판정: `got:`이 `loc 1 mode 1`이면 착용 장비를 막은 것. 제거 조건: handoff 3-59.
 - (261022 `482171b`에서 바뀜) `chores slow: clearInventory|buyPotions Ns`(261021~261022 로그) → `chores Ns: pre heal id inv [npc:<NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`(doChores 전체 10초 초과만, Claude 추가). `buyPotions: buy failed 코드 gold: columns:|buffer`(261021)는 그대로. 판정: 어느 단계가 긴가 — inv의 pots(물약 정리, 261022부터 마시기), belt 클릭 수, buy의 npc(상점 NPC까지 걷기·열기)와 구매 횟수·실패, 시작 시 NPC 메뉴(08)·거래창(0C). 제거 조건: handoff 3-27 판정 뒤 삭제 여부 결정. 261023 `0f6da09`부터 belt 뒤에 `cur 시도/실패 put N shift 시도/실패 ui 직전>직후 remain N`(handoff 3-27)이 붙고, 벨트 실패가 1건이라도 있으면 10초 미만이어도 찍힘. `ui`는 `08`(NPC 메뉴)·`01`(인벤토리 창), 없으면 `-`.
 - `belt shift fail: 코드 col:N [열 물약 코드] ping:N inv:true/false`(`d87cfcb`, handoff 3-27) — 벨트 넣기 shift-click 실패마다 정리 안에서 찍힘. inv false = 클릭이 늦게 반영됨(핑), inv true = 실제 실패(물약 코드와 열 코드 비교). 제거 조건: 3건 이상 분류.
 - `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정. **261029 삭제**(가설 틀림 판정, handoff 1-18).
@@ -141,10 +142,9 @@
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
-| 3-29 | useUnit 성공 시간 비교(1차: 클릭 뒤 최소 대기, 2차: 클릭 앞 게이트 ↔ 600ms) | 4-4 `[useUnit] ok` 같은 출구 분포. 참고 timeout 줄 수(261023 34, 261024 42, 261025 283, 261026 275, 261027 526, 261028 260, 261029 아시아 45, 261030 아시아 52) |
-| 3-43 | 듀리엘 시작 Atma 대화(2단계, `59bf6c8`) | 나이트메어·헬 DURIEL 구멍 앞 `Party desynced 1`, 빠진 프로필 Lut Gholein |
-| 3-52 | 스태틱 필드 로직 통합 | 육안(스태틱 → % 뒤 넘어감, 번개 면역 제외), `[teleportTo failed]` 수 |
+| 3-29 | useUnit 클릭 뒤 대기 1초 재현(261101 1초로 되돌림, 200ms 실패) | 4-4 `[useUnit] ok` 분포를 261031(1초)과 비교. 참고 timeout 줄 수(261023 34, 261024 42, 261025 283, 261026 275, 261027 526, 261028 260, 261029 아시아 45, 261030 아시아 52, 261031 55, 261101 200ms 479) |
 | 3-53 | 피겨린 주운 사람 블록 건너뜀 | 4-6 `[openMenu] retry` — 건너뛴 사례의 주운 사람 Alkor 줄 |
+| 3-59 | MoveToSlot 인벤토리 밖 아이템 건드리지 않음 | 4-6 `[MoveToSlot] skip` 줄(`got:` 착용 여부), 실패 줄, 착용 장비가 빠지는 사례(`undefined FAILED … item:loc 1`, 다음 게임 `equipped: [칸] -1`) |
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.
@@ -159,5 +159,5 @@
    - 판정에 걸리는 이상한 사례는 원인이 나올 때까지 따라간 뒤 판정한다. "안 봄"으로 남기지 않는다. 끝까지 못 가면 알 수 없음으로 두고 이유를 적는다.
 3. **기존 결정·결론이 흔들리는 사례는 따로 알린다.** handoff·코드 노트·`rejected.md`·`log_results.md`의 앞선 결정이나 결론과 맞지 않는 사례(반증, 다른 원인, 조건이 달라짐)를 "기존 결론과 다른 것"으로 분리해 근거와 함께 보고한다.
 4. **그 밖 관찰**(4-1~4-7): 결과 나옴 / 상황 없음 / 원인 못 찾음 표, 숫자마다 근거 줄 예시. 새 문제는 사실만 적고 handoff 1절 후보로 낸다.
-5. **보고 순서**: ① 데이터 요약 ② 3절 판정표(사용자 지시 261029: 항목마다 한 행, 열은 `항목 | 적용 커밋 | 확인할 사항 | 판정 기준 | 이전까지 확인된 것 | 미확인 | 이번 로그에서 확인된 것 | 성공/실패 | 개선안`. 적용 커밋 = 그 수정의 커밋과 이번 로그에 들어갔는지의 근거(실행 시작 시각과 병합 시각, 줄 형식). 판정 기준 = 무엇이면 성공이고 무엇이면 실패인지(handoff 검증 방법에서 옮김). 성공/실패 칸에는 확정·실패·케이스 미발견·알 수 없음·이번 로그에 적용되지 않음 중 하나) ③ 기존 결론과 다른 것 ④ 그 밖 관찰 ⑤ 결정이 필요한 것(사실과 선택지, Claude 제안은 "제안"으로 표시하고 규모: 파일 수, 새 변수·키·로그) ⑥ 로그 정리 후보(목적을 다해 삭제 / 실패 때만 남김 / 새로 필요(승인 필요) / 실패 기록용 유지, 사용자 지시 261006).
+5. **보고 순서**: ① 데이터 요약 ② 3절 판정표(사용자 지시 261029: 항목마다 한 행, 열은 `항목 | 적용 커밋 | 확인할 사항 | 판정 기준 | 이전까지 확인된 것 | 미확인 | 이번 로그에서 확인된 것 | 성공/실패 | 개선안`. 적용 커밋 = 그 수정의 커밋과 이번 로그에 들어갔는지의 근거(실행 시작 시각과 병합 시각, 줄 형식). 판정 기준 = 무엇이면 성공이고 무엇이면 실패인지(handoff 검증 방법에서 옮김). 성공/실패 칸에는 확정·실패·케이스 미발견·알 수 없음·이번 로그에 적용되지 않음 중 하나) ③ 기존 결론과 다른 것 ④ 그 밖 관찰(치킨 표 4-2 포함, 사용자 지시 261101) ⑤ 결정이 필요한 것(사실과 선택지, Claude 제안은 "제안"으로 표시하고 규모: 파일 수, 새 변수·키·로그) ⑥ 로그 정리 후보(목적을 다해 삭제 / 실패 때만 남김 / 새로 필요(승인 필요) / 실패 기록용 유지, 사용자 지시 261006).
 6. **handoff 정리**: 사용자가 판정과 다음 할 일을 정하면 handoff(3절 정리, 2절 이동), 코드 노트, `log_results.md`(묶음 결과), 이 문서 5절 표를 고친다. 커밋·푸시는 묻고 한다(CLAUDE.md 1절). 여기까지가 로그 분석이다.

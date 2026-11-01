@@ -35,25 +35,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 코드: `Attack.js`에 `Pather.moveTo` throw를 trace 없이 받는 catch가 3곳(잃은 목표 마지막 위치로 이동 `searches = 99`, 자리 잡기 이동 `moved = false` 2곳). 이번 2건이 어느 호출부였는지는 로그로 모름. CLAUDE.md 4절: 잡힌 오류는 `Misc.caughtError`.
   - 261027 로그: `no adjusted path` 10회 2건은 모두 `[Error] moveTo: Failed to generate path`가 찍힘(a6 Pz-6 Stony Field, a7 Pz-55 Abaddon `usePortal → moveToUnit`) — 오류 줄 없는 위 2건과 다른 호출 자리. 261028 로그: `no adjusted path` 0.
 - **판단에 필요한 것**: 진행할지. 한다면 조용한 catch 3곳에 `Misc.caughtError`를 넣을지(콘솔은 게임당 자리별 1회).
-
-### 1-18. 칸 옮기기(MoveToSlot)에서 아이템 유실 (`Storage` MoveToSlot, `AutoSmurf.start`, 사용자 261029, 옛 3-17·1-6)
-- **문제(증상)**: 게임 시작 정리 뒤 큐브(0,0)·TP 책(0,2)·회복 물약(1,2 / 1,3 / 2,3 / 3,3)을 정해진 칸으로 옮기다가, 집은 아이템이 칸에 놓이지 않고 커서에 남아 바닥에 버려진다. 착용 장비가 버려진 사례 1건.
-  - 이력: 260930~261020 실패 34건(게임 시작, 대부분 회복 물약), 261022~261028 일곱 묶음 0건, 261029 24건(109게임).
-  - 261029: 21건은 헬 회복 물약(Rejuvenation 17·Full 4, 20건 Harrogath·1건 Rogue Encampment), 1건 TP 책(a5 Pz-2 Rogue Encampment), 2건 아이템 이름 `undefined`. 모두 게임 시작 13~38초. 회복 물약 21건 줄 끝은 `slot:empty dropped:<그 물약> item:loc 0 mode 5`. 같은 게임 2번 연속 실패 4게임(a1 Pz-82, a4 Pz-59, a5 Pz-66, a8 Pz-61).
-  - 장비 유실: a8 Pz-61 10/29 01:15:25 Full Rejuvenation 실패(바닥) → 01:15:27 `undefined FAILED slot:Rejuvenation Potion dropped:Cobalt Demonhide Gloves item:loc 1 mode 1 at 10,0`(착용 칸 10 = 장갑). ItemLog a3 01:15:29 같은 장갑 `Kept` → 01:18:24 `Equipped`. a8 다음 게임 print `equipped: [Gloves] -1`(앞 게임 12). 그 사이 a8 ItemLog에 장갑 줄 없음(01:15:21 `Equipped`는 지팡이 `[ArmG]`).
-- **확인된 것**
-  - 호출(코드 읽음, `AutoSmurf.start`): `Town.doChores(true)`(장비 교체 포함) 뒤 큐브 → TP 책 → 회복 물약 목록(`findItems(516)` + `findItems(515)`, 루프 전에 한 번 만듦) 순서로 `Storage.Inventory.MoveToSlot`.
-  - `MoveToSlot`(코드 읽음, `libs/Storage.js`)이 아이템을 바닥에 버리는 곳 세 군데:
-    1. 막는 아이템(목표 칸을 차지한 인벤토리 아이템, 종류 무관)을 빈 칸으로 옮기다가 1초(`max(1000, ping×3+500)`) 안에 놓이지 않으면 `blocker.drop()` — **trace·ItemLog 없음**.
-    2. 막는 아이템을 둘 빈 칸이 없으면 trace `[MoveToSlot] no room, dropped blocker` 뒤 버림(261029 0건).
-    3. 옮길 아이템을 놓은 뒤 1.5초(`max(1500, ping×3+1000)`) + 200ms에도 커서에 무언가 있으면, 그것이 무엇이든 버림(`getUnit(100).drop()`, 실패 줄의 `dropped:`).
-  - 옮길 아이템은 `getUnit(4, -1, -1, item.gid)`로 다시 찾는다. 실패 줄의 `item:`은 버린 뒤 이 방식으로 다시 찾은 결과.
-  - 파티 수락 가설(옛 3-17): 수락은 게임 시작 0~1초, 실패는 13~38초, 실패 앞뒤 10초 안 수락 0 → 틀림. 판별 trace `party accept` 삭제(261029).
-- **추정**(로그로 확인 못 함): a8 장갑은 ① 첫 호출에서 두 번째 회복 물약이 막는 아이템으로 옮겨지다 1번 경로로 조용히 버려져 목록의 그 객체가 깨지고(`undefined`) ② 깨진 객체의 gid로 찾은 결과가 장갑이 되어 그것을 집었다가 3번 경로로 버려진 것. 단, 두 번째 호출의 목표 칸(1,3)에 Rejuvenation이 남아 있어(`slot:Rejuvenation Potion`) 이 순서와 맞지 않을 수 있음. 깨진 gid로 `getUnit`이 무엇을 돌려주는지는 엔진 동작을 확인하지 않음. 클릭이 놓이지 않는 원인은 모름.
-- **판단에 필요한 것**(폐기할지 고칠지)
-  - 칸 고정이 필요한 이유: 큐브·TP 책·회복 물약 자리에 기대는 코드가 있는지(아직 찾지 않음). 없으면 함수 호출 자체를 지우는 안(폐기)이 가능.
-  - 고칠 경우 정해야 할 것: 커서에 남은 것을 버리지 않고 되돌릴지, 막는 아이템 옮기기가 실패하면 그 자리에서 멈출지, 옮기기 전에 아이템 객체가 살아 있는지(gid로 다시 찾은 것이 같은 아이템인지) 확인할지, 1번 경로에 기록을 남길지.
-  - 다음 사이클 실패 줄(유지)로 같은 모양이 반복되는지.
+  - 261101 로그: a6 11/01 10:13:11~10:13:21 Pit of Acheron(목표 12781,7542) `no original path` 뒤 `no adjusted path` 10회(모두 12785,7565) → `fixed path`·`[Error]` 없이 10:14:20 `=== [INFERNAL] ===`(오류 줄 없는 모양). 같은 묶음 a8 05:06 Harrogath는 `[Error] moveTo: Failed to generate path: 12641,6349`(찍힌 모양).
 
 ### 1-19. 대기 자리에 와 있는데 okCount 미도착 (`AutoSmurf.okCount`, 사용자 261029)
 - **문제(사례)**: 261029 — a3 Chaos Sanctuary 4게임(10/29 04:38·06:09·09:31·12:15, 퇴장한 프로필과 4~27칸, 그 앞 150초 a3 trace 줄 없음, 06:09만 87초 전 `Town check (direct)` 다녀옴), a6 Pz-27 Travincal(10/28 19:41, 120초 전 `Town check (direct)` 다녀온 뒤). 261027에도 같은 모양(Pz-103 a3 Ancient's Way, Pz-117 a6 Catacombs 4).
@@ -62,6 +44,8 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **261030 사례**(91게임, desync 10게임 중 피겨린 Pz-38·무덤 안 Pz-21을 뺀 8게임): 퇴장 순간 빠진 프로필과 퇴장한 프로필의 거리, 그 앞 5분 trace.
   - 마을 다녀오기 관련 3: Pz-55 a6 Travincal 9칸(00:36:15 `Town check (direct)` → 00:36:33 복귀, 그 뒤 2분 20초 trace 없이 거의 제자리), Pz-49 a3 Harrogath 8칸(23:21:03 Pit of Acheron에서 `visitTown start`, `back` 없음), Pz-64 a5 Chaos 16~26칸(상대가 기다린 지 91초 뒤 마을행, 퇴장 6초 전 복귀).
   - 그 밖 5: Pz-25 a6 Harrogath 3칸, Pz-47 a4 Harrogath 4칸, Pz-58 a7 Ancient's Way 9칸, Pz-59 리더 a1 Rogue Encampment 0칸(3분 반 전 Worldstone Chamber `Town check` 뒤 COUNTESS·PIT 정상 진행), Pz-71 a3 Rogue Encampment(퇴장한 둘과 72칸, okCount를 보낸 다른 5명과 같은 자리). 모두 그 앞 5분 trace에 마을 다녀오기 없음.
+- **261031 사례**(95게임, desync 10게임 중 피겨린 Pz-26 제외): Chaos a3 Pz-73(27칸)·Pz-86(16~23칸, 퇴장 1분 안 `Town check (direct)` 2번)·Pz-89(23칸, 51초 전 Town check), a8 Pz-78(37칸, 48초 전 Town check). Ancient's Way Pz-66 a3 12칸·Pz-77 a7 9칸(게임 시작 2~3분, 앞 trace 없음). Pz-81 a4 Throne에 남음(리더 Worldstone Chamber, 5분 안 Town chicken 2·Town check 3, 마지막 복귀 13초 뒤 퇴장). Pz-1 a6·a7 Burial Grounds에 못 들어가고 Cold Plains(3분 trace 없음). Pz-10 a8 Catacombs 2층 도착 자리 근처 3분 반(퇴장한 a3과 271칸).
+- **261101 사례**(63게임, desync 5게임): Pz-33 a6 Pit of Acheron에 남음(2분 안 Town chicken 2·Town check 1, 마지막 복귀 45초 뒤 퇴장, 리더는 Harrogath). Pz-38 a3 Ancient's Way 7~15칸(게임 시작 2분 반, 앞 trace 없음). Pz-43 a6 퇴장 12초 전 Catacombs 4층에서 `Town check (direct)` → Rogue Encampment에서 퇴장. Pz-52 a3 Harrogath 1칸(10:03:23 Pit of Acheron `visitTown start`, `back` 없음).
 
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
 
@@ -107,39 +91,10 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **1차(클릭 앞 게이트 ↔ 고정 대기) 건너뜀**(사용자 261031): 게이트는 대부분 거의 기다리지 않는데(첫 클릭 성공 시간 안에 게이트·클릭·지역 변경이 다 들어감) 첫 클릭 성공 98%라, 고정 600ms·200ms는 a1 계단마다 대기만 늘어난다(600ms면 사이클당 약 4.7분, 재시도 11건이 다 없어져도 약 16초). 게이트 유지.
 - **바꾼 것 2**(261031, 2차): 클릭 뒤 최소 대기 `max(1000, 핑×2+300)` → 200ms(모든 회차, type 2·5 모두). 로딩 중 대기·걷는 중 4초 상한·클릭 앞 게이트·type 2 `openUnit` 뒤 대기는 그대로.
 - **검증 방법 2**: 위 ① 결과와 비교. ⓐ 재시도 성공(`iter:1` 이상) 시간이 줄었나 ⓑ 첫 클릭 성공 중 200ms 넘게 걸리던 건(① a1 33건, 걷는 프로필 127건)이 다시 클릭·옆 이동으로 늘었나 ⓒ 8회 모두 실패(`timeout iter:7`). a1/걷는 프로필, 계단/오브젝트로 묶어 비교하고 반복 출구(id 29 등)는 id끼리. 판정은 위 판정 기준(성공 시간).
-
-### 3-43. 듀리엘 첫 포탈 못 탐: 써모너 일지 전원 1회 읽기(1단계) → 듀리엘 시작 때 Atma 대화(2단계) (`AutoSmurf.summoner`·`duriel`, 사용자 261028·261029)
-- **문제**(사용자 관찰): 듀리엘에서 일부 팔로워(간헐적으로 1명 또는 여럿)가 오리피스 무덤 포탈(첫 포탈)을 못 탄다. 퀘스트 창은 캐니언 웨이를 찍고 마을에 오면 끝나 있는데도 못 타고, 그때 멈추고 수동으로 NPC 대화를 하면 탈 수 있다. 일지를 직접 읽지 않은 프로필로 추정(사용자). `quest_flags.md` 12번 bit0(일지 조작 = 2막 파티원에게도 설정)과 다른 결과다.
-- **확인된 것**(코드): 써모너 일지 반복은 46번 포탈이 이미 있으면 바로 끝나 리더가 연 뒤에는 팔로워가 일지를 누르지 않았다. 261027 Atma 대화는 무덤에 들어간 뒤(두리엘 방 포탈 대기 전)라 첫 포탈과 무관했다.
-- **바꾼 것**(261028 `dfc884b`): `summoner` 일지 반복 앞에 일지 1회 누르기(포탈 유무 무관). `duriel` 팔로워 Atma 대화 삭제.
-- **검증 방법**: 못 탄 팔로워는 마을에서 끝없이 기다리므로 리더의 구멍 앞 okCount에서 DURIEL 구간 `Party desynced`와 그 프로필의 `party has left … town:true`가 남는다. 이 사례가 없어지면 일지가 원인. 그대로면 2단계(리더가 무덤에 도착한 시점에 NPC 대화).
-- **바꾼 것 2**(261028, 판별 trace): 일지를 누른 뒤의 대기(`me.ping * 2 + 1000`)를 같은 시간 동안 10ms마다 `getIsTalkingNPC()`를 보는 대기로 바꿈(대사는 끊지 않음, 동작 같음). trace `[Summoner] journal: dialog at Nms dist:D` / `no dialog dist:D` / `none`(일지 유닛 없음). 퀘스트 플래그(12번 bit0)는 파티원에게도 켜져 직접 읽었는지 가르지 못하므로, 그 프로필 화면에 일지 대사가 떴는지(상호작용 성공)로 본다. 근거: 260929 `[OD]` a8 일지 대사가 누른 뒤 약 922ms에 떠서 약 78ms 만에 닫힘(`crash_analysis.md` 유형 B, 관찰 1건). 새 지역 변수 `tick`·`talked`.
-- **판정**: DURIEL 실패 프로필의 그 게임 써모너 줄이 `dialog at`이면 읽었는데도 못 들어감(가설 틀림) → 2단계. `no dialog`·`none`이면 못 읽음(가설 맞음) → 일지 앞으로 다가가 누르게 고침. 제거 조건: 실패 1건 판정, 또는 두 사이클 실패 0.
-- **결과**: 261029 **1단계 실패**(사용자 확인) — DURIEL 구간 desync 2게임, 빠진 프로필은 모두 Lut Gholein에 남음.
-  - Pz-53(나이트메어, 10/28 23:52): a3·a4·a6·a7. 그 게임 일지 줄 a3 `dialog at 94ms`, a4·a6·a7 `no dialog`. 통과한 a2·a5·a8은 `dialog at`.
-  - Pz-72(헬, 10/29 03:47): a3. 그 게임 일지 줄 a3 `no dialog`, 통과한 a2·a4~a8도 모두 `no dialog`.
-  - 노말(10/28 17:52 써모너, 4명 `no dialog`)은 두리엘 desync 0. 두 실패 게임 모두 다음 게임 DURIEL은 통과.
-- **바꾼 것 3**(261029 사용자 `59bf6c8`, 2단계): `duriel` 시작(syncBO·마을 이동 뒤, 리더·팔로워 분기 앞)에 전원 `Town.move(NPC.Atma)` → `openMenu` → `me.cancel()`, 그 뒤 기존 대기(리더 웨이 앞 okCount, 팔로워 포탈 대기).
-  - 같은 커밋에서 `summoner`의 판별 trace(`[Summoner] journal`)와 1단계 1회 누르기를 지우고, 일지 반복을 "누르기 → 46번 포탈이 있으면 끝"(최대 3번)으로 바꿈. 남은 지역 변수 `talked`는 261029 삭제.
-- **판단**(사용자 261029): 노말은 써모너와 두리엘 사이에 tombs가 끼어 있어 대부분 그 사이 NPC를 이미 만난다. 나이트메어·헬은 써모너 뒤 다른 작업 없이 리더가 스태프를 구하고 라다먼트가 끝나면 바로 두리엘에 들어가 NPC 대화를 하지 않았을 수 있다.
-- **검증 방법 3**: 다음 사이클 나이트메어·헬 DURIEL 같은 시점(리더 무덤 구멍 앞 okCount)에서 `Party desynced 1`과 빠진 프로필이 Lut Gholein에 남는 사례가 없는가.
-- **결과 3**: 261030 나이트메어 Pz-38(20:44)·헬 Pz-54(00:22) DURIEL desync 0, 8명 모두 3막으로(노말 Pz-22도 0). 한 사이클 더 본다(사용자 261030).
-
-### 3-52. 스태틱 필드 로직 통합 (`Sorceress.js` `doAttack`·`doCast`, `Attack.setPosition`·`checkResist`, `Config.js`, S.SFFW·S.FIRE, 사용자 261029)
-- **문제**(사용자): 스태틱이 두 경로로 나뉘어 있었다. ① 컨피그 선시전 루프(`CastStatic` %까지 스태틱만 반복, `StaticList` 대상만, 빌드는 노멀 보스 6만) ② 어택스킬 칸 42(`checkResist`의 42 게이트가 `CastStatic`으로 % 판정, `CastStatic`이 `false`인 나이트메어·헬은 "HP% > 0"이라 % 없이 계속 씀).
-- **확인된 것**: 스태틱 반경 mpq `skills.txt` `aurarangecalc = ln12`, Param1 5·Param2 1 → 레벨 + 4(좌표 거리). 게임 화면 야드 = × 2/3(Might·Resist Fire·Holy Shock의 ln12 값과 위키 야드 대조). 텔레 도착 판정은 `teleportTo`의 `maxRange`(기본 5), `setPosition`의 `minDist`는 걷기에만 쓰였다.
-- **바꾼 것**(261029, 사용자 요청·승인):
-  - `Sorceress.js` `doAttack`: 선시전 루프 삭제. 언타임드를 고른 뒤·로우마나 판정 앞에서 `CastStatic === true`, 스태틱 습득, 대상(`StaticList`가 비면 전체, 아니면 이름·classid 일치), 번개 면역 아님(`checkResist(unit, "lightning")`), `unit.hp × 100 / 128 > (보스 ? StaticBossHP : StaticHP)[me.diff]`이면 `untimedSkill = 42`. 보스 = `index === 1`(`spectype & 0x7`, 어택스킬 보스 칸과 같은 판정). 타임드는 기존 어택스킬 그대로라 `doCast`가 타임드(딜레이 없을 때) ↔ 스태틱을 번갈아 쓴다. 스태틱을 쓰는 동안 기준 거리 = min(타임드 사거리, 레벨 + 2).
-  - `doCast`: 언타임드가 42면 타임드·언타임드 두 `setPosition`에 도착 오차 2.
-  - `Attack.setPosition`: 호출부가 `minDist`를 넘기면 텔레(`teleportTo`)에도 도착 오차로 넘긴다(안 넘기면 5 그대로). 레벨 + 2와 오차 2로 실제 거리 ≤ 레벨 + 4.
-  - `Attack.checkResist`: 42 게이트(`// Static handler`) 삭제.
-  - `Config.js`: `CastStatic` = `true`/`false` 스위치. 새 키 `StaticHP: [25, 33, 50]`(일반), `StaticBossHP: [10, 33, 50]`(보스), [노멀, 나이트메어, 헬].
-  - S.SFFW: 18레벨 노멀 `CastStatic = true`(보스 6 리스트 유지). 46레벨 `AttackSkill = [-1, 51, -1, 51, -1, -1, 43]`, `CastStatic = true`, `StaticList = []`(전 난이도 전체).
-  - S.FIRE: 6레벨의 주석 블록(옛 `CastStatic` %) 삭제, 46레벨 `CastStatic = true`, `StaticList = []`(세부 조정은 사용자).
-  - 261030 사용자 빌드 수정(`38ee175`): S.SFFW 18레벨 `CastStatic = true`를 난이도 조건 없이(보스 6 리스트), S.FIRE 18·46레벨 스태틱 설정은 모두 주석(꺼 둠). 두 빌드의 `StaticHP`·`StaticBossHP` 주석 줄에 `Config.`를 붙임(261030).
-  - 261030 추가(사용자 요청): 언타임드 칸(`checkSkill`, 커스텀 공격이면 그 값)이 -1이고 그 몹에게 타임드 스킬이 있으면(`timedSkill > -1`) HP%·번개 면역과 관계없이 스태틱(쿨타임 사이 채우기, 주변 몹에 효과). 타임드가 없으면(예: S.SFFW의 불 면역) 원래 규칙(번개 면역 아님·% 초과까지)을 따른 뒤 `[6]`. 조건식 하나 수정, 로우마나 판정 앞 그대로.
-- **검증 방법**: (261030) S.SFFW 46레벨 이상(언타임드 칸 -1)에서 파이어월 쿨타임 사이에 HP%와 관계없이 스태틱이 나가는지(번개 면역 몹 포함), 불 면역 몹은 %까지 스태틱 뒤 텔레키네시스, 불·번개 둘 다 면역 몹은 텔레키네시스. 언타임드 칸이 있는 빌드(S.FIRE 파이어볼)는 스태틱 → %(노멀 일반 25·보스 10, 나이트메어 33, 헬 50) 도달 뒤 그 스킬로 넘어가는지, 스태틱 사이에 파이어월(타임드)이 나가는지, 번개 면역 몹에 스태틱을 쓰지 않는지(사용자 육안). 스태틱이 사거리 밖에서 나가는 미스캐스팅이 없는지(낮은 스킬 레벨). trace `[teleportTo failed]` 수가 늘지 않는지(도착 오차 2). 노멀 18~45레벨 보스 6에서만 스태틱.
-- **결과**: 아직 없음.
+- **결과 2**(261101 로그, 11/01 00:24~12:17, 63게임, 핑 15~109): **실패**(사용자 261101). 출구 하나 평균 시간 a1 계단 135 → 237ms, 걷는 프로필 계단 312 → 456ms. 같은 출구(양쪽 5건 이상)끼리 200ms가 빠른 곳 a1 9곳 중 4, 걷는 프로필 21곳 중 7. 첫 클릭 성공 a1 98 → 91%, 걷는 프로필 95 → 71%. 8회 모두 실패 0 → 5(a4·a8 Pz-1 Blood Moor → Den 2초 안에 8회 소진 후 `moveToExit failed`, a7 Canyon → 무덤 #4 2번 각 2초 안 소진, a1 Pz-58 Lut Gholein → 궁전 `dist:21` 회차마다 6초는 261025와 같은 모양). 200ms 뒤 옆 자리 텔레 중 지역이 바뀌어 새 지역에서 옛 좌표로 `teleportTo failed`(a1 04:29:52 `dist:2384`, 08:04:37 `dist:2006`, 두 출구 2,687ms). timeout 55 → 479줄.
+  - 1초 사이클(261031) 첫 클릭 성공 분포(계단): a1 526건 중 200ms 안 493·500ms 안 502·1초 안 525, 걷는 프로필 409건 중 282·345·403. 다시 클릭이 필요했던 건 a1 11(합 18초)·걷는 프로필 23(합 38초). timeout 줄 바로 뒤 `ok … iter:0`(늦게 먹힌 첫 클릭) 5건(1,062~4,640ms).
+- **바꾼 것 3**(261101): 클릭 뒤 최소 대기 200ms → `max(1000, 핑×2+300)`(되돌림). 1초가 최적이라는 증명은 아님(200ms보다 나은 것은 실측, 500ms는 분포로 추정, 1초 초과는 데이터 없음).
+- **검증 방법 3**: 한 사이클 더 1초로 돌려 `[useUnit] ok` 분포를 261031과 비교(재현성). `[useUnit] ok` 제거 조건을 "1초 재현 확인"으로 바꿈(사용자 261101).
 
 ### 3-53. 피겨린 주운 사람이 블록을 건너뜀: `Packet.openMenu` 재시도 로그 (`AutoSmurf.figurine`, `Packet.openMenu`·`skipTalk`, 사용자 261101)
 - **문제(사례)**: 261030 Pz-38 a6, 261031 Pz-26 a4 — 피겨린을 주운 사람만 `if (!me.getQuest(20, 0))` 블록을 건너뛰어(그 게임 `!!! [POTION] !!!` 없음, 다음 게임 시작 `preparation`에서 물약을 마심) `teamFigurine`을 보내지 않고 혼자 끝 okCount에서 `Party desynced 1`(나머지 7명 missing). 같은 주운 사람이 블록을 탄 게임도 있다(261031 Pz-63 a4, 261030 Pz-23·55).
@@ -150,6 +105,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **가설**: 스페이스 연타가 534 뒤 열린 메뉴를 닫고, 이를 못 본 재시도 상호작용이 538(완료)이 되었다. 앞 단계(연타가 실제로 여러 번 나감, 스페이스가 메뉴를 닫음, 루프가 메뉴를 놓침)는 게임·엔진 동작이라 코드로 확인 못 함.
 - **바꾼 것**(261101): `Packet.openMenu` 다시 상호작용하기 직전(회차 1 이상)에 trace `[openMenu] retry i:N keys:K npc:이름`(K = 그때까지 보낸 스페이스 수). 모든 NPC에서 찍힘. 피겨린 코드 수정(물약·`teamFigurine` 블록 밖으로)과 `skipTalk` 대기는 이번에 넣지 않음(사용자 261101).
 - **판정**(사용자 261101): 건너뛴 사례에서 그 게임 FIGURINE 시작 ~ 주운 사람의 okCount 사이에 `npc:Alkor` `retry` 줄이 있으면 첫 `openMenu` 안에서 Alkor에게 두 번 말을 건 것(줄 = 두 번째 0x13 직전에만 찍힘), 두 번째가 완료 대화(538)였다는 것은 판정 때 이미 완료였다는 결과와 "말 한 번에 퀘스트 대화 하나" 전제에서의 추론. `keys`는 참고(534 대사가 여러 줄이면 2 이상도 정상). 줄이 있으면 → `skipTalk`(스페이스 1회 뒤 대사 끝·메뉴 열림까지 대기, 상한 뒤에만 다시) 수정. Alkor `retry`가 없으면 가설이 틀림 → 원인 다시 찾기, 그동안 피겨린 블록 밖으로 빼기. 제거 조건: 건너뛴 사례 1건 판정(2사이클 동안 사례가 없으면 그때 다시 정함).
+- **결과**: 261101 **케이스 미발견** — 피겨린 3게임(주운 사람 a6 04:07·a6 07:48·a8 11:27) 모두 8명이 블록 안에서 물약(`!!! [POTION] !!!` trace). `[openMenu] retry` 119줄 모두 `keys:0`(대사 없이 1초 안에 메뉴를 못 봄: Malah 33, Larzuk 18, Fara 16, Akara 13, Warriv 10 …, Alkor 2는 블록 안 반복). 발견될 때까지 유지(사용자 261101).
 
 ### 3-54. 카우스 followDriver 가까운 기준 15 → 10 (`AutoSmurf.farmingCows` `followDriver`, 사용자 261101)
 - **바꾼 것**(261101): 리더 분기·`msgNode` 분기의 중간 단계 기준 15 → 10, 루프 뒤 `msgNode` 마무리 이동 기준 15 → 10(일관성). 30 초과 클리어 없이 이동 + BO, 10 초과 ~ 30 클리어패스 이동, 10 이하 `Attack.clear(20)` — 동작은 그대로.
@@ -180,3 +136,29 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **바꾼 것**(261101): `doCast` 뒤 `aura === 110`이고 오른손 스킬(`me.getSkill(2)`)이 110인 첫 순간 trace `[diaAura] on skill:N`, 게임당 1회(새 변수 `ClassAttack.diaAuraLogged`).
 - **판정**: P.CONC 노말 디아블로 게임에서 줄이 있으면 켬, 없으면 한 번도 못 켬(사용자 261101: 켰는지만 보면 됨). 제거 조건: 디아블로 게임 1건 판정.
 - **결과**: 아직 없음.
+
+### 3-59. 칸 옮기기(MoveToSlot)에서 아이템 유실 → 인벤토리 밖 아이템은 건드리지 않음 (`Storage.MoveToSlot`, `AutoSmurf.start`, 사용자 261029·261101, 옛 1-18·3-17·1-6)
+- **문제(증상)**: 게임 시작 정리 뒤 큐브(0,0)·TP 책(0,2)·회복 물약(1,2 / 1,3 / 2,3 / 3,3)을 정해진 칸으로 옮기다가, 집은 아이템이 칸에 놓이지 않고 커서에 남아 바닥에 버려진다. 착용 장비가 버려진 사례 1건.
+  - 이력: 260930~261020 실패 34건(게임 시작, 대부분 회복 물약), 261022~261028 일곱 묶음 0건, 261029 24건(109게임).
+  - 261029: 21건은 헬 회복 물약(Rejuvenation 17·Full 4, 20건 Harrogath·1건 Rogue Encampment), 1건 TP 책(a5 Pz-2 Rogue Encampment), 2건 아이템 이름 `undefined`. 모두 게임 시작 13~38초. 회복 물약 21건 줄 끝은 `slot:empty dropped:<그 물약> item:loc 0 mode 5`. 같은 게임 2번 연속 실패 4게임(a1 Pz-82, a4 Pz-59, a5 Pz-66, a8 Pz-61).
+  - 장비 유실: a8 Pz-61 10/29 01:15:25 Full Rejuvenation 실패(바닥) → 01:15:27 `undefined FAILED slot:Rejuvenation Potion dropped:Cobalt Demonhide Gloves item:loc 1 mode 1 at 10,0`(착용 칸 10 = 장갑). ItemLog a3 01:15:29 같은 장갑 `Kept` → 01:18:24 `Equipped`. a8 다음 게임 print `equipped: [Gloves] -1`(앞 게임 12). 그 사이 a8 ItemLog에 장갑 줄 없음(01:15:21 `Equipped`는 지팡이 `[ArmG]`).
+- **확인된 것**
+  - 호출(코드 읽음, `AutoSmurf.start`): `Town.doChores(true)`(장비 교체 포함) 뒤 큐브 → TP 책 → 회복 물약 목록(`findItems(516)` + `findItems(515)`, 루프 전에 한 번 만듦) 순서로 `Storage.Inventory.MoveToSlot`.
+  - `MoveToSlot`(코드 읽음, `libs/Storage.js`)이 아이템을 바닥에 버리는 곳 세 군데:
+    1. 막는 아이템(목표 칸을 차지한 인벤토리 아이템, 종류 무관)을 빈 칸으로 옮기다가 1초(`max(1000, ping×3+500)`) 안에 놓이지 않으면 `blocker.drop()` — **trace·ItemLog 없음**.
+    2. 막는 아이템을 둘 빈 칸이 없으면 trace `[MoveToSlot] no room, dropped blocker` 뒤 버림(261029 0건).
+    3. 옮길 아이템을 놓은 뒤 1.5초(`max(1500, ping×3+1000)`) + 200ms에도 커서에 무언가 있으면, 그것이 무엇이든 버림(`getUnit(100).drop()`, 실패 줄의 `dropped:`).
+  - 옮길 아이템은 `getUnit(4, -1, -1, item.gid)`로 다시 찾는다. 실패 줄의 `item:`은 버린 뒤 이 방식으로 다시 찾은 결과.
+  - 파티 수락 가설(옛 3-17): 수락은 게임 시작 0~1초, 실패는 13~38초, 실패 앞뒤 10초 안 수락 0 → 틀림. 판별 trace `party accept` 삭제(261029).
+- **추정**(로그로 확인 못 함): a8 장갑은 ① 첫 호출에서 두 번째 회복 물약이 막는 아이템으로 옮겨지다 1번 경로로 조용히 버려져 목록의 그 객체가 깨지고(`undefined`) ② 깨진 객체의 gid로 찾은 결과가 장갑이 되어 그것을 집었다가 3번 경로로 버려진 것. 단, 두 번째 호출의 목표 칸(1,3)에 Rejuvenation이 남아 있어(`slot:Rejuvenation Potion`) 이 순서와 맞지 않을 수 있음. 깨진 gid로 `getUnit`이 무엇을 돌려주는지는 엔진 동작을 확인하지 않음. 클릭이 놓이지 않는 원인은 모름.
+- **판단에 필요한 것**(폐기할지 고칠지)
+  - 칸 고정이 필요한 이유: 큐브·TP 책·회복 물약 자리에 기대는 코드가 있는지(아직 찾지 않음). 없으면 함수 호출 자체를 지우는 안(폐기)이 가능.
+  - 고칠 경우 정해야 할 것: 커서에 남은 것을 버리지 않고 되돌릴지, 막는 아이템 옮기기가 실패하면 그 자리에서 멈출지, 옮기기 전에 아이템 객체가 살아 있는지(gid로 다시 찾은 것이 같은 아이템인지) 확인할지, 1번 경로에 기록을 남길지.
+  - 다음 사이클 실패 줄(유지)로 같은 모양이 반복되는지.
+- **261031 사례**: 실패 21(회복 물약 20, TP 책 1). 그중 `dropped:none item:loc 0 mode 3`(물약이 이미 바닥) 4(a3 22:13, a6 21:33, a8 20:29·03:00), `undefined … item:gone` 2(a8 20:29:42·20:46:18) — 261029(모두 `dropped:<물약> mode 5`)와 다른 모양.
+- **261101 사례**: 실패 21(회복 물약 15, Horadric Cube 2(a4·a5 02:29 Lut Gholein, ItemLog상 바로 다시 주움), `undefined … item:gone` 3, 반지 1).
+  - 장비 유실: a1 Pz-56 10:42:16 시작 `equipped: [RingG] 11`·`[RingB] 11` → 10:42:50 `[MoveToSlot] undefined FAILED slot:Russet Ring dropped:none item:loc 1 mode 1 at 7,0` → 10:46:37 ItemLog `Sold … Russet Ring (60)`(08:18 착용한 반지) → 10:55:46 다음 게임 `[RingB] -1`. 그 사이 다른 반지 착용·해제 줄 없음.
+  - 팔린 경로(코드 읽음): nip 티어 판정(`NTItemParser` 330줄 근처)은 착용 캐시 `Config.TierNow`를 본다. 캐시는 게임 시작(`Equip.updateTiers`)·장착·소켓 때만 갱신되고 MoveToSlot이 착용 장비를 빼도 그대로 → 인벤토리 반지(11)가 캐시(오른쪽 11)보다 높지 않아 "필요 없음". `Town.doChores`는 `shopItems`가 false면 `autoEquip`(실제 착용 상태를 봄)이 판매(`clearInventory`) 뒤. 10:46:37 판매가 어느 호출의 정리였는지는 확인 못 함.
+- **원인**(추정, 사용자 261101 확인 요청에 대한 분석): `AutoSmurf.start`의 물약 목록은 루프 전에 한 번 만든다. 앞 호출 실패로 물약이 버려지면 목록의 객체가 깨지고(`undefined`·`mode 3`·`gone`), 그 `item.gid`로 `getUnit(4, -1, -1, item.gid)`를 부르면 엉뚱한 유닛(착용 장비)이 돌아오는 것으로 봄(엔진 동작 확인 안 함). MoveToSlot은 다시 찾은 유닛이 이 인벤토리 안인지 보지 않고 `toCursor()`로 집어 목표 칸에 놓았다. 두 장비 사례 모두 이름 `undefined`, 잡힌 것은 착용 칸(10, 7). 칸 고정(큐브 0,0 / TP 책 0,2 / 물약)을 읽는 코드는 없고 `Config.Inventory`는 전부 1(정리 목적으로 보임).
+- **바꾼 것**(261101, A안 채택): `Storage.MoveToSlot`에서 다시 찾은 유닛이 이 컨테이너 안(`location === this.location && mode === 0`)도 아니고 커서(`mode === 4`, `toCursor`가 바로 true → 목표 칸에 놓음)도 아니면 trace `[MoveToSlot] skip <이름> gid:<item.gid> got:<잡힌 이름> loc L mode M at x,y`를 남기고 `false`(착용·바닥 아이템은 집지 않음). 칸 고정 호출은 그대로. 이 분기에서 커서에 다른 아이템이 있으면 그대로 둔다(물약·책은 가치가 낮고 드문 경우, 사용자 261101). 클릭이 놓이지 않아 커서 것을 버리는 원래 경로(큐브 2건 포함)는 그대로. `toCursor`는 착용 아이템(`mode === 1`)이면 `clickItem(0, bodylocation)`으로 몸에서 집는다(`libs/Prototypes.js`, 큐빙용) — 깨진 객체로 착용 장비를 잡으면 빠지는 경로.
+- **검증 방법**(CLAUDE.md 4절): skip 줄의 `gid:`가 비정상이고 `got:`이 착용(`loc 1 mode 1`)이면 가설(깨진 객체로 다른 유닛을 잡음)이 맞고 유실을 막은 것 — 다음 게임 `equipped:` 티어 그대로인지 함께 본다. skip 줄 없이 착용 장비가 빠지면(`equipped: [칸] -1`, 그 사이 ItemLog 착용 줄 없음) 조건으로는 부족 → 원인 다시. 제거 조건: 착용 장비를 잡은 skip 줄 1건 이상 + 장비 유실 0이면 skip 줄을 지울지 실패 기록용으로 남길지 정한다.

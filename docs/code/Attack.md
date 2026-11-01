@@ -76,6 +76,16 @@
 - 지금 코드: 회피 채점 = (`Dodge.Enabled` 또는 활 사용) && distance ≥ `Dodge.MinSkillRange`(10) && unit이 243이 아님. 감지·후보 몹 수는 `Dodge.Range`(8) 이하(`getMonsterCount`는 `<=`). 회피 링은 하나: 걷기 min(distance, `Dodge.Move` 13), 텔레 distance. 기준선 0이면 회피 안 함. 걷기 도착 기본 minDist 3.
 - 경위: 260930 링 하나·R = min(사거리, 10), 261003 감지 R − 2·MinSkillRange 9·minDist 1.5(프로즌오브가 시전마다 텔레하던 원인 = 공격 대상 자신이 R 안에 세짐), 261008 사용자가 감지 반경(Range 8)과 걷기 회피 거리(Move 13)를 따로 두고 문턱 10·minDist 3으로 바꿈. 261020 활 조건 `usingBow()`의 `()` 빠짐을 사용자가 고침.
 
+### 261029 사용자·Claude: 스태틱 필드 로직 통합 (`0b06f24`·`63f59af`, PR #122·#124, 옛 handoff 3-52)
+- 호출부가 `minDist`를 넘기면 텔레(`teleportTo`)에도 도착 오차로 넘긴다(안 넘기면 5 그대로, 전에는 `minDist`가 걷기에만 쓰였다). 소서 스태틱(`doCast`, 오차 2)이 레벨 + 2 거리와 함께 실제 거리 ≤ 레벨 + 4를 맞추려고.
+- 확인: 261031·261101 로그 `[teleportTo failed]` 7·4(261029 13, 261030 6, 늘지 않음), 동작은 사용자 육안. 검증 통과(사용자 261101).
+
+## checkResist
+
+### 261029 사용자·Claude: 스태틱 필드 로직 통합 (`0b06f24`·`63f59af`, PR #122·#124, 옛 handoff 3-52)
+- 42 게이트(`// Static handler`, `CastStatic`으로 % 판정) 삭제. 스태틱 판정은 `Sorceress.js` doAttack(`ClassAttack.md`).
+- 확인: 261031·261101 로그 `[teleportTo failed]` 7·4(261029 13, 261030 6, 늘지 않음), 동작은 사용자 육안. 검증 통과(사용자 261101).
+
 ## getSkillElement
 
 ### 260928 Claude: Telekinesis(43) → `"none"`
