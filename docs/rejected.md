@@ -137,6 +137,9 @@
 ### togglePause
 - **261021 Pause 키를 default 기준으로 전부 같게 토글** — 이유: 수동 Pause 없이는 꼬일 경로가 없다.
 
+### drinkPotion
+- **261101 용병 물약을 준 뒤 ToolsThread 안에서 기다렸다가 벨트에서 빠졌는지 확인** — 이유: ToolsThread(치킨 판정)가 멈추면 안 됨(사용자). 다음 루프에서 확인하는 방식으로 함(`handoff.md` 3-55).
+
 ## threads/TownChicken.js
 - **261021 TownChicken을 ToolsThread로 이관** — 이유: 사용자 기각. 261013·261020 로그에서 TownChicken을 끄면 HP 마을행 146건 중 도착한 95건(65%)이 전투에 남는다(`log_results.md`).
 
