@@ -1863,7 +1863,7 @@ function AutoSmurf() {
 
 		// Clear the whole Den room by room. Only the Den uses this	//260928 (was this.clearLevel, originally Attack.clearLevel)
 		var clearDen = function () {
-			var room, result, rooms, myRoom, currentArea, previousArea;
+			var room, result, rooms, myRoom;	//261101 currentArea, previousArea removed
 
 			function RoomSort(a, b) {
 				return getDistance(myRoom[0], myRoom[1], a[0], a[1]) - getDistance(myRoom[0], myRoom[1], b[0], b[1]);
@@ -1876,7 +1876,6 @@ function AutoSmurf() {
 			}
 
 			rooms = [];
-			currentArea = getArea().id;
 
 			do {
 				rooms.push([room.x * 5 + room.xsize / 2, room.y * 5 + room.ysize / 2]);
@@ -1907,15 +1906,12 @@ function AutoSmurf() {
 				result = Pather.getNearestWalkable(room[0], room[1], 20, 3);	//260826 prev. 18/3
 
 				if (result) {
-					Pather.moveTo(result[0], result[1], 3, true);
-					previousArea = result;
+					Pather.moveTo(result[0], result[1], 3, true, false, true);	//261101 random
 
 					if (!Attack.clear(30)) {	//40	//260910
 						break;
 					}
-				} else if (currentArea !== getArea().id) { // Make sure bot does not get stuck in different area.
-					Pather.moveTo(previousArea[0], previousArea[1], 3, true);
-				}
+				}	//261101 different-area branch removed: the Den is left only through its exit (useUnit)
 
 				if (me.area === 8 && !me.getQuest(1, 1)) {	//260627
 					sendPacket(1, 0x40);
@@ -4472,7 +4468,9 @@ function AutoSmurf() {
 			Town.goToTown(3);
 		}
 
-		this.portalReset();	//261029 figurine: release a boss kept by my old portal
+		if (!me.getQuest(20, 0)) {	//261101 only while Golden Bird is not done
+			this.portalReset();	//261029 figurine: release a boss kept by my old portal
+		}
 
 		if (!me.getQuest(21, 0)) {
 			while (!cain || !cain.openMenu()) { // Try more than once to interact with Deckard Cain.
@@ -6492,7 +6490,7 @@ function AutoSmurf() {
 			return false;
 		};
 
-		var followDriver = function () {	//260903	//260928 rewritten (user): far > 30 plain move, 15~30 move with clearPath, near clear
+		var followDriver = function () {	//260903	//260928 rewritten (user): far > 30 plain move, 15~30 move with clearPath, near clear	//261101 15 -> 10
 			var driver, result,
 				driverName = getDriverName();
 			
@@ -6521,7 +6519,7 @@ function AutoSmurf() {
 						if (Boer && me.getSkill(149, 1)) {
 							Skill.cast(149, 0); // Battle Orders
 						}
-					} else if (getDistance(me, driver) > 15) {
+					} else if (getDistance(me, driver) > 10) {	//261101 15 -> 10
 						result = Pather.moveTo(driver.x, driver.y, 3, true, false, true);	//261002 no offset	//261029 random
 						
 						if (result === "killMonsters") {
@@ -6541,7 +6539,7 @@ function AutoSmurf() {
 						if (Boer && me.getSkill(149, 1)) {
 							Skill.cast(149, 0); // Battle Orders
 						}
-					} else if (getDistance(me, msgNode[0], msgNode[1]) > 15) {	//260928
+					} else if (getDistance(me, msgNode[0], msgNode[1]) > 10) {	//260928	//261101 15 -> 10
 						result = Pather.moveTo(msgNode[0], msgNode[1], 3, true, false, true);	//261002 no offset	//261029 random
 						
 						if (result === "killMonsters") {
@@ -6561,7 +6559,7 @@ function AutoSmurf() {
 				delay(me.ping * 2 + 200);
 			}
 			
-			if (msgNode && getDistance(me, msgNode[0], msgNode[1]) > 15) {
+			if (msgNode && getDistance(me, msgNode[0], msgNode[1]) > 10) {	//261101 15 -> 10
 				Pather.moveTo(msgNode[0], msgNode[1], 3, false, false, true);	//261002 no offset	//261029 random
 			}
 			
