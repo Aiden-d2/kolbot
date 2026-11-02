@@ -92,16 +92,16 @@ var AutoBuildTemplate = {
 					Config.MercSkill = "Prayer";
 				}
 				
-				Config.TierGoal.Helm = 15;	//261028 renamed
-				Config.TierGoal.Amulet = 17;	//261028 renamed
-				Config.TierGoal.Armor = 31;	//261028 renamed
-				Config.TierGoal.ArmG = 31;	//261028 renamed
-				Config.TierGoal.ArmB = 31;	//261028 renamed
-				Config.TierGoal.RingG = 14;	//261028 renamed
-				Config.TierGoal.RingB = 14;	//261028 renamed
-				Config.TierGoal.Belt = 16;
-				Config.TierGoal.Boots = 13;
-				Config.TierGoal.Gloves = 13;	//261028 renamed
+				Config.TierGoal.Head = 15;
+				Config.TierGoal.Neck = 17;
+				Config.TierGoal.Body = 31;
+				Config.TierGoal.ArmA = 31;
+				Config.TierGoal.ArmB = 31;
+				Config.TierGoal.RingA = 14;
+				Config.TierGoal.RingB = 14;
+				Config.TierGoal.Waist = 16;
+				Config.TierGoal.Shoes = 13;
+				Config.TierGoal.Hands = 13;
 				
 				Equip.updateTiers();
 				Grant.updateTiers();
@@ -127,17 +127,17 @@ var AutoBuildTemplate = {
 				Config.Cubing = true;
 				
 				if (!Config.Tiered) {
-					Config.CubeRecipe.push([Recipe.Caster.Boots, "wyrmhideboots"]);	//261023 Recipes -> CubeRecipe
-					Config.CubeRecipe.push([Recipe.Caster.Belt, "sharkskinbelt"]);	//261023 Recipes -> CubeRecipe
-					Config.CubeRecipe.push([Recipe.Caster.Amulet]);	//261023 Recipes -> CubeRecipe
-					Config.CubeRecipe.push([Recipe.Caster.Ring]);	//261023 Recipes -> CubeRecipe
+					Config.CubeRecipe.push([Recipe.Caster.Boots, "wyrmhideboots"]);
+					Config.CubeRecipe.push([Recipe.Caster.Belt, "sharkskinbelt"]);
+					Config.CubeRecipe.push([Recipe.Caster.Amulet]);
+					Config.CubeRecipe.push([Recipe.Caster.Ring]);
 				}
 			}
 		},
 
 	25:	{
 			Update: function () {
-				Config.Dodge.Enabled = true;	//261002 18 -> 25
+				Config.Dodge.Enabled = true;
 			}
 		},
 

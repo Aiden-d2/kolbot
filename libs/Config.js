@@ -8,14 +8,14 @@ if (!isIncluded("Settings.js")) { include("Settings.js"); };
 if (!isIncluded("libs/Cubing.js")) { include("libs/Cubing.js"); };
 if (!isIncluded("libs/Prototypes.js")) { include("libs/Prototypes.js"); };
 if (!isIncluded("libs/Runewords.js")) { include("libs/Runewords.js"); };
-if (!isIncluded("libs/Misc.js")) { include("libs/Misc.js"); };	//260803
+if (!isIncluded("libs/Misc.js")) { include("libs/Misc.js"); };
 
 var Scripts = {
 	AutoSmurf: true
 };
 
 var Config = {
-	init: function (notify) {	//260803
+	init: function (notify) {
 		try {
 			var currentScript = getScript(true).name.toLowerCase();
 			if (Config.AutoBuild.Enabled === true) {
@@ -67,59 +67,59 @@ var Config = {
 	PickitFiles: ["X.nip", "Y.nip", "Z.nip", "V.nip", "T.nip"],
 	
 	//Pathing
-	OpenChests: 2,	//260928 2 = the full container list (what Attack.clear used to open). Opened by Pather on clearPath moves
-	UseKeys: false,	//260928 key handling (need check, buying, keeping) apart from OpenChests. Off: only assassins open locked chests
+	OpenChests: 2,	// 2 = the full container list. Opened by Pather on clearPath moves
+	UseKeys: false,	// key handling (need check, buying, keeping) apart from OpenChests. Off: only assassins open locked chests
 	ScanShrines: [1, 2, 3],
-	UseWells: true,	//260806
+	UseWells: true,
 	
 	DetourPath: 4,
 	
-	SafeTele: {	//261019
+	SafeTele: {
 		Enabled: false,
 		Range: 10,
-		Angle: 75,	//261022 60 -> 75 (back to the 10-03 value: compare the lag with the landing check moved after the monster count)
-		Step: 5,	//261022 7 -> 5
-		Min: 10,	//261022 7 -> 10
+		Angle: 75,
+		Step: 5,
+		Min: 10,
 		Skip: [62, 63, 64, 120, 132],	//120 Arreat Summit, 132 Worldstone Chamber: boss approach, no sidestep at nodes
 		Soul: false
 	},
 
 	Dodge: {
 		Enabled: false,
-		Range: 8,	//261008
-		Move: 13,	//261008
-		MinSkillRange: 10	//261008
+		Range: 8,
+		Move: 13,
+		MinSkillRange: 10
 	},
 	
 	//Gear
-	Gear: {1: "Helm", 2: "Amulet", 3: "Armor", 4: "ArmG", 5: "ArmB", 6: "RingG", 7: "RingB", 8: "Belt", 9: "Boots", 10: "Gloves"},  //260804	//261028 names: nip gear keys [helm] [armg] etc
+	Gear: {1: "Head", 2: "Neck", 3: "Body", 4: "ArmA", 5: "ArmB", 6: "RingA", 7: "RingB", 8: "Waist", 9: "Shoes", 10: "Hands"},	// names = nip gear keys ([head] [arma] etc)
 
 	Tiered: false,
 	
 	TierGoal: {
-		Helm: 0,	//261028 renamed
-		Amulet: 0,	//261028 renamed
-		Armor: 0,	//261028 renamed
-		ArmG: 0,	//261028 renamed
-		ArmB: 0,	//261028 renamed
-		RingG: 0,	//261028 renamed
-		RingB: 0,	//261028 renamed
-		Belt: 0,
-		Boots: 0,
-		Gloves: 0	//261028 renamed
+		Head: 0,
+		Neck: 0,
+		Body: 0,
+		ArmA: 0,
+		ArmB: 0,
+		RingA: 0,
+		RingB: 0,
+		Waist: 0,
+		Shoes: 0,
+		Hands: 0
 	},
 
 	TierNow: {
-		Helm: {tier: 0, str: 0, dex: 0},   //260804	//261028 renamed
-		Amulet: {tier: 0, str: 0, dex: 0},	//261028 renamed
-		Armor: {tier: 0, str: 0, dex: 0},	//261028 renamed
-		ArmG: {tier: 0, str: 0, dex: 0},	//261028 renamed
-		ArmB: {tier: 0, str: 0, dex: 0},	//261028 renamed
-		RingG: {tier: 0, str: 0, dex: 0},	//261028 renamed
-		RingB: {tier: 0, str: 0, dex: 0},	//261028 renamed
-		Belt: {tier: 0, str: 0, dex: 0},
-		Boots: {tier: 0, str: 0, dex: 0},
-		Gloves: {tier: 0, str: 0, dex: 0}	//261028 renamed
+		Head: {tier: 0, str: 0, dex: 0},
+		Neck: {tier: 0, str: 0, dex: 0},
+		Body: {tier: 0, str: 0, dex: 0},
+		ArmA: {tier: 0, str: 0, dex: 0},
+		ArmB: {tier: 0, str: 0, dex: 0},
+		RingA: {tier: 0, str: 0, dex: 0},
+		RingB: {tier: 0, str: 0, dex: 0},
+		Waist: {tier: 0, str: 0, dex: 0},
+		Shoes: {tier: 0, str: 0, dex: 0},
+		Hands: {tier: 0, str: 0, dex: 0}
 	},
 
 	//Merc
@@ -130,7 +130,7 @@ var Config = {
 	MercWatch: false,
 	MercChicken: 0,
 	
-	MercStat: {id: null, str: 0, dex: 0, lvl: 0},  //260804
+	MercStat: {id: null, str: 0, dex: 0, lvl: 0},
 	
 	MercSkill: "",
 										// "Fire Arrow": 7 (Act1)
@@ -147,9 +147,9 @@ var Config = {
 										// "Bash": 126 (Act5)
 	
 	TierMerc: {
-		Helm: {merc: 0, str: 0, dex: 0},   //260804	//261028 renamed
-		Armor: {merc: 0, str: 0, dex: 0},	//261028 renamed
-		ArmG: {merc: 0, str: 0, dex: 0}	//261028 renamed
+		Head: {merc: 0, str: 0, dex: 0},
+		Body: {merc: 0, str: 0, dex: 0},
+		ArmA: {merc: 0, str: 0, dex: 0}
 	},
 	
 	//Time
@@ -266,62 +266,62 @@ var Config = {
 	LogHighGems: false,
 	
 	//Socketing
-	Socketing: true,	//261023 new switch: Town.socketGems and socket gem pickup (Pickit.socketTargets)
+	Socketing: true,	// Town.socketGems and socket gem pickup (Pickit.socketTargets)
 	
-	SocketRecipe: {	//261023 SocketGems -> SocketRecipe, sapphire in Head/Body, Weapon order. gems for empty sockets of equipped tiered items: itemType (96-102) = any grade, classid (557-601) = that grade only. builds can override (e.g. Config.SocketRecipe.Head = [100])
-		Head: [100, 99],	//261023
-		Body: [100, 99],	//261023
-		Shield: [97],	//261023
-		Weapon: [101, 98, 99, 100]	//261023
+	SocketRecipe: {	// sapphire in Head/Body, Weapon order. gems for empty sockets of equipped tiered items: itemType (96-102) = any grade, classid (557-601) = that grade only. builds can override (e.g. Config.SocketRecipe.Head = [100])
+		Head: [100, 99],
+		Body: [100, 99],
+		Shield: [97],
+		Weapon: [101, 98, 99, 100]
 	},
 	
 	//Cubing
 	Cubing: false,
 	
-	CubeRecipe: [	//261023 Recipes -> CubeRecipe
+	CubeRecipe: [
 		[Recipe.Token],
 		
 		//[Recipe.Moser2],
 		
-		[Recipe.Punch.Weapon, "berserkeraxe"],	//261023 Recipe.Socket -> Recipe.Punch
-		[Recipe.Punch.Weapon, "ettinaxe"],	//261023
-		[Recipe.Punch.Weapon, "naga"],	//261023
+		[Recipe.Punch.Weapon, "berserkeraxe"],
+		[Recipe.Punch.Weapon, "ettinaxe"],
+		[Recipe.Punch.Weapon, "naga"],
 		
-		[Recipe.Punch.Weapon, "greatpoleaxe"],	//261023
-		[Recipe.Punch.Weapon, "crypticaxe"],	//261023
-		[Recipe.Punch.Weapon, "giantthresher"],	//261023
-		[Recipe.Punch.Weapon, "thresher"],	//261023
+		[Recipe.Punch.Weapon, "greatpoleaxe"],
+		[Recipe.Punch.Weapon, "crypticaxe"],
+		[Recipe.Punch.Weapon, "giantthresher"],
+		[Recipe.Punch.Weapon, "thresher"],
 		
-		[Recipe.Punch.Weapon, "archonstaff"],	//261023
-		[Recipe.Punch.Weapon, "shillelagh"],	//261023
-		[Recipe.Punch.Weapon, "elderstaff"],	//261023
+		[Recipe.Punch.Weapon, "archonstaff"],
+		[Recipe.Punch.Weapon, "shillelagh"],
+		[Recipe.Punch.Weapon, "elderstaff"],
 		
-		[Recipe.Punch.Weapon, "becdecorbin"],	//261023
-		[Recipe.Punch.Weapon, "partizan"],	//261023
-		[Recipe.Punch.Weapon, "bill"],	//261023
-		[Recipe.Punch.Weapon, "battlescythe"],	//261023
+		[Recipe.Punch.Weapon, "becdecorbin"],
+		[Recipe.Punch.Weapon, "partizan"],
+		[Recipe.Punch.Weapon, "bill"],
+		[Recipe.Punch.Weapon, "battlescythe"],
 		
-		[Recipe.Punch.Weapon, "halberd"],	//261023
-		[Recipe.Punch.Weapon, "poleaxe"],	//261023
+		[Recipe.Punch.Weapon, "halberd"],
+		[Recipe.Punch.Weapon, "poleaxe"],
 		
-		[Recipe.Punch.Armor, "archonplate", Roll.Eth],	//261023
-		[Recipe.Punch.Armor, "sacredarmor", Roll.Eth],	//261023
+		[Recipe.Punch.Armor, "archonplate", Roll.Eth],
+		[Recipe.Punch.Armor, "sacredarmor", Roll.Eth],
 		
-		[Recipe.Punch.Shield, "sacredtarge"],	//261023
-		[Recipe.Punch.Shield, "vortexshield"],	//261023
+		[Recipe.Punch.Shield, "sacredtarge"],
+		[Recipe.Punch.Shield, "vortexshield"],
 		
-		[Recipe.Punch.Shield, "akaranrondache"],	//261023
-		[Recipe.Punch.Shield, "akarantarge"],	//261023
-		[Recipe.Punch.Shield, "aerinshield"],	//261023
-		[Recipe.Punch.Shield, "heraldicshield"],	//261023
-		[Recipe.Punch.Shield, "rondache"],	//261023
-		[Recipe.Punch.Shield, "targe"],	//261023
+		[Recipe.Punch.Shield, "akaranrondache"],
+		[Recipe.Punch.Shield, "akarantarge"],
+		[Recipe.Punch.Shield, "aerinshield"],
+		[Recipe.Punch.Shield, "heraldicshield"],
+		[Recipe.Punch.Shield, "rondache"],
+		[Recipe.Punch.Shield, "targe"],
 		
-		[Recipe.Punch.Weapon, "crystalsword"],	//261023
-		[Recipe.Punch.Weapon, "broadsword"],	//261023
-		[Recipe.Punch.Weapon, "claymore"],	//261023
-		[Recipe.Punch.Weapon, "giantsword"],	//261023
-		[Recipe.Punch.Weapon, "phaseblade"],	//261023
+		[Recipe.Punch.Weapon, "crystalsword"],
+		[Recipe.Punch.Weapon, "broadsword"],
+		[Recipe.Punch.Weapon, "claymore"],
+		[Recipe.Punch.Weapon, "giantsword"],
+		[Recipe.Punch.Weapon, "phaseblade"],
 		
 		//[Recipe.Caster.Amulet],
 		//[Recipe.Caster.Ring],
@@ -338,9 +338,9 @@ var Config = {
 	],
 	
 	//Runewording
-	Runewording: true,	//261023 MakeRunewords -> Runewording
+	Runewording: true,
 	
-	RunewordRecipe: [	//261023 Runewords -> RunewordRecipe
+	RunewordRecipe: [
 		// Zephyr
 		[Runeword.Zephyr, "ceremonialbow"],
 		[Runeword.Zephyr, "ashwoodbow"],
@@ -412,31 +412,31 @@ var Config = {
 		[Runeword.Edge, "hunter'sbow"],
 		
 		// Obedience
-		//[Runeword.Obedience, "greatpoleaxe"],	//261023 merc str too high
+		//[Runeword.Obedience, "greatpoleaxe"],	// merc str too high
 		[Runeword.Obedience, "crypticaxe"],
-		//[Runeword.Obedience, "giantthresher"],	//261023 merc str too high
+		//[Runeword.Obedience, "giantthresher"],	// merc str too high
 		[Runeword.Obedience, "thresher"],
 		
 		// Insight
-		//[Runeword.Insight, "greatpoleaxe"],	//261023 merc str too high
+		//[Runeword.Insight, "greatpoleaxe"],	// merc str too high
 		[Runeword.Insight, "crypticaxe"],
-		//[Runeword.Insight, "giantthresher"],	//261023 merc str too high
+		//[Runeword.Insight, "giantthresher"],	// merc str too high
 		[Runeword.Insight, "thresher"],
 		
 		[Runeword.Insight, "archonstaff"],
 		[Runeword.Insight, "shillelagh"],		
 		[Runeword.Insight, "elderstaff"],
 		
-		//[Runeword.Insight, "becdecorbin"],	//261023 elite thresher/cryptic only
-		//[Runeword.Insight, "partizan"],	//261023 elite thresher/cryptic only
-		//[Runeword.Insight, "bill"],	//261023 elite thresher/cryptic only
-		//[Runeword.Insight, "battlescythe"],	//261023 elite thresher/cryptic only
+		//[Runeword.Insight, "becdecorbin"],	// elite thresher/cryptic only
+		//[Runeword.Insight, "partizan"],	// elite thresher/cryptic only
+		//[Runeword.Insight, "bill"],	// elite thresher/cryptic only
+		//[Runeword.Insight, "battlescythe"],	// elite thresher/cryptic only
 		
-		//[Runeword.Insight, "halberd"],	//261023 elite thresher/cryptic only
-		//[Runeword.Insight, "poleaxe"],	//261023 elite thresher/cryptic only
+		//[Runeword.Insight, "halberd"],	// elite thresher/cryptic only
+		//[Runeword.Insight, "poleaxe"],	// elite thresher/cryptic only
 		
 		// Enigma
-		//[Runeword.Enigma, "breastplate"],	//261023 Enigma off
+		//[Runeword.Enigma, "breastplate"],	// Enigma off
 		
 		// Smoke
 		//[Runeword.Smoke, "archonplate"],
@@ -538,13 +538,13 @@ var Config = {
 
 	//Sorceress
 	UseTelekinesis: false,
-	CastStatic: false,		// true = Static Field before the attack skills (any build that has it), false = off	//261029 switch only
-	StaticHP: [25, 33, 50],		// stop at this hp % on other monsters [normal, nightmare, hell]	//261029
-	StaticBossHP: [10, 33, 50],	// stop at this hp % on bosses (spectype & 0x7, the AttackSkill boss slot) [normal, nightmare, hell]	//261029
-	StaticList: [],			// names or classids; empty = every monster	//261029
-	Enchant: {	//261019
+	CastStatic: false,		// true = Static Field before the attack skills (any build that has it), false = off
+	StaticHP: [25, 33, 50],		// stop at this hp % on other monsters [normal, nightmare, hell]
+	StaticBossHP: [10, 33, 50],	// stop at this hp % on bosses (spectype & 0x7, the AttackSkill boss slot) [normal, nightmare, hell]
+	StaticList: [],			// names or classids; empty = every monster
+	Enchant: {
 		Enabled: false,
-		Player: [],			// build names (Settings.js), ex. ["M.HYBR"]	//261028 was class ids
+		Player: [],			// build names (Settings.js), ex. ["M.HYBR"]
 		Merc: [],			// 271=act1, 338=act2, 561=act5
 		Pet: [],
 							// 289=claygolem, 290=bloodgolem, 291=irongolem, 292=firegolem
