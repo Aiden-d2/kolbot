@@ -24,8 +24,8 @@
 		S.COLD - Soceress / Blizzard + Glacial Spike
 		S.ENCH - Soceress / Static Field + Fire Wall + Enchant
 		S.FIRE - Soceress / Fire Ball + Meteor + Static Field
-		S.NORB - Soceress / Frozen Orb + Nova
 		S.LTNG - Soceress / Chain Lightning + Lightning
+		S.NORB - Soceress / Frozen Orb + Nova
 */
 
 var prefix = "a";
