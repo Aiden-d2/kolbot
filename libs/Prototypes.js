@@ -136,9 +136,9 @@ Unit.prototype.openMenu = function (addDelay) {
 		}
 
 		sendPacket(1, 0x2f, 4, 1, 4, this.gid);
-		delay(me.ping * 2 + 100);	//261102 +100: me.ping 0 made it delay(0)
+		delay(me.ping * 2);
 		sendPacket(1, 0x30, 4, 1, 4, this.gid);
-		delay(me.ping * 2 + 100);	//261102 +100: me.ping 0 made it delay(0)
+		delay(me.ping * 2);
 		Packet.flash(me.gid);
 	}
 
