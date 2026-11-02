@@ -544,7 +544,7 @@ var Config = {
 	StaticList: [],			// names or classids; empty = every monster
 	Enchant: {
 		Enabled: false,
-		Player: [],			// build names (Settings.js), ex. ["M.HYBR"]
+		Player: [],			// build names (Settings.js), ex. ["M.BOWF"]
 		Merc: [],			// 271=act1, 338=act2, 561=act5
 		Pet: [],
 							// 289=claygolem, 290=bloodgolem, 291=irongolem, 292=firegolem

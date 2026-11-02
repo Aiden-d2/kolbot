@@ -45,7 +45,7 @@ var Build = {
 	getBuildType: function (profile) {	//261028 profile: another profile's build (Precast.enchant), default me.profile
 		switch (profile || me.profile) {	//261007	//261028
 		case profiles[0]:	//profile name
-			return "S.FIRE";	//build type
+			return "S.ENCH";	//build type
 			
 		case profiles[1]:
 			return "S.COLD";
