@@ -56,6 +56,11 @@
 ### 261029 Claude: takeOff trace 삭제 (사용자 요청)
 - 검증 통과(옛 handoff 3-32)로 `[Runeword]/[Cube] takeOff …` trace 삭제. 그 줄에서만 쓰던 `Misc.takeOff`의 지역 변수 `name`·인자 `tag`도 지우고, 호출 2곳(`Runewords.makeRunewords`·`Cubing.doCubing`)의 셋째 인자를 뺌. 동작 같음.
 
+## Misc.where
+
+### 261102 사용자: 주석의 `CLAUDE.md` 언급 삭제
+- 설명 주석 `(CLAUDE.md log rules)` → `(log rules)`. 코드 변경 없음.
+
 ## Packet.openMenu
 
 ### 261001 Claude: 대사 중이면 스페이스로 넘김 (유형 B 크래시)

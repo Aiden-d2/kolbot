@@ -30,6 +30,10 @@
 - M.BOWF(활 줄), 유니크·룬워드 무기 줄, 재료 줄은 이름 그대로.
 - 확인: 파서(node, `NTIP.OpenFile`)로 수정 전후 nip 18개 — 오류 0, 규칙 1869개 같음, 읽힌 결과 차이는 A.TRAP 25줄의 타입 순서뿐.
 
+261102 사용자: 기어 칸 이름 (`Config.md` Gear):
+- 기어 조건 키 `[armor]` → `[body]`, `[armg]` → `[arma]`, `[mercarmg]` → `[mercarma]`. `[armb]`는 이름 그대로. 빌드 nip 13개와 V.nip, 꺼 둔 규칙 포함 219곳(`[arma]` 90, `[armb]` 63, `[body]` 62, `[mercarma]` 4). 다른 칸 키는 nip에서 쓰는 곳 없음.
+- 아이템 분류 설명 줄(`// [Helm] …`, `// [Armor] …` 등)은 그대로 둠(사용자 결정 261102).
+
 ## A.TRAP.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
