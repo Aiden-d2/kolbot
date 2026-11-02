@@ -1,0 +1,79 @@
+//############################################################################################################################################################################################
+// [Merc]
+//############################################################################################################################################################################################
+
+//============================================================================================================================================================================================
+// [Helm] 40Fresi 30resi // 40life 10/15ener
+//============================================================================================================================================================================================
+
+[type] == helm && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 10 # [merc] == 1
+[type] == helm && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [merc] == 2
+[type] == helm && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 30 # [merc] == 3
+[type] == helm && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [merc] == 4
+[type] == helm && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 50 # [merc] == 5
+[type] == helm && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [merc] == 6
+[type] == helm && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 70 # [merc] == 7
+[type] == helm && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [merc] == 8
+[type] == helm && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 90 # [merc] == 9
+
+[name] == tiara && [quality] == unique # # [merc] == 11
+[name] == grandcrown && [quality] == unique # # [merc] == 11
+[name] == grimhelm && [quality] == unique # # [merc] == 11
+[name] == deathmask && [quality] == set # # [merc] == 11
+
+
+//============================================================================================================================================================================================
+// [Armor] 40mana 30resi // 60/100life
+//============================================================================================================================================================================================
+
+[type] == armor && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 20 # [merc] == 1
+[type] == armor && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 40 # [merc] == 2
+[type] == armor && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 60 # [merc] == 3
+[type] == armor && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 80 # [merc] == 4
+[type] == armor && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 100 # [merc] == 5
+[type] == armor && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 120 # [merc] == 6
+[type] == armor && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 140 # [merc] == 7
+[type] == armor && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 160 # [merc] == 8
+[type] == armor && [quality] >= normal # [strength]+[dexterity]+[lifeleech]+[fhr]+[ias]+[itemdeadlystrike]+[itemopenwounds]+[defense]/50+([itemallskills]+[itemcannotbefrozen])*20+([itemcrushingblow]+[damageresist])*2+[maxhp]+[vitality]*1.2+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 180 # [merc] == 9
+
+[type] == armor && [flag] == runeword # [fireresist] == 50 # [merc] == 11
+[name] == cuirass && [quality] == unique # # [merc] == 11
+[name] == mesharmor && [quality] == unique # # [merc] == 11
+[name] == hellforgeplate && [quality] == set # # [merc] == 11
+
+
+//============================================================================================================================================================================================
+// [Weapon] 200/300damage 300/450tohit fools 2skill 2/3tap // 20min 20/63max 75fd 50cd 120ld 100pd 9ll 9ml
+//============================================================================================================================================================================================
+// [spear]=33 // [polearm]=34
+//============================================================================================================================================================================================
+// [strength]=0 // [enhanceddamage]=18 // [mindamage]=21 // [maxdamage]=22 // [secondarymindamage]=23 // [secondarymaxdamage]=24
+// [firemindam]=48 // [firemaxdam]=49 // [lightmindam]=50 // [lightmaxdam]=51 // [coldmindam]=54 // [coldmaxdam]=55
+// [itemtohitperlevel]=224(16.5=33)
+// [itemignoretargetac]=115(1) // [itemfractionaltargetac]=116(+) // [itempreventheal]=117(?)
+// [itemopenwounds]=135 // [itemcrushingblow]=136 // [itemdeadlystrike]=141
+// [lifeleech]=60 // [ias]=93 // [fhr]=99
+// [fireresist]=39 // [lightresist]=41 // [coldresist]=43 // [poisonresist]=45
+// [itemallskills]=127
+//============================================================================================================================================================================================
+
+([type] == spear || [type] == polearm) && [quality] >= normal # [21]+[22]+[23]+[24]+[0]+([48]+[49]+[50]+[51])/4+([54]+[55])/2+[224]/33*50+[115]*30+[116]+[117]*10+[135]+[136]*2+[141]+[60]*3+[93]+[99]+([39]+[41]+[43]+[45])/2+[127]*20 >= 200 # [merc] == 1
+([type] == spear || [type] == polearm) && [quality] >= normal # [21]+[22]+[23]+[24]+[0]+([48]+[49]+[50]+[51])/4+([54]+[55])/2+[224]/33*50+[115]*30+[116]+[117]*10+[135]+[136]*2+[141]+[60]*3+[93]+[99]+([39]+[41]+[43]+[45])/2+[127]*20 >= 400 # [merc] == 2
+([type] == spear || [type] == polearm) && [quality] >= normal # [21]+[22]+[23]+[24]+[0]+([48]+[49]+[50]+[51])/4+([54]+[55])/2+[224]/33*50+[115]*30+[116]+[117]*10+[135]+[136]*2+[141]+[60]*3+[93]+[99]+([39]+[41]+[43]+[45])/2+[127]*20 >= 600 # [merc] == 3
+([type] == spear || [type] == polearm) && [quality] >= normal # [21]+[22]+[23]+[24]+[0]+([48]+[49]+[50]+[51])/4+([54]+[55])/2+[224]/33*50+[115]*30+[116]+[117]*10+[135]+[136]*2+[141]+[60]*3+[93]+[99]+([39]+[41]+[43]+[45])/2+[127]*20 >= 800 # [merc] == 4
+([type] == spear || [type] == polearm) && [quality] >= normal # [21]+[22]+[23]+[24]+[0]+([48]+[49]+[50]+[51])/4+([54]+[55])/2+[224]/33*50+[115]*30+[116]+[117]*10+[135]+[136]*2+[141]+[60]*3+[93]+[99]+([39]+[41]+[43]+[45])/2+[127]*20 >= 1000 # [merc] == 5
+
+[type] == polearm && [flag] == runeword # # [merc] == 11
+[type] == polearm && [flag] == runeword && [flag] == ethereal # # [merc] == 12
+
+
+//============================================================================================================================================================================================
+// [Runewording]
+//============================================================================================================================================================================================
+
+// [Obedience & Insight]
+([name] == thresher || [name] == crypticaxe) && [quality] == normal && [level] >= 26 # [sockets] == 0 @ ([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) # ([sockets] == 0 || [sockets] == 4 || [sockets] == 5)	//261023 thresher/cryptic only, keep qty -> hold	//261028 hold [qty] < 1 out (default)
+([name] == thresher || [name] == crypticaxe) && [quality] == normal && [flag] == ethereal && [level] >= 26 # [sockets] == 0 @ ([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) && [flag] == ethereal # ([sockets] == 0 || [sockets] == 4 || [sockets] == 5)	//261023 thresher/cryptic only, keep qty -> hold	//261028 hold [qty] < 1 out (default)
+
+([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) # ([sockets] == 4 || [sockets] == 5) @ ([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) # ([sockets] == 4 || [sockets] == 5)	//261023 thresher/cryptic only, keep qty -> hold	//261028 hold [qty] < 1 out (default)
+([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) && [flag] == ethereal # ([sockets] == 4 || [sockets] == 5) @ ([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) && [flag] == ethereal # ([sockets] == 4 || [sockets] == 5)	//261023 thresher/cryptic only, keep qty -> hold	//261028 hold [qty] < 1 out (default)
