@@ -9,6 +9,15 @@
 ### 261030 사용자: `Config.PublicMode` 삭제
 - 1레벨 Update의 `if (me.profile === Team.Leader) { Config.PublicMode = 3; }` 블록 삭제(빌드당 4줄, 뒤 빈 줄 포함). 읽는 곳이 없었다(`Config.md` PublicMode). 동작은 바꾸지 않음.
 
+## A.TRAP.js · B.WCRY.js · D.FGOM.js · D.WIND.js · M.BOWF.js · N.SUMM.js · P.AURA.js · P.HAMM.js · S.COLD.js · S.ENCH.js · S.FIRE.js · S.LTNG.js · S.NORB.js (13개 공통)
+
+### 261102 사용자: 기어 칸 이름 (`Head Neck Body ArmA ArmB RingA RingB Waist Shoes Hands`)
+- 1레벨 Update의 `Config.TierGoal.<칸>` 10줄을 새 칸 이름으로(`Config.md` Gear). 주석으로 꺼 둔 M.BOWF `ArmB` 포함. 숫자는 바꾸지 않음.
+
+### 261102 사용자: 날짜 표기·이력 주석 삭제
+- 줄 끝의 날짜 표기와 이력 메모(`renamed`, `Recipes -> CubeRecipe`, `Runewords -> RunewordRecipe`, `18 -> 25`, `Config.` 등)를 지움. S.ENCH `// Fire Wall + Telekinesis` 같은 설명은 남김. 값은 바꾸지 않음.
+- 빌드 파일은 수정한 줄에 날짜 표기를 달지 않음(사용자 결정 261102).
+
 ## S.FIRE.js
 
 ### 261029 사용자·Claude: 스태틱 필드 로직 통합 (`0b06f24`·`63f59af`, PR #122·#124, 옛 handoff 3-52)

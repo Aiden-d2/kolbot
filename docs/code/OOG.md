@@ -15,3 +15,6 @@
 ### 261001 Claude: 게임 밖 로그 (게임 밖 흐름)
 - `OOGLog.print`/`OOGLog.stop`이 콘솔(회색, `사건: 대상 - 처리 (loc N)`)과 같은 줄을 trace에 남긴다. `Misc.trace`는 게임 밖이면 `[OOG loc N]`.
 - 확인: 261006 로그 통과.
+
+### 261102 사용자: 주석의 `CLAUDE.md` 언급 삭제
+- 설명 주석 `(CLAUDE.md log rules, 261001)` → `(log rules, 261001)`. 코드 변경 없음.

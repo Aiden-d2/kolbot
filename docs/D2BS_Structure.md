@@ -1041,7 +1041,7 @@ Pickit.checkItem(unit)
 | 게이트 | 내용 |
 |---|---|
 | tiered | 끝 칸 `[tiered]` 표시가 있으면 `Config.Tiered`(게임 시작 때 전 칸 `TierGoal` 도달)일 때만 통과 |
-| 기어 조건 | 끝 칸 `[armg] < 31`·`[armb] < goal` 등: `Config.TierNow`(착용 때마다 갱신)를 숫자나 `Config.TierGoal`과 비교, 용병 칸은 `Config.TierMerc` |
+| 기어 조건 | 끝 칸 `[arma] < 31`·`[armb] < goal` 등: `Config.TierNow`(착용 때마다 갱신)를 숫자나 `Config.TierGoal`과 비교, 용병 칸은 `Config.TierMerc` |
 | 속성 | `[name] [type] [quality] [flag]` 등 속성 조건 평가 |
 | 미감정 | 스탯 조건이 있는데 미감정이면 즉시 `result -1` |
 | 스탯 | 스탯 조건 평가 |
@@ -1080,7 +1080,7 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 | `NoSkipArea` `DetourPath` | `Attack.clear` / `setPosition`, `Paladin.getHammerPosition` |
 | `SafeTele{Enabled Range Angle Step Min Skip}` (261001 Count 삭제) | `Pather.moveTo`의 `safeCheckNode` |
 | `Dodge{Enabled Range MinSkillRange}` | `Attack.setPosition`. `Enabled`는 `AutoSmurf.duriel` 안(탈라샤 무덤 오리피스 박스 정리 동안)에서 잠시 끄고 다시 켬. 포탈 집결 직후 붙은 몹부터 정리하려는 것 (260930 HP·Step·Max·Count 삭제). 261002: War Cry·Shock Wave·Armageddon은 직업 파일 게이트로 회피 없음 |
-| `Gear` `Tiered` `TierGoal` `TierNow` | `NTIP.EvaluateItem` / `GetScore`, `Equip` 계열, `AutoSmurf.preparation`(`Tiered`). 칸 이름 `Helm Amulet Armor ArmG ArmB RingG RingB Belt Boots Gloves`(261028, `TieredGear` 삭제) |
+| `Gear` `Tiered` `TierGoal` `TierNow` | `NTIP.EvaluateItem` / `GetScore`, `Equip` 계열, `AutoSmurf.preparation`(`Tiered`). 칸 이름 `Head Neck Body ArmA ArmB RingA RingB Waist Shoes Hands`(261102, 261028 `TieredGear` 삭제) |
 | `TierMerc` `MercStat` | `NTIP` merc 게이트·`GetScore`, `Grant`, `ToolsThread` |
 | `MercSkill` | `AutoSmurf` → `Merc.hire` |
 | `UseMerc` `UseMercHP` `UseMercRejuv` `MercChicken` | `ToolsThread`, `Town`, `NTIP` merc 게이트, `AutoSmurf.preparation`(설정) |

@@ -25,6 +25,9 @@
 ### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
 - 인자 `tieredNegate` 삭제. `[tiered]` 줄이면 ` / (Tiered)`. 기어 조건 표시는 새 칸 이름(` / (ArmG<goal)`).
 
+### 261102 사용자: 기어 칸 이름 (`Config.md` Gear)
+- 코드 변경 없음. 기어 조건 표시는 새 칸 이름(` / (ArmA<41)`, 용병 `(MercArmA<21)`). 주석 예시를 새 이름으로.
+
 ## IsSyntaxInt
 
 ### 261028 사용자: 파서 읽기 통일·문법 검사, 홀드 `[owned]`, 기어 칸 이름·`goal`, `[tiered]` 표시 (handoff 3-39)
@@ -68,3 +71,6 @@
 - 홀드 키: `[owned]`만, `< <= > >= ==` 정수 → `Owned: "<1"` 모양. 없으면 `< 1`(홀드 조건에 맞는 아이템을 1개 이상 가지면 건너뜀). 홀드에 다른 키(`[qty]` 포함)는 오류.
 - 같은 키가 두 번 나오면: 값 키(`[tier]`·`[merc]`·`[qty]`·`[tiered]`·`[owned]`)는 뒤 값이 덮어쓰는 실수라 `Duplicate rule key`를 `Misc.errorReport`로 표시(줄은 남김). 기어 키는 조건이 모두 `&&`로 적용되어 범위(`[armg] > 10 && [armg] < 31`)로 쓸 수 있으므로 trace `NTIP: duplicate gear key [키]`만 남김(`a599048`).
 - tier·merc 줄의 기어 조건은 기존처럼 빼고 trace `NTIP: gear tier ignored on tier/merc line`.
+
+### 261102 사용자: 기어 칸 이름 (`Config.md` Gear)
+- 코드 변경 없음(칸 키를 `Config.TierNow`·`Config.TierMerc` 키의 소문자로 찾음). 기어 조건 키는 `[head] [neck] [body] [arma] [armb] [ringa] [ringb] [waist] [shoes] [hands]`, 용병 `[merchead] [mercbody] [mercarma]`. 옛 키는 `Unknown rule` 오류. 주석 예시를 새 이름으로.
