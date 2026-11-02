@@ -272,7 +272,7 @@ var Config = {
 		Head: [100, 99],
 		Body: [100, 99],
 		Shield: [97],
-		Weapon: [101, 98, 99, 100]
+		Weapon: [96, 101, 98]
 	},
 	
 	//Cubing
