@@ -613,22 +613,25 @@ MainLoop:
 		}
 
 		while (getDistance(me.x, me.y, x, y) > minDist && !me.dead) {
-			if (me.inTown && me.classid === 3 && Config.Vigor && me.getSkill(115, 1)) {	//260915
-				Skill.setSkill(115, 0);
-			}
-			
-			//eom	//2 poison, 9 ampli, 60 decre, 61 LR, 45 cleansing, 48 medi
-			if (!me.inTown && me.classid === 3) {
-				if (Config.Conviction && me.getSkill(123, 1)) {	//260915
-					Skill.setSkill(123, 0);	//Conviction
-				} else if (me.getState(2) && me.getSkill(109, 1)) {
-					Skill.setSkill(109, 0);	//Cleansing
-				} else if (Config.Meditation && me.getSkill(120, 1)) {
-					Skill.setSkill(120, 0);	//Meditation
-				} else if (Config.Cleansing && me.getSkill(109, 1)) {
-					Skill.setSkill(109, 0);	//Cleansing
-				} else if (Config.Vigor && me.getSkill(115, 1)) {
-					Skill.setSkill(115, 0);	//Vigor
+			if (me.classid === 3) {	//261102
+				if (me.inTown) {
+					if (Config.Vigor && me.getSkill(115, 1)) {
+						Skill.setSkill(115, 0);
+					}
+				} else {	//2 poison, 9 ampli, 60 decre, 61 LR, 45 cleansing, 48 medi
+					if (me.getState(2) && me.getSkill(109, 1)) {
+						Skill.setSkill(109, 0);	//Cleansing
+					} else if (Config.Conviction && me.getSkill(123, 1)) {
+						Skill.setSkill(123, 0);	//Conviction
+					} else if (Config.Salvation && me.getSkill(125, 1)) {
+						Skill.setSkill(125, 0);	//Salvation
+					} else if (Config.Meditation && me.getSkill(120, 1)) {
+						Skill.setSkill(120, 0);	//Meditation
+					} else if (Config.Cleansing && me.getSkill(109, 1)) {
+						Skill.setSkill(109, 0);	//Cleansing
+					} else if (Config.Vigor && me.getSkill(115, 1)) {
+						Skill.setSkill(115, 0);	//Vigor
+					}
 				}
 			}
 			

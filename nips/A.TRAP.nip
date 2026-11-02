@@ -134,7 +134,6 @@
 ([type] == wand || [type] == handtohand || [type] == assassinclaw) && [quality] >= normal # [itemallskills]*60+[assassinskills]*60+[trapsskilltab]*35+[shadowdisciplinesskilltab]*25+[skilllightningsentry]*20+[skillshockweb]*15+[skillfade]*15+[skillshadowwarrior]*10+[maxhp]+[maxmana]*0.5+[vitality]*1.2+[energy]*0.7+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 200 # [tier] == 30
 
 [type] == sword && [flag] == runeword # [fhr] == 55 # [tier] == 31
-[type] == sword && [flag] == runeword # [fhr] == 55 && [maxmana] >= 100 # [tier] == 32
 
 [name] == flail && [flag] == runeword # [FCR] >= 40 # [tier] == 41
 

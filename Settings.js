@@ -17,16 +17,15 @@
 		B.WCRY - Barbarian / War Cry
 		D.FGOM - Druid / Werebear + Armageddon + Shock Wave
 		D.WIND - Druid / Hurricane + Tornado
-		M.HYBR - Amazon / Freezing Arrow
+		M.BOWF - Amazon / Freezing Arrow
 		N.SUMM - Necromancer / Summoning + Lower Resist + Corpse Explosion
-		P.CONC - Paladin / Blessed Hammer + Concentration
-		P.CONV - Paladin / Blessed Hammer + Conviction
-		P.FIST - Paladin / Fist Of The Heavens + Conviction
+		P.AURA - Paladin / Blessed Hammer + Concentration + Conviction
+		P.HAMM - Paladin / Blessed Hammer + Concentration (for only Paladin party)
 		S.COLD - Soceress / Blizzard + Glacial Spike
-		S.FIRE - Soceress / Fire Ball + Meteor
-		S.FONV - Soceress / Frozen Orb + Nova
+		S.ENCH - Soceress / Static Field + Fire Wall + Enchant
+		S.FIRE - Soceress / Fire Ball + Meteor + Static Field
+		S.NORB - Soceress / Frozen Orb + Nova
 		S.LTNG - Soceress / Chain Lightning + Lightning
-		S.SFFW - Soceress / Static Field + Fire Wall + Enchant
 */
 
 var prefix = "a";
@@ -46,7 +45,7 @@ var Build = {
 	getBuildType: function (profile) {	//261028 profile: another profile's build (Precast.enchant), default me.profile
 		switch (profile || me.profile) {	//261007	//261028
 		case profiles[0]:	//profile name
-			return "S.SFFW";	//build type
+			return "S.FIRE";	//build type
 			
 		case profiles[1]:
 			return "S.COLD";
@@ -55,10 +54,10 @@ var Build = {
 			return "A.TRAP";
 			
 		case profiles[3]:
-			return "P.CONC";
+			return "P.AURA";
 			
 		case profiles[4]:
-			return "M.HYBR";
+			return "M.NORB";
 			
 		case profiles[5]:
 			return "D.FGOM";

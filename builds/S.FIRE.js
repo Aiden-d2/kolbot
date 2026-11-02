@@ -28,7 +28,6 @@ var AutoBuildTemplate = {
 		
 		Skills: [
 			{id: 58, target: 1, from: 43},	// Energy Shield
-			//{id: 42, target: 1},			// Static Field
 			{id: 43, target: 1},			// Telekinesis
 			{id: 45, target: 1},			// Ice Blast
 			{id: 50, target: 1},			// Shiver Armor
@@ -37,13 +36,14 @@ var AutoBuildTemplate = {
 			{id: 40, target: 1},			// Frozen Armor
 			{id: 37, target: 1},			// Warmth
 			{id: 39, target: 1},			// Ice Bolt
+			{id: 42, target: 1, from: 18},	// Static Field
 			{id: 61, target: 1},			// Fire Mastery
 			{id: 47, target: 20},			// Fire Ball
 			{id: 56, target: 20},			// Meteor
+			{id: 61, target: 7},			// Fire Mastery
+			{id: 42, target: 16, from: 50},	// Static Field
 			{id: 61, target: 20, from: 50},	// Fire Mastery
 			{id: 36, target: 20, from: 50},	// Fire Bolt
-			{id: 43, target: 17, from: 50},	// Telekinesis
-			//{id: 58, target: 8, from: 50},	// Energy Shield
 		]
 	},
 
@@ -130,10 +130,10 @@ var AutoBuildTemplate = {
 				Config.LowManaSkill = [-1, -1];
 				Config.PacketCasting = 1;									// 0 = disable, 1 = packet teleport, 2 = full packet casting.
 				
-				//Config.CastStatic = true;
+				Config.CastStatic = true;
 				//Config.StaticHP = [25, 33, 50];	//261030 Config.
 				//Config.StaticBossHP = [10, 33, 50];	//261030 Config.
-				//Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];
+				Config.StaticList = ["Andariel", "Duriel", "Mephisto", "Izual", "Diablo", "Baal"];
 			}
 		},
 
@@ -159,16 +159,16 @@ var AutoBuildTemplate = {
 
 	46:	{
 			Update: function () {
-				//Config.CastStatic = true;
-				//Config.StaticHP = [25, 33, 50];	//261030 Config.
-				//Config.StaticBossHP = [10, 33, 50];	//261030 Config.
-				//Config.StaticList = [];
+				Config.AttackSkill = [-1, 56, 47, 56, 47, -1, 43];			// Meteor + Fire Ball
 			}
 		},
 
-	50:	{
+	71:	{
 			Update: function () {
-				Config.AttackSkill = [-1, 56, 47, 56, 47, -1, 43];			// Meteor + Fire Ball
+				//Config.CastStatic = true;
+				//Config.StaticHP = [25, 33, 50];	//261030 Config.
+				//Config.StaticBossHP = [10, 33, 50];	//261030 Config.
+				Config.StaticList = [];
 			}
 		}
 };

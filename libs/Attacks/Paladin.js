@@ -75,7 +75,7 @@ var ClassAttack = {
 		Misc.unShift();
 		Precast.doPrecast(false);
 
-		if (Config.Redemption instanceof Array && (me.hp * 100 / me.hpmax < Config.Redemption[0] || me.mp * 100 / me.mpmax < Config.Redemption[1]) && Skill.setSkill(124, 0)) {
+		if (me.getSkill(124, 1) && Config.Redemption instanceof Array && (me.hp * 100 / me.hpmax < Config.Redemption[0] || me.mp * 100 / me.mpmax < Config.Redemption[1]) && Skill.setSkill(124, 0)) {	//261102
 			delay(1500);
 		}
 	},

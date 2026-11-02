@@ -405,7 +405,11 @@ var Config = {
 		[Runeword.Edge, "razorbow"],
 		[Runeword.Edge, "edgebow"],
 		
-		[Runeword.Edge, "shortbow"],
+		[Runeword.Edge, "shortwarbow"],
+		[Runeword.Edge, "shortbattlebow"],
+		[Runeword.Edge, "compositebow"],
+		[Runeword.Edge, "longbow"],
+		[Runeword.Edge, "hunter'sbow"],
 		
 		// Obedience
 		//[Runeword.Obedience, "greatpoleaxe"],	//261023 merc str too high
@@ -565,9 +569,10 @@ var Config = {
 	//Paladin
 	Redemption: [0, 0],
 	Conviction: false,
-	Vigor: false,
-	Cleansing: false,
+	Salvation: false,
 	Meditation: false,
+	Cleansing: false,
+	Vigor: false,
 
 	//Barbarian
 	FindItem: false,

@@ -5845,10 +5845,12 @@ function AutoSmurf() {
 				break;
 			case 3: // Paladin
 				if (Config.AttackSkill[3] === 112) { // 112	Blessed Hammer
-					if (Config.Conviction && me.getSkill(123, 1)) {	//261016 matched to Pather logic
-						Skill.setSkill(123, 0);	//Conviction
-					} else if (me.getState(2) && me.getSkill(109, 1)) {
+					if (me.getState(2) && me.getSkill(109, 1)) {
 						Skill.setSkill(109, 0);	//Cleansing
+					} else if (Config.Conviction && me.getSkill(123, 1)) {
+						Skill.setSkill(123, 0);	//Conviction
+					} else if (Config.Salvation && me.getSkill(125, 1)) {
+						Skill.setSkill(125, 0);	//Salvation
 					} else if (Config.Meditation && me.getSkill(120, 1)) {
 						Skill.setSkill(120, 0);	//Meditation
 					} else if (Config.Cleansing && me.getSkill(109, 1)) {
