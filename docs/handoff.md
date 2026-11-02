@@ -149,3 +149,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **바꾼 것**(261102): `fail >= retry`로 멈추는 자리에 trace `[moveTo] retry N over -> x,y in 지역 dist:D`(새 변수 없음).
 - **검증 방법**: 줄이 찍힌 시각 뒤 같은 프로필의 `[Error]`·`[Quit]`·`X failed:` print·desync·30분 시간 초과를 이어 보고, 그 호출부 코드가 false를 받으면 throw하는지·반복이나 대기에 갇히는지 본다. 특정 호출 자리·지역에 몰리면 그 호출의 retry 값과 실패 처리를 검토한다. 흩어지기 이동(`moveTo(me.x, me.y, 3, …)`)에서도 찍힐 수 있다. 제거 조건: 한 사이클 리뷰를 마치면.
 
+
+### 3-62. nip 점수식 통일·무기 타입·줄 끝 주석 삭제 (`nips/*.nip`, 사용자 261102)
+- **바꾼 것**(261102, 내용은 `docs/code/nips.md` 261102): 빌드 nip 11개 헬름·목걸이를 X.nip 양식(순서·공통부)으로, 직업 전용 방어구 4종 공통부·`[fhr]/2`·`[fcr]/2`, 무기 12개 파일 타입(공통 8종 + 직업 전용)·양손 거르기(바바리안 `[mindamage] > 0`, 나머지 `[secondarymindamage] == 0`)·tier 11~30 `[fcr]/2`(A `[ias]/2`)·공통부, `[FCR]` → `[fcr]`, 규칙 줄 뒤 주석 삭제(T·Y·Z `[Runeword]` 제외), V.nip `[armg]` → `[mercarmg]`. 사용자 업로드(X·A.TRAP·M.BOWF·V 양식, 빌드 이름 변경)는 같은 묶음.
+- **검증 방법**: ① nip 로드 오류 0(ScriptErrorLog·회색 콘솔 `Error`·trace `[Error]`). ② tier 11~30 구간에서 양손무기를 끼지 않고 한손무기는 계속 바꿔 끼는지(print `equipped:`, 8프로필), 바바리안은 순수 양손무기를 끼지 않는지(`[mindamage] > 0` 전제 확인). ③ 공통부 변경으로 헬름·목걸이·직업 전용 방어구 tier가 이상하게 오르내리지 않는지(`equipped:` tier 값). ④ 용병 인사이트 베이스: 용병 무기 tier가 11(에테리얼 12) 미만일 때만 줍는지(ItemLog `(MercArmG<11)` 표시 줄).
