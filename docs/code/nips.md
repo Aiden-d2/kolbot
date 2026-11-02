@@ -34,6 +34,12 @@
 - 기어 조건 키 `[armor]` → `[body]`, `[armg]` → `[arma]`, `[mercarmg]` → `[mercarma]`. `[armb]`는 이름 그대로. 빌드 nip 13개와 V.nip, 꺼 둔 규칙 포함 219곳(`[arma]` 90, `[armb]` 63, `[body]` 62, `[mercarma]` 4). 다른 칸 키는 nip에서 쓰는 곳 없음.
 - 아이템 분류 설명 줄(`// [Helm] …`, `// [Armor] …` 등)은 그대로 둠(사용자 결정 261102).
 
+261102 사용자: 스피릿 베이스 0소켓 줄 노말만 (사용자 업로드 `8deaca1`):
+- 스피릿 베이스(crystalsword·broadsword) 0소켓 줄 본문의 품질 `([quality] == normal || [quality] == superior)` → `[quality] == normal`. 무기 소켓 큐빙 레시피 입력이 `weap,nor,nos`(mpqdata `cubemain.txt`)라 노말만 큐빙되고, `Cubing.js` 펀치 레시피 판정도 노말(`quality === 2`)·0소켓만 받는다.
+- 홀드(`@` 뒤)와 4소켓 줄의 `normal || superior`는 그대로(수페 4소켓도 스피릿 베이스).
+- 빌드 nip 12개 13줄: A.TRAP, B.WCRY(`[arma]`·`[armb]` 2줄), D.FGOM, D.WIND, N.SUMM, P.AURA, P.HAMM, S.COLD, S.ENCH, S.FIRE, S.LTNG, S.NORB 각 1줄.
+- 확인: diff 13줄이 모두 이 품질 조건만 바뀜, 본문에 superior가 남은 0소켓 줄 0개. 인게임 미확인.
+
 ## A.TRAP.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
