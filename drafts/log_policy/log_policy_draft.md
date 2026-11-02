@@ -141,12 +141,16 @@
 |---|---|
 | `[console]` print 한 벌(`OOG.js:38`) | 공유 파일로 대체 **[정함]** |
 | `ScriptErrorLog.txt` 쓰기(`Misc.errorReport`) | 파일에만 있는 것은 `Stack:` 한 줄뿐. 스택을 print로 옮기면 남길 이유 없음 |
-| AutoBuild `log`·`Verbose` print(`AutoBuild.js`) | 설정이 꺼져 있어(`Verbose`·`DebugMode` false) 안 쓰임. 스탯·스킬 결과가 필요하면 print 몇 줄로 대체 |
-| 측정기 `startMeter`·`runMeter`(`ToolsThread.js`, "260930 temp") | 임시 측정 |
-| 키 입력 디버그 콘솔(`ToolsThread.js:501`, `MapThread.js:841, 847`) | 좌표·거리 숫자만 콘솔로 감 |
-| `debugLog(me.profile)`(`D2BotLead.dbj:374`, `D2BotFollow.dbj:185`), `Misc.debugLog`(호출 0) | d2bs 로그에 프로필 이름 한 줄(`D2BS 19156: a1`)만 남김 |
-| 채팅 `say`(Starter 3곳) | 채널 설정이 비어 있어 안 쓰임. 로그가 아니라 기능이라 **[보류]** |
-| 매니저 아이템 탭(`Misc.logItem`) | 보시는지 확인 필요 **[보류]** |
+| `debugLog(me.profile)`(`D2BotLead.dbj:374`, `D2BotFollow.dbj:185`), `Misc.debugLog`(호출 0) | d2bs 로그에 프로필 이름 한 줄(`D2BS 19156: a1`, 추정)만 남김. 파일 이름에 프로필이 이미 있음 |
+| 채팅 `say`(Starter 3곳) | 안 쓰임 **[정함: 지움]** |
+
+남기는 것 **[정함]**
+
+- AutoBuild `log`·`Verbose` print: 오류·오작동을 볼 때 켜서 쓰는 진단 기능.
+- 측정기(숫자패드 5), 키 입력 디버그(숫자패드): 키를 눌러야만 동작, 보통 게임에는 안 찍힘. 새 정책에서는 콘솔 대신 print로 보낼지 형식 정리 때 본다.
+- 매니저 아이템 탭(`Misc.logItem` → `D2Bot.printToItemLog`): 사용자가 아이템을 그래픽으로 보는 주요 화면. `logItem` 9곳 모두 바로 옆에 같은 동작의 `itemLogger`가 있어(261102 확인) 분석은 `ItemLog.txt`로 한다.
+
+매니저 화면(콘솔 색, 아이템 탭 그래픽)은 사람이 보는 곳, 파일(`Console.txt`, `ItemLog.txt`, d2bs 로그)은 분석과 매니저가 꺼졌을 때의 기록이다 **[정함]**
 
 ---
 
