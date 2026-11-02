@@ -14,25 +14,53 @@
 - 바꾼 줄 끝에 `//261028` 메모.
 - 확인: 261029 로그 — nip 로드 오류·표시 줄 0(ScriptErrorLog·회색 콘솔), print `equipped:` 새 칸 이름만, ItemLog 기어 조건 표시 124줄(그중 100줄을 그 시각 착용 tier와 대조, 기준 이상이 된 뒤 줍기 0). `[tiered]`(ItemLog `(Tiered)` 0)·홀드 기본값은 사례를 확인하지 않음. 검증 통과(사용자 261029, 같은 헤더 항목 공통).
 
+261102 사용자·Claude: 빌드 이름 변경·점수식 통일·줄 끝 주석 삭제 (handoff 3-62):
+- 빌드 이름(사용자 업로드 `5e7e7e1`·`b7b65dd`): M.HYBR → M.BOWF, S.FONV → S.NORB, S.SFFW → S.ENCH, P.CONC → P.AURA, P.CONV·P.FIST → P.HAMM(새 빌드). 이 노트의 옛 이름 절은 옛 파일의 기록이다.
+- 기본 양식(X.nip, 사용자 업로드 `0c7de18`~`ad57938`): 점수식 순서 = 캐릭터 전용 옵션 → 클래스스킬부 → 올스킬 → 파트 전용 옵션 → 패스트 3종(`[frw]/2` → `[fhr]/2` → `[fcr]/2`) → 마나(`[itemmaxmanapercent]` → `[manarecoverybonus]/2`) → 공통부 `[maxhp]+[vitality]+[maxmana]+[energy]+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8`. 붙지 않는 옵션은 생략(아머는 `[itemmaxmanapercent]` 없음). A.TRAP·M.BOWF는 사용자가 이 양식으로 고친 샘플.
+- 공용 부위(헬름·목걸이) 클래스스킬부: `[직업스킬]*Y-[itemaddclassskills]*60+[스킬탭]*N-[itemaddskilltab]*30`. 하위 번호 없는 `[itemaddclassskills]`·`[itemaddskilltab]`은 어느 직업·스킬탭이든 처음 0이 아닌 값을 돌려주므로(`Prototypes.js` getStatEx 83·188) 다른 직업 스킬이 붙으면 음수가 된다. 직업 전용 아이템은 빼는 항 없이 순점수(헬름의 Y−60, N−30)를 가중치로 쓴다. M.BOWF 장갑은 다른 빌드가 쓰지 않는 스킬탭만 붙으므로 빼는 항 없음(사용자).
+- 빌드 nip 11개 헬름·목걸이: 위 순서로, 헬름 패스트 `frw → fhr → fcr`, 목걸이 `[fcr]/2` 추가·`[manarecoverybonus]*0.5` → `/2`, 공통부 X.nip 형식(가중치·기준값·tier 숫자는 그대로).
+- 직업 전용 방어구: 바바리안 헬름·펠트 `[fhr]` → `[fhr]/2`, 네크로맨서 머리 `[fcr]/2` 추가, 팔라딘 방패 `[itemdamagetomana]*0.5` → `/2`·`[fcr]/2` 추가, 공통부 X.nip 형식. 클래스스킬부는 그대로. 올스킬·헬름 부위 옵션은 붙지 않아 넣지 않음(사용자).
+- 무기(M.BOWF 제외, tier 1~5(B.WCRY 1~10)·11~30 같은 타입): 공통 8종(mace·knife·throwingknife·throwingaxe·javelin·axe·hammer·sword) + 직업 전용(A handtohand·assassinclaw, D club, N wand, P scepter, S orb, B 없음). `[name] == …`·`thrownweapon` 삭제. 양손 거르기 `# [secondarymindamage] == 0 && …`, 바바리안 `# [mindamage] > 0 && …`(순수 양손무기에서 21이 0인지는 인게임 미확인). `[flag] != ethereal`은 tier 1~5만. tier 1~5 점수식(스탯 번호)은 그대로. tier 11~30: A `[ias]/2`, 나머지 `[fcr]/2`를 맨 앞에, 클래스스킬부 그대로(소서리스 `-[itemaddskilltab]*30`은 스킬탭 뒤로), `[itemallskills]*X`, 공통부 X.nip 형식. 품질 하한은 그대로(B.WCRY·D.* `>= magic`).
+- `[FCR]` → `[fcr]`(flail 룬워드 줄).
+- nip 규칙 줄(꺼 둔 규칙 포함) 뒤 주석 삭제, 날짜 표기도 달지 않음(`CLAUDE.md` 3절 예외). T.nip·Y.nip 전체와 Z.nip `[Runeword]` 절은 둠.
+
 ## A.TRAP.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty] < 1` 삭제 1줄, 기어 키 이름 15줄, `[tiered]` 1줄.
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 무기 타입에서 wand·club·scepter 제외(tier 1~5·11~30 각 5·20줄), 클로 `[ias]` → `[ias]/2` 20줄, 줄 끝 주석 16줄.
 
 ## B.WCRY.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty] < 1` 삭제 2줄, 기어 키 이름 15줄, `[tiered]` 2줄.
 
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 바바리안 헬름 20줄, 무기 30줄(공통 8종, `[mindamage] > 0`), 줄 끝 주석 17줄.
+
 ## D.FGOM.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty] < 1` 삭제 1줄, 기어 키 이름 15줄, `[tiered]` 1줄.
 
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 펠트 20줄, 무기 25줄(club + 공통 8종), 줄 끝 주석 17줄.
+
 ## D.WIND.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty] < 1` 삭제 1줄, 기어 키 이름 15줄, `[tiered]` 1줄.
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 펠트 20줄, 무기 25줄(club + 공통 8종), 줄 끝 주석 18줄.
+
+## M.BOWF.nip
+
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 줄 끝 주석 20줄(점수식은 사용자 샘플 그대로).
 
 ## M.HYBR.nip
 
@@ -43,6 +71,21 @@
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty] < 1` 삭제 1줄, 기어 키 이름 15줄, `[tiered]` 1줄.
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 머리 20줄, 무기 25줄(wand + 공통 8종), `[FCR]` 1줄, 줄 끝 주석 17줄.
+
+## P.AURA.nip
+
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 방패 20줄, 무기 25줄(scepter + 공통 8종), 줄 끝 주석 18줄.
+
+## P.HAMM.nip
+
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 방패 20줄, 무기 25줄(scepter + 공통 8종), 줄 끝 주석 18줄.
 
 ## P.CONC.nip
 
@@ -64,10 +107,22 @@
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty] < 1` 삭제 1줄, 기어 키 이름 12줄, `[tiered]` 1줄.
 
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 무기 25줄(orb + 공통 8종), `[FCR]` 1줄, 줄 끝 주석 14줄.
+
+## S.ENCH.nip
+
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 무기 25줄(orb + 공통 8종), `[FCR]` 1줄, 줄 끝 주석 14줄.
+
 ## S.FIRE.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty] < 1` 삭제 1줄, 기어 키 이름 12줄, `[tiered]` 1줄.
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 무기 25줄(orb + 공통 8종), `[FCR]` 1줄, 줄 끝 주석 14줄.
 
 ## S.FONV.nip
 
@@ -79,6 +134,15 @@
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty] < 1` 삭제 1줄, 기어 키 이름 12줄, `[tiered]` 1줄.
 
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 무기 25줄(orb + 공통 8종), `[FCR]` 1줄, 줄 끝 주석 14줄.
+
+## S.NORB.nip
+
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 헬름·목걸이 40줄, 무기 25줄(orb + 공통 8종), `[FCR]` 1줄, 줄 끝 주석 14줄.
+
 ## S.SFFW.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
@@ -89,12 +153,21 @@
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty] < 1` 삭제 4줄.
 
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 인사이트·오비디언스 베이스 줄(사용자 업로드 `ad57938`, 홀드 → `[qty] == 1`·기어 조건)의 `[armg]`(플레이어 무기 칸) → `[mercarmg]`(용병 무기 칸) 4줄. `[qty]`·홀드 개수는 용병 아이템까지 센다(`NTItemParser` CheckQuantityOwned). 용병 헬름·아머 tier 9단계 → 5단계는 사용자 업로드(의도).
+
 ## X.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - 홀드 `[qty]` → `[owned]` 1줄.
 
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- 줄 끝 주석 1줄.
+
 ## Z.nip
 
 ### 261028 사용자: nip 문법 변경 (handoff 3-39)
 - `[tiered]` 16줄 (주석으로 꺼 둔 2줄 포함).
+
+### 261102 사용자·Claude: 점수식 통일·줄 끝 주석 삭제 (handoff 3-62)
+- `[Tiered]` 절 줄 끝 주석 16줄(꺼 둔 규칙 2줄 포함).
