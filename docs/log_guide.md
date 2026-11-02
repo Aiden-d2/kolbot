@@ -98,7 +98,7 @@
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
 - `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms(261024 `be4f0e2`부터 시전 중일 때만 최대 600ms, handoff 3-29), 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(`docs/code/Pather.md` useUnit 261022). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
-- `[useUnit] ok Nms iter:i type:t id: target:`(261030, Claude 추가, handoff 3-29) — useUnit이 지역을 넘어간 순간. N = 회차 0 접근 이동 뒤 클릭 앞 대기 직전부터 넘어간 순간까지, iter = 먹힌 클릭의 회차, type 5 계단 타일·2 오브젝트. 판정: 같은 출구(id)끼리 사이클 사이 분포 비교(timeout 수는 보지 않음). 제거 조건: 1초 재현 확인(handoff 3-29, 사용자 261101). 261031 1초·261101 200ms 결과는 `log_results.md`. 판정 팁: timeout 줄 바로 뒤 `ok … iter:0`은 늦게 먹힌 첫 클릭(옆 이동 중 넘어감), `iter:1` 이상은 다시 클릭해서 넘어감.
+- `[useUnit] ok Nms iter:i type:t id: target:`(261030~261102, Claude 추가, handoff 3-29, **261102 삭제**: 1초 확정) — useUnit이 지역을 넘어간 순간. N = 회차 0 접근 이동 뒤 클릭 앞 대기 직전부터 넘어간 순간까지, iter = 먹힌 클릭의 회차, type 5 계단 타일·2 오브젝트. 판정: 같은 출구(id)끼리 사이클 사이 분포 비교(timeout 수는 보지 않음). 제거 조건: 1초 재현 확인(handoff 3-29, 사용자 261101). 261031 1초·261101 200ms 결과는 `log_results.md`. 판정 팁: timeout 줄 바로 뒤 `ok … iter:0`은 늦게 먹힌 첫 클릭(옆 이동 중 넘어감), `iter:1` 이상은 다시 클릭해서 넘어감.
 - (261022 삭제) `[exit] 26 -> 27 type: exit:x,y dest:x,y` — H1(Monastery Gate 동선). 좌표는 `handoff.md` 1-2.
 - `[SafeTele] monsters N near M`(261021, Claude 추가) — 45 거르기로 빠진 몹 수. 제거 조건: 확인. **261023 `0f6da09` 삭제**.
 - `[Quit] moveToExit failed: A -> B`(261021~, 기본색 콘솔) — 옛 `clearToExit` 무한 재시도 대신 한 번 실패로 퇴장. 261022 `482171b`부터 `AutoSmurf.exitTo`(3회 실패)도 같은 줄, throw는 `[Error] AutoSmurf.exitTo: ...`로 먼저 찍힘. 거리 while 3회 실패 사유: `Arcane portal not reached`, `Cube chest not reached`, `Tomb chest not reached`, `Radament chest not reached`, `Orifice not reached`, `Red portal not reached`, `Duriel chamber not entered`(`docs/code/AutoSmurf.md` exitTo).
@@ -142,7 +142,10 @@
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
-| 3-29 | useUnit 클릭 뒤 대기 1초 재현(261101 1초로 되돌림, 200ms 실패) | 4-4 `[useUnit] ok` 분포를 261031(1초)과 비교. 참고 timeout 줄 수(261023 34, 261024 42, 261025 283, 261026 275, 261027 526, 261028 260, 261029 아시아 45, 261030 아시아 52, 261031 55, 261101 200ms 479) |
+| 3-55 | 용병 물약 상태 100이 없을 때만 주기(261102) | `[mercPot] gone: state100: mercHP:` 줄 사이 간격(약 7~10초에 모이는가, 1초 간격 연속이 있는가) |
+| 3-57 | 트라빈컬 portalReset 피겨린 게이트 | `[travincal] portalReset run\|skip q20:` — 피겨린 완료 게임 `skip`, 미완료 `run` |
+| 3-60 | 같은 id 계단 중 출구 좌표에 가까운 것(Jail Level 3, Underground Passage 1, Spider Forest, 쿠라스트 사원) | 4-4 `[useUnit] timeout`의 `unit:`이 도착 자리인 사례, `Area reversed`, `moveToExit failed` |
+| (사용자 261102) | `Pather.moveTo`가 실패로 끝난(false) 뒤 호출부가 오류를 던지거나 더 진행할 수 없는 상태가 된 사례 리뷰 | 결과 줄에서 거꾸로 찾는다: `[Error]`·`[Quit]`·`X failed:` print·desync·30분 시간 초과 직전의 이동 구간과 그 호출부 코드(false를 받으면 throw하는지, 반복·대기에 갇히는지). `moveTo` 자체는 경로 재계산이 retry에 닿으면 멈추고 목표 5칸 밖이면 false를 돌려줄 뿐 trace가 없다(머리 위 `move retry N`만) |
 | 3-53 | 피겨린 주운 사람 블록 건너뜀 | 4-6 `[openMenu] retry` — 건너뛴 사례의 주운 사람 Alkor 줄 |
 | 3-59 | MoveToSlot 인벤토리 밖 아이템 건드리지 않음 | 4-6 `[MoveToSlot] skip` 줄(`got:` 착용 여부), 실패 줄, 착용 장비가 빠지는 사례(`undefined FAILED … item:loc 1`, 다음 게임 `equipped: [칸] -1`) |
 
