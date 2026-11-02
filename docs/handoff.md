@@ -151,5 +151,5 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 
 
 ### 3-62. nip 점수식 통일·무기 타입·줄 끝 주석 삭제 (`nips/*.nip`, 사용자 261102)
-- **바꾼 것**(261102, 내용은 `docs/code/nips.md` 261102): 빌드 nip 11개 헬름·목걸이를 X.nip 양식(순서·공통부)으로, 직업 전용 방어구 4종 공통부·`[fhr]/2`·`[fcr]/2`, 무기 12개 파일 타입(공통 8종 + 직업 전용)·양손 거르기(바바리안 `[mindamage] > 0`, 나머지 `[secondarymindamage] == 0`)·tier 11~30 `[fcr]/2`(A `[ias]/2`)·공통부, `[FCR]` → `[fcr]`, 규칙 줄 뒤 주석 삭제(T·Y·Z `[Runeword]` 제외), V.nip `[armg]` → `[mercarmg]`. 사용자 업로드(X·A.TRAP·M.BOWF·V 양식, 빌드 이름 변경)는 같은 묶음.
+- **바꾼 것**(261102, 내용은 `docs/code/nips.md` 261102): 빌드 nip 11개 헬름·목걸이를 X.nip 양식(순서·공통부)으로, 직업 전용 방어구 4종 공통부·`[fhr]/2`·`[fcr]/2`, 무기 12개 파일 타입(공통 8종 + 직업 전용)·양손 거르기(바바리안 `[mindamage] > 0`, 나머지 `[secondarymindamage] == 0`)·tier 11~30 `[fcr]/2`(A `[ias]/2`)·공통부, `[FCR]` → `[fcr]`, 규칙 줄 뒤 주석 삭제(T·Y·Z `[Runeword]` 제외), V.nip `[armg]` → `[mercarmg]`. 사용자 업로드(X·A.TRAP·M.BOWF·V 양식, 빌드 이름 변경)는 같은 묶음. 이어서 무기 tier 줄 타입을 번호로·전용 무기를 앞으로, `[Weapon]` 설명 줄을 타입 번호로(파서 결과는 A.TRAP 타입 순서 외 같음).
 - **검증 방법**: ① nip 로드 오류 0(ScriptErrorLog·회색 콘솔 `Error`·trace `[Error]`). ② tier 11~30 구간에서 양손무기를 끼지 않고 한손무기는 계속 바꿔 끼는지(print `equipped:`, 8프로필), 바바리안은 순수 양손무기를 끼지 않는지(`[mindamage] > 0` 전제 확인). ③ 공통부 변경으로 헬름·목걸이·직업 전용 방어구 tier가 이상하게 오르내리지 않는지(`equipped:` tier 값). ④ 용병 인사이트 베이스: 용병 무기 tier가 11(에테리얼 12) 미만일 때만 줍는지(ItemLog `(MercArmG<11)` 표시 줄).
