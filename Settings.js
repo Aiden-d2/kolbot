@@ -57,7 +57,7 @@ var Build = {
 			return "P.AURA";
 			
 		case profiles[4]:
-			return "M.NORB";
+			return "S.NORB";
 			
 		case profiles[5]:
 			return "D.FGOM";

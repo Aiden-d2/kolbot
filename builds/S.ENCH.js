@@ -174,7 +174,7 @@ var AutoBuildTemplate = {
 	65:	{
 			Update: function () {
 				Config.Enchant.Enabled = true,
-				Config.Enchant.Player = ["M.HYBR"];	//261028 build name (was class id 0)
+				Config.Enchant.Player = ["M.BOWF"];	//261102
 				Config.Enchant.Merc = [338];
 				Config.Enchant.Pet = [357, 417, 428];
 				//Config.Enchant.Revive = true;
