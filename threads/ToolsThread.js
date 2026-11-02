@@ -172,7 +172,7 @@ function main() {
 	};
 
 	this.drinkPotion = function (type) {
-		var pottype, potion,
+		var pottype, potion, merc,	//261102 merc
 			tNow = getTickCount();
 
 		switch (type) {
@@ -185,6 +185,14 @@ function main() {
 			break;
 		case 2:
 			if (timerLastDrink[type] && (tNow - timerLastDrink[type] < 300)) { // small delay for juvs just to prevent using more at once
+				return false;
+			}
+
+			break;
+		case 3:	//261102 merc life potion like mine: 1s apart and not while the merc has the potion state (100), was 8s apart
+			merc = me.getMerc();	//261102
+
+			if ((timerLastDrink[type] && (tNow - timerLastDrink[type] < 1000)) || (merc && merc.getState(100))) {	//261102
 				return false;
 			}
 

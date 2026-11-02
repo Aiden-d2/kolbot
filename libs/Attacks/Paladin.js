@@ -5,8 +5,6 @@
 */
 
 var ClassAttack = {
-	diaAuraLogged: false,	//261101 Diablo Resist Lightning trace: once per game
-
 	doAttack: function (unit, preattack) {
 		if (Config.MercWatch && Town.needMerc()) {
 			print("mercwatch");
@@ -62,11 +60,6 @@ var ClassAttack = {
 		}
 		
 		result = this.doCast(unit, attackSkill, aura);
-		
-		if (aura === 110 && !this.diaAuraLogged && me.getSkill(2) === 110) {	//261101 first time the right skill is Resist Lightning on Diablo
-			Misc.trace("[diaAura] on skill:" + attackSkill);	//261101
-			this.diaAuraLogged = true;	//261101
-		}
 
 		return result;
 	},

@@ -524,3 +524,44 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - MoveToSlot 실패 21(회복 물약 15, Horadric Cube 2(a4·a5 02:29 Lut Gholein, 바로 다시 주움), `undefined … item:gone` 3, 반지 1). a1 Pz-56 착용 반지가 빠져 판매됨: `handoff.md` 3-59.
 - 경로: a6 10:13 Pit of Acheron `no adjusted path` 10회 → 오류 줄 없이 다음 구간(1-17 모양), a8 05:06 Harrogath `[Error] Failed to generate path`.
 - `[Error]` 2(위 경로, a1 Pz-58 궁전 진입 실패), 크래시 1(a4 11:57 Ancient's Way). `Town chicken` 39, `Town check` 109, getWP `menu not opened` 101, `boss not found` 28(Grand Vizier of Chaos 13, Lord De Seis 7, Sszark 6).
+
+## 261102 묶음 (11/01 13:43 ~ 11/02 09:25, 8프로필 각 93게임, 아시아 서버)
+데이터: trace·d2bs·ItemLog. 새 캐릭터로 노말(Pz-1~32) → 나이트메어(Pz-33~46) → 헬(Pz-47~). 핑 31~109(중간 47). 코드: `[mercPot]`·`[diaAura]` 줄 있음(#131), useUnit 재시도 성공 최소 1,203ms(#132 1초 되돌림). 실행 중 코드 변경 여부는 확인 안 함. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 결과
+- 3-29 1초 재현: a1 계단 첫 클릭 성공 621/632(98%, 중간 63ms, 200ms 안 599·500ms 안 608·1초 안 620), 재시도 11(1,219~3,500ms, 중간 1,516ms). 걷는 프로필 계단 433/460(94%, 306·364·424), 재시도 27(1,203~5,422ms, 중간 1,907ms, 10건은 Ancient's Way → Arreat Summit id 74에 8명이 1~2초 사이 몰림). 오브젝트 a1 15·걷는 프로필 21. 8회 모두 실패 0. timeout 79줄(9줄은 3-60 Jail 사례). 늦게 먹힌 첫 클릭(timeout 뒤 `ok iter:0`) 6건(1,031~3,609ms). 2초 검토는 `docs/code/Pather.md` useUnit 261024~261102. → 1초 확정(사용자 261102).
+- 3-53: 케이스 미발견(피겨린 3게임, 주운 사람 a7·a3·a3, 8명 모두 블록 안). `[openMenu] retry` 222줄 모두 `keys:0`.
+- 3-54: 카우 2게임 desync 0. Pz-46 `Cows failed: followDriver` 7줄·`clearCowLevel` 1줄은 a6 00:21:05 `Cow King found` 뒤. → 확정(사용자 261102).
+- 3-55: `[mercPot]` 550줄, `gone:true` 547(`state100:true` 539), `gone:false` 3, 간격 9초 이하 272회. → 상태 100 기준으로 바꿈, trace는 검증용으로 유지(사용자 261102).
+- 3-56: DEN 3번 실패·퇴장 없음 → 확정(사용자 261102).
+- 3-57: 로그 줄이 없어 알 수 없음(피겨린 완료 뒤 트라빈컬은 Pz-18 하나) → trace 넣고 다시 측정(사용자 261102).
+- 3-58: a4(P.CONC) 노말 디아블로 4게임(Pz-18·19·20·22) 모두 `[diaAura] on` → 확정(사용자 261102).
+- 3-59: 케이스 미발견. `skip` 0, `undefined … FAILED` 0, 실패 13(회복 물약 12, TP 책 1, 모두 `dropped:<그 아이템> mode 5`), 착용 칸 -1 전환 0.
+
+### 새 사례
+- Pz-6 Jail Level 3 → Inner Cloister: 8명이 도착한 계단(id 13)으로 Jail Level 2에 되돌아감 → `[Error] AutoSmurf.moveToExit 32` 8줄 → a4 `Area reversed`. `handoff.md` 3-60.
+
+### 치킨
+- Life Chicken 27, 16건이 같은 프로필 `Town chicken` 0~3초 뒤. 프로필 × 난이도:
+
+| 프로필 | 노말 | 나이트메어 | 헬 | 합 |
+|---|---|---|---|---|
+| a1 | Dark Wood(1)<br>Monastery Gate(1)<br>Jail Level 1(1) | - | Spider Cavern(2)<br>Chaos Sanctuary(2)<br>Tal Rashas Tomb #2(1)<br>Flayer Dungeon Level 3(1) | 9 |
+| a2 | Barracks(1) | - | Chaos Sanctuary(1) | 2 |
+| a3 | Catacombs Level 2(1)<br>Catacombs Level 1(1)<br>Tal Rashas Tomb #3(1) | - | - | 3 |
+| a4 | Stony Field(1)<br>Canyon Of The Magi(1) | - | Chaos Sanctuary(2)<br>Pit Level 2(1) | 5 |
+| a5 | - | Travincal(1) | Durance Of Hate Level 3(2)<br>Spider Cavern(1)<br>Chaos Sanctuary(1)<br>Tower Cellar Level 5(1) | 6 |
+| a6 | - | - | - | 0 |
+| a7 | - | - | Tal Rashas Tomb #2(1)<br>Chaos Sanctuary(1) | 2 |
+| a8 | - | - | - | 0 |
+| 합 | 9 | 1 | 17 | 27 |
+
+### 그 밖
+- 조기 종료: Life Chicken 27, desync 11줄(9게임), Not ready to start Duriel 3, Not ready for act2 2, Area reversed 1. 30분 시간 초과 3게임(17:30 Pz-17 Travincal, 18:00, 21:40).
+- 사망: a1 Pz-55 Chaos(Life Chicken 0/787, 다음 게임 `You died in last game`), a3 Summoner(보스가드 치킨 꺼진 중, `revive start` → `corpse picked`).
+- desync 9게임: `handoff.md` 1-19 261102 사례.
+- 크래시 2(a8 18:41·02:00 Harrogath 진입), 분석 안 함. `[Error]` 8(모두 Pz-6 Jail).
+- 경로: Jail 사례 밖 `adjusted path` 1(Pit of Acheron), Infernal Pit `no adjusted path` 1(바로 퇴장). 1-17 모양 0.
+- `Town chicken` 55, `Town check` 323, getWP `menu not opened` 100, `waypoint unit not found` 0, `boss not found` 66(Grand Vizier 32, Lord De Seis 16, Sszark 8, 안다리엘 156 6, 디아블로 243 2 …), `[teleportTo failed]` 5.
+- 게임 밖: Realm down 7(13:46~13:47, 시작 직후), a3 그 줄 trace 위치가 `(undefined undefined,undefined)`(같은 loc 13인 a7·a8은 `(OOG loc 13)`).
+

@@ -142,6 +142,10 @@
 ### 260928 Claude: `Attack.clearLevel` → den 내부 `clearDen`
 - Attack의 `clearLevel`을 없애고 den 안의 함수(`clearDen`, 방마다 `clear(30)`)로 옮겼다.
 
+### 261101 Claude: `clearDen` 방 이동 random (`36bcb50`, 사용자 요청, 옛 handoff 3-56)
+- 방 이동 `Pather.moveTo(…, 3, true)` → `(…, 3, true, false, true)`(random). 다른 지역으로 빠졌을 때 직전 방으로 돌아가는 분기와 변수 `currentArea`·`previousArea` 삭제 — 덴은 계단식 지역 변경(useUnit)이라 걸어서 빠질 수 없음(사용자).
+- 확인: 261102 로그 DEN 3번(노말·나이트메어·헬) 모두 실패·퇴장 없이 다음 구간. 검증 통과(사용자 261102).
+
 ## this.summoner
 
 ### 261004 Claude: 공통 보스 보호로 교체
@@ -266,6 +270,10 @@
 ### 261025 Claude: 팀 대기를 okCount로 통일 (`f26ef73`, 옛 handoff 3-36·3-47)
 - 리더는 `msgLeader`를 한 번만 보냄(반복·`msgFollower` 답장 삭제). 팀 대기는 뒤의 기존 okCount.
 - 확인: `this.okCount` 같은 헤더 항목. 검증 통과(사용자 261029).
+
+### 261101 Claude: 가까운 기준 15 → 10 (`36bcb50`, 사용자 요청, 옛 handoff 3-54)
+- 리더 분기·`msgNode` 분기의 중간 단계 기준 15 → 10, 루프 뒤 `msgNode` 마무리 이동 기준 15 → 10. 30 초과 클리어 없이 이동 + BO, 10 초과 ~ 30 클리어패스 이동, 10 이하 `Attack.clear(20)`.
+- 확인: 261102 로그 카우 2게임 desync 0. Pz-46의 `Cows failed: followDriver` 7줄은 a6 `Cow King found`(카우 중단) 뒤라 이 변경과 무관. 검증 통과(사용자 261102).
 
 ## onCopyData (main의 copydata 처리)
 

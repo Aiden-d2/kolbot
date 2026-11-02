@@ -902,7 +902,7 @@ ModeLoop:
 
 							break;
 						case 2: // stairs
-							if (!this.openExit(areas[i]) && !this.useUnit(5, currExit.tileid, areas[i])) {
+							if (!this.openExit(areas[i]) && !this.useUnit(5, currExit.tileid, areas[i], currExit)) {	//261102 exit spot: the stair nearest it
 								return false;
 							}
 
@@ -1057,14 +1057,14 @@ ModeLoop:
 	},
 
 	/*
-		Pather.useUnit(type, id, targetArea);
+		Pather.useUnit(type, id, targetArea, exit);
 		type - type of the unit to use
 		id - id of the unit to use
 		targetArea - area id of where the unit leads to
+		exit - (optional) the exit spot {x, y}: among units of the same id, the one nearest it is used
 	*/
-	useUnit: function (type, id, targetArea) {
+	useUnit: function (type, id, targetArea, exit) {	//261102 exit
 		var i, j, tick, unit, spot,
-			start = getTickCount(),	//261030 success time: reset at the first click below (handoff 3-29)
 			side = 0,	//261022 next side of the unit to try after a timeout
 			dirs = [[4, 0], [0, 4], [-4, 0], [0, -4]],	//261022 stairs open toward one of +x, +y, -x, -y (isometric map): spots 4 tiles out
 			preArea = me.area;
@@ -1082,6 +1082,24 @@ ModeLoop:
 		if (!unit) {
 			throw new Error("useUnit: Unit not found. ID: " + id);
 		}
+
+		if (exit) {	//261102 two stairs of the same id lead to different areas (Jail Level 3 13, Underground Passage Level 1 4, Spider Forest 51): the first found may be the one back
+			spot = null;	//261102 nearest one's spot (spot is reused for the side spots below)
+
+			do {
+				if (!spot || getDistance(unit, exit.x, exit.y) < spot.d) {	//261102
+					spot = {x: unit.x, y: unit.y, d: getDistance(unit, exit.x, exit.y)};	//261102
+				}
+			} while (unit.getNext());	//261102
+
+			unit = getUnit(type, id);	//261102 walk the list again up to the nearest one
+
+			while (unit.x !== spot.x || unit.y !== spot.y) {	//261102
+				if (!unit.getNext()) {	//261102
+					break;	//261102
+				}
+			}
+		}
 		
 		function moved() {	//260930 checked only once the area has loaded: me.area is undefined while loading
 			return me.gameReady && !!me.area && (targetArea ? me.area === targetArea : me.area !== preArea);
@@ -1089,7 +1107,6 @@ ModeLoop:
 
 		for (i = 0; i < 8; i += 1) {	//260903	//261022 7 -> 8: the 4 sides twice
 			if (moved()) {	//260930 moved in right after the last wait: the unit is in the old area now, do not walk or click it
-				Misc.trace("[useUnit] ok " + (getTickCount() - start) + "ms iter:" + (i - 1) + " type:" + type + " id:" + id + " target:" + targetArea);	//261030 the last click worked (handoff 3-29, remove once judged)
 				delay(100);
 
 				return true;
@@ -1097,10 +1114,6 @@ ModeLoop:
 
 			if (getDistance(me, unit) > 7) {	//261022 5 -> 7: a side spot (4 tiles + 2 arrival) is not pulled back onto the unit
 				this.moveToUnit(unit);
-			}
-
-			if (i === 0) {	//261030 measure from the first click's wait, after the walk to the unit (handoff 3-29)
-				start = getTickCount();
 			}
 
 			if (type === 2 && unit.mode === 0) {
@@ -1139,7 +1152,6 @@ ModeLoop:
 			// about 1s like usePortal, and while an area loads (act change portal) keep waiting instead of walking and clicking again	//260930 was ping*2+300
 			while (getTickCount() - tick < Math.max(1000, me.ping * 2 + 300) || !me.gameReady || ([2, 3, 6].indexOf(me.mode) > -1 && getTickCount() - tick < 4000)) {	//261022 still walking in after the click: keep waiting (up to 4s)	//261101 200 -> back to max(1000, ping*2+300): 200ms was slower, 8-try failures (handoff 3-29)
 				if (moved()) {
-					Misc.trace("[useUnit] ok " + (getTickCount() - start) + "ms iter:" + i + " type:" + type + " id:" + id + " target:" + targetArea);	//261030 (handoff 3-29, remove once judged)
 					delay(100);
 					return true;
 				}
@@ -1150,7 +1162,6 @@ ModeLoop:
 			Misc.trace("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area + " id:" + id + " target:" + targetArea + " unit:" + unit.x + "," + unit.y);	//260622	//260930 print -> trace (diagnostic)	//261021 id, target, unit spot (which exit it took)
 			
 			if (moved()) {	//261022 moved in right at the timeout: no side step on the old area's spot
-				Misc.trace("[useUnit] ok " + (getTickCount() - start) + "ms iter:" + i + " type:" + type + " id:" + id + " target:" + targetArea);	//261030 (handoff 3-29, remove once judged)
 				delay(100);
 
 				return true;

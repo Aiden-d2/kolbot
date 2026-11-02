@@ -65,6 +65,13 @@
 
 ## Paladin.js
 
+### doAttack
+
+#### 261101 Claude: 노말 디아블로 레지스트 라이트닝 오라 확인 trace (옛 handoff 3-58)
+- 261030부터 `me.diff === 0 && classid 243 && me.getSkill(110, 1)`이면 `aura = 110`, `doCast`가 스킬 직전 `Skill.setSkill(aura, 0)`. 110을 배우는 빌드는 P.CONC(25레벨부터)뿐.
+- 확인용 trace `[diaAura] on skill:N`(오른손 스킬이 110인 첫 순간, 게임당 1회, 변수 `ClassAttack.diaAuraLogged`).
+- 확인: 261102 로그 a4(P.CONC) 노말 디아블로 4게임(Pz-18·19·20·22) 모두 `[diaAura] on`. 검증 통과(사용자 261102). trace와 변수 삭제(261102).
+
 ### getHammerPosition
 
 #### 260928 Claude: 옛 clear의 Angle/Detour 게이트
