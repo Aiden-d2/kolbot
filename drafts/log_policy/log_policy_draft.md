@@ -110,6 +110,13 @@
 
 ---
 
+### 4-1. 261102 사용자 결정 (trace 판단 필요 항목, 구간 실패)
+
+- 구간 실패: 콘솔에 새로 넣지 않는다. 지금 있는 print `X failed: 이유`는 그대로, 나가게 되면 조기 종료 줄이 콘솔에 남는다.
+- 화살통 10줄(`Town.repair`): trace(임시). print에 있는 같은 줄은 지운다(검증 거의 끝남).
+- 길찾기 사슬 4줄(`Pather.moveTo` `no original path` …): trace(임시). 사슬 끝에 던지는 오류는 잡힌 자리에서 콘솔·print에 남아야 한다.
+- 라다멘트 퀘스트 비트 2줄: trace(임시).
+
 ## 5. 아이템마다 찍는 것 (6번 답)
 
 아이템 로그(`ItemLog.txt`)에 남는 동작: Kept, Ingredient, Sold, Dropped, Stashed, Shopped, Gambled, Equipped, Granted, Socketed, Runeworded(Fail), Transmuted(Fail). 줍기부터 처리까지 모두 남는다.
