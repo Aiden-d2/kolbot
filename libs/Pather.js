@@ -512,6 +512,7 @@ var Pather = {
 					Packet.flash(me.gid);
 
 					if (fail >= retry) {
+						Misc.trace("[moveTo] retry " + retry + " over -> " + x + "," + y + " in " + Pather.getAreaName(me.area) + " dist:" + Math.round(getDistance(me, x, y)));	//261102 moveTo ends here and returns false if not within 5 (handoff 3-61, remove once reviewed)
 						break;
 					}
 				}

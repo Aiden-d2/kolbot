@@ -95,6 +95,7 @@
   - 아케인 사례 판정: 같은 좌표로 `no original path`가 반복되는가, `adjusted path`가 있는가, `no adjusted path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 1-4)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
 - (261020 삭제) `moveTo entered town` — 5건 정상.
 - throw 전파: `no adjusted path` 10번째(옛 랜덤 걸음 10번째)의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
+- `[moveTo] retry N over -> x,y in 지역 dist:D`(261102, Claude 추가, handoff 3-61) — `moveTo`가 경로 재계산 retry에 닿아 멈춘 순간. 이 뒤 목표 5칸 밖이면 false. 제거 조건: 한 사이클 리뷰.
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
 - `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms(261024 `be4f0e2`부터 시전 중일 때만 최대 600ms, handoff 3-29), 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(`docs/code/Pather.md` useUnit 261022). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
@@ -145,7 +146,7 @@
 | 3-55 | 용병 물약 상태 100이 없을 때만 주기(261102) | `[mercPot] gone: state100: mercHP:` 줄 사이 간격(약 7~10초에 모이는가, 1초 간격 연속이 있는가) |
 | 3-57 | 트라빈컬 portalReset 피겨린 게이트 | `[travincal] portalReset run\|skip q20:` — 피겨린 완료 게임 `skip`, 미완료 `run` |
 | 3-60 | 같은 id 계단 중 출구 좌표에 가까운 것(Jail Level 3, Underground Passage 1, Spider Forest, 쿠라스트 사원) | 4-4 `[useUnit] timeout`의 `unit:`이 도착 자리인 사례, `Area reversed`, `moveToExit failed` |
-| (사용자 261102) | `Pather.moveTo`가 실패로 끝난(false) 뒤 호출부가 오류를 던지거나 더 진행할 수 없는 상태가 된 사례 리뷰 | 결과 줄에서 거꾸로 찾는다: `[Error]`·`[Quit]`·`X failed:` print·desync·30분 시간 초과 직전의 이동 구간과 그 호출부 코드(false를 받으면 throw하는지, 반복·대기에 갇히는지). `moveTo` 자체는 경로 재계산이 retry에 닿으면 멈추고 목표 5칸 밖이면 false를 돌려줄 뿐 trace가 없다(머리 위 `move retry N`만) |
+| 3-61 | `Pather.moveTo`가 실패(false)로 끝난 뒤 호출부가 오류를 던지거나 더 진행할 수 없는 상태가 된 사례 리뷰(사용자 261102) | 4-4 `[moveTo] retry N over -> x,y in 지역 dist:D` 뒤 같은 프로필의 `[Error]`·`[Quit]`·`X failed:` print·desync·30분 시간 초과, 그 호출부 코드(false를 받으면 throw하는지, 반복·대기에 갇히는지) |
 | 3-53 | 피겨린 주운 사람 블록 건너뜀 | 4-6 `[openMenu] retry` — 건너뛴 사례의 주운 사람 Alkor 줄 |
 | 3-59 | MoveToSlot 인벤토리 밖 아이템 건드리지 않음 | 4-6 `[MoveToSlot] skip` 줄(`got:` 착용 여부), 실패 줄, 착용 장비가 빠지는 사례(`undefined FAILED … item:loc 1`, 다음 게임 `equipped: [칸] -1`) |
 
