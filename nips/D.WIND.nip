@@ -189,7 +189,7 @@
 [name] == roundshield && [quality] == unique && [flag] != ethereal # [sockets] == 2 # [qty] == 1
 
 // [Spirit Sword]
-([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) && [flag] != runeword && [level] >= 26 # [sockets] == 0 # [qty] == 1 && [arma] < 31 @ ([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4
+([name] == crystalsword || [name] == broadsword) && [quality] == normal && [flag] != runeword && [level] >= 26 # [sockets] == 0 # [qty] == 1 && [arma] < 31 @ ([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) # [sockets] == 4
 ([name] == crystalsword || [name] == broadsword) && ([quality] == normal || [quality] == superior) && [flag] != runeword # [sockets] == 4 # [qty] == 1 && [arma] < 31
 
 // [HeartoftheOak]
