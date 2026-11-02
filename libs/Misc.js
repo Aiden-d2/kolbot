@@ -2334,7 +2334,7 @@ MainLoop:
 			"[" + stamp + "] " + msg + (skip ? "" : " (" + (me.ingame ? Pather.getAreaName(me.area) + " " + me.x + "," + me.y : "OOG loc " + getLocation()) + ")") + "\n");	//261011
 	},
 
-	// Console lines (CLAUDE.md log rules): an early quit reason is red (9), an error grey (10), both with where it happened. The same line goes to the trace	//260930
+	// Console lines (log rules): an early quit reason is red (9), an error grey (10), both with where it happened. The same line goes to the trace	//260930	//261102 comment
 	where: function () {
 		return Pather.getAreaName(me.area) + " " + me.x + "," + me.y;
 	},

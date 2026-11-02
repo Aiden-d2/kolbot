@@ -261,7 +261,7 @@ NTIP.EvaluateItem = function (item, list) {	//260804
 			}
 
 			//gate1b - gear tier	//261025
-			if (rule && rule.TierCheck && !eval(rule.TierCheck)) {	//261025 [armor] < 21 etc, cached tier only	//261028 key names
+			if (rule && rule.TierCheck && !eval(rule.TierCheck)) {	//261025 [body] < 21 etc, cached tier only	//261028 key names	//261102 key names
 				continue;
 			}
 
@@ -470,7 +470,7 @@ NTIP.buildLineStr = function (sa, merc, tier, qty, tiered, tierCheck) {	//261025
 		str += " / (Tiered)";
 	}
 
-	if (tierCheck) {	//261025 e.g. / (ArmG<41)	//261028 key names
+	if (tierCheck) {	//261025 e.g. / (ArmA<41)	//261028 key names	//261102 key names
 		str += " / " + tierCheck;
 	}
 
@@ -772,7 +772,7 @@ NTIP.ParseRule = function (sec, hold, info) {	//261028
 		case "tiered":
 			Misc.errorReport("[tiered] is a marker, write it without op and value: " + parts[i] + where);
 			return false;
-		default:	// gear tier gate: [armor] < 21 = cached Config.TierNow, [mercarmor] < 21 = cached Config.TierMerc, value goal = Config.TierGoal
+		default:	// gear tier gate: [body] < 21 = cached Config.TierNow, [mercbody] < 21 = cached Config.TierMerc, value goal = Config.TierGoal	//261102 key names
 			isMerc = key.indexOf("merc") === 0;
 			gearList = isMerc ? Config.TierMerc : Config.TierNow;
 			gearKey = null;

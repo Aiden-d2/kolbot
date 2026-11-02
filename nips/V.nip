@@ -64,8 +64,8 @@
 //============================================================================================================================================================================================
 
 // [Obedience & Insight]
-([name] == thresher || [name] == crypticaxe) && [quality] == normal && [flag] != runeword && [level] >= 26 # [sockets] == 0 # [qty] == 1 && [mercarmg] < 11 @ ([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) # ([sockets] == 4 || [sockets] == 5)
-([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) && [flag] != runeword # ([sockets] == 4 || [sockets] == 5) # [qty] == 1 && [mercarmg] < 11
+([name] == thresher || [name] == crypticaxe) && [quality] == normal && [flag] != runeword && [level] >= 26 # [sockets] == 0 # [qty] == 1 && [mercarma] < 11 @ ([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) # ([sockets] == 4 || [sockets] == 5)
+([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) && [flag] != runeword # ([sockets] == 4 || [sockets] == 5) # [qty] == 1 && [mercarma] < 11
 
-([name] == thresher || [name] == crypticaxe) && [quality] == normal && [flag] == ethereal && [flag] != runeword && [level] >= 26 # [sockets] == 0 # [qty] == 1 && [mercarmg] < 12 @ ([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) && [flag] == ethereal # ([sockets] == 4 || [sockets] == 5)
-([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) && [flag] == ethereal && [flag] != runeword # ([sockets] == 4 || [sockets] == 5) # [qty] == 1 && [mercarmg] < 12
+([name] == thresher || [name] == crypticaxe) && [quality] == normal && [flag] == ethereal && [flag] != runeword && [level] >= 26 # [sockets] == 0 # [qty] == 1 && [mercarma] < 12 @ ([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) && [flag] == ethereal # ([sockets] == 4 || [sockets] == 5)
+([name] == thresher || [name] == crypticaxe) && ([quality] == normal || [quality] == superior) && [flag] == ethereal && [flag] != runeword # ([sockets] == 4 || [sockets] == 5) # [qty] == 1 && [mercarma] < 12

@@ -1276,7 +1276,7 @@ MainLoop:
 	}
 };
 
-// Out-of-game log (CLAUDE.md log rules, 261001): grey console "event: target - action (loc N)", the same line to the trace ([OOG loc N] by Misc.trace)
+// Out-of-game log (log rules, 261001): grey console "event: target - action (loc N)", the same line to the trace ([OOG loc N] by Misc.trace)	//261102 comment
 var OOGLog = {
 	print: function (text, detail) {
 		D2Bot.printToConsole(text + " (loc " + getLocation() + ")", 10);
