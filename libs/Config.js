@@ -266,13 +266,20 @@ var Config = {
 	LogHighGems: false,
 	
 	//Socketing
-	Socketing: true,	// Town.socketGems and socket gem pickup (Pickit.socketTargets)
-	
-	SocketRecipe: {	// sapphire in Head/Body, Weapon order. gems for empty sockets of equipped tiered items: itemType (96-102) = any grade, classid (557-601) = that grade only. builds can override (e.g. Config.SocketRecipe.Head = [100])
+	Socketing: true,	// Town.socketGems and socket gem pickup (Pickit.socketTargets), gems for empty sockets of equipped tiered items: Head/Body/Weapon
+						// itmeType = any grade		// classid = that grade only
+						// 96:amethyst				// 557-561:amethyst (lowest to highest)
+						// 97:diamond				// 582-586:diamond
+						// 98:emerald				// 572-576:emerald
+						// 99:ruby					// 577-581:ruby
+						// 100:sapphire				// 567-571:sapphire
+						// 101:topaz				// 562-566:topaz
+						// 102:skull				// 597-601:skull
+	SocketRecipe: {
 		Head: [100, 99],
 		Body: [100, 99],
 		Shield: [97],
-		Weapon: [96, 101, 98]
+		Weapon: [96, 101]
 	},
 	
 	//Cubing
