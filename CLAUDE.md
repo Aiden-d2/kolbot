@@ -90,6 +90,7 @@
 | `docs/rejected.md` | 기각 노트 |
 | `docs/log_results.md` | 로그 분석 결과 (묶음마다 쌓음) |
 | `docs/log_guide.md` | 로그 분석 지침 |
+| `docs/log_types.md` | 로그 종류 11가지의 목적·보는 곳·파일·코드·설정 |
 | `docs/D2BS_Structure.md` | D2BS / kolbot 구조 참조, 확인된 엔진·게임 사실 |
 | `docs/attack_flow.md` | clear / setPosition 흐름 정리 |
 | `docs/skill_range.md` | 스킬 사거리 (공식, 측정, 현재 값). 사거리 정보는 빠짐없이 여기에 기록한다 |
