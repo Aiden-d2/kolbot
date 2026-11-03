@@ -92,7 +92,7 @@ var ClassAttack = {
 				break;
 			default:
 				Config.Curse[i] = 0;
-				print("Invalid curse id");
+				Misc.print("[initCurses] Failed: invalid curse id");	//261103 log policy
 
 				break;
 			}

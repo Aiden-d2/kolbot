@@ -21,7 +21,7 @@ var Attack = {
 
 		if (Config.AttackSkill[1] < 0 || Config.AttackSkill[3] < 0) {
 			showConsole();
-			print("ÿc1Bad attack config. Don't expect your bot to attack.");
+			Misc.print("[Attack] Failed: bad attack config");	//261103 log policy
 		}
 
 		if (me.gametype === 1) {
@@ -73,8 +73,8 @@ var Attack = {
 		// a configured attack skill that is not actually learned (AutoBuild / goal allocation error) makes every cast fail silently: stop the profile	//260928
 		for (i = 0; i < Config.AttackSkill.length; i += 1) {	//260928 array length differs per build
 			if (Config.AttackSkill[i] > -1 && !me.getSkill(Config.AttackSkill[i], 1) && Config.AttackSkill[i] !== 500) {
-				D2Bot.printToConsole("AttackSkill[" + i + "] " + Config.AttackSkill[i] + " not learned (lvl " + me.charlvl + "). Stopping", 9);
-				Misc.trace("AttackSkill[" + i + "] " + Config.AttackSkill[i] + " not learned (lvl " + me.charlvl + "). Stopping");	//261001
+				D2Bot.printToConsole("[Stop] AttackSkill[" + i + "] " + Config.AttackSkill[i] + " not learned (lvl " + me.charlvl + ")", 9);	//261103 log policy
+				Misc.print("[Stop] AttackSkill[" + i + "] " + Config.AttackSkill[i] + " not learned (lvl " + me.charlvl + ")");	//261001	//261103 log policy: trace -> print
 				D2Bot.stop();
 
 				return false;
@@ -316,6 +316,7 @@ var Attack = {
 					try {
 						Pather.moveTo(lostEntry.lastPos.x, lostEntry.lastPos.y, 3);
 					} catch (e1) {
+						Misc.caughtError("Attack.clear lostPos", e1);	//261103 the moveTo error was swallowed without a line (handoff 1-17)
 						lostEntry.searches = 99;
 					}
 
@@ -469,7 +470,7 @@ var Attack = {
 		}
 
 		if (spec && spec.ids && !mustSeen) {	//260930 clear returns true either way: note a boss that never showed up
-			Misc.trace("boss not found: " + spec.ids.join(", "));
+			Misc.print("[clear] Failed: boss not found " + spec.ids.join(", "));	//261103 log policy: trace -> print
 		}
 
 		if (castTotal > 0) {
@@ -740,6 +741,7 @@ var Attack = {
 					moved = Pather.moveTo(choice.x, choice.y, 1);	// several hops
 				}
 			} catch (e1) {
+				Misc.caughtError("Attack.setPosition move", e1);	//261103 the moveTo error was swallowed without a line (handoff 1-17)
 				moved = false;
 			}
 
@@ -766,6 +768,7 @@ var Attack = {
 			try {
 				moved = Pather.moveTo(pathCand.x, pathCand.y, 1);
 			} catch (e2) {
+				Misc.caughtError("Attack.setPosition detour", e2);	//261103 the moveTo error was swallowed without a line (handoff 1-17)
 				moved = false;
 			}
 
@@ -932,7 +935,7 @@ var Attack = {
 		if (king) {
 			do {
 				if ((king.spectype & 0x1 || king.name === "The Cow King") && getDistance(me, king) <= Math.max(range, 40)) {
-					print("Cow King found");
+					Misc.print("[clear] Cow King found");	//261103 log policy
 					
 					return true;
 				}
@@ -970,7 +973,7 @@ var Attack = {
 		}
 
 		if ((unit.spectype & 0x7) && Config.SkipException && Config.SkipException.indexOf(unit.name) > -1) {
-			print("ÿc1Skip Exception: " + unit.name);
+			Misc.print("[clear] Skip exception: " + unit.name);	//261103 log policy
 			return true;
 		}
 

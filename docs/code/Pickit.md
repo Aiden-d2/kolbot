@@ -1,9 +1,19 @@
 # libs/Pickit.js
 
+## init
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `Loaded [nip]` → `Misc.print("[Pickit] Loaded [...]")`.
+
 ## checkItem
 
 ### 261021~261023 사용자 결정: 소켓 보석 줍기 (결과 5, 옛 handoff 3-15)
 - Cubing 판정 앞. 바닥·인벤토리 보석만, 보석 레벨 제한 ≤ 캐릭 레벨. 인벤토리 보석(자기 제외, gid 순)을 대상 순서대로 미리 배정하고, 빈칸이 남은 대상이 이 보석을 받으면 5. nip 무관, 스태시로 가지 않음. 필요 없어지면 기존 판정. 줍기 직후 overhead `(Ingredient)`, ItemLog `Ingredient {가진 개수}`. 검증 통과(사용자 261023).
+
+## pickItems
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `Not enough room for 이름` 머리 위 글자 2곳 옆에 `Misc.print("[Pickit] Failed: not enough room for 이름")`(못 주운 아이템은 아이템 로그에 남지 않음). `undefined item` trace → `Misc.print("[Pickit] Failed: undefined item")`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
 
 ## socketTargets
 

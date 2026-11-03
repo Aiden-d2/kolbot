@@ -14,3 +14,6 @@
 
 ### 261029 Claude: takeOff trace 삭제 (사용자 요청)
 - 검증 통과(옛 handoff 3-32)로 `[Runeword]/[Cube] takeOff …` trace 삭제. 그 줄에서만 쓰던 `Misc.takeOff`의 지역 변수 `name`·인자 `tag`도 지우고, 호출 2곳(`Runewords.makeRunewords`·`Cubing.doCubing`)의 셋째 인자를 뺌. 동작 같음.
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `[Runeword]`·`[Reset]` print 색 코드 지움 → `Misc.print`, 같은 줄의 머리 위 글자 삭제(콘솔은 그대로). 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.

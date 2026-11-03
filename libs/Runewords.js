@@ -421,8 +421,7 @@ RuneLoop:
 			//260901
 			parts = items[0].fname.replace(/ÿc[0-9!"+<;.*]/g, "").split("\n").reverse();
 			logString = parts[0].trim() + " " + parts.slice(1).join(" ").trim() + (items[0].getFlag(0x400000) ? " (Eth)" : "");	//260901
-			me.overhead("[Runeword] " + logString);
-			print("ÿc4[Runeword] ÿc0" + logString);
+			Misc.print("[Runeword] " + logString);	//261103 log policy
 			D2Bot.printToConsole("[Runeword] " + logString, 5);	//261023 "# " removed
 			
 			var result = NTIP.Evaluate(items[0]);	//260907
@@ -477,8 +476,7 @@ RuneLoop:
 				//260901
 				parts = base.fname.replace(/ÿc[0-9!"+<;.*]/g, "").split("\n").reverse();
 				logString = parts[0].trim() + " " + parts.slice(1).join(" ").trim() + (base.getFlag(0x400000) ? " (Eth)" : "");
-				me.overhead("[Reset] " + logString);
-				print("ÿc4[Reset] ÿc0" + logString);
+				Misc.print("[Reset] " + logString);	//261103 log policy
 				D2Bot.printToConsole("[Reset] " + logString, 5);	//261023 "# " removed
 
 				transmute();

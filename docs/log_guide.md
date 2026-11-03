@@ -18,11 +18,12 @@
 ## 2. 받을 데이터와 준비
 | 파일 | 위치(게임 PC) | 용도 |
 |---|---|---|
-| trace | `kolbot/_cache/trace/trace-<프로필>-<YYYYMMDD>.txt` | 분석의 중심. 프로필별·날짜별 |
-| d2bs 로그 | D2BS 로그 폴더 | `print` 진행 기록, 엔진 오류(`Error in ...`), `[Chicken]` print, `enchant:`, 콘솔 줄(`[console] 내용`: 조기 종료 사유, 치킨·사망, 오류, 경험치 줄, 게임 밖 줄) |
-| ItemLog | `kolbot/_cache/ItemLog.txt` (10/26 업로드 `941ac63`부터 `kolbot/_cache/trace/ItemLog.txt`, `ScriptErrorLog.txt`도 같은 폴더) | 줍기·구매·판매 |
+| 콘솔 파일 (261103~) | `kolbot/_cache/trace/Console.txt` (전 프로필 한 파일, 날짜로 나누지 않음) | 흐름과 끝. `[YYYY/MM/DD HH:MM:SS] <프로필> <분류> 내용`, 분류 OOG/Flow/Item/Exp/Quit/Red/Error |
+| d2bs 로그 | `d2bs/logs/d2bs-<프로필>-<YYYYMMDD>.log` | 261103~: **분석의 중심**(상세 기록 전부, 3-1). 그 전: `print` 진행 기록, 엔진 오류(`Error in ...`), `[Chicken]` print, `enchant:`, 콘솔 줄(`[console] 내용`) |
+| trace | `kolbot/_cache/trace/trace-<프로필>-<YYYYMMDD>.txt` | 261103~: 임시 검증 줄만(handoff 3절). 그 전: 분석의 중심. 프로필별·날짜별 |
+| ItemLog | `kolbot/_cache/ItemLog.txt` (10/26 업로드 `941ac63`부터 `kolbot/_cache/trace/ItemLog.txt`, `ScriptErrorLog.txt`도 같은 폴더. `ScriptErrorLog.txt`는 261103부터 없음) | 줍기·구매·판매 |
 
-- 매니저 콘솔은 받지 않는다(사용자 261024). 콘솔 줄은 d2bs 로그의 `[console]` 줄로 본다(261021~). 261024 묶음에서 콘솔 복사본과 `[console]` 줄이 내용 기준 1:1로 맞았고, 콘솔에만 있던 줄은 매니저가 찍는 크래시 줄(`Window has unexpectedly exited`) 하나였다. 색은 어느 쪽에도 남지 않으므로 줄 내용(4-8 정상 종료 판정)으로 가른다. 이 문서의 "콘솔 `…`" 줄은 모두 `[console]` 줄에서 찾는다.
+- 261103부터 콘솔 줄은 `Console.txt`에서 본다(d2bs 로그의 `[console]` 한 벌은 삭제). 그 전 로그: 매니저 콘솔은 받지 않는다(사용자 261024). 콘솔 줄은 d2bs 로그의 `[console]` 줄로 본다(261021~). 261024 묶음에서 콘솔 복사본과 `[console]` 줄이 내용 기준 1:1로 맞았고, 콘솔에만 있던 줄은 매니저가 찍는 크래시 줄(`Window has unexpectedly exited`) 하나였다. 색은 어느 쪽에도 남지 않으므로 줄 내용(4-8 정상 종료 판정)으로 가른다. 이 문서의 "콘솔 `…`" 줄은 모두 `[console]` 줄에서 찾는다.
 - 크래시: d2bs 로그의 `Crash: 스크립트 지역 - wait Ns (loc N)`(매니저가 크래시 정보를 남겼을 때) 또는 엔진 재시작 줄(`D2BS Engine startup complete`, 앞 번호가 바뀜). 크래시 때 하던 일·위치는 재시작 직전의 trace·d2bs 마지막 줄로 본다. 크래시는 분석하지 않는다(로그로 원인을 알 수 없음, 사용자 261025·261026). 개수와 지역만 적는다.
 
 - 이전에는 사용자가 `log` 브랜치 `logs/`에 올렸다. 위치를 사용자에게 확인한다.
@@ -35,8 +36,34 @@
 | 261011 이후 | `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`. 게임 밖은 `(OOG loc N)`. `Misc.trace(msg, true)`인 줄은 위치 없음: 게임 경계, 구간 헤더, `[Error]`, `party has left`(261024 `33bd183` 전까지, 261020 전 로그에는 `[Quit] stopDefault`도) |
 | 261001~261010 | `M/D H:M:S [지역 x,y] 내용`(0 채움 없음), 게임 밖 `[OOG loc N]` |
 
-- 게임 경계: `=== [게임이름] ===`(261011 이후), 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다.
-- 구간 헤더: `=== [ANDY] ===` 등. 리더 콘솔에도 `=== ANDY ===`(구간 끝, 금색).
+### 3-1. 261103 로그 정책 이후 (CLAUDE.md 4절, `docs/log_types.md`)
+- 상세 기록은 d2bs 로그(print). 줄 모양 `[주체] 문장 (지역 x,y)`(위치는 `Misc.print`가 붙임, 엔진이 앞에 `[MM/DD/YY HH:MM:SS] D2BS <번호>:`). 고정 모양(`=== [게임] ===`, `=== [구간] ===`, `!!! … !!!`)·게임 밖 줄은 위치 없음, 게임 밖 상세는 `… | 상세 (loc N)`.
+- trace는 임시 검증 줄만. 아래 줄 이름은 261103 이후 로그에서 이렇게 찾는다(그 전 로그는 이 문서의 옛 이름).
+
+| 옛 줄(찾던 곳) | 261103~ 줄(찾을 곳) |
+|---|---|
+| trace `=== [게임] ===` | print `=== [게임] ===`(모든 프로필), 콘솔 `=== [게임] ===`(리더) |
+| 콘솔 `=== X ===`(리더, 구간 끝) | 콘솔 `[X] Completed` |
+| trace `[Quit] 사유: 상세`, 콘솔 `사유 (지역)` | print `[Quit] 사유 \| 상세`, 콘솔 `[Quit] 사유 (지역)` |
+| trace `[Error] 자리: 메시지`, 콘솔 `자리: 메시지` | print `[Error] 자리: 메시지 (파일 #줄)`, 콘솔 `[Error] …` |
+| `Life Chicken`·`Mana Chicken`·`Iron Golem Chicken`·`Merc Chicken`·`High ping`(trace `[Quit] …`) | 콘솔·print `[Chicken] Life H/M`·`Mana`·`Iron Golem`·`Merc`·`High ping N/M` |
+| `You died in last game` | 콘솔 `[Died] Last game`, 새 `[Died]`(죽은 순간, 콘솔 빨강·print) |
+| `Init failed …. Stopping`, `AttackSkill[N] … Stopping`, `Failed to get corpse, stopping.` | `[Stop] …` |
+| `alkor error` | 콘솔 `[Quit] Alkor not found` |
+| (없음, 경험치 줄 `[30:00]`으로 추정) | 콘솔·print `[Quit] Max game time N min` |
+| 콘솔 `Radament off: tombs, quit at 10 min` | print `[RADAMENT] Off: tombs, quit at 10 min`(리더) + 콘솔 `[Quit] Max game time 10 min` |
+| `party has left: 이름` | print `[PartyThread] Party has left: 이름` |
+| `boss not found: id` | print `[clear] Failed: boss not found id` |
+| `X failed: 이유`(구간) | print `[X] Failed: 이유`(구간 이름 대문자) |
+| `Town check`·`Town chicken`·`Town check (direct)` | print `[TownChicken] Town check`·`[TownChicken] Town chicken`·`[townCheck] Direct` |
+| `visitTown start by:… tick:` / `visitTown back tick:` | print `[visitTown] Start by=… tick=…` / `[visitTown] Back tick=…` |
+| `[useUnit] timeout iter:…`, `[WP] wp.area:…`, `[getWP] …`, `[goWP] Failed …` | print `[useUnit] Retry N: timeout \| …`, `[useWaypoint] Retry N: wp.area=…`, `[getWP] Failed:/Retry N: …`, `[goWP] Failed: 10 attempts` |
+| `revive start`, `corpse picked`, `bossGuard …` | print `[bossEnd] Revive start`·`Corpse picked`, `[bossGuard] …` |
+| (없음) | print `[okCount] Waiting`(okCount 진입, 프로필마다) |
+| `Script ended`(trace는 조기 종료 없을 때만) | print `[AutoSmurf] Script ended`(언제나) |
+
+- 게임 경계: `=== [게임이름] ===`(261011 이후, 261103부터 print), 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다.
+- 구간 헤더: `=== [ANDY] ===` 등. 리더 콘솔에도 `=== ANDY ===`(구간 끝, 금색, 261103부터 `[ANDY] Completed`).
 - 줄 시계는 초 단위다. 초 미만 순서는 같은 파일 안의 줄 순서로 본다. 프로필 사이 비교는 PC 시계가 같다는 전제(같은 PC).
 - 위치 `(지역 x,y)`는 그 줄을 찍은 순간의 위치다. 이동을 **시작한** 줄의 좌표를 그 시각의 위치로 읽지 않는다(걷는 중을 멈춤으로 읽은 적이 있다).
 
@@ -137,13 +164,15 @@
 
 ### 4-8. 기본 기록 (관찰용 아님, 게임 흐름 파악에 씀)
 게임 경계, 구간 헤더, `[Quit] 사유: 상세`, `[Error] 구간: 메시지 (파일 #줄)`, `Script ended`(조기 종료가 없을 때만), `boss not found: id`, `AttackSkill[N] not learned`, `!!! POTION/SCROLL/BOOK !!!`, `[Quit] High ping / Mana·Iron Golem·Merc Chicken`, `undefined item`, `[DBG] drop`, `Couldn't give the potion to merc`.
-- 정상 종료 판정(CLAUDE.md): 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상. 단 4-4의 경로 콘솔 줄(`no random path`·`original path`·`no original path`·`adjusted path`·`fixed path`, 검정)은 조기 종료 줄이 아니다(261030 전 로그만, 261030부터 콘솔에서 삭제).
+- 정상 종료 판정(CLAUDE.md): 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상. 261103부터: 경험치 줄 앞에 `[Quit]`·`[Stop]`·`[Chicken]`·`[Died]`·`[Error]`가 없으면 정상(30분 시간 초과는 `[Quit] Max game time`). 단 4-4의 경로 콘솔 줄(`no random path`·`original path`·`no original path`·`adjusted path`·`fixed path`, 검정)은 조기 종료 줄이 아니다(261030 전 로그만, 261030부터 콘솔에서 삭제).
 - 이유 없이 끝난 게임은 `log_results.md` 261006 "이유 없이 끝난 게임"처럼 분류한다(크래시, 마지막 게임, 30분 시간 초과, 매니저 일시정지, 원인 불명).
 
 ## 5. 이번 로그로 볼 확인 항목
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
+| 3-64 | 로그 정책 개편 | `Console.txt` 깨진 줄 0·매니저 콘솔과 1:1, print 위치·`ÿc` 0, `is not defined` 0, `[Died]`↔`[Died] Last game`, 게임 경계, `Max game time`, `[okCount] Waiting` |
+| 3-65 | `Attack` catch 3곳 `Misc.caughtError` | `no adjusted path` 10회 뒤 print `[Error] Attack.clear lostPos/setPosition move/detour: moveTo: Failed to generate path` |
 | 3-63 | 피겨린 물약이 있으면 알리고 마시기, 시작 okCount | 피겨린 게임 desync, `!!! [POTION] !!!` 8명(게임 안), TOME에서 주운 게임은 주운 사람 물약이 리더 `=== [FIGURINE] ===` 뒤 |
 | 3-60 | 같은 id 계단 중 출구 좌표에 가까운 것(Jail Level 3, Underground Passage 1, Spider Forest, 쿠라스트 사원) | 4-4 `[useUnit] nearest` 줄 뒤 그 프로필이 target 지역에 도착했는가, `Area reversed` |
 

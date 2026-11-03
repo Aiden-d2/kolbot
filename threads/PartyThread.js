@@ -121,8 +121,7 @@ function partyInGame () {	//260908
 	}
 
 	if (retry > 2) {
-		print("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")));
-		Misc.trace("party has left: " + (lost.length ? lost.join(", ") : names.join(", ")));	//261008	//261024 + place	//261028 state and step removed (handoff 3-49)
+		Misc.print("[PartyThread] Party has left: " + (lost.length ? lost.join(", ") : names.join(", ")));	//261103 log policy
 		scriptBroadcast("quit");
 	}
 };

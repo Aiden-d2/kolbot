@@ -59,10 +59,9 @@ function main() {
 		function (msg) {
 			if (msg === "townCheck") {
 				if (me.area === 136) {
-					print("Can't tp from uber trist.");
+					// Misc.townCheck does not send it here (uber trist, Arreat Summit): "Cannot open TP" overhead there	//261103 log policy: print removed (never ran)
 				} else if (me.area === 120) {
-					print("cannot open TP");
-					D2Bot.printToConsole("cannot open TP");
+					// same as above	//261103 log policy: print removed (never ran)
 				} else {
 					townCheck = true;
 				}
@@ -90,13 +89,9 @@ function main() {
 
 			try {
 				if (townCheck) {
-					me.overhead("Town check");	//261007
-					print("Town check");	//261007
-					Misc.trace("Town check");	//261007
+					Misc.print("[TownChicken] Town check");	//261007	//261103 log policy
 				} else {
-					me.overhead("Town chicken");	//261007
-					print("Town chicken");	//261007
-					Misc.trace("Town chicken");	//261007
+					Misc.print("[TownChicken] Town chicken");	//261007	//261103 log policy
 				}
 				
 				Town.visitTown();

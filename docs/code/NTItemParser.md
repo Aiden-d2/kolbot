@@ -74,3 +74,6 @@
 
 ### 261102 사용자: 기어 칸 이름 (`Config.md` Gear)
 - 코드 변경 없음(칸 키를 `Config.TierNow`·`Config.TierMerc` 키의 소문자로 찾음). 기어 조건 키는 `[head] [neck] [body] [arma] [armb] [ringa] [ringb] [waist] [shoes] [hands]`, 용병 `[merchead] [mercbody] [mercarma]`. 옛 키는 `Unknown rule` 오류. 주석 예시를 새 이름으로.
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- nip 경고 trace 2줄 → `Misc.print("[NTIP] Duplicate gear key [키]…")`·`[NTIP] Gear tier ignored on tier/merc line | file= line=`. `I can't find my items!` → `[NTIP] Failed: can't find my items`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.

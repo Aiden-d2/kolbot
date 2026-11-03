@@ -53,13 +53,13 @@ var Config = {
 							}
 						});
 					} else {
-						print("ÿc8Error: Config cache not found for " + me.profile);
+						Misc.print("[Config] Failed: cache not found for " + me.profile);	//261103 log policy
 					}
 				}
 			}
 		} catch (e3) {
-			print("ÿc8Error in Config.init");
-			print(e3.toSource());
+			Misc.print("[Config] Failed: Config.init");	//261103 log policy
+			Misc.print("[Config] Failed: " + e3.toSource());	//261103 log policy
 		}
 	},
 

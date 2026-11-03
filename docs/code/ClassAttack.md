@@ -63,6 +63,9 @@
 - 이유: 같은 몹에게 타임드와 언타임드의 사거리가 다르면 회피(텔레는 사거리 지점에 착지)로 두 거리를 오간다(예: S.FONV 번개 면역 몹에 오브 ↔ 텔레키네시스 20). 면역 몹은 자기가 맞을 수 있는 스킬 거리에 선다(B안, A안은 `rejected.md`).
 - 남는 것(사용자 수용): 면역 몹이 섞인 무리에서 몹이 바뀔 때 거리가 바뀌는 진동, `LowManaSkill` 근접 공격 진동(1~17레벨).
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `Invalid curse id` → `Misc.print("[initCurses] Failed: invalid curse id")`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
 ## Paladin.js
 
 ### doAttack
@@ -77,6 +80,9 @@
 #### 260928 Claude: 옛 clear의 Angle/Detour 게이트
 - 해머는 setPosition을 안 거치므로 맨 앞에 게이트. 조건 0x5(해머는 몹 옆에 서야 하므로 0x1로 막혀도 이동이 필요). 막히면 `tick.fail = "unreachable"`. MUST는 게이트 없음(260929 NoSkipArea 제거). 박스 울타리는 적용 안 함(설 자리가 몹 옆 5칸 이내, 회피 없음).
 - 확인: 260930 trace에서 해머딘 헛돎 없음(`log_results.md`).
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `mercwatch` → `Misc.print("[doAttack] MercWatch")`.
 
 ## Sorceress.js
 
@@ -94,6 +100,9 @@
 - 261030 추가(사용자 요청, `63f59af`): 언타임드 칸(`checkSkill`, 커스텀 공격이면 그 값)이 -1이고 그 몹에게 타임드가 있으면 HP%·번개 면역과 관계없이 스태틱(쿨타임 사이 채우기). 타임드가 없으면 원래 규칙(번개 면역 아님·% 초과까지) 뒤 `[6]`.
 - `doCast`: 언타임드가 42면 두 `setPosition`에 도착 오차 2(`Attack.md` setPosition). 스태틱 반경 = 레벨 + 4(좌표 거리, mpq `aurarangecalc = ln12`, `skill_range.md`).
 - 확인: 261031·261101 로그 `[teleportTo failed]` 7·4(261029 13, 261030 6, 늘지 않음), 동작은 사용자 육안. 검증 통과(사용자 261101).
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `mercwatch` → `Misc.print("[doAttack] MercWatch")`.
 
 ## Wereform.js
 

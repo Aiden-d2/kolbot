@@ -7,6 +7,9 @@
 ### 260928 Claude: 레벨업 때 다시 호출
 - `AutoBuild.levelUpHandler`가 `Attack.init()`을 무조건 다시 부른다(46레벨 Wereform이 그 게임부터 적용). 엔진이 이미 include한 파일은 건너뛰어 부작용 없음. 핸들러는 default.dbj에만 등록.
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `AttackSkill` 미습득 멈춤: 콘솔 `[Stop] AttackSkill[i] id not learned (lvl N)`, trace → `Misc.print`. `Bad attack config` → `Misc.print("[Attack] Failed: bad attack config")`.
+
 ## clear
 
 ### 260928 Claude: 단일 전투 엔진 (리팩터링)
@@ -57,6 +60,10 @@
 - 근접 캐릭이 무리 속으로 들어가 맞는 것은 감수(사용자).
 - 확인: 261023 사용자 육안 검증 통과.
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 조용한 catch(잃은 목표 마지막 위치로 이동)에 `Misc.caughtError("Attack.clear lostPos", e1)`(handoff 3-65, 옛 1-17). 동작(`searches = 99`)은 그대로.
+- `boss not found: id` trace → `Misc.print("[clear] Failed: boss not found id")`, `Cow King found`·`Skip Exception` print → `[clear] Cow King found`·`[clear] Skip exception: 이름`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
 ## setPosition
 
 ### 260928 Claude: 접근·회피를 한 함수로
@@ -79,6 +86,9 @@
 ### 261029 사용자·Claude: 스태틱 필드 로직 통합 (`0b06f24`·`63f59af`, PR #122·#124, 옛 handoff 3-52)
 - 호출부가 `minDist`를 넘기면 텔레(`teleportTo`)에도 도착 오차로 넘긴다(안 넘기면 5 그대로, 전에는 `minDist`가 걷기에만 쓰였다). 소서 스태틱(`doCast`, 오차 2)이 레벨 + 2 거리와 함께 실제 거리 ≤ 레벨 + 4를 맞추려고.
 - 확인: 261031·261101 로그 `[teleportTo failed]` 7·4(261029 13, 261030 6, 늘지 않음), 동작은 사용자 육안. 검증 통과(사용자 261101).
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 조용한 catch 2곳에 `Misc.caughtError("Attack.setPosition move", e1)`, `("Attack.setPosition detour", e2)`(handoff 3-65, 옛 1-17). 동작(`moved = false` → `moveFailed`)은 그대로. 10회 보정 뒤 `moveTo` throw(261021)가 `Attack`에서 부른 경우에만 기록 없이 사라지던 것.
 
 ## checkResist
 

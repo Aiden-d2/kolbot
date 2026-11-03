@@ -17,6 +17,9 @@
 - 넣은 것이 있으면 끝에서 `Cubing.update()`(소켓용 최상급 보석 후보를 다시 계산). 사용자 `30c9b4e`: `Config.Cubing`일 때만 부름(큐빙이 꺼져 있으면 레시피가 없다).
 - 확인: `Cubing.md` buildRecipes 261026과 같다(사용자 확정 261030).
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `socketGems failed` trace → `Misc.print("[socketGems] Failed: … | dropped")`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
 ## heal
 
 ### 261021 Claude: 끝의 `me.cancel()` 삭제
@@ -47,11 +50,17 @@
 - 동작: ID 스크롤이 없고 레벨 25 미만, 상점에 ID 스크롤(530)이 있고 `me.gold < getItemCost(0)`이면 미감정으로 팔고 다음 물건으로. 그 밖은 `identify stopped` 후 중단. 유니크·세트 제외 조건은 없음.
 - 확인: 261006·261013 로그 통과.
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- trace `identify stopped/failed/slow` → `Misc.print("[identify] Failed: no ID scroll for 이름 gold=")`·`[identify] Failed: 이름 | tome|scroll ms=`·`[identify] Slow: …`.
+
 ## repair
 
 ### 261028 Claude: MiniShopBot·용병 부활을 LowGold로 (`dfc884b`, 사용자 요청, 옛 handoff 3-45)
 - MiniShopBot 호출 조건 2곳에 `me.gold >= Config.LowGold`(노말 벨트 쇼핑 조건은 그대로). 목적은 `buyPotions` 항목과 같음.
 - 확인: 그 방문의 골드가 로그에 없어 로그로는 판정하지 않음. 바꾼 것이 조건 비교뿐이라 사용자 판단으로 검증 통과(261028).
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 화살통 줄: print 사본 10줄 삭제, trace(임시)만 남김(사용자 261102, 검증 거의 끝). `Can't afford repairs` 머리 위 글자 → `Misc.print("[repair] Failed: can't afford")`.
 
 ## reviveMerc
 
@@ -59,11 +68,17 @@
 - 첫 골드 조건 `Config.MercMinGold`(20만) → `Config.LowGold`, `MercMinGold` 삭제. 목적은 `buyPotions` 항목과 같음.
 - 확인: 그 방문의 골드가 로그에 없어 로그로는 판정하지 않음. 바꾼 것이 조건 비교뿐이라 사용자 판단으로 검증 통과(261028).
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `MercWatch precast` 머리 위 글자 → `Misc.print("[MercWatch] Precast")`.
+
 ## getCorpse
 
 ### 261004 Claude: `quitOnFail` 인자 (보스 보호 시체 회수)
 - `getCorpse(true)`면 실패 시 프로필 정지 대신 false를 돌려준다(`AutoSmurf.bossEnd`가 퇴장 처리). 인자 없이 부르는 곳은 예전대로 정지.
 - 확인: `AutoSmurf.md` bossEnd 항목.
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 멈춤 콘솔 `Failed to get corpse, stopping.` → `[Stop] Failed to get corpse (지역 x,y)`.
 
 ## clearBelt
 
@@ -92,3 +107,6 @@
 
 ### 261028 Claude: 판별 줄 삭제 (`4e6087b`, 사용자 요청, 옛 handoff 3-49)
 - `scriptBroadcast("town:…")` 4줄 삭제(옛 handoff 3-37 단계 표시, `rejected.md` PartyThread). 확인은 `clearBelt` 같은 항목.
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- trace → `Misc.print("[visitTown] Failed: Arreat Summit")`·`[visitTown] Start by=스크립트 tick=`·`[visitTown] Back tick=`. `goToTown` 실패 trace → `[goToTown] Failed: take TP | startTick= made=`. `moveToSpot`의 `alkor error`(빨강, 90초) → 콘솔 `[Quit] Alkor not found (지역 x,y)`(기본색, `quit()`은 그대로). `initNPC`·`MiniShopBot` 머리 위 글자 → `Misc.print`.

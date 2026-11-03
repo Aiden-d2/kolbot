@@ -33,11 +33,23 @@ var D2Bot = {
 				profile: me.profile,
 				func: "printToConsole",
 				args: [JSON.stringify(printObj)]
-			};
-
-		print("[console] " + msg);	//261021 the console line in the d2bs log too
+			},
+			d, pad, kind;	//261103 shared console file
 
 		sendCopyData(null, this.handle, 0, JSON.stringify(obj));
+
+		// the same line to the shared console file of all profiles: [YYYY/MM/DD HH:MM:SS] <profile> <kind> msg. The kind stands for the colour the file cannot keep	//261103
+		if (typeof Misc === "object" && Misc.fileAction) {	//261103 threads without Misc (MapThread) only send to the manager
+			d = new Date();	//261103
+			pad = function (n) { return (n < 10 ? "0" : "") + n; };	//261103
+			kind = !me.ingame ? "OOG" : ({7: "Flow", 8: "Item", 5: "Item", 4: "Exp", 9: "Red", 10: "Error"})[color] || "Quit";	//261103 0 (default) = early quit reason
+
+			if (!dopen("_cache/trace/")) {	//261103 same as Misc.trace
+				dopen("_cache/").create("trace");
+			}
+
+			Misc.fileAction("_cache/trace/Console.txt", 2, "[" + d.getFullYear() + "/" + pad(d.getMonth() + 1) + "/" + pad(d.getDate()) + " " + pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds()) + "] <" + me.profile + "> <" + kind + "> " + msg + "\n");	//261103
+		}
 	},
 
 	printToItemLog: function (itemObj) {
@@ -683,7 +695,7 @@ MainLoop:
 
 		me.blockMouse = true;
 
-		print("Creating Game: " + name);
+		Misc.print("[Starter] Create game: " + name);	//261103 log policy
 		ControlAction.click(6, 594, 433, 172, 32);
 
 		me.blockMouse = false;
@@ -1217,7 +1229,7 @@ MainLoop:
 				break;
 			case 30: // char name exists (text box 4, 268, 320, 264, 120)
 				this.charNameTaken = this.readText(4, 268, 320, 264, 120);	//261001
-				Misc.trace("Character name taken: " + info.charName + " \"" + this.charNameTaken + "\"");	//261001
+				Misc.print("[makeCharacter] Failed: name taken " + info.charName + " | " + this.charNameTaken);	//261001	//261103 log policy
 				ControlAction.click(6, 351, 337, 96, 32);
 				ControlAction.click(6, 33, 572, 128, 35);
 
@@ -1276,11 +1288,11 @@ MainLoop:
 	}
 };
 
-// Out-of-game log (log rules, 261001): grey console "event: target - action (loc N)", the same line to the trace ([OOG loc N] by Misc.trace)	//261102 comment
+// Out-of-game log (log rules, 261001): grey console "event: target - action (loc N)", the same line with the detail to the print	//261102 comment	//261103 trace -> print
 var OOGLog = {
 	print: function (text, detail) {
 		D2Bot.printToConsole(text + " (loc " + getLocation() + ")", 10);
-		Misc.trace(text + (detail ? " | " + detail : ""));
+		print(text + (detail ? " | " + detail : "") + " (loc " + getLocation() + ")");	//261103 log policy: trace -> print
 	},
 
 	// log, ask D2Bot# to stop this profile and wait for it

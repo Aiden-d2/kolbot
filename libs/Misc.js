@@ -395,7 +395,7 @@ MainLoop:
 
 		// Charged skills must be cast from right hand
 		if (hand === undefined || hand === 3 || item) {
-			item && hand !== 0 && print('[ÿc9Warningÿc0] charged skills must be cast from right hand');
+			item && hand !== 0 && Misc.print('[setSkill] Charged skills must be cast from right hand');	//261103 log policy
 			hand = 0;
 		}
 
@@ -491,7 +491,7 @@ var Equip = {
 		Config.TierNow[key] = {tier: eq.tier, str: eq.str, dex: eq.dex};
 		
 		if (!skipLog) {
-			print("equipped: [" + key + "] " + eq.tier);
+			Misc.print("[Equip] " + key + " tier=" + eq.tier);	//261103 log policy
 		}
 		
 		return true;
@@ -870,7 +870,7 @@ var Grant = {
 		Config.TierMerc[key] = {merc: eq.tier, str: eq.str, dex: eq.dex};
 		
 		if (!skipLog) {
-			print("granted: [" + key + "] " + eq.tier);
+			Misc.print("[Grant] " + key + " tier=" + eq.tier);	//261103 log policy
 		}
 		
 		return true;
@@ -879,7 +879,7 @@ var Grant = {
 	updateStat: function (merc) {
 		Config.MercStat = {id: merc.classid, str: merc.getStat(0), dex: merc.getStat(2), lvl: merc.getStat(12)};  //260804
 		
-		print("updateMercStat");	//261007
+		Misc.print("[Grant] updateMercStat");	//261007	//261103 log policy
 		
 		return true;
 	},
@@ -2089,11 +2089,12 @@ var Misc = {
 	// Go to town when low on hp/mp or when out of potions. can be upgraded to check for curses etc.
 	townCheck: function () {
 		var i, potion, check,
+			need = [],	//261103 log policy: which potions, printed once after the belt loop
 			needhp = true,
 			needmp = true;
 
-		// Can't tp from uber trist or when dead
-		if (me.area === 136 || me.area === 120 || me.dead) {
+		// Can't tp when dead (uber trist and Arreat Summit: below, after the need is known)	//261103
+		if (me.dead) {	//261103 136 / 120 moved below the need check
 			return false;
 		}
 		
@@ -2115,7 +2116,7 @@ var Misc = {
 							}
 
 							if (needhp) {
-								me.overhead("We need healing potions");	//eom
+								need.indexOf("healing") === -1 && need.push("healing");	//261103 log policy: overhead -> one print after the loop
 
 								check = true;
 							}
@@ -2135,7 +2136,7 @@ var Misc = {
 							}
 
 							if (needmp) {
-								me.overhead("We need mana potions");	//eom
+								need.indexOf("mana") === -1 && need.push("mana");	//261103 log policy: overhead -> one print after the loop
 
 								check = true;
 							}
@@ -2148,10 +2149,18 @@ var Misc = {
 		}
 
 		if (check) {
+			if (me.area === 136 || me.area === 120) {	//261103 can't tp from uber trist / Arreat Summit (was the first check of this function)
+				me.overhead("Cannot open TP");	//261103 log policy: shown here (the TownChicken line never ran)
+
+				return false;
+			}
+
+			if (need.length) {	//261103
+				this.print("[townCheck] Need " + need.join(" and ") + " potions");	//261103 log policy
+			}
+
 			if (getScript(true).name.toLowerCase() === "default.dbj") {	//261021 default goes itself: no pause, so no team message is dropped. Other scripts (TownChicken inside visitTown, MapHelper) keep the message
-				me.overhead("Town check (direct)");
-				print("Town check (direct)");
-				Misc.trace("Town check (direct)");
+				this.print("[townCheck] Direct");	//261103 log policy: overhead, print, trace -> one print
 				Town.visitTown();
 
 				return true;
@@ -2271,7 +2280,7 @@ var Misc = {
 			unit = getUnit(-1, name);
 
 		if (!unit) {
-			print("player not found");
+			Misc.print("[spy] Failed: player not found");	//261103 log policy
 
 			return false;
 		}
@@ -2339,15 +2348,20 @@ MainLoop:
 		return Pather.getAreaName(me.area) + " " + me.x + "," + me.y;
 	},
 
+	// print line of the log rules: colour codes removed (the d2bs log keeps them as letters), in game the place at the end	//261103
+	print: function (msg) {	//261103
+		print(String(msg).replace(/ÿc[0-9!"+<:;.*]/g, "") + (me.ingame ? " (" + this.where() + ")" : ""));	//261103
+	},
+
 	quitReason: "",	//260930 set by quitGame: this script is on its way out (AutoSmurf prints "Script ended" only without it)
 
 	// early quit: the reason once (a loop may call it again until the game closes), then quit. every profile prints its own	//261001
 	quitGame: function (reason, detail) {	//260930	//261001 console argument removed: every profile prints
 		if (!this.quitReason) {
 			this.quitReason = reason;
-			D2Bot.printToConsole(reason + " (" + this.where() + ")");	//261002 red -> default color: red is left to chicken / death
+			D2Bot.printToConsole("[Quit] " + reason + " (" + this.where() + ")");	//261002 red -> default color: red is left to chicken / death	//261103 log policy: [Quit]
 
-			this.trace("[Quit] " + reason + (detail ? ": " + detail : ""));
+			this.print("[Quit] " + reason + (detail ? " | " + detail : ""));	//261103 log policy: trace -> print
 		}
 
 		scriptBroadcast("quit");
@@ -2359,11 +2373,11 @@ MainLoop:
 	caughtError: function (place, e) {	//260930
 		var msg = e && e.message ? e.message : String(e);
 
-		this.trace("[Error] " + place + ": " + msg + (e && e.fileName ? " (" + e.fileName.substring(e.fileName.lastIndexOf("\\") + 1) + " #" + e.lineNumber + ")" : ""));
+		print("[Error] " + place + ": " + msg + (e && e.fileName ? " (" + e.fileName.substring(e.fileName.lastIndexOf("\\") + 1) + " #" + e.lineNumber + ")" : "") + " (" + this.where() + ")");	//261103 log policy: trace -> print
 
 		if (!this.caughtErrors[place]) {
 			this.caughtErrors[place] = true;
-			D2Bot.printToConsole(place + ": " + msg + " (" + this.where() + ")", 10);
+			D2Bot.printToConsole("[Error] " + place + ": " + msg + " (" + this.where() + ")", 10);	//261103 log policy: [Error]
 		}
 	},
 
@@ -2372,21 +2386,16 @@ MainLoop:
 
 	// Report script errors to logs/ScriptErrorLog.txt
 	errorReport: function (error, script) {
-		var i, date, dateString, msg, oogmsg, filemsg, source, stack,
+		var i, oogmsg, detail, source, stack,	//261103 log policy: ScriptErrorLog.txt removed (date, msg, filemsg)
 			stackLog = "";
 
-		date = new Date();
-		dateString = "[" + new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0,-5).replace(/-/g, '/').replace('T', ' ') + "]";
-
 		if (typeof error === "string") {
-			msg = error;
-			oogmsg = error.replace(/ÿc[0-9!"+<:;.*]/gi, "");
-			filemsg = dateString + " <" + me.profile + "> " + error.replace(/ÿc[0-9!"+<:;.*]/gi, "") + "\n";
+			oogmsg = "[Error] " + error.replace(/ÿc[0-9!"+<:;.*]/gi, "");	//261103 log policy: [Error]
+			detail = "";	//261103
 		} else {
 			source = error.fileName.substring(error.fileName.lastIndexOf("\\") + 1, error.fileName.length);
-			msg = "ÿc1Error in ÿc0" + script + " ÿc1(" + source + " line ÿc1" + error.lineNumber + "): ÿc1" + error.message;
-			oogmsg = " Error in " + script + " (" + source + " #" + error.lineNumber + ") " + error.message + " (Area: " + me.area + ", Ping:" + me.ping + ", Game: " + me.gamename + ")";
-			filemsg = dateString + " <" + me.profile + "> " + msg.replace(/ÿc[0-9!"+<:;.*]/gi, "") + "\n";
+			oogmsg = "[Error] " + script + ": " + error.message + " (" + source + " #" + error.lineNumber + ")";	//261103 log policy: [Error] script: message (file #line)
+			detail = " | area=" + me.area + " ping=" + me.ping + " game=" + me.gamename;	//261103 the print keeps the detail
 
 			if (error.hasOwnProperty("stack")) {
 				stack = error.stack;
@@ -2411,7 +2420,7 @@ MainLoop:
 			}
 
 			if (stackLog) {
-				filemsg += "Stack: " + stackLog + "\n";
+				detail += " | stack=" + stackLog;	//261103 was the Stack line of ScriptErrorLog.txt
 			}
 		}
 
@@ -2419,21 +2428,12 @@ MainLoop:
 			D2Bot.printToConsole(oogmsg, 10);
 		}
 
-		this.trace("[Error] " + oogmsg.trim(), true);	//260930 was showConsole() + print(msg): errors go to the console and the trace, print keeps the game flow
-		this.fileAction("_cache/trace/ScriptErrorLog.txt", 2, filemsg);
+		print(oogmsg + detail);	//261103 log policy: trace -> print (no place: may be out of game)
 
 		if (this.screenshotErrors) {
 			takeScreenshot();
 			delay(500);
 		}
-	},
-
-	debugLog: function (msg) {
-		if (!Config.Debug) {
-			return;
-		}
-
-		debugLog(me.profile + ": " + msg);
 	},
 
 	// Use a NPC menu. Experimental function, subject to change
@@ -2677,13 +2677,13 @@ var Experience = {
 
 		if (gain) {
 			D2Bot.printToConsole(string, 4);
-			print(string);	//260610
+			Misc.print(string);	//260610	//261103 log policy
 
 			if (me.getStat(12) > DataFile.getStats().level) {
 			}
 		} else {	//260910
-			D2Bot.printToConsole("no exp" + getGameTime, 4);
-			print("no exp" + getGameTime);
+			D2Bot.printToConsole("No exp" + getGameTime, 4);	//261103 log policy
+			Misc.print("No exp" + getGameTime);	//261103 log policy
 		}
 	}
 };
@@ -2762,7 +2762,7 @@ var Packet = {
 		}
 
 		if (talk.keys >= 20) {	//261006 only when every space was used and the talk may still be on
-			Misc.trace("[TK] talk skipped " + talk.keys + " npc:" + npc.name);
+			Misc.print("[endTalk] Talk skipped keys=" + talk.keys + " npc=" + npc.name);	//261103 log policy
 		}
 
 		if (!me.automap) {
