@@ -51,11 +51,17 @@
 - 콘솔 5줄 삭제(`no random path`, `original path`, `no original path`, `adjusted path`, `fixed path`, 사용자 임시 확인용이었음). random 되돌림 trace `no random path`·`original path`와 trace만 있던 `if` 블록 삭제(3-50 검증 통과, 되돌림 동작은 그대로).
 - 남김(trace만): 원래 좌표에도 경로가 없을 때의 사슬 `no original path` → `adjusted path` / `no adjusted path` → `fixed path` → throw. 아케인처럼 목표에 길이 없는 경우를 추적한다(사용자 261030).
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 길찾기 사슬 trace(`no original path` → `adjusted path` / `no adjusted path` → `fixed path`)는 임시 trace로 그대로(사용자 261102). 사슬 끝 throw는 잡힌 자리의 `[Error]`(콘솔·print)로 남는다. `SafeTele` 실패 trace → `Misc.print("[SafeTele] Failed: teleportTo | safeNode=x,y dist=D")`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
 ## teleportTo
 
 ### 260930 Claude: 시전 동작 기준 대기
 - 고정 대기 대신 `me.attacking` 기준: max(200, ping×2) 안에 시전 동작이 안 시작되면 바로 재시전, 시작됐으면 끝날 때까지 기다리고(겹쳐 시전 안 함), 끝났는데 제자리면 바로 재시전. 회차당 최대 2초 × 10회. maxTeleDistance(45) 검사 삭제.
 - 근거: 서버가 받아들인 요청도 1초 가까이 걸릴 수 있어, 짧은 대기는 느린 요청을 겹쳐 보내게 만들었다.
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `[teleportTo failed] attempt:` trace → `Misc.print("[teleportTo] Retry N: dist=D ping=P")`(area 지움, 끝에 위치).
 
 ## moveToUnit
 
@@ -85,21 +91,33 @@
 - 2초가 필요 없는가(사용자 261102 질문): 대기는 지역이 바뀌는 순간 끝나므로 2초는 첫 클릭 성공을 늦추지 않고, 먹히지 않은 클릭마다 1초를 더한다(코드 읽음). 261102 로그에서 비용은 timeout 약 70줄 ≈ 60~70초, 이득은 2초 넘게 걸린 재시도 16건이 모두 "옆 자리 이동이 취소한 늦은 첫 클릭"이었다고 해도 최대 약 17초. 늦게 먹힌 첫 클릭 6건은 옆 자리 이동 중에도 그대로 넘어갔다. 재시도가 버려진 클릭인지 늦은 클릭인지는 로그로 가르지 못함.
 - 1초 확정(사용자 261102). `[useUnit] ok` trace와 측정 변수 `start` 삭제(261102).
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `[useUnit] timeout iter:` trace → `Misc.print("[useUnit] Retry N: timeout | dist= ping= id= target= unit=x,y")`(area 지움). 3-60 `[useUnit] nearest` trace는 그대로. `ArreatSummit Gate` → `[Pather] Arreat Summit gate`.
+
 ## useWaypoint
 
 ### 260930 사용자: 루트 골레인 Warriv 경유 (의도)
 - 루트 골레인(40)에서 Warriv가 50 안이면 1막 경유. 2막 시작점에서 WP가 멀어 1막 WP가 빠르다.
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 머리 위 글자 `Trying to get the waypoint`·`waypoint retry N` → `Misc.print("[useWaypoint] …")`, `[WP]` trace → `[useWaypoint] Retry N: wp.area= target=`.
 
 ## makePortal
 
 ### 260930 Claude: 늦게 뜬 포털 처리
 - `oldGid`를 첫 시전 전에 한 번만 잡는다(매 회차 다시 잡아 늦게 뜬 내 포털을 옛것으로 보고 다시 시전하던 문제). 회차 시작에 늦게 뜬 포털이 있으면 다시 시전하지 않고 쓴다. 대기 max(1000, ping×2+300).
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- trace → `Misc.print("[makePortal] Late|Existing portal used | try= gid=")`, `[makePortal] Retry N: cast again`.
+
 ## usePortal
 
 ### 260930 Claude: 대기와 로딩, 빨간 포털
 - 파란 포털 대기 max(1000, ping×2+300), 빨간 포털 1500ms. 로딩 중(`gameReady` false)엔 대기·재전송 없음. 성공 판정은 로딩 뒤(`me.area`는 로딩 중 undefined). flash(3회마다)는 유지.
 - 근거: 260926 `usePortal 342` 로그 47회 전부 102→103 성공, 1회 35·2회 9·3~5회 3, 성공은 전송 뒤 약 1초 안. 확인: 261006 로그에서 빨간 포털 통과(옛 인게임 검증 2번).
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `usePortal failed …` trace → `Misc.print("[usePortal] Failed: target=… | owner= unit= pre= tick= tries= portals=")`.
 
 ## goWP / getWP
 
@@ -110,3 +128,6 @@
 - getWP가 웨이까지 > 5일 때 부르는 `moveToUnit(wp, 0, 0, false, false, true)`에서 random 인자를 지움. goWP(프리셋 > 10)의 random은 유지.
 - 이유: 대각 오프셋(약 7.1) 프로필은 도착해도 늘 5를 넘고, 오프셋 5 프로필도 1칸 어긋나면 넘어 부를 때마다 반대편으로 왕복했다(플라이 소서 웨이 착지 버벅임, 사용자 관찰).
 - 확인: 261023 사용자 육안 검증 통과.
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `going to nearest WP` → `[goWP] Going to nearest WP`, trace `[goWP] Failed …` → `[goWP] Failed: 10 attempts`, `[getWP] …` → `[getWP] Failed: waypoint unit not found`·`[getWP] Retry N: menu not opened`(모두 `Misc.print`, area 지움).

@@ -427,7 +427,7 @@ var Pather = {
 						continue;
 					}
 					
-					Misc.trace("[SafeTele] teleportTo FAILED - safeNode:(" + checkedNode.x + "," + checkedNode.y + ") dist:" + Math.floor(getDistance(me.x, me.y, checkedNode.x, checkedNode.y)));	//260930 print -> trace (diagnostic)
+					Misc.print("[SafeTele] Failed: teleportTo | safeNode=" + checkedNode.x + "," + checkedNode.y + " dist=" + Math.floor(getDistance(me.x, me.y, checkedNode.x, checkedNode.y)));	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 				}
 			}
 
@@ -571,7 +571,7 @@ MainLoop:
 			}
 			
 			if (i === 9) {	// 260528
-				Misc.trace("[teleportTo failed] attempt:" + (i + 1) + " dist:" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping:" + me.ping + " area:" + me.area);	//260930 print -> trace (diagnostic)
+				Misc.print("[teleportTo] Retry " + (i + 1) + ": dist=" + Math.floor(getDistance(me.x, me.y, x, y)) + " ping=" + me.ping);	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 			}
 		}
 		
@@ -1134,7 +1134,7 @@ ModeLoop:
 				delay(Math.max(me.ping * 2, 300));	//260903
 				
 				if (id === 547) {	//260921
-					Misc.trace("ArreatSummit Gate");	//260930 print -> trace (diagnostic)
+					Misc.print("[Pather] Arreat Summit gate");	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 					delay(3000);
 				}
 			}
@@ -1163,7 +1163,7 @@ ModeLoop:
 				delay(10);
 			}
 			
-			Misc.trace("[useUnit] timeout iter:" + i + " dist:" + Math.floor(getDistance(me, unit)) + " ping:" + me.ping + " area:" + me.area + " id:" + id + " target:" + targetArea + " unit:" + unit.x + "," + unit.y);	//260622	//260930 print -> trace (diagnostic)	//261021 id, target, unit spot (which exit it took)
+			Misc.print("[useUnit] Retry " + i + ": timeout | dist=" + Math.floor(getDistance(me, unit)) + " ping=" + me.ping + " id=" + id + " target=" + targetArea + " unit=" + unit.x + "," + unit.y);	//260622	//260930 print -> trace (diagnostic)	//261021 id, target, unit spot (which exit it took)	//261103 log policy: trace -> print
 			
 			if (moved()) {	//261022 moved in right at the timeout: no side step on the old area's spot
 				delay(100);
@@ -1284,7 +1284,7 @@ ModeLoop:
 
 						if (!getWaypoint(this.wpAreas.indexOf(targetArea))) {
 							me.cancel();
-							me.overhead("Trying to get the waypoint");
+							Misc.print("[useWaypoint] Trying to get the waypoint");	//261103 log policy: overhead -> print
 
 							if (this.getWP(targetArea)) {	//261002 goWP -> getWP: activate the missing waypoint
 								return true;
@@ -1300,7 +1300,7 @@ ModeLoop:
 				}
 				
 				if (!getUIFlag(0x14)) {
-					me.overhead("waypoint retry " + (i + 1));	//eom
+					Misc.print("[useWaypoint] Retry " + (i + 1));	//eom	//261103 log policy: overhead -> print
 					retry = Math.min(i + 1, 5);
 					coord = CollMap.getRandCoordinate(me.x, -5 * retry, 5 * retry, me.y, -5 * retry, 5 * retry);
 					this.moveTo(coord.x, coord.y);
@@ -1333,7 +1333,7 @@ ModeLoop:
 				
 				Packet.flash(me.gid);
 			} else {
-				Misc.trace("[WP] wp.area:" + (wp ? wp.area : "null") + " me.area:" + me.area + " target:" + targetArea + " retry:" + i);	// 260517	//260930 print -> trace (diagnostic)
+				Misc.print("[useWaypoint] Retry " + i + ": wp.area=" + (wp ? wp.area : "null") + " target=" + targetArea);	// 260517	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 				Packet.flash(me.gid);
 			}
 
@@ -1394,12 +1394,12 @@ ModeLoop:
 			portal = newPortal();	//260930 a late portal from the last cast: use it instead of casting again
 
 			if (portal) {	//261004 was i > 0: try 0 = a portal of mine that was already there (no cast)
-				Misc.trace("makePortal " + (i > 0 ? "late" : "existing") + " portal used try:" + i + " gid:" + portal.gid);	//260930	//261004 existing, gid
+				Misc.print("[makePortal] " + (i > 0 ? "Late" : "Existing") + " portal used | try=" + i + " gid=" + portal.gid);	//260930	//261004 existing, gid	//261103 log policy: trace -> print
 			}
 
 			if (!portal) {
 				if (i > 0) {
-					Misc.trace("makePortal cast again try:" + i);	//260930
+					Misc.print("[makePortal] Retry " + i + ": cast again");	//260930	//261103 log policy: trace -> print
 				}
 
 				tpTome = me.findItem("tsc", 0, 3) || me.findItem("tbk", 0, 3); //260712
@@ -1546,7 +1546,7 @@ ModeLoop:
 				} while (p.getNext());
 			}
 
-			Misc.trace("usePortal failed target:" + targetArea + " owner:" + owner + " unit:" + (unit ? unit.gid : "-") + " pre:" + preArea + " tick:" + startTick + "-" + getTickCount() + " tries:" + tries.join(" ") + " portals:" + (list.join(" ") || "none"));
+			Misc.print("[usePortal] Failed: target=" + targetArea + " | owner=" + owner + " unit=" + (unit ? unit.gid : "-") + " pre=" + preArea + " tick=" + startTick + "-" + getTickCount() + " tries=" + tries.join(" ") + " portals=" + (list.join(" ") || "none"));	//261103 log policy: trace -> print
 		}
 
 		return result;
@@ -1712,12 +1712,12 @@ MainLoop:
 			presetUnit = getPresetUnit(me.area, 2, wpIDs[i]);
 
 			if (presetUnit) {
-				print("going to nearest WP");
+				Misc.print("[goWP] Going to nearest WP");	//261103 log policy
 				attempt = 0;	//eom 260411
 
 				while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 10) {
 					if (attempt >= 10) {	//eom 260411
-						Misc.trace("[goWP] Failed to reach WP after 10 attempts. area:" + me.area);	//260930 print -> trace (diagnostic)
+						Misc.print("[goWP] Failed: 10 attempts");	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 						break;
 					}
 					
@@ -1762,7 +1762,7 @@ MainLoop:
 			wp = getUnit(2, "waypoint");
 
 			if (!wp || wp.area !== me.area) {
-				Misc.trace("[getWP] waypoint unit not found. area:" + me.area);
+				Misc.print("[getWP] Failed: waypoint unit not found");	//261103 log policy: trace -> print
 
 				break;
 			}
@@ -1779,7 +1779,7 @@ MainLoop:
 				delay(me.ping + 200);
 				me.cancel();
 			} else {
-				Misc.trace("[getWP] waypoint menu not opened. try:" + i + " area:" + me.area);
+				Misc.print("[getWP] Retry " + i + ": menu not opened");	//261103 log policy: trace -> print
 				Packet.flash(me.gid);
 				delay(me.ping * 2 + 200);
 			}

@@ -81,15 +81,15 @@ function AutoSmurf() {
 	this.checkRole = function () { // Checks Config settings to determine role.
 		if (Team.Leader === me.profile) {
 			Leader = true;
-			me.overhead("I am the Leader");
+			Misc.print("[Role] Leader");	//261103 log policy: overhead -> print
 			
 			Config.SafeTele.Enabled = true;
-			print("SafeTele: " + Config.SafeTele.Enabled);
+			Misc.print("[Config] SafeTele=" + Config.SafeTele.Enabled);	//261103 log policy
 		} else if (Team.Boer === me.profile) {
 			Boer = true;
-			me.overhead("I am the Boer");
+			Misc.print("[Role] Boer");	//261103 log policy: overhead -> print
 		} else {
-			me.overhead("I am a Follower");
+			Misc.print("[Role] Follower");	//261103 log policy: overhead -> print
 		}
 	};
 
@@ -98,7 +98,7 @@ function AutoSmurf() {
 		
 		while (book) {	//261012
 			if (book.drop()) {
-				Misc.trace("dropping radament book");
+				Misc.print("[start] Dropping Radament book");	//261103 log policy: trace -> print
 			}
 			
 			book = me.findItem(552);	//261020
@@ -155,7 +155,7 @@ function AutoSmurf() {
 		if (mercLvl && !Merc.hire(Config.MercSkill)) {
 			hireMerc = true;
 			Messaging.sendToList(Team.Profiles, "hireMerc");
-			print("hireMerc: " + hireMerc);
+			Misc.print("[Config] hireMerc=" + hireMerc);	//261103 log policy
 		}
 		
 		Pickit.pickItems();
@@ -205,24 +205,24 @@ function AutoSmurf() {
 
 		if (!Config.Tiered && me.diff > 0) {
 			Config.MiniShopBot = true;
-			print("MiniShopBot: " + Config.MiniShopBot);
+			Misc.print("[Config] MiniShopBot=" + Config.MiniShopBot);	//261103 log policy
 		}
 	
 		if (me.diff === 2 && !farmingON && !Config.Tiered) {
 			farmingON = true;
 			Messaging.sendToList(Team.Profiles, "farmingON");
-			print("farmingON");
+			Misc.print("[Config] farmingON");	//261103 log policy
 		}
 		
 		if (Config.Tiered) {
-			print("Tiered: " + Config.Tiered);
+			Misc.print("[Config] Tiered=" + Config.Tiered);	//261103 log policy
 		}
 		
 		if (mercLvl) {
 			Config.UseMerc = true;
 			Config.UseMercHP = 70;
 			scriptBroadcast(JSON.stringify({useMerc: Config.UseMerc, useMercHP: Config.UseMercHP, useMercRejuv: Config.UseMercRejuv})); //260808
-			print("UseMerc: " + Config.UseMerc + " HP: " + Config.UseMercHP);
+			Misc.print("[Config] UseMerc=" + Config.UseMerc + " UseMercHP=" + Config.UseMercHP);	//261103 log policy
 		}
 		
 		if (Leader && me.charlvl > 17 && me.gold < 5000) {
@@ -264,7 +264,7 @@ function AutoSmurf() {
 			}
 			
 			if (essA || essM) {	//260828
-				print("Token needed");
+				Misc.print("[toggle] Token needed");	//261103 log policy
 			}
 			
 			var kT = (me.findItems(647, 0) || []).length,	//260831
@@ -290,7 +290,7 @@ function AutoSmurf() {
 			}
 			
 			if (keyT || keyH || keyD) {	//260809
-				print(keyMsg);	//260831
+				Misc.print("[toggle] " + keyMsg);	//260831	//261103 log policy
 			}
 		}
 	};
@@ -398,9 +398,12 @@ function AutoSmurf() {
 			range = 20;
 		}
 		
+		Misc.print("[okCount] Waiting");	//261103 log policy: a profile without this line did not come in
 		Messaging.sendToList(Team.Profiles, "okCount");
 
 		while (!teamOk) {
+			me.overhead("Waiting: " + this.missing("okCount").join(", "));	//261103 log policy: who has not come yet (every tick)
+
 			if (!me.inTown) {
 				Attack.clear(range);	//260727 //260926
 			}
@@ -454,8 +457,6 @@ function AutoSmurf() {
 			}
 		}
 		
-		me.overhead("OK");
-		
 		delete teamNames.teamCount;	//261021
 		teamOk = false;	//261021 cleared here, not at the okCount phase end: a teamOk sent before its sender's teamCount has always come by now
 	};
@@ -478,7 +479,7 @@ function AutoSmurf() {
 			}
 			
 			if (dote.length < 4) {
-				me.overhead("Buying antidote potions");
+				Misc.print("[buffCount] Buying antidote potions");	//261103 log policy: overhead -> print
 				
 				while (!akara || !akara.openMenu()) { // Try more than once to interact with Kashya.
 					Packet.flash(me.gid);
@@ -502,7 +503,7 @@ function AutoSmurf() {
 					me.cancel();
 				}
 			} else {
-				me.overhead("Antidote potions ready");
+				Misc.print("[buffCount] Antidote potions ready");	//261103 log policy: overhead -> print
 			}
 			
 			if (me.diff === 0) {	//261014
@@ -521,7 +522,7 @@ function AutoSmurf() {
 
 		if (act === 2) {
 			if (thaw.length < 4) {
-				me.overhead("Buying thawing potions");
+				Misc.print("[buffCount] Buying thawing potions");	//261103 log policy: overhead -> print
 				
 				while (!lysander || !lysander.openMenu()) { // Try more than once to interact with Kashya.
 					Packet.flash(me.gid);
@@ -545,7 +546,7 @@ function AutoSmurf() {
 					me.cancel();
 				}
 			} else {
-				me.overhead("Thawing potions ready");
+				Misc.print("[buffCount] Thawing potions ready");	//261103 log policy: overhead -> print
 			}
 			
 			if (Leader) {
@@ -578,7 +579,7 @@ function AutoSmurf() {
 			if (Leader) {
 				Pather.usePortal(37, null);
 				Pather.makePortal();
-				me.overhead("tpReady");
+				Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 				Messaging.sendToList(Team.Profiles, "tpReady");
 				delay(1000);
 			} else {
@@ -599,17 +600,17 @@ function AutoSmurf() {
 
 	this.syncBO = function (act) { //260813
 		if (act < 0 || act > 5) {
-			print("syncBO failed: invalid act");
+			Misc.print("[syncBO] Failed: invalid act");	//261103 log policy
 			return false;
 		}
 		
 		if (!Team.Boer) {
-			print("syncBO failed: no Boer in my team");
+			Misc.print("[syncBO] Failed: no Boer in my team");	//261103 log policy
 			return false;
 		}
 		
 		if (!this.partyLevel(24)) {
-			print("syncBO failed: lower level");
+			Misc.print("[syncBO] Failed: lower level");	//261103 log policy
 			return false;
 		}
 		
@@ -716,8 +717,7 @@ function AutoSmurf() {
 			syncWP = false;
 		}
 		
-		print(msg);
-		me.overhead(msg);
+		Misc.print("[syncBO] " + msg);	//261103 log policy
 		
 		if (me.area !== destination) {
 			Town.goToTown();
@@ -766,8 +766,7 @@ function AutoSmurf() {
 			act = 5;
 		}
 		
-		print(msg);
-		me.overhead(msg);
+		Misc.print("[syncWP] " + msg);	//261103 log policy
 
 		if (Leader) {
 			Pather.useWaypoint(destination);
@@ -815,8 +814,7 @@ function AutoSmurf() {
 				
 				Pickit.pickItem(goldPile);
 				
-				me.overhead("Picking up " + amount + " Gold");
-				Misc.trace("Picking up " + amount + " Gold");
+				Misc.print("[pickGold] Picking up " + amount + " gold");	//261103 log policy: trace -> print
 			}
 
 			if (me.getStat(14) >= me.charlvl * 10000) {
@@ -854,8 +852,7 @@ function AutoSmurf() {
 		while (me.getStat(14)) {
 			gold(me.getStat(14)); // Drop Gold
 
-			me.overhead("Dropping " + Math.round(dropGold) + " Gold");
-			Misc.trace("Dropping " + Math.round(dropGold) + " Gold");
+			Misc.print("[giveGold] Dropping " + Math.round(dropGold) + " gold");	//261103 log policy: trace -> print
 
 			delay(me.ping * 2 + 200);
 		}
@@ -876,8 +873,7 @@ function AutoSmurf() {
 				
 				Pickit.pickItem(goldPile);
 				
-				me.overhead("Retaking " + amount + " Gold");
-				Misc.trace("Retaking " + amount + " Gold");
+				Misc.print("[giveGold] Retaking " + amount + " gold");	//261103 log policy: trace -> print
 			}
 		}
 	};
@@ -911,10 +907,10 @@ function AutoSmurf() {
 		guardSeen = {};	//261006
 		guardStart = 0;	//261020 set at the first boss found
 
-		Misc.trace("bossGuard on: " + pct + "%");	//261020
+		Misc.print("[bossGuard] On pct=" + pct);	//261020	//261103 log policy: trace -> print
 
 		if (!pct) {
-			Misc.trace("bossGuard chicken off: pct 0 (now)");	//261004
+			Misc.print("[bossGuard] Chicken off: pct=0");	//261004	//261103 log policy: trace -> print
 			this.setLifeChicken(0);
 
 			fired = true;	//261006 pct 0 also watches the boss (seen / last seen alive in the bossEnd trace)
@@ -929,7 +925,7 @@ function AutoSmurf() {
 
 			if (!guardStart) {	//261020 the first boss found (any of them): 0s
 				guardStart = getTickCount();
-				Misc.trace("bossGuard found: " + unit.name + " " + hp + "%");
+				Misc.print("[bossGuard] Found " + unit.name + " hp=" + hp + "%");	//261103 log policy: trace -> print
 			}
 
 			if (!seen) {	//261006 last scan of each boss unit	//261020 first scan removed
@@ -958,7 +954,7 @@ function AutoSmurf() {
 			}
 
 			fired = true;	//261006 was Attack.bossScan = null
-			Misc.trace("bossGuard chicken off: " + unit.name + " " + hp + "%@" + ((getTickCount() - guardStart) / 1000).toFixed(1) + "s");	//261020 seconds after found
+			Misc.print("[bossGuard] Chicken off: " + unit.name + " hp=" + hp + "% t=" + ((getTickCount() - guardStart) / 1000).toFixed(1) + "s");	//261020 seconds after found	//261103 log policy: trace -> print
 			self.setLifeChicken(0);
 		};
 
@@ -977,7 +973,7 @@ function AutoSmurf() {
 		}
 
 		if (last) {	//261020 nothing when no boss was found
-			Misc.trace("bossGuard last: " + last.name + " " + last.hp1 + "%@" + (last.t1 / 1000).toFixed(1) + "s");
+			Misc.print("[bossGuard] Last " + last.name + " hp=" + last.hp1 + "% t=" + (last.t1 / 1000).toFixed(1) + "s");	//261103 log policy: trace -> print
 		}
 
 		guardSeen = null;
@@ -1003,7 +999,7 @@ function AutoSmurf() {
 			
 			Config.TownCheck = false;	//261013
 
-			Misc.trace("revive start");	//261004	//261020 the line's place is where I died
+			Misc.print("[bossEnd] Revive start");	//261004	//261020 the line's place is where I died	//261103 log policy: trace -> print
 
 			for (i = 0; i < 10 && !me.inTown; i += 1) {
 				if (me.mode === 17) {
@@ -1022,7 +1018,7 @@ function AutoSmurf() {
 			}
 
 			if (Config.LifeChicken !== guardChicken) {	//261020 the line only after a chicken off
-				Misc.trace("bossGuard chicken on: " + guardChicken + "%");
+				Misc.print("[bossGuard] Chicken on: " + guardChicken + "%");	//261103 log policy: trace -> print
 			}
 
 			this.setLifeChicken(guardChicken); // alive again, in town
@@ -1071,10 +1067,10 @@ function AutoSmurf() {
 			
 			Config.TownCheck = true;	//261013
 
-			Misc.trace("corpse picked");	//261004	//261020
+			Misc.print("[bossEnd] Corpse picked");	//261004	//261020	//261103 log policy: trace -> print
 		} else if (Config.LifeChicken !== guardChicken) {
 			this.setLifeChicken(guardChicken);
-			Misc.trace("bossGuard chicken on: " + guardChicken + "%");	//261004	//261020
+			Misc.print("[bossGuard] Chicken on: " + guardChicken + "%");	//261004	//261020	//261103 log policy: trace -> print
 		}
 
 		guardChicken = null;
@@ -1194,8 +1190,7 @@ function AutoSmurf() {
 			return false;
 		}
 
-		print("Traveling to " + Pather.getAreaName(destination));	//260922
-		me.overhead("Traveling to " + Pather.getAreaName(destination));	//260922
+		Misc.print("[travel] To " + Pather.getAreaName(destination));	//260922	//261103 log policy
 
 		Town.goToTown();
 	
@@ -1210,7 +1205,7 @@ function AutoSmurf() {
 		nextAreaIndex = areaIDs.indexOf(target.course[0]) + 1; // Index of next area
 		
 		//Misc.trace("Travel course: " + target.course);	//260930 print -> trace (diagnostic)
-		me.overhead("Travel course: " + target.course);
+		Misc.print("[travel] Course " + target.course);	//261103 log policy: overhead -> print
 
 		if (nextAreaIndex < areaIDs.length) { // If next area index is invalid, return true.
 			Messaging.sendToList(Team.Profiles, "travel");	//261026 actually traveling: the team's next okCount waits for me up to 10 min (handoff 2-25)
@@ -1224,7 +1219,7 @@ function AutoSmurf() {
 				me.overhead("nextAreaIndex: " + nextAreaIndex);
 				
 				//print("Next location name: " + Pather.getAreaName(areaIDs[nextAreaIndex]));	//260922
-				me.overhead("Next location name: " + Pather.getAreaName(areaIDs[nextAreaIndex]));	//260922
+				Misc.print("[travel] Next " + Pather.getAreaName(areaIDs[nextAreaIndex]));	//260922	//261103 log policy: overhead -> print
 
 				switch (areaIDs[nextAreaIndex]) { // Special actions for traveling to some areas
 				case 32: // Inner Cloister
@@ -1291,7 +1286,7 @@ function AutoSmurf() {
 
 						delay(10000);
 
-						me.overhead("Attempting to use any portal");
+						Misc.print("[travel] Attempting to use any portal");	//261103 log policy: overhead -> print
 
 						while (!Pather.usePortal(129, null)) {
 							delay(5000);
@@ -1409,7 +1404,7 @@ function AutoSmurf() {
 		var npc, time, tpTome, i,
 			preArea = me.area;
 
-		me.overhead("changeAct " + act);
+		Misc.print("[changeAct] To act " + act);	//261103 log policy: overhead -> print
 		
 		if (me.act === act) {
 			return true;
@@ -1554,7 +1549,7 @@ function AutoSmurf() {
 			return false;
 		}
 
-		me.overhead("Checking player in...");
+		Misc.print("[changeAct] Checking player in");	//261103 log policy: overhead -> print
 		
 		for (time = 0; time < 200; time += 1) {
 			if (this.playerIn()) {
@@ -1621,7 +1616,7 @@ function AutoSmurf() {
 					vanished += 1;
 
 					if (vanished > 3) {
-						Misc.trace(classid + " vanished");	//261021
+						Misc.print("[getQuestItem] Failed: " + classid + " vanished");	//261021	//261103 log policy: trace -> print
 
 						return false;
 					}
@@ -1629,30 +1624,28 @@ function AutoSmurf() {
 					delay(me.ping * 2 + 100);
 				} else {
 					if (Pickit.canMakeRoom()) {
-						me.overhead("Trying to make room for " + item.name);	//eom
-						Misc.trace("Trying to make room for " + item.name);	//261012
+						Misc.print("[getQuestItem] Making room for " + item.name);	//261012	//261103 log policy: trace -> print
 
 						Town.visitTown(); // Go to Town and do chores. Will throw an error if it fails to return from Town.
 					} else {
-						me.overhead("Not enough room for " + item.name);	//eom
-						Misc.trace("Not enough room for " + item.name);	//261012
+						Misc.print("[getQuestItem] Failed: not enough room for " + item.name);	//261012	//261103 log policy: trace -> print
 
 						return false;
 					}
 				}
 			} else {
-				Misc.trace(classid + " not found");	//261012
+				Misc.print("[getQuestItem] Failed: " + classid + " not found");	//261012	//261103 log policy: trace -> print
 				return false;
 			}
 		}
 
 		if (classid >= 553 && classid <= 555) {	//261021 Khalim's eye, heart, brain: on the pick (leader)
 			name = ["EYE", "HEART", "BRAIN"][classid - 553];
-			D2Bot.printToConsole("===" + name + "===", 7);
+			D2Bot.printToConsole("[" + name + "] Completed", 7);	//261103 log policy: section end
 		}
 		
 		if (classid === 92) {	//261022
-			D2Bot.printToConsole("=== STAFF ===", 7);
+			D2Bot.printToConsole("[STAFF] Completed", 7);	//261103 log policy: section end
 		}
 
 		return true;
@@ -1676,7 +1669,7 @@ function AutoSmurf() {
 				Storage.Inventory.MoveTo(items[i]);
 			}
 			
-			me.overhead("offEquip");
+			Misc.print("[offEquip] Start");	//261103 log policy: overhead -> print
 		}
 		
 		delay(1000);
@@ -1691,7 +1684,7 @@ function AutoSmurf() {
 		var amulet = me.findItem("vip"),
 			staff = me.findItem("msf");
 
-		me.overhead("cubingStaff");
+		Misc.print("[cubeStaff] Start");	//261103 log policy: overhead -> print
 
 		if (!staff || !amulet) {
 			return false;
@@ -1715,7 +1708,7 @@ function AutoSmurf() {
 			tick = getTickCount(),
 			preArea = me.area;
 
-		me.overhead("placeStaff");
+		Misc.print("[placeStaff] Start");	//261103 log policy: overhead -> print
 		
 		orifice = getUnit(2, 152);
 		
@@ -1746,14 +1739,14 @@ function AutoSmurf() {
 			brain = me.findItem(555),
 			flail = me.findItem(173);
 
-		me.overhead("cubeFlail");
+		Misc.print("[cubeFlail] Start");	//261103 log policy: overhead -> print
 		
 		if (me.findItem(174)) { // Already have the finished Flail.
 			return true;
 		}
 
 		if (!eye || !heart || !brain || !flail) {
-			print("cubeFlail failed: missing ingredient(s)");
+			Misc.print("[cubeFlail] Failed: missing ingredients");	//261103 log policy
 
 			return false;
 		}
@@ -1794,12 +1787,12 @@ function AutoSmurf() {
 
 			if (cursorItem) {
 				if (Storage.Inventory.CanFit(cursorItem)) {
-					me.overhead("Keeping weapon by force");
+					Misc.print("[equipFlail] Keeping weapon by force");	//261103 log policy: overhead -> print
 
 					Storage.Inventory.MoveTo(cursorItem);
 				} else {
 					me.cancel();
-					print("No room to keep weapon by force");
+					Misc.print("[equipFlail] Failed: no room to keep weapon");	//261103 log policy
 
 					cursorItem.drop();
 				}
@@ -1817,7 +1810,7 @@ function AutoSmurf() {
 		var i,
 			orb = getUnit(2, 404);
 
-		me.overhead("Smashing the Compelling Orb");
+		Misc.print("[placeFlail] Smashing the Compelling Orb");	//261103 log policy: overhead -> print
 
 		if (!orb) {
 			throw new Error("placeFlail: Couldn't find Compelling Orb");
@@ -1833,7 +1826,7 @@ function AutoSmurf() {
 			}
 		}
 
-		D2Bot.printToConsole("=== TRAVINCAL ===", 7);
+		D2Bot.printToConsole("[TRAVINCAL] Completed", 7);	//261103 log policy: section end
 
 		return true;
 	};
@@ -1921,7 +1914,7 @@ function AutoSmurf() {
 			return true;
 		};
 		
-		print("ÿc4=== [DEN] ===");	Misc.trace("=== [DEN] ===", true);	//260930
+		print("=== [DEN] ===");	//260930	//261103 log policy
 		
 		if (!me.getQuest(1, 1)) { // Haven't cleared the Den yet.
 			if (me.diff === 0) { // All characters grab Cold Plains Waypoint in Normal. Only the Teleporting Sorc grabs it in Nightmare and Hell.
@@ -1955,7 +1948,7 @@ function AutoSmurf() {
 				this.okCount();	//260922
 				
 				for (i = 0; i < 2; i += 1) {
-					me.overhead("Clearing retry " + i);
+					Misc.print("[DEN] Retry " + i + ": clearing");	//261103 log policy: overhead -> print
 
 					clearDen();	//260928
 
@@ -2004,7 +1997,7 @@ function AutoSmurf() {
 				Pather.teleport = false; // not teleporting in Den
 				
 				for (i = 0; i < 3; i += 1) {
-					me.overhead("Clearing retry " + i);
+					Misc.print("[DEN] Retry " + i + ": clearing");	//261103 log policy: overhead -> print
 
 					clearDen();	//260928
 
@@ -2052,7 +2045,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== DEN ===", 7);
+			D2Bot.printToConsole("[DEN] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -2068,7 +2061,7 @@ function AutoSmurf() {
 		}
 		
 		if (!me.getQuest(2, 1) && !me.getQuest(2, 0)) {
-			print("ÿc4=== [BLOOD] ===");	Misc.trace("=== [BLOOD] ===", true);	//260930
+			print("=== [BLOOD] ===");	//260930	//261103 log policy
 			
 			Pather.useWaypoint(3);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
@@ -2100,7 +2093,7 @@ function AutoSmurf() {
 		}
 		
 		if (!getWaypoint(2)) {	//261006
-			me.overhead("Getting waypoint...");
+			Misc.print("[BLOOD] Getting waypoint");	//261103 log policy: overhead -> print
 			
 			if (me.inTown) {
 				Pather.useWaypoint(3);
@@ -2140,7 +2133,7 @@ function AutoSmurf() {
 			me.cancel();
 			
 			if (Leader) {
-				D2Bot.printToConsole("=== BLOOD ===", 7);
+				D2Bot.printToConsole("[BLOOD] Completed", 7);	//261103 log policy: section end
 			}
 		}
 
@@ -2153,7 +2146,7 @@ function AutoSmurf() {
 	this.cain = function () { // Dark-f: rewrite rescue cain
 		var i, j, akara, cain, slave, scroll1, scroll2, stoneA, stoneB, stoneC, stoneD, stoneE, spot;	//261002 spot
 
-		print("ÿc4=== [CAIN] ===");	Misc.trace("=== [CAIN] ===", true);	//260930
+		print("=== [CAIN] ===");	//260930	//261103 log policy
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -2164,7 +2157,7 @@ function AutoSmurf() {
 		if (!me.getQuest(4, 1)) { // not rescues Cain
 			if (me.diff === 0 && !getWaypoint(3)) {
 				
-				me.overhead("Getting waypoint...");
+				Misc.print("[CAIN] Getting waypoint");	//261103 log policy: overhead -> print
 				
 				Pather.useWaypoint(4);
 				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
@@ -2226,7 +2219,7 @@ function AutoSmurf() {
 			
 			if (!me.getQuest(4, 3) && !me.getQuest(4, 4)) {
 				//4,4redportal already open ; 4,3 holding scroll
-				me.overhead("Getting scroll...");
+				Misc.print("[CAIN] Getting scroll");	//261103 log policy: overhead -> print
 
 				if (!me.inTown) {
 					Town.goToTown();
@@ -2288,7 +2281,7 @@ function AutoSmurf() {
 				}
 			}
 			
-			me.overhead("Getting redportal...");
+			Misc.print("[CAIN] Getting red portal");	//261103 log policy: overhead -> print
 			
 			if (me.diff === 0) {
 				Pather.useWaypoint(4); //stoney field
@@ -2344,7 +2337,7 @@ function AutoSmurf() {
 			
 			Pather.teleport = true;
 			
-			me.overhead("Rescue cain");
+			Misc.print("[CAIN] Rescue");	//261103 log policy: overhead -> print
 
 			for (i = 0; i < 15; i += 1) {
 				if (Pather.usePortal(38)) {
@@ -2387,7 +2380,7 @@ function AutoSmurf() {
 					Town.goToTown();
 				}
 				
-				D2Bot.printToConsole("=== CAIN ===", 7);
+				D2Bot.printToConsole("[CAIN] Completed", 7);	//261103 log policy: section end
 			} else { // Dark-f: other teams goto town.
 				if (!Pather.usePortal(1, null)) {
 					Town.goToTown();
@@ -2429,7 +2422,7 @@ function AutoSmurf() {
 					25053, 5189,
 					25125, 5190];
 		
-		print("ÿc4=== [TRIST] ===");	Misc.trace("=== [TRIST] ===", true);	//260930
+		print("=== [TRIST] ===");	//260930	//261103 log policy
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -2488,7 +2481,7 @@ function AutoSmurf() {
 		Pather.teleport = true;
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== TRIST ===", 7);
+			D2Bot.printToConsole("[TRIST] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -2499,7 +2492,7 @@ function AutoSmurf() {
 	// add for Lv up when the partyLevel is less than the tristLvl
 	this.outer = function () {
 		
-		print("ÿc4=== [OUTER] ===");	Misc.trace("=== [OUTER] ===", true);	//260930
+		print("=== [OUTER] ===");	//260930	//261103 log policy
 		
 		if (!me.inTown) { // this.trist(); doesn't end in town.
 			Town.goToTown();
@@ -2559,7 +2552,7 @@ function AutoSmurf() {
 		Pather.getWP();	//261021 was clickWP
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== OUTER ===", 7);
+			D2Bot.printToConsole("[OUTER] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -2570,7 +2563,7 @@ function AutoSmurf() {
 	this.smith = function () {	//260531
 		var smith;
 		
-		print("ÿc4=== [SMITH] ===");	Misc.trace("=== [SMITH] ===", true);	//260930
+		print("=== [SMITH] ===");	//260930	//261103 log policy
 		
 		if (me.area !== 27) {
 			Town.goToTown();
@@ -2596,7 +2589,7 @@ function AutoSmurf() {
 			tick = getTickCount();
 			while (getDistance(me.x, me.y, smith.roomx * 5 + smith.x, smith.roomy * 5 + smith.y) > 15) {
 				if (getTickCount() - tick > 180 * 1000) {
-					print("Smith failed: moveTo");
+					Misc.print("[SMITH] Failed: moveTo");	//261103 log policy
 					break;
 				}
 				
@@ -2606,11 +2599,11 @@ function AutoSmurf() {
 			if (getUnit(1, 402)) {
 				Attack.clear(20);	//261002
 			} else {
-				print("Smith failed: getUnit");
+				Misc.print("[SMITH] Failed: getUnit");	//261103 log policy
 				return false;
 			}
 		} else {
-			print("Smith failed: getPresetUnit");
+			Misc.print("[SMITH] Failed: getPresetUnit");	//261103 log policy
 			return false;
 		}
 		
@@ -2619,7 +2612,7 @@ function AutoSmurf() {
 		this.okCount();
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== SMITH ===", 7);
+			D2Bot.printToConsole("[SMITH] Completed", 7);	//261103 log policy: section end
 		}
 		
 		if (!me.getQuest(3,1)) {
@@ -2653,7 +2646,7 @@ function AutoSmurf() {
 					Pather.usePortal(28, null);
 					Pather.makePortal();
 					
-					me.overhead("tpReady");
+					Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 					Messaging.sendToList(Team.Profiles, "tpReady");
 				} else {
 					while (!tpReady) {
@@ -2675,7 +2668,7 @@ function AutoSmurf() {
 	this.malus = function () {
 		var i, target;
 		
-		print("ÿc4=== [MALUS] ===");	Misc.trace("=== [MALUS] ===", true);	//260930
+		print("=== [MALUS] ===");	//260930	//261103 log policy
 		
 		if (me.act !== 1 || !me.inTown) {
 			Town.goToTown(1);
@@ -2707,7 +2700,7 @@ function AutoSmurf() {
 				}
 				
 				if (i > 30) {
-					print("Malus failed");
+					Misc.print("[MALUS] Failed");	//261103 log policy
 					Misc.quitGame("Malus failed");	//260930
 				}
 				
@@ -2716,7 +2709,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== MALUS ===", 7);
+			D2Bot.printToConsole("[MALUS] Completed", 7);	//261103 log policy: section end
 		}
 		
 		return true;
@@ -2724,7 +2717,7 @@ function AutoSmurf() {
 
 	this.jail = function () {
 		
-		print("ÿc4=== [JAIL] ===");	Misc.trace("=== [JAIL] ===", true);	//260930
+		print("=== [JAIL] ===");	//260930	//261103 log policy
 
 		if (me.area !== 28) {
 			if (me.area === 27) {
@@ -2766,7 +2759,7 @@ function AutoSmurf() {
 		Pather.getWP();	//261021 was clickWP
 	
 		if (Leader) {
-			D2Bot.printToConsole("=== JAIL ===", 7);
+			D2Bot.printToConsole("[JAIL] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -2776,7 +2769,7 @@ function AutoSmurf() {
 
 	this.inner = function () {
 		
-		print("ÿc4=== [INNER] ===");	Misc.trace("=== [INNER] ===", true);	//260930
+		print("=== [INNER] ===");	//260930	//261103 log policy
 		
 		if (me.area !== 29) {
 			Town.goToTown();
@@ -2904,7 +2897,7 @@ function AutoSmurf() {
 		Pather.getWP();	//261021 was clickWP
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== INNER ===", 7);
+			D2Bot.printToConsole("[INNER] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -2914,7 +2907,7 @@ function AutoSmurf() {
 
 	this.cathedral = function () {
 		
-		print("ÿc4=== [CATHEDRAL] ===");	Misc.trace("=== [CATHEDRAL] ===", true);	//260930
+		print("=== [CATHEDRAL] ===");	//260930	//261103 log policy
 		
 		if (me.area !== 32) {
 			Town.goToTown();
@@ -2964,7 +2957,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== CATHEDRAL ===", 7);
+			D2Bot.printToConsole("[CATHEDRAL] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -2973,7 +2966,7 @@ function AutoSmurf() {
 	};
 
 	this.andy = function () {
-		print("ÿc4=== [ANDY] ===");	Misc.trace("=== [ANDY] ===", true);	//260930
+		print("=== [ANDY] ===");	//260930	//261103 log policy
 		
 		if (runAndy === 0) {
 			if (me.area === 35) {
@@ -3107,7 +3100,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== ANDY ===", 7);
+			D2Bot.printToConsole("[ANDY] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -3120,7 +3113,7 @@ function AutoSmurf() {
 	this.cube = function () { // Only called in Normal Difficulty.
 		var i, chest;
 
-		print("ÿc4=== [CUBE] ===");	Misc.trace("=== [CUBE] ===", true);	//260930
+		print("=== [CUBE] ===");	//260930	//261103 log policy
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3209,7 +3202,7 @@ function AutoSmurf() {
 		this.okCount();
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== CUBE ===", 7);
+			D2Bot.printToConsole("[CUBE] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -3220,7 +3213,7 @@ function AutoSmurf() {
 	this.amulet = function () {
 		var cain, drognan;
 		
-		print("ÿc4=== [AMULET] ===");	Misc.trace("=== [AMULET] ===", true);	//260930
+		print("=== [AMULET] ===");	//260930	//261103 log policy
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3300,7 +3293,7 @@ function AutoSmurf() {
 		me.cancel();
 
 		if (Leader) {
-			D2Bot.printToConsole("=== AMULET ===", 7);
+			D2Bot.printToConsole("[AMULET] Completed", 7);	//261103 log policy: section end
 		} else  {
 			Town.move("portalspot");
 		}
@@ -3313,7 +3306,7 @@ function AutoSmurf() {
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
 		var journal, i, tick;	//261004 chicken -> bossGuard	//261029 talked removed (journal trace gone)
 
-		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===", true);	//260930
+		print("=== [SUMMONER] ===");	//260930	//261103 log policy
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3346,7 +3339,7 @@ function AutoSmurf() {
 			
 			Pather.makePortal();
 			
-			me.overhead("tpReady");
+			Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 			Messaging.sendToList(Team.Profiles, "tpReady");
 			
 			Pather.teleportTo(me.x, me.y - 8);	//261008
@@ -3442,7 +3435,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== SUMMONER ===", 7);
+			D2Bot.printToConsole("[SUMMONER] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -3453,7 +3446,7 @@ function AutoSmurf() {
 	this.tombs = function(force) {	//261022
 		var i, j, chest;
 
-		print("ÿc4=== [TOMBS] ===");	Misc.trace("=== [TOMBS] ===", true);	//260930
+		print("=== [TOMBS] ===");	//260930	//261103 log policy
 		
 		if (me.area !== 46) {
 			if (!doneChores) {
@@ -3538,7 +3531,7 @@ function AutoSmurf() {
 				}
 				
 			} else {
-				print("Tombs: chest not found");
+				Misc.print("[TOMBS] Failed: chest not found");	//261103 log policy
 				continue;
 			}
 
@@ -3551,7 +3544,7 @@ function AutoSmurf() {
 			} else if (chest.x > 30 && chest.y > 5) {
 				Attack.clear(0, {x1: chest.roomx * 5 + 15, x2: chest.roomx * 5 + 65, y1: chest.roomy * 5 - 20, y2: chest.roomy * 5 + 20});	//260926	//260929
 			} else {
-				print("Tombs: incorrect chest cord");
+				Misc.print("[TOMBS] Failed: incorrect chest coord");	//261103 log policy
 				continue;
 			}
 			
@@ -3577,11 +3570,11 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== TOMBS ===", 7);
+			D2Bot.printToConsole("[TOMBS] Completed", 7);	//261103 log policy: section end
 		}
 		
 		while (!this.partyLevel(tombsLvl)) {
-			print("Not ready to start Duriel");
+			Misc.print("[TOMBS] Failed: not ready to start Duriel");	//261103 log policy
 			
 			if (Leader) {
 				Misc.quitGame("Not ready to start Duriel");	//260930
@@ -3604,7 +3597,7 @@ function AutoSmurf() {
 	this.staff = function () { // Only the Teleporting Sorc does this. She will be at least level 18 as required by MAIN to reach this stage.
 		var presetUnit;
 		
-		print("ÿc4=== [STAFF] ===");	Misc.trace("=== [STAFF] ===", true);	//260930
+		print("=== [STAFF] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3638,7 +3631,7 @@ function AutoSmurf() {
 			pathX = [5106, 5205, 5205, 5214, 5222],
             pathY = [5125, 5125, 5152, 5153, 5181];
 
-		print("ÿc4=== [RADAMENT] ===");	Misc.trace("=== [RADAMENT] ===", true);	//260930
+		print("=== [RADAMENT] ===");	//260930	//261103 log policy
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3726,7 +3719,7 @@ function AutoSmurf() {
 				
 				Pather.makePortal();
 				
-				me.overhead("tpReady");
+				Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 				Messaging.sendToList(Team.Profiles, "tpReady");
 			} else {
 				Town.move("portalspot");
@@ -3798,7 +3791,7 @@ function AutoSmurf() {
 			if (book) {
 				this.okCount();
 				clickItem(1, book);
-				print("ÿc8!!! [BOOK] !!!");	Misc.trace("!!! [BOOK] !!!");	//261002
+				print("!!! [BOOK] !!!");	//261002	//261103 log policy
 				D2Bot.printToConsole("!!! BOOK !!!", 8);
 			} else {
 				Misc.quitGame("getQuestItem failed");	//261012
@@ -3811,7 +3804,7 @@ function AutoSmurf() {
 		//this.okCount();
 
 		if (Leader) {
-			D2Bot.printToConsole("=== RADAMENT ===", 7);
+			D2Bot.printToConsole("[RADAMENT] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -3822,7 +3815,7 @@ function AutoSmurf() {
 	this.duriel = function () {
 		var i, orifice, hole, npc;	//261027	//261028 atma removed (the talk had no effect on the first portal)
 		
-		print("ÿc4=== [DURIEL] ===");	Misc.trace("=== [DURIEL] ===", true);	//260930
+		print("=== [DURIEL] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3879,13 +3872,13 @@ function AutoSmurf() {
 
 				Pather.makePortal();
 
-				me.overhead("tpReady");
+				Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 				Messaging.sendToList(Team.Profiles, "tpReady");
 			} else {
 				Town.move("portalspot");
 				this.okCount();
 				
-				me.overhead("Waiting for Orifice TP...");
+				Misc.print("[DURIEL] Waiting for Orifice TP");	//261103 log policy: overhead -> print
 				
 				while (me.inTown) {
 					if (tpReady) {
@@ -3961,7 +3954,7 @@ function AutoSmurf() {
 				
 				this.okCount();
 				
-				me.overhead("Waiting for Duriel TP...");
+				Misc.print("[DURIEL] Waiting for Duriel TP");	//261103 log policy: overhead -> print
 				
 				while (!Pather.usePortal(73, null)) {
 					delay(250);
@@ -4022,7 +4015,7 @@ function AutoSmurf() {
 		}
 
 		if (Leader) {
-			D2Bot.printToConsole("=== DURIEL ===", 7);
+			D2Bot.printToConsole("[DURIEL] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -4047,7 +4040,7 @@ function AutoSmurf() {
 		me.getQuest(20, 5/12/13/16/19) = persists after drinking potion
 	----------------------------
 */
-		print("ÿc4=== [FIGURINE] ===");	Misc.trace("=== [FIGURINE] ===", true);	//260930
+		print("=== [FIGURINE] ===");	//260930	//261103 log policy
 		
 		if (me.act !== 3 || !me.inTown) {
 			Town.goToTown(3);
@@ -4113,7 +4106,7 @@ function AutoSmurf() {
 		if (potion) {	//261103 has the potion: tell the team, drink, walk back from Alkor
 			Messaging.sendToList(Team.Profiles, "teamFigurine");	//261103 moved out of the block
 			clickItem(1, potion);
-			print("ÿc8!!! [POTION] !!!");	Misc.trace("!!! [POTION] !!!");	//261002
+			print("!!! [POTION] !!!");	//261002	//261103 log policy
 			D2Bot.printToConsole("!!! POTION !!!", 8);
 			Town.move("figurine");	//261103 moved out of the block
 			Town.move("ormus");
@@ -4128,7 +4121,7 @@ function AutoSmurf() {
 		leaderFigurine = false;	//260922
 
 		if (Leader) {
-			D2Bot.printToConsole("=== FIGURINE ===", 7);
+			D2Bot.printToConsole("[FIGURINE] Completed", 7);	//261103 log policy: section end
 		}
 
 		return true;
@@ -4137,7 +4130,7 @@ function AutoSmurf() {
 	this.heart = function () {
 		var presetUnit;
 		
-		print("ÿc4=== [HEART] ===");	Misc.trace("=== [HEART] ===", true);	//260930
+		print("=== [HEART] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4171,7 +4164,7 @@ function AutoSmurf() {
 	this.brain = function () {
 		var presetUnit;
 		
-		print("ÿc4=== [BRAIN] ===");	Misc.trace("=== [BRAIN] ===", true);	//260930
+		print("=== [BRAIN] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4205,7 +4198,7 @@ function AutoSmurf() {
 	this.eye = function (fig) {	//261029 fig: figurine hunt, the team kills Sszark
 		var presetUnit, tick;
 
-		print("ÿc4=== [EYE] ===");	Misc.trace("=== [EYE] ===", true);	//260930
+		print("=== [EYE] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4247,7 +4240,7 @@ function AutoSmurf() {
 
 			Pather.makePortal();	//261029
 
-			me.overhead("tpReady");
+			Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 			Messaging.sendToList(Team.Profiles, "tpReady");
 		} else {	//261029
 			Town.move("portalspot");
@@ -4304,7 +4297,7 @@ function AutoSmurf() {
 	this.tome = function (fig) { // Teleporting Sorc walks over to Alkor and completes the quest for everyone via exploit.	//261029 fig: figurine hunt with the team
 		var i, alkor, target, tick;
 
-		print("ÿc4=== [TOME] ===");	Misc.trace("=== [TOME] ===", true);	//260930
+		print("=== [TOME] ===");	//260930	//261103 log policy
 
 		if (fig) {	//261029 figurine hunt: the team walks to the altar, killing on the way
 			if (!doneChores) {
@@ -4327,7 +4320,7 @@ function AutoSmurf() {
 
 				Pather.makePortal();
 
-				me.overhead("tpReady");
+				Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 				Messaging.sendToList(Team.Profiles, "tpReady");
 			} else {
 				Town.move("portalspot");
@@ -4446,7 +4439,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		D2Bot.printToConsole("=== TOME ===", 7);
+		D2Bot.printToConsole("[TOME] Completed", 7);	//261103 log policy: section end
 		
 		doneChores = false;
 		
@@ -4456,7 +4449,7 @@ function AutoSmurf() {
 	this.travincal = function () {
 		var cain, presetUnit;
 		
-		print("ÿc4=== [TRAVINCAL] ===");	Misc.trace("=== [TRAVINCAL] ===", true);	//260930
+		print("=== [TRAVINCAL] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4495,7 +4488,7 @@ function AutoSmurf() {
 			presetUnit = getPresetUnit(83, 2, 237);
 
 			if (!presetUnit) {
-				print("Travincal failed: getPresetUnit");
+				Misc.print("[TRAVINCAL] Failed: getPresetUnit");	//261103 log policy
 				return false;
 			}
 
@@ -4513,7 +4506,7 @@ function AutoSmurf() {
 		presetUnit = getPresetUnit(83, 2, 237);
 
 		if (!presetUnit) {
-			print("Travincal failed: getPresetUnit");
+			Misc.print("[TRAVINCAL] Failed: getPresetUnit");	//261103 log policy
 			return false;
 		}
 
@@ -4597,7 +4590,7 @@ function AutoSmurf() {
 			takeRedPortal = false;
 		}
 
-		print("ÿc4=== [MEPHISTO] ===");	Misc.trace("=== [MEPHISTO] ===", true);	//260930
+		print("=== [MEPHISTO] ===");	//260930	//261103 log policy
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4703,7 +4696,7 @@ function AutoSmurf() {
 		delay(me.ping * 2 + 500);
 
 		if (Leader && !takeRedPortal) {
-			D2Bot.printToConsole("=== MEPHISTO ===", 7);
+			D2Bot.printToConsole("[MEPHISTO] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -4714,7 +4707,7 @@ function AutoSmurf() {
 	this.izual = function () {
 		var tyrael, presetUnit;
 		
-		print("ÿc4=== [IZUAL] ===");	Misc.trace("=== [IZUAL] ===", true);	//260930
+		print("=== [IZUAL] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4741,7 +4734,7 @@ function AutoSmurf() {
 				Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y, 15);
 				Pather.makePortal();
 				
-				me.overhead("tpReady");
+				Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 				Messaging.sendToList(Team.Profiles, "tpReady");
 			} else {
 				Town.move("portalspot");
@@ -4803,7 +4796,7 @@ function AutoSmurf() {
 		me.cancel();
 
 		if (Leader) {
-			D2Bot.printToConsole("=== IZUAL ===", 7);
+			D2Bot.printToConsole("[IZUAL] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -4889,7 +4882,7 @@ function AutoSmurf() {
 		};
 
 		this.seisSeal = function () {
-			me.overhead("Seis layout " + this.seisLayout);
+			Misc.print("[DIABLO] Seis layout=" + this.seisLayout);	//261103 log policy: overhead -> print
 
 			this.followPath(this.seisLayout === 1 ? this.starToSeisA : this.starToSeisB);
 			
@@ -4935,7 +4928,7 @@ function AutoSmurf() {
 		};
 
 		this.infectorSeal = function () {
-			me.overhead("Inf layout " + this.infLayout);
+			Misc.print("[DIABLO] Infector layout=" + this.infLayout);	//261103 log policy: overhead -> print
 
 			this.followPath(this.infLayout === 1 ? this.starToInfA : this.starToInfB);
 			
@@ -4973,7 +4966,7 @@ function AutoSmurf() {
 		};
 
 		this.vizierSeal = function () {
-			me.overhead("Viz layout " + this.vizLayout);
+			Misc.print("[DIABLO] Vizier layout=" + this.vizLayout);	//261103 log policy: overhead -> print
 
 			this.followPath(this.vizLayout === 1 ? this.starToVizA : this.starToVizB);
 			
@@ -5135,7 +5128,7 @@ function AutoSmurf() {
 		this.starToVizB = [7755,5290, 7720,5275, 7710,5315, 7660,5315,
 							7655,5280];
 
-		print("ÿc4=== [DIABLO] ===");	Misc.trace("=== [DIABLO] ===", true);	//260930
+		print("=== [DIABLO] ===");	//260930	//261103 log policy
 		
 		Town.goToTown(4);
 		
@@ -5154,7 +5147,7 @@ function AutoSmurf() {
 			Pather.moveTo(7790, 5240, 10); // 7660, 5275
 			Pather.makePortal();
 			
-			me.overhead("tpReady");
+			Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 			Messaging.sendToList(Team.Profiles, "tpReady");
 		} else {
 			if (me.act !== 4 || !me.inTown) {
@@ -5252,7 +5245,7 @@ function AutoSmurf() {
 		runDiablo = 1;
 		
 		if (Leader && !me.getQuest(28, 0)) {
-			D2Bot.printToConsole("=== DIABLO ===", 7);
+			D2Bot.printToConsole("[DIABLO] Completed", 7);	//261103 log policy: section end
 		}
 		
 		if (Leader) {
@@ -5282,7 +5275,7 @@ function AutoSmurf() {
 
 	this.shenk = function () { // SiC-666 TODO: Rewrite this.
 	
-		print("ÿc4=== [SHENK] ===");	Misc.trace("=== [SHENK] ===", true);	//260930
+		print("=== [SHENK] ===");	//260930	//261103 log policy
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5300,7 +5293,7 @@ function AutoSmurf() {
 			Pather.moveTo(3883, 5113, 5);
 			Pather.makePortal();
 			
-			me.overhead("tpReady");
+			Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 			Messaging.sendToList(Team.Profiles, "tpReady");
 		} else {
 			if (me.act !== 5 || !me.inTown) {
@@ -5351,7 +5344,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader && (me.getQuest(35, 1) || me.getQuest(35, 0))) {
-			D2Bot.printToConsole("=== SHENK ===", 7);
+			D2Bot.printToConsole("[SHENK] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -5364,7 +5357,7 @@ function AutoSmurf() {
 			coords =[],
 			barbSpots = [];
 	
-		print("ÿc4=== [BARBS] ===");	Misc.trace("=== [BARBS] ===", true);	//260930
+		print("=== [BARBS] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5389,7 +5382,7 @@ function AutoSmurf() {
 			}
 			
 			for (k = 0; k < coords.length; k += 1) {
-				me.overhead("Going to barbspot " + (k + 1) + "/" + barbSpots.length);
+				Misc.print("[BARBS] Going to barbspot " + (k + 1) + "/" + barbSpots.length);	//261103 log policy: overhead -> print
 				
 				Pather.moveToUnit(coords[k]);	//260929
 				door = getUnit(1, 434);
@@ -5459,7 +5452,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== BARBS ===", 7);
+			D2Bot.printToConsole("[BARBS] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -5470,7 +5463,7 @@ function AutoSmurf() {
 	this.anya = function () { // Dark-f: Rewrite this.
 		var i, anya, malah, scroll, unit, waitAnya, larzuk;
 	
-		print("ÿc4=== [ANYA] ===");	Misc.trace("=== [ANYA] ===", true);	//260930
+		print("=== [ANYA] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5514,7 +5507,7 @@ function AutoSmurf() {
 				
 				Pather.makePortal();
 				
-				me.overhead("tpReady");
+				Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 				Messaging.sendToList(Team.Profiles, "tpReady");
 			} else {
 				Town.move("portalspot");
@@ -5664,7 +5657,7 @@ function AutoSmurf() {
 			
 			if (scroll) {
 				clickItem(1, scroll);
-				print("ÿc8!!! [SCROLL] !!!");	Misc.trace("!!! [SCROLL] !!!");	//261002
+				print("!!! [SCROLL] !!!");	//261002	//261103 log policy
 				D2Bot.printToConsole("!!! SCROLL !!!", 8);
 			}
 		}
@@ -5694,7 +5687,7 @@ function AutoSmurf() {
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 		if (Leader) {
-			D2Bot.printToConsole("=== ANYA ===", 7);
+			D2Bot.printToConsole("[ANYA] Completed", 7);	//261103 log policy: section end
 		}
 		
 		doneChores = false;
@@ -5704,7 +5697,7 @@ function AutoSmurf() {
 
 	this.ancients = function () { // SiC-666 TODO: Rewrite this.
 
-		print("ÿc4=== [ANCIENTS] ===");	Misc.trace("=== [ANCIENTS] ===", true);	//260930
+		print("=== [ANCIENTS] ===");	//260930	//261103 log policy
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5717,7 +5710,7 @@ function AutoSmurf() {
 			Pather.moveToExit(120, false);	//261004 portal in front of the summit: the altar closes every TP on the summit (the corpse run needs this one)
 			Pather.makePortal();	//261008
 
-			me.overhead("tpReady");	//261028 the portal opens before the summit now (corpse run): a town chicken portal on the way must not be taken
+			Misc.print("[tpReady] Sent");	//261028 the portal opens before the summit now (corpse run): a town chicken portal on the way must not be taken	//261103 log policy: overhead -> print
 			Messaging.sendToList(Team.Profiles, "tpReady");	//261028
 
 			this.exitTo(120);	//261022 result checked
@@ -5794,7 +5787,7 @@ function AutoSmurf() {
 		this.bossEnd();	//261004
 
 		if (Leader) {
-			D2Bot.printToConsole("=== ANCIENTS ===", 7);
+			D2Bot.printToConsole("[ANCIENTS] Completed", 7);	//261103 log policy: section end
 		}
 		
 		if (Leader) {
@@ -5934,7 +5927,7 @@ function AutoSmurf() {
 			return true;
 		};
 		
-		print("ÿc4=== [BAAL] ===");	Misc.trace("=== [BAAL] ===", true);	//260930
+		print("=== [BAAL] ===");	//260930	//261103 log policy
 
 		if (Leader) {
 			if (farmingON || me.diff !== 2) {
@@ -5965,7 +5958,7 @@ function AutoSmurf() {
 			
 			if (this.exitTo(130) === "Souls") {	//261020	//261022 result checked
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Baal failed: souls found");
+				Misc.print("[BAAL] Failed: souls found");	//261103 log policy
 
 				while (!me.inTown) {
 					Town.goToTown();
@@ -5977,7 +5970,7 @@ function AutoSmurf() {
 			
 			if (this.exitTo(131) === "Souls") {	//261020	//261022 result checked
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Baal failed: souls found");
+				Misc.print("[BAAL] Failed: souls found");	//261103 log policy
 
 				while (!me.inTown) {
 					Town.goToTown();
@@ -5989,7 +5982,7 @@ function AutoSmurf() {
 			
 			if (Pather.moveTo(15118, 5002) === "Souls") {	//261020
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Baal failed: souls found");
+				Misc.print("[BAAL] Failed: souls found");	//261103 log policy
 
 				while (!me.inTown) {
 					Town.goToTown();
@@ -6003,7 +5996,7 @@ function AutoSmurf() {
 			
 			Pather.makePortal();
 			
-			me.overhead("tpReady");
+			Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 			Messaging.sendToList(Team.Profiles, "tpReady");
 		} else {
 			if (me.act !== 5 || !me.inTown) {
@@ -6015,7 +6008,7 @@ function AutoSmurf() {
 			while (me.inTown) {
 				if (earlyReturn) {	//260627
 					earlyReturn = false;
-					print("Baal failed: souls found");
+					Misc.print("[BAAL] Failed: souls found");	//261103 log policy
 					
 					while (!me.inTown) {
 						Town.goToTown();
@@ -6129,9 +6122,9 @@ function AutoSmurf() {
 			}
 			
 			if (hireMerc) {
-				print("Hiring needed");
+				Misc.print("[BAAL] Failed: hiring needed");	//261103 log policy
 			} else {
-				print("Not ready to kill Baal");
+				Misc.print("[BAAL] Failed: not ready");	//261103 log policy
 			}
 			
 			doneChores = false;
@@ -6184,7 +6177,7 @@ function AutoSmurf() {
 		runBaal = 1;
 
 		if (Leader && baalMSG === 0) {
-			D2Bot.printToConsole("=== BAAL ===", 7);
+			D2Bot.printToConsole("[BAAL] Completed", 7);	//261103 log policy: section end
 		}
 		
 		this.okCount();
@@ -6219,7 +6212,7 @@ function AutoSmurf() {
 	this.farmingCountess = function() { 
 		var poi;
 		
-		print("ÿc4=== [COUNTESS] ===");	Misc.trace("=== [COUNTESS] ===", true);	//260930
+		print("=== [COUNTESS] ===");	//260930	//261103 log policy
 		
 		Town.doChores();
 		
@@ -6295,7 +6288,7 @@ function AutoSmurf() {
 
 	this.farmingPit = function() { 
 		
-		print("ÿc4=== [PIT] ===");	Misc.trace("=== [PIT] ===", true);	//260930
+		print("=== [PIT] ===");	//260930	//261103 log policy
 
 		Town.doChores();
 		
@@ -6356,7 +6349,7 @@ function AutoSmurf() {
 
 	this.farmingAndy = function() { 
 		
-		print("ÿc4=== [ANDY] ===");	Misc.trace("=== [ANDY] ===", true);	//260930
+		print("=== [ANDY] ===");	//260930	//261103 log policy
 		
 		Town.doChores();
 
@@ -6496,7 +6489,7 @@ function AutoSmurf() {
 			var driver, result,
 				driverName = getDriverName();
 			
-			me.overhead("followDriver start");
+			Misc.print("[followDriver] Start");	//261103 log policy: overhead -> print
 			
 			while (!msgLeader) {
 				if (earlyReturn) {
@@ -6565,7 +6558,7 @@ function AutoSmurf() {
 				Pather.moveTo(msgNode[0], msgNode[1], 3, false, false, true);	//261002 no offset	//261029 random
 			}
 			
-			me.overhead("followDriver end");
+			Misc.print("[followDriver] End");	//261103 log policy: overhead -> print
 			
 			return true;
 		};
@@ -6621,28 +6614,28 @@ function AutoSmurf() {
 		};
 
 		//main
-		print("ÿc4=== [COWS] ===");	Misc.trace("=== [COWS] ===", true);	//260930
+		print("=== [COWS] ===");	//260930	//261103 log policy
 		
 		this.okCount();	//260824
 		
 		if (Leader) {
 			if (me.getQuest(4, 10)) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Cows failed: King killed");
+				Misc.print("[COWS] Failed: King killed");	//261103 log policy
 				
 				return true;
 			}
 
 			if (!me.getQuest(4, 0)) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Cows failed: Cain incomplete");
+				Misc.print("[COWS] Failed: Cain incomplete");	//261103 log policy
 				
 				return true;
 			}
 
 			if (!me.getQuest(40, 0)) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Cows failed: Baal incomplete");
+				Misc.print("[COWS] Failed: Baal incomplete");	//261103 log policy
 				
 				return true;
 			}
@@ -6650,7 +6643,7 @@ function AutoSmurf() {
 			for (i = 0; i < 5; i += 1) {
 				if (earlyReturn) {
 					earlyReturn = false;
-					print("Cows failed: quest unmatched");
+					Misc.print("[COWS] Failed: quest unmatched");	//261103 log policy
 					
 					return true;
 				}
@@ -6692,7 +6685,7 @@ function AutoSmurf() {
 
 				if (!portal) {
 					Messaging.sendToList(Team.Profiles, "earlyReturn");
-					print("Cows failed: enter Tristram");
+					Misc.print("[COWS] Failed: enter Tristram");	//261103 log policy
 						
 					while (!me.inTown) {
 						Town.goToTown();
@@ -6727,7 +6720,7 @@ function AutoSmurf() {
 
 				if (!leg) {
 					Messaging.sendToList(Team.Profiles, "earlyReturn");
-					print("Cows failed: get leg");
+					Misc.print("[COWS] Failed: get leg");	//261103 log policy
 						
 					while (!me.inTown) {
 						Town.goToTown();
@@ -6757,7 +6750,7 @@ function AutoSmurf() {
 
 				if (!akara) {
 					Messaging.sendToList(Team.Profiles, "earlyReturn");
-					print("Cows failed: init akara");
+					Misc.print("[COWS] Failed: initNPC Akara");	//261103 log policy
 					
 					return true;
 				}
@@ -6780,7 +6773,7 @@ function AutoSmurf() {
 
 				if (!cowTome) {
 					Messaging.sendToList(Team.Profiles, "earlyReturn");
-					print("Cows failed: get tome");
+					Misc.print("[COWS] Failed: get tome");	//261103 log policy
 					
 					return true;
 				}
@@ -6792,14 +6785,14 @@ function AutoSmurf() {
 
 			if (!Cubing.emptyCube()) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Cows failed: empty cube");
+				Misc.print("[COWS] Failed: empty cube");	//261103 log policy
 				
 				return true;
 			}
 
 			if (!Storage.Cube.MoveTo(leg) || !Storage.Cube.MoveTo(cowTome) || !Cubing.openCube()) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Cows failed: transmute leg and tome");
+				Misc.print("[COWS] Failed: transmute leg and tome");	//261103 log policy
 				
 				return true;
 			}
@@ -6819,12 +6812,12 @@ function AutoSmurf() {
 
 			if (!portal) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Cows failed: open portal");
+				Misc.print("[COWS] Failed: open portal");	//261103 log policy
 				
 				return true;
 			}
 			
-			me.overhead("tpReady");
+			Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 			Messaging.sendToList(Team.Profiles, "tpReady");
 		} else {
 			Pather.useWaypoint(1);
@@ -6834,7 +6827,7 @@ function AutoSmurf() {
 			while (!tpReady) {
 				if (earlyReturn) {
 					earlyReturn = false;
-					print("Cows failed: open portal");
+					Misc.print("[COWS] Failed: open portal");	//261103 log policy
 					
 					while (!me.inTown) {
 						Town.goToTown();
@@ -6894,7 +6887,7 @@ function AutoSmurf() {
 		if (Leader) {
 			if (!clearCowLevel(rooms)) {	//260824
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Cows failed: clearCowLevel");
+				Misc.print("[COWS] Failed: clearCowLevel");	//261103 log policy
 				
 				while (!me.inTown) {
 					Town.goToTown();
@@ -6913,7 +6906,7 @@ function AutoSmurf() {
 		} else {
 			if (!followDriver()) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Cows failed: followDriver");
+				Misc.print("[COWS] Failed: followDriver");	//261103 log policy
 				
 				while (!me.inTown) {
 					Town.goToTown();
@@ -6953,7 +6946,7 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("=== COWS ===", 7);
+			D2Bot.printToConsole("[COWS] Completed", 7);	//261103 log policy: section end
 		}
 		
 		Pather.teleport = true;
@@ -6968,7 +6961,7 @@ function AutoSmurf() {
 	this.farmingSummoner = function() {
 		var journal, i;
 		
-		print("ÿc4=== [SUMMONER] ===");	Misc.trace("=== [SUMMONER] ===", true);	//260930
+		print("=== [SUMMONER] ===");	//260930	//261103 log policy
 
 		Town.doChores();
 		
@@ -6991,7 +6984,7 @@ function AutoSmurf() {
 					Pather.moveToPreset(74, 2, 357, 8, 8);	//261020
 				} catch (e) {
 					Messaging.sendToList(Team.Profiles, "earlyReturn");
-					print("Summoner failed: Invalid Path");
+					Misc.print("[SUMMONER] Failed: invalid path");	//261103 log policy
 
 					while (!me.inTown) {
 						Town.goToTown();
@@ -7004,7 +6997,7 @@ function AutoSmurf() {
 			
 			Pather.makePortal();
 			
-			me.overhead("tpReady");
+			Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 			Messaging.sendToList(Team.Profiles, "tpReady");
 		} else {
 			if (me.act !== 2 || !me.inTown) {
@@ -7017,7 +7010,7 @@ function AutoSmurf() {
 			while (me.inTown) {
 				if (earlyReturn) {
 					earlyReturn = false;
-					print("Summoner failed: Invalid Path");
+					Misc.print("[SUMMONER] Failed: invalid path");	//261103 log policy
 					
 					return true;
 				}
@@ -7083,7 +7076,7 @@ function AutoSmurf() {
 	this.farmingMephisto = function() {
 		var redPortal;
 
-		print("ÿc4=== [MEPHISTO] ===");	Misc.trace("=== [MEPHISTO] ===", true);	//260930
+		print("=== [MEPHISTO] ===");	//260930	//261103 log policy
 		
 		Town.doChores();
 		
@@ -7149,7 +7142,7 @@ function AutoSmurf() {
 	this.farmingAbaddon = function() {
 		var presetUnit;
 	
-		print("ÿc4=== [ABADDON] ===");	Misc.trace("=== [ABADDON] ===", true);	//260930
+		print("=== [ABADDON] ===");	//260930	//261103 log policy
 
 		Town.doChores();
 		
@@ -7190,7 +7183,7 @@ function AutoSmurf() {
 		presetUnit = getPresetUnit(me.area, 2, 397);
 		
 		if (!presetUnit) {
-			print("Abaddon failed: getPresetUnit");
+			Misc.print("[ABADDON] Failed: getPresetUnit");	//261103 log policy
 			return false;
 		}
 		
@@ -7198,7 +7191,7 @@ function AutoSmurf() {
 		
 		while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 15) {
 			if (getTickCount() - fail > 180 * 1000) {
-				print("Abaddon failed: moveTo");
+				Misc.print("[ABADDON] Failed: moveTo");	//261103 log policy
 				break;
 			}
 			
@@ -7232,7 +7225,7 @@ function AutoSmurf() {
 	this.farmingPOA = function() {
 		var presetUnit;
 	
-		print("ÿc4=== [POA] ===");	Misc.trace("=== [POA] ===", true);	//260930
+		print("=== [POA] ===");	//260930	//261103 log policy
 
 		Town.doChores();
 		
@@ -7273,7 +7266,7 @@ function AutoSmurf() {
 		presetUnit = getPresetUnit(me.area, 2, 397);
 		
 		if (!presetUnit) {
-			print("POA failed: getPresetUnit");
+			Misc.print("[POA] Failed: getPresetUnit");	//261103 log policy
 			return false;
 		}
 		
@@ -7281,7 +7274,7 @@ function AutoSmurf() {
 		
 		while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 15) {
 			if (getTickCount() - fail > 180 * 1000) {
-				print("POA failed: moveTo");
+				Misc.print("[POA] Failed: moveTo");	//261103 log policy
 				break;
 			}
 			
@@ -7315,7 +7308,7 @@ function AutoSmurf() {
 	this.farmingInfernal = function() {
 		var presetUnit;
 	
-		print("ÿc4=== [INFERNAL] ===");	Misc.trace("=== [INFERNAL] ===", true);	//260930
+		print("=== [INFERNAL] ===");	//260930	//261103 log policy
 
 		Town.doChores();
 		
@@ -7356,7 +7349,7 @@ function AutoSmurf() {
 		presetUnit = getPresetUnit(me.area, 2, 397);
 		
 		if (!presetUnit) {
-			print("Infernal failed: getPresetUnit");
+			Misc.print("[INFERNAL] Failed: getPresetUnit");	//261103 log policy
 			return false;
 		}
 		
@@ -7364,7 +7357,7 @@ function AutoSmurf() {
 		
 		while (getDistance(me.x, me.y, presetUnit.roomx * 5 + presetUnit.x, presetUnit.roomy * 5 + presetUnit.y) > 15) {
 			if (getTickCount() - fail > 180 * 1000) {
-				print("Infernal failed: moveTo");
+				Misc.print("[INFERNAL] Failed: moveTo");	//261103 log policy
 				break;
 			}
 			
@@ -7397,7 +7390,7 @@ function AutoSmurf() {
 	
 	this.farmingNihlathak = function() { 
 		
-		print("ÿc4=== [NIHLATHAK] ===");	Misc.trace("=== [NIHLATHAK] ===", true);	//260930
+		print("=== [NIHLATHAK] ===");	//260930	//261103 log policy
 
 		Town.doChores();
 		
@@ -7417,7 +7410,7 @@ function AutoSmurf() {
 			
 			if (me.diff === 2 && getUnit(1, 597)) {	//260627
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
-				print("Nihlathak failed: Vipers found");
+				Misc.print("[NIHLATHAK] Failed: Vipers found");	//261103 log policy
 
 				while (!me.inTown) {
 					Town.goToTown();
@@ -7429,7 +7422,7 @@ function AutoSmurf() {
 			
 			Pather.makePortal();
 			
-			me.overhead("tpReady");
+			Misc.print("[tpReady] Sent");	//261103 log policy: overhead -> print
 			Messaging.sendToList(Team.Profiles, "tpReady");
 		} else {
 			Town.move("portalspot");
@@ -7438,7 +7431,7 @@ function AutoSmurf() {
 			while (me.inTown) {
 				if (earlyReturn) {
 					earlyReturn = false;
-					print("Nihlathak failed: Vipers found");
+					Misc.print("[NIHLATHAK] Failed: Vipers found");	//261103 log policy
 					
 					while (!me.inTown) {
 						Town.goToTown();
@@ -7524,7 +7517,7 @@ function AutoSmurf() {
 			case "hireMerc":
 				if (!hireMerc) {
 					hireMerc = true;
-					print("hireMerc");
+					Misc.print("[Config] hireMerc received");	//261103 log policy
 				}
 				break;
 				
@@ -7537,7 +7530,7 @@ function AutoSmurf() {
 			case "farmingON":
 				if (!farmingON) {
 					farmingON = true;
-					print("farmingON");
+					Misc.print("[Config] farmingON received");	//261103 log policy
 				}
 				break;
 			case "essA":
@@ -7600,7 +7593,7 @@ function AutoSmurf() {
 				
 			case "tpReady":
 				tpReady = true;
-				me.overhead("tpReady");
+				Misc.print("[tpReady] Received");	//261103 log policy: overhead -> print
 				break;
 			case "earlyReturn":
 				earlyReturn = true;
@@ -7655,7 +7648,7 @@ function AutoSmurf() {
 				
 			case "msgLeader":
 				msgLeader = true;
-				me.overhead("msgLeader");	//261025 no msgFollower reply
+				Misc.print("[msgLeader] Received");	//261025 no msgFollower reply	//261103 log policy: overhead -> print
 				break;
 			}
 		}
@@ -7778,7 +7771,7 @@ function AutoSmurf() {
 				if (DataFile.getStats().radamentOff) {	//261021 game after the book reset: quest 9 is off here, the book does not drop. Tombs, then leave at 10 min from the game start
 					DataFile.updateStats("radamentOff", false);
 					Misc.trace("radamentOff -> tombs");	//261021 check (remove once seen)
-					D2Bot.printToConsole("Radament off: tombs, quit at 10 min (" + Misc.where() + ")");	//261021 the reason line for the quit below (the engine leaves without one)
+					Misc.print("[RADAMENT] Off: tombs, quit at 10 min");	//261021 the reason line for the quit below (the engine leaves without one)	//261103 log policy: console -> print (the quit line is [Quit] Max game time)
 					me.maxgametime = 10 * 60 * 1000;	// the engine leaves the game at this time from the start; default.dbj sets Config.MaxGameTime again next game
 
 					Messaging.sendToList(Team.Profiles, "forceTombs");
@@ -7988,8 +7981,7 @@ function AutoSmurf() {
 			}
 
 			if (checkPartyAct === 3) { // If the lowest Town is Act 3.
-				print("Helping straggler complete act3");	//260923
-				me.overhead("Helping straggler complete act3");	//260923
+				Misc.print("[act3] Helping straggler complete act 3");	//260923	//261103 log policy
 				Messaging.sendToList(Team.Profiles, "takeRedPortal");
 				this.mephisto(true);
 			}
@@ -8112,11 +8104,7 @@ function AutoSmurf() {
 		}
 	};
 	
-	print("Script ended");
-
-	if (!Misc.quitReason) {	//260930 reached the end	//261001 console line removed: no red/Error line before the exp line = normal end
-		Misc.trace("Script ended");
-	}
+	Misc.print("[AutoSmurf] Script ended");	//261103 log policy: the trace copy (only without an early quit) removed
 
 	return true;
 };

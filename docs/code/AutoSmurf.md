@@ -37,6 +37,9 @@
 - 가진 라다먼트 북(552)을 버리는 `while (book)`에서 버린 뒤 다시 찾는다(`book = me.findItem(552)`). 버릴 때마다 trace `dropping radament book`.
 - 확인: 261024~261030 로그 `dropping radament book` 0(북을 가진 채 시작한 게임 없음). 사용자 확정(261030): 앞 수정들로 북이 어긋날 조건을 거의 없앴다. trace는 재발 추적용으로 남김.
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 구간 헤더: print `ÿc4=== [X] ===` + trace 사본 → `print("=== [X] ===")`(색 코드·trace 삭제, 42곳), `!!! [BOOK|POTION|SCROLL] !!!`도 같음. 리더 콘솔 구간 끝 `=== X ===` → `[X] Completed`(31곳, `getQuestItem`의 눈·심장·뇌·스태프 포함). 설정 print `SafeTele:` 등 → `[Config] 키=값`, 역할 머리 위 글자 → `[Role] Leader|Boer|Follower`, 구간 실패 `X failed: 이유` → `[X] Failed: 이유`, 진행 trace(골드·`bossGuard`·`bossEnd`·`getQuestItem`)와 한 번씩 일어나는 머리 위 글자(`tpReady` 16곳 → `[tpReady] Sent`, 받은 쪽 `Received`, `changeAct`, 웨이, 퀘스트 진행 등) → `Misc.print`. 같은 줄을 찍던 머리 위 글자 사본 삭제. `Script ended` → `[AutoSmurf] Script ended`(trace 사본 삭제). Radament off 콘솔·trace 줄 → print `[RADAMENT] Off: tombs, quit at 10 min`(퇴장 사유는 `ToolsThread`의 `[Quit] Max game time 10 min`). `radamentOff -> tombs` trace는 그대로. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
 ## this.okCount / this.teamCount
 
 ### 261004 Claude: 죽은 사람도 타임아웃, 타임아웃 상세
@@ -61,6 +64,9 @@
 
 ### 261029 Claude: 퇴장 상세의 `travel` 삭제 (사용자 요청)
 - 검증 통과(옛 handoff 3-47)로 `Party desynced 1` 상세 끝 ` travel true/false` 삭제. `leaderTravel`(10분 대기)은 그대로.
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `okCount` 첫머리 `Misc.print("[okCount] Waiting")`(없는 프로필 = 진입 못 함), `while` 안 머리 위 글자 `Waiting: 안 온 프로필`(매 틱), `teamCount` 끝 머리 위 글자 `OK` 삭제(사용자 261103). 함수 이름(`okCount`·`teamCount`) 바꾸기는 나중(사용자).
 
 ## this.buffCount
 

@@ -43,7 +43,7 @@ function main() {
 	var i, stats,
 		startTime = getTickCount();
 
-	Misc.trace("=== [" + me.gamename + "] ===", true);	//261011
+	print("=== [" + me.gamename + "] ===");	//261011	//261103 log policy: game boundary trace -> print
 
 	// Initialize libs - load config variables, build pickit list, attacks, containers and cubing and runeword recipes
 	try {	//261026 an error here killed default.dbj silently and the game stood until max game time; a restart runs the same code, so stop (handoff 2-24)
@@ -54,8 +54,8 @@ function main() {
 		Cubing.init();
 	} catch (initError) {	//261026
 		Misc.errorReport(initError, "default.dbj");	//261026 error detail: grey console + [Error] trace
-		D2Bot.printToConsole("Init failed in default.dbj. Stopping", 9);	//261026 stop: red console, no location
-		Misc.trace("Init failed in default.dbj. Stopping", true);	//261026
+		D2Bot.printToConsole("[Stop] Init failed in default.dbj", 9);	//261026 stop: red console, no location	//261103 log policy
+		print("[Stop] Init failed in default.dbj");	//261026	//261103 log policy: trace -> print (no place)
 		D2Bot.stop();	//261026
 
 		return false;	//261026
@@ -66,7 +66,7 @@ function main() {
 
 	// Check for experience decrease -> log death. Skip report if life chicken is disabled.
 	if (stats.name === me.name && me.getStat(13) < stats.experience && Config.LifeChicken > 0) {
-		D2Bot.printToConsole("You died in last game", 9);
+		D2Bot.printToConsole("[Died] Last game", 9);	//261103 log policy
 		DataFile.updateStats("deaths");
 		D2Bot.updateDeaths();
 	}
@@ -97,7 +97,7 @@ function main() {
 				delay(1000);
 			}
 		} catch (e1) {
-			print(e1);
+			Misc.print("[Error] MinGameTime: " + e1);	//261103 log policy
 		}
 	}
 

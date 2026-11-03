@@ -121,20 +121,20 @@ var Loader = {
 					}
 
 					if (this.skipTown.indexOf(script) > -1 || Town.goToTown()) {
-						print("Loaded ÿc9[" + script + ".js]");	// 260903
+						Misc.print("[Loader] Loaded [" + script + ".js]");	// 260903	//261103 log policy
 						Messaging.sendToScript("threads/ToolsThread.js", JSON.stringify({currScript: script}));
 						
 						reconfiguration = typeof Scripts[script] === 'object';
 
 						if (reconfiguration) {
-							print("ÿc2Copying Config properties from " + script + " object.");
+							Misc.print("[Loader] Copying Config properties from " + script);	//261103 log policy
 							this.copy(Scripts[script], Config);
 						}
 
 						global[script]();
 
 						if (reconfiguration) {
-							print("ÿc2Reverting back unmodified config properties.");
+							Misc.print("[Loader] Reverting unmodified config properties");	//261103 log policy
 							this.copy(unmodifiedConfig, Config);
 						}
 					}

@@ -46,18 +46,16 @@
 - **근거 없는 가설로 로그·진단을 제안하지 않는다.** 제안하려면 먼저 ① 확인된 사실 ② 가설 ③ 그 로그가 어떤 값이면 가설이 맞고 어떤 값이면 틀리는지 ④ 결과에 따라 할 일을 적는다. 하나라도 못 채우면 제안하지 않는다. 이미 아는 것을 다시 보는 로그, 원인을 알아도 할 일이 바뀌지 않는 로그는 제안하지 않는다.
   - 진단 로그를 넣을 때는 제거 조건(무엇을 확인하면 지우는가)을 함께 정한다.
   - 정리 목록에는 로그마다 출처(원래 코드 / Claude 추가 YYMMDD / 사용자 추가)를 적고, 같은 목적으로 넣은 줄은 한 항목으로 묶는다.
-- **콘솔** (`D2Bot.printToConsole`, 매니저 화면) = **직접 보고 알아채야 하는 것**. 형식 `내용 (지역 x,y)`, 말머리 없이 색으로 구분.
-  - 조기 종료 이유 = **기본색(검정)**, `Misc.quitGame(이유, trace용 상세)`. 모든 조기 종료(quit)는 이 함수로 한다. 공통 사건이어도 각 프로필이 찍는다. 목표: 누가 나가든 나간 사유가 콘솔에 한 줄 이상 남는다. 따라 나가는 `PartyThread`의 `party has left`는 print만.
-  - 치킨·사망(`You died in last game`)·핑 퇴장 = **빨강(9)**.
-  - 멈춤(`D2Bot.stop`) = 빨강 콘솔 + trace. 위치와 무관한 것(AttackSkill 미습득)은 `(지역 x,y)` 없이.
-  - **게임 바깥**(클라이언트 시작~게임 입장 전: Starter `D2Bot*.dbj`, `tools/OOG.js`, `tools/AutoCreate.js`) 콘솔은 멈춤·조기 종료를 포함해 **모두 회색(10)** 이다. 예외: 게임 뒤 플레이 시간 요약은 기존 색.
-    - 형식 `사건: 대상 - 처리 (loc N)`. 영어, 마침표 없음, `CDKey` 표기, 처리는 `stop`/`restart`/`retry`/`wait 30s`/`wait 5m`/`switch key`/`skip`/`create`. trace는 일이 생길 때만, 위치는 `[OOG loc N]`.
-  - 오류 = **회색(10)**: 치명 오류 `Misc.errorReport`, 잡힌 오류 `Misc.caughtError(구간, e)`(trace는 매번, 콘솔은 게임당 자리별 1회).
-  - 정상 종료 = 콘솔에 찍지 않는다. 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상 종료다. `Script ended`는 print·trace만(trace는 조기 종료가 없었을 때만).
-  - 진행 요약(구간 헤더 `=== X ===`, `!!! BOOK/POTION/SCROLL !!!`, `[Hired]`, 룬워드, 경험치 로그)은 기존대로. 경험치 로그는 치킨 포함 모든 종료에서 남는다.
-- **`print`** (d2bs 로그, 게임 화면 콘솔) = **게임 진행 기록**만: 구간 시작, 구간 결과(`X failed: 이유`), 용병 결과, 장비(`equipped/granted`), 이동·버프 진행, 시작 설정 표시 등. 오류 관련 줄은 넣지 않는다.
-- **`Misc.trace`** (`_cache/trace/trace-<프로필>-<날짜>.txt`) = **분석·검증·오류 상세**: 타임아웃, 재시도, 실패 상세, 판정·측정, 콘솔로 가는 줄 전부(`[Quit]`, `[Error]`), 구간 헤더, 게임 경계(`=== [<게임 이름>] ===`), `Script ended`, `boss not found`.
-  - 형식 `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`(게임 밖은 `(OOG loc N)`). `Misc.trace(msg, true)`는 위치를 붙이지 않는다: 게임 경계, 구간 헤더, `[Error]`.
+- **로그 4가지.** 사람이 보는 곳은 매니저(콘솔 색, 아이템 탭 그래픽), 분석은 파일(`Console.txt`, `ItemLog.txt`, d2bs 로그, trace).
+- **줄 모양**(콘솔·print 공통): `[주체] 문장`. 주체는 함수·스레드 이름, 구간 이름(대문자, 헤더와 같음), 또는 사건 종류. 이유·설명 앞 `: `, 값 `키=값`, 상세 덧붙임 ` | `, 줄 끝 `( )`는 위치·파일 줄 번호. 문장 첫 단어만 대문자(고유명사·코드 이름은 원래대로), 콜론 뒤는 소문자. 고정 모양(분류 아님): `=== [게임 이름] ===`, `=== [구간] ===`, `!!! … !!!`, `=== START/FARMING/LEVELING ===`, 경험치 줄.
+- **콘솔** (`D2Bot.printToConsole`) = **흐름과 끝**. 매니저 화면 + 전 프로필 공유 파일 `_cache/trace/Console.txt`(`[YYYY/MM/DD HH:MM:SS] <프로필> <분류> 내용`, 분류는 `printToConsole`이 색과 게임 안/밖으로 정함: OOG/Flow/Item/Exp/Quit/Red/Error). 형식 `내용 (지역 x,y)`, 색으로 구분.
+  - 흐름은 **리더만**: 게임 입장 `=== [게임 이름] ===`, 구간 끝 `[X] Completed`, 팀 대기·휴식, 플레이 시간 요약. 팔로워 흐름은 print로 본다.
+  - 사건 종류(분류 하나에 경우가 여럿일 때만 만든다): `[Quit]` 조기 종료(기본색, `Misc.quitGame(이유, 상세)`, 모든 quit은 이 함수. 최대 게임 시간 `Max game time N min` 포함), `[Stop]` 프로필 멈춤(빨강), `[Chicken]` 치킨·핑(빨강), `[Died]` 죽은 순간·`Last game`(빨강), `[Error]` 오류(회색 10, `Misc.errorReport`·`Misc.caughtError(자리, e)` 콘솔은 게임당 자리별 1회), `[Hired]`·`[Socket]`·`[Runeword]`·`[Reset]`·큐브, `!!! … !!!`, 경험치(모든 끝). 사건 종류를 쓰는 줄은 일어난 자리를 문장 안에 쓴다.
+  - 정상 종료는 찍지 않는다(경험치 줄 앞에 `[Quit]`·`[Stop]`·`[Chicken]`·`[Died]`·`[Error]`가 없으면 정상).
+  - **게임 바깥**(Starter `D2Bot*.dbj`, `tools/OOG.js`, `tools/AutoCreate.js`) 콘솔은 모두 회색(10), 형식 `사건: 대상 - 처리 (loc N)`. 영어, 마침표 없음, `CDKey` 표기, 처리는 `stop`/`restart`/`retry`/`wait 30s`/`wait 5m`/`switch key`/`skip`/`create`. 예외: 게임 뒤 플레이 시간 요약은 기존 색.
+- **print** (d2bs 로그 = 게임 화면 콘솔, 프로필·날짜별, 엔진이 시각을 붙임) = **상세 기록 전부**: 진행, 실패·재시도, 오류 상세, 조기 종료 상세(`[Quit] 이유 | 상세`), 게임 경계, 구간 헤더. 게임 안 줄은 `Misc.print(msg)`(끝에 `(지역 x,y)`, 색 코드 없음), 고정 모양·게임 밖 줄은 위치 없이 `print`.
+- **`Misc.trace`** (`_cache/trace/trace-<프로필>-<날짜>.txt`) = **임시 검증용만**. 줄 끝 메모에 handoff 번호와 제거 조건을 적는다. 형식 `[MM/DD/YY HH:MM:SS] 내용 (지역 x,y)`(게임 밖 `(OOG loc N)`).
+- **머리 위 글자** (`me.overhead`) = 매 틱 반복 표시, 아이템마다의 표시, 키 입력 표시만. 한 번씩 일어나는 사건은 print로.
 - D2BS 엔진 메시지는 d2bs 로그에 남는다(옮길 수 없음).
 
 ## 5. 노트
@@ -92,6 +90,7 @@
 | `docs/rejected.md` | 기각 노트 |
 | `docs/log_results.md` | 로그 분석 결과 (묶음마다 쌓음) |
 | `docs/log_guide.md` | 로그 분석 지침 |
+| `docs/log_types.md` | 로그 종류 11가지의 목적·보는 곳·파일·코드·설정 |
 | `docs/D2BS_Structure.md` | D2BS / kolbot 구조 참조, 확인된 엔진·게임 사실 |
 | `docs/attack_flow.md` | clear / setPosition 흐름 정리 |
 | `docs/skill_range.md` | 스킬 사거리 (공식, 측정, 현재 값). 사거리 정보는 빠짐없이 여기에 기록한다 |

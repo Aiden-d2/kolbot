@@ -111,7 +111,7 @@ NTIP.CheckQuantityOwned = function (item_type, item_stats, selfGid) {	//260816
 		mercItems = merc ? merc.getItems() : null;
 
 	if (!items) {
-		print("I can't find my items!");
+		Misc.print("[NTIP] Failed: can't find my items");	//261103 log policy
 		return { count: 0 };
 	}
 
@@ -735,7 +735,7 @@ NTIP.ParseRule = function (sec, hold, info) {	//261028
 
 		if (seen[key]) {	// shown only, same result as before
 			if (!hold && ["tier", "merc", "qty", "tiered"].indexOf(key) === -1) {	//261028 gear key (range etc): trace only
-				Misc.trace("NTIP: duplicate gear key [" + key + "]" + where);
+				Misc.print("[NTIP] Duplicate gear key [" + key + "]" + where);	//261103 log policy: trace -> print
 			} else {
 				Misc.errorReport("Duplicate rule key: [" + key + "]" + where);
 			}
@@ -808,7 +808,7 @@ NTIP.ParseRule = function (sec, hold, info) {	//261028
 	if (rule.TierCheck && (rule.hasOwnProperty("Tier") || rule.hasOwnProperty("Merc"))) {	//261025 tier/merc line: gear tier ignored (GetScore does not see it either), line kept
 		delete rule.TierCheck;
 		delete rule.TierCheckStr;
-		Misc.trace("NTIP: gear tier ignored on tier/merc line File: " + info.file + " Line: " + info.line);
+		Misc.print("[NTIP] Gear tier ignored on tier/merc line | file=" + info.file + " line=" + info.line);	//261103 log policy: trace -> print
 	}
 
 	return rule;

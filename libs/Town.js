@@ -173,7 +173,7 @@ var Town = {
 						dropped = Packet.dropItem(cursorItem);
 					}
 
-					Misc.trace("socketGems failed: " + name + " -> [" + Config.Gear[t.bodyLoc] + "] " + t.item.name + (dropped ? " (dropped)" : ""));	//261023 (cursor) removed (0x28 never left it, 2 log cycles)
+					Misc.print("[socketGems] Failed: " + name + " -> [" + Config.Gear[t.bodyLoc] + "] " + t.item.name + (dropped ? " | dropped" : ""));	//261023 (cursor) removed (0x28 never left it, 2 log cycles)	//261103 log policy: trace -> print
 
 					if (dropped) {
 						me.cancel();	//261022 close panels before picking up
@@ -254,7 +254,7 @@ var Town = {
 
 	// Start a task and return the NPC Unit
 	initNPC: function (task, reason) {
-		me.overhead("initNPC: " + reason);	//eom
+		Misc.print("[initNPC] " + reason);	//eom	//261103 log policy: overhead -> print
 
 		var npc = getInteractedNPC();
 
@@ -754,7 +754,7 @@ MainLoop:
 							continue;
 						}
 
-						Misc.trace("identify stopped: no ID scroll for " + item.name + " (gold " + me.gold + ")");	//261001
+						Misc.print("[identify] Failed: no ID scroll for " + item.name + " gold=" + me.gold);	//261001	//261103 log policy: trace -> print
 
 						break MainLoop;
 					}
@@ -762,9 +762,9 @@ MainLoop:
 					timer = getTickCount();	//261001
 
 					if (!this.identifyItem(item, scroll)) {	//261001
-						Misc.trace("identify failed: " + item.name + " (" + (scroll.classid === 519 ? "tome" : "scroll") + ", " + (getTickCount() - timer) + "ms)");
+						Misc.print("[identify] Failed: " + item.name + " | " + (scroll.classid === 519 ? "tome" : "scroll") + " ms=" + (getTickCount() - timer));	//261103 log policy: trace -> print
 					} else if (getTickCount() - timer >= 2000) {	//261001 slow success (no failure line)
-						Misc.trace("identify slow: " + item.name + " (" + (scroll.classid === 519 ? "tome" : "scroll") + ", " + (getTickCount() - timer) + "ms)");
+						Misc.print("[identify] Slow: " + item.name + " | " + (scroll.classid === 519 ? "tome" : "scroll") + " ms=" + (getTickCount() - timer));	//261103 log policy: trace -> print
 					}
 
 					result = Pickit.checkItem(item);
@@ -881,7 +881,7 @@ CursorLoop:
 			return false;
 		}
 
-		me.overhead("MiniShopBot: Scanning " + npc.itemcount + " items.");	//eom
+		Misc.print("[MiniShopBot] Scanning " + npc.itemcount + " items");	//eom	//261103 log policy: overhead -> print
 
 		do {
 			if (this.ignoredItemTypes.indexOf(item.itemType) === -1) {
@@ -1168,7 +1168,6 @@ CursorLoop:
 			case "buyQuiver":	//261017
 				if (getInteractedNPC()) {
 					sendKey(0x20);
-					print("interact closed");
 					Misc.trace("interact closed");
 					
 					if (!me.automap) {
@@ -1188,22 +1187,18 @@ CursorLoop:
 					equipQuiver = me.getItem(quiver, 1);
 					invQuiver = me.getItem(quiver, 0);
 					
-					print("not enough quiver: " + (equipQuiver ? equipQuiver.getStat(70) : 0) + (invQuiver ? " + " + invQuiver.getStat(70) : ""));
 					Misc.trace("not enough quiver: " + (equipQuiver ? equipQuiver.getStat(70) : 0) + (invQuiver ? " + " + invQuiver.getStat(70) : ""));
 
 					if (me.act === 3) {
 						if (equipQuiver && Storage.Inventory.MoveTo(equipQuiver)) {
-							print("equipQuiver moved");
 							Misc.trace("equipQuiver moved");
 						}
 					} else {
 						if (equipQuiver && equipQuiver.drop()) {
-							print("equipQuiver dropped");
 							Misc.trace("equipQuiver dropped");
 						}
 						
 						if (invQuiver && invQuiver.drop()) {
-							print("invQuiver dropped");
 							Misc.trace("invQuiver dropped");
 						}
 					}
@@ -1219,33 +1214,28 @@ CursorLoop:
 					}
 					
 					if (me.act === 3 && equipQuiver && equipQuiver.sell()) {
-						print("equipQuiver sold");
 						Misc.trace("equipQuiver sold");
 					}
 					
 					buyQuiver = npc.getItem(quiver);
 					
 					if (buyQuiver && buyQuiver.buy()) {
-						print("equipQuiver");
 						Misc.trace("equipQuiver");
 					}
 					
 					if (me.act === 3 && invQuiver && invQuiver.sell()) {
-						print("invQuiver sold");
 						Misc.trace("invQuiver sold");
 						
 						buyQuiver = npc.getItem(quiver);
 					}
 					
 					if (buyQuiver && buyQuiver.buy()) {
-						print("invQuiver");
 						Misc.trace("invQuiver");
 					}
 					
 					equipQuiver = me.getItem(quiver, 1);
 					invQuiver = me.getItem(quiver, 0);
 					
-					print((equipQuiver ? "equipQuiver " + equipQuiver.getStat(70) : "no quiver") + (invQuiver ? " / invQuiver " + invQuiver.getStat(70) : ""));
 					Misc.trace((equipQuiver ? "equipQuiver " + equipQuiver.getStat(70) : "no quiver") + (invQuiver ? " / invQuiver " + invQuiver.getStat(70) : ""));
 				}
 
@@ -1310,7 +1300,7 @@ CursorLoop:
 			}
 		} else {
 			if (me.inTown) {
-				me.overhead("Town: Can't afford repairs.");	//eom
+				Misc.print("[repair] Failed: can't afford");	//eom	//261103 log policy: overhead -> print
 			}
 		}
 
@@ -1448,7 +1438,7 @@ MainLoop:
 
 		if (!!me.getMerc()) {
 			if (Config.MercWatch) { // Cast BO on merc so he doesn't just die again
-				me.overhead("MercWatch precast");	//eom
+				Misc.print("[MercWatch] Precast");	//eom	//261103 log policy: overhead -> print
 				Pather.useWaypoint("random");
 				Precast.doPrecast(true);
 				Pather.useWaypoint(preArea);
@@ -1648,7 +1638,7 @@ MainLoop:
 					return false;
 				}
 
-				D2Bot.printToConsole("Failed to get corpse, stopping.", 9);
+				D2Bot.printToConsole("[Stop] Failed to get corpse (" + Misc.where() + ")", 9);	//261103 log policy
 				D2Bot.stop();
 			}
 
@@ -2259,7 +2249,7 @@ MainLoop:
 				}
 				
 				if (getTickCount() - tick > 90000) {
-					D2Bot.printToConsole("alkor error", 9);
+					D2Bot.printToConsole("[Quit] Alkor not found (" + Misc.where() + ")");	//261103 log policy: early quit (quit() kept)
 					quit();
 				}
 
@@ -2291,7 +2281,7 @@ MainLoop:
 			made = typeof portal === "object" ? portal.gid + " " + portal.x + "," + portal.y + " m" + portal.mode : String(portal);	//261004 read now, the unit may be gone later
 
 			if (!Pather.usePortal(null, me.name)) {
-				Misc.trace("goToTown take TP failed start tick:" + startTick + " made:" + made);	//261004	//261006 kept: failure record
+				Misc.print("[goToTown] Failed: take TP | startTick=" + startTick + " made=" + made);	//261004	//261006 kept: failure record	//261103 log policy: trace -> print
 				throw new Error("Town.goToTown: Failed to take TP");
 			}
 		}
@@ -2326,7 +2316,7 @@ MainLoop:
 		}
 
 		if (me.area === 120) {	//261004 a TP on Arreat Summit resets the Ancients and takes away the leader's portal in front of it
-			Misc.trace("visitTown refused: Arreat Summit");
+			Misc.print("[visitTown] Failed: Arreat Summit");	//261103 log policy: trace -> print
 
 			return false;
 		}
@@ -2335,7 +2325,7 @@ MainLoop:
 			preAct = me.act,
 			townCheck = Config.TownCheck;	//261021
 
-		Misc.trace("visitTown start by:" + getScript(true).name + " tick:" + getTickCount());	//261004 who goes (default.dbj / TownChicken) and when
+		Misc.print("[visitTown] Start by=" + getScript(true).name + " tick=" + getTickCount());	//261004 who goes (default.dbj / TownChicken) and when	//261103 log policy: trace -> print
 
 		Config.TownCheck = false;	//261021 a moveTo in goToTown (walking to my portal) must not start another town trip (default calls visitTown directly: town check, quiver)
 
@@ -2359,7 +2349,7 @@ MainLoop:
 			throw new Error("Town.visitTown: Failed to go back from town");
 		}
 
-		Misc.trace("visitTown back tick:" + getTickCount());	//261004 portal reuse is blocked for 1-2s after this
+		Misc.print("[visitTown] Back tick=" + getTickCount());	//261004 portal reuse is blocked for 1-2s after this	//261103 log policy: trace -> print
 
 		return true;
 	}

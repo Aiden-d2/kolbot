@@ -28,6 +28,8 @@ function main() {
 		debugInfo = {area: 0, currScript: "no entry"},
 		pingTimer = [],
 		quitFlag = false,
+		wasDead = false,	//261103 log policy: [Died] once per death
+		maxTimeLogged = false,	//261103 log policy: [Quit] Max game time once
 		timerLastDrink = [],
 		relayMsgs = [];	//261021 team messages (copydata 55, follow node 56) that came while default.dbj was paused; the engine drops events for a paused script
 
@@ -59,16 +61,14 @@ function main() {
 		for (i = 0; i < Config.PingQuit.length; i += 1) {
 			if (Config.PingQuit[i].Ping > 0) {
 				if (me.ping >= Config.PingQuit[i].Ping) {
-					me.overhead("High Ping");
-
 					if (pingTimer[i] === undefined || pingTimer[i] === 0) {
 						pingTimer[i] = getTickCount();
 					}
 
 					if (getTickCount() - pingTimer[i] >= Config.PingQuit[i].Duration * 1000) {
 						if (print) {
-							D2Bot.printToConsole("High ping " + me.ping + "/" + Config.PingQuit[i].Ping + " (" + Misc.where() + ")", 9);	//260930 where it happened, same form as the other quit reasons
-							Misc.trace("[Quit] High ping " + me.ping + "/" + Config.PingQuit[i].Ping);	//260930
+							D2Bot.printToConsole("[Chicken] High ping " + me.ping + "/" + Config.PingQuit[i].Ping + " (" + Misc.where() + ")", 9);	//260930 where it happened, same form as the other quit reasons	//261103 log policy: [Chicken]
+							Misc.print("[Chicken] High ping " + me.ping + "/" + Config.PingQuit[i].Ping);	//260930	//261103 log policy: trace -> print
 						}
 
 						scriptBroadcast("pingquit");
@@ -99,7 +99,7 @@ function main() {
 
 		for (i = 0; i < items.length; i += 1) {
 			if (type < 3 && items[i].mode === 0 && items[i].location === 3 && items[i].itemType === pottype) {
-				me.overhead("Drinking potion from inventory.");	//eom
+				Misc.print("[getPotion] Drinking potion from inventory");	//eom	//261103 log policy: overhead -> print
 
 				return copyUnit(items[i]);
 			}
@@ -242,7 +242,7 @@ function main() {
 				try {
 					clickItem(2, potion);
 				} catch (e) {
-					Misc.trace("Couldn't give the potion to merc.");	//260930 print -> trace (diagnostic)
+					Misc.print("[drinkPotion] Failed: merc potion");	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 				}
 			}
 
@@ -579,6 +579,21 @@ function main() {
 	// Start
 	while (true) {
 		try {
+			if (me.gameReady) {	//261103 log policy: death and the max game time (the engine leaves without a reason line)
+				if (me.dead && !wasDead) {	//261103 the moment I died (alive -> dead)
+					D2Bot.printToConsole("[Died] (" + Misc.where() + ")", 9);	//261103
+					Misc.print("[Died]");	//261103
+				}
+
+				wasDead = me.dead;	//261103
+
+				if (!maxTimeLogged && me.maxgametime > 0 && getTickCount() - me.gamestarttime >= me.maxgametime - 1000) {	//261103 1s before the engine leaves
+					maxTimeLogged = true;	//261103
+					D2Bot.printToConsole("[Quit] Max game time " + Math.round(me.maxgametime / 60000) + " min (" + Misc.where() + ")");	//261103
+					Misc.print("[Quit] Max game time " + Math.round(me.maxgametime / 60000) + " min");	//261103
+				}
+			}
+
 			if (me.gameReady && !me.inTown) {
 				if (Config.UseHP > 0 && me.hp < Math.floor(me.hpmax * Config.UseHP / 100)) {
 					this.drinkPotion(0);
@@ -589,9 +604,8 @@ function main() {
 				}
 
 				if (Config.LifeChicken > 0 && me.hp <= Math.floor(me.hpmax * Config.LifeChicken / 100)) {
-					D2Bot.printToConsole("Life Chicken " + me.hp + "/" + me.hpmax + " (" + Misc.where() + ")", 9);	//260930
-					Misc.trace("[Quit] Life Chicken " + me.hp + "/" + me.hpmax);	//260930	//261021 mode and monsters around removed
-					print("[Chicken] Life (" + me.hp + "/" + me.hpmax + ") area:" + me.area + " (" + me.x + "," + me.y + ")");	//eom 260415
+					D2Bot.printToConsole("[Chicken] Life " + me.hp + "/" + me.hpmax + " (" + Misc.where() + ")", 9);	//260930	//261103 log policy: [Chicken]
+					Misc.print("[Chicken] Life " + me.hp + "/" + me.hpmax);	//260930	//261021 mode and monsters around removed	//261103 log policy: trace -> print (the old [Chicken] print removed)
 					D2Bot.updateChickens();
 
 					if (Config.LogExperience) {	//261001 the chickened profile also leaves its exp line
@@ -612,8 +626,8 @@ function main() {
 				}
 
 				if (Config.ManaChicken > 0 && me.mp <= Math.floor(me.mpmax * Config.ManaChicken / 100)) {
-					D2Bot.printToConsole("Mana Chicken " + me.mp + "/" + me.mpmax + " (" + Misc.where() + ")", 9);	//260930
-					Misc.trace("[Quit] Mana Chicken " + me.mp + "/" + me.mpmax);	//260930
+					D2Bot.printToConsole("[Chicken] Mana " + me.mp + "/" + me.mpmax + " (" + Misc.where() + ")", 9);	//260930	//261103 log policy: [Chicken]
+					Misc.print("[Chicken] Mana " + me.mp + "/" + me.mpmax);	//260930	//261103 log policy: trace -> print
 					D2Bot.updateChickens();
 
 					if (Config.LogExperience) {	//261001 the chickened profile also leaves its exp line
@@ -632,8 +646,8 @@ function main() {
 
 					if (ironGolem) {
 						if (ironGolem.hp <= Math.floor(128 * Config.IronGolemChicken / 100)) { // ironGolem.hpmax is bugged with BO
-							D2Bot.printToConsole("Iron Golem Chicken (" + Misc.where() + ")", 9);	//260930
-							Misc.trace("[Quit] Iron Golem Chicken");	//260930
+							D2Bot.printToConsole("[Chicken] Iron Golem (" + Misc.where() + ")", 9);	//260930	//261103 log policy: [Chicken]
+							Misc.print("[Chicken] Iron Golem");	//260930	//261103 log policy: trace -> print
 							D2Bot.updateChickens();
 
 							if (Config.LogExperience) {	//261001 the chickened profile also leaves its exp line
@@ -653,8 +667,8 @@ function main() {
 					
 					if (mercHP > 0 && merc && merc.mode !== 12) {
 						if (mercHP < Config.MercChicken) {
-							D2Bot.printToConsole("Merc Chicken (" + Misc.where() + ")", 9);	//260930
-							Misc.trace("[Quit] Merc Chicken");	//260930
+							D2Bot.printToConsole("[Chicken] Merc (" + Misc.where() + ")", 9);	//260930	//261103 log policy: [Chicken]
+							Misc.print("[Chicken] Merc");	//260930	//261103 log policy: trace -> print
 							D2Bot.updateChickens();
 
 							if (Config.LogExperience) {	//261001 the chickened profile also leaves its exp line

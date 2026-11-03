@@ -136,7 +136,7 @@ function ReceiveCopyData (mode, msg) {
 
 		break;
 	case 2: // Game info
-		print("Recieved Game Info");
+		Misc.print("[Starter] Received game info");	//261103 log policy
 
 		gameInfo = JSON.parse(msg);
 
@@ -182,7 +182,6 @@ function timer (tick) {
 }
 
 function main () {
-	debugLog(me.profile);
 	addEventListener('copydata', ReceiveCopyData);
 
 	while (!handle) {
@@ -340,13 +339,6 @@ MainSwitch:
 			chatActionsDone = true;
 
 			ControlAction.timeoutDelay("Chat delay", StarterConfig.ChatActionsDelay * 1e3);
-			say("/j " + StarterConfig.JoinChannel);
-			delay(1000);
-
-			if (StarterConfig.FirstJoinMessage !== "") {
-				say(StarterConfig.FirstJoinMessage);
-				delay(500);
-			}
 		}
 
 		if (!ControlAction.click(6, 652, 469, 120, 20)) { // Join
@@ -420,7 +412,7 @@ JoinLoop2:
 						ControlAction.timeoutDelay("Game Delay", (lastGameTick - getTickCount() + 5000));
 					}
 
-					print("joining game " + joinInfo.gameName);
+					Misc.print("[Starter] Join game: " + joinInfo.gameName);	//261103 log policy
 
 					if (typeof AdvancedConfig[me.profile] === "object" && typeof AdvancedConfig[me.profile].JoinDelay === "number") {
 						ControlAction.timeoutDelay("Custom Join Delay", AdvancedConfig[me.profile].JoinDelay * 1e3);
@@ -502,7 +494,7 @@ JoinLoop2:
 				OOGLog.stop("Login failed: " + Profile(me.profile).character, e);
 			} else {
 				me.blockKeys = false;
-				print(e + " " + getLocation());
+				print("[Starter] Login error: " + e + " (loc " + getLocation() + ")");	//261103 log policy (out of game: loc N)
 			}
 		}
 

@@ -13,6 +13,11 @@
 ### 261002 Claude: 아마게돈 변신 가드
 - 249는 곰·늑대 상태가 아니면 먼저 변신(121 중이면 바로 false, 변신 실패면 false). 인간 상태 아마게돈 경로(Wereform 변신 실패·걷는 사이 만료, `diabloPrep`·바알 preattack)를 한곳에서 막는다. 전체 스킬 무조건 변신은 Cyclone Armor·CTA BO가 안 나가서 아마게돈만.
 
+## Skill.setSkill
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 경고 print → `Misc.print("[setSkill] Charged skills must be cast from right hand")`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
 ## Skill.getManaCost
 
 ### 260928 Claude: 캐시 제거
@@ -23,6 +28,14 @@
 ### 261028 사용자: 기어 칸 이름·`TieredGear` 삭제 (handoff 3-39)
 - `Config.TieredGear`(부위별 도달) 설정 2줄 삭제. 전 칸이 `TierGoal` 이상이면 `Config.Tiered = true`는 그대로(게임 시작 때 빌드 1레벨 Update에서 부름). 칸 이름은 `Config.Gear`를 따라 `equipped: [ArmG] N`처럼 찍힌다.
 - 확인: 261029 로그 — nip 로드 오류·표시 줄 0(ScriptErrorLog·회색 콘솔), print `equipped:` 새 칸 이름만, ItemLog 기어 조건 표시 124줄(그중 100줄을 그 시각 착용 tier와 대조, 기준 이상이 된 뒤 줍기 0). `[tiered]`(ItemLog `(Tiered)` 0)·홀드 기본값은 사례를 확인하지 않음. 검증 통과(사용자 261029, 같은 헤더 항목 공통).
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `Equip.updateTier`의 `equipped: [자리] N` print → `Misc.print("[Equip] 자리 tier=N")`.
+
+## Grant.updateTier / Grant.updateStat
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `granted: [자리] N` → `[Grant] 자리 tier=N`, `updateMercStat` → `[Grant] updateMercStat`(`Misc.print`).
 
 ## Misc.openChests
 
@@ -44,6 +57,10 @@
 ### 261021 Claude: default.dbj는 직접 마을행 (`ab94751`, 옛 handoff 3-5)
 - default.dbj면 `Town.visitTown`을 직접 부른다(멈춤 없음, trace `Town check (direct)`). TownChicken(visitTown 안에서만 부름)·MapHelper(default와 동시에 움직임)는 기존 메시지. 재진입 막기는 `Town.md` visitTown. 검증 통과(사용자 261023).
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- Arreat Summit(120)·Uber Tristram(136) 확인을 첫머리에서 "마을에 가야 함"(`check`) 판정 뒤로 옮기고 그 자리에 머리 위 글자 `Cannot open TP`. 두 지역에서 마을에 가지 않는 동작은 같다. 예전에는 `TownChicken`이 이 두 지역에서 `cannot open TP`를 찍었지만 이 함수가 먼저 끝내서 메시지가 가지 않아 찍히지 않는 자리였다(코드 읽음).
+- `We need healing/mana potions` 머리 위 글자(벨트 칸마다) → 지역 변수 `need`에 모아 루프 뒤 1회 `Misc.print("[townCheck] Need healing and mana potions")`. 직접 갈 때 `Town check (direct)`(머리 위 글자·print·trace) → `Misc.print("[townCheck] Direct")`.
+
 ## Misc.wornItems / Misc.takeOff
 
 ### 261024 Claude: 착용 중인 재료 베이스로 룬워드·펀치 (`789d80d`·`aafbe50`·`9c0d445`, 사용자 결정 261023·261024·261025, 옛 handoff 3-32)
@@ -56,10 +73,33 @@
 ### 261029 Claude: takeOff trace 삭제 (사용자 요청)
 - 검증 통과(옛 handoff 3-32)로 `[Runeword]/[Cube] takeOff …` trace 삭제. 그 줄에서만 쓰던 `Misc.takeOff`의 지역 변수 `name`·인자 `tag`도 지우고, 호출 2곳(`Runewords.makeRunewords`·`Cubing.doCubing`)의 셋째 인자를 뺌. 동작 같음.
 
+## Misc.spy
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `player not found` → `Misc.print("[spy] Failed: player not found")`.
+
 ## Misc.where
 
 ### 261102 사용자: 주석의 `CLAUDE.md` 언급 삭제
 - 설명 주석 `(CLAUDE.md log rules)` → `(log rules)`. 코드 변경 없음.
+
+## Misc.print
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 새 함수 `Misc.print(msg)`: 색 코드(`ÿc.`)를 지우고, 게임 안이면 끝에 ` (지역 x,y)`(`Misc.where`)를 붙여 `print`. 게임 안 print 줄은 모두 이 함수로 찍는다. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
+## Misc.quitGame / Misc.caughtError / Misc.errorReport
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `quitGame`: 콘솔 `[Quit] 이유 (지역 x,y)`, trace `[Quit] 이유: 상세` → `Misc.print("[Quit] 이유 | 상세")`.
+- `caughtError`: 콘솔 `[Error] 자리: 메시지 (지역 x,y)`(게임당 자리별 1회 그대로), trace → print `[Error] 자리: 메시지 (파일 #줄) (지역 x,y)`(매번).
+- `errorReport`: 콘솔 `[Error] 스크립트: 메시지 (파일 #줄)`(문자열 오류는 `[Error] 문자열`), trace → print 같은 줄 + ` | area= ping= game=` + ` | stack=…`. `_cache/trace/ScriptErrorLog.txt` 쓰기와 날짜·`filemsg` 계산 삭제(파일에만 있던 Stack을 print로).
+- `Misc.debugLog` 삭제(호출 0).
+
+## Experience.log
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- 경험치 print → `Misc.print`(위치 붙음). `no exp` → `No exp`(콘솔·print).
 
 ## Packet.openMenu
 
@@ -78,3 +118,6 @@
 
 ### 261001 Claude: 대사 끝 처리 (openMenu 항목 참고)
 - trace `[TK] talk skipped <횟수> npc:<이름>`, 오토맵이 꺼져 있으면 다시 켬.
+
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- trace `[TK] talk skipped N npc:이름` → `Misc.print("[endTalk] Talk skipped keys=N npc=이름")`.

@@ -6,7 +6,7 @@
 - 3절 `인게임 검증 대기`: 바꾼 것(커밋) / 검증 방법 / 결과(로그 묶음별)
 - 흐름: 1 → 2(진행 결정) → 3(수정 완료) → 코드 노트(검증 통과). 3 검증 실패는 실패 사례를 붙여 2로. 기각은 `rejected.md`. 같은 내용은 한 항목에만, 옮길 때 `옛 N-N`. 지운 번호는 다시 쓰지 않는다.
 
-trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
+trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/trace/`에, print는 d2bs 로그(`d2bs/logs/d2bs-<프로필>-<날짜>.log`)에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
 **마지막으로 분석한 로그**: 261103 묶음(11/02 17:38 ~ 11/03 09:31, 8프로필 각 90게임, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261103. 코드는 261102 수정(PR #133·#134, nip #135·#136)이 들어간 main(줄 형식으로 확인). 실행 중 main 변경(11/02 18:04 `263ba9c` openMenu, 20:31~20:55 Prototypes·Config 업로드, 23:05 nip `8deaca1`)이 게임 PC에 들어갔는지는 확인 안 함. **다음 사이클**: 3-60 `[useUnit] nearest` trace·3-63 피겨린 수정(261103)이 들어간 main으로 돈다. 3-61 리뷰는 261103에 끝남(사례는 1-2·1-17·1-19, `[moveTo] retry … over` trace 261103 삭제).
 
@@ -29,16 +29,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 등급 기준이 이미 두 곳에 있다: `X.nip` 138~148줄(회복·마나 1등급 노멀 1~2막, 2등급 노멀 1~3막, 3등급 노멀 1~4막, 4·5등급 항상)과 `clearBelt`의 노멀 마나 규칙(2막 mp1, 3막 mp1·mp2를 벨트에서 버림). 두 기준이 한 막씩 어긋난다(nip은 2막에서 mp1, 3막에서 mp2를 줍는다).
 - **판단에 필요한 것**: 진행할지. 한다면 기준(① 같은 게임에서 연 상점의 막별 최고 등급을 기록해 씀 — 새 상태 1개, 게임 첫 방문엔 적용 안 됨, ② 막·난이도 고정 표 — `clearBelt` 마나 정리 규칙처럼 제외할 등급을 코드에 적음(상점 데이터 불필요, 사용자 261028), ③ nip 판정 `Pickit.checkItem`이 0이면 넣지 않음 — 새 상태 없음), 넣지 않은 물약을 버릴지, nip과 `clearBelt` 마나 규칙의 어긋남을 어느 쪽으로 맞출지.
 
-### 1-17. 경로 보정 10회 실패 뒤 오류 줄 없음 (`Pather.moveTo`, `Attack`, 사용자 261026)
-- **문제**: `Pather.moveTo`는 `no adjusted path` 10번째에도 경로가 없으면 throw(`moveTo: Failed to generate path`)하는데, 261026 로그 2건은 오류 줄 없이 다음 구간으로 넘어갔다.
-- **확인된 것**
-  - 사례: a3 10/26 00:29:09~00:29:22 Abaddon(목표 12659,6098, 10회 모두 12645,6106 부근) → 00:29:29 `=== [POA] ===`. a7 03:37:10~03:37:23 Infernal Pit(목표 12660,9099) → 03:37:29 `=== [DIABLO] ===`. 두 건 모두 `fixed path`·`[Error]`·`Failed to generate path` 0.
-  - 코드: `Attack.js`에 `Pather.moveTo` throw를 trace 없이 받는 catch가 3곳(잃은 목표 마지막 위치로 이동 `searches = 99`, 자리 잡기 이동 `moved = false` 2곳). 이번 2건이 어느 호출부였는지는 로그로 모름. CLAUDE.md 4절: 잡힌 오류는 `Misc.caughtError`.
-  - 261027 로그: `no adjusted path` 10회 2건은 모두 `[Error] moveTo: Failed to generate path`가 찍힘(a6 Pz-6 Stony Field, a7 Pz-55 Abaddon `usePortal → moveToUnit`) — 오류 줄 없는 위 2건과 다른 호출 자리. 261028 로그: `no adjusted path` 0.
-- **판단에 필요한 것**: 진행할지. 한다면 조용한 catch 3곳에 `Misc.caughtError`를 넣을지(콘솔은 게임당 자리별 1회).
-  - 261101 로그: a6 11/01 10:13:11~10:13:21 Pit of Acheron(목표 12781,7542) `no original path` 뒤 `no adjusted path` 10회(모두 12785,7565) → `fixed path`·`[Error]` 없이 10:14:20 `=== [INFERNAL] ===`(오류 줄 없는 모양). 같은 묶음 a8 05:06 Harrogath는 `[Error] moveTo: Failed to generate path: 12641,6349`(찍힌 모양).
-  - 261103 로그(3-61 리뷰, 파밍 `farmingAbaddon`·`farmingPOA`의 `while (거리 > 15) moveTo` 루프, 180초 상한): a1 Pz-55 11/03 02:54:06~02:54:16 Pit of Acheron 목표 12659,7599(루프 목표 12680,7640과 다른 좌표) `no adjusted path` 10회(12645,7603) → `[Error]` 없이 02:54:23 `=== [INFERNAL] ===`(오류 줄 없는 모양). a4 Pz-37 11/02 23:26:56~23:27:07 Abaddon 목표 12674,6094(루프 목표) 10회(12700,6084) → `[Error] Error in AutoSmurf (pather.js #346) moveTo: Failed to generate path` → a4가 나가 팀 전체가 다음 게임으로(찍힌 모양, 루프의 `moveTo`에는 catch 없음, 코드 읽음).
-
 ### 1-19. 대기 자리에 와 있는데 okCount 미도착 (`AutoSmurf.okCount`, 사용자 261029)
 - **문제(사례)**: 261029 — a3 Chaos Sanctuary 4게임(10/29 04:38·06:09·09:31·12:15, 퇴장한 프로필과 4~27칸, 그 앞 150초 a3 trace 줄 없음, 06:09만 87초 전 `Town check (direct)` 다녀옴), a6 Pz-27 Travincal(10/28 19:41, 120초 전 `Town check (direct)` 다녀온 뒤). 261027에도 같은 모양(Pz-103 a3 Ancient's Way, Pz-117 a6 Catacombs 4).
 - **확인된 것**: okCount 보내기는 `sendCopyData` 한 번, 결과 확인·재전송 없음(261027 코드 읽음). 지금 로그로는 보내지 않았는지·유실됐는지·단계가 어긋났는지 모름.
@@ -52,10 +42,6 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **261103 사례**(90게임, desync 10게임): 3-61 `[moveTo] retry … over` trace로 빠진 프로필이 마을에서 같은 목표로 `moveTo`(retry 3)를 약 13초마다 되풀이하며 위치가 그대로(이동하지 못함)인 것이 보임, 3게임 — Pz-84 a2 Rogue Encampment(목표 4390,5630, 4452,5604에서 거리 67, 08:16:01~08:17:37 8회, 퇴장한 리더와 1칸), Pz-85 a4 Rogue Encampment(4860,4575, 4921,4553에서 65, 08:23:50~08:25:10 7회), Pz-49 a1(리더) Harrogath(5129,5061, 5071,5022에서 70, 01:24:20~01:24:57 4회). 세 건 모두 구간(ANDY·MEPHISTO·ABADDON) 시작 27~30초 뒤부터, a4는 직전 08:23:37 `equipped: [Head] 16`. 호출 자리(`Town.doChores` 안 이동으로 추정)와 못 움직인 원인은 모름(줄에 호출부 없음). 비슷한 상태 진단(퇴장 줄 상태·`Town.move` 실패 trace)은 `rejected.md` 261028 기각. 그 밖: 피겨린 Pz-46(2-29), Ancient's Way 게임 시작 2분 반 Pz-28 a6·Pz-56 a7·Pz-89 a3(앞 trace 없음), Chaos Pz-69·Pz-72 a3, Pz-76 a1·a5·a8(a5·a8은 퇴장 2~24초 전 마을 다녀옴), Pz-62 a8 Den of Evil(퇴장 2분 전 마을 다녀옴).
 
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
-
-### 2-2. print/trace 중복 정리 (여러 파일)
-- **구현안**: 범위(print·trace 중복 / 콘솔+print 중복 / 로그 규칙 위반)는 그때 정한다.
-- **선행 조건**: 없음. 처음에는 3절 검증용 줄이 바뀌지 않도록 3절 검증이 끝난 뒤로 했으나(사용자 결정 261021), 남은 3절 항목에 영향이 없다고 보고 가능으로 바꿈(사용자 261023). 남은 3절 항목의 검증 줄도 2-2 정책에 맞춰 바꿔도 된다(줄 모양보다 판단에 필요한 정보가 남는 것이 중요, 사용자 261023). 바꾸면 해당 3절 항목의 검증 방법과 `log_guide.md` 줄 이름을 함께 고친다.
 
 ### 2-23. 웨이 유닛 못 찾음 (`Pather.getWP`·`useWaypoint`, 옛 1-14·2-9·1-11·3-7 실패 2건)
 - **문제**(사용자 261022): a1 Pz-49·50 Catacombs Level 2 `[getWP] waypoint unit not found` → `useWaypoint`가 그 자리에서 `wp.area:null` 12회 → throw → 게임 종료.
@@ -73,6 +59,37 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **검증 방법**: 검토에서 정한다.
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
+
+### 3-64. 로그 정책 개편: 콘솔 공유 파일, print로 상세 기록, trace는 임시만 (여러 파일, 옛 2-2, 사용자 261102·261103)
+- **결정**(사용자 261102·261103): 정책 전문은 `CLAUDE.md` 4절, 로그 종류는 `docs/log_types.md`, 줄 이름 대응은 `log_guide.md` 3-1. 줄별 수정 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록).
+- **바꾼 것**(261103)
+  - 콘솔 줄을 모두 `_cache/trace/Console.txt`에도 씀(`D2Bot.printToConsole`, `[YYYY/MM/DD HH:MM:SS] <프로필> <분류> 내용`). d2bs 로그의 `[console]` 한 벌 삭제.
+  - `Misc.print(msg)` 새 함수(색 코드 지움, 게임 안이면 `(지역 x,y)`). trace의 영구 줄(`[Quit]`·`[Error]` 상세, 실패·재시도·진행, 게임 경계)과 한 번씩 일어나는 머리 위 글자를 print로 옮기고 `[주체] 문장` 모양으로 통일. 임시 trace(handoff 3-60 `[useUnit] nearest`, 3-59 `[MoveToSlot]`, 화살통, 길찾기 사슬, 라다멘트 퀘스트 비트 등)는 그대로.
+  - 콘솔: `[Quit]`(조기 종료, `Alkor not found`, 새 `Max game time N min`), `[Stop]`, `[Chicken]`(치킨·핑), `[Died]`(새: 죽은 순간, `Last game`), `[Error]`. 리더 흐름: 새 `=== [게임 이름] ===`, 구간 끝 `=== X ===` → `[X] Completed`. `Radament off`는 print `[RADAMENT] Off: …`로, `cannot open TP`는 `Misc.townCheck` 머리 위 글자로.
+  - okCount 첫머리 print `[okCount] Waiting`, `while` 안 머리 위 글자 `Waiting: 안 온 프로필`, `teamCount` 끝 `OK` 삭제.
+  - 삭제: `ScriptErrorLog.txt` 쓰기(스택은 print `[Error] … | stack=`), `debugLog(me.profile)`·`Misc.debugLog`, Starter `say`·`sayMsg`.
+  - 커밋 전 `.js`·`.dbj`·`.dbl` 55개 `node --check` 통과.
+- **검증 방법**(첫 사이클)
+  - `_cache/trace/Console.txt`가 생기고 8프로필 줄이 섞여도 깨진 줄 0, 매니저 콘솔과 1:1(매니저 크래시 줄 제외).
+  - d2bs 로그: `Misc.print` 줄 끝 `(지역 x,y)`, 고정 모양(`=== [..] ===`, `!!! … !!!`)·게임 밖 줄은 위치 없음, `ÿc` 글자 0.
+  - `Error in`·`is not defined`(Misc·Pather 없는 곳에서 불림) 0.
+  - `[Died]`와 다음 게임 `[Died] Last game` 짝(맞으면 `Last game` 지울지 정함).
+  - 리더 콘솔 `=== [게임] ===`와 각 프로필 print `=== [게임] ===`이 게임마다 있음.
+  - 30분 게임에서 `[Quit] Max game time 30 min`(리더 1줄), Radament off 게임에서 `10 min`.
+  - `[okCount] Waiting` print가 프로필마다 짝지어 있음(없는 프로필 = 진입 못 함).
+
+### 3-65. 경로 보정 10회 실패 뒤 오류 줄 없음 → `Attack` 조용한 catch 3곳에 `Misc.caughtError` (`Pather.moveTo`, `Attack.clear`·`setPosition`, 옛 1-17, 사용자 261026·261103)
+- **문제**: `Pather.moveTo`는 `no adjusted path` 10번째에도 경로가 없으면 throw(`moveTo: Failed to generate path`)하는데, 261026 로그 2건은 오류 줄 없이 다음 구간으로 넘어갔다.
+- **확인된 것**
+  - 사례: a3 10/26 00:29:09~00:29:22 Abaddon(목표 12659,6098, 10회 모두 12645,6106 부근) → 00:29:29 `=== [POA] ===`. a7 03:37:10~03:37:23 Infernal Pit(목표 12660,9099) → 03:37:29 `=== [DIABLO] ===`. 두 건 모두 `fixed path`·`[Error]`·`Failed to generate path` 0.
+  - 코드: `Attack.js`에 `Pather.moveTo` throw를 trace 없이 받는 catch가 3곳(잃은 목표 마지막 위치로 이동 `searches = 99`, 자리 잡기 이동 `moved = false` 2곳). 이번 2건이 어느 호출부였는지는 로그로 모름. CLAUDE.md 4절: 잡힌 오류는 `Misc.caughtError`.
+  - 261027 로그: `no adjusted path` 10회 2건은 모두 `[Error] moveTo: Failed to generate path`가 찍힘(a6 Pz-6 Stony Field, a7 Pz-55 Abaddon `usePortal → moveToUnit`) — 오류 줄 없는 위 2건과 다른 호출 자리. 261028 로그: `no adjusted path` 0.
+- **판단에 필요한 것**: 진행할지. 한다면 조용한 catch 3곳에 `Misc.caughtError`를 넣을지(콘솔은 게임당 자리별 1회).
+  - 261101 로그: a6 11/01 10:13:11~10:13:21 Pit of Acheron(목표 12781,7542) `no original path` 뒤 `no adjusted path` 10회(모두 12785,7565) → `fixed path`·`[Error]` 없이 10:14:20 `=== [INFERNAL] ===`(오류 줄 없는 모양). 같은 묶음 a8 05:06 Harrogath는 `[Error] moveTo: Failed to generate path: 12641,6349`(찍힌 모양).
+  - 261103 로그(3-61 리뷰, 파밍 `farmingAbaddon`·`farmingPOA`의 `while (거리 > 15) moveTo` 루프, 180초 상한): a1 Pz-55 11/03 02:54:06~02:54:16 Pit of Acheron 목표 12659,7599(루프 목표 12680,7640과 다른 좌표) `no adjusted path` 10회(12645,7603) → `[Error]` 없이 02:54:23 `=== [INFERNAL] ===`(오류 줄 없는 모양). a4 Pz-37 11/02 23:26:56~23:27:07 Abaddon 목표 12674,6094(루프 목표) 10회(12700,6084) → `[Error] Error in AutoSmurf (pather.js #346) moveTo: Failed to generate path` → a4가 나가 팀 전체가 다음 게임으로(찍힌 모양, 루프의 `moveTo`에는 catch 없음, 코드 읽음).
+- **결정**(사용자 261103): 진행. 동작(목표 버림·`moveFailed`)은 그대로 두고 기록만 남긴다. catch는 이동 실패를 `clear`의 재시도·포기 판단에 넘기려는 설계(`docs/code/Attack.md` 260928)이고, 261021에 10회 보정 뒤 throw가 들어오면서 `Attack`에서 부른 경우에만 기록 없이 사라지게 됐다.
+- **바꾼 것**(261103, 3-64와 같은 커밋): `Attack.clear` 잃은 목표 이동 catch에 `Misc.caughtError("Attack.clear lostPos", e1)`, `Attack.setPosition` 자리 이동 catch에 `"Attack.setPosition move"`, 우회 후보 이동 catch에 `"Attack.setPosition detour"`.
+- **검증 방법**: `no adjusted path` 10회 뒤(trace) 같은 시각 print에 `[Error] Attack.clear lostPos|Attack.setPosition move|Attack.setPosition detour: moveTo: Failed to generate path …`가 있고, 콘솔에 같은 자리 첫 1회 `[Error] …`. 오류 줄 없이 다음 구간으로 넘어간 10회 사례가 0이면 통과. 메시지가 `Failed to generate path`가 아닌 `[Error]`(다른 실행 중 오류)는 따로 본다.
 
 ### 3-63. 피겨린 주운 사람이 블록을 건너뜀 → 물약이 있으면 알리고 마시기, 시작 okCount (`AutoSmurf.figurine`, 옛 3-53·2-29, 사용자 261101·261103)
 - **문제(사례)**: 피겨린을 주운 사람만 `if (!me.getQuest(20, 0))` 블록을 건너뛰어(그 게임 `!!! [POTION] !!!` 없음, 다음 게임 시작 `preparation`에서 물약을 마심) `teamFigurine`을 보내지 않고 혼자 끝 okCount에서 `Party desynced 1`(나머지 7명 missing). 261030 Pz-38 a6, 261031 Pz-26 a4, 261103 Pz-46 a6. 같은 주운 사람이 블록을 탄 게임도 있다.

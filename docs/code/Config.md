@@ -6,6 +6,9 @@
 - 줄 끝의 날짜 표기(`//261008` 등)와 이력 메모(`60 -> 75 (...)`, `renamed`, `Recipes -> CubeRecipe`, `was class ids` 등)를 지움. 날짜와 사용법 설명이 섞인 주석은 사용법 설명만 남김(`OpenChests`, `UseKeys`, `Socketing`, `SocketRecipe`, `Gear`, 꺼 둔 룬워드의 이유). 값은 바꾸지 않음.
 - 이 파일은 수정한 줄에 날짜 표기를 달지 않음(사용자 결정 261102).
 
+### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
+- `Config.init` 오류 print → `Misc.print("[Config] Failed: …")`(색 코드 지움). 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
 ## Gear / TierGoal / TierNow / TierMerc
 
 ### 261028 사용자: 기어 칸 이름·`TieredGear` 삭제 (handoff 3-39)

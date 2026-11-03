@@ -337,21 +337,21 @@ var Merc = {
 		var stats = DataFile.getStats();
 		
 		if (!stats.Merc || stats.Merc !== skill) {
-			print("Merc unmatched");
+			Misc.print("[Merc] Unmatched");	//261103 log policy
 			return false;
 		}
 		
 		if (me.mercrevivecost) {	//260820
-			print("Revive needed");
+			Misc.print("[Merc] Revive needed");	//261103 log policy
 			return true;
 		}
 
 		if (!Misc.poll(function () { return me.getMerc(); }, 3000, 100)) {
-			print("Merc not found");
+			Misc.print("[Merc] Failed: not found");	//261103 log policy
 			return false;
 		}
 
-		print("Merc matched: " + stats.Merc);
+		Misc.print("[Merc] Matched: " + stats.Merc);	//261103 log policy
 
 		return true;
 	},
@@ -368,14 +368,14 @@ var Merc = {
 	// level: minimum mercenary level required to consider a candidate. Defaults to 2.	//260827
 	hire: function (skill, force, level) {
 		if (!skill) {
-			print("[hire] no skill specified");
+			Misc.print("[hire] Failed: no skill specified");	//261103 log policy
 			return true;
 		}
 		
 		var check = Merc.mercSkill[skill];
 
 		if (!check) {
-			print("[hire] invalid skill");
+			Misc.print("[hire] Failed: invalid skill");	//261103 log policy
 			return true;
 		}
 		
@@ -392,7 +392,7 @@ var Merc = {
 		}
 
 		if (check.diff && check.diff.indexOf(me.diff) < 0) {
-			print("[hire] invalid difficulty");
+			Misc.print("[hire] Failed: invalid difficulty");	//261103 log policy
 			return true;
 		}
 
@@ -426,7 +426,7 @@ var Merc = {
 		var npc = getUnit(1, npcName);
 		
 		if (!npc.openMenu()) {
-			print("[hire] openMenu failed");
+			Misc.print("[hire] Failed: openMenu");	//261103 log policy
 			
 			if (me.act != preAct) {
 				Town.goToTown(preAct);
@@ -451,7 +451,7 @@ var Merc = {
 			me.cancel();
 			
 			if (!Grant.removeItems()) {
-				print("[hire] removeItems failed");
+				Misc.print("[hire] Failed: removeItems");	//261103 log policy
 				Grant.updateTiers();  //260916
 				Pickit.pickItems();
 				Grant.autoEquip();
@@ -462,12 +462,12 @@ var Merc = {
 				Town.initNPC("Merc", "hireMerc");
 			
 				if (!npc.openMenu()) {
-					print("[hire] openMenu failed");
+					Misc.print("[hire] Failed: openMenu");	//261103 log policy
 					failed = true;
 				}
 			}
 		} else {
-			print("[hire] no candidates: " + skill);
+			Misc.print("[hire] Failed: no candidates " + skill);	//261103 log policy
 			failed = true;
 		}
 		
@@ -496,13 +496,13 @@ var Merc = {
 			if (hiredMerc && hiredMerc.getSkill(skillId, 1)) {
 				foundMerc = true;
 				D2Bot.printToConsole("[Hired] Level " + target.level + " " + skill, 5);	//260911
-				print("[Hired] Level " + target.level + " " + skill);	//261004
+				Misc.print("[Hired] Level " + target.level + " " + skill);	//261004	//261103 log policy
 				DataFile.updateStats("Merc", skill);
 				break;
 			}
 
 			retry += 1;
-			Misc.trace("[hire] hiring retry (" + (retry) + "/5)");	//260930 print -> trace (diagnostic)
+			Misc.print("[hire] Retry " + retry + "/5");	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 		}
 		
 		Grant.updateTiers();  //260916
@@ -512,7 +512,7 @@ var Merc = {
 		if (foundMerc) {
 			Grant.autoEquip();
 		} else {
-			print("[hire] hiring failed");
+			Misc.print("[hire] Failed: hiring");	//261103 log policy
 		}
 
 		if (me.act != preAct) {

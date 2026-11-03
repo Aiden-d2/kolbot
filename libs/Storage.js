@@ -215,10 +215,10 @@ Loop:
 				}
 			}
 
-			Misc.trace("[Storage.MoveTo] retry item:" + item.name + " loc:" + this.location);	//260816	//260930 print -> trace (diagnostic)
+			Misc.print("[Storage.MoveTo] Retry: " + item.name + " loc=" + this.location);	//260816	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 			return false;	//260816
 		} catch (e) {
-			Misc.trace("[Storage.MoveTo] catch: " + e.message + " item:" + (item ? item.name : "?") + " loc:" + this.location);	//260816	//260930 print -> trace (diagnostic)
+			Misc.print("[Storage.MoveTo] Failed: " + e.message + " | item=" + (item ? item.name : "?") + " loc=" + this.location);	//260816	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 			return false;
 		}
 	};
@@ -325,7 +325,7 @@ Loop:
 			}
 
 			if (!placed && blocker.toCursor()) {
-				Misc.trace("[MoveToSlot] no room, dropped blocker " + blocker.fname);	//260930 temp: this drop leaves no ItemLog line	//260930 print -> trace (diagnostic)
+				Misc.print("[MoveToSlot] No room, dropped blocker " + blocker.fname);	//260930 temp: this drop leaves no ItemLog line	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 				blocker.drop();
 				delay(200);
 			}

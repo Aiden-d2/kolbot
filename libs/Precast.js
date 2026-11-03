@@ -474,7 +474,7 @@ var Precast = new function () {
 					//if ((Config.Enchant.Player.indexOf(unit.classid) > -1 || unit.name === me.name) && !unit.getState(16)) {	//261020
 					if (this.enchantNames.indexOf(unit.name) > -1 && !unit.getState(16)) {	//261020	//261028 build names (was classid)
 						Skill.cast(52, 0, unit);
-						print("enchant: " + unit.name);
+						Misc.print("[enchant] " + unit.name);	//261103 log policy
 					}
 					
 					chanted.push(unit.name);
@@ -490,7 +490,7 @@ var Precast = new function () {
 				if (unit.getParent() && chanted.indexOf(unit.getParent().name) > -1 && getDistance(me, unit) <= 40) {
 					if ((Config.Enchant.Merc.indexOf(unit.classid) > -1 || Config.Enchant.Pet.indexOf(unit.classid) > -1 || Config.Enchant.Revive === true) &&  !unit.getState(16)) {	//261020
 						Skill.cast(52, 0, unit);
-						print("enchant: " + unit.classid);
+						Misc.print("[enchant] " + unit.classid);	//261103 log policy
 					}
 				}
 			} while (unit.getNext());

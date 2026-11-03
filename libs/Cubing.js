@@ -1074,7 +1074,7 @@ IngredientLoop:
 				
 				if (logType <= 90) {	//260901
 					me.overhead(string);
-					print(string);
+					Misc.print(string);	//261103 log policy
 
 					if (Config.LogCubingInfo) {
 						D2Bot.printToConsole(string, 5);	//261023 "@ " removed

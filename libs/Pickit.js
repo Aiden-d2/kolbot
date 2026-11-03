@@ -24,7 +24,7 @@ var Pickit = {
 		}
 		
 		if (notify) {	// 260903
-			print("Loaded ÿc9[" + loaded.join("] [") + "]");
+			Misc.print("[Pickit] Loaded [" + loaded.join("] [") + "]");	//261103 log policy
 		}
 
 		NTIP.SortLists();	//260803
@@ -220,11 +220,13 @@ var Pickit = {
 
 							// Town visit failed - abort
 							me.overhead("Not enough room for " + pickList[0].name);	//eom
+							Misc.print("[Pickit] Failed: not enough room for " + pickList[0].name);	//261103 log policy: not picked, no ItemLog line
 
 							return false;
 						}
 
 						me.overhead("Not enough room for " + pickList[0].name);	//eom
+						Misc.print("[Pickit] Failed: not enough room for " + pickList[0].name);	//261103 log policy: not picked, no ItemLog line
 					}
 
 					// Item can fit - pick it up
@@ -719,7 +721,7 @@ MainLoop:
 
 			break;
 		case undefined: // Yes, it does happen
-			Misc.trace("undefined item (!?)");	//260930 print -> trace (diagnostic)
+			Misc.print("[Pickit] Failed: undefined item");	//260930 print -> trace (diagnostic)	//261103 log policy: trace -> print
 
 			return false;
 		}

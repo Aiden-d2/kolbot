@@ -7,7 +7,7 @@
 var ClassAttack = {
 	doAttack: function (unit, preattack) {
 		if (Config.MercWatch && Town.needMerc()) {
-			print("mercwatch");
+			Misc.print("[doAttack] MercWatch");	//261103 log policy
 			Town.visitTown();
 		}
 
