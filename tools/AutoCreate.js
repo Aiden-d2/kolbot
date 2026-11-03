@@ -59,7 +59,7 @@ var AutoCreate = {
 		
 		var profile = profiles.slice().reverse();
 		
-		ControlAction.timeoutDelay("Waiting for account creation", profile.indexOf(me.profile) * 30000 + 30000);	//261010
+		ControlAction.timeoutDelay("Waiting for account creation", profile.indexOf(me.profile) * 25000 + 65000);	//261103	//prev. 30+30
 
 		return ControlAction.makeAccount(info);	//261001 the starter printed "Invalid account: X - create"
 	},
