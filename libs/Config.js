@@ -288,7 +288,7 @@ var Config = {
 	CubeRecipe: [
 		[Recipe.Token],
 		
-		//[Recipe.Moser2],
+		[Recipe.Reroll.Magic, 603],
 		
 		[Recipe.Punch.Weapon, "berserkeraxe"],
 		[Recipe.Punch.Weapon, "ettinaxe"],
@@ -328,20 +328,7 @@ var Config = {
 		[Recipe.Punch.Weapon, "broadsword"],
 		[Recipe.Punch.Weapon, "claymore"],
 		[Recipe.Punch.Weapon, "giantsword"],
-		[Recipe.Punch.Weapon, "phaseblade"],
-		
-		//[Recipe.Caster.Amulet],
-		//[Recipe.Caster.Ring],
-		//[Recipe.Caster.Belt, "sharkskinbelt"],
-		//[Recipe.Caster.Boots, "wyrmhideboots"],
-		
-		//[Recipe.Blood.Amulet],
-		//[Recipe.Blood.Ring],
-		//[Recipe.Blood.Helm, "armet"],
-		//[Recipe.Blood.Gloves, "vampirebonegloves"],
-		//[Recipe.Blood.Belt, "meshbelt"],
-		
-		[Recipe.Reroll.Magic, 603]
+		[Recipe.Punch.Weapon, "phaseblade"]
 	],
 	
 	//Runewording
@@ -400,10 +387,10 @@ var Config = {
 		[Runeword.Steel, "axe"],
 		
 		// Edge
-		[Runeword.Edge, "ceremonialbow"],
-		[Runeword.Edge, "ashwoodbow"],
-		[Runeword.Edge, "reflexbow"],
-		[Runeword.Edge, "stagbow"],
+		//[Runeword.Edge, "ceremonialbow"],
+		//[Runeword.Edge, "ashwoodbow"],
+		//[Runeword.Edge, "reflexbow"],
+		//[Runeword.Edge, "stagbow"],
 		
 		[Runeword.Edge, "runebow"],
 		[Runeword.Edge, "shortsiegebow"],
@@ -510,8 +497,8 @@ var Config = {
 		[Runeword.AncientsPledge, "targe"],
 		
 		// Stealth
-		//[Runeword.Stealth, "breastplate"],
-		[Runeword.Stealth, "studdedleather"],
+		[Runeword.Stealth, "breastplate"],
+		//[Runeword.Stealth, "studdedleather"],
 		
 		// HeartoftheOak
 		[Runeword.HeartoftheOak, "flail"],

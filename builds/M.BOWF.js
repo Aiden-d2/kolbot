@@ -135,10 +135,11 @@ var AutoBuildTemplate = {
 				Config.RunewordRecipe.push([Runeword.Duress, "lightplate"]);
 				
 				if (!Config.Tiered) {
-					Config.CubeRecipe.push([Recipe.Caster.Boots, "wyrmhideboots"]);
-					Config.CubeRecipe.push([Recipe.Caster.Belt, "sharkskinbelt"]);
-					Config.CubeRecipe.push([Recipe.Caster.Amulet]);
-					Config.CubeRecipe.push([Recipe.Caster.Ring]);
+					//Config.CubeRecipe.push([Recipe.Blood.Helm, "armet"]);
+					Config.CubeRecipe.push([Recipe.Blood.Gloves, "vampirebonegloves"]);
+					Config.CubeRecipe.push([Recipe.Blood.Belt, "meshbelt"]);
+					Config.CubeRecipe.push([Recipe.Blood.Amulet]);
+					Config.CubeRecipe.push([Recipe.Blood.Ring]);
 				}
 			}
 		},
