@@ -4468,8 +4468,6 @@ function AutoSmurf() {
 			Town.goToTown(3);
 		}
 
-		Misc.trace("[travincal] portalReset " + (me.getQuest(20, 0) ? "skip" : "run") + " q20:" + me.getQuest(20, 0));	//261102 (handoff 3-57, remove once skip and run are both seen)
-
 		if (!me.getQuest(20, 0)) {	//261101 only while Golden Bird is not done
 			this.portalReset();	//261029 figurine: release a boss kept by my old portal
 		}

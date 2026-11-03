@@ -575,7 +575,7 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 3-57: `skip q20:1` 16(Pz-27·48), `run q20:0` 8(Pz-65). → 확정(사용자 261103).
 - 3-59: `skip` 4줄 모두 바닥 회복 물약(`loc 0 mode 3`), 실패 18줄 모두 `dropped:<그 물약> mode 5`, 착용 장비 유실 0. → 확정, `skip` trace 유지(사용자 261103).
 - 3-60: `Area reversed` 0, Jail Level 3 timeout 0, Pz-10 8명 Inner Cloister 통과(CATHEDRAL 18:54:53, 계단·대비책 구분 불가), Underground Passage 1 timeout 2줄(Pz-4) 모두 Dark Wood 도착, timeout 45줄. 알 수 없음: 옛 코드도 첫 계단이 맞으면 성공하므로 실패 없음으로는 가를 수 없고, 고른 계단을 남기는 줄이 없음.
-- 3-61: 3,078줄, false 1,874(retry 0 721·retry 1 163·파밍 3지역 906). 손실 사례: 마을 제자리 이동 반복 desync 3게임(Pz-49 a1·Pz-84 a2·Pz-85 a4, `handoff.md` 1-19), a4 Pz-37 Abaddon throw → 팀 게임 종료(1-17), a2 Pz-7 Monastery Gate 1회 시도 퇴장(1-2). 180초 도달 1번(01:17 `Abaddon failed: moveTo` 4명). 리뷰 끝(사용자 261103).
+- 3-61: 3,078줄, false 1,874(retry 0 721·retry 1 163·파밍 3지역 906). 손실 사례: 마을 제자리 이동 반복 desync 3게임(Pz-49 a1·Pz-84 a2·Pz-85 a4, `handoff.md` 1-19), a4 Pz-37 Abaddon throw → 팀 게임 종료(1-17), a2 Pz-7 Monastery Gate 1회 시도 퇴장(1-2). 180초 도달 1번(01:17 `Abaddon failed: moveTo` 4명). 리뷰 끝(사용자 261103), trace 삭제(261103).
 - 3-62: nip 로드 오류 0, 양손무기는 M.BOWF 활뿐, tier 하락은 a5 화살통 1건, 용병 베이스 줍기 1건(용병 무기 tier -1). → 확정(사용자 261103).
 
 ### 치킨
@@ -597,4 +597,4 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 조기 종료: Life Chicken 32, desync 16줄(10게임), Not ready to start Duriel 3, Not ready for act2 1, Figurine incompleted 1, moveToExit failed 1. 사망 0. 30분 시간 초과 2게임(Pz-27, Pz-48).
 - 크래시 3(a5 19:13 Catacombs Level 4, a7 23:57 Harrogath, a1 00:49 Kurast Docktown), 분석 안 함. `[Error]` 1(a4 Pz-37 Abaddon `Failed to generate path`).
 - 경로: `no adjusted path` 10회 2건(a1 Pz-55 POA 오류 줄 없음, a4 Pz-37 Abaddon 오류 줄 있음, `handoff.md` 1-17), `adjusted path` 1(a7 Throne).
-- `Town chicken` 46, `Town check` 177, getWP `menu not opened` 101, `waypoint unit not found` 8, `[teleportTo failed]` 7, `boss not found` 98(Grand Vizier 46, Sszark 22, Lord De Seis 12 …).
+- `Town chicken` 46, `Town check` 177, getWP `menu not opened` 101, `waypoint unit not found` 8(Pz-9 Jail Level 1 8명 같은 초, 오류 없이 INNER로 → Pz-10 JAIL 반복, `handoff.md` 2-23), `[teleportTo failed]` 7, `boss not found` 98(Grand Vizier 46, Sszark 22, Lord De Seis 12 …).
