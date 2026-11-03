@@ -412,11 +412,11 @@ var Config = {
 		[Runeword.Edge, "razorbow"],
 		[Runeword.Edge, "edgebow"],
 		
-		[Runeword.Edge, "shortwarbow"],
-		[Runeword.Edge, "shortbattlebow"],
-		[Runeword.Edge, "compositebow"],
-		[Runeword.Edge, "longbow"],
-		[Runeword.Edge, "hunter'sbow"],
+		//[Runeword.Edge, "shortwarbow"],
+		//[Runeword.Edge, "shortbattlebow"],
+		//[Runeword.Edge, "compositebow"],
+		//[Runeword.Edge, "longbow"],
+		//[Runeword.Edge, "hunter'sbow"],
 		
 		// Obedience
 		//[Runeword.Obedience, "greatpoleaxe"],	// merc str too high
