@@ -503,7 +503,7 @@ var Config = {
 		[Runeword.AncientsPledge, "targe"],
 		
 		// Stealth
-		[Runeword.Stealth, "breastplate"],
+		//[Runeword.Stealth, "breastplate"],
 		[Runeword.Stealth, "studdedleather"],
 		
 		// HeartoftheOak
