@@ -23,6 +23,7 @@
 - 무기(M.BOWF 제외, tier 1~5(B.WCRY 1~10)·11~30 같은 타입): 공통 8종(mace·knife·throwingknife·throwingaxe·javelin·axe·hammer·sword) + 직업 전용(A handtohand·assassinclaw, D club, N wand, P scepter, S orb, B 없음). `[name] == …`·`thrownweapon` 삭제. 양손 거르기 `# [secondarymindamage] == 0 && …`, 바바리안 `# [mindamage] > 0 && …`(순수 양손무기에서 21이 0인지는 인게임 미확인). `[flag] != ethereal`은 tier 1~5만. tier 1~5 점수식(스탯 번호)은 그대로. tier 11~30: A `[ias]/2`, 나머지 `[fcr]/2`를 맨 앞에, 클래스스킬부 그대로(소서리스 `-[itemaddskilltab]*30`은 스킬탭 뒤로), `[itemallskills]*X`, 공통부 X.nip 형식. 품질 하한은 그대로(B.WCRY·D.* `>= magic`).
 - `[FCR]` → `[fcr]`(flail 룬워드 줄).
 - nip 규칙 줄(꺼 둔 규칙 포함) 뒤 주석 삭제, 날짜 표기도 달지 않음(`CLAUDE.md` 3절 예외). T.nip·Y.nip 전체와 Z.nip `[Runeword]` 절은 둠.
+- 확인: 261103 로그(8프로필 90게임) — nip 로드 오류 0(ScriptErrorLog·d2bs `Error`), 양손무기 착용은 M.BOWF 활뿐(B.WCRY 한손무기만), 8프로필 모두 tier 11 이상에서도 무기를 바꿔 낌, 착용 tier가 내려간 것은 a5 화살통 1건. 용병 인사이트 베이스 `(MercArmA<11)` 표시 2줄(a5 Thresher, 용병 무기 tier -1). 용병 무기 tier 11 이상은 룬워드를 못 만들어 생길 수 없는 상황이었음. 검증 통과(사용자 261103, 옛 handoff 3-62).
 
 261102 사용자·Claude: 무기 타입 번호 표기 (handoff 3-62):
 - 무기 tier 점수 줄(tier 1~5, B.WCRY 1~10, tier 11~30)의 타입을 이름 대신 번호로(`[type] == 36` 등, 번호는 `tools/NTItemAlias.dbl`). 직업 전용 무기를 맨 앞에(A.TRAP도 handtohand·assassinclaw를 앞으로).

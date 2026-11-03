@@ -235,6 +235,11 @@
 ### 261029·261030 사용자: 끝 okCount (`c178f72`·`29b677a`)
 - `c178f72`에서 끝 okCount를 주석으로(피겨린 시작으로 옮김), `29b677a`에서 되살리고 그 앞 `Town.move("cain")`은 주석으로. 주운 사람은 들판 okCount 뒤 `figurine`을 보내고, 리더는 이 끝 okCount를 지난 뒤 신호를 본다.
 
+### 261101~261102 Claude: `portalReset`은 피겨린 미완료일 때만, 판별 trace (`36bcb50`·`f541423`, 사용자 요청, 옛 handoff 3-57)
+- 문제(사용자): 피겨린이 eye·tome에서 끝났는데도 Cain 대화 앞에서 `portalReset`(피겨린 전용)이 돌았다.
+- 261101: `if (!me.getQuest(20, 0))`일 때만 `this.portalReset()`, 캐릭터마다 자기 퀘스트 상태로. 시그니처(`travincal(fig)`)는 팔로워가 메시지 플래그로 인자 없이 부르는 구조라 새 메시지·플래그가 필요해 택하지 않음(사용자 261101). 261102 로그는 줄이 없어 판정 못 함 → 261102 게이트 앞 trace `[travincal] portalReset run|skip q20:<getQuest(20,0)>`.
+- 확인: 261103 로그 `skip q20:1` 16줄(Pz-27·Pz-48 피겨린 완료 뒤 8명씩), `run q20:0` 8줄(Pz-65, 피겨린은 그 뒤 Pz-67). 검증 통과(사용자 261103). trace 삭제는 정하지 않음.
+
 ## this.diablo (getBoss)
 
 ### 261003 Claude: 봉인 보스는 `clear(35, 이름)` 한 번

@@ -95,7 +95,8 @@
   - 아케인 사례 판정: 같은 좌표로 `no original path`가 반복되는가, `adjusted path`가 있는가, `no adjusted path`가 몇 번인가, 이를 부른 구간(써모너 `while (거리 > 10) moveToPreset` 등 탈출 조건 없는 루프, `handoff.md` 1-4)과 그때 위치. 목표 좌표가 다른 지역 것인지(261006에 8건 있었음), 보정 칸이 같은 칸인지.
 - (261020 삭제) `moveTo entered town` — 5건 정상.
 - throw 전파: `no adjusted path` 10번째(옛 랜덤 걸음 10번째)의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
-- `[moveTo] retry N over -> x,y in 지역 dist:D`(261102, Claude 추가, handoff 3-61) — `moveTo`가 경로 재계산 retry에 닿아 멈춘 순간. 이 뒤 목표 5칸 밖이면 false. 제거 조건: 한 사이클 리뷰.
+- `[useUnit] nearest id:N first:x,y chosen:x,y exit:x,y target:지역`(261103, Claude 추가, handoff 3-60) — 같은 id 계단 중 출구에 가장 가까운 것(chosen)이 옛 코드가 쓰던 첫 유닛(first)과 다를 때만. 판정: 그 프로필이 target 지역에 도착했는가. 제거 조건: 확정 사례 1건.
+- `[moveTo] retry N over -> x,y in 지역 dist:D`(261102, Claude 추가, handoff 3-61, 261103 리뷰 끝) — `moveTo`가 경로 재계산 retry에 닿아 멈춘 순간. 이 뒤 목표 5칸 밖이면 false. 제거 조건: 한 사이클 리뷰.
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
 - `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms(261024 `be4f0e2`부터 시전 중일 때만 최대 600ms, handoff 3-29), 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(`docs/code/Pather.md` useUnit 261022). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
@@ -118,7 +119,7 @@
 - 화살통(261014~261019, 활 직업 = M.HYBR): `interact closed`(상점 창이 열려 있어 스페이스로 닫음) → `not enough quiver: 장착 + 예비` → 3막 `equipQuiver moved` / 그 밖 `equipQuiver dropped`, `invQuiver dropped` → 3막 `equipQuiver sold`, `invQuiver sold`(Ormus에게 팔고 350개짜리로 되사기) → `equipQuiver`, `invQuiver`(구매 성공) → `equipQuiver N / invQuiver N`(결과). 판정: 구매 실패(결과 줄이 `no quiver`)·같은 게임 반복 방문.
 - 골드 나눔(261010): 리더 골드 < 5000(18레벨 이상)이면 팔로워가 `Dropping N Gold`, 리더가 `Picking up N Gold`, 15초 안에 안 주우면 `Retaking N Gold`. 줄 안의 goldPile은 유닛 객체 문자열일 수 있다.
 - 감정: `identify failed / slow: 이름 (scroll|tome, Nms)`, `identify stopped: no ID scroll`. (261020 삭제) `sold unid` — 13건 동작.
-- 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`. 261101부터(handoff 3-59) 다시 찾은 유닛이 인벤토리 안도 커서도 아니면(착용·바닥) `[MoveToSlot] skip <이름> gid: got: loc L mode M at x,y`를 남기고 끝난다(`undefined FAILED` 줄은 줄어들 것으로 예상). 판정: `got:`이 `loc 1 mode 1`이면 착용 장비를 막은 것. 제거 조건: handoff 3-59.
+- 벨트 물약: `[MoveToSlot] 이름 FAILED slot: dropped: item:` — 옮기던 회복 물약이 커서에 남아 바닥에 버려짐(게임 시작, 원인 미결). `inv:` 필드는 261020 삭제: 실패 34건 중 33건 `closed`, 1건 `-`(집기 전에 아이템이 사라짐)였으나 `MoveToSlot`은 창을 열지 않아 성공도 `closed`일 것이라 원인을 가를 수 없음(성공 기록 없음). `[MoveToSlot] no room, dropped blocker`. 261101부터(handoff 3-59) 다시 찾은 유닛이 인벤토리 안도 커서도 아니면(착용·바닥) `[MoveToSlot] skip <이름> gid: got: loc L mode M at x,y`를 남기고 끝난다(`undefined FAILED` 줄은 줄어들 것으로 예상). 판정: `got:`이 `loc 1 mode 1`이면 착용 장비를 막은 것. 3-59 확정(261103), 사례를 보려고 줄은 남김(사용자 261103).
 - (261022 `482171b`에서 바뀜) `chores slow: clearInventory|buyPotions Ns`(261021~261022 로그) → `chores Ns: pre heal id inv [npc:<NPC> 08/0C belt Ns/클릭 pots Ns/개수 cube Ns/n stash Ns/n left Ns/n] tome buy [npc Ns buys n shift n fail n] repair rest stash gems`(doChores 전체 10초 초과만, Claude 추가). `buyPotions: buy failed 코드 gold: columns:|buffer`(261021)는 그대로. 판정: 어느 단계가 긴가 — inv의 pots(물약 정리, 261022부터 마시기), belt 클릭 수, buy의 npc(상점 NPC까지 걷기·열기)와 구매 횟수·실패, 시작 시 NPC 메뉴(08)·거래창(0C). 제거 조건: handoff 3-27 판정 뒤 삭제 여부 결정. 261023 `0f6da09`부터 belt 뒤에 `cur 시도/실패 put N shift 시도/실패 ui 직전>직후 remain N`(handoff 3-27)이 붙고, 벨트 실패가 1건이라도 있으면 10초 미만이어도 찍힘. `ui`는 `08`(NPC 메뉴)·`01`(인벤토리 창), 없으면 `-`.
 - `belt shift fail: 코드 col:N [열 물약 코드] ping:N inv:true/false`(`d87cfcb`, handoff 3-27) — 벨트 넣기 shift-click 실패마다 정리 안에서 찍힘. inv false = 클릭이 늦게 반영됨(핑), inv true = 실제 실패(물약 코드와 열 코드 비교). 제거 조건: 3건 이상 분류.
 - `party accept: 이름`(261021, Claude 추가) — MoveToSlot 실패와 시각이 겹치는가. 제거 조건: 판정. **261029 삭제**(가설 틀림 판정, handoff 1-18).
@@ -126,7 +127,7 @@
 - `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`(261024 `789d80d`, Claude 추가, handoff 3-32) — 착용 중인 재료 베이스를 룬워드·펀치 앞에서 뺐는가. ok 뒤 같은 방문의 `[Runeword]`/`[Punch]`와 ItemLog `Runeworded`/`Transmuted`, 그 칸 재장착(`Equipped`·`Granted`). 261024 `aafbe50`부터 입은 베이스의 재료도 줍는다(ItemLog `Ingredient`). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0. **261029 삭제**(3-32 검증 통과, 사용자).
 - d2bs 로그 `enchant: 이름/classid`(S.SFFW 65레벨부터 아마존·2막 용병·발키리·섀도 워리어·그리즐리).
 
-- `[openMenu] retry i:N keys:K npc:이름`(261101, Claude 추가, handoff 3-53) — `Packet.openMenu`가 메뉴를 못 보고 다시 상호작용하기 직전. K = 그때까지 보낸 스페이스 수. 판정: 피겨린 주운 사람이 블록을 건너뛴 게임(`!!! [POTION] !!!` 없이 다음 게임 시작 콘솔 `!!! POTION !!!`)의 Alkor 줄. 제거 조건: 3-53 판정.
+- `[openMenu] retry i:N keys:K npc:이름`(261101, Claude 추가, 옛 handoff 3-53 → 2-29) — `Packet.openMenu`가 메뉴를 못 보고 다시 상호작용하기 직전. K = 그때까지 보낸 스페이스 수. 판정: 피겨린 주운 사람이 블록을 건너뛴 게임(`!!! [POTION] !!!` 없이 다음 게임 시작 콘솔 `!!! POTION !!!`)의 Alkor 줄. 제거 조건: 3-53 판정.
 
 ### 4-7. 게임 밖 (회색 콘솔 + trace `(OOG loc N)`)
 - `Team wait: a3, a5 - wait`(리더, 팔로워가 5초 넘게 안 들어올 때), `Rest: N games - wait Nm`
@@ -143,12 +144,7 @@
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
-| 3-55 | 용병 물약 상태 100이 없을 때만 주기(261102) | `[mercPot] gone: state100: mercHP:` 줄 사이 간격(약 7~10초에 모이는가, 1초 간격 연속이 있는가) |
-| 3-57 | 트라빈컬 portalReset 피겨린 게이트 | `[travincal] portalReset run\|skip q20:` — 피겨린 완료 게임 `skip`, 미완료 `run` |
-| 3-60 | 같은 id 계단 중 출구 좌표에 가까운 것(Jail Level 3, Underground Passage 1, Spider Forest, 쿠라스트 사원) | 4-4 `[useUnit] timeout`의 `unit:`이 도착 자리인 사례, `Area reversed`, `moveToExit failed` |
-| 3-61 | `Pather.moveTo`가 실패(false)로 끝난 뒤 호출부가 오류를 던지거나 더 진행할 수 없는 상태가 된 사례 리뷰(사용자 261102) | 4-4 `[moveTo] retry N over -> x,y in 지역 dist:D` 뒤 같은 프로필의 `[Error]`·`[Quit]`·`X failed:` print·desync·30분 시간 초과, 그 호출부 코드(false를 받으면 throw하는지, 반복·대기에 갇히는지) |
-| 3-53 | 피겨린 주운 사람 블록 건너뜀 | 4-6 `[openMenu] retry` — 건너뛴 사례의 주운 사람 Alkor 줄 |
-| 3-59 | MoveToSlot 인벤토리 밖 아이템 건드리지 않음 | 4-6 `[MoveToSlot] skip` 줄(`got:` 착용 여부), 실패 줄, 착용 장비가 빠지는 사례(`undefined FAILED … item:loc 1`, 다음 게임 `equipped: [칸] -1`) |
+| 3-60 | 같은 id 계단 중 출구 좌표에 가까운 것(Jail Level 3, Underground Passage 1, Spider Forest, 쿠라스트 사원) | 4-4 `[useUnit] nearest` 줄 뒤 그 프로필이 target 지역에 도착했는가, `Area reversed` |
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)
 로그 분석을 요청받으면 아래 순서로 한다. 6번까지 해야 끝난다.
