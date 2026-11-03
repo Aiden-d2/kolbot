@@ -136,7 +136,8 @@ var AutoBuildTemplate = {
 				
 				if (!Config.Tiered) {
 					//Config.CubeRecipe.push([Recipe.Blood.Helm, "armet"]);
-					Config.CubeRecipe.push([Recipe.Blood.Gloves, "vampirebonegloves"]);
+					//Config.CubeRecipe.push([Recipe.Blood.Gloves, "vampirebonegloves"]);
+					Config.CubeRecipe.push([Recipe.Blood.Gloves, "sharkskingloves"]);
 					Config.CubeRecipe.push([Recipe.Blood.Belt, "meshbelt"]);
 					Config.CubeRecipe.push([Recipe.Blood.Amulet]);
 					Config.CubeRecipe.push([Recipe.Blood.Ring]);

@@ -127,7 +127,8 @@ var AutoBuildTemplate = {
 				Config.Cubing = true;
 				
 				if (!Config.Tiered) {
-					Config.CubeRecipe.push([Recipe.Caster.Boots, "wyrmhideboots"]);
+					//Config.CubeRecipe.push([Recipe.Caster.Boots, "wyrmhideboots"]);
+					Config.CubeRecipe.push([Recipe.Caster.Boots, "demonhideboots"]);
 					Config.CubeRecipe.push([Recipe.Caster.Belt, "sharkskinbelt"]);
 					Config.CubeRecipe.push([Recipe.Caster.Amulet]);
 					Config.CubeRecipe.push([Recipe.Caster.Ring]);
