@@ -6,7 +6,7 @@
 - 문제(사용자): 용병 HP가 70% 미만인데 회복이 안 되는 것처럼 보였다. `UseMerc`는 캐릭터 69레벨 이상, `UseMercHP = 70`, `drinkPotion(3)`은 벨트 생명 물약만 `clickItem(2, 물약)`, 원래 최소 8초 간격.
 - 261101: 준 직후 물약 gid·시각을 기억(`mercPotGid`·`mercPotTick`), main 용병 분기에서 `me.ping + 200`ms 뒤 trace `[mercPot] gone:true/false state100:true/false mercHP:N`. 261102 로그 550줄: `gone:true` 547(그중 `state100:true` 539), 간격 9초 이하 272회(8초 간격으로 계속 줌).
 - 261102: 8초 간격 → 플레이어(type 0)처럼 최소 1초 + 용병(`me.getMerc()`)에게 상태 100(`healthpot`)이 있으면 주지 않음. `drinkPotion` type 3 분기, 지역 변수 `merc`.
-- 확인: 261103 로그 295줄, 간격 193개 중간 10초(7~10초 89), 6초 이하 17개는 모두 한 번씩(1초 간격 연속 없음), 짧은 간격 뒤 줄은 모두 `state100:false`. 검증 통과(사용자 261103). `[mercPot]` trace 삭제는 정하지 않음.
+- 확인: 261103 로그 295줄, 간격 193개 중간 10초(7~10초 89), 6초 이하 17개는 모두 한 번씩(1초 간격 연속 없음), 짧은 간격 뒤 줄은 모두 `state100:false`. 검증 통과(사용자 261103). `[mercPot]` trace와 변수 `mercPotGid`·`mercPotTick` 삭제(261103, 제거 조건: 이 판정).
 
 ## main (copydata 중계)
 

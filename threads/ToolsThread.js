@@ -29,8 +29,6 @@ function main() {
 		pingTimer = [],
 		quitFlag = false,
 		timerLastDrink = [],
-		mercPotGid = 0,	//261101 merc potion check (gid of the potion given)
-		mercPotTick = 0,	//261101 merc potion check (when it was given)
 		relayMsgs = [];	//261021 team messages (copydata 55, follow node 56) that came while default.dbj was paused; the engine drops events for a paused script
 
 	D2Bot.init();
@@ -243,8 +241,6 @@ function main() {
 			} else {
 				try {
 					clickItem(2, potion);
-					mercPotGid = potion.gid;	//261101 checked on a later loop (no wait here)
-					mercPotTick = getTickCount();	//261101
 				} catch (e) {
 					Misc.trace("Couldn't give the potion to merc.");	//260930 print -> trace (diagnostic)
 				}
@@ -656,11 +652,6 @@ function main() {
 					merc = me.getMerc();
 					
 					if (mercHP > 0 && merc && merc.mode !== 12) {
-						if (mercPotGid && getTickCount() - mercPotTick > me.ping + 200) {	//261101 did the merc potion leave the belt, did the merc get the potion state (100)
-							Misc.trace("[mercPot] gone:" + !getUnit(4, -1, 2, mercPotGid) + " state100:" + !!merc.getState(100) + " mercHP:" + mercHP);	//261101
-							mercPotGid = 0;	//261101
-						}
-
 						if (mercHP < Config.MercChicken) {
 							D2Bot.printToConsole("Merc Chicken (" + Misc.where() + ")", 9);	//260930
 							Misc.trace("[Quit] Merc Chicken");	//260930

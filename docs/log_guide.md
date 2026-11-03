@@ -96,7 +96,7 @@
 - (261020 삭제) `moveTo entered town` — 5건 정상.
 - throw 전파: `no adjusted path` 10번째(옛 랜덤 걸음 10번째)의 throw는 catch가 있는 호출부(바뀌기 전 써모너 while)에서만 다시 돌고, 없는 호출부(`usePortal → moveToUnit` 등)에서는 로더까지 올라가 게임이 끝난다(10/20 02:49 a7). 써모너 리더는 261020에 catch를 없애 게임 종료, 파밍 써모너는 `earlyReturn`으로 팀이 다음 구간으로(사용자 수정).
 - `[useUnit] nearest id:N first:x,y chosen:x,y exit:x,y target:지역`(261103, Claude 추가, handoff 3-60) — 같은 id 계단 중 출구에 가장 가까운 것(chosen)이 옛 코드가 쓰던 첫 유닛(first)과 다를 때만. 판정: 그 프로필이 target 지역에 도착했는가. 제거 조건: 확정 사례 1건.
-- `[moveTo] retry N over -> x,y in 지역 dist:D`(261102, Claude 추가, handoff 3-61, 261103 리뷰 끝) — `moveTo`가 경로 재계산 retry에 닿아 멈춘 순간. 이 뒤 목표 5칸 밖이면 false. 제거 조건: 한 사이클 리뷰.
+- `[moveTo] retry N over -> x,y in 지역 dist:D`(261102, Claude 추가, handoff 3-61, **261103 삭제**: 리뷰 끝) — `moveTo`가 경로 재계산 retry에 닿아 멈춘 순간. 이 뒤 목표 5칸 밖이면 false. 제거 조건: 한 사이클 리뷰.
 - `[SafeTele] teleportTo FAILED - safeNode:(x,y) dist:N` — SafeTele는 리더만 켜짐(261020). `SafeTele.Skip` 62·63·64·77·78·120·132.
 - `[teleportTo failed] attempt:N dist: ping: area:`
 - `[useUnit] timeout iter: dist: ping: area: id: target: unit:x,y`(id·target·unit 261021 추가) — 어느 출구 유닛을 잡았나. 261022 `482171b`부터 회차 0~7(8회), 계단 클릭 앞 600ms(261024 `be4f0e2`부터 시전 중일 때만 최대 600ms, handoff 3-29), 실패 뒤 유닛 기준 4방향 4칸 자리로 옮김(`docs/code/Pather.md` useUnit 261022). 판정: a1 timeout 수, 0회차 비율, 8회 모두 실패 건수. `id`는 LvlWarp `Id`(이름으로 어느 계단인지 알 수 있음, `log_results.md` 261022 묶음 2).
@@ -127,7 +127,7 @@
 - `[Runeword] takeOff [칸] 이름 (player|merc): ok | fail (no room | still equipped | stuck on cursor)`, `[Cube] takeOff ...`(261024 `789d80d`, Claude 추가, handoff 3-32) — 착용 중인 재료 베이스를 룬워드·펀치 앞에서 뺐는가. ok 뒤 같은 방문의 `[Runeword]`/`[Punch]`와 ItemLog `Runeworded`/`Transmuted`, 그 칸 재장착(`Equipped`·`Granted`). 261024 `aafbe50`부터 입은 베이스의 재료도 줍는다(ItemLog `Ingredient`). 제거 조건: 룬워드·펀치 각각 ok 1건 이상, fail 0. **261029 삭제**(3-32 검증 통과, 사용자).
 - d2bs 로그 `enchant: 이름/classid`(S.SFFW 65레벨부터 아마존·2막 용병·발키리·섀도 워리어·그리즐리).
 
-- `[openMenu] retry i:N keys:K npc:이름`(261101, Claude 추가, 옛 handoff 3-53 → 2-29) — `Packet.openMenu`가 메뉴를 못 보고 다시 상호작용하기 직전. K = 그때까지 보낸 스페이스 수. 판정: 피겨린 주운 사람이 블록을 건너뛴 게임(`!!! [POTION] !!!` 없이 다음 게임 시작 콘솔 `!!! POTION !!!`)의 Alkor 줄. 제거 조건: 3-53 판정.
+- `[openMenu] retry i:N keys:K npc:이름`(261101, Claude 추가, 옛 handoff 3-53, **261103 삭제**: 가설 틀림) — `Packet.openMenu`가 메뉴를 못 보고 다시 상호작용하기 직전. K = 그때까지 보낸 스페이스 수. 판정: 피겨린 주운 사람이 블록을 건너뛴 게임(`!!! [POTION] !!!` 없이 다음 게임 시작 콘솔 `!!! POTION !!!`)의 Alkor 줄. 제거 조건: 3-53 판정.
 
 ### 4-7. 게임 밖 (회색 콘솔 + trace `(OOG loc N)`)
 - `Team wait: a3, a5 - wait`(리더, 팔로워가 5초 넘게 안 들어올 때), `Rest: N games - wait Nm`

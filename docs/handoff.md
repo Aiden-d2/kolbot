@@ -8,7 +8,7 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**마지막으로 분석한 로그**: 261103 묶음(11/02 17:38 ~ 11/03 09:31, 8프로필 각 90게임, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261103. 코드는 261102 수정(PR #133·#134, nip #135·#136)이 들어간 main(줄 형식으로 확인). 실행 중 main 변경(11/02 18:04 `263ba9c` openMenu, 20:31~20:55 Prototypes·Config 업로드, 23:05 nip `8deaca1`)이 게임 PC에 들어갔는지는 확인 안 함. **다음 사이클**: 3-60 `[useUnit] nearest` trace(261103)가 들어간 main으로 돈다.
+**마지막으로 분석한 로그**: 261103 묶음(11/02 17:38 ~ 11/03 09:31, 8프로필 각 90게임, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261103. 코드는 261102 수정(PR #133·#134, nip #135·#136)이 들어간 main(줄 형식으로 확인). 실행 중 main 변경(11/02 18:04 `263ba9c` openMenu, 20:31~20:55 Prototypes·Config 업로드, 23:05 nip `8deaca1`)이 게임 PC에 들어갔는지는 확인 안 함. **다음 사이클**: 3-60 `[useUnit] nearest` trace(261103)가 들어간 main으로 돈다. 3-61 리뷰는 261103에 끝남(사례는 1-2·1-17·1-19, `[moveTo] retry … over` trace 261103 삭제).
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -67,6 +67,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 261026 로그(새 사례 3건): Pz-22 10/25 17:50 8명 모두 Catacombs Level 2의 거의 같은 자리(22519,6639 부근)에서 `going to nearest WP` 뒤 `[WP] wp.area:null me.area:35 target:1` 87줄 → a1·a2·a3·a4·a6 `[Error] useWaypoint: Failed to use waypoint`(한 프로필의 일시적 조회 실패로는 설명되지 않음). a1 10/26 07:22 Durance of Hate Level 2 `waypoint unit not found` + `wp.area:null` 8줄, 9초 뒤 그 자리에서 Life Chicken. a1 06:59 Sewers Level 2 `waypoint unit not found` 1줄(오류 없이 진행).
   - 진행 확정(사용자 261026) → 1절에서 2절로.
   - 261027 로그: a1 Pz-47 Durance of Hate Level 2 도착 직후 `waypoint unit not found` → `wp.area:null` 12회 → `[Error] useWaypoint`. 261028 로그: a1 Pz-49 10/28 03:31 Catacombs Level 2(22648,6513) `waypoint unit not found` → `wp.area:null` 12회 → `[Error] useWaypoint`로 게임 종료(261022 사례와 게임 번호·지역이 같음).
+  - 261103 로그: Pz-9 11/02 18:42:57 Jail Level 1에서 8명 모두 같은 초 `[getWP] waypoint unit not found. area:29`(17701~17706, 5275~5280). `wp.area:null`·`[Error]`·`goWP Failed` 없이 같은 초 INNER로 넘어감(`useWaypoint` throw가 아니라 `getWP`가 웨이를 못 얻은 채 지나간 모양). 다음 게임 Pz-10에서 JAIL을 한 번 더 돎(JAIL은 `if (!getWaypoint(6))`일 때만, 코드 읽음), Pz-10은 `going to nearest WP` 뒤 정상. 8명이 함께 못 찾은 모양은 261026 Pz-22와 같다.
 - **가설**: 없음(검토에서 정한다).
 - **구현안**: 검토에서 정한다.
 - **검증 방법**: 검토에서 정한다.
@@ -84,7 +85,7 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 261029 피겨린 사냥 수정(`dcd7c78`) 전에도 아무나 주울 수 있었다. 그때 이 desync가 없었는지 관찰하지 못했는지는 모름(사용자 261103).
 - **가설**: 없음.
 - **구현안**: 사용자 261101 결정 — 가설이 틀리면 원인을 다시 찾고, 그동안 물약·`teamFigurine` 보내기를 블록 밖으로 뺀다. 대상 `AutoSmurf.figurine`, 수정 규모는 검토에서.
-- **검증 방법**: 검토에서 정한다. `[openMenu] retry` trace(`Packet.openMenu`, 261101)는 옛 3-53 제거 조건(건너뛴 사례 1건 판정)을 채움, 삭제 여부는 정하지 않음.
+- **검증 방법**: 검토에서 정한다. `[openMenu] retry` trace(`Packet.openMenu`, 261101)는 옛 가설을 가르는 줄이라 가설이 틀린 뒤 삭제(261103).
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
@@ -100,9 +101,3 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **바꾼 것 2**(261103): `useUnit`의 `exit` 분기에서 처음 돌려받은 계단(`getUnit(type, id)`, 옛 코드가 쓰던 것)의 좌표가 고른 계단(`spot`)과 다를 때만 trace `[useUnit] nearest id:N first:x,y chosen:x,y exit:x,y target:지역`(새 변수 없음).
 - **검증 방법 2**: 줄이 찍히고 그 프로필이 `target` 지역에 도착하면(`Area reversed` 없음, 다음 구간 진행) 옛 코드라면 되돌아갔을 사례를 막은 것 → 확정. 줄이 찍혔는데 되돌아가면 고르는 방식이 틀림 → 2절. 줄이 0이면 첫 계단이 늘 맞았음 → 케이스 미발견. 제거 조건: 확정 사례 1건.
 
-### 3-61. moveTo 재시도 초과 trace: 실패 뒤 호출부가 오류를 던지거나 진행 불가가 되는 사례 리뷰 (`Pather.moveTo`, 사용자 261102)
-- **문제**(사용자): `moveTo`가 실패로 끝나면 false를 돌려주는데, 이것이 호출부에서 오류를 던지거나 더 진행할 수 없는 상태가 되는 경우가 있는가.
-- **확인된 것**(코드): `moveTo`는 경로 재계산 횟수가 `retry`(생략 3)에 닿으면 멈추고, 목표 5칸 밖이면 false를 돌려준다. trace는 없었다(머리 위 `move retry N`만). AutoSmurf `moveTo` 호출 retry: 3 65곳, 생략(3) 30곳, 5 34곳, 10 13곳, 15 6곳(261102 코드 읽음).
-- **바꾼 것**(261102): `fail >= retry`로 멈추는 자리에 trace `[moveTo] retry N over -> x,y in 지역 dist:D`(새 변수 없음).
-- **검증 방법**: 줄이 찍힌 시각 뒤 같은 프로필의 `[Error]`·`[Quit]`·`X failed:` print·desync·30분 시간 초과를 이어 보고, 그 호출부 코드가 false를 받으면 throw하는지·반복이나 대기에 갇히는지 본다. 특정 호출 자리·지역에 몰리면 그 호출의 retry 값과 실패 처리를 검토한다. 흩어지기 이동(`moveTo(me.x, me.y, 3, …)`)에서도 찍힐 수 있다. 제거 조건: 한 사이클 리뷰를 마치면.
-- **결과**: 261103 리뷰 끝(사용자 261103). 3,078줄 중 목표 5칸 밖(false) 1,874. retry 0(721줄, `moveToUnit`·Pickit)·retry 1(163줄, Attack 자리 잡기)은 코드상 첫 실패에서 멈춤. 파밍 Abaddon·POA·Infernal 906줄은 `while (거리 > 15)` 180초 루프가 다시 돎(180초 도달 1번: 01:17 4명 `Abaddon failed: moveTo`, 다음 구간 정상). 손실로 이어진 것: 마을 제자리 이동 반복 → desync 3게임(1-19), 파밍 루프 throw → 팀 게임 종료 1(1-17), Monastery Gate 1회 시도 퇴장 1(1-2). 그 밖 60초 안 퇴장 10건은 치킨·`Not ready…`(`partyLevel` 레벨 조건, moveTo와 무관, 코드 읽음). trace 삭제는 정하지 않음.
