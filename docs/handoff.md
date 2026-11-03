@@ -8,7 +8,7 @@
 
 trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**마지막으로 분석한 로그**: 261103 묶음(11/02 17:38 ~ 11/03 09:31, 8프로필 각 90게임, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261103. 코드는 261102 수정(PR #133·#134, nip #135·#136)이 들어간 main(줄 형식으로 확인). 실행 중 main 변경(11/02 18:04 `263ba9c` openMenu, 20:31~20:55 Prototypes·Config 업로드, 23:05 nip `8deaca1`)이 게임 PC에 들어갔는지는 확인 안 함. **다음 사이클**: 3-60 `[useUnit] nearest` trace(261103)가 들어간 main으로 돈다. 3-61 리뷰는 261103에 끝남(사례는 1-2·1-17·1-19, `[moveTo] retry … over` trace 261103 삭제).
+**마지막으로 분석한 로그**: 261103 묶음(11/02 17:38 ~ 11/03 09:31, 8프로필 각 90게임, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261103. 코드는 261102 수정(PR #133·#134, nip #135·#136)이 들어간 main(줄 형식으로 확인). 실행 중 main 변경(11/02 18:04 `263ba9c` openMenu, 20:31~20:55 Prototypes·Config 업로드, 23:05 nip `8deaca1`)이 게임 PC에 들어갔는지는 확인 안 함. **다음 사이클**: 3-60 `[useUnit] nearest` trace·3-63 피겨린 수정(261103)이 들어간 main으로 돈다. 3-61 리뷰는 261103에 끝남(사례는 1-2·1-17·1-19, `[moveTo] retry … over` trace 261103 삭제).
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -72,7 +72,9 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
 - **구현안**: 검토에서 정한다.
 - **검증 방법**: 검토에서 정한다.
 
-### 2-29. 피겨린 주운 사람이 블록을 건너뜀 (`AutoSmurf.figurine`, 옛 3-53, 사용자 261101)
+## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
+
+### 3-63. 피겨린 주운 사람이 블록을 건너뜀 → 물약이 있으면 알리고 마시기, 시작 okCount (`AutoSmurf.figurine`, 옛 3-53·2-29, 사용자 261101·261103)
 - **문제(사례)**: 피겨린을 주운 사람만 `if (!me.getQuest(20, 0))` 블록을 건너뛰어(그 게임 `!!! [POTION] !!!` 없음, 다음 게임 시작 `preparation`에서 물약을 마심) `teamFigurine`을 보내지 않고 혼자 끝 okCount에서 `Party desynced 1`(나머지 7명 missing). 261030 Pz-38 a6, 261031 Pz-26 a4, 261103 Pz-46 a6. 같은 주운 사람이 블록을 탄 게임도 있다.
 - **확인된 것**
   - 괄호 구조는 `bots/AutoSmurf.js`가 저장소에 들어온 `a4e1b05`(09/14)부터 같다(최근 수정으로 생긴 것 아님).
@@ -83,11 +85,11 @@ trace 파일은 게임 PC의 `kolbot/_cache/trace/`에 있다. 사용자가 올�
   - 리더 TOME의 Alkor 대화와 겹침: Pz-46에는 TOME 없음(리더 HEART → BRAIN → EYE → FIGURINE). 주운 사람이 아닌 프로필은 `getQuest(20, 1)`·`teamFigurine`을 기다리며 그 전에 Alkor와 말하지 않고, 리더의 Alkor 대화는 `tome()` 끝뿐(코드 읽음). 겹침이 있던 261103 Pz-27(TOME 사냥, a8 Ruined Temple, 리더만 FIGURINE 9초 늦게 21:04:23)은 a8이 21:04:46 첫 물약(블록 안).
   - `Town.checkQuestItems`(Golden Bird면 Alkor와 2회 대화)는 호출하는 곳 없음(grep).
   - 261029 피겨린 사냥 수정(`dcd7c78`) 전에도 아무나 주울 수 있었다. 그때 이 desync가 없었는지 관찰하지 못했는지는 모름(사용자 261103).
-- **가설**: 없음.
-- **구현안**: 사용자 261101 결정 — 가설이 틀리면 원인을 다시 찾고, 그동안 물약·`teamFigurine` 보내기를 블록 밖으로 뺀다. 대상 `AutoSmurf.figurine`, 수정 규모는 검토에서.
-- **검증 방법**: 검토에서 정한다. `[openMenu] retry` trace(`Packet.openMenu`, 261101)는 옛 가설을 가르는 줄이라 가설이 틀린 뒤 삭제(261103).
-
-## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
+- **결정**(사용자 261103): 원인 로그 없이 desync만 막는다. 1차·2차 대화 중 어디서 완료되는지는 게임이 정하고 스크립트가 고를 수 없어, 원인을 알아도 대응이 대화 뒤 상태를 보는 것으로 같다. 앞 게임에서 남은 물약은 `preparation`(게임 시작)이 마시므로 FIGURINE에서 갖고 있는 물약은 그 게임에서 받은 것뿐.
+- **바꾼 것**(261103)
+  - `if (!me.getQuest(20, 0))` 블록에는 기다림·시차 delay·Alkor 대화만 남기고, `teamFigurine` 보내기·물약 마시기·마을 이동 4줄(`figurine`·`ormus`·`portalspot`·제자리 random)을 블록 뒤 `potion = me.findItem(545); if (potion) { … }`로. 블록을 탄 사람은 물약을 받거나 91회째 퇴장으로만 루프를 끝내므로 동작이 같고, 물약을 가진 채 건너뛴 주운 사람도 알리고 마시고 Alkor 자리에서 돌아온다. 물약이 없는 완료자는 지금처럼 아무것도 안 함.
+  - `Town.goToTown(3)` 뒤 시작 `this.okCount()`(8명 모두). TOME에서 리더가 끝 okCount 뒤 Alkor 대화를 하는 동안 나머지가 먼저 FIGURINE을 시작하던 것(261103 Pz-27 팔로워 21:04:14, 리더 21:04:23)을 맞춘다. 261029 `c178f72`에 넣고 261030 `29b677a`에서 끝 okCount로 맞을 것이라 보고 뺐던 줄(사용자 261103).
+- **검증 방법**: ① 피겨린 게임 desync 0. ② TOME에서 주운 게임은 주운 사람의 `!!! [POTION] !!!`가 리더 `=== [FIGURINE] ===` 뒤. ③ 정상 게임 8명 모두 `!!! [POTION] !!!`(게임 안). 로그가 없어 주운 사람이 블록을 건너뛰었는지는 구분 못 함(사용자 261103).
 
 ### 3-60. 같은 id 계단 중 출구 좌표에 가까운 것 (`Pather.moveToExit`·`useUnit`, 사용자 261102)
 - **문제(사례)**: 261102 Pz-6 15:01~15:03 — Jail Level 3에서 Inner Cloister로 갈 때 8명 모두 도착한 계단(17580,8271)을 다시 클릭해 Jail Level 2로 돌아감 → Level 2에서 Level 3 좌표로 경로를 찾다 `[Error] AutoSmurf.moveToExit 32: moveTo: Failed to generate path` 8줄 → 아무도 32에 없어 a4 `Area reversed`로 퇴장. 같은 경로 Pz-7은 정상. 사용자: Stony Field → Underground Passage → Dark Wood에서도 같은 일이 있어 두 곳에 폴백(포털 열고 합류)이 있다.

@@ -144,6 +144,7 @@
 확인 항목과 판정 방법은 `handoff.md` 3절에 항목마다 있다. 로그로 볼 줄은 아래와 같다.
 | handoff | 항목 | 로그 |
 |---|---|---|
+| 3-63 | 피겨린 물약이 있으면 알리고 마시기, 시작 okCount | 피겨린 게임 desync, `!!! [POTION] !!!` 8명(게임 안), TOME에서 주운 게임은 주운 사람 물약이 리더 `=== [FIGURINE] ===` 뒤 |
 | 3-60 | 같은 id 계단 중 출구 좌표에 가까운 것(Jail Level 3, Underground Passage 1, Spider Forest, 쿠라스트 사원) | 4-4 `[useUnit] nearest` 줄 뒤 그 프로필이 target 지역에 도착했는가, `Area reversed` |
 
 ## 6. 분석 순서와 끝 (사용자 지시 261024)

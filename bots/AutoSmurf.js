@@ -4053,6 +4053,8 @@ function AutoSmurf() {
 			Town.goToTown(3);
 		}
 		
+		this.okCount();	//261103 all start together: in tome the leader talks to Alkor after the end okCount (handoff 2-29)
+		
 		//Town.move("cain");
 		//Pather.moveTo(me.x, me.y, 3, false, false, true);	//261029
 		
@@ -4104,18 +4106,16 @@ function AutoSmurf() {
 				
 				delay(500);
 			}
-			
-			Messaging.sendToList(Team.Profiles, "teamFigurine");
-			
-			potion = me.findItem(545);
-			
-			if (potion) {
-				clickItem(1, potion);
-				print("ÿc8!!! [POTION] !!!");	Misc.trace("!!! [POTION] !!!");	//261002
-				D2Bot.printToConsole("!!! POTION !!!", 8);
-			}
-			
-			Town.move("figurine");
+		}
+		
+		potion = me.findItem(545);	//261103 out of the block: the holder can skip it with the potion already got (handoff 2-29)
+		
+		if (potion) {	//261103 has the potion: tell the team, drink, walk back from Alkor
+			Messaging.sendToList(Team.Profiles, "teamFigurine");	//261103 moved out of the block
+			clickItem(1, potion);
+			print("ÿc8!!! [POTION] !!!");	Misc.trace("!!! [POTION] !!!");	//261002
+			D2Bot.printToConsole("!!! POTION !!!", 8);
+			Town.move("figurine");	//261103 moved out of the block
 			Town.move("ormus");
 			Town.move("portalspot");
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
