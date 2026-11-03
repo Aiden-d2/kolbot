@@ -1095,6 +1095,10 @@ ModeLoop:
 
 			unit = getUnit(type, id);	//261102 walk the list again up to the nearest one
 
+			if (unit.x !== spot.x || unit.y !== spot.y) {	//261103 the old code took this first one: log only when the nearest differs (handoff 3-60, remove once judged)
+				Misc.trace("[useUnit] nearest id:" + id + " first:" + unit.x + "," + unit.y + " chosen:" + spot.x + "," + spot.y + " exit:" + exit.x + "," + exit.y + " target:" + Pather.getAreaName(targetArea));	//261103
+			}
+
 			while (unit.x !== spot.x || unit.y !== spot.y) {	//261102
 				if (!unit.getNext()) {	//261102
 					break;	//261102

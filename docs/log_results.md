@@ -565,3 +565,36 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - `Town chicken` 55, `Town check` 323, getWP `menu not opened` 100, `waypoint unit not found` 0, `boss not found` 66(Grand Vizier 32, Lord De Seis 16, Sszark 8, 안다리엘 156 6, 디아블로 243 2 …), `[teleportTo failed]` 5.
 - 게임 밖: Realm down 7(13:46~13:47, 시작 직후), a3 그 줄 trace 위치가 `(undefined undefined,undefined)`(같은 loc 13인 a7·a8은 `(OOG loc 13)`).
 
+
+## 261103 묶음 (11/02 17:38 ~ 11/03 09:31, 8프로필 각 90게임, 아시아 서버)
+데이터: trace·d2bs·ItemLog·ScriptErrorLog. 새 캐릭터로 노말(Pz-1~43) → 나이트메어(Pz-44~61) → 헬(Pz-62~). 빌드 a1 S.ENCH, a2 S.COLD, a3 A.TRAP, a4 P.AURA, a5 M.BOWF, a6 D.FGOM, a7 N.SUMM, a8 B.WCRY. 코드: `[moveTo] retry … over`(#134)·`[travincal] portalReset`(#133)·`[MoveToSlot] skip`(#132) 줄 있음, 용병 물약 1~6초 간격(#133 새 규칙), nip `(MercArmA<11)` 표시(#135·#136·`dbb3107`). 실행 중 main 변경(18:04 `263ba9c`, 20:31~20:55 업로드, 23:05 `8deaca1`)이 들어갔는지는 확인 안 함. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 결과
+- 3-53: 실패(가설 틀림). Pz-46 a6이 00:45:31 Spider Cavern에서 피겨린을 주움 → 00:48:11 `Party desynced 1`(7명 missing), 다음 게임 시작 `!!! POTION !!!`, a6의 Pz-46 `[openMenu] retry` 0줄. 공통점·겹침 분석은 `handoff.md` 2-29. `[openMenu] retry` 164줄 모두 `keys:0`(Malah 44, Larzuk 27, Akara 26 …).
+- 3-55: `[mercPot]` 295줄, 간격 193개 중간 10초(7~10초 89), 6초 이하 17개 모두 단발, 짧은 간격 뒤 줄은 모두 `state100:false`(9개는 용병 HP 1~12%). → 확정(사용자 261103).
+- 3-57: `skip q20:1` 16(Pz-27·48), `run q20:0` 8(Pz-65). → 확정(사용자 261103).
+- 3-59: `skip` 4줄 모두 바닥 회복 물약(`loc 0 mode 3`), 실패 18줄 모두 `dropped:<그 물약> mode 5`, 착용 장비 유실 0. → 확정, `skip` trace 유지(사용자 261103).
+- 3-60: `Area reversed` 0, Jail Level 3 timeout 0, Pz-10 8명 Inner Cloister 통과(CATHEDRAL 18:54:53, 계단·대비책 구분 불가), Underground Passage 1 timeout 2줄(Pz-4) 모두 Dark Wood 도착, timeout 45줄. 알 수 없음: 옛 코드도 첫 계단이 맞으면 성공하므로 실패 없음으로는 가를 수 없고, 고른 계단을 남기는 줄이 없음.
+- 3-61: 3,078줄, false 1,874(retry 0 721·retry 1 163·파밍 3지역 906). 손실 사례: 마을 제자리 이동 반복 desync 3게임(Pz-49 a1·Pz-84 a2·Pz-85 a4, `handoff.md` 1-19), a4 Pz-37 Abaddon throw → 팀 게임 종료(1-17), a2 Pz-7 Monastery Gate 1회 시도 퇴장(1-2). 180초 도달 1번(01:17 `Abaddon failed: moveTo` 4명). 리뷰 끝(사용자 261103).
+- 3-62: nip 로드 오류 0, 양손무기는 M.BOWF 활뿐, tier 하락은 a5 화살통 1건, 용병 베이스 줍기 1건(용병 무기 tier -1). → 확정(사용자 261103).
+
+### 치킨
+- Life Chicken 32, 19건이 같은 프로필 `Town chicken` 0~3초 뒤. 프로필 × 난이도:
+
+| 프로필 | 노말 | 나이트메어 | 헬 | 합 |
+|---|---|---|---|---|
+| a1 | Arcane Sanctuary(2)<br>Underground Passage Level 1(1)<br>Dark Wood(1)<br>Tal Rashas Tomb #1(1)<br>Flayer Jungle(1)<br>Flayer Dungeon Level 3(1) | Claw Viper Temple Level 2(1)<br>Pit Of Acheron(1) | Flayer Dungeon Level 2(1)<br>Ruined Temple(1)<br>Plains Of Despair(1) | 12 |
+| a2 | - | - | Spider Cavern(1) | 1 |
+| a3 | Barracks(1)<br>Jail Level 1(1)<br>Tal Rashas Tomb #1(1) | - | - | 3 |
+| a4 | Dark Wood(1)<br>Canyon Of The Magi(1) | Tal Rashas Tomb #1(1) | Chaos Sanctuary(4)<br>Throne Of Destruction(1) | 8 |
+| a5 | Tal Rashas Tomb #3(2)<br>Cathedral(1)<br>Tal Rashas Tomb #4(1) | - | - | 4 |
+| a6 | Stony Field(1)<br>Dark Wood(1) | - | - | 2 |
+| a7 | Stony Field(1)<br>Tal Rashas Tomb #2(1) | - | - | 2 |
+| a8 | - | - | - | 0 |
+| 합 | 20 | 3 | 9 | 32 |
+
+### 그 밖
+- 조기 종료: Life Chicken 32, desync 16줄(10게임), Not ready to start Duriel 3, Not ready for act2 1, Figurine incompleted 1, moveToExit failed 1. 사망 0. 30분 시간 초과 2게임(Pz-27, Pz-48).
+- 크래시 3(a5 19:13 Catacombs Level 4, a7 23:57 Harrogath, a1 00:49 Kurast Docktown), 분석 안 함. `[Error]` 1(a4 Pz-37 Abaddon `Failed to generate path`).
+- 경로: `no adjusted path` 10회 2건(a1 Pz-55 POA 오류 줄 없음, a4 Pz-37 Abaddon 오류 줄 있음, `handoff.md` 1-17), `adjusted path` 1(a7 Throne).
+- `Town chicken` 46, `Town check` 177, getWP `menu not opened` 101, `waypoint unit not found` 8, `[teleportTo failed]` 7, `boss not found` 98(Grand Vizier 46, Sszark 22, Lord De Seis 12 …).
