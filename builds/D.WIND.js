@@ -75,10 +75,10 @@ var AutoBuildTemplate = {
 					Config.LowGold = me.charlvl * 3000;
 					Config.StashGold = me.charlvl * 2000;
 				
-					Config.SocketRecipe.Head = [581];
-					Config.SocketRecipe.Body = [571];
-					Config.SocketRecipe.Shield = [586];
-					Config.SocketRecipe.Weapon = [561];
+					Config.SocketRecipe.Head = [580];
+					Config.SocketRecipe.Body = [570];
+					Config.SocketRecipe.Shield = [585];
+					Config.SocketRecipe.Weapon = [560];
 				}					
 				
 				if (me.diff > 0) {
