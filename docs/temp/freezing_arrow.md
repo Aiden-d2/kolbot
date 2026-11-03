@@ -38,9 +38,12 @@
 
 ## 4. 테스트 계획
 **사용자 결정**
-- 헬, 카우(Hell Bovine)에서 혼자 측정. 팔로우 프로필로 혼자 방을 만들고 바로 Pause 키 → 손으로 플레이.
+- 헬, 카우(Hell Bovine)에서 혼자 측정. **맵 진입점**(`D2BotMap.dbj`)으로 들어가 손으로 플레이한다(팔로우 프로필 Pause 안 씀).
 - 냉기 길이 참을 수십 개 채워 차이를 키운다.
 - 측정 코드로 기록한다(사람이 초를 세지 않음).
+- 운용: 한 발 쏘고, 얼은 몹이 다 풀린 뒤 다음 발을 쏜다(다시 얼리기로 값이 길어지는 것을 막음. 코드로 거르지 않음).
+- 측정 코드: 키로 켜고 끈다. 확인 간격은 루프 그대로(따로 조절 안 함). 거리 제한 30.
+- 자동 물약·체력 치킨이 없는 것은 문제없음(손으로 플레이).
 - 참 수집: `nips/T.nip`에 아래 두 줄(모든 프로필이 읽음, `Config.PickitFiles`). 아직 넣지 않음.
   ```
   [name] == smallcharm && [quality] == magic # [coldlength] == 25 # [qty] == 2
@@ -49,27 +52,49 @@
   `[qty]`는 프로필마다 창고·인벤토리·용병 아이템 중 같은 조건 개수(`NTIP.CheckQuantityOwned`) → 프로필당 25짜리·50짜리 각 2개.
 
 **측정 조건 (코드)**
-- Pause(`ToolsThread.togglePause`)는 `AutoBuildThread`·`PartyThread`·`TownChicken`·`default.dbj`만 멈춘다. `ToolsThread` 메인 루프(10ms)는 계속 돈다.
-- Pause 중에도 동작: 최대 게임 시간 30분(`Config.MaxGameTime` 1800), 체력 치킨, 자동 물약.
-- "파티가 안 들어오면 나가는" 코드 위치는 못 찾음 → 들어가자마자 Pause.
+- 맵 진입점이면 `default.dbj`가 `threads/MapThread.js`만 띄운다(+ MapThread가 `MapHelper.js`를 띄움). `ToolsThread`(자동 물약·치킨·Pause)와 `default.dbj` 본 흐름(파티 대기)은 돌지 않는다. `me.maxgametime`을 정하는 줄도 맵 분기 뒤라 최대 게임 시간이 없을 것으로 봄(추정).
+- `MapThread` 메인 루프: 20ms. 아래 창이 하나라도 열려 있으면 닫힐 때까지 루프 전체가 멈춘다(`hideFlags`, `while (getUIFlag(…)) { Hooks.flush(); delay(100); }`). 측정 호출도 같이 멈춰서, 그 사이 풀린 몹은 값이 길게 나온다.
+
+  | 번호 | 창 |
+  |---|---|
+  | 0x01 | 인벤토리 |
+  | 0x02 | 캐릭터 스탯 |
+  | 0x09 | ESC 메뉴 |
+  | 0x0C | NPC 거래 |
+  | 0x0D | **Alt 키 아이템 이름 표시**(누르고 있는 동안) |
+  | 0x0F | 퀘스트 화면 |
+  | 0x18 | 메시지 기록 |
+  | 0x19 | 창고 |
+  | 0x1A | 호라드릭 큐브 |
+  | 0x21 | 도움말 |
+
+  - 번호 출처: D2MOO `source/D2CommonDefinitions/include/D2Constants.h`의 `UI_` 목록(코드 확인). kolbot 사용처(0x08 NPC 메뉴, 0x0C 거래, 0x14 웨이포인트, 0x19 창고, 0x1A 큐브)와 맞음.
+  - `MapHelper`는 ESC 메뉴(0x09)가 열리면 MapThread 스크립트를 `pause()`, 닫히면 `resume()`한다.
+  - 자동맵(0x0A)은 멈춤 조건이 아님(열리면 그리기, 닫히면 지우기).
+  - 측정 중 피할 것: Alt, 인벤토리(I)·스탯(C)·퀘스트(Q), ESC 메뉴, 메시지 기록, 도움말. 자동맵(Tab)·벨트 물약은 괜찮음.
+  - `docs/D2BS_Structure.md`의 "인벤토리 UI(0x09)" 설명은 틀림(0x09는 ESC 메뉴). 노트 정리 때 고침.
+- MapThread 숫자패드: 0 다음 지역, 1 이전 지역, 2 웨이포인트, 3 주요 지점(POI), 4 옆 지역(이동은 MapHelper가 실행), 7 몬스터 표시, 8 경로 선, `*` 좌표, `−` 플레이어 거리. 빈 키는 5, 6, 9.
 - 혼자라 팀 소서 프리즈(`S.COLD` 등)는 섞이지 않음. 용병은 2막·5막. 3막 냉기 용병(Glacial Spike·Ice Blast·Frozen Armor)은 쓰지 않음.
 - 카우 킹을 잡으면 그 난이도에서 포털을 다시 못 연다(일반 지식, 확인 안 함).
 - 주운 참이 창고로 옮겨지는지는 확인 안 함.
 
-**측정 코드 (Claude 제안, 수정 목록 미승인)**
-- 위치 `threads/ToolsThread.js` 메인 루프(`Misc.js` 이미 불러옴). 새 함수 `this.freezeCheck`, 새 변수 `this.freezeStart`, 루프 호출 1개.
-- 아마존(`me.classid === 0`)일 때만 `getUnit(1)` 몬스터의 상태 1이 켜진 시각과 꺼진 시각을 고유 번호별로 기록. 꺼지면 `Misc.trace` 한 줄. 도중에 죽거나 사라진 몹은 버림.
+**측정 코드 (사용자 승인 261103, 구현됨)** — 파일 1개 `threads/MapThread.js`
+1. `main` include 줄에 `include("libs/Misc.js")` 추가(`Misc.trace`용).
+2. `this.keyEvent`에 **Numpad 5**로 측정 켜기·끄기. 머리 위 글자 `Freeze log on`/`off`.
+3. 새 함수 `this.freezeCheck`, 새 변수 `this.freezeStart`(꺼짐 = `null`): `getUnit(1)`을 돌며 상태 1이 새로 켜졌고 거리 30 안쪽이면 시작 시각·이름·classid·spectype·냉기 저항을 기록. 기록 중인 몹은 거리와 상관없이 상태 1이 꺼지면 `Misc.trace` 한 줄을 남기고 지움. 도중에 죽거나 목록에서 사라진 몹은 기록 없이 지움.
+4. 메인 루프 `delay(20)` 앞에 `this.freezeCheck()` 호출. 자체 try/catch로 감싸 오류 시 `[FREEZE] Off: …`를 print하고 측정만 끔.
 - 줄 형식: `[FREEZE] Hell Bovine classid=391 spectype=0 ms=… coldres=… diff=… ia=… coldlen=… (지역 x,y)`
-- 가설과 판정: (a) 아이템 길이가 더해진다, (b) 시너지 뒤에 더해진다(식 A). 3절 표와 비교한다. (a)가 맞으면 냉기 길이 참 안을 handoff 1절로, 틀리면 기각.
+- 줄 끝 메모: `//261103 temp` (첫 줄들에 `docs/temp/freezing_arrow.md, remove after cold length 0/10/30 judged`)
+- 기록 파일: `_cache/trace/trace-<프로필>-<날짜>.txt`
+- 확인 안 함: 키 처리 안의 `this`가 MapThread `main`의 `this`와 같은지(MapThread는 `js_strict(true)`, ToolsThread는 같은 방식으로 `this.togglePause`를 씀). 첫 테스트에서 Numpad 5를 눌러 머리 위 글자가 나오는지 본다.
+- 가설과 판정: (a) 아이템 길이가 더해진다, (b) 시너지 뒤에 더해진다(식 A). 3절 표와 비교한다.
 - 제거 조건: 냉기 길이 옵션 0 / 10 / 30 조건마다 20건 이상 모여 (a)·(b)가 판정되면 지운다.
 - 사전 확인: 마을에서 참을 넣고 `me.getStat(56)`이 25 × 옵션 수만큼 느는지.
-- 한계: 상태 수신 지연으로 1~2프레임 오차(추정). 다른 몹의 상태 1을 클라이언트가 받는지는 첫 로그로 확인.
+- 한계: 상태 수신 지연으로 1~2프레임 오차(추정). 다른 몹의 상태 1을 클라이언트가 받는지는 첫 로그로 확인. 다시 얼리기를 걸러내는 코드는 없음(운용으로 막음).
 
-**정할 것**
-- 측정 코드 수정 목록 승인
-- 비교할 옵션 수 (제안 0 / 10 / 30)
-- 보조 측정: 저항 0 기준값 카타콤 4층(Ghoul·Afflicted 저항 0), 저항별 비교와 냉기 효과 0 대조군 카운테스 타워(BloodClan 0, DarkArcher 25, Devilkin 40, Ghost 냉기 효과 0)
-- `T.nip`을 누가 넣을지, 모은 참을 아마존에게 옮기는 방법
+**정해진 것**
+- 비교할 냉기 길이 옵션 수: 0 / 10 / 30 (사용자 결정)
+- 보조 측정(카타콤 4층, 카운테스 타워)과 `T.nip` 두 줄 넣기, 참 옮기기는 사용자가 직접 한다.
 
 ## 5. 출처
 - 데이터: mpqdata `skills.txt`, `missiles.txt`, `difficultylevels.txt`, `states.txt`, `itemstatcost.txt`, `properties.txt`, `magicprefix.txt`, `magicsuffix.txt`, `uniqueitems.txt`, `monstats.txt`, `levels.txt`

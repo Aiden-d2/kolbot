@@ -799,6 +799,7 @@ function main() {
 	include("tools/json2.js");
 	include("libs/Attack.js");
 	include("libs/Pather.js");
+	include("libs/Misc.js");	//261103 temp: Misc.trace for the freeze log (docs/temp/freezing_arrow.md, remove after cold length 0/10/30 judged)
 	load("threads/MapHelper.js");
 	print("ÿc9Map Thread Loaded.");
 
@@ -836,6 +837,11 @@ function main() {
 			}
 
 			break;
+		case 101: // Numpad 5 (freeze log, temp)	//261103 temp: docs/temp/freezing_arrow.md, remove after cold length 0/10/30 judged
+			this.freezeStart = this.freezeStart ? null : {};	//261103 temp: toggle, on = empty list
+			me.overhead("Freeze log " + (this.freezeStart ? "on" : "off"));	//261103 temp
+
+			break;
 		case 106: // Numpad *
 			print(me.x+","+me.y);
 			D2Bot.printToConsole(me.x+","+me.y)
@@ -847,6 +853,48 @@ function main() {
 			D2Bot.printToConsole(Math.round(getDistance(me.x, me.y, player.x, player.y)))
 
 			break;
+		}
+	};
+
+	// Freeze log (Numpad 5): how long each monster within 30 stays frozen (state 1), one trace line when it thaws. A monster that dies or leaves the list is dropped	//261103 temp: docs/temp/freezing_arrow.md, remove after cold length 0/10/30 judged
+	this.freezeStart = null;	//261103 temp: null = off, otherwise gid -> {t, name, classid, spectype, res}
+
+	this.freezeCheck = function () {	//261103 temp
+		var gid, rec, ms,	//261103 temp
+			seen = {},	//261103 temp
+			unit = getUnit(1);	//261103 temp
+
+		if (!this.freezeStart) {	//261103 temp: off
+			return;	//261103 temp
+		}
+
+		if (unit) {	//261103 temp
+			do {
+				if (unit.hp === 0 || unit.mode === 0 || unit.mode === 12) {	//261103 temp: dead, dropped below as not seen
+					continue;	//261103 temp
+				}
+
+				seen[unit.gid] = true;	//261103 temp
+				rec = this.freezeStart[unit.gid];	//261103 temp
+
+				if (unit.getState(1)) {	//261103 temp: frozen
+					if (!rec && getDistance(me, unit) <= 30) {	//261103 temp: newly frozen within 30
+						this.freezeStart[unit.gid] = {t: getTickCount(), name: unit.name, classid: unit.classid, spectype: unit.spectype, res: unit.getStat(43)};	//261103 temp
+					}
+				} else if (rec) {	//261103 temp: thawed
+					ms = getTickCount() - rec.t;	//261103 temp
+
+					delete this.freezeStart[unit.gid];	//261103 temp
+					Misc.trace("[FREEZE] " + rec.name + " classid=" + rec.classid + " spectype=" + rec.spectype + " ms=" + ms + " coldres=" + rec.res +
+						" diff=" + me.diff + " ia=" + me.getSkill(21, 0) + " coldlen=" + me.getStat(56));	//261103 temp
+				}
+			} while (unit.getNext());
+		}
+
+		for (gid in this.freezeStart) {	//261103 temp
+			if (this.freezeStart.hasOwnProperty(gid) && !seen[gid]) {	//261103 temp: died or out of the list
+				delete this.freezeStart[gid];	//261103 temp
+			}
 		}
 	};
 
@@ -866,6 +914,13 @@ function main() {
 			Hooks.update();
 		} else {
 			Hooks.flush();
+		}
+
+		try {	//261103 temp: freeze log, an error only turns it off
+			this.freezeCheck();	//261103 temp
+		} catch (e) {	//261103 temp
+			print("[FREEZE] Off: " + e);	//261103 temp
+			this.freezeStart = null;	//261103 temp
 		}
 
 		delay(20);
