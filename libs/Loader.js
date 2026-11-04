@@ -121,7 +121,7 @@ var Loader = {
 					}
 
 					if (this.skipTown.indexOf(script) > -1 || Town.goToTown()) {
-						Misc.print("[Loader] Loaded [" + script + ".js]");	// 260903	//261103 log policy
+						print("[Loader] Loaded [" + script + ".js]");	// 260903	//261103 log policy	//261104 log: info line, no place
 						Messaging.sendToScript("threads/ToolsThread.js", JSON.stringify({currScript: script}));
 						
 						reconfiguration = typeof Scripts[script] === 'object';

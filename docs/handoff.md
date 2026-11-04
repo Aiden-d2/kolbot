@@ -62,6 +62,12 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
+### 3-66. 로그 모양 정리: 위치 없는 정보 줄, 구간 시작·끝, [Quit] 색, [Died] lost=, 콘솔 줄을 print에도 (3-64 후속, 사용자 261104)
+- **문제**(사용자 261104): print에 위치가 쓸모없는 정보 줄이 많고, 게임·구간·시작 줄 모양이 매니저 창에서 구분이 어렵고, 콘솔에만 있는 줄이 있었다. `[Quit]`이 기본색이라 다른 기본색 줄을 쓸 수 없었다.
+- **바꾼 것**(261104, 이 커밋): 입장 직후 정보 줄 위치 삭제(`[Pickit]`·`[Loader]`·`[Role]`·`[Config]`·`[toggle] key: T3 / H2 / D1`·`[Attack] Failed: bad attack config`, `[Equip] 자리=N`·`[Grant] 자리=N`은 착용 때도), 게임 경계 `[게임]`(리더 콘솔 기본색), 구간 시작 print `[X] Go`·구간 끝 콘솔·print `=== [X] ===`(리더), `=== [START]/[FARMING]/[LEVELING] ===`·`=== [BOOK]/[POTION]/[SCROLL] ===` 콘솔·print, `[Total]`(콘솔), `[Quit]` 색 6·`Console.txt` 분류(6 Quit, 게임 안 0 Flow), `[Died] lost=N.NN%`(ToolsThread `aliveExp`), print 추가(`[Died] Last game`·`[Socket]`·`[Stop] Failed to get corpse`), Alkor → `Misc.quitGame`. 함수별 내용은 코드 노트의 같은 헤더.
+- **검증 방법**: d2bs 로그 — 입장 직후 정보 줄과 `[Equip]`·`[Grant]`에 `(지역 x,y)` 0, 게임마다 `[게임]` 1줄, 리더 `[X] Go` 수 ≥ `=== [X] ===` 수, `Completed`·`!!! `·`=== [게임] ===` 0. `Console.txt` — `<Quit>` 줄은 모두 `[Quit]`, `[게임]` 줄은 `<Flow>`, `[Total]`은 `<OOG>`. `[Died]`가 나오면 `lost=` 값(0.00%만 나오면 게임이 죽는 순간이 아니라 부활 때 경험치를 깎는 것 → 부활 시점 비교로 옮길지 정함), 같은 프로필 다음 게임 `[Died] Last game`과 짝. Alkor 퇴장이 나오면 print `[Quit] Alkor not found`와 경험치 줄. 매니저 화면에서 `[Quit]` 색(어두운 황금색)이 보이는지(사용자).
+- **결과**: (로그 대기)
+
 ### 3-65. 경로 보정 10회 실패 뒤 오류 줄 없음 → `Attack` 조용한 catch 3곳에 `Misc.caughtError` (`Pather.moveTo`, `Attack.clear`·`setPosition`, 옛 1-17, 사용자 261026·261103)
 - **문제**: `Pather.moveTo`는 `no adjusted path` 10번째에도 경로가 없으면 throw(`moveTo: Failed to generate path`)하는데, 261026 로그 2건은 오류 줄 없이 다음 구간으로 넘어갔다.
 - **확인된 것**

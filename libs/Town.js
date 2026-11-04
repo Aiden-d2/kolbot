@@ -188,6 +188,7 @@ var Town = {
 				result = NTIP.Evaluate(t.item);	//261022 line after socketing (same as Equipped)
 				base = getLocaleString(getBaseStat(0, t.item.classid, "namestr")).trim();	//261022 base name only (no affixes), same as the cubing console line
 				D2Bot.printToConsole("[Socket] " + name + " " + base + " (" + (filled + 1) + "/" + t.item.getStat(194) + ")", 5);	//261023 "# [Gem]" -> "[Socket]"
+				Misc.print("[Socket] " + name + " " + base + " (" + (filled + 1) + "/" + t.item.getStat(194) + ")");	//261104 log: in the print too (like [Runeword])
 				Misc.itemLogger("Socketed", t.item, (result.line ? result.line + " / " : "") + "(" + (filled + 1) + "/" + t.item.getStat(194) + ")");	//261023 Gemmed -> Socketed (normal items already have "Gemmed" in the name), nip line like the other logs	//261028 socket state at the end
 
 				if (Equip.getEquippedItem(t.bodyLoc).tier > tierBefore) {	//261028 manager item log only when the real tier went up (console, print and ItemLog keep every gem)
@@ -1639,6 +1640,7 @@ MainLoop:
 				}
 
 				D2Bot.printToConsole("[Stop] Failed to get corpse (" + Misc.where() + ")", 9);	//261103 log policy
+				Misc.print("[Stop] Failed to get corpse");	//261104 log: the stop in the print too
 				D2Bot.stop();
 			}
 
@@ -2249,8 +2251,7 @@ MainLoop:
 				}
 				
 				if (getTickCount() - tick > 90000) {
-					D2Bot.printToConsole("[Quit] Alkor not found (" + Misc.where() + ")");	//261103 log policy: early quit (quit() kept)
-					quit();
+					Misc.quitGame("Alkor not found");	//261104 log: through quitGame like every early quit (was console + quit())
 				}
 
 				break;

@@ -9,6 +9,10 @@
 - d2bs 로그 한 벌 `print("[console] " + msg)` 삭제. 매니저로 보낸 뒤 같은 줄을 `_cache/trace/Console.txt`(전 프로필 한 파일)에 `[YYYY/MM/DD HH:MM:SS] <프로필> <분류> msg`로 덧붙인다. 분류: 게임 밖 `OOG`, 색 7 `Flow`, 8·5 `Item`, 4 `Exp`, 9 `Red`, 10 `Error`, 그 밖(0) `Quit`. `Misc.fileAction`(덧붙이기, 실패 시 30회 재시도)으로 쓰고 `Misc`가 없는 스레드(`MapThread`)에서는 쓰지 않는다. 폴더가 없으면 만든다. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
 - 확인: 261104 로그 `Console.txt` 1,231줄(8프로필 섞임) 깨진 줄 0, 분류 7종 모두 나옴, 리더 `=== [게임] ===` 89 = 각 프로필 print 게임 경계 89, `[Quit] Max game time 30 min` 2줄(리더). 매니저 콘솔과의 대조는 안 함(받지 않음). 검증 통과(사용자 261104, 3-64 같은 헤더 항목 공통).
 
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- `Console.txt` 분류: 색 6 `Quit`, 게임 안 색 0(생략 포함)과 표에 없는 색 `Flow`(게임 이름 줄, 키 입력 디버그 줄). 게임 밖은 그대로 `OOG`.
+- 색 번호의 실제 색(D2Bot 디컴파일본 `ColorFromInt`, `D2BS_Structure.md`): 0~3 검정, 4 파랑, 5 초록, 6 어두운 황금색, 7 갈색, 8 진한 주황, 9 빨강, 10 회색.
+
 ## ControlAction
 
 ### 261001 Claude: 화면 문구 읽기

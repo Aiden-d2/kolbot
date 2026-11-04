@@ -27,3 +27,7 @@
 - 죽음: 변수 `wasDead`. 게임 준비 상태에서 살아 있다가 `me.dead`가 된 순간 1회 콘솔 빨강 `[Died] (지역 x,y)` + print `[Died]`. 부활하면 다음 죽음도 찍는다.
 - 최대 게임 시간: 변수 `maxTimeLogged`. `getTickCount() - me.gamestarttime >= me.maxgametime - 1000`이면 1회 콘솔(기본색)·print `[Quit] Max game time N min`. 엔진이 사유 없이 내보내는 퇴장의 사유 줄. 리더가 먼저 시간이 끝나고 팔로워는 `PartyThread`로 따라 나가므로 실제로는 리더 1줄(사용자 261103). 엔진이 `me.gamestarttime`부터 재는지는 엔진 소스로 확인하지 않음(`getGameTime`과 같은 기준이라는 추정).
 - `getPotion` 머리 위 글자 → `Misc.print("[getPotion] Drinking potion from inventory")`, `drinkPotion` trace → `Misc.print("[drinkPotion] Failed: merc potion")`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- 죽음 줄에 잃은 경험치: 새 변수 `aliveExp`(살아 있는 동안 매 순회 `me.getStat(13)`). 살아 있다가 죽은 순간 `(aliveExp - 지금 경험치) × 100 / Experience.nextExp[레벨]`(경험치 줄 %와 같은 기준, 99레벨이면 0)을 소수 둘째 자리로 `aliveExp`에 넣어 콘솔 `[Died] lost=N.NN% (지역 x,y)`·print `[Died] lost=N.NN%`. 다시 살아나면 `aliveExp`는 경험치로 돌아간다. 게임이 죽는 순간 경험치를 깎는지는 확인하지 않음(0만 나오면 부활 때 깎이는 것).
+- `[Quit] Max game time N min` 콘솔 색 6.

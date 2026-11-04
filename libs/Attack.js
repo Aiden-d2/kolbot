@@ -21,7 +21,7 @@ var Attack = {
 
 		if (Config.AttackSkill[1] < 0 || Config.AttackSkill[3] < 0) {
 			showConsole();
-			Misc.print("[Attack] Failed: bad attack config");	//261103 log policy
+			print("[Attack] Failed: bad attack config");	//261103 log policy	//261104 log: info line, no place
 		}
 
 		if (me.gametype === 1) {

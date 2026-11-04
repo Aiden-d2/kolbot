@@ -17,3 +17,6 @@
 
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - 게임 안 루프의 `if (!ingame)` 블록(게임마다 1회)에서 리더 콘솔 `=== [게임 이름] ===`(색 7). `debugLog(me.profile)` 삭제. `Recieved Game Info` → `Misc.print("[Starter] Received game info")`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- 리더 콘솔 게임 경계 `=== [게임 이름] ===`(색 7) → `[게임 이름]`(기본색 0, `Console.txt` 분류 `Flow`). 로비 플레이 시간 줄(`addPlayTime`) 앞에 `[Total] `(콘솔만, 분류 `OOG`).

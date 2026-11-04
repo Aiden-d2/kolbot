@@ -32,10 +32,16 @@
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - `Equip.updateTier`의 `equipped: [자리] N` print → `Misc.print("[Equip] 자리 tier=N")`.
 
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- `Equip.updateTier` print `[Equip] 자리 tier=N`(위치 붙음) → `print("[Equip] 자리=N")`(위치 없음). 게임 시작 때(`updateTiers`)와 착용·벗기 때 모두 이 줄이다.
+
 ## Grant.updateTier / Grant.updateStat
 
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - `granted: [자리] N` → `[Grant] 자리 tier=N`, `updateMercStat` → `[Grant] updateMercStat`(`Misc.print`).
+
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- `[Grant] 자리 tier=N` → `print("[Grant] 자리=N")`, `[Grant] updateMercStat` → `print`(둘 다 위치 없음).
 
 ## Misc.openChests
 
@@ -96,6 +102,9 @@
 - `caughtError`: 콘솔 `[Error] 자리: 메시지 (지역 x,y)`(게임당 자리별 1회 그대로), trace → print `[Error] 자리: 메시지 (파일 #줄) (지역 x,y)`(매번).
 - `errorReport`: 콘솔 `[Error] 스크립트: 메시지 (파일 #줄)`(문자열 오류는 `[Error] 문자열`), trace → print 같은 줄 + ` | area= ping= game=` + ` | stack=…`. `_cache/trace/ScriptErrorLog.txt` 쓰기와 날짜·`filemsg` 계산 삭제(파일에만 있던 Stack을 print로).
 - `Misc.debugLog` 삭제(호출 0).
+
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- `quitGame` 콘솔 `[Quit] 이유 (지역 x,y)`를 색 6(어두운 황금색, D2Bot `DarkGoldenrod`)으로. 기본색(0)은 게임 이름 줄에 쓴다. `Console.txt` 분류는 `OOG.md` printToConsole.
 
 ## Experience.log
 

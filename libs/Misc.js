@@ -491,7 +491,7 @@ var Equip = {
 		Config.TierNow[key] = {tier: eq.tier, str: eq.str, dex: eq.dex};
 		
 		if (!skipLog) {
-			Misc.print("[Equip] " + key + " tier=" + eq.tier);	//261103 log policy
+			print("[Equip] " + key + "=" + eq.tier);	//261103 log policy	//261104 log: no place, "tier" removed
 		}
 		
 		return true;
@@ -870,7 +870,7 @@ var Grant = {
 		Config.TierMerc[key] = {merc: eq.tier, str: eq.str, dex: eq.dex};
 		
 		if (!skipLog) {
-			Misc.print("[Grant] " + key + " tier=" + eq.tier);	//261103 log policy
+			print("[Grant] " + key + "=" + eq.tier);	//261103 log policy	//261104 log: no place, "tier" removed
 		}
 		
 		return true;
@@ -879,7 +879,7 @@ var Grant = {
 	updateStat: function (merc) {
 		Config.MercStat = {id: merc.classid, str: merc.getStat(0), dex: merc.getStat(2), lvl: merc.getStat(12)};  //260804
 		
-		Misc.print("[Grant] updateMercStat");	//261007	//261103 log policy
+		print("[Grant] updateMercStat");	//261007	//261103 log policy	//261104 log: info line, no place
 		
 		return true;
 	},
@@ -2359,7 +2359,7 @@ MainLoop:
 	quitGame: function (reason, detail) {	//260930	//261001 console argument removed: every profile prints
 		if (!this.quitReason) {
 			this.quitReason = reason;
-			D2Bot.printToConsole("[Quit] " + reason + " (" + this.where() + ")");	//261002 red -> default color: red is left to chicken / death	//261103 log policy: [Quit]
+			D2Bot.printToConsole("[Quit] " + reason + " (" + this.where() + ")", 6);	//261002 red -> default color: red is left to chicken / death	//261103 log policy: [Quit]	//261104 log: dark goldenrod (6), default colour is left to the game name
 
 			this.print("[Quit] " + reason + (detail ? " | " + detail : ""));	//261103 log policy: trace -> print
 		}

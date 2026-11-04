@@ -10,3 +10,6 @@
 
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - 게임 경계 trace `=== [게임 이름] ===` → `print`(위치 없음, 모든 프로필). 초기화 실패: 콘솔 `[Stop] Init failed in default.dbj`, trace → print. 지난 게임 사망 콘솔 `You died in last game` → `[Died] Last game`(첫 사이클 동안 `[Died]`와 짝 확인 뒤 지울지 정함, 사용자 261103). MinGameTime catch `print(e1)` → `Misc.print("[Error] MinGameTime: " + e1)`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- 게임 경계 print `=== [게임 이름] ===` → `[게임 이름]`. 지난 게임 사망 콘솔 `[Died] Last game` 옆에 같은 문장 `print`(위치 없음). 두 `[Died]` 줄(죽은 순간 `lost=`, 다음 게임 `Last game`)은 둘 다 유지(사용자 261104: 죽음이 한쪽에서 안 잡힐 수 있다). `Last game`의 기준은 지난 게임 시작 때 저장한 경험치라 죽어서 잃은 양은 알 수 없다.

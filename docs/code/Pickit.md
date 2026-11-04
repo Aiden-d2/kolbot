@@ -5,6 +5,9 @@
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - `Loaded [nip]` → `Misc.print("[Pickit] Loaded [...]")`.
 
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- `[Pickit] Loaded [...]` → `print`(위치 없음, 입장 직후 정보 줄).
+
 ## checkItem
 
 ### 261021~261023 사용자 결정: 소켓 보석 줍기 (결과 5, 옛 handoff 3-15)

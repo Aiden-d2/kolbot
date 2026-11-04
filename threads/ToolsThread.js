@@ -29,6 +29,7 @@ function main() {
 		pingTimer = [],
 		quitFlag = false,
 		wasDead = false,	//261103 log policy: [Died] once per death
+		aliveExp = 0,	//261104 log: experience while alive, for [Died] lost=
 		maxTimeLogged = false,	//261103 log policy: [Quit] Max game time once
 		timerLastDrink = [],
 		relayMsgs = [];	//261021 team messages (copydata 55, follow node 56) that came while default.dbj was paused; the engine drops events for a paused script
@@ -581,15 +582,20 @@ function main() {
 		try {
 			if (me.gameReady) {	//261103 log policy: death and the max game time (the engine leaves without a reason line)
 				if (me.dead && !wasDead) {	//261103 the moment I died (alive -> dead)
-					D2Bot.printToConsole("[Died] (" + Misc.where() + ")", 9);	//261103
-					Misc.print("[Died]");	//261103
+					aliveExp = me.getStat(12) < 99 && aliveExp > me.getStat(13) ? ((aliveExp - me.getStat(13)) * 100 / Experience.nextExp[me.getStat(12)]).toFixed(2) : "0.00";	//261104 log: lost % of the level (same base as the experience line); aliveExp takes it until I am alive again
+					D2Bot.printToConsole("[Died] lost=" + aliveExp + "% (" + Misc.where() + ")", 9);	//261103	//261104 log: lost=
+					Misc.print("[Died] lost=" + aliveExp + "%");	//261103	//261104 log: lost=
 				}
 
 				wasDead = me.dead;	//261103
 
+				if (!me.dead) {	//261104 log: experience just before a death
+					aliveExp = me.getStat(13);	//261104
+				}
+
 				if (!maxTimeLogged && me.maxgametime > 0 && getTickCount() - me.gamestarttime >= me.maxgametime - 1000) {	//261103 1s before the engine leaves
 					maxTimeLogged = true;	//261103
-					D2Bot.printToConsole("[Quit] Max game time " + Math.round(me.maxgametime / 60000) + " min (" + Misc.where() + ")");	//261103
+					D2Bot.printToConsole("[Quit] Max game time " + Math.round(me.maxgametime / 60000) + " min (" + Misc.where() + ")", 6);	//261103	//261104 log: [Quit] dark goldenrod (6)
 					Misc.print("[Quit] Max game time " + Math.round(me.maxgametime / 60000) + " min");	//261103
 				}
 			}

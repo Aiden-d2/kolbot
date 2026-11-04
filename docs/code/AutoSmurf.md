@@ -40,6 +40,11 @@
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - 구간 헤더: print `ÿc4=== [X] ===` + trace 사본 → `print("=== [X] ===")`(색 코드·trace 삭제, 42곳), `!!! [BOOK|POTION|SCROLL] !!!`도 같음. 리더 콘솔 구간 끝 `=== X ===` → `[X] Completed`(31곳, `getQuestItem`의 눈·심장·뇌·스태프 포함). 설정 print `SafeTele:` 등 → `[Config] 키=값`, 역할 머리 위 글자 → `[Role] Leader|Boer|Follower`, 구간 실패 `X failed: 이유` → `[X] Failed: 이유`, 진행 trace(골드·`bossGuard`·`bossEnd`·`getQuestItem`)와 한 번씩 일어나는 머리 위 글자(`tpReady` 16곳 → `[tpReady] Sent`, 받은 쪽 `Received`, `changeAct`, 웨이, 퀘스트 진행 등) → `Misc.print`. 같은 줄을 찍던 머리 위 글자 사본 삭제. `Script ended` → `[AutoSmurf] Script ended`(trace 사본 삭제). Radament off 콘솔·trace 줄 → print `[RADAMENT] Off: tombs, quit at 10 min`(퇴장 사유는 `ToolsThread`의 `[Quit] Max game time 10 min`). `radamentOff -> tombs` trace는 그대로. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
 
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- 구간 시작 print `=== [X] ===` → `[X] Go`(42곳). 구간 끝 리더 콘솔 `[X] Completed` → `=== [X] ===`(색 7, 31곳, `getQuestItem`의 눈·심장·뇌·스태프 포함)과 같은 블록에 print `=== [X] ===`(리더만). 이 커밋부터 print의 `=== [X] ===`는 구간 끝이다(그 전 로그에서는 시작).
+- 리더 콘솔 `=== START/FARMING/LEVELING ===` → `=== [START] ===`·`=== [FARMING] ===`·`=== [LEVELING] ===`(색 7) + 같은 블록에 print. 퀘스트 아이템 콘솔 `!!! BOOK/POTION/SCROLL !!!` → `=== [BOOK] ===` 등(색 8), print `!!! [X] !!!` → `=== [X] ===`(이미 print가 있던 3곳은 문장만, `preparation`의 POTION·SCROLL 2곳은 print 추가). `preparation`의 꺼 둔 BOOK 줄(`/* */` 안)은 그대로.
+- 입장 직후 정보 줄은 위치 없이 `print`: `checkRole`의 `[Role] Leader|Boer|Follower`·`[Config] SafeTele=`, `start`의 `[Config] hireMerc=`, `preparation`의 `[Config] MiniShopBot=`·`farmingON`·`Tiered=`·`UseMerc=`, `toggle`의 `[toggle] …`. 토글 키 줄 `key: T 3 / H 2 / D 1` → `key: T3 / H2 / D1`.
+
 ## this.okCount / this.teamCount
 
 ### 261004 Claude: 죽은 사람도 타임아웃, 타임아웃 상세
