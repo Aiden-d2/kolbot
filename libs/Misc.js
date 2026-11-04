@@ -2659,7 +2659,7 @@ var Experience = {
 			rawSeconds = "0" + rawSeconds;
 		}
 
-		return " [" + rawMinutes + ":" + rawSeconds + "]";
+		return "[" + rawMinutes + ":" + rawSeconds + "]";	//261104
 	},
 
 	// Log to manager
@@ -2673,7 +2673,8 @@ var Experience = {
 			getGameTime = this.getGameTime(),
 			timeToLevel = this.timeToLevel();
 
-		string = getGameTime + " +" + gainPercent + "% / [Level " + me.getStat(12) + "] " + progress + "%";
+		//string = getGameTime + " +" + gainPercent + "% / [Level " + me.getStat(12) + "] " + progress + "%";
+		string = getGameTime + " " + progress + "% / [Level " + me.getStat(12) + "]";	//261104
 
 		if (gain) {
 			D2Bot.printToConsole(string, 4);
@@ -2682,8 +2683,8 @@ var Experience = {
 			if (me.getStat(12) > DataFile.getStats().level) {
 			}
 		} else {	//260910
-			D2Bot.printToConsole("No exp" + getGameTime, 4);	//261103 log policy
-			Misc.print("No exp" + getGameTime);	//261103 log policy
+			D2Bot.printToConsole(getGameTime + " No exp", 4);	//261104
+			Misc.print(getGameTime + " No exp");	//261104
 		}
 	}
 };
