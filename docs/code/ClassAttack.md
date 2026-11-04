@@ -98,7 +98,7 @@
 - 문제(사용자): 스태틱이 두 경로였다. ① 컨피그 선시전 루프(`CastStatic` %까지 스태틱만 반복) ② 어택스킬 칸 42(`checkResist`의 42 게이트, `CastStatic`이 `false`인 나이트메어·헬은 % 없이 계속 씀).
 - `doAttack`: 선시전 루프 삭제. 언타임드를 고른 뒤·로우마나 판정 앞에서 `CastStatic === true`, 스태틱 습득, 대상(`StaticList`가 비면 전체, 아니면 이름·classid 일치), 번개 면역 아님(`checkResist(unit, "lightning")`), `unit.hp × 100 / 128 > (보스 ? StaticBossHP : StaticHP)[me.diff]`이면 `untimedSkill = 42`. 보스 = `index === 1`(`spectype & 0x7`). 타임드는 기존 어택스킬 그대로라 `doCast`가 타임드 ↔ 스태틱을 번갈아 쓴다. 스태틱을 쓰는 동안 기준 거리 = min(타임드 사거리, 레벨 + 2).
 - 261030 추가(사용자 요청, `63f59af`): 언타임드 칸(`checkSkill`, 커스텀 공격이면 그 값)이 -1이고 그 몹에게 타임드가 있으면 HP%·번개 면역과 관계없이 스태틱(쿨타임 사이 채우기). 타임드가 없으면 원래 규칙(번개 면역 아님·% 초과까지) 뒤 `[6]`.
-- `doCast`: 언타임드가 42면 두 `setPosition`에 도착 오차 2(`Attack.md` setPosition). 스태틱 반경 = 레벨 + 4(좌표 거리, mpq `aurarangecalc = ln12`, `skill_range.md`).
+- `doCast`: 언타임드가 42면 두 `setPosition`에 도착 오차 2(`Attack.md` setPosition). 스태틱 반경 = 레벨 + 4(좌표 거리, mpq `aurarangecalc = ln12`, `info/skill_range.md`).
 - 확인: 261031·261101 로그 `[teleportTo failed]` 7·4(261029 13, 261030 6, 늘지 않음), 동작은 사용자 육안. 검증 통과(사용자 261101).
 
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
@@ -109,7 +109,7 @@
 ### doAttack / doCast
 
 #### 261002 Claude: 쇼크웨이브 시전 좌표, 회피 없는 스킬
-- 쇼크웨이브(243): 몹이 5칸보다 가까우면 몹 방향 5칸 지점에 시전(막힌 자리면 몹 좌표). 근거: 측정(커서 거리 1~10 × 3회)에서 미사일 5개가 커서 지점과 좌우 1·2칸을 향하고, 이웃 미사일 간격이 d5부터 2.6 이하(2×2 몹에 빈틈 없음). 세부는 `skill_range.md`.
+- 쇼크웨이브(243): 몹이 5칸보다 가까우면 몹 방향 5칸 지점에 시전(막힌 자리면 몹 좌표). 근거: 측정(커서 거리 1~10 × 3회)에서 미사일 5개가 커서 지점과 좌우 1·2칸을 향하고, 이웃 미사일 간격이 d5부터 2.6 이하(2×2 몹에 빈틈 없음). 세부는 `info/skill_range.md`.
 - Shock Wave·Armageddon(249)은 사거리 밖이거나 0x4로 막혔을 때만 setPosition(회피 반경 안에 몹이 있으면 매 틱 물러난 뒤 시전해 한 턴씩 늦었다). 261003에 Shock Wave 가드는 `MinSkillRange`로 회피가 없어져 지움, Armageddon 가드는 유지.
 - 선공격의 249 전용 변신 분기 삭제(`Misc.md` Skill.cast가 맡음).
 
