@@ -100,4 +100,5 @@
 | `docs/quest_flags.md` | 퀘스트 플래그 표 (1.14d) |
 | `docs/crash_analysis.md` | 크래시 분석 절차와 유형별 결과 |
 | `docs/freezing_arrow.md` | 프리징 애로우 프리즈 길이: 계산식·측정 결과, 상한 측정 준비 |
+| `docs/info/` | 참고용 게임 인포가 들어 있다 (`mpqdata` 브랜치와 같은 개념) |
 | `mpqdata` 브랜치 | 게임 정보(아이템·드랍·몬스터·지역·스킬 등)는 기억으로 답하지 않고 이 브랜치에서 찾는다. 파일은 브랜치 최상위에 있다(`git fetch origin mpqdata` 후 `git show origin/mpqdata:<파일>`) |
