@@ -67,6 +67,7 @@
 
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - `okCount` 첫머리 `Misc.print("[okCount] Waiting")`(없는 프로필 = 진입 못 함), `while` 안 머리 위 글자 `Waiting: 안 온 프로필`(매 틱), `teamCount` 끝 머리 위 글자 `OK` 삭제(사용자 261103). 함수 이름(`okCount`·`teamCount`) 바꾸기는 나중(사용자).
+- 확인: 261104 로그 desync 6게임 모두 `[okCount] Waiting`이 하나 모자란 프로필 = 퇴장 줄의 `missing` 이름(6/6). 검증 통과(사용자 261104).
 
 ## this.buffCount
 
@@ -211,6 +212,12 @@
 
 ### 261030 사용자: 시작 okCount 삭제 (`29b677a`)
 - 시작 okCount를 지우고 끝 okCount를 `eye(fig)`·`tome(fig)`·`travincal` 끝으로(각 함수 절). 시작의 `Town.move("cain")`은 주석으로.
+
+### 261103 Claude: 물약이 있으면 알리고 마시기(블록 밖), 시작 okCount (`67f41c2`, PR #144, 사용자 결정 261103, 옛 handoff 3-63·2-29·3-53)
+- 문제: 피겨린을 주운 사람만 `if (!me.getQuest(20, 0))` 블록을 건너뛰어(첫 Alkor 대화 안에서 완료까지 일어남) `teamFigurine`을 보내지 않고, 혼자 끝 okCount에서 `Party desynced 1`(261030 Pz-38 a6, 261031 Pz-26 a4, 261103 Pz-46 a6, 모두 EYE·Spider Cavern에서 주움). 옛 가설(스페이스 연타가 메뉴를 닫고 재시도 상호작용이 완료)은 261103 로그로 틀림(옛 3-53).
+- 블록에는 기다림·시차 delay·Alkor 대화만 남기고, `teamFigurine` 보내기·물약 마시기·마을 이동 4줄을 블록 뒤 `potion = me.findItem(545); if (potion) { … }`로. 블록을 건너뛴 주운 사람도 물약이 있으면 알리고 마신다. 물약이 없는 완료자는 아무것도 안 함. 앞 게임에서 남은 물약은 `preparation`이 마신다.
+- `Town.goToTown(3)` 뒤 시작 `this.okCount()`(8명). TOME에서 리더가 끝 okCount 뒤 Alkor 대화를 하는 동안 나머지가 먼저 FIGURINE을 시작하던 것(261103 Pz-27 9초)을 맞춘다.
+- 확인: 261104 로그 피겨린 3게임(Pz-24·Pz-44 a4 EYE·Spider Cavern, Pz-60 리더 a1 TOME·Ruined Temple) desync 0, 8명 모두 게임 안 `!!! [POTION] !!!`, Pz-60 FIGURINE 8명 같은 초. 주운 사람이 블록을 건너뛰었는지는 로그로 구분 못 함(사용자 동의 261103), 건너뛰어도 알리는 구조가 근거. 검증 통과(사용자 261104).
 
 ## this.eye
 

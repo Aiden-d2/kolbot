@@ -87,6 +87,7 @@
 
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - 새 함수 `Misc.print(msg)`: 색 코드(`ÿc.`)를 지우고, 게임 안이면 끝에 ` (지역 x,y)`(`Misc.where`)를 붙여 `print`. 게임 안 print 줄은 모두 이 함수로 찍는다. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
+- 확인: 261104 로그(89게임 × 8프로필) — 게임 안 print 중 위치 없는 줄은 고정 모양(`=== [..] ===`, `!!! … !!!`)·`[Error]`(area= 붙음)뿐, `ÿc`는 엔진 메시지·AutoBuild `Loaded [빌드.js]`(유지 결정분)·키 입력 스탯 줄만, `Error in`·`is not defined` 0. 검증 통과(사용자 261104, 3-64 같은 헤더 항목 공통). `[Died]`↔`[Died] Last game` 짝·Radament `10 min`은 이 로그에 사례가 없었고, 영구 로그라 사이클이 쌓이면 본다(사용자 261104).
 
 ## Misc.quitGame / Misc.caughtError / Misc.errorReport
 

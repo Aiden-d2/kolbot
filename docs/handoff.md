@@ -8,7 +8,7 @@
 
 trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/trace/`에, print는 d2bs 로그(`d2bs/logs/d2bs-<프로필>-<날짜>.log`)에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**마지막으로 분석한 로그**: 261103 묶음(11/02 17:38 ~ 11/03 09:31, 8프로필 각 90게임, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261103. 코드는 261102 수정(PR #133·#134, nip #135·#136)이 들어간 main(줄 형식으로 확인). 실행 중 main 변경(11/02 18:04 `263ba9c` openMenu, 20:31~20:55 Prototypes·Config 업로드, 23:05 nip `8deaca1`)이 게임 PC에 들어갔는지는 확인 안 함. **다음 사이클**: 3-60 `[useUnit] nearest` trace·3-63 피겨린 수정(261103)이 들어간 main으로 돈다. 3-61 리뷰는 261103에 끝남(사례는 1-2·1-17·1-19, `[moveTo] retry … over` trace 261103 삭제).
+**마지막으로 분석한 로그**: 261104 묶음(11/03 14:40 ~ 11/04 09:40, 8프로필 각 89게임, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261104. 코드는 현재 main(사용자 261104: 버전은 따로 확인하지 않는다). 3-64 로그 정책·3-63 피겨린 확정(261104). **다음 사이클**: 3-60·3-65 케이스 미발견으로 계속 본다.
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -40,6 +40,7 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **261102 사례**(93게임, desync 9게임): Pz-10 a4가 Catacombs 2층에 남음(퇴장한 a6은 3층). Pz-35 a8 Harrogath 4칸(Pit of Acheron `visitTown start`, `back` 없음). Pz-39 a8(Chaos에서 Town check 2번, 퇴장 때 마을). Pz-44 POA: a1(리더)·a4·a8이 같은 자리(12640,7595)에서 180초 동안 목표에 못 닿음(`POA failed: moveTo`, 경로 실패 줄 없음), 나머지 5명은 먼저 INFERNAL로 넘어가 a5가 Harrogath에서 퇴장. Pz-54 a1 Chaos 약 34칸(46초 전 Town check). Pz-59 a7 Ancient's Way 12칸·Pz-89 a7 8칸(게임 시작 2분 반, 앞 trace 없음). Pz-67 a6 Rogue Encampment 66칸. Pz-92 a8 Chaos: 3분 안 Town check 3번 뒤 a8 자신이 `missing(okCount):  teamOk true`로 퇴장(다 모인 뒤 같은 회차에서 120초 초과 검사, 사용자 261102: 정상).
 - **261101 사례**(63게임, desync 5게임): Pz-33 a6 Pit of Acheron에 남음(2분 안 Town chicken 2·Town check 1, 마지막 복귀 45초 뒤 퇴장, 리더는 Harrogath). Pz-38 a3 Ancient's Way 7~15칸(게임 시작 2분 반, 앞 trace 없음). Pz-43 a6 퇴장 12초 전 Catacombs 4층에서 `Town check (direct)` → Rogue Encampment에서 퇴장. Pz-52 a3 Harrogath 1칸(10:03:23 Pit of Acheron `visitTown start`, `back` 없음).
 - **261103 사례**(90게임, desync 10게임): 3-61 `[moveTo] retry … over` trace로 빠진 프로필이 마을에서 같은 목표로 `moveTo`(retry 3)를 약 13초마다 되풀이하며 위치가 그대로(이동하지 못함)인 것이 보임, 3게임 — Pz-84 a2 Rogue Encampment(목표 4390,5630, 4452,5604에서 거리 67, 08:16:01~08:17:37 8회, 퇴장한 리더와 1칸), Pz-85 a4 Rogue Encampment(4860,4575, 4921,4553에서 65, 08:23:50~08:25:10 7회), Pz-49 a1(리더) Harrogath(5129,5061, 5071,5022에서 70, 01:24:20~01:24:57 4회). 세 건 모두 구간(ANDY·MEPHISTO·ABADDON) 시작 27~30초 뒤부터, a4는 직전 08:23:37 `equipped: [Head] 16`. 호출 자리(`Town.doChores` 안 이동으로 추정)와 못 움직인 원인은 모름(줄에 호출부 없음). 비슷한 상태 진단(퇴장 줄 상태·`Town.move` 실패 trace)은 `rejected.md` 261028 기각. 그 밖: 피겨린 Pz-46(2-29), Ancient's Way 게임 시작 2분 반 Pz-28 a6·Pz-56 a7·Pz-89 a3(앞 trace 없음), Chaos Pz-69·Pz-72 a3, Pz-76 a1·a5·a8(a5·a8은 퇴장 2~24초 전 마을 다녀옴), Pz-62 a8 Den of Evil(퇴장 2분 전 마을 다녀옴).
+- **261104 사례**(89게임, desync 6게임, 빠진 프로필은 `[okCount] Waiting`이 하나 모자란 프로필로 확인 6/6): Pz-35 a4 Harrogath(POA 시작 뒤 21:14:17 `[initNPC] identify`를 끝으로 2분 동안 줄 없음), Pz-45 a3 Ancient's Way(게임 시작 2분 42초, 마지막 줄 23:21:10 `[okCount] Waiting`, 8명 모두 퇴장), Pz-58 a3 Rogue Encampment(ANDY 시작 02:16:18 `[okCount] Waiting` 뒤 4분 줄 없음), Pz-71 a6 Rogue Encampment(ANDY 시작 05:25:02 `[okCount] Waiting` 뒤 2분 40초 줄 없음), Pz-62 a4 Chaos Sanctuary(`[visitTown] Back` 37초 뒤 퇴장). Pz-11 a8은 2-23(`goWP` 10회 실패).
 
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
 
@@ -54,29 +55,12 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
   - 진행 확정(사용자 261026) → 1절에서 2절로.
   - 261027 로그: a1 Pz-47 Durance of Hate Level 2 도착 직후 `waypoint unit not found` → `wp.area:null` 12회 → `[Error] useWaypoint`. 261028 로그: a1 Pz-49 10/28 03:31 Catacombs Level 2(22648,6513) `waypoint unit not found` → `wp.area:null` 12회 → `[Error] useWaypoint`로 게임 종료(261022 사례와 게임 번호·지역이 같음).
   - 261103 로그: Pz-9 11/02 18:42:57 Jail Level 1에서 8명 모두 같은 초 `[getWP] waypoint unit not found. area:29`(17701~17706, 5275~5280). `wp.area:null`·`[Error]`·`goWP Failed` 없이 같은 초 INNER로 넘어감(`useWaypoint` throw가 아니라 `getWP`가 웨이를 못 얻은 채 지나간 모양). 다음 게임 Pz-10에서 JAIL을 한 번 더 돎(JAIL은 `if (!getWaypoint(6))`일 때만, 코드 읽음), Pz-10은 `going to nearest WP` 뒤 정상. 8명이 함께 못 찾은 모양은 261026 Pz-22와 같다.
+  - 261104 로그: Pz-41 a1 11/03 22:04:47 Catacombs Level 2 `[goWP] Going to nearest WP` → 22:04:50 `[getWP] Failed: waypoint unit not found`(22514,6524) → `[useWaypoint] Retry 0~11: wp.area=null target=1` → `[Error] AutoSmurf: useWaypoint: Failed to use waypoint` → 게임 종료. 그 자리는 Pz-44에서 팔로워들이 이 웨이를 쓴 자리(22514~22521, 6521~6526)와 같다. Catacombs Level 2 a1 사례는 261022 Pz-49·50, 261028 Pz-49에 이어 4번째. Pz-11 a8 16:22:50 같은 Catacombs Level 2 `Going to nearest WP` 뒤 22555,6588(웨이 자리에서 약 81칸)에 3분 그대로 있다가 16:25:57 `[goWP] Failed: 10 attempts`(`Pather.goWP` caughtError 0, 그동안 줄은 물약 2번뿐) → 나머지 7명이 16:22:49에 웨이로 간 뒤 a8 missing으로 `Party desynced 1`. `[goWP] Failed`는 261022 기록에서 0이었다(그 뒤 묶음은 대조 안 함). 10번 모두 못 닿은 이유는 로그로 모름.
 - **가설**: 없음(검토에서 정한다).
 - **구현안**: 검토에서 정한다.
 - **검증 방법**: 검토에서 정한다.
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
-
-### 3-64. 로그 정책 개편: 콘솔 공유 파일, print로 상세 기록, trace는 임시만 (여러 파일, 옛 2-2, 사용자 261102·261103)
-- **결정**(사용자 261102·261103): 정책 전문은 `CLAUDE.md` 4절, 로그 종류는 `docs/log_types.md`, 줄 이름 대응은 `log_guide.md` 3-1. 줄별 수정 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록).
-- **바꾼 것**(261103)
-  - 콘솔 줄을 모두 `_cache/trace/Console.txt`에도 씀(`D2Bot.printToConsole`, `[YYYY/MM/DD HH:MM:SS] <프로필> <분류> 내용`). d2bs 로그의 `[console]` 한 벌 삭제.
-  - `Misc.print(msg)` 새 함수(색 코드 지움, 게임 안이면 `(지역 x,y)`). trace의 영구 줄(`[Quit]`·`[Error]` 상세, 실패·재시도·진행, 게임 경계)과 한 번씩 일어나는 머리 위 글자를 print로 옮기고 `[주체] 문장` 모양으로 통일. 임시 trace(handoff 3-60 `[useUnit] nearest`, 3-59 `[MoveToSlot]`, 화살통, 길찾기 사슬, 라다멘트 퀘스트 비트 등)는 그대로.
-  - 콘솔: `[Quit]`(조기 종료, `Alkor not found`, 새 `Max game time N min`), `[Stop]`, `[Chicken]`(치킨·핑), `[Died]`(새: 죽은 순간, `Last game`), `[Error]`. 리더 흐름: 새 `=== [게임 이름] ===`, 구간 끝 `=== X ===` → `[X] Completed`. `Radament off`는 print `[RADAMENT] Off: …`로, `cannot open TP`는 `Misc.townCheck` 머리 위 글자로.
-  - okCount 첫머리 print `[okCount] Waiting`, `while` 안 머리 위 글자 `Waiting: 안 온 프로필`, `teamCount` 끝 `OK` 삭제.
-  - 삭제: `ScriptErrorLog.txt` 쓰기(스택은 print `[Error] … | stack=`), `debugLog(me.profile)`·`Misc.debugLog`, Starter `say`·`sayMsg`.
-  - 커밋 전 `.js`·`.dbj`·`.dbl` 55개 `node --check` 통과.
-- **검증 방법**(첫 사이클)
-  - `_cache/trace/Console.txt`가 생기고 8프로필 줄이 섞여도 깨진 줄 0, 매니저 콘솔과 1:1(매니저 크래시 줄 제외).
-  - d2bs 로그: `Misc.print` 줄 끝 `(지역 x,y)`, 고정 모양(`=== [..] ===`, `!!! … !!!`)·게임 밖 줄은 위치 없음, `ÿc` 글자 0.
-  - `Error in`·`is not defined`(Misc·Pather 없는 곳에서 불림) 0.
-  - `[Died]`와 다음 게임 `[Died] Last game` 짝(맞으면 `Last game` 지울지 정함).
-  - 리더 콘솔 `=== [게임] ===`와 각 프로필 print `=== [게임] ===`이 게임마다 있음.
-  - 30분 게임에서 `[Quit] Max game time 30 min`(리더 1줄), Radament off 게임에서 `10 min`.
-  - `[okCount] Waiting` print가 프로필마다 짝지어 있음(없는 프로필 = 진입 못 함).
 
 ### 3-65. 경로 보정 10회 실패 뒤 오류 줄 없음 → `Attack` 조용한 catch 3곳에 `Misc.caughtError` (`Pather.moveTo`, `Attack.clear`·`setPosition`, 옛 1-17, 사용자 261026·261103)
 - **문제**: `Pather.moveTo`는 `no adjusted path` 10번째에도 경로가 없으면 throw(`moveTo: Failed to generate path`)하는데, 261026 로그 2건은 오류 줄 없이 다음 구간으로 넘어갔다.
@@ -88,25 +72,9 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
   - 261101 로그: a6 11/01 10:13:11~10:13:21 Pit of Acheron(목표 12781,7542) `no original path` 뒤 `no adjusted path` 10회(모두 12785,7565) → `fixed path`·`[Error]` 없이 10:14:20 `=== [INFERNAL] ===`(오류 줄 없는 모양). 같은 묶음 a8 05:06 Harrogath는 `[Error] moveTo: Failed to generate path: 12641,6349`(찍힌 모양).
   - 261103 로그(3-61 리뷰, 파밍 `farmingAbaddon`·`farmingPOA`의 `while (거리 > 15) moveTo` 루프, 180초 상한): a1 Pz-55 11/03 02:54:06~02:54:16 Pit of Acheron 목표 12659,7599(루프 목표 12680,7640과 다른 좌표) `no adjusted path` 10회(12645,7603) → `[Error]` 없이 02:54:23 `=== [INFERNAL] ===`(오류 줄 없는 모양). a4 Pz-37 11/02 23:26:56~23:27:07 Abaddon 목표 12674,6094(루프 목표) 10회(12700,6084) → `[Error] Error in AutoSmurf (pather.js #346) moveTo: Failed to generate path` → a4가 나가 팀 전체가 다음 게임으로(찍힌 모양, 루프의 `moveTo`에는 catch 없음, 코드 읽음).
 - **결정**(사용자 261103): 진행. 동작(목표 버림·`moveFailed`)은 그대로 두고 기록만 남긴다. catch는 이동 실패를 `clear`의 재시도·포기 판단에 넘기려는 설계(`docs/code/Attack.md` 260928)이고, 261021에 10회 보정 뒤 throw가 들어오면서 `Attack`에서 부른 경우에만 기록 없이 사라지게 됐다.
-- **바꾼 것**(261103, 3-64와 같은 커밋): `Attack.clear` 잃은 목표 이동 catch에 `Misc.caughtError("Attack.clear lostPos", e1)`, `Attack.setPosition` 자리 이동 catch에 `"Attack.setPosition move"`, 우회 후보 이동 catch에 `"Attack.setPosition detour"`.
+- **바꾼 것**(261103, `4aae2ef` 로그 정책과 같은 커밋): `Attack.clear` 잃은 목표 이동 catch에 `Misc.caughtError("Attack.clear lostPos", e1)`, `Attack.setPosition` 자리 이동 catch에 `"Attack.setPosition move"`, 우회 후보 이동 catch에 `"Attack.setPosition detour"`.
 - **검증 방법**: `no adjusted path` 10회 뒤(trace) 같은 시각 print에 `[Error] Attack.clear lostPos|Attack.setPosition move|Attack.setPosition detour: moveTo: Failed to generate path …`가 있고, 콘솔에 같은 자리 첫 1회 `[Error] …`. 오류 줄 없이 다음 구간으로 넘어간 10회 사례가 0이면 통과. 메시지가 `Failed to generate path`가 아닌 `[Error]`(다른 실행 중 오류)는 따로 본다.
-
-### 3-63. 피겨린 주운 사람이 블록을 건너뜀 → 물약이 있으면 알리고 마시기, 시작 okCount (`AutoSmurf.figurine`, 옛 3-53·2-29, 사용자 261101·261103)
-- **문제(사례)**: 피겨린을 주운 사람만 `if (!me.getQuest(20, 0))` 블록을 건너뛰어(그 게임 `!!! [POTION] !!!` 없음, 다음 게임 시작 `preparation`에서 물약을 마심) `teamFigurine`을 보내지 않고 혼자 끝 okCount에서 `Party desynced 1`(나머지 7명 missing). 261030 Pz-38 a6, 261031 Pz-26 a4, 261103 Pz-46 a6. 같은 주운 사람이 블록을 탄 게임도 있다.
-- **확인된 것**
-  - 괄호 구조는 `bots/AutoSmurf.js`가 저장소에 들어온 `a4e1b05`(09/14)부터 같다(최근 수정으로 생긴 것 아님).
-  - `quest_flags.md` 20번: Alkor 대화(534, 황금새 전달)는 bit1, 완료 대화(538)는 bit0·bit5(물약). 건너뛴 2건은 블록 판정 전에 물약을 가졌으므로 첫 Alkor `openMenu` 안에서 538까지 일어났다.
-  - `Config.PacketShopping = true` → `Unit.prototype.openMenu`는 `Packet.openMenu`(`libs/Misc.js`). 상호작용(0x13) 뒤 1초 안에 메뉴(`getUIFlag(0x08)`)를 못 보면 취소 패킷 뒤 다시 상호작용(최대 5회). 대사 중에는 `skipTalk`이 스페이스를 대기 없이 보낸다(`continue`, 한도 20). 261001 전에는 대사 중 키를 보내지 않았다.
-  - 옛 가설(스페이스 연타가 534 뒤 열린 메뉴를 닫고, 재시도 상호작용이 538) 틀림(옛 3-53 판정 기준, 261103): Pz-46 a6이 00:45:31 Spider Cavern에서 주움(ItemLog) → 00:45:45 8명 같은 초 FIGURINE → 00:48:11 a6 `Party desynced 1`, 다음 게임 00:48:28 콘솔 `!!! POTION !!!`. a6의 Pz-46 `[openMenu] retry` 0줄(Alkor 포함). 한 번에 성공한 `openMenu`는 줄이 남지 않는다.
-  - 공통점(261103 분석): 건너뛴 3건 모두 눈(EYE) 사냥 중 Spider Cavern에서 주움(Pz-46은 로그, 261030·261031은 `log_results.md` 기록만, 원본 로그는 삭제됨). 같은 모양(EYE·Spider Cavern, 줍고 15초 뒤 8명 같은 초 FIGURINE)인 261103 Pz-67 a7은 블록 안에서 물약 → EYE만으로는 갈리지 않음.
-  - 리더 TOME의 Alkor 대화와 겹침: Pz-46에는 TOME 없음(리더 HEART → BRAIN → EYE → FIGURINE). 주운 사람이 아닌 프로필은 `getQuest(20, 1)`·`teamFigurine`을 기다리며 그 전에 Alkor와 말하지 않고, 리더의 Alkor 대화는 `tome()` 끝뿐(코드 읽음). 겹침이 있던 261103 Pz-27(TOME 사냥, a8 Ruined Temple, 리더만 FIGURINE 9초 늦게 21:04:23)은 a8이 21:04:46 첫 물약(블록 안).
-  - `Town.checkQuestItems`(Golden Bird면 Alkor와 2회 대화)는 호출하는 곳 없음(grep).
-  - 261029 피겨린 사냥 수정(`dcd7c78`) 전에도 아무나 주울 수 있었다. 그때 이 desync가 없었는지 관찰하지 못했는지는 모름(사용자 261103).
-- **결정**(사용자 261103): 원인 로그 없이 desync만 막는다. 1차·2차 대화 중 어디서 완료되는지는 게임이 정하고 스크립트가 고를 수 없어, 원인을 알아도 대응이 대화 뒤 상태를 보는 것으로 같다. 앞 게임에서 남은 물약은 `preparation`(게임 시작)이 마시므로 FIGURINE에서 갖고 있는 물약은 그 게임에서 받은 것뿐.
-- **바꾼 것**(261103)
-  - `if (!me.getQuest(20, 0))` 블록에는 기다림·시차 delay·Alkor 대화만 남기고, `teamFigurine` 보내기·물약 마시기·마을 이동 4줄(`figurine`·`ormus`·`portalspot`·제자리 random)을 블록 뒤 `potion = me.findItem(545); if (potion) { … }`로. 블록을 탄 사람은 물약을 받거나 91회째 퇴장으로만 루프를 끝내므로 동작이 같고, 물약을 가진 채 건너뛴 주운 사람도 알리고 마시고 Alkor 자리에서 돌아온다. 물약이 없는 완료자는 지금처럼 아무것도 안 함.
-  - `Town.goToTown(3)` 뒤 시작 `this.okCount()`(8명 모두). TOME에서 리더가 끝 okCount 뒤 Alkor 대화를 하는 동안 나머지가 먼저 FIGURINE을 시작하던 것(261103 Pz-27 팔로워 21:04:14, 리더 21:04:23)을 맞춘다. 261029 `c178f72`에 넣고 261030 `29b677a`에서 끝 okCount로 맞을 것이라 보고 뺐던 줄(사용자 261103).
-- **검증 방법**: ① 피겨린 게임 desync 0. ② TOME에서 주운 게임은 주운 사람의 `!!! [POTION] !!!`가 리더 `=== [FIGURINE] ===` 뒤. ③ 정상 게임 8명 모두 `!!! [POTION] !!!`(게임 안). 로그가 없어 주운 사람이 블록을 건너뛰었는지는 구분 못 함(사용자 261103).
+- **결과**: 261104 **케이스 미발견** — `no adjusted path`는 1회뿐(a8 Pz-30 20:24:05 Infernal Pit, 1회째 직후 리더가 나가 게임 끝), 10회 0, `[Error] Attack.` 0. 한 사이클 더 본다(사용자 261104).
 
 ### 3-60. 같은 id 계단 중 출구 좌표에 가까운 것 (`Pather.moveToExit`·`useUnit`, 사용자 261102)
 - **문제(사례)**: 261102 Pz-6 15:01~15:03 — Jail Level 3에서 Inner Cloister로 갈 때 8명 모두 도착한 계단(17580,8271)을 다시 클릭해 Jail Level 2로 돌아감 → Level 2에서 Level 3 좌표로 경로를 찾다 `[Error] AutoSmurf.moveToExit 32: moveTo: Failed to generate path` 8줄 → 아무도 32에 없어 a4 `Area reversed`로 퇴장. 같은 경로 Pz-7은 정상. 사용자: Stony Field → Underground Passage → Dark Wood에서도 같은 일이 있어 두 곳에 폴백(포털 열고 합류)이 있다.
@@ -119,4 +87,5 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **결과**: 261103 **알 수 없음** — 검증 방법이 실패 없음만 보는데, 옛 코드도 처음 돌려받은 계단이 맞으면 정상으로 간다(261102 Pz-7). 어느 계단을 골랐는지 남는 줄이 없어 새 코드의 효과를 가를 수 없음. `Area reversed` 0. Jail Level 3 → Inner Cloister는 노말 Pz-10 한 게임(Pz-9는 a3 Jail Level 1 치킨으로 그 전에 끝남): Jail Level 3 `useUnit` timeout 0, 8명 모두 18:54:53 CATHEDRAL 시작(INNER 끝 okCount는 Inner Cloister 안). 계단으로 들어갔는지 대비책(마을 → 32 포털)으로 들어갔는지는 줄이 없어 모름(성공 줄 `[useUnit] ok`는 261102 삭제, 대비책 경로에는 trace 없음). Underground Passage Level 1 timeout 2줄(Pz-4 a3·a6 18:02, 유닛 7757,8390 = Dark Wood 쪽 계단)은 둘 다 Dark Wood 도착. timeout 45줄(261102 79), `moveToExit failed` 1(Monastery Gate, 계단 아님, 1-2).
 - **바꾼 것 2**(261103): `useUnit`의 `exit` 분기에서 처음 돌려받은 계단(`getUnit(type, id)`, 옛 코드가 쓰던 것)의 좌표가 고른 계단(`spot`)과 다를 때만 trace `[useUnit] nearest id:N first:x,y chosen:x,y exit:x,y target:지역`(새 변수 없음).
 - **검증 방법 2**: 줄이 찍히고 그 프로필이 `target` 지역에 도착하면(`Area reversed` 없음, 다음 구간 진행) 옛 코드라면 되돌아갔을 사례를 막은 것 → 확정. 줄이 찍혔는데 되돌아가면 고르는 방식이 틀림 → 2절. 줄이 0이면 첫 계단이 늘 맞았음 → 케이스 미발견. 제거 조건: 확정 사례 1건.
+- **결과 2**: 261104 **케이스 미발견** — `[useUnit] nearest` 0줄. 해당 구간 통과는 Jail Level 3 → Inner Cloister 4게임 17회, Underground Passage Level 1 → Dark Wood 3게임 10회(지역이 바뀐 print 줄로 셈, 줄이 없는 통과는 빠짐), Spider Cavern·Ruined Temple 진입 있음. `Area reversed` 0, useUnit timeout 76줄(261103 45, 261102 79) 모두 Retry 0~1, 8회 모두 실패 0. 한 사이클 더 본다(사용자 261104).
 
