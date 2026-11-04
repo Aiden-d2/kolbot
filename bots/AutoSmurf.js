@@ -188,15 +188,15 @@ function AutoSmurf() {
 		// Check and use quest items that might be left over from the previous game
 		if (me.findItem(545)) {
 			clickItem(1, me.findItem(545));
-			D2Bot.printToConsole("!!! [POTION] !!!", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
-			print("!!! [POTION] !!!");	//261104 log: in the print too
+			D2Bot.printToConsole("[Quest] Potion", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
+			print("[Quest] Potion");	//261104 log: in the print too
 			delay(me.ping * 2 + 500);
 		}
 		
 		if (me.findItem(646)) {
 			clickItem(1, me.findItem(646));
-			D2Bot.printToConsole("!!! [SCROLL] !!!", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
-			print("!!! [SCROLL] !!!");	//261104 log: in the print too
+			D2Bot.printToConsole("[Quest] Scroll", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
+			print("[Quest] Scroll");	//261104 log: in the print too
 			delay(me.ping * 2 + 500);
 		}
 
@@ -3806,8 +3806,8 @@ function AutoSmurf() {
 			if (book) {
 				this.okCount();
 				clickItem(1, book);
-				print("!!! [BOOK] !!!");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
-				D2Bot.printToConsole("!!! [BOOK] !!!", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
+				print("[Quest] Book");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
+				D2Bot.printToConsole("[Quest] Book", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
 			} else {
 				Misc.quitGame("getQuestItem failed");	//261012
 			}
@@ -4123,8 +4123,8 @@ function AutoSmurf() {
 		if (potion) {	//261103 has the potion: tell the team, drink, walk back from Alkor
 			Messaging.sendToList(Team.Profiles, "teamFigurine");	//261103 moved out of the block
 			clickItem(1, potion);
-			print("!!! [POTION] !!!");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
-			D2Bot.printToConsole("!!! [POTION] !!!", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
+			print("[Quest] Potion");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
+			D2Bot.printToConsole("[Quest] Potion", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
 			Town.move("figurine");	//261103 moved out of the block
 			Town.move("ormus");
 			Town.move("portalspot");
@@ -5681,8 +5681,8 @@ function AutoSmurf() {
 			
 			if (scroll) {
 				clickItem(1, scroll);
-				print("!!! [SCROLL] !!!");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
-				D2Bot.printToConsole("!!! [SCROLL] !!!", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
+				print("[Quest] Scroll");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
+				D2Bot.printToConsole("[Quest] Scroll", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
 			}
 		}
 		

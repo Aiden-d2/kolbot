@@ -2674,7 +2674,7 @@ var Experience = {
 			timeToLevel = this.timeToLevel();
 
 		//string = getGameTime + " +" + gainPercent + "% / [Level " + me.getStat(12) + "] " + progress + "%";
-		string = getGameTime + " " + progress + "% / [Level " + me.getStat(12) + "]";	//261104
+		string = getGameTime + " " + progress + "% (Level " + me.getStat(12) + ")";	//261104
 
 		if (gain) {
 			D2Bot.printToConsole(string, 4);
