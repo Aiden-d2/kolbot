@@ -40,22 +40,8 @@
 
 **측정 조건 (코드)**
 - 맵 진입점이면 `default.dbj`가 `threads/MapThread.js`만 띄운다(+ MapThread가 `MapHelper.js`를 띄움). `ToolsThread`(자동 물약·치킨·Pause)와 `default.dbj` 본 흐름(파티 대기)은 돌지 않는다.
-- `MapThread` 메인 루프: 20ms. 아래 창이 하나라도 열려 있으면 닫힐 때까지 루프 전체가 멈춘다(`hideFlags`, `while (getUIFlag(…)) { Hooks.flush(); delay(100); }`). 측정 호출도 같이 멈춰서, 그 사이 풀린 몹은 값이 길게 나온다.
-
-  | 번호 | 창 |
-  |---|---|
-  | 0x01 | 인벤토리 |
-  | 0x02 | 캐릭터 스탯 |
-  | 0x09 | ESC 메뉴 |
-  | 0x0C | NPC 거래 |
-  | 0x0D | **Alt 키 아이템 이름 표시**(누르고 있는 동안) |
-  | 0x0F | 퀘스트 화면 |
-  | 0x18 | 메시지 기록 |
-  | 0x19 | 창고 |
-  | 0x1A | 호라드릭 큐브 |
-  | 0x21 | 도움말 |
-
-  - 번호와 UI 번호 전체 표는 `docs/D2BS_Structure.md` 4-2절 MapThread / MapHelper(출처 D2MOO `D2Constants.h`).
+- `MapThread` 메인 루프: 20ms. 정해진 창(`hideFlags`)이 하나라도 열려 있으면 닫힐 때까지 루프 전체가 멈춘다(`hideFlags`, `while (getUIFlag(…)) { Hooks.flush(); delay(100); }`). 측정 호출도 같이 멈춰서, 그 사이 풀린 몹은 값이 길게 나온다.
+  - 멈추는 창 번호(`hideFlags`)와 UI 번호 전체는 `docs/info/ui_flags.md`.
   - `MapHelper`는 ESC 메뉴(0x09)가 열리면 MapThread 스크립트를 `pause()`, 닫히면 `resume()`한다.
   - 자동맵(0x0A)은 멈춤 조건이 아님(열리면 그리기, 닫히면 지우기).
   - 측정 중 피할 것: Alt, 인벤토리(I)·스탯(C)·퀘스트(Q), ESC 메뉴, 메시지 기록, 도움말. 자동맵(Tab)·벨트 물약은 괜찮음.
