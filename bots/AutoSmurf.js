@@ -186,12 +186,6 @@ function AutoSmurf() {
 		}
 		
 		// Check and use quest items that might be left over from the previous game
-		/*if (me.findItem(552)) {
-			clickItem(1, me.findItem(552));
-			D2Bot.printToConsole("!!! BOOK !!!", 8);
-			delay(me.ping * 2 + 500);
-		}*/
-		
 		if (me.findItem(545)) {
 			clickItem(1, me.findItem(545));
 			D2Bot.printToConsole("=== [POTION] ===", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
