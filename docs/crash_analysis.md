@@ -198,3 +198,10 @@ ProcDump(`C:\CrashDumps`)가 원래 예외 지점을 잡는다. WER 덤프의 0x
   - 상황: doChores 뒤 48초 대기 → Qual-Kehk 쪽 이동 중. 유형 C·D의 기존 Harrogath 사례와 비슷하다.
 - 함께 받은 `procdump_13272.log`는 10/3 22:11:46의 다른 크래시 로그다. 덤프는 받지 않아 미분류.
 - 결론: 두 건 모두 게임 내부 원인이라 스크립트로 고칠 수 없다. 이후 방침은 0절.
+
+## 7. 크래시 뒤 스타터 오류로 멈춤 (특수 사례, 사용자 261104)
+- 261104 묶음 a1(리더) 11/03 22:22:53 Travincal 크래시(`Crash File: BlizzardError/2026-11-03 22.22.53/Crash.txt`) → 22:22:56 엔진 재시작, `D2BotLead.dbj` 시작 → 22:23:04 `Crash: no entry Travincal - wait 5s (loc 9)` → 22:23:22 `[Error] Code(26) File(kolbot\tools\oog.js:313) InternalError: too much recursion` → 22:49:58 `D2BS Shutdown complete` → 22:50:16 Pz-44. 리더가 26분 멈춤.
+- 사용자 확인(261104): 매니저가 창을 닫지 못해 재시작도 못 하고 멈춰 있었고, 사용자가 수동으로 끄고 다시 켰다. 이런 사례는 처음.
+- 코드(읽음): `oog.js` 313줄은 `D2Bot.joinMe`의 `sendCopyData`. 리더는 `ReceiveCopyData` `case 3`(게임 요청)마다 `joinMe`로 답하고, 팔로워는 참가 화면에서 요청을 0.1초 간격으로 보낸다(`D2BotFollow.dbj` JoinLoop2 `requestGame` 뒤 `delay(100)`).
+- 원인은 모름. 리스너가 하던 일 위에 겹쳐 돌 수 있고 겹침 방지가 없어 스택 한도를 넘으면 too much recursion이 된다는 엔진 동작(`D2BS_Structure.md` D2BS 이벤트)과 맞지만 추정이다. 요청 빈도는 매 게임 같고 이 묶음 89게임과 그 전 묶음에 이 오류가 없었으므로 빈도만으로는 설명되지 않는다.
+- 처리(사용자 261104): 특수 사례로 기록만 한다. 다시 나오면 본다.
