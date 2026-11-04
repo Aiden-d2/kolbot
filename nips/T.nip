@@ -22,6 +22,11 @@
 [name] == smallcharm && [quality] == magic # [coldlength] == 25 # [qty] == 2
 [name] == smallcharm && [quality] == magic # [coldlength] == 50 # [qty] == 2
 
+[type] == amulet # [coldlength] > 3 # [qty] == 1
+
+([name] == longbattlebow || [name] == longwarbow) # [sockets] == 6 # [qty] == 1
+[name] == grimhelm && [quality] == unique # # [qty] == 1
+
 // [itemhowl]=112
 # [112] > 0 && [112] < 16 # [qty] == 1
 //# [112] == 16 # [qty] == 1	// 12%=16
