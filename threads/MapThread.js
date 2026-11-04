@@ -887,6 +887,8 @@ function main() {
 					delete this.freezeStart[unit.gid];	//261103 temp
 					Misc.trace("[FREEZE] " + rec.name + " classid=" + rec.classid + " spectype=" + rec.spectype + " ms=" + ms + " coldres=" + rec.res +
 						" diff=" + me.diff + " ia=" + me.getSkill(21, 0) + " coldlen=" + me.getStat(56));	//261103 temp
+					print("[FREEZE] " + rec.name + " classid=" + rec.classid + " spectype=" + rec.spectype + " ms=" + ms + " coldres=" + rec.res +
+						" diff=" + me.diff + " ia=" + me.getSkill(21, 0) + " coldlen=" + me.getStat(56));
 				}
 			} while (unit.getNext());
 		}
