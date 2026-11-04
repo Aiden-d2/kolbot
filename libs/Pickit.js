@@ -24,7 +24,7 @@ var Pickit = {
 		}
 		
 		if (notify) {	// 260903
-			Misc.print("[Pickit] Loaded [" + loaded.join("] [") + "]");	//261103 log policy
+			print("[Pickit] Loaded [" + loaded.join("] [") + "]");	//261103 log policy	//261104 log: info line, no place
 		}
 
 		NTIP.SortLists();	//260803

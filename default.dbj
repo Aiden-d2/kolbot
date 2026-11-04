@@ -43,7 +43,7 @@ function main() {
 	var i, stats,
 		startTime = getTickCount();
 
-	print("=== [" + me.gamename + "] ===");	//261011	//261103 log policy: game boundary trace -> print
+	print("[" + me.gamename + "]");	//261011	//261103 log policy: game boundary trace -> print	//261104 log: "=== [game] ===" -> "[game]"
 
 	// Initialize libs - load config variables, build pickit list, attacks, containers and cubing and runeword recipes
 	try {	//261026 an error here killed default.dbj silently and the game stood until max game time; a restart runs the same code, so stop (handoff 2-24)
@@ -67,6 +67,7 @@ function main() {
 	// Check for experience decrease -> log death. Skip report if life chicken is disabled.
 	if (stats.name === me.name && me.getStat(13) < stats.experience && Config.LifeChicken > 0) {
 		D2Bot.printToConsole("[Died] Last game", 9);	//261103 log policy
+		print("[Died] Last game");	//261104 log: in the print too (game start, no place)
 		DataFile.updateStats("deaths");
 		D2Bot.updateDeaths();
 	}

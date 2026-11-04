@@ -53,13 +53,13 @@ var Config = {
 							}
 						});
 					} else {
-						Misc.print("[Config] Failed: cache not found for " + me.profile);	//261103 log policy
+						print("[Config] Failed: cache not found for " + me.profile);	//261103 log policy	//261104 log: info line, no place
 					}
 				}
 			}
 		} catch (e3) {
-			Misc.print("[Config] Failed: Config.init");	//261103 log policy
-			Misc.print("[Config] Failed: " + e3.toSource());	//261103 log policy
+			print("[Config] Failed: Config.init");	//261103 log policy	//261104 log: info line, no place
+			print("[Config] Failed: " + e3.toSource());	//261103 log policy	//261104 log: info line, no place
 		}
 	},
 

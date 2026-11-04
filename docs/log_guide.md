@@ -18,7 +18,7 @@
 ## 2. 받을 데이터와 준비
 | 파일 | 위치(게임 PC) | 용도 |
 |---|---|---|
-| 콘솔 파일 (261103~) | `kolbot/_cache/trace/Console.txt` (전 프로필 한 파일, 날짜로 나누지 않음) | 흐름과 끝. `[YYYY/MM/DD HH:MM:SS] <프로필> <분류> 내용`, 분류 OOG/Flow/Item/Exp/Quit/Red/Error |
+| 콘솔 파일 (261103~) | `kolbot/_cache/trace/Console.txt` (전 프로필 한 파일, 날짜로 나누지 않음) | 흐름과 끝. `[YYYY/MM/DD HH:MM:SS] <프로필> <분류> 내용`, 분류 OOG/Flow/Item/Exp/Quit/Red/Error(261104부터 Quit = 색 6, 게임 안 기본색은 Flow) |
 | d2bs 로그 | `d2bs/logs/d2bs-<프로필>-<YYYYMMDD>.log` | 261103~: **분석의 중심**(상세 기록 전부, 3-1). 그 전: `print` 진행 기록, 엔진 오류(`Error in ...`), `[Chicken]` print, `enchant:`, 콘솔 줄(`[console] 내용`) |
 | trace | `kolbot/_cache/trace/trace-<프로필>-<YYYYMMDD>.txt` | 261103~: 임시 검증 줄만(handoff 3절). 그 전: 분석의 중심. 프로필별·날짜별 |
 | ItemLog | `kolbot/_cache/ItemLog.txt` (10/26 업로드 `941ac63`부터 `kolbot/_cache/trace/ItemLog.txt`, `ScriptErrorLog.txt`도 같은 폴더. `ScriptErrorLog.txt`는 261103부터 없음) | 줍기·구매·판매 |
@@ -38,12 +38,13 @@
 
 ### 3-1. 261103 로그 정책 이후 (CLAUDE.md 4절, `docs/log_types.md`)
 - 상세 기록은 d2bs 로그(print). 줄 모양 `[주체] 문장 (지역 x,y)`(위치는 `Misc.print`가 붙임, 엔진이 앞에 `[MM/DD/YY HH:MM:SS] D2BS <번호>:`). 고정 모양(`=== [게임] ===`, `=== [구간] ===`, `!!! … !!!`)·게임 밖 줄은 위치 없음, 게임 밖 상세는 `… | 상세 (loc N)`.
+- **261104부터**(handoff 3-66): 게임 경계 `[게임]`(콘솔·print), 구간 시작 print `[X] Go`, **구간 끝** 콘솔·print `=== [X] ===`(리더, 그 전 print의 `=== [X] ===`는 시작이었다), `=== [START]/[FARMING]/[LEVELING] ===`·`=== [BOOK]/[POTION]/[SCROLL] ===`(콘솔·print), 리더 플레이 시간 `[Total] …`(콘솔만), `[Died] lost=N.NN%`(죽은 순간), `[Died] Last game`·`[Socket]`·`[Stop] Failed to get corpse`도 print에, `[Quit] Alkor not found`는 `quitGame`(print 있음). 입장 직후 정보 줄(`[Pickit]`·`[Loader]`·`[Role]`·`[Config]`·`[toggle]`·`[Equip] 자리=N`·`[Grant] 자리=N`)은 위치 없음.
 - trace는 임시 검증 줄만. 아래 줄 이름은 261103 이후 로그에서 이렇게 찾는다(그 전 로그는 이 문서의 옛 이름).
 
 | 옛 줄(찾던 곳) | 261103~ 줄(찾을 곳) |
 |---|---|
 | trace `=== [게임] ===` | print `=== [게임] ===`(모든 프로필), 콘솔 `=== [게임] ===`(리더) |
-| 콘솔 `=== X ===`(리더, 구간 끝) | 콘솔 `[X] Completed` |
+| 콘솔 `=== X ===`(리더, 구간 끝) | 콘솔 `[X] Completed`(261104부터 콘솔·print `=== [X] ===`) |
 | trace `[Quit] 사유: 상세`, 콘솔 `사유 (지역)` | print `[Quit] 사유 \| 상세`, 콘솔 `[Quit] 사유 (지역)` |
 | trace `[Error] 자리: 메시지`, 콘솔 `자리: 메시지` | print `[Error] 자리: 메시지 (파일 #줄)`, 콘솔 `[Error] …` |
 | `Life Chicken`·`Mana Chicken`·`Iron Golem Chicken`·`Merc Chicken`·`High ping`(trace `[Quit] …`) | 콘솔·print `[Chicken] Life H/M`·`Mana`·`Iron Golem`·`Merc`·`High ping N/M` |
@@ -62,8 +63,8 @@
 | (없음) | print `[okCount] Waiting`(okCount 진입, 프로필마다) |
 | `Script ended`(trace는 조기 종료 없을 때만) | print `[AutoSmurf] Script ended`(언제나) |
 
-- 게임 경계: `=== [게임이름] ===`(261011 이후, 261103부터 print), 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다.
-- 구간 헤더: `=== [ANDY] ===` 등. 리더 콘솔에도 `=== ANDY ===`(구간 끝, 금색, 261103부터 `[ANDY] Completed`).
+- 게임 경계: `=== [게임이름] ===`(261011 이후, 261103부터 print), 261104부터 `[게임이름]`, 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다.
+- 구간 헤더: `=== [ANDY] ===` 등(261104부터 시작은 `[ANDY] Go`, `=== [ANDY] ===`는 리더의 구간 끝). 리더 콘솔에도 `=== ANDY ===`(구간 끝, 갈색, 261103부터 `[ANDY] Completed`, 261104부터 `=== [ANDY] ===`).
 - 줄 시계는 초 단위다. 초 미만 순서는 같은 파일 안의 줄 순서로 본다. 프로필 사이 비교는 PC 시계가 같다는 전제(같은 PC).
 - 위치 `(지역 x,y)`는 그 줄을 찍은 순간의 위치다. 이동을 **시작한** 줄의 좌표를 그 시각의 위치로 읽지 않는다(걷는 중을 멈춤으로 읽은 적이 있다).
 

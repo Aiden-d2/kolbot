@@ -42,7 +42,7 @@ var D2Bot = {
 		if (typeof Misc === "object" && Misc.fileAction) {	//261103 threads without Misc (MapThread) only send to the manager
 			d = new Date();	//261103
 			pad = function (n) { return (n < 10 ? "0" : "") + n; };	//261103
-			kind = !me.ingame ? "OOG" : ({7: "Flow", 8: "Item", 5: "Item", 4: "Exp", 9: "Red", 10: "Error"})[color] || "Quit";	//261103 0 (default) = early quit reason
+			kind = !me.ingame ? "OOG" : ({0: "Flow", 7: "Flow", 8: "Item", 5: "Item", 4: "Exp", 9: "Red", 10: "Error", 6: "Quit"})[color] || "Flow";	//261103	//261104 log: 6 = early quit, 0 (default) = flow (game name)
 
 			if (!dopen("_cache/trace/")) {	//261103 same as Misc.trace
 				dopen("_cache/").create("trace");

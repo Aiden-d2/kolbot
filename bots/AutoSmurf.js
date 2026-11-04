@@ -81,15 +81,15 @@ function AutoSmurf() {
 	this.checkRole = function () { // Checks Config settings to determine role.
 		if (Team.Leader === me.profile) {
 			Leader = true;
-			Misc.print("[Role] Leader");	//261103 log policy: overhead -> print
+			print("[Role] Leader");	//261103 log policy: overhead -> print	//261104 log: info line, no place
 			
 			Config.SafeTele.Enabled = true;
-			Misc.print("[Config] SafeTele=" + Config.SafeTele.Enabled);	//261103 log policy
+			print("[Config] SafeTele=" + Config.SafeTele.Enabled);	//261103 log policy	//261104 log: info line, no place
 		} else if (Team.Boer === me.profile) {
 			Boer = true;
-			Misc.print("[Role] Boer");	//261103 log policy: overhead -> print
+			print("[Role] Boer");	//261103 log policy: overhead -> print	//261104 log: info line, no place
 		} else {
-			Misc.print("[Role] Follower");	//261103 log policy: overhead -> print
+			print("[Role] Follower");	//261103 log policy: overhead -> print	//261104 log: info line, no place
 		}
 	};
 
@@ -155,7 +155,7 @@ function AutoSmurf() {
 		if (mercLvl && !Merc.hire(Config.MercSkill)) {
 			hireMerc = true;
 			Messaging.sendToList(Team.Profiles, "hireMerc");
-			Misc.print("[Config] hireMerc=" + hireMerc);	//261103 log policy
+			print("[Config] hireMerc=" + hireMerc);	//261103 log policy	//261104 log: info line, no place
 		}
 		
 		Pickit.pickItems();
@@ -181,7 +181,8 @@ function AutoSmurf() {
 
 	this.preparation = function () {
 		if (Leader && me.getStat(13) === 0) {
-			D2Bot.printToConsole("=== START ===", 7);
+			D2Bot.printToConsole("=== [START] ===", 7);	//261104 log: bracket
+			print("=== [START] ===");	//261104 log: in the print too
 		}
 		
 		// Check and use quest items that might be left over from the previous game
@@ -193,36 +194,38 @@ function AutoSmurf() {
 		
 		if (me.findItem(545)) {
 			clickItem(1, me.findItem(545));
-			D2Bot.printToConsole("!!! POTION !!!", 8);
+			D2Bot.printToConsole("=== [POTION] ===", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
+			print("=== [POTION] ===");	//261104 log: in the print too
 			delay(me.ping * 2 + 500);
 		}
 		
 		if (me.findItem(646)) {
 			clickItem(1, me.findItem(646));
-			D2Bot.printToConsole("!!! SCROLL !!!", 8);
+			D2Bot.printToConsole("=== [SCROLL] ===", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
+			print("=== [SCROLL] ===");	//261104 log: in the print too
 			delay(me.ping * 2 + 500);
 		}
 
 		if (!Config.Tiered && me.diff > 0) {
 			Config.MiniShopBot = true;
-			Misc.print("[Config] MiniShopBot=" + Config.MiniShopBot);	//261103 log policy
+			print("[Config] MiniShopBot=" + Config.MiniShopBot);	//261103 log policy	//261104 log: info line, no place
 		}
 	
 		if (me.diff === 2 && !farmingON && !Config.Tiered) {
 			farmingON = true;
 			Messaging.sendToList(Team.Profiles, "farmingON");
-			Misc.print("[Config] farmingON");	//261103 log policy
+			print("[Config] farmingON");	//261103 log policy	//261104 log: info line, no place
 		}
 		
 		if (Config.Tiered) {
-			Misc.print("[Config] Tiered=" + Config.Tiered);	//261103 log policy
+			print("[Config] Tiered=" + Config.Tiered);	//261103 log policy	//261104 log: info line, no place
 		}
 		
 		if (mercLvl) {
 			Config.UseMerc = true;
 			Config.UseMercHP = 70;
 			scriptBroadcast(JSON.stringify({useMerc: Config.UseMerc, useMercHP: Config.UseMercHP, useMercRejuv: Config.UseMercRejuv})); //260808
-			Misc.print("[Config] UseMerc=" + Config.UseMerc + " UseMercHP=" + Config.UseMercHP);	//261103 log policy
+			print("[Config] UseMerc=" + Config.UseMerc + " UseMercHP=" + Config.UseMercHP);	//261103 log policy	//261104 log: info line, no place
 		}
 		
 		if (Leader && me.charlvl > 17 && me.gold < 5000) {
@@ -264,13 +267,13 @@ function AutoSmurf() {
 			}
 			
 			if (essA || essM) {	//260828
-				Misc.print("[toggle] Token needed");	//261103 log policy
+				print("[toggle] Token needed");	//261103 log policy	//261104 log: info line, no place
 			}
 			
 			var kT = (me.findItems(647, 0) || []).length,	//260831
 				kH = (me.findItems(648, 0) || []).length,
 				kD = (me.findItems(649, 0) || []).length,
-				keyMsg = "key: T " + kT + " / H " + kH + " / D " + kD;
+				keyMsg = "key: T" + kT + " / H" + kH + " / D" + kD;	//261104 log: no space after the letter
 			
 			if (!farmingON) {	//260831
 				if (!keyT && kT !== 3) {
@@ -290,7 +293,7 @@ function AutoSmurf() {
 			}
 			
 			if (keyT || keyH || keyD) {	//260809
-				Misc.print("[toggle] " + keyMsg);	//260831	//261103 log policy
+				print("[toggle] " + keyMsg);	//260831	//261103 log policy	//261104 log: info line, no place
 			}
 		}
 	};
@@ -1641,11 +1644,13 @@ function AutoSmurf() {
 
 		if (classid >= 553 && classid <= 555) {	//261021 Khalim's eye, heart, brain: on the pick (leader)
 			name = ["EYE", "HEART", "BRAIN"][classid - 553];
-			D2Bot.printToConsole("[" + name + "] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [" + name + "] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [" + name + "] ===");	//261104 log: section end in the print too
 		}
 		
 		if (classid === 92) {	//261022
-			D2Bot.printToConsole("[STAFF] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [STAFF] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [STAFF] ===");	//261104 log: section end in the print too
 		}
 
 		return true;
@@ -1826,7 +1831,8 @@ function AutoSmurf() {
 			}
 		}
 
-		D2Bot.printToConsole("[TRAVINCAL] Completed", 7);	//261103 log policy: section end
+		D2Bot.printToConsole("=== [TRAVINCAL] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+		print("=== [TRAVINCAL] ===");	//261104 log: section end in the print too
 
 		return true;
 	};
@@ -1914,7 +1920,7 @@ function AutoSmurf() {
 			return true;
 		};
 		
-		print("=== [DEN] ===");	//260930	//261103 log policy
+		print("[DEN] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!me.getQuest(1, 1)) { // Haven't cleared the Den yet.
 			if (me.diff === 0) { // All characters grab Cold Plains Waypoint in Normal. Only the Teleporting Sorc grabs it in Nightmare and Hell.
@@ -2045,7 +2051,8 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("[DEN] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [DEN] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [DEN] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -2061,7 +2068,7 @@ function AutoSmurf() {
 		}
 		
 		if (!me.getQuest(2, 1) && !me.getQuest(2, 0)) {
-			print("=== [BLOOD] ===");	//260930	//261103 log policy
+			print("[BLOOD] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 			
 			Pather.useWaypoint(3);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
@@ -2133,7 +2140,8 @@ function AutoSmurf() {
 			me.cancel();
 			
 			if (Leader) {
-				D2Bot.printToConsole("[BLOOD] Completed", 7);	//261103 log policy: section end
+				D2Bot.printToConsole("=== [BLOOD] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+				print("=== [BLOOD] ===");	//261104 log: section end in the print too
 			}
 		}
 
@@ -2146,7 +2154,7 @@ function AutoSmurf() {
 	this.cain = function () { // Dark-f: rewrite rescue cain
 		var i, j, akara, cain, slave, scroll1, scroll2, stoneA, stoneB, stoneC, stoneD, stoneE, spot;	//261002 spot
 
-		print("=== [CAIN] ===");	//260930	//261103 log policy
+		print("[CAIN] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -2380,7 +2388,8 @@ function AutoSmurf() {
 					Town.goToTown();
 				}
 				
-				D2Bot.printToConsole("[CAIN] Completed", 7);	//261103 log policy: section end
+				D2Bot.printToConsole("=== [CAIN] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+				print("=== [CAIN] ===");	//261104 log: section end in the print too
 			} else { // Dark-f: other teams goto town.
 				if (!Pather.usePortal(1, null)) {
 					Town.goToTown();
@@ -2422,7 +2431,7 @@ function AutoSmurf() {
 					25053, 5189,
 					25125, 5190];
 		
-		print("=== [TRIST] ===");	//260930	//261103 log policy
+		print("[TRIST] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -2481,7 +2490,8 @@ function AutoSmurf() {
 		Pather.teleport = true;
 		
 		if (Leader) {
-			D2Bot.printToConsole("[TRIST] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [TRIST] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [TRIST] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -2492,7 +2502,7 @@ function AutoSmurf() {
 	// add for Lv up when the partyLevel is less than the tristLvl
 	this.outer = function () {
 		
-		print("=== [OUTER] ===");	//260930	//261103 log policy
+		print("[OUTER] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!me.inTown) { // this.trist(); doesn't end in town.
 			Town.goToTown();
@@ -2552,7 +2562,8 @@ function AutoSmurf() {
 		Pather.getWP();	//261021 was clickWP
 		
 		if (Leader) {
-			D2Bot.printToConsole("[OUTER] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [OUTER] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [OUTER] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -2563,7 +2574,7 @@ function AutoSmurf() {
 	this.smith = function () {	//260531
 		var smith;
 		
-		print("=== [SMITH] ===");	//260930	//261103 log policy
+		print("[SMITH] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (me.area !== 27) {
 			Town.goToTown();
@@ -2612,7 +2623,8 @@ function AutoSmurf() {
 		this.okCount();
 		
 		if (Leader) {
-			D2Bot.printToConsole("[SMITH] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [SMITH] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [SMITH] ===");	//261104 log: section end in the print too
 		}
 		
 		if (!me.getQuest(3,1)) {
@@ -2668,7 +2680,7 @@ function AutoSmurf() {
 	this.malus = function () {
 		var i, target;
 		
-		print("=== [MALUS] ===");	//260930	//261103 log policy
+		print("[MALUS] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (me.act !== 1 || !me.inTown) {
 			Town.goToTown(1);
@@ -2709,7 +2721,8 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("[MALUS] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [MALUS] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [MALUS] ===");	//261104 log: section end in the print too
 		}
 		
 		return true;
@@ -2717,7 +2730,7 @@ function AutoSmurf() {
 
 	this.jail = function () {
 		
-		print("=== [JAIL] ===");	//260930	//261103 log policy
+		print("[JAIL] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (me.area !== 28) {
 			if (me.area === 27) {
@@ -2759,7 +2772,8 @@ function AutoSmurf() {
 		Pather.getWP();	//261021 was clickWP
 	
 		if (Leader) {
-			D2Bot.printToConsole("[JAIL] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [JAIL] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [JAIL] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -2769,7 +2783,7 @@ function AutoSmurf() {
 
 	this.inner = function () {
 		
-		print("=== [INNER] ===");	//260930	//261103 log policy
+		print("[INNER] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (me.area !== 29) {
 			Town.goToTown();
@@ -2897,7 +2911,8 @@ function AutoSmurf() {
 		Pather.getWP();	//261021 was clickWP
 		
 		if (Leader) {
-			D2Bot.printToConsole("[INNER] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [INNER] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [INNER] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -2907,7 +2922,7 @@ function AutoSmurf() {
 
 	this.cathedral = function () {
 		
-		print("=== [CATHEDRAL] ===");	//260930	//261103 log policy
+		print("[CATHEDRAL] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (me.area !== 32) {
 			Town.goToTown();
@@ -2957,7 +2972,8 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("[CATHEDRAL] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [CATHEDRAL] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [CATHEDRAL] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -2966,7 +2982,7 @@ function AutoSmurf() {
 	};
 
 	this.andy = function () {
-		print("=== [ANDY] ===");	//260930	//261103 log policy
+		print("[ANDY] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (runAndy === 0) {
 			if (me.area === 35) {
@@ -3100,7 +3116,8 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("[ANDY] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [ANDY] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [ANDY] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -3113,7 +3130,7 @@ function AutoSmurf() {
 	this.cube = function () { // Only called in Normal Difficulty.
 		var i, chest;
 
-		print("=== [CUBE] ===");	//260930	//261103 log policy
+		print("[CUBE] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3202,7 +3219,8 @@ function AutoSmurf() {
 		this.okCount();
 		
 		if (Leader) {
-			D2Bot.printToConsole("[CUBE] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [CUBE] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [CUBE] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -3213,7 +3231,7 @@ function AutoSmurf() {
 	this.amulet = function () {
 		var cain, drognan;
 		
-		print("=== [AMULET] ===");	//260930	//261103 log policy
+		print("[AMULET] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3293,7 +3311,8 @@ function AutoSmurf() {
 		me.cancel();
 
 		if (Leader) {
-			D2Bot.printToConsole("[AMULET] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [AMULET] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [AMULET] ===");	//261104 log: section end in the print too
 		} else  {
 			Town.move("portalspot");
 		}
@@ -3306,7 +3325,7 @@ function AutoSmurf() {
 	this.summoner = function () { // Teleporting Sorc will be at least level 18 as required by MAIN to reach this stage.
 		var journal, i, tick;	//261004 chicken -> bossGuard	//261029 talked removed (journal trace gone)
 
-		print("=== [SUMMONER] ===");	//260930	//261103 log policy
+		print("[SUMMONER] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3435,7 +3454,8 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("[SUMMONER] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [SUMMONER] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [SUMMONER] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -3446,7 +3466,7 @@ function AutoSmurf() {
 	this.tombs = function(force) {	//261022
 		var i, j, chest;
 
-		print("=== [TOMBS] ===");	//260930	//261103 log policy
+		print("[TOMBS] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (me.area !== 46) {
 			if (!doneChores) {
@@ -3570,7 +3590,8 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("[TOMBS] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [TOMBS] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [TOMBS] ===");	//261104 log: section end in the print too
 		}
 		
 		while (!this.partyLevel(tombsLvl)) {
@@ -3597,7 +3618,7 @@ function AutoSmurf() {
 	this.staff = function () { // Only the Teleporting Sorc does this. She will be at least level 18 as required by MAIN to reach this stage.
 		var presetUnit;
 		
-		print("=== [STAFF] ===");	//260930	//261103 log policy
+		print("[STAFF] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3631,7 +3652,7 @@ function AutoSmurf() {
 			pathX = [5106, 5205, 5205, 5214, 5222],
             pathY = [5125, 5125, 5152, 5153, 5181];
 
-		print("=== [RADAMENT] ===");	//260930	//261103 log policy
+		print("[RADAMENT] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -3791,8 +3812,8 @@ function AutoSmurf() {
 			if (book) {
 				this.okCount();
 				clickItem(1, book);
-				print("!!! [BOOK] !!!");	//261002	//261103 log policy
-				D2Bot.printToConsole("!!! BOOK !!!", 8);
+				print("=== [BOOK] ===");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
+				D2Bot.printToConsole("=== [BOOK] ===", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
 			} else {
 				Misc.quitGame("getQuestItem failed");	//261012
 			}
@@ -3804,7 +3825,8 @@ function AutoSmurf() {
 		//this.okCount();
 
 		if (Leader) {
-			D2Bot.printToConsole("[RADAMENT] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [RADAMENT] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [RADAMENT] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -3815,7 +3837,7 @@ function AutoSmurf() {
 	this.duriel = function () {
 		var i, orifice, hole, npc;	//261027	//261028 atma removed (the talk had no effect on the first portal)
 		
-		print("=== [DURIEL] ===");	//260930	//261103 log policy
+		print("[DURIEL] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4015,7 +4037,8 @@ function AutoSmurf() {
 		}
 
 		if (Leader) {
-			D2Bot.printToConsole("[DURIEL] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [DURIEL] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [DURIEL] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -4040,7 +4063,7 @@ function AutoSmurf() {
 		me.getQuest(20, 5/12/13/16/19) = persists after drinking potion
 	----------------------------
 */
-		print("=== [FIGURINE] ===");	//260930	//261103 log policy
+		print("[FIGURINE] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (me.act !== 3 || !me.inTown) {
 			Town.goToTown(3);
@@ -4106,8 +4129,8 @@ function AutoSmurf() {
 		if (potion) {	//261103 has the potion: tell the team, drink, walk back from Alkor
 			Messaging.sendToList(Team.Profiles, "teamFigurine");	//261103 moved out of the block
 			clickItem(1, potion);
-			print("!!! [POTION] !!!");	//261002	//261103 log policy
-			D2Bot.printToConsole("!!! POTION !!!", 8);
+			print("=== [POTION] ===");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
+			D2Bot.printToConsole("=== [POTION] ===", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
 			Town.move("figurine");	//261103 moved out of the block
 			Town.move("ormus");
 			Town.move("portalspot");
@@ -4121,7 +4144,8 @@ function AutoSmurf() {
 		leaderFigurine = false;	//260922
 
 		if (Leader) {
-			D2Bot.printToConsole("[FIGURINE] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [FIGURINE] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [FIGURINE] ===");	//261104 log: section end in the print too
 		}
 
 		return true;
@@ -4130,7 +4154,7 @@ function AutoSmurf() {
 	this.heart = function () {
 		var presetUnit;
 		
-		print("=== [HEART] ===");	//260930	//261103 log policy
+		print("[HEART] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4164,7 +4188,7 @@ function AutoSmurf() {
 	this.brain = function () {
 		var presetUnit;
 		
-		print("=== [BRAIN] ===");	//260930	//261103 log policy
+		print("[BRAIN] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4198,7 +4222,7 @@ function AutoSmurf() {
 	this.eye = function (fig) {	//261029 fig: figurine hunt, the team kills Sszark
 		var presetUnit, tick;
 
-		print("=== [EYE] ===");	//260930	//261103 log policy
+		print("[EYE] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4297,7 +4321,7 @@ function AutoSmurf() {
 	this.tome = function (fig) { // Teleporting Sorc walks over to Alkor and completes the quest for everyone via exploit.	//261029 fig: figurine hunt with the team
 		var i, alkor, target, tick;
 
-		print("=== [TOME] ===");	//260930	//261103 log policy
+		print("[TOME] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (fig) {	//261029 figurine hunt: the team walks to the altar, killing on the way
 			if (!doneChores) {
@@ -4439,7 +4463,8 @@ function AutoSmurf() {
 			}
 		}
 		
-		D2Bot.printToConsole("[TOME] Completed", 7);	//261103 log policy: section end
+		D2Bot.printToConsole("=== [TOME] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+		print("=== [TOME] ===");	//261104 log: section end in the print too
 		
 		doneChores = false;
 		
@@ -4449,7 +4474,7 @@ function AutoSmurf() {
 	this.travincal = function () {
 		var cain, presetUnit;
 		
-		print("=== [TRAVINCAL] ===");	//260930	//261103 log policy
+		print("[TRAVINCAL] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4590,7 +4615,7 @@ function AutoSmurf() {
 			takeRedPortal = false;
 		}
 
-		print("=== [MEPHISTO] ===");	//260930	//261103 log policy
+		print("[MEPHISTO] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4696,7 +4721,8 @@ function AutoSmurf() {
 		delay(me.ping * 2 + 500);
 
 		if (Leader && !takeRedPortal) {
-			D2Bot.printToConsole("[MEPHISTO] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [MEPHISTO] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [MEPHISTO] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -4707,7 +4733,7 @@ function AutoSmurf() {
 	this.izual = function () {
 		var tyrael, presetUnit;
 		
-		print("=== [IZUAL] ===");	//260930	//261103 log policy
+		print("[IZUAL] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -4796,7 +4822,8 @@ function AutoSmurf() {
 		me.cancel();
 
 		if (Leader) {
-			D2Bot.printToConsole("[IZUAL] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [IZUAL] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [IZUAL] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -5128,7 +5155,7 @@ function AutoSmurf() {
 		this.starToVizB = [7755,5290, 7720,5275, 7710,5315, 7660,5315,
 							7655,5280];
 
-		print("=== [DIABLO] ===");	//260930	//261103 log policy
+		print("[DIABLO] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		Town.goToTown(4);
 		
@@ -5245,7 +5272,8 @@ function AutoSmurf() {
 		runDiablo = 1;
 		
 		if (Leader && !me.getQuest(28, 0)) {
-			D2Bot.printToConsole("[DIABLO] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [DIABLO] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [DIABLO] ===");	//261104 log: section end in the print too
 		}
 		
 		if (Leader) {
@@ -5275,7 +5303,7 @@ function AutoSmurf() {
 
 	this.shenk = function () { // SiC-666 TODO: Rewrite this.
 	
-		print("=== [SHENK] ===");	//260930	//261103 log policy
+		print("[SHENK] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5344,7 +5372,8 @@ function AutoSmurf() {
 		}
 		
 		if (Leader && (me.getQuest(35, 1) || me.getQuest(35, 0))) {
-			D2Bot.printToConsole("[SHENK] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [SHENK] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [SHENK] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -5357,7 +5386,7 @@ function AutoSmurf() {
 			coords =[],
 			barbSpots = [];
 	
-		print("=== [BARBS] ===");	//260930	//261103 log policy
+		print("[BARBS] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5452,7 +5481,8 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("[BARBS] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [BARBS] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [BARBS] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -5463,7 +5493,7 @@ function AutoSmurf() {
 	this.anya = function () { // Dark-f: Rewrite this.
 		var i, anya, malah, scroll, unit, waitAnya, larzuk;
 	
-		print("=== [ANYA] ===");	//260930	//261103 log policy
+		print("[ANYA] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5657,8 +5687,8 @@ function AutoSmurf() {
 			
 			if (scroll) {
 				clickItem(1, scroll);
-				print("!!! [SCROLL] !!!");	//261002	//261103 log policy
-				D2Bot.printToConsole("!!! SCROLL !!!", 8);
+				print("=== [SCROLL] ===");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
+				D2Bot.printToConsole("=== [SCROLL] ===", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
 			}
 		}
 		
@@ -5687,7 +5717,8 @@ function AutoSmurf() {
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
 		if (Leader) {
-			D2Bot.printToConsole("[ANYA] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [ANYA] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [ANYA] ===");	//261104 log: section end in the print too
 		}
 		
 		doneChores = false;
@@ -5697,7 +5728,7 @@ function AutoSmurf() {
 
 	this.ancients = function () { // SiC-666 TODO: Rewrite this.
 
-		print("=== [ANCIENTS] ===");	//260930	//261103 log policy
+		print("[ANCIENTS] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (!doneChores) {
 			Town.doChores(true);
@@ -5787,7 +5818,8 @@ function AutoSmurf() {
 		this.bossEnd();	//261004
 
 		if (Leader) {
-			D2Bot.printToConsole("[ANCIENTS] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [ANCIENTS] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [ANCIENTS] ===");	//261104 log: section end in the print too
 		}
 		
 		if (Leader) {
@@ -5927,15 +5959,17 @@ function AutoSmurf() {
 			return true;
 		};
 		
-		print("=== [BAAL] ===");	//260930	//261103 log policy
+		print("[BAAL] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		if (Leader) {
 			if (farmingON || me.diff !== 2) {
-				D2Bot.printToConsole("=== FARMING ===", 7);
+				D2Bot.printToConsole("=== [FARMING] ===", 7);	//261104 log: bracket
+				print("=== [FARMING] ===");	//261104 log: in the print too
 			}
 			
 			if (!farmingON && me.diff === 2) {
-				D2Bot.printToConsole("=== LEVELING ===", 7);
+				D2Bot.printToConsole("=== [LEVELING] ===", 7);	//261104 log: bracket
+				print("=== [LEVELING] ===");	//261104 log: in the print too
 			}
 		}
 		
@@ -6177,7 +6211,8 @@ function AutoSmurf() {
 		runBaal = 1;
 
 		if (Leader && baalMSG === 0) {
-			D2Bot.printToConsole("[BAAL] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [BAAL] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [BAAL] ===");	//261104 log: section end in the print too
 		}
 		
 		this.okCount();
@@ -6212,7 +6247,7 @@ function AutoSmurf() {
 	this.farmingCountess = function() { 
 		var poi;
 		
-		print("=== [COUNTESS] ===");	//260930	//261103 log policy
+		print("[COUNTESS] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		Town.doChores();
 		
@@ -6288,7 +6323,7 @@ function AutoSmurf() {
 
 	this.farmingPit = function() { 
 		
-		print("=== [PIT] ===");	//260930	//261103 log policy
+		print("[PIT] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		Town.doChores();
 		
@@ -6349,7 +6384,7 @@ function AutoSmurf() {
 
 	this.farmingAndy = function() { 
 		
-		print("=== [ANDY] ===");	//260930	//261103 log policy
+		print("[ANDY] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		Town.doChores();
 
@@ -6614,7 +6649,7 @@ function AutoSmurf() {
 		};
 
 		//main
-		print("=== [COWS] ===");	//260930	//261103 log policy
+		print("[COWS] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		this.okCount();	//260824
 		
@@ -6946,7 +6981,8 @@ function AutoSmurf() {
 		}
 		
 		if (Leader) {
-			D2Bot.printToConsole("[COWS] Completed", 7);	//261103 log policy: section end
+			D2Bot.printToConsole("=== [COWS] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
+			print("=== [COWS] ===");	//261104 log: section end in the print too
 		}
 		
 		Pather.teleport = true;
@@ -6961,7 +6997,7 @@ function AutoSmurf() {
 	this.farmingSummoner = function() {
 		var journal, i;
 		
-		print("=== [SUMMONER] ===");	//260930	//261103 log policy
+		print("[SUMMONER] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		Town.doChores();
 		
@@ -7076,7 +7112,7 @@ function AutoSmurf() {
 	this.farmingMephisto = function() {
 		var redPortal;
 
-		print("=== [MEPHISTO] ===");	//260930	//261103 log policy
+		print("[MEPHISTO] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
 		Town.doChores();
 		
@@ -7142,7 +7178,7 @@ function AutoSmurf() {
 	this.farmingAbaddon = function() {
 		var presetUnit;
 	
-		print("=== [ABADDON] ===");	//260930	//261103 log policy
+		print("[ABADDON] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		Town.doChores();
 		
@@ -7225,7 +7261,7 @@ function AutoSmurf() {
 	this.farmingPOA = function() {
 		var presetUnit;
 	
-		print("=== [POA] ===");	//260930	//261103 log policy
+		print("[POA] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		Town.doChores();
 		
@@ -7308,7 +7344,7 @@ function AutoSmurf() {
 	this.farmingInfernal = function() {
 		var presetUnit;
 	
-		print("=== [INFERNAL] ===");	//260930	//261103 log policy
+		print("[INFERNAL] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		Town.doChores();
 		
@@ -7390,7 +7426,7 @@ function AutoSmurf() {
 	
 	this.farmingNihlathak = function() { 
 		
-		print("=== [NIHLATHAK] ===");	//260930	//261103 log policy
+		print("[NIHLATHAK] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 
 		Town.doChores();
 		

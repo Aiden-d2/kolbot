@@ -9,6 +9,9 @@
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - `Config.init` 오류 print → `Misc.print("[Config] Failed: …")`(색 코드 지움). 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
 
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- `Config.init` 오류 3줄(`[Config] Failed: cache not found …`, `Failed: Config.init`, `Failed: 상세`) → `print`(위치 없음, 색 없음).
+
 ## Gear / TierGoal / TierNow / TierMerc
 
 ### 261028 사용자: 기어 칸 이름·`TieredGear` 삭제 (handoff 3-39)

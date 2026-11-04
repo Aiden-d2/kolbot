@@ -20,6 +20,9 @@
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - `socketGems failed` trace → `Misc.print("[socketGems] Failed: … | dropped")`. 줄별 목록은 커밋 `26b36ba`의 `drafts/log_policy/modify_list.md`(git 기록). 정책은 `CLAUDE.md` 4절.
 
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- 콘솔 `[Socket] 보석 베이스 (찬/전체)` 옆에 같은 문장 `Misc.print`(위치 붙음, `[Runeword]`처럼 print에도 남김).
+
 ## heal
 
 ### 261021 Claude: 끝의 `me.cancel()` 삭제
@@ -80,6 +83,9 @@
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - 멈춤 콘솔 `Failed to get corpse, stopping.` → `[Stop] Failed to get corpse (지역 x,y)`.
 
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- 30초 넘게 못 주워 멈출 때 콘솔 `[Stop] Failed to get corpse (지역 x,y)`(빨강 그대로) 옆에 `Misc.print("[Stop] Failed to get corpse")` 추가(전에는 콘솔에만 있었다).
+
 ## clearBelt
 
 ### 261025 Claude: 벨트 넣기·남는 물약 정리를 `clearBelt` 끝으로 (`81d5b43`, 사용자 승인, 옛 handoff 3-21·2-17·3-27)
@@ -95,6 +101,11 @@
 - 위 판별 로그를 지움: `Town.chores` 객체(`doChores`의 `c`)와 `doChores`·`buyPotions`·`clearBelt`·`clearInventory`의 기록 줄 전부, `chores N.Ns: …` trace, `buyPotions: buy failed` trace 4줄, `clearBelt`의 `shiftFails`와 `belt shift fail` trace, `doChores`의 `scriptBroadcast("chores:…")` 11줄(옛 handoff 3-37 단계 표시, `rejected.md` PartyThread).
 - 남긴 동작: `pot.buy` 호출, `clearBelt` 넣기 성공 뒤 `break`와 그 판정용 빈칸 합계 비교(같은 뜻으로 `!== total`).
 - 확인: 코드에 지운 줄이 남지 않음(261028 grep). 동작은 바꾸지 않아 인게임 검증 없이 통과(사용자 261028).
+
+## moveToSpot
+
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- Alkor를 90초 넘게 못 찾으면 콘솔 `[Quit] Alkor not found (지역 x,y)` + `quit()` → `Misc.quitGame("Alkor not found")`(다른 조기 종료와 같은 길: 콘솔 색 6·print, ToolsThread가 `quit` 메시지로 나가며 경험치 줄도 찍는다). 261103에는 콘솔 문장만 바꾸고 `quit()`을 남겼었다.
 
 ## visitTown
 

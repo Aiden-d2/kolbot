@@ -346,7 +346,7 @@ function addPlayTime() {	// 260926 accumulate in-game time (normal end only), pr
 		text = m + "m";
 	}
 
-	D2Bot.printToConsole(text + " / " + me.gamename.split('-')[1] + "r (Avg. " + Math.floor(total / 60000 / me.gamename.split('-')[1]) + "m)");
+	D2Bot.printToConsole("[Total] " + text + " / " + me.gamename.split('-')[1] + "r (Avg. " + Math.floor(total / 60000 / me.gamename.split('-')[1]) + "m)");	//261104 log: [Total]
 }
 
 function randomString(len, useNumbers = false) {
@@ -415,7 +415,7 @@ function main() {
 					DataFile.updateStats("ingameTick");
 					
 					restCount();	// 260922
-					D2Bot.printToConsole("=== [" + me.gamename + "] ===", 7);	//261103 log policy: game boundary in the console (leader)
+					D2Bot.printToConsole("[" + me.gamename + "]");	//261103 log policy: game boundary in the console (leader)	//261104 log: "[game]", default colour (Console.txt Flow)
 				}
 				
 				//eom

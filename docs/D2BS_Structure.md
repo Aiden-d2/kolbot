@@ -699,6 +699,12 @@ ControlAction  click / setText / getText / timeoutDelay / joinChannel / createGa
 |---|---|---|---|---|---|---|---|---|
 | 같은 색 `print` 코드 | 없음(흰색) | `ÿc3` | `ÿc2` | `ÿc9` | `ÿc4` | `ÿc8` | `ÿc1` | `ÿc5` |
 
+**매니저 실제 색 (261104, D2Bot 디컴파일본 `ResurrectedTrader/D2Bot`의 `D2Bot/Main.cs` `ColorFromInt`)** — 위 표의 이름 중 6·7이 실제와 다르다. 매니저 화면은 `HH:mm:ss (프로필) `을 검정, 문장만 이 색으로 찍는다(`ConsolePrint`). 디컴파일본과 쓰는 매니저의 버전이 같은지는 확인하지 않음.
+
+| 색 번호 | 0·1·2·3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 그 밖 |
+|---|---|---|---|---|---|---|---|---|---|
+| .NET 색 | Black | Blue `#0000FF` | Green `#008000` | DarkGoldenrod `#B8860B` | SaddleBrown `#8B4513` | DarkOrange `#FF8C00` | Red `#FF0000` | Gray `#808080` | Black |
+
 - `print`·`overhead` 코드: `ÿc0` White, `ÿc1` Red, `ÿc2` Green, `ÿc3` Blue, `ÿc4` Gold, `ÿc5` Grey, `ÿc6` Black, `ÿc7` Tan, `ÿc8` Orange, `ÿc9` Yellow, `ÿc:` Dark Green, `ÿc;` Purple. 사용자 자료와 kolbot 이슈 #1146 목록이 12개 모두 일치(이름만 다름: `ÿc4` DARK_GOLD/Brown, `ÿc7` LIGHT_GOLD). #1146에는 `ÿc<` GREEN이 더 있음(미확인).
 - 콘솔 4~9는 개인 포크(Roger-Takeshita/Kolbot_Roger-That: 3 Black, 7 Brown)와 일치. 10 grey는 외부 자료에 없고 사용자 자료·현재 사용과 맞음. 이슈 #2503의 다른 번호표는 `_NTIPAliasColor`(아이템 염색 색)라 콘솔 색이 아닌 것으로 봄(추정).
 - `ÿc` 코드는 게임 화면 콘솔에서는 색으로 보이지만 d2bs 로그 파일에는 글자로 남는다(사용자 확인 261022).
@@ -1187,7 +1193,7 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 - **경험치 로그:** ToolsThread가 `quit` 메시지를 받을 때 찍음(정상·조기 종료 모두). 치킨도 나가기 전에 찍음(261001).
 - **리더:** a1(`Creating Game`은 리더만 남김). 260930 리더 치킨 8/59게임(팔로워 전원 동시 종료), 사용자: 무시.
 - **상점:** 같은 게임의 상점 목록은 공유. nip이 겹쳐 두 프로필이 같은 아이템을 노릴 수 있음(먼저 산 쪽만 구매).
-- **콘솔 색(D2Bot#):** 4 파랑, 5 초록, 6 노랑, 7 금색, 8 주황, 9 빨강, 10 회색, 생략 시 검정. print 색은 `ÿc0` 흰, `ÿc1` 빨강, `ÿc2` 초록, `ÿc3` 파랑, `ÿc4` 금색, `ÿc5` 회색, `ÿc6` 검정, `ÿc7` 황갈, `ÿc8` 주황, `ÿc9` 노랑, `ÿc:` 짙은 초록, `ÿc;` 보라.
+- **콘솔 색(D2Bot#):** 0~3 검정(생략 포함), 4 파랑, 5 초록, 6 어두운 황금색, 7 갈색, 8 진한 주황, 9 빨강, 10 회색(디컴파일본 `ColorFromInt`, 261104). print 색은 `ÿc0` 흰, `ÿc1` 빨강, `ÿc2` 초록, `ÿc3` 파랑, `ÿc4` 금색, `ÿc5` 회색, `ÿc6` 검정, `ÿc7` 황갈, `ÿc8` 주황, `ÿc9` 노랑, `ÿc:` 짙은 초록, `ÿc;` 보라.
 - **ProcDump:** `-e -h -n 10`. 한 크래시에 덤프가 여러 개 생기면(D2BS exit0 버그로 반복 예외) 첫 파일(접미사 없음)만 보면 된다. 261001 6건은 모두 첫 덤프에 원래 예외가 그대로 있었다(6번 유형 C도 첫 덤프에 0x6494DC가 바로 찍힘, 260930 유형 C 때처럼 0x576F08에서 꺼낼 필요 없었음). 크래시 프로세스의 procdump 로그는 약 7KB, 몇 초 뒤의 약 1.5KB 로그는 재시작된 새 프로세스다. `-e`는 처리되지 않은 예외만 덤프한다(잡힌 예외는 `-e 1`, 덤프가 많이 생길 수 있어 쓰지 않음).
 - **미사일·몹 데이터(261002):** blizzhackers/d2data `missiles.json`·`monstats2.json`. Shock Wave 미사일 511: Vel 20, Range 14(프레임), Size 1, 관통(CollideKill 없음), NextHit 1·NextDelay 4. 몹 충돌 크기 2×2 366종, 3×3 197종.
 - **팔로워 크래시 때 전원 종료:** 크래시 난 프로필이 파티에서 빠지면 나머지 전원(리더 포함)이 `PartyThread`의 `retry > 2`(`threads/PartyThread.js:122-124`)로 약 2초 뒤 나간다. `party has left`는 print만이라 콘솔·trace에는 이유가 안 남는다(로그 규칙대로). 크래시 쪽은 매니저의 `Window has unexpectedly exited` 줄로 구분한다.

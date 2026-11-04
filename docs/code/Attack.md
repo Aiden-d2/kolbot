@@ -10,6 +10,9 @@
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - `AttackSkill` 미습득 멈춤: 콘솔 `[Stop] AttackSkill[i] id not learned (lvl N)`, trace → `Misc.print`. `Bad attack config` → `Misc.print("[Attack] Failed: bad attack config")`.
 
+### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
+- `[Attack] Failed: bad attack config` → `print`(위치 없음). 레벨업 때 `AutoBuild`가 다시 부를 때도 같은 줄.
+
 ## clear
 
 ### 260928 Claude: 단일 전투 엔진 (리팩터링)
