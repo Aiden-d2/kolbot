@@ -3,7 +3,7 @@
 `docs/info`(지금 d2reference 브랜치 `gamedata/`) 검토(261105)에서 사용자가 "다음 작업"으로 정한 것과, 다음 대화가 이어 가는 데 필요한 맥락 전부. 근거 표시: 데이터 / 코드 / 웹 미검증 / 사용자 결정 / Claude 제안 미결정.
 
 - 지난 작업: PR #163(검토 반영), #164(links.md 사이트 내용 표) 병합 완료.
-- 남은 작업: **1. 경험치 직접 계산**, 링크 2곳 추출(`links.md` "가져올 예정", 261105).
+- 남은 작업: **1. 경험치 직접 계산**(규칙은 확인, 계산은 아직), 링크 2곳 추출(`links.md` "가져올 예정", 261105).
 
 ## 1. 경험치 직접 계산 (`gamedata/experience.md`)
 
@@ -35,18 +35,12 @@
 - 지역 이름은 kolbot `Pather.getAreaName` 이름을 쓴다(사용자 결정 261105). `levels.txt` `LevelName`과 28곳이 다르다(`tc.md` 1절 아래 설명).
 - 몬스터 레벨 규칙(나이트메어·헬 = 지역 레벨, 보스는 `monstats` 레벨, 유니크 +3, 챔피언 +2)은 `tc.md` 1절에 있다(1.14d 역어셈블로 확인한 것).
 
-### 게임 코드에서 확인할 것 (D2MOO, 외부 조회)
+### 게임 코드 (1.14d `Game.exe`로 확인, 261105)
 
-- D2MOO = 게임 소스를 1.10f 기준으로 재구성한 공개 프로젝트. 이 저장소·세션에 없다. GitHub `ThePhrozenKeep/D2MOO`로 기억한다(Claude 기억, 미확인). 1.14d와 같은지는 따로 확인되지 않는다.
-- 확인 목록:
-  1. 몬스터 경험치 기본식: `monlvl` 경험치 × `monstats` `Exp` % 인지
-  2. 챔피언·유니크·미니언·슈퍼유니크 경험치 배수(일반 지식: 챔피언 ×3, 유니크 ×5 등, 미확인)
-  3. 인원수(플레이어 설정) 보너스
-  4. 파티 분배: 같은 지역·거리 조건, 레벨 비례 분배, 파티원당 보너스
-  5. 레벨 차이 감소와 `ExpRatio` 적용 순서
-  6. 바알 웨이브 구성(`AiThink.cpp` 바알 부하 소환, 웨이브 1~5의 몬스터·수). `tc.md`의 Baal Subject 1~5(`fallenshaman5`·`unraveler5`·`baalhighpriest`·`venomlord`·`baalminion1`) 참고
-  7. 디아블로 봉인 소환(`A4Q2.cpp`): Grand Vizier of Chaos·Lord De Seis·Infector of Souls와 미니언 수
-- `tc.md`가 이미 인용한 D2MOO 파일: `MonsterMode.cpp`, `D2Game/ITEMS/Items.cpp`, `A4Q2.cpp`, `A5Q3.cpp`, `A5Q5.cpp`, `AiThink.cpp`, `DrlgMaze.cpp` 등.
+- 1~5(기본식, 챔피언·유니크 배수, 인원수 보너스, 파티 분배, 레벨 차이 감소와 `ExpRatio`)는 확인했고 d2reference `gamedata/experience.md` 1절에 넣었다. 근거: **코드**(1.14d exe, D2MOO와 같음).
+- 6·7 바알 웨이브·디아블로 봉인: 슈퍼유니크 부하 수(`MinGrp`~`MaxGrp` + 난이도)와 Baal Subject 2의 `skmage_cold3` 10마리 추가 소환을 확인해 `experience.md` 1절에 넣었다. 웨이브·봉인 소환이 같은 슈퍼유니크 생성 함수를 거치는 것도 확인(`tc.md` 3절). 남은 미확인: 부하 종류(`minion1`)와 부하 배수 없음은 데이터 + D2MOO만(1.14d 대조 안 함).
+- D2MOO: GitHub `ThePhrozenKeep/D2MOO`(261105 받음, 확인). 1.14d 주소가 주석에 달린 함수가 많아 exe 대조에 쓴다.
+- 분석 도구·주소 색인(261105): d2reference `tools/`(작업 폴더를 만드는 `setup.sh`, exe·DS1·TC 재계산 스크립트, 사용법 `tools/README.md`)와 `gamedata/exe_1.14d.md`(찾은 함수·표·구조체 위치). 다시 분석할 때 여기서 시작한다. `Game.exe`는 저장소에 없어 그때 다시 올려야 한다.
 
 ### 웹 대조
 
@@ -71,7 +65,7 @@
 
 ## 그 밖에 이번 검토에서 미확인으로 남은 것 (참고, 다음 작업으로 정해지지 않음)
 
-- `tc.md`: 아이템 레벨 = 몬스터 레벨(상자 = 지역 레벨)은 일반 지식. D2MOO `ITEMS_GetItemLevelForNewItem` 미확인. TC 올림이 `x` TC를 거쳐 낮아지는 규칙(Snapchip Shatter·Frozenstein 헬)은 이전 세션 역어셈블 결과이고 다시 확인하지 않았다.
+- `tc.md`: 미결 없음(261105). D2MOO·일반 지식·웹 근거였던 곳을 모두 1.14d로 확인했고, 표 606줄을 규칙대로 다시 계산해 대조했다(그 과정에서 헬 지역 일반 몬스터 34칸을 `bow`·`mele` 포함 값으로 고침).
 - `breakpoints.md`: 아마존 FBR 1열, 드루이드 인간 FHR 3열, 늑대·곰 FCR·FBR·FHR은 공식 대조 "미확인". 드루이드 FHR 4열 주석 "with Wizardspike"의 뜻 미확인. 어쌔신 "3/3/3/3/7"은 추정.
 - `ids.md`: 상점 화면 상태를 돌려주는 함수, 기본 스탯 인덱스 번호로 `getBaseStat`이 되는지 미확인(D2BS 엔진 소스가 저장소에 없음). 사용자 결정: 두 절 모두 유지.
 - `item_mods.md`: 에테리얼 "활·석궁 없음", 그랜드 참 라이프 41~45 아이템 레벨 89(식으로는 91), 실효 매직 찬스 공식(웹 지식, 게임 코드 미확인).
