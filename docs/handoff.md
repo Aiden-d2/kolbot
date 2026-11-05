@@ -65,8 +65,8 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 
 ### 3-68. 끝 줄 정리: Script ended 리더 콘솔·팔로워 waitParty, Max game time 콘솔 리더만, 게임 이름 print 삭제 (`AutoSmurf` main 끝, `ToolsThread` main, `default.dbj` main, 사용자 261105)
 - **문제**(사용자 261105): 정상 종료가 콘솔에 없어, 경험치 줄 앞에 종료 사유가 없는 게임을 구별할 수 없었다. 리더만 `Script ended`를 찍으면 팔로워가 먼저 끝난 게임에서 리더는 `PartyThread`로 따라 나가 줄이 빠진다. `[Quit] Max game time`은 모든 프로필이 콘솔에 찍어 지저분했다. 게임 이름 print는 `[Starter] Create game`·`Join game`과 중복.
-- **바꾼 것**(261105, 이 커밋): 팔로워·Boer는 끝에서 `this.waitParty()` 뒤 print `[AutoSmurf] Script ended`, 리더는 print + 콘솔 `[AutoSmurf] Script ended (지역 x,y)`(기본색). `Max game time` 콘솔은 리더만(print는 모두). `default.dbj`의 주석 처리된 게임 이름 print 삭제. 내용은 코드 노트의 같은 헤더.
-- **검증 방법**: `Console.txt` — 리더 경험치 줄 앞에 `[AutoSmurf] Script ended`·`[Quit]`·`[Stop]`·`[Chicken]`·`[Died]`·`[Error]` 중 하나가 있는지. 아무것도 없는 게임은 따로 원인을 본다. `[Quit] Max game time`은 게임마다 리더 1줄(팔로워 0). `[AutoSmurf] Script ended`는 `<Flow>`. d2bs 로그 — 팔로워 끝 `[waitParty] Waiting` 뒤 `[AutoSmurf] Script ended` 또는 `Party has left`. `Party desynced in`의 `missing`이 리더면 리더가 끝에 못 온 것. 게임 이름 단독 줄 0.
+- **바꾼 것**(261105, 이 커밋): 팔로워·Boer는 끝에서 `this.waitParty()` 뒤 print `[AutoSmurf] Script ended`, 리더는 print + 콘솔 `[AutoSmurf] Script ended (지역 x,y)`(기본색). `Max game time` 콘솔은 리더만(print는 모두). `default.dbj`의 주석 처리된 게임 이름 print 삭제. 내용은 코드 노트의 같은 헤더. 추가(261105, 이 커밋): 경험치 줄 `[Level N] 진행% [mm:ss]`, `No exp` 끔(못 얻은 게임도 같은 줄), `D2BotLead.dbj`의 꺼 둔 게임 경계 콘솔 줄 삭제.
+- **검증 방법**: `Console.txt` — 리더 경험치 줄 앞에 `[AutoSmurf] Script ended`·`[Quit]`·`[Stop]`·`[Chicken]`·`[Died]`·`[Error]` 중 하나가 있는지. 아무것도 없는 게임은 따로 원인을 본다. `[Quit] Max game time`은 게임마다 리더 1줄(팔로워 0). `[AutoSmurf] Script ended`는 `<Flow>`. d2bs 로그 — 팔로워 끝 `[waitParty] Waiting` 뒤 `[AutoSmurf] Script ended` 또는 `Party has left`. `Party desynced in`의 `missing`이 리더면 리더가 끝에 못 온 것. 게임 이름 단독 줄 0. 경험치 줄은 콘솔·print 모두 `[Level N] 진행% [mm:ss]` 모양으로 게임마다 1줄(프로필별), `No exp` 0.
 - **결과**: (로그 대기)
 
 ### 3-67. 팀 대기 이름 정리: okCount·teamCount → waitParty (`AutoSmurf.waitParty`, 사용자 261105)
