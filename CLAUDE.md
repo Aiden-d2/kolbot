@@ -60,7 +60,7 @@
 - D2BS 엔진 메시지는 d2bs 로그에 남는다(옮길 수 없음).
 
 ## 5. 노트
-- 노트(`docs/**/*.md`)는 확정된 사항만 쓴다. 확정되지 않은 것(논의 중, Claude 제안)은 쓰지 않는다. 모호하면 물어본다.
+- 노트(`docs/**/*.md`, d2reference 브랜치 `gamedata/*.md`)는 확정된 사항만 쓴다. 확정되지 않은 것(논의 중, Claude 제안)은 쓰지 않는다. 모호하면 물어본다.
   - 예외: 임시노트(`docs/temp/*.md`)는 스터디 기록이라 확정되지 않은 것(웹 자료, 계산식, 가설, 논의 중인 계획, Claude 제안)도 쓴다. 내용마다 근거 종류(데이터 / 코드 / 웹 미검증 / 사용자 결정 / Claude 제안 미결정)를 표시한다.
 - 노트 커밋 시점은 1절을 따른다. 대화가 길어 앞부분이 요약됐으면, 기록 전에 그 사실을 알린다.
 
@@ -81,7 +81,8 @@
   - 예외: nip(`nips/*.nip`)·빌드(`builds/*.js`)·직업 공격(`libs/Attacks/*.js`)은 종류마다 노트 하나(`docs/code/nips.md`·`docs/code/builds.md`·`docs/code/ClassAttack.md`)에 넣고, 그 안에서 코드 파일 이름으로 절을 나눈다.
   - 항목 헤더는 `YYMMDD 사용자|Claude: 짧은 제목`이다. 여러 파일에 걸친 수정은 각 노트에 같은 헤더를 쓴다. 줄 번호 대신 함수 이름으로 가리킨다.
 - `docs/rejected.md` = **기각만**: 코드 파일·함수 순서로 묶고, 항목마다 무엇을, 이유를 적는다.
-- `docs/<주제>.md` = 정보 파일: 코드에 직접 들어 있지 않은 정보(구조, 로그 분석 방법, 스킬 사거리, 퀘스트 플래그, 크래시 분석, Attack 흐름 해설).
+- `docs/<주제>.md` = 정보 파일: 코드에 직접 들어 있지 않은 정보(구조, 로그 분석 방법, 크래시 분석, Attack 흐름 해설).
+- d2reference 브랜치 `gamedata/<주제>.md` = 게임 정보 파일(스킬 사거리, 퀘스트 플래그, TC, 엔진 번호 등).
 
 **노트 목록.** 새 대화는 `handoff.md`를 먼저 읽고, 작업할 코드의 노트와 관련 정보 파일을 읽는다. 로그 분석은 `log_guide.md`부터 읽는다.
 
@@ -96,9 +97,9 @@
 | `docs/log_types.md` | 로그 종류 11가지의 목적·보는 곳·파일·코드·설정 |
 | `docs/D2BS_Structure.md` | D2BS / kolbot 구조 참조, 확인된 엔진·게임 사실 |
 | `docs/attack_flow.md` | clear / setPosition 흐름 정리 |
-| `docs/info/skill_range.md` | 스킬 사거리 (공식, 측정, 현재 값). 사거리 정보는 빠짐없이 여기에 기록한다 |
-| `docs/info/quest_flags.md` | 퀘스트 플래그 표 (1.14d) |
+| d2reference 브랜치 `gamedata/skill_range.md` | 스킬 사거리 (공식, 측정, 현재 값). 사거리 정보는 빠짐없이 여기에 기록한다 |
+| d2reference 브랜치 `gamedata/quest_flags.md` | 퀘스트 플래그 표 (1.14d) |
 | `docs/crash_analysis.md` | 크래시 분석 절차와 유형별 결과 |
-| `docs/info/freezing_arrow.md` | 프리징 애로우 프리즈 길이: 계산식·측정 결과, 상한 측정 준비 |
-| `docs/info/` | 참고용 게임 인포가 들어 있다 (`mpqdata` 브랜치와 같은 개념) |
-| `mpqdata` 브랜치 | 게임 정보(아이템·드랍·몬스터·지역·스킬 등)는 기억으로 답하지 않고 이 브랜치에서 찾는다. txt 파일은 `excel/` 폴더에 있다(`git fetch origin mpqdata` 후 `git show origin/mpqdata:excel/<파일>`) |
+| d2reference 브랜치 `gamedata/freezing_arrow.md` | 프리징 애로우 프리즈 길이: 계산식·측정 결과, 상한 측정 준비 |
+| d2reference 브랜치 `gamedata/` | 참고용 게임 인포(정보 파일)가 들어 있다. 읽는 법: `git fetch origin d2reference` 후 `git show origin/d2reference:gamedata/<파일>` |
+| d2reference 브랜치 `mpqdata/` | 게임 정보(아이템·드랍·몬스터·지역·스킬 등)는 기억으로 답하지 않고 이 폴더에서 찾는다. txt 파일은 `mpqdata/excel/` 폴더에 있다(`git fetch origin d2reference` 후 `git show origin/d2reference:mpqdata/excel/<파일>`) |
