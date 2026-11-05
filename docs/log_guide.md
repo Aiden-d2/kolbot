@@ -39,7 +39,7 @@
 ### 3-1. 261103 로그 정책 이후 (CLAUDE.md 4절, `docs/log_types.md`)
 - 상세 기록은 d2bs 로그(print). 줄 모양 `[주체] 문장 (지역 x,y)`(위치는 `Misc.print`가 붙임, 엔진이 앞에 `[MM/DD/YY HH:MM:SS] D2BS <번호>:`). 고정 모양(`=== [게임] ===`, `=== [구간] ===`, `!!! … !!!`)·게임 밖 줄은 위치 없음, 게임 밖 상세는 `… | 상세 (loc N)`.
 - **261104부터**(handoff 3-66): 게임 경계 `[게임]`(콘솔·print), 구간 시작 print `[X] Go`, **구간 끝** 콘솔·print `=== [X] ===`(리더, 그 전 print의 `=== [X] ===`는 시작이었다), `=== [START]/[FARMING]/[LEVELING] ===`·`=== [BOOK]/[POTION]/[SCROLL] ===`(콘솔·print), 리더 플레이 시간 `[Total] …`(콘솔만), `[Died] lost=N.NN%`(죽은 순간), `[Died] Last game`·`[Socket]`·`[Stop] Failed to get corpse`도 print에, `[Quit] Alkor not found`는 `quitGame`(print 있음). 입장 직후 정보 줄(`[Pickit]`·`[Loader]`·`[Role]`·`[Config]`·`[toggle]`·`[Equip] 자리=N`·`[Grant] 자리=N`)은 위치 없음.
-- **사용자 수정**(261104 실행 중 업로드 `03e4d6d`·`fb1d19d`, 261105 `1e53c1b`·`f10e021`, 코드 노트 같은 헤더): 리더 콘솔 게임 경계 줄 꺼 둠(261104 17:36부터 콘솔에 게임 경계 없음, 그 전 `[게임]`). 퀘스트 아이템 `=== [BOOK]/[POTION]/[SCROLL] ===` → `!!! [X] !!!`(261104 17:36~) → `[Quest] Book/Potion/Scroll`(261104 22:57~). 플레이 시간 `[Total] 시간 / Nr (Avg. Nm)` → `시간 (Nm * Nr)`(콘솔 `<OOG>`). 경험치 줄 `[mm:ss] 진행% (Level N)`, `[mm:ss] No exp`. `[Pickit] Loaded`·`[Loader] Loaded` → `Loaded ÿc9[...]`. 게임 경계 print `[게임]`은 261105 `f10e021`부터 꺼 둠(3-68에서 삭제) → 그 뒤 로그는 Starter의 `[Starter] Create game: pz-N`(리더)·`[Starter] Join game: pz-N`(팔로워)으로 게임을 자른다. 줄 모양은 실행 중 바뀌어도 다음 게임부터 적용된다(261105 묶음에서 확인).
+- **사용자 수정**(261104 실행 중 업로드 `03e4d6d`·`fb1d19d`, 261105 `1e53c1b`·`f10e021`, 코드 노트 같은 헤더): 리더 콘솔 게임 경계 줄 꺼 둠(261104 17:36부터 콘솔에 게임 경계 없음, 그 전 `[게임]`). 퀘스트 아이템 `=== [BOOK]/[POTION]/[SCROLL] ===` → `!!! [X] !!!`(261104 17:36~) → `[Quest] Book/Potion/Scroll`(261104 22:57~). 플레이 시간 `[Total] 시간 / Nr (Avg. Nm)` → `시간 (Nm * Nr)`(콘솔 `<OOG>`). 경험치 줄 `[mm:ss] 진행% (Level N)`, `[mm:ss] No exp`. 261105(3-68)부터 경험치 줄 `[Level N] 진행% [mm:ss]`, 경험치를 못 얻은 게임도 같은 줄(`No exp` 없음, 직전 게임과 진행 %가 같으면 0). `[Pickit] Loaded`·`[Loader] Loaded` → `Loaded ÿc9[...]`. 게임 경계 print `[게임]`은 261105 `f10e021`부터 꺼 둠(3-68에서 삭제) → 그 뒤 로그는 Starter의 `[Starter] Create game: pz-N`(리더)·`[Starter] Join game: pz-N`(팔로워)으로 게임을 자른다. 줄 모양은 실행 중 바뀌어도 다음 게임부터 적용된다(261105 묶음에서 확인).
 - trace는 임시 검증 줄만. 아래 줄 이름은 261103 이후 로그에서 이렇게 찾는다(그 전 로그는 이 문서의 옛 이름).
 
 | 옛 줄(찾던 곳) | 261103~ 줄(찾을 곳) |
@@ -52,7 +52,7 @@
 | `You died in last game` | 콘솔 `[Died] Last game`, 새 `[Died]`(죽은 순간, 콘솔 빨강·print) |
 | `Init failed …. Stopping`, `AttackSkill[N] … Stopping`, `Failed to get corpse, stopping.` | `[Stop] …` |
 | `alkor error` | 콘솔 `[Quit] Alkor not found` |
-| (없음, 경험치 줄 `[30:00]`으로 추정) | 콘솔·print `[Quit] Max game time N min` |
+| (없음, 경험치 줄 `[30:00]`으로 추정) | 콘솔·print `[Quit] Max game time N min`(261105~ 콘솔은 리더만, print는 모두) |
 | 콘솔 `Radament off: tombs, quit at 10 min` | print `[RADAMENT] Off: tombs, quit at 10 min`(리더) + 콘솔 `[Quit] Max game time 10 min` |
 | `party has left: 이름` | print `[PartyThread] Party has left: 이름` |
 | `boss not found: id` | print `[clear] Failed: boss not found id` |
@@ -62,7 +62,7 @@
 | `[useUnit] timeout iter:…`, `[WP] wp.area:…`, `[getWP] …`, `[goWP] Failed …` | print `[useUnit] Retry N: timeout \| …`, `[useWaypoint] Retry N: wp.area=…`, `[getWP] Failed:/Retry N: …`, `[goWP] Failed: 10 attempts` |
 | `revive start`, `corpse picked`, `bossGuard …` | print `[bossEnd] Revive start`·`Corpse picked`, `[bossGuard] …` |
 | (없음) | print `[okCount] Waiting`(okCount 진입, 프로필마다). 261105~ `[waitParty] Waiting` |
-| `Script ended`(trace는 조기 종료 없을 때만) | print `[AutoSmurf] Script ended`(언제나) |
+| `Script ended`(trace는 조기 종료 없을 때만) | print `[AutoSmurf] Script ended`(언제나). 261105~ 리더는 콘솔 `[AutoSmurf] Script ended (지역 x,y)`(`<Flow>`)도, 팔로워는 그 앞에 `[waitParty] Waiting` |
 
 - 게임 경계: `=== [게임이름] ===`(261011 이후, 261103부터 print), 261104부터 `[게임이름]`, 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다. 261105 `f10e021`부터 print 게임 경계가 없다(3-68에서 삭제) → `[Starter] Create game: pz-N`·`Join game: pz-N`(엔진 재시작·재로드는 같은 게임 번호가 다시 나올 수 있음)으로 자른다.
 - 구간 헤더: `=== [ANDY] ===` 등(261104부터 시작은 `[ANDY] Go`, `=== [ANDY] ===`는 리더의 구간 끝). 리더 콘솔에도 `=== ANDY ===`(구간 끝, 갈색, 261103부터 `[ANDY] Completed`, 261104부터 `=== [ANDY] ===`).
@@ -166,7 +166,7 @@
 
 ### 4-8. 기본 기록 (관찰용 아님, 게임 흐름 파악에 씀)
 게임 경계, 구간 헤더, `[Quit] 사유: 상세`, `[Error] 구간: 메시지 (파일 #줄)`, `Script ended`(조기 종료가 없을 때만), `boss not found: id`, `AttackSkill[N] not learned`, `!!! POTION/SCROLL/BOOK !!!`, `[Quit] High ping / Mana·Iron Golem·Merc Chicken`, `undefined item`, `[DBG] drop`, `Couldn't give the potion to merc`.
-- 정상 종료 판정(CLAUDE.md): 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상. 261103부터: 경험치 줄 앞에 `[Quit]`·`[Stop]`·`[Chicken]`·`[Died]`·`[Error]`가 없으면 정상(30분 시간 초과는 `[Quit] Max game time`). 단 4-4의 경로 콘솔 줄(`no random path`·`original path`·`no original path`·`adjusted path`·`fixed path`, 검정)은 조기 종료 줄이 아니다(261030 전 로그만, 261030부터 콘솔에서 삭제).
+- 정상 종료 판정: **261105부터**(handoff 3-68) 리더 경험치 줄 앞에 `[AutoSmurf] Script ended`가 있으면 정상, `[Quit]`·`[Stop]`·`[Chicken]`·`[Died]`·`[Error]`가 있으면 조기 종료, 둘 다 없으면 끝난 이유를 따로 본다(아래 "이유 없이 끝난 게임"). 그 전 로그: 경험치 줄 앞에 조기 종료 줄(검정, `(지역 x,y)`)·빨간 줄·`Error in` 줄이 없으면 정상. 261103부터: 경험치 줄 앞에 `[Quit]`·`[Stop]`·`[Chicken]`·`[Died]`·`[Error]`가 없으면 정상(30분 시간 초과는 `[Quit] Max game time`). 단 4-4의 경로 콘솔 줄(`no random path`·`original path`·`no original path`·`adjusted path`·`fixed path`, 검정)은 조기 종료 줄이 아니다(261030 전 로그만, 261030부터 콘솔에서 삭제).
 - 이유 없이 끝난 게임은 `log_results.md` 261006 "이유 없이 끝난 게임"처럼 분류한다(크래시, 마지막 게임, 30분 시간 초과, 매니저 일시정지, 원인 불명).
 
 ## 5. 이번 로그로 볼 확인 항목

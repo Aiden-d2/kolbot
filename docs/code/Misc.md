@@ -114,6 +114,9 @@
 ### 261104 사용자: 경험치 줄 모양 (실행 중 업로드 `03e4d6d`·`fb1d19d`, `getGameTime` 포함)
 - 경험치 줄 `[mm:ss] +획득% / [Level N] 진행%` → `[mm:ss] 진행% (Level N)`(획득 % 빠짐, 옛 줄은 주석으로 둠). `getGameTime` 앞 공백 삭제. `No exp[mm:ss]` → `[mm:ss] No exp`(콘솔 색 4·print).
 
+### 261105 Claude: 경험치 줄 `[Level N] 진행% [mm:ss]`, No exp 끔 (사용자 요청 261105, handoff 3-68)
+- `Experience.log`: 줄 모양 `[mm:ss] 진행% (Level N)` → `[Level N] 진행% [mm:ss]`. `if (gain)`과 `else`(`No exp` 콘솔·print), 빈 레벨업 블록을 주석 처리(되돌릴 때를 위해 남김, 사용자 261105). 경험치를 못 얻은 게임도 같은 줄을 찍는다(콘솔 색 4·print). 쓰지 않는 변수(`gain` 등)는 그대로.
+
 ## Packet.openMenu
 
 ### 261001 Claude: 대사 중이면 스페이스로 넘김 (유형 B 크래시)

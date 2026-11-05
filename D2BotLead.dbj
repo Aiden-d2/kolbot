@@ -415,7 +415,6 @@ function main() {
 					DataFile.updateStats("ingameTick");
 					
 					restCount();	// 260922
-					//D2Bot.printToConsole("[" + me.gamename + "]");	//261103 log policy: game boundary in the console (leader)	//261104 log: "[game]", default colour (Console.txt Flow)
 				}
 				
 				//eom

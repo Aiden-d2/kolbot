@@ -2674,18 +2674,18 @@ var Experience = {
 			timeToLevel = this.timeToLevel();
 
 		//string = getGameTime + " +" + gainPercent + "% / [Level " + me.getStat(12) + "] " + progress + "%";
-		string = getGameTime + " " + progress + "% (Level " + me.getStat(12) + ")";	//261104
+		string = "[Level " + me.getStat(12) + "] " + progress + "% " + getGameTime;	//261104	//261105 log: "[mm:ss] N% (Level N)" -> "[Level N] N% [mm:ss]"
 
-		if (gain) {
+		//if (gain) {	//261105 log: every game prints the line (No exp removed), kept for a revert
 			D2Bot.printToConsole(string, 4);
 			Misc.print(string);	//260610	//261103 log policy
 
-			if (me.getStat(12) > DataFile.getStats().level) {
-			}
-		} else {	//260910
-			D2Bot.printToConsole(getGameTime + " No exp", 4);	//261104
-			Misc.print(getGameTime + " No exp");	//261104
-		}
+			//if (me.getStat(12) > DataFile.getStats().level) {	//261105
+			//}	//261105
+		//} else {	//260910	//261105
+			//D2Bot.printToConsole(getGameTime + " No exp", 4);	//261104	//261105
+			//Misc.print(getGameTime + " No exp");	//261104	//261105
+		//}	//261105
 	}
 };
 
