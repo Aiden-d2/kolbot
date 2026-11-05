@@ -396,7 +396,7 @@ UI 번호(`getUIFlag(번호)`)는 `docs/info/ids.md` "UI 플래그" 절.
 
 | mode | 내용 |
 |---|---|
-| 55 | 문자열 신호. 준비: `okCount` `teamOk` `teamCount` / 버프·이동: `syncBO` `BOing` `syncWP` `tpReady` `earlyReturn` / 준비물: `hireMerc` `giveGold` `farmingON` `essA` `essM` `keyT` `keyH` `keyD` `getCube` / 퀘스트: `cube` `amulet` `summoner` `tombs` `radament` `duriel` `figurine` `teamFigurine` `figurineEye` `figurineTome` `travincal` `mephisto` `takeRedPortal` / 소 레벨: `msgLeader` |
+| 55 | 문자열 신호. 준비: `waitPartyIn` `waitPartyAll` `waitPartyOut` / 버프·이동: `syncBO` `BOing` `syncWP` `tpReady` `earlyReturn` / 준비물: `hireMerc` `giveGold` `farmingON` `essA` `essM` `keyT` `keyH` `keyD` `getCube` / 퀘스트: `cube` `amulet` `summoner` `tombs` `radament` `duriel` `figurine` `teamFigurine` `figurineEye` `figurineTome` `travincal` `mephisto` `takeRedPortal` / 소 레벨: `msgLeader` |
 | 56 | 좌표 객체 `{x, y}`. 소 레벨에서 리더가 이동 노드를 공유 (`msgNode`) |
 
 ---
@@ -748,18 +748,19 @@ start()                      큐브(0,0)·TP 책(0,2) 슬롯 고정 → 진행�
                              preparation() → Town.doChores(true) → 회복포션 슬롯 정리 →
                              (mercLvl) Merc.hire, 실패 시 hireMerc 브로드캐스트 →
                              웨이포인트 활성화 → 대기 오프셋(Pather.moveTo random, 261028)으로 이동 →
-                             okCount →
+                             waitParty →
                              toggle() → 골드 수수
 preparation()                잔여 퀘스트템 사용(책·포션·스크롤), MiniShopBot/farmingON/UseMerc 결정,
                              리더 골드 부족(레벨 18+, 5000 미만) 시 giveGold 요청
 toggle()                     큐브·피규린·엣센스·열쇠 상태를 팀에 브로드캐스트
-okCount(range)               기본 range 20. okCount 를 뿌리고 teamOk 까지 대기, 이어서 teamCount(range)
-teamCount(range)             teamCount 를 뿌리고 전원 응답까지 대기
-                             둘 다 필드에서는 대기 중 Attack.clear(range) 후 원위치, 120초 초과 시 quit
+waitParty(range)             기본 range 20. 1단계: waitPartyIn 을 뿌리고 전원 이름이 모이거나 waitPartyAll 을 받을 때까지 대기
+                             (다 모은 사람이 waitPartyAll 을 뿌림). 2단계: waitPartyOut 을 뿌리고 전원 이름이 모일 때까지 대기
+                             두 단계 모두 필드에서는 대기 중 Attack.clear(range) 후 원위치, 단계마다 120초 초과 시 quit
+                             (1단계는 리더 웨이 모으기 중 600초)
 playerIn(area) / partyAct()
 partyLevel(level)            → bool   파티 전원이 level 이상인가 (getParty 30회 재시도)
 syncBO(act)                  Team.Boer 없음 / 파티에 24 미만 있음 → 즉시 false.
-                             BO가 필요하면 리더가 BOing 을 한 번 뿌림 → okCount → BOing 이 아니면 false
+                             BO가 필요하면 리더가 BOing 을 한 번 뿌림 → waitParty → BOing 이 아니면 false
 syncWP(destination, home, oneway) / buffCount(act)
 pickGold() / giveGold()
 setLifeChicken(value)        Config.LifeChicken 변경 → 캐시 json 재기록 → {lifeChicken} 브로드캐스트
@@ -900,7 +901,7 @@ AutoSmurf.preparation (mercLvl)
 
 ```
 checkRole()
-okCount()                     입장 직후 팀 집결 (120초 초과 시 quit)
+waitParty()                   입장 직후 팀 집결 (120초 초과 시 quit)
 start()                       타운 정비 + 팀 준비 동기화
 
 액트 1   !getQuest(7,0)         goToTown(1) → syncBO → den
@@ -918,7 +919,7 @@ start()                       타운 정비 + 팀 준비 동기화
                                 팔로워: travincal / figurineEye / figurineTome / figurine / mephisto / takeRedPortal / syncBO 플래그 대기
                                 (주요 단계 전에 리더가 syncBO 브로드캐스트)
 액트 4   getQuest(23,0)         리더: partyAct 로 최저 타운 확인, 3막이면 takeRedPortal → mephisto(true)
-                                → okCount → syncBO → travel(8) → izual → diablo → changeAct(5)
+                                → waitParty → syncBO → travel(8) → izual → diablo → changeAct(5)
 액트 5   getQuest(28,0)         syncBO → travel(9) → shenk → barbs(Normal) → anya → ancients
 바알     getQuest(39,0)         syncBO → travel(10) → baal
 
@@ -1180,7 +1181,7 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 - **에인션트 TP(261004, `A5Q5.cpp`):** 정상(120)에서 TP가 열리면 고대인이 비활성·리셋(`OnPortalOpened`, 처치 뒤에는 무시). 제단을 누르면 정상의 TP를 모두 닫는다(`OperateFunction65_AncientsAltar`). 크레딧은 정상에 있고 레벨 20×(난이도+1) 이상인 플레이어(생사 무관)와 5막의 파티원.
 - **라다먼트 북(261004, `A2Q1.cpp`, `ItemMode.cpp`):** 킬 때 bit1·bit5(책 보상 대기) 설정. 북 사용 시 bit5 해제 + 스킬 포인트 1, bit5가 없으면 북을 쓸 수 없다. 북은 킬한 게임에서 "bit5 있고 북 없는 플레이어" 수만큼 떨어진다(퀘스트가 켜진 게임만). 게임 시작 처리에서 bit0(아트마 보상 대화)·bit5·북 없음이면 9번을 초기화하지만 그 게임은 퀘스트가 꺼진 채다. AutoSmurf는 원래 아트마와 대화하지 않는다.
 - **`me.revive()`(261004):** D2BS 내장(kolton 원본 `d2bs/HISTORY.txt:9`, 살아 있을 때 쓰면 밴 위험). kolton `Follower.js`, blizzhackers `Rushee.js`·`Wakka.js`가 mode 17(죽음)일 때만 부른다.
-- **okCount 연속 호출(261004):** 초기화는 각자 teamCount를 빠져나올 때 한다. 먼저 끝난 사람의 다음 okCount 메시지가 늦은 사람의 초기화에 지워질 수 있지만, 먼저 초기화한 사람은 전원 메시지를 받으므로 teamOk로 풀린다. 전제: 보낸 순서대로 도착(추정), 모든 프로필이 같은 횟수로 호출. 비교가 `===`라 호출 횟수가 어긋나면 120초 타임아웃.
+- **waitParty 연속 호출(261004, 261021 이름 수집, 261105 이름 정리):** 보낸 프로필 이름을 메시지별로 모은다(`waitPartyNames`). `waitPartyIn` 이름은 1단계 끝(`waitPartyOut`을 보내기 전)에, `waitPartyOut` 이름과 `waitPartyAll`은 2단계 끝에 비운다. 빠른 사람의 다음 `waitPartyIn`은 내 `waitPartyOut`을 받은 뒤에야 오므로 지워지지 않고, 2단계 중 그 사람의 `waitPartyOut`보다 먼저 온 `waitPartyIn`(지난 회차의 늦은 것)은 버린다. 전제: 같은 사람의 메시지는 보낸 순서대로 도착(`sendCopyData` = 동기 `SendMessage`), 모든 프로필이 같은 횟수로 호출. 호출 횟수가 어긋나면 120초 타임아웃. 261105 전 이름: `okCount`(1단계·함수)·`teamCount`(2단계·함수)·`teamOk`·`teamNames`.
 - **D2BS `me.mp`:** 실제 마나를 내림한 정수다(`JSUnit.cpp:262`, stat 8 `>> 8`).
 - **D2BS `include`:** 이미 include한 파일은 다시 실행하지 않는다(`Script.cpp:308`).
 - **D2BS 이벤트(261003, noah-/d2bs 소스):** 리스너가 등록돼 있으면(`IsListenerRegistered`, `Events.cpp:250`) 게임 스레드가 이벤트마다 `FireEvent`로 큐에 넣고 `TriggerOperationCallback()`을 부른다(`Script.cpp:419-427`). 스크립트는 delay 안(`JSCore.cpp:145-151`)뿐 아니라 JS 실행 중 검사 지점의 `operationCallback`(`ScriptEngine.cpp:316-322`)에서도 큐를 비우며 리스너를 실행한다. 즉 리스너는 메인 스크립트가 무엇을 하던 중이든 그 스택 위에서 돈다. `operationCallback`에 재진입 방지가 없고, 스크립트 스택 한도는 `JS_SetNativeStackQuota(runtime, 50000)`(`Script.cpp:121`)이라 넘으면 too much recursion. `RegisterEvent`는 같은 함수의 중복 등록을 막지 않는다(`Script.cpp:352-358`). itemaction은 0x9C(내)·0x9D(다른 플레이어, `global`) 아이템 패킷과 상점 거래(mode 100+)에서 온다(`D2NetHandlers.cpp:72-76·132-168`), 리스너 인자 순서는 `(gid, mode, code, global)`(`ScriptEngine.cpp:468-471`). 상시 리스너(특히 itemaction·gamepacket)는 이벤트가 몰리는 곳에서 이 위험이 있다(`rejected.md` Pickit gid 줍기).

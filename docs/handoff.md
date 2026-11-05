@@ -29,7 +29,7 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
   - 등급 기준이 이미 두 곳에 있다: `X.nip` 138~148줄(회복·마나 1등급 노멀 1~2막, 2등급 노멀 1~3막, 3등급 노멀 1~4막, 4·5등급 항상)과 `clearBelt`의 노멀 마나 규칙(2막 mp1, 3막 mp1·mp2를 벨트에서 버림). 두 기준이 한 막씩 어긋난다(nip은 2막에서 mp1, 3막에서 mp2를 줍는다).
 - **판단에 필요한 것**: 진행할지. 한다면 기준(① 같은 게임에서 연 상점의 막별 최고 등급을 기록해 씀 — 새 상태 1개, 게임 첫 방문엔 적용 안 됨, ② 막·난이도 고정 표 — `clearBelt` 마나 정리 규칙처럼 제외할 등급을 코드에 적음(상점 데이터 불필요, 사용자 261028), ③ nip 판정 `Pickit.checkItem`이 0이면 넣지 않음 — 새 상태 없음), 넣지 않은 물약을 버릴지, nip과 `clearBelt` 마나 규칙의 어긋남을 어느 쪽으로 맞출지.
 
-### 1-19. 대기 자리에 와 있는데 okCount 미도착 (`AutoSmurf.okCount`, 사용자 261029)
+### 1-19. 대기 자리에 와 있는데 waitParty 미도착 (`AutoSmurf.waitParty`, 옛 okCount, 사용자 261029)
 - **문제(사례)**: 261029 — a3 Chaos Sanctuary 4게임(10/29 04:38·06:09·09:31·12:15, 퇴장한 프로필과 4~27칸, 그 앞 150초 a3 trace 줄 없음, 06:09만 87초 전 `Town check (direct)` 다녀옴), a6 Pz-27 Travincal(10/28 19:41, 120초 전 `Town check (direct)` 다녀온 뒤). 261027에도 같은 모양(Pz-103 a3 Ancient's Way, Pz-117 a6 Catacombs 4).
 - **확인된 것**: okCount 보내기는 `sendCopyData` 한 번, 결과 확인·재전송 없음(261027 코드 읽음). 지금 로그로는 보내지 않았는지·유실됐는지·단계가 어긋났는지 모름.
 - **결정**(사용자 261029): 한 사이클 더 본다. 그래도 나오면 어디서 빠지는지 검증 방법을 세운다.
@@ -61,6 +61,12 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **검증 방법**: 검토에서 정한다.
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
+
+### 3-67. 팀 대기 이름 정리: okCount·teamCount → waitParty (`AutoSmurf.waitParty`, 사용자 261105)
+- **문제**(사용자 261105): 개수를 세지 않는데 이름이 `okCount`·`teamCount`라 뜻이 맞지 않았다.
+- **바꾼 것**(261105, 이 커밋): 두 함수를 `this.waitParty` 하나로 합치고(두 단계 유지), 메시지·변수를 `waitPartyIn`·`waitPartyAll`·`waitPartyOut`·`waitPartyNames`로, 로그를 `[waitParty] Waiting`·`Party desynced in/out`으로 바꿈. 퇴장 상세의 ` teamOk X` 삭제. 동작(순서·타임아웃·버리기 조건)은 그대로. 내용은 코드 노트의 같은 헤더.
+- **검증 방법**: d2bs 로그 — `[okCount]`·`Party desynced 1`·`Party desynced 2`·`teamOk` 0줄, 게임마다 프로필별 `[waitParty] Waiting` 수가 같고 구간 진행이 끝까지 감(대기가 풀림). desync가 나오면 `Party desynced in|out`과 `missing(waitPartyIn|waitPartyOut): 프로필`이 찍히고, in의 이름이 `[waitParty] Waiting`이 모자란 프로필과 같은지. `ReferenceError`·`[Error]`에 `waitParty`·`okCount`·`teamCount` 0.
+- **결과**: (로그 대기)
 
 ### 3-66. 로그 모양 정리: 위치 없는 정보 줄, 구간 시작·끝, [Quit] 색, [Died] lost=, 콘솔 줄을 print에도 (3-64 후속, 사용자 261104)
 - **문제**(사용자 261104): print에 위치가 쓸모없는 정보 줄이 많고, 게임·구간·시작 줄 모양이 매니저 창에서 구분이 어렵고, 콘솔에만 있는 줄이 있었다. `[Quit]`이 기본색이라 다른 기본색 줄을 쓸 수 없었다.

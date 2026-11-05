@@ -45,7 +45,7 @@
 - 리더 콘솔 `=== START/FARMING/LEVELING ===` → `=== [START] ===`·`=== [FARMING] ===`·`=== [LEVELING] ===`(색 7) + 같은 블록에 print. 퀘스트 아이템 콘솔 `!!! BOOK/POTION/SCROLL !!!` → `=== [BOOK] ===` 등(색 8), print `!!! [X] !!!` → `=== [X] ===`(이미 print가 있던 3곳은 문장만, `preparation`의 POTION·SCROLL 2곳은 print 추가). `preparation`의 꺼 둔 BOOK 줄(`/* */` 안)은 그대로.
 - 입장 직후 정보 줄은 위치 없이 `print`: `checkRole`의 `[Role] Leader|Boer|Follower`·`[Config] SafeTele=`, `start`의 `[Config] hireMerc=`, `preparation`의 `[Config] MiniShopBot=`·`farmingON`·`Tiered=`·`UseMerc=`, `toggle`의 `[toggle] …`. 토글 키 줄 `key: T 3 / H 2 / D 1` → `key: T3 / H2 / D1`.
 
-## this.okCount / this.teamCount
+## this.waitParty (옛 this.okCount / this.teamCount)
 
 ### 261004 Claude: 죽은 사람도 타임아웃, 타임아웃 상세
 - 죽은 사람도 120초 타임아웃(`&& !me.dead` 삭제, 사유 `Dead wait timeout`). 타임아웃 trace 상세에 `okCount`/`teamCount`/`teamOk` 값.
@@ -73,6 +73,13 @@
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - `okCount` 첫머리 `Misc.print("[okCount] Waiting")`(없는 프로필 = 진입 못 함), `while` 안 머리 위 글자 `Waiting: 안 온 프로필`(매 틱), `teamCount` 끝 머리 위 글자 `OK` 삭제(사용자 261103). 함수 이름(`okCount`·`teamCount`) 바꾸기는 나중(사용자).
 - 확인: 261104 로그 desync 6게임 모두 `[okCount] Waiting`이 하나 모자란 프로필 = 퇴장 줄의 `missing` 이름(6/6). 검증 통과(사용자 261104).
+
+### 261105 사용자: okCount·teamCount → waitParty 합치기와 이름 정리 (handoff 3-67)
+- 이유(사용자): 개수를 세던 방식(팀 크기 − 1까지 +1)이 이름 수집으로 바뀌어 `Count`의 뜻이 없어졌고, 예전 `waitForPartyMembers`가 없어져 이름이 겹칠 일도 없다. 두 단계는 유지한다(261021).
+- 함수 `this.okCount` + `this.teamCount` → `this.waitParty(range)` 하나(1단계 반복, 2단계 반복). 2단계 시작에서 `tick`·`orgx`·`orgy`를 다시 잡아 단계마다 120초(옛 `teamCount`가 들어갈 때 잡던 것과 같음). `this.missing`은 그대로(`waitParty` 뒤).
+- 이름 대응(변수·메시지·저장 키를 같은 이름으로): 메시지 `okCount` → `waitPartyIn`(1단계: 들어왔다), `teamOk`(메시지·변수) → `waitPartyAll`(모두 들어왔다, 1단계 끝 신호), `teamCount` → `waitPartyOut`(1단계를 나왔다, 다 모이면 최종 통과), `teamNames` → `waitPartyNames`. 호출 145곳 이름만 바꿈(호출 줄에는 날짜 표기 없음, 사용자 261105).
+- 로그: `[okCount] Waiting` → `[waitParty] Waiting`. 퇴장 `Party desynced 1` → `Party desynced in`(상세 `missing(waitPartyIn): …`), `Party desynced 2` → `Party desynced out`(`missing(waitPartyOut): …`). 상세 끝 ` teamOk X` 삭제(사용자 261105): 1단계는 거의 늘 false이고 true는 마지막 틱에 다 모인 경우뿐, 2단계는 늘 true라 정보가 없다. 머리 위 `Waiting: …`·`missing`은 그대로.
+- 주석 처리된 `//this.okCount();`(`radament` 끝) 삭제. 줄 끝 메모 안의 옛 이름을 새 이름으로.
 
 ## this.buffCount
 
