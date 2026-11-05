@@ -132,7 +132,8 @@
 [type] == amulet && [name] != 521 && [quality] >= magic # [ias]+[dexterity]+[tohit]/5+[lifeleech]+[manaleech]+[amazonskills]*120-[itemaddclassskills]*60+[bowandcrossbowskilltab]*50+[passiveandmagicskilltab]*70-[itemaddskilltab]*30+[itemallskills]*60+[fcr]/2+[manarecoverybonus]/2+[maxhp]+[vitality]+[maxmana]+[energy]+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 190 # [tier] == 29
 [type] == amulet && [name] != 521 && [quality] >= magic # [ias]+[dexterity]+[tohit]/5+[lifeleech]+[manaleech]+[amazonskills]*120-[itemaddclassskills]*60+[bowandcrossbowskilltab]*50+[passiveandmagicskilltab]*70-[itemaddskilltab]*30+[itemallskills]*60+[fcr]/2+[manarecoverybonus]/2+[maxhp]+[vitality]+[maxmana]+[energy]+([coldresist]+[fireresist]+[lightresist]+[poisonresist])*0.8 >= 200 # [tier] == 30
 
-[type] == amulet && [quality] == set # [itemdamagetomana] == 20 # [tier] == 31
+[type] == amulet && [quality] == unique # [coldlength] >= 1 # [tier] == 31
+[type] == amulet && [quality] == set # [itemdamagetomana] == 20 # [tier] == 32
 
 
 //============================================================================================================================================================================================
