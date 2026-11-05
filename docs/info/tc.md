@@ -2,14 +2,14 @@
 
 지역별 일반·챔피언·유니크 몬스터와 상자, 슈퍼유니크·액트 보스가 떨어뜨릴 수 있는 최대 장비 TC와 최고 룬 (261104).
 
-- 데이터: mpqdata(1.14d에서 추출) `levels.txt`·`monstats.txt`·`superuniques.txt`·`treasureclassex.txt`. 규칙: 1.14d `Game.exe`(FileVersion 1.14.3.71) 역어셈블로 확인(아래 주소). 값은 모두 이 규칙으로 계산한 것이다(261104).
+- 데이터: mpqdata(1.14d에서 추출) `levels.txt`·`monstats.txt`·`superuniques.txt`·`treasureclassex.txt`. 규칙: 1.14d `Game.exe`(FileVersion 1.14.3.71) 역어셈블로 확인(아래 주소). 값은 모두 이 규칙으로 계산한 것이다(261104). 노말 표 추가(261105).
 - kolbot 사용처: 사냥 구간 선택(`bots/*`), 아이템 레벨이 필요한 판단
 
 ## 1. 규칙
 
 | 항목 | 규칙 | 1.14d 근거 |
 |---|---|---|
-| 몬스터 종류별 TC | 일반 `TreasureClass1`, 챔피언 `TreasureClass2`, 유니크 `TreasureClass3`, 퀘스트 첫 처치 `TreasureClass4`(난이도별 `(N)`·`(H)` 열). 슈퍼유니크는 `superuniques.txt` `TC`·`TC(N)`·`TC(H)` | D2MOO `MonsterMode.cpp` 498~568줄(1.14d 함수 위치는 찾지 않음) |
+| 몬스터 종류별 TC | 일반 `TreasureClass1`, 챔피언 `TreasureClass2`, 유니크 `TreasureClass3`, 퀘스트 첫 처치 `TreasureClass4`(노말은 접미사 없는 열, 나이트메어·헬은 `(N)`·`(H)` 열). 슈퍼유니크는 `superuniques.txt` `TC`·`TC(N)`·`TC(H)` | D2MOO `MonsterMode.cpp` 498~568줄(1.14d 함수 위치는 찾지 않음) |
 | 몬스터 레벨 | 확장팩 나이트메어·헬: 지역 레벨(`levels.txt` `MonLvl2Ex`·`MonLvl3Ex`). `monstats.txt` `boss`·`noRatio` 클래스는 `Level(N)`·`Level(H)` | `0x61dca0`(지역 레벨 읽기) |
 | 레벨 가산 | 유니크·슈퍼유니크 +3(umod 4 `leveladd`). 챔피언 +2(+3 후 champion umod의 −1). 챔피언 중 berserk는 +3(−1 없음) | `0x5a2120`(umod 1~4를 먼저 적용, `0x6e2168`), `0x5a0e40`(+3), `0x5a0e80`(−1), 적용 함수 표 `0x73c008` |
 | TC 올림 | 확장팩·나이트메어 이상·`boss`/`noRatio`가 아닌 몬스터만. 몬스터 TC에서 시작해, 다음 기록이 같은 `group`이고 그 `level` ≤ 몬스터 레벨이면 다음으로 옮긴다. 내리지 않는다 | `0x55afa0`(조건), `0x654e00`(루프) |
@@ -19,6 +19,142 @@
 
 - 표의 "장비 TC / 룬" = 그 TC에서 도달할 수 있는 가장 높은 `weap`/`armo` 번호와 가장 높은 룬. TC 안의 확률은 반영하지 않았다.
 - 지역 값 = 그 지역 `nmon1~10`(나이트메어·헬 몬스터 목록) 몬스터 중 최댓값. 목록이 빈 지역은 `-`.
+
+## 2. 지역 (노말)
+
+- 노말은 TC 올림이 없다(`0x55afa0` 조건: 난이도 > 0). 값 = 그 지역 몬스터의 기본 TC 중 최댓값. 일반은 `mon1~10`, 챔피언·유니크는 `umon1~10`(노말만 이 목록에서 고름, D2MOO `MONSTERCHOOSE_GetPresetMonsterId`, 1.14d 미확인). 레벨 = `MonLvl1Ex`(상자 판정에 쓰임, `0x61dca0`).
+
+| ID | 지역 | 레벨 | 일반 | 챔피언 | 유니크 | 상자 |
+|---|---|---|---|---|---|---|
+| 2 | Blood Moor | 1 | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 3 | Cold Plains | 2 | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 4 | Stony Field | 4 | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 5 | Dark Wood | 5 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 6 | Black Marsh | 6 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 7 | Tamoe Highland | 8 | 12 / - | 12 / - | 12 / - | B: 6 / - |
+| 8 | Den of Evil | 1 | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 9 | Cave Level 1 | 2 | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 10 | Underground Passage Level 1 | 4 | 6 / - | 6 / - | 6 / - | A: 3 / - |
+| 11 | Hole Level 1 | 5 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 12 | Pit Level 1 | 7 | 12 / - | 12 / - | 12 / - | B: 6 / - |
+| 13 | Cave Level 2 | 2 | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 14 | Underground Passage Level 2 | 4 | 6 / - | 6 / - | 6 / - | A: 3 / - |
+| 15 | Hole Level 2 | 5 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 16 | Pit Level 2 | 7 | 12 / - | 12 / - | 12 / - | B: 6 / - |
+| 17 | Burial Grounds | 3 | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 18 | Crypt | 3 | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 19 | Mausoleum | 3 | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 21 | Tower Cellar Level 1 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 22 | Tower Cellar Level 2 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 23 | Tower Cellar Level 3 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 24 | Tower Cellar Level 4 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 25 | Tower Cellar Level 5 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 26 | Monastery Gate | 8 | 12 / - | 12 / - | 12 / - | B: 6 / - |
+| 27 | Outer Cloister | 9 | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 28 | Barracks | 9 | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 29 | Jail Level 1 | 10 | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 30 | Jail Level 2 | 10 | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 31 | Jail Level 3 | 10 | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 32 | Inner Cloister | 10 | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 33 | Cathedral | 11 | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 34 | Catacombs Level 1 | 11 | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 35 | Catacombs Level 2 | 11 | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 36 | Catacombs Level 3 | 12 | 21 / Ral | 21 / Ral | 21 / Ral | C: 12 / - |
+| 37 | Catacombs Level 4 | 12 | 21 / Ral | 21 / Ral | 21 / Ral | C: 12 / - |
+| 38 | Tristram | 6 | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 39 | Moo Moo Farm | 28 | 36 / Dol | 36 / Sol | 36 / Sol | C: 12 / - |
+| 41 | Rocky Waste | 14 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 42 | Dry Hills | 15 | 15 / Nef | 15 / Nef | 15 / Nef | B: 18 / Nef |
+| 43 | Far Oasis | 16 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 44 | Lost City | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 45 | Valley of Snakes | 18 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 46 | Canyon of the Magi | 16 | 21 / Ral | 21 / Ral | 21 / Ral | C: 21 / Nef |
+| 47 | Sewers Level 1 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 48 | Sewers Level 2 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 49 | Sewers Level 3 | 14 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 51 | Harem Level 2 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 52 | Palace Cellar Level 1 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 53 | Palace Cellar Level 2 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 54 | Palace Cellar Level 3 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 55 | Stony Tomb Level 1 | 12 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 56 | Halls of the Dead Level 1 | 12 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 57 | Halls of the Dead Level 2 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 58 | Claw Viper Temple Level 1 | 14 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 59 | Stony Tomb Level 2 | 12 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 60 | Halls of the Dead Level 3 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 61 | Claw Viper Temple Level 2 | 14 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 62 | Maggot Lair Level 1 | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 63 | Maggot Lair Level 2 | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 64 | Maggot Lair Level 3 | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 65 | Ancient Tunnels | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 66 | Tal Rasha's Tomb | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 67 | Tal Rasha's Tomb | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 68 | Tal Rasha's Tomb | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 69 | Tal Rasha's Tomb | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 70 | Tal Rasha's Tomb | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 71 | Tal Rasha's Tomb | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 72 | Tal Rasha's Tomb | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 73 | Duriel's Lair | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 74 | Arcane Sanctuary | 14 | 21 / Ral | 21 / Ral | 21 / Ral | A: 15 / Nef |
+| 76 | Spider Forest | 21 | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
+| 77 | Great Marsh | 21 | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
+| 78 | Flayer Jungle | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 79 | Lower Kurast | 22 | 24 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 80 | Kurast Bazaar | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 81 | Upper Kurast | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 82 | Kurast Causeway | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 83 | Travincal | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 84 | Spider Cave | 21 | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
+| 85 | Spider Cavern | 21 | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
+| 86 | Swampy Pit Level 1 | 21 | 27 / Ral | 27 / Ral | 27 / Ral | A: 24 / Ral |
+| 87 | Swampy Pit Level 2 | 21 | 27 / Ral | 27 / Ral | 27 / Ral | A: 24 / Ral |
+| 88 | Flayer Dungeon Level 1 | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 89 | Flayer Dungeon Level 2 | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 90 | Swampy Pit Level 3 | 21 | 27 / Ral | 27 / Ral | 27 / Ral | A: 24 / Ral |
+| 91 | Flayer Dungeon Level 3 | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 92 | Sewers Level 1 | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 93 | Sewers Level 2 | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 94 | Ruined Temple | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 95 | Disused Fane | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 96 | Forgotten Reliquary | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 97 | Forgotten Temple | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 98 | Ruined Fane | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 99 | Disused Reliquary | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 100 | Durance of Hate Level 1 | 25 | 30 / Ral | 30 / Ral | 30 / Ral | C: 30 / Ral |
+| 101 | Durance of Hate Level 2 | 25 | 30 / Ral | 30 / Ral | 30 / Ral | C: 30 / Ral |
+| 102 | Durance of Hate Level 3 | 25 | 30 / Ral | 30 / Ral | 30 / Ral | C: 30 / Ral |
+| 104 | Outer Steppes | 26 | 36 / Sol | 33 / Sol | 33 / Sol | A: 33 / Sol |
+| 105 | Plains of Despair | 26 | 36 / Sol | 36 / Sol | 36 / Sol | A: 33 / Sol |
+| 106 | City of the Damned | 27 | 36 / Sol | 36 / Sol | 36 / Sol | B: 36 / Sol |
+| 107 | River of Flame | 27 | 36 / Sol | 36 / Sol | 36 / Sol | B: 36 / Sol |
+| 108 | Chaos Sanctum | 28 | 36 / Sol | 36 / Sol | 36 / Sol | C: 36 / Sol |
+| 110 | Bloody Foothills | 24 | 36 / Dol | - / - | - / - | B: 39 / Dol |
+| 111 | Rigid Highlands | 25 | 39 / Dol | 36 / Dol | 36 / Dol | B: 39 / Dol |
+| 112 | Arreat Plateau | 26 | 36 / Dol | 36 / Dol | 36 / Dol | B: 39 / Dol |
+| 113 | Crystalized Cavern Level 1 | 29 | 39 / Dol | 36 / Dol | 36 / Dol | B: 39 / Dol |
+| 114 | Cellar of Pity | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 115 | Crystalized Cavern Level 2 | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 116 | Echo Chamber | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 117 | Tundra Wastelands | 27 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 118 | Glacial Caves Level 1 | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 119 | Glacial Caves Level 2 | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 120 | Rocky Summit | 37 | - / - | - / - | - / - | C: 39 / Dol |
+| 121 | Nihlathaks Temple | 32 | - / - | - / - | - / - | B: 39 / Dol |
+| 122 | Halls of Anguish | 33 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 123 | Halls of Death's Calling | 34 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 124 | Halls of Vaught | 36 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 125 | Hell1 | 39 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 126 | Hell2 | 39 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 127 | Hell3 | 39 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 128 | The Worldstone Keep Level 1 | 39 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 129 | The Worldstone Keep Level 2 | 40 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 130 | The Worldstone Keep Level 3 | 42 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 131 | Throne of Destruction | 43 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 132 | The Worldstone Chamber | 43 | - / - | - / - | - / - | C: 39 / Dol |
+| 133 | Pandemonium Run 1 | 50 | 36 / Dol | 36 / Dol | 36 / Dol | C: 39 / Dol |
+| 134 | Pandemonium Run 2 | 50 | 33 / Sol | 33 / Sol | 33 / Sol | C: 39 / Dol |
+| 135 | Pandemonium Run 3 | 50 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 136 | Tristram | 50 | - / - | - / - | - / - | C: 39 / Dol |
 
 ## 2. 지역 (나이트메어)
 
@@ -288,10 +424,89 @@
 | 135 | Pandemonium Run 3 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
 | 136 | Tristram | 83 | - / - | - / - | - / - | C: 87 / Zod |
 
+## 3. 슈퍼유니크 (노말)
+
+- 노말은 TC 올림이 없어 레벨이 TC에 영향을 주지 않으므로 레벨을 적지 않는다. 지역은 나이트메어 표와 같다.
+
+| hcIdx | Superunique | 클래스 | TC | 장비 TC / 룬 |
+|---|---|---|---|---|
+| 0 | Bishibosh | fallenshaman1 | Act 1 Super A | 3 / - |
+| 1 | Bonebreak | skeleton1 | Act 1 Super A | 3 / - |
+| 2 | Coldcrow | cr_archer1 | Act 1 Super A | 3 / - |
+| 3 | Rakanishu | fallen2 | Act 1 Super B | 6 / - |
+| 4 | Treehead WoodFist | brute2 | Act 1 Super B | 6 / - |
+| 5 | Griswold | griswold (B) | Griswold | 12 / - |
+| 6 | The Countess | corruptrogue3 | Countess | 12 / Ral |
+| 7 | Pitspawn Fouldog | bighead2 | Act 1 Super B | 6 / - |
+| 8 | Flamespike the Crawler | quillrat4 | Act 1 Unique C | 12 / - |
+| 9 | Boneash | skmage_pois3 | Act 1 Super C | 12 / - |
+| 10 | Radament | radament (B) | Radament | 27 / Ral |
+| 11 | Bloodwitch the Wild | pantherwoman1 | Act 2 Super A | 15 / Nef |
+| 12 | Fangskin | clawviper3 | Act 2 Super B | 18 / Nef |
+| 13 | Beetleburst | scarab2 | Act 2 Super B | 18 / Nef |
+| 14 | Leatherarm | mummy2 | Act 2 Super A | 15 / Nef |
+| 15 | Coldworm the Burrower | maggotqueen1 | Act 2 Super B | 18 / Nef |
+| 16 | Fire Eye | sandraider3 | Act 2 Super B | 18 / Nef |
+| 17 | Dark Elder | zombie5 | Act 2 Super B | 18 / Nef |
+| 18 | The Summoner | summoner (B) | Summoner | 21 / Nef |
+| 19 | Ancient Kaa the Soulless | unraveler3 | Act 2 Super C | 21 / Ral |
+| 20 | The Smith | smith | Smith | 12 / - |
+| 21 | Web Mage the Burning | arach4 | Act 3 Super A | 24 / Ral |
+| 22 | Witch Doctor Endugu | fetishshaman4 | Act 3 Super B | 27 / Ral |
+| 23 | Stormtree | thornhulk3 | Act 3 Super B | 27 / Ral |
+| 24 | Sarina the Battlemaid | corruptrogue5 | Act 3 Super B | 27 / Ral |
+| 25 | Icehawk Riftwing | batdemon3 | Act 3 Super A | 24 / Ral |
+| 26 | Ismail Vilehand | councilmember1 | Council | 33 / Sol |
+| 27 | Geleb Flamefinger | councilmember2 | Council | 33 / Sol |
+| 28 | Bremm Sparkfist | councilmember3 | Council | 33 / Sol |
+| 29 | Toorc Icefist | councilmember1 | Council | 33 / Sol |
+| 30 | Wyand Voidfinger | councilmember2 | Council | 33 / Sol |
+| 31 | Maffer Dragonhand | councilmember3 | Council | 33 / Sol |
+| 32 | Winged Death | megademon3 | Act 4 Super A | 33 / Sol |
+| 33 | The Tormentor | willowisp3 | Act 4 Super A | 33 / Sol |
+| 34 | Taintbreeder | vilemother2 | Act 4 Super A | 33 / Sol |
+| 35 | Riftwraith the Cannibal | regurgitator2 | Act 4 Super A | 33 / Sol |
+| 36 | Infector of Souls | megademon3 | Act 4 Super B | 36 / Sol |
+| 37 | Lord De Seis | doomknight3 | Act 4 Super C | 36 / Sol |
+| 38 | Grand Vizier of Chaos | fingermage3 | Act 4 Super B | 36 / Sol |
+| 39 | The Cow King | hellbovine | Cow King | 12 / - |
+| 40 | Corpsefire | zombie1 | Act 1 Super A | 3 / - |
+| 41 | The Feature Creep | hephasto | Haphesto | 36 / Dol |
+| 42 | Siege Boss | overseer1 | Act 5 Super A | 36 / Dol |
+| 43 | Ancient Barbarian 1 | ancientbarb1 | - | - / - |
+| 44 | Ancient Barbarian 2 | ancientbarb2 | - | - / - |
+| 45 | Ancient Barbarian 3 | ancientbarb3 | - | - / - |
+| 46 | Axe Dweller | bloodlord3 | Act 5 Super C | 39 / Dol |
+| 47 | Bonesaw Breaker | reanimatedhorde2 | Act 5 Super A | 36 / Dol |
+| 48 | Dac Farren | imp3 | Act 5 Super B | 39 / Dol |
+| 49 | Megaflow Rectifier | minion1 | Act 5 Super A | 36 / Dol |
+| 50 | Eyeback Unleashed | deathmauler1 | Act 5 Super A | 36 / Dol |
+| 51 | Threash Socket | siegebeast3 | Act 5 Super Cx | 39 / Dol |
+| 52 | Pindleskin | reanimatedhorde5 | Act 5 Super Cx | 39 / Dol |
+| 53 | Snapchip Shatter | frozenhorror1 | Act 5 Super C | 39 / Dol |
+| 54 | Anodized Elite | succubus4 | Act 5 Super C | 39 / Dol |
+| 55 | Vinvear Molech | succubuswitch2 | Act 5 Super A | 36 / Dol |
+| 56 | Sharp Tooth Sayer | overseer3 | Act 5 Super B | 39 / Dol |
+| 57 | Magma Torquer | imp5 | Act 5 Super C | 39 / Dol |
+| 58 | Blaze Ripper | deathmauler5 | Act 5 Super C | 39 / Dol |
+| 59 | Frozenstein | snowyeti4 | Act 5 Super C | 39 / Dol |
+| 60 | Nihlathak Boss | nihlathakboss (B) | Nihlathak | 39 / Dol |
+| 61 | Baal Subject 1 | fallenshaman5 | Act 5 Champ C | 39 / Dol |
+| 62 | Baal Subject 2 | unraveler5 | Act 5 Champ C | 39 / Dol |
+| 63 | Baal Subject 3 | baalhighpriest | Act 5 Champ C | 39 / Dol |
+| 64 | Baal Subject 4 | venomlord | Act 5 Champ C | 39 / Dol |
+| 65 | Baal Subject 5 | baalminion1 | Act 5 Champ C | 39 / Dol |
+
 ## 3. 슈퍼유니크 (나이트메어)
 
 - 레벨 = 기본 레벨 + 3. 기본 레벨은 지역 레벨, `boss`·`noRatio` 클래스(표의 B)는 `monstats` 레벨(올림 없음).
-- 지역(슈퍼유니크가 나오는 지역)은 mpqdata에 없는 정보라 따로 지정했다(근거: 웹 미검증). 지역 칸이 빈 13명은 지정하지 못해 레벨·올림을 계산하지 않았다(기본 TC 값만).
+- 지역 = 슈퍼유니크가 놓이는 지도(DS1)의 지역. 근거: 1.14d `d2data.mpq`·`d2exp.mpq`의 DS1 2,384개(사용자 추출)에서 프리셋 몬스터(`monpreset.txt`)를 읽고, 그 DS1을 `lvlprest.txt` → D2MOO 지도 생성 코드(`DrlgMaze.cpp`·`DrlgOutWild.cpp`·`DrlgOutDesr.cpp`·`DrlgOutJung.cpp`·`DrlgOutPlace.cpp`·`DrlgOutSiege.cpp`, 1.10f 재구성, 1.14d 미확인)로 지역에 맞췄다. DS1에 없는 것은 D2MOO 소환 코드(디아블로 봉인 `A4Q2.cpp`, 고대인 `A5Q5.cpp`, 니라탁 `A5Q3.cpp`, 바알 부하 `AiThink.cpp`)(261105).
+- 슈퍼유니크는 게임당 한 번만 나온다(`Stacks` 0인 경우, D2MOO `D2GAME_SpawnSuperUnique_6FC6F690`). 같은 지도가 여러 지역에 놓이면 먼저 활성화된 곳에서 나온다. 다른 후보 지역으로 계산해도 값은 같다.
+  - Icehawk Riftwing: 92 Sewers Level 1·93 Sewers Level 2 둘 다(`DRLGMAZE_PlaceAct3SewerStuff`가 두 층 모두 배수로 방을 놓음)
+  - Eyeback Unleashed: 111 Rigid Highlands·112 Arreat Plateau·117 Tundra Wastelands의 출구(`DRLGOUTSIEGE_PlaceBarricadeEntrancesAndExits`)
+  - Ancient Kaa the Soulless: 66~72 Tal Rasha's Tomb 중 지팡이 무덤이 아닌 무작위 한 곳(`nBossTombLevel`)
+- 지역 칸이 빈 9명은 나오지 않는다: Winged Death·The Tormentor·Taintbreeder·Riftwraith the Cannibal·Axe Dweller·Anodized Elite·Vinvear Molech·Magma Torquer(DS1·소환 코드 모두 없음), Blaze Ripper(DS1은 있으나 `lvlprest.txt` `Act 5 - Barricade Snow Unique`의 `Files`가 0이고 지도 코드가 쓰지 않음).
+- The Summoner는 슈퍼유니크 기록이 아니라 `monstats` 몬스터 `summoner`로 놓인다(`monpreset.txt` 액트2). 그래서 +3이 붙지 않고 레벨은 `monstats` `Level(N)`·`Level(H)`다.
 
 | hcIdx | Superunique | 클래스 | 지역 | 레벨 | 기본 TC | 올린 TC | 장비 TC / 룬 |
 |---|---|---|---|---|---|---|---|
@@ -303,7 +518,7 @@
 | 5 | Griswold | griswold (B) | 38 Tristram | 42 | Griswold (N) |  | 66 / Vex |
 | 6 | The Countess | corruptrogue3 | 25 Tower Cellar Level 5 | 45 | Countess (N) |  | 45 / Ko |
 | 7 | Pitspawn Fouldog | bighead2 | 30 Jail Level 2 | 44 | Act 1 (N) Super B | Act 2 (N) Super A | 45 / Ko |
-| 8 | Flamespike the Crawler | quillrat4 |  |  | Act 1 (N) Unique C |  | 42 / Io |
+| 8 | Flamespike the Crawler | quillrat4 | 32 Inner Cloister | 44 | Act 1 (N) Unique C | Act 2 (N) Unique B | 48 / Ko |
 | 9 | Boneash | skmage_pois3 | 33 Cathedral | 45 | Act 1 (N) Super C | Act 2 (N) Super B | 48 / Ko |
 | 10 | Radament | radament (B) | 49 Sewers Level 3 | 52 | Radament (N) |  | 51 / Lem |
 | 11 | Bloodwitch the Wild | pantherwoman1 | 60 Halls of the Dead Level 3 | 48 | Act 2 (N) Super A | Act 3 (N) Super A | 51 / Lem |
@@ -313,10 +528,10 @@
 | 15 | Coldworm the Burrower | maggotqueen1 | 64 Maggot Lair Level 3 | 49 | Act 2 (N) Super B | Act 3 (N) Super A | 51 / Lem |
 | 16 | Fire Eye | sandraider3 | 54 Palace Cellar Level 3 | 51 | Act 2 (N) Super B | Act 3 (N) Super C | 51 / Lem |
 | 17 | Dark Elder | zombie5 | 44 Lost City | 49 | Act 2 (N) Super B | Act 3 (N) Super A | 51 / Lem |
-| 18 | The Summoner | summoner (B) | 74 Arcane Sanctuary | 58 | Summoner (N) |  | 48 / Ko |
+| 18 | The Summoner | summoner (B) | 74 Arcane Sanctuary | 55 | Summoner (N) |  | 48 / Ko |
 | 19 | Ancient Kaa the Soulless | unraveler3 | 66 Tal Rasha's Tomb | 52 | Act 2 (N) Super C | Act 3 (N) Super C | 51 / Lem |
 | 20 | The Smith | smith | 28 Barracks | 43 | Smith (N) |  | 66 / Vex |
-| 21 | Web Mage the Burning | arach4 | 84 Spider Cave | 53 | Act 3 (N) Super A | Act 3 (N) Super C | 51 / Lem |
+| 21 | Web Mage the Burning | arach4 | 85 Spider Cavern | 53 | Act 3 (N) Super A | Act 3 (N) Super C | 51 / Lem |
 | 22 | Witch Doctor Endugu | fetishshaman4 | 91 Flayer Dungeon Level 3 | 54 | Act 3 (N) Super B | Act 4 (N) Super A | 54 / Um |
 | 23 | Stormtree | thornhulk3 | 78 Flayer Jungle | 53 | Act 3 (N) Super B | Act 3 (N) Super C | 51 / Lem |
 | 24 | Sarina the Battlemaid | corruptrogue5 | 94 Ruined Temple | 56 | Act 3 (N) Super B | Act 4 (N) Super A | 54 / Um |
@@ -338,9 +553,9 @@
 | 40 | Corpsefire | zombie1 | 8 Den of Evil | 39 | Act 1 (N) Super A |  | 42 / Io |
 | 41 | The Feature Creep | hephasto | 107 River of Flame | 60 | Haphesto (N) |  | 60 / Ist |
 | 42 | Siege Boss | overseer1 | 110 Bloody Foothills | 61 | Act 5 (N) Super A |  | 60 / Ist |
-| 43 | Ancient Barbarian 1 | ancientbarb1 |  |  | - |  | - / - |
-| 44 | Ancient Barbarian 2 | ancientbarb2 |  |  | - |  | - / - |
-| 45 | Ancient Barbarian 3 | ancientbarb3 |  |  | - |  | - / - |
+| 43 | Ancient Barbarian 1 | ancientbarb1 | 120 Rocky Summit | 71 | - |  | - / - |
+| 44 | Ancient Barbarian 2 | ancientbarb2 | 120 Rocky Summit | 71 | - |  | - / - |
+| 45 | Ancient Barbarian 3 | ancientbarb3 | 120 Rocky Summit | 71 | - |  | - / - |
 | 46 | Axe Dweller | bloodlord3 |  |  | Act 5 (N) Super C |  | 63 / Ist |
 | 47 | Bonesaw Breaker | reanimatedhorde2 | 115 Crystalized Cavern Level 2 | 64 | Act 5 (N) Super A | Act 5 (N) Super B | 60 / Ist |
 | 48 | Dac Farren | imp3 | 110 Bloody Foothills | 61 | Act 5 (N) Super B |  | 60 / Ist |
@@ -365,7 +580,13 @@
 ## 3. 슈퍼유니크 (헬)
 
 - 레벨 = 기본 레벨 + 3. 기본 레벨은 지역 레벨, `boss`·`noRatio` 클래스(표의 B)는 `monstats` 레벨(올림 없음).
-- 지역(슈퍼유니크가 나오는 지역)은 mpqdata에 없는 정보라 따로 지정했다(근거: 웹 미검증). 지역 칸이 빈 13명은 지정하지 못해 레벨·올림을 계산하지 않았다(기본 TC 값만).
+- 지역 = 슈퍼유니크가 놓이는 지도(DS1)의 지역. 근거: 1.14d `d2data.mpq`·`d2exp.mpq`의 DS1 2,384개(사용자 추출)에서 프리셋 몬스터(`monpreset.txt`)를 읽고, 그 DS1을 `lvlprest.txt` → D2MOO 지도 생성 코드(`DrlgMaze.cpp`·`DrlgOutWild.cpp`·`DrlgOutDesr.cpp`·`DrlgOutJung.cpp`·`DrlgOutPlace.cpp`·`DrlgOutSiege.cpp`, 1.10f 재구성, 1.14d 미확인)로 지역에 맞췄다. DS1에 없는 것은 D2MOO 소환 코드(디아블로 봉인 `A4Q2.cpp`, 고대인 `A5Q5.cpp`, 니라탁 `A5Q3.cpp`, 바알 부하 `AiThink.cpp`)(261105).
+- 슈퍼유니크는 게임당 한 번만 나온다(`Stacks` 0인 경우, D2MOO `D2GAME_SpawnSuperUnique_6FC6F690`). 같은 지도가 여러 지역에 놓이면 먼저 활성화된 곳에서 나온다. 다른 후보 지역으로 계산해도 값은 같다.
+  - Icehawk Riftwing: 92 Sewers Level 1·93 Sewers Level 2 둘 다(`DRLGMAZE_PlaceAct3SewerStuff`가 두 층 모두 배수로 방을 놓음)
+  - Eyeback Unleashed: 111 Rigid Highlands·112 Arreat Plateau·117 Tundra Wastelands의 출구(`DRLGOUTSIEGE_PlaceBarricadeEntrancesAndExits`)
+  - Ancient Kaa the Soulless: 66~72 Tal Rasha's Tomb 중 지팡이 무덤이 아닌 무작위 한 곳(`nBossTombLevel`)
+- 지역 칸이 빈 9명은 나오지 않는다: Winged Death·The Tormentor·Taintbreeder·Riftwraith the Cannibal·Axe Dweller·Anodized Elite·Vinvear Molech·Magma Torquer(DS1·소환 코드 모두 없음), Blaze Ripper(DS1은 있으나 `lvlprest.txt` `Act 5 - Barricade Snow Unique`의 `Files`가 0이고 지도 코드가 쓰지 않음).
+- The Summoner는 슈퍼유니크 기록이 아니라 `monstats` 몬스터 `summoner`로 놓인다(`monpreset.txt` 액트2). 그래서 +3이 붙지 않고 레벨은 `monstats` `Level(N)`·`Level(H)`다.
 
 | hcIdx | Superunique | 클래스 | 지역 | 레벨 | 기본 TC | 올린 TC | 장비 TC / 룬 |
 |---|---|---|---|---|---|---|---|
@@ -377,7 +598,7 @@
 | 5 | Griswold | griswold (B) | 38 Tristram | 87 | Griswold (H) |  | 66 / Vex |
 | 6 | The Countess | corruptrogue3 | 25 Tower Cellar Level 5 | 82 | Countess (H) |  | 66 / Lo |
 | 7 | Pitspawn Fouldog | bighead2 | 30 Jail Level 2 | 74 | Act 1 (H) Super B | Act 3 (H) Super A | 72 / Ber |
-| 8 | Flamespike the Crawler | quillrat4 |  |  | Act 1 (H) Unique C |  | 66 / Vex |
+| 8 | Flamespike the Crawler | quillrat4 | 32 Inner Cloister | 75 | Act 1 (H) Unique C | Act 3 (H) Unique B | 75 / Ber |
 | 9 | Boneash | skmage_pois3 | 33 Cathedral | 75 | Act 1 (H) Super C | Act 3 (H) Super B | 75 / Ber |
 | 10 | Radament | radament (B) | 49 Sewers Level 3 | 86 | Radament (H) |  | 75 / Ber |
 | 11 | Bloodwitch the Wild | pantherwoman1 | 60 Halls of the Dead Level 3 | 85 | Act 2 (H) Super A | Act 4 (H) Super B | 78 / Cham |
@@ -387,10 +608,10 @@
 | 15 | Coldworm the Burrower | maggotqueen1 | 64 Maggot Lair Level 3 | 88 | Act 2 (H) Super B | Act 4 (H) Super C | 78 / Cham |
 | 16 | Fire Eye | sandraider3 | 54 Palace Cellar Level 3 | 81 | Act 2 (H) Super B | Act 4 (H) Super A | 78 / Cham |
 | 17 | Dark Elder | zombie5 | 44 Lost City | 80 | Act 2 (H) Super B | Act 3 (H) Super C | 75 / Ber |
-| 18 | The Summoner | summoner (B) | 74 Arcane Sanctuary | 83 | Summoner (H) |  | 72 / Lo |
+| 18 | The Summoner | summoner (B) | 74 Arcane Sanctuary | 80 | Summoner (H) |  | 72 / Lo |
 | 19 | Ancient Kaa the Soulless | unraveler3 | 66 Tal Rasha's Tomb | 83 | Act 2 (H) Super C | Act 4 (H) Super A | 78 / Cham |
 | 20 | The Smith | smith | 28 Barracks | 73 | Smith (H) |  | 66 / Vex |
-| 21 | Web Mage the Burning | arach4 | 84 Spider Cave | 82 | Act 3 (H) Super A | Act 4 (H) Super A | 78 / Cham |
+| 21 | Web Mage the Burning | arach4 | 85 Spider Cavern | 82 | Act 3 (H) Super A | Act 4 (H) Super A | 78 / Cham |
 | 22 | Witch Doctor Endugu | fetishshaman4 | 91 Flayer Dungeon Level 3 | 86 | Act 3 (H) Super B | Act 4 (H) Super B | 78 / Cham |
 | 23 | Stormtree | thornhulk3 | 78 Flayer Jungle | 83 | Act 3 (H) Super B | Act 4 (H) Super A | 78 / Cham |
 | 24 | Sarina the Battlemaid | corruptrogue5 | 94 Ruined Temple | 87 | Act 3 (H) Super B | Act 4 (H) Super C | 78 / Cham |
@@ -412,9 +633,9 @@
 | 40 | Corpsefire | zombie1 | 8 Den of Evil | 82 | Act 1 (H) Super A | Act 4 (H) Super A | 78 / Cham |
 | 41 | The Feature Creep | hephasto | 107 River of Flame | 88 | Haphesto (H) |  | 84 / Zod |
 | 42 | Siege Boss | overseer1 | 110 Bloody Foothills | 83 | Act 5 (H) Super A |  | 84 / Zod |
-| 43 | Ancient Barbarian 1 | ancientbarb1 |  |  | - |  | - / - |
-| 44 | Ancient Barbarian 2 | ancientbarb2 |  |  | - |  | - / - |
-| 45 | Ancient Barbarian 3 | ancientbarb3 |  |  | - |  | - / - |
+| 43 | Ancient Barbarian 1 | ancientbarb1 | 120 Rocky Summit | 90 | - |  | - / - |
+| 44 | Ancient Barbarian 2 | ancientbarb2 | 120 Rocky Summit | 90 | - |  | - / - |
+| 45 | Ancient Barbarian 3 | ancientbarb3 | 120 Rocky Summit | 90 | - |  | - / - |
 | 46 | Axe Dweller | bloodlord3 |  |  | Act 5 (H) Super C |  | 87 / Zod |
 | 47 | Bonesaw Breaker | reanimatedhorde2 | 115 Crystalized Cavern Level 2 | 86 | Act 5 (H) Super A |  | 84 / Zod |
 | 48 | Dac Farren | imp3 | 110 Bloody Foothills | 83 | Act 5 (H) Super B |  | 87 / Zod |
@@ -440,15 +661,29 @@
 
 - 레벨은 `monstats` 레벨, 올림 없음. 퀘스트 TC는 그 퀘스트를 아직 깨지 않은 캐릭터가 처치할 때(D2MOO `MonsterMode.cpp` 536~568줄).
 
-| 몬스터 | 나이트메어 레벨 | TC | 장비 TC / 룬 | 퀘스트 TC | 장비 TC / 룬 | 헬 레벨 | TC | 장비 TC / 룬 | 퀘스트 TC | 장비 TC / 룬 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| bloodraven | 43 | Blood Raven (N) | 42 / Io | - | - | 88 | Blood Raven (H) | 66 / Vex | - | - |
-| andariel | 49 | Andariel (N) | 45 / Ko | Andarielq (N) | 45 / Ko | 75 | Andariel (H) | 69 / Lo | Andarielq (H) | 69 / Lo |
-| duriel | 55 | Duriel (N) | 51 / Lem | Durielq (N) | 51 / Lem | 88 | Duriel (H) | 72 / Ber | Durielq (H) | 72 / Ber |
-| mephisto | 59 | Mephisto (N) | 54 / Um | Mephistoq (N) | 54 / Um | 87 | Mephisto (H) | 78 / Cham | Mephistoq (H) | 78 / Cham |
-| izual | 60 | Izual (N) | 57 / Um | - | - | 86 | Izual (H) | 78 / Cham | - | - |
-| diablo | 62 | Diablo (N) | 60 / Ist | Diabloq (N) | 60 / Ist | 94 | Diablo (H) | 84 / Zod | Diabloq (H) | 84 / Zod |
-| baalcrab | 75 | Baal (N) | 63 / Vex | Baalq (N) | 63 / Vex | 99 | Baal (H) | 87 / Zod | Baalq (H) | 87 / Zod |
+| 몬스터 | 난이도 | 레벨 | TC | 장비 TC / 룬 | 퀘스트 TC | 장비 TC / 룬 |
+|---|---|---|---|---|---|---|
+| bloodraven | 노말 | 10 | Blood Raven | 6 / - | - | - |
+| bloodraven | 나이트메어 | 43 | Blood Raven (N) | 42 / Io | - | - |
+| bloodraven | 헬 | 88 | Blood Raven (H) | 66 / Vex | - | - |
+| andariel | 노말 | 12 | Andariel | 15 / Nef | Andarielq | 15 / Nef |
+| andariel | 나이트메어 | 49 | Andariel (N) | 45 / Ko | Andarielq (N) | 45 / Ko |
+| andariel | 헬 | 75 | Andariel (H) | 69 / Lo | Andarielq (H) | 69 / Lo |
+| duriel | 노말 | 22 | Duriel | 24 / Ral | Durielq | 24 / Ral |
+| duriel | 나이트메어 | 55 | Duriel (N) | 51 / Lem | Durielq (N) | 51 / Lem |
+| duriel | 헬 | 88 | Duriel (H) | 72 / Ber | Durielq (H) | 72 / Ber |
+| mephisto | 노말 | 26 | Mephisto | 33 / Sol | Mephistoq | 33 / Sol |
+| mephisto | 나이트메어 | 59 | Mephisto (N) | 54 / Um | Mephistoq (N) | 54 / Um |
+| mephisto | 헬 | 87 | Mephisto (H) | 78 / Cham | Mephistoq (H) | 78 / Cham |
+| izual | 노말 | 29 | Izual | 36 / Sol | - | - |
+| izual | 나이트메어 | 60 | Izual (N) | 57 / Um | - | - |
+| izual | 헬 | 86 | Izual (H) | 78 / Cham | - | - |
+| diablo | 노말 | 40 | Diablo | 36 / Dol | Diabloq | 36 / Dol |
+| diablo | 나이트메어 | 62 | Diablo (N) | 60 / Ist | Diabloq (N) | 60 / Ist |
+| diablo | 헬 | 94 | Diablo (H) | 84 / Zod | Diabloq (H) | 84 / Zod |
+| baalcrab | 노말 | 60 | Baal | 42 / Io | Baalq | 42 / Io |
+| baalcrab | 나이트메어 | 75 | Baal (N) | 63 / Vex | Baalq (N) | 63 / Vex |
+| baalcrab | 헬 | 99 | Baal (H) | 87 / Zod | Baalq (H) | 87 / Zod |
 
 ## 5. 계산에 넣지 않은 것 (메모)
 
