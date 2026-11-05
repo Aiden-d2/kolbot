@@ -7,6 +7,47 @@
 
 ---
 
+## 0. 야드와 좌표 거리 (전제) (261104)
+
+- **좌표 거리**: kolbot이 쓰는 거리(`getDistance`, 유닛 x·y). 1 = 서브타일 1칸.
+- **야드**: 게임 화면·스킬 설명에 나오는 거리. **야드 = 좌표 거리 × 2/3** (좌표 = 야드 × 3/2).
+  - 근거: mpqdata `skills.txt`의 `aurarangecalc` 값(좌표)과 위키 야드를 Might·Resist Fire·Holy Shock으로 대조(261029, Static Field 행에서 옮김). 아래 야드 그림 6개 원과도 맞는다.
+- 오라·저주 반경 계산: `aurarangecalc = ln12` → Param1 + (레벨−1) × Param2, `ln56` → Param5 + (레벨−1) × Param6 (좌표 거리).
+
+### 야드 그림 (사용자 자료 `야드.png`)
+
+- 출처: 사용자 자료(출처 표시 없음). 근거: **출처 불명**. 게임 화면 위에 2~16 야드 눈금과 스킬 범위 원을 그린 그림.
+- 그림의 원과 mpqdata 계산값(261104):
+
+| 스킬 (ID) | `aurarangecalc` | Param | 좌표 반경 (레벨 1) | 야드 (×2/3) | 그림의 원 위치 |
+|---|---|---|---|---|---|
+| Terror (77) | ln12 | 4, 0 | 4 | 2.7 | 2 눈금 바로 바깥 |
+| Decrepify (87) | ln12 | 6, 0 | 6 | 4 | 4 눈금 |
+| Iron Maiden (76) | ln12 | 7, 0 | 7 | 4.7 | 4 눈금 바깥 |
+| Attract (86) | ln12 | 9, 0 | 9 | 6 | 6 눈금 |
+| Redemption (124) | ln12 | 16, 0 | 16 | 10.7 | 10~12 눈금 사이 |
+| Inner Sight (8), Slow Missiles (17) | ln56 | 20, 0 | 20 | 13.3 | 12~14 눈금 사이(Conviction과 같은 원) |
+| Conviction (123) | ln12 | 20, 0 | 20 | 13.3 | 〃 |
+
+- Param2·Param6이 0이라 이 스킬들의 반경은 레벨과 관계없다.
+- 그림의 원 위치는 눈으로 읽은 것이다(눈금 사이 값은 정확히 재지 않았다).
+
+### 화면 크기와 서브타일 (사용자 자료 `260413 getUnit range.txt`)
+
+- 출처: 사용자 자료(260413). 근거: 사용자 자료(앞부분 측정값은 `docs/info/getUnit_range.md`). 원문 그대로.
+
+```
+Resolution	|	Width	|	Height
+640x480	|	13+1/3 yards (13.3)	|	18 yards
+800x600	|	16+2/3 yards (16.7 = 12.525 st)	|	23 yards (17.25 st)
+
+스킬 1야드는 약 1.5배 서브타일의 x.y그리드
+1서브타일은 화면기준 32*16픽셀
+1타일은 5*5서브타일 160*80픽셀
+```
+
+---
+
 ## 1. 사거리 계산 공식 (미사일 스킬)
 
 - **좌표 거리 = 속도 × 프레임 × 3/64.** 감속(`Accel`)이 있으면 프레임마다 속도에 `Accel/1000`을 더한다(Accel은 음수).
@@ -510,7 +551,7 @@
 | 활 스킬, Fire Wall, Fist of the Heavens, Double Throw, Psychic Hammer, Dragon Flight | 20 | 기존 (Fire Wall 260917) |
 | Armageddon (249) | 20 | 261002 7→20. 사용자: 맞든 안 맞든 20 안에 몹이 보이면 바로 시전. 게이트(회피 없음, `Wereform.js`). 효과가 시전 좌표와 무관하게 내 주변에 난다는 건 추정(미확인) |
 | Summoner(500) | 25 | 260723 |
-| Static Field (42) | 스킬 레벨 + 4 | 260915. 261029 mpq `skills.txt` `aurarangecalc = ln12`, Param1 5·Param2 1 → 5 + (레벨−1) = 레벨 + 4(좌표 거리). 게임 화면 야드 = × 2/3(Might·Resist Fire·Holy Shock의 ln12 값과 위키 야드 대조). 261029 스태틱 로직(`Sorceress.js` `doAttack`)은 레벨 + 2에 서고 도착 오차 2(텔레 포함) → 실제 거리 ≤ 레벨 + 4. 옛 선시전 루프의 floor((레벨+4)×2/3)은 야드 값이었다(261029 삭제). S.SFFW 스태틱 레벨 모의: 46→8, 48→14, 50→16, 52→17(261003 스킬 분배 모의) |
+| Static Field (42) | 스킬 레벨 + 4 | 260915. 261029 mpq `skills.txt` `aurarangecalc = ln12`, Param1 5·Param2 1 → 5 + (레벨−1) = 레벨 + 4(좌표 거리). 야드 환산은 0절. 261029 스태틱 로직(`Sorceress.js` `doAttack`)은 레벨 + 2에 서고 도착 오차 2(텔레 포함) → 실제 거리 ≤ 레벨 + 4. 옛 선시전 루프의 floor((레벨+4)×2/3)은 야드 값이었다(261029 삭제). S.SFFW 스태틱 레벨 모의: 46→8, 48→14, 50→16, 52→17(261003 스킬 분배 모의) |
 | Leap / Arctic Blast | 표 × 3/2 − 1 | 260513 |
 | Bone Spear/Spirit | 15 | PvP 40 |
 | Fire Ball, Lightning, Chain Lightning, Glacial Spike, Meteor, Blizzard, Mind Blast | 20 | PvP 40 |

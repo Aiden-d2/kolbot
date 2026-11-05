@@ -799,7 +799,7 @@ function main() {
 	include("tools/json2.js");
 	include("libs/Attack.js");
 	include("libs/Pather.js");
-	include("libs/Misc.js");	//261103 temp: Misc.trace for the freeze log (docs/temp/freezing_arrow.md, remove after cold length 0/10/30 judged)
+	include("libs/Misc.js");	//261104 temp: Misc.trace for the freeze log (docs/info/freezing_arrow.md, remove after cold length 0/10/30 judged)
 	load("threads/MapHelper.js");
 	print("ÿc9Map Thread Loaded.");
 
@@ -837,7 +837,7 @@ function main() {
 			}
 
 			break;
-		case 101: // Numpad 5 (freeze log, temp)	//261103 temp: docs/temp/freezing_arrow.md, remove after cold length 0/10/30 judged
+		case 101: // Numpad 5 (freeze log, temp)	//261104 temp: docs/info/freezing_arrow.md, remove after cold length 0/10/30 judged
 			this.freezeStart = this.freezeStart ? null : {};	//261103 temp: toggle, on = empty list
 			me.overhead("Freeze log " + (this.freezeStart ? "on" : "off"));	//261103 temp
 
@@ -856,7 +856,7 @@ function main() {
 		}
 	};
 
-	// Freeze log (Numpad 5): how long each monster within 30 stays frozen (state 1), one trace line when it thaws. A monster that dies or leaves the list is dropped	//261103 temp: docs/temp/freezing_arrow.md, remove after cold length 0/10/30 judged
+	// Freeze log (Numpad 5): how long each monster within 30 stays frozen (state 1), one trace line when it thaws. A monster that dies or leaves the list is dropped	//261104 temp: docs/info/freezing_arrow.md, remove after cold length 0/10/30 judged
 	this.freezeStart = null;	//261103 temp: null = off, otherwise gid -> {t, name, classid, spectype, res}
 
 	this.freezeCheck = function () {	//261103 temp

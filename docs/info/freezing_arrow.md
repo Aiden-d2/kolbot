@@ -41,7 +41,7 @@
 **측정 조건 (코드)**
 - 맵 진입점이면 `default.dbj`가 `threads/MapThread.js`만 띄운다(+ MapThread가 `MapHelper.js`를 띄움). `ToolsThread`(자동 물약·치킨·Pause)와 `default.dbj` 본 흐름(파티 대기)은 돌지 않는다.
 - `MapThread` 메인 루프: 20ms. 정해진 창(`hideFlags`)이 하나라도 열려 있으면 닫힐 때까지 루프 전체가 멈춘다(`hideFlags`, `while (getUIFlag(…)) { Hooks.flush(); delay(100); }`). 측정 호출도 같이 멈춰서, 그 사이 풀린 몹은 값이 길게 나온다.
-  - 멈추는 창 번호(`hideFlags`)와 UI 번호 전체는 `docs/info/ui_flags.md`.
+  - 멈추는 창 번호(`hideFlags`)와 UI 번호 전체는 `docs/info/ids.md` "UI 플래그" 절.
   - `MapHelper`는 ESC 메뉴(0x09)가 열리면 MapThread 스크립트를 `pause()`, 닫히면 `resume()`한다.
   - 자동맵(0x0A)은 멈춤 조건이 아님(열리면 그리기, 닫히면 지우기).
   - 측정 중 피할 것: Alt, 인벤토리(I)·스탯(C)·퀘스트(Q), ESC 메뉴, 메시지 기록, 도움말. 자동맵(Tab)·벨트 물약은 괜찮음.
@@ -55,7 +55,7 @@
 4. 메인 루프 `delay(20)` 앞에 `this.freezeCheck()` 호출. 자체 try/catch로 감싸 오류 시 `[FREEZE] Off: …`를 print하고 측정만 끔.
 - 줄 형식: `[FREEZE] Hell Bovine classid=391 spectype=0 ms=… coldres=… diff=… ia=… coldlen=… (지역 x,y)`. `ia` = 아이스 애로우 직접 포인트, `coldlen` = 캐릭터 냉기 길이 합계(스탯 56).
 - 사용자 업로드 `a023087`: 같은 줄을 `print`로도 남김(d2bs 로그).
-- 줄 끝 메모: `//261103 temp` (첫 줄들에 `docs/temp/freezing_arrow.md, remove after cold length 0/10/30 judged`). 노트 경로와 제거 조건은 옮기기 전 것이다(지금 노트는 `docs/freezing_arrow.md`, 제거는 상한 측정 뒤 사용자가 정함).
+- 줄 끝 메모: `//261103 temp` (첫 줄들에 `docs/temp/freezing_arrow.md, remove after cold length 0/10/30 judged`). 261104 사용자 요청: 세 줄(include, Numpad 5 case, Freeze log 주석)의 노트 경로를 `docs/info/freezing_arrow.md`로, 날짜 표기를 `//261104 temp`로 바꿈. 제거 조건 문구는 그대로다(제거는 상한 측정 뒤 사용자가 정함).
 - 기록 파일: `_cache/trace/trace-<프로필>-<날짜>.txt`
 - 확인됨(측정): Numpad 5로 켜지고 기록 줄이 남는다. 클라이언트가 다른 몬스터의 상태 1을 받는다. `coldres`는 `monstats.txt` 헬 값과 같다.
 - 다시 얼리기를 걸러내는 코드는 없음(한 발 쏘고 다 풀린 뒤 다음 발로 막음). 몹이 많으면 같은 시각 묶음의 뒤쪽 줄이 길게 나오므로 중앙값으로 본다(5절 카우).

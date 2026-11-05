@@ -379,7 +379,7 @@ loadScripts()
 
 **MapThread / MapHelper** — MapThread가 `Attack` `Pather`를 include하고 `MapHelper.js`를 로드한 뒤 몬스터·아이템·경로 오버레이를 그린다. MapHelper는 `scriptmsg`로 받은 `{type: "area"|"unit"|"wp", dest}`를 `Pather.moveToExit` / `moveToUnit` / `getWP`로 실행하고, ESC 메뉴(0x09)가 열리면 MapThread를 pause, 닫히면 resume한다. MapThread 메인 루프(20ms)는 `hideFlags`(0x09·0x0C·0x0D·0x01·0x02·0x0F·0x18·0x19·0x1A·0x21) 중 하나라도 열려 있으면 닫힐 때까지 `Hooks.flush(); delay(100)`으로 기다린다(0x0D는 Alt 키를 누르고 있는 동안). 자동맵(0x0A)은 열리면 그리고(`Hooks.update`) 닫히면 지울(`Hooks.flush`) 뿐 멈추지 않는다.
 
-UI 번호(`getUIFlag(번호)`)는 `docs/info/ui_flags.md`.
+UI 번호(`getUIFlag(번호)`)는 `docs/info/ids.md` "UI 플래그" 절.
 
 ### 4-3. 통신 경로
 
@@ -1176,7 +1176,7 @@ Town.stash        canStash 통과 후 Cubing.keepItem / Runewords.keepItem 로 �
 ## 확인된 사실 (엔진·게임 동작, handoff에서 옮김 261021)
 - **퀘스트 크레딧·방장 규칙(261004, D2MOO 1.10f 소스 + 사용자 제공 1.14d 퀘스트 플래그 표):** 보스 킬 크레딧은 보스 지역에 있는 플레이어(죽은 시체 포함)와 같은 막의 파티원에게 들어간다(마을 포함, 사용자 확인). 게임 시작 처리는 방을 만든 첫 플레이어에게만 돈다(`Quests.cpp:1083-1131`). 방장 기록에 그 퀘스트의 bit0(완료) 또는 bit15(로드 때 bit1이 있으면 켜짐, `D2QuestRecord.cpp:76-79`)가 있으면 그 게임에서 퀘스트가 꺼져(`bNotIntro = 0`) 누구도 크레딧·퀘스트 드롭을 못 받는다. 그래서 리더가 먼저 끝낸 보스는 못 잡은 팔로워가 따라잡지 못한다. 킬 때 켜지는 bit: 앤디·써모너·라다먼트·이주얼·쉥크 bit1, 메피스토·디아블로·에인션트·바알 bit0, 듀리엘 bit5만(bit0은 메쉬프 대화).
 - **레드포탈(261004, `ObjMode.cpp:3089-3110`):** 조작한 본인의 22번 bit0 또는 **bit13**(`QFLAG_PRIMARYGOALDONE`, `ObjMode.cpp:3104`)이 있어야 4막으로 간다(261004 정정: 앞서 bit12로 적었음). 포탈이 열려 보이는 것은 방장 22,0 때문(`A3Q6.cpp:683-692`). `mephisto(true)`의 `getQuest(22,0) || getQuest(22,12)`(`AutoSmurf.js`)는 게임 조건(22,0 또는 22,13)과 다르다. bit12는 클라이언트가 퀘스트 로그를 닫았다고 보고할 때 켜진다. `handoff.md` 1-5.
-- **퀘스트 플래그 표(261004):** `docs/quest_flags.md`. 0~41번의 bit별 동작(1.14d 주소)을 D2MOO와 클래식 저장 파일 문서로 검증했다. 41번은 Akara 리스펙이고, 1.14a~d에는 퀘스트 변경이 없다.
+- **퀘스트 플래그 표(261004):** `docs/info/quest_flags.md`. 0~41번의 bit별 동작(1.14d 주소)을 D2MOO와 클래식 저장 파일 문서로 검증했다. 41번은 Akara 리스펙이고, 1.14a~d에는 퀘스트 변경이 없다.
 - **에인션트 TP(261004, `A5Q5.cpp`):** 정상(120)에서 TP가 열리면 고대인이 비활성·리셋(`OnPortalOpened`, 처치 뒤에는 무시). 제단을 누르면 정상의 TP를 모두 닫는다(`OperateFunction65_AncientsAltar`). 크레딧은 정상에 있고 레벨 20×(난이도+1) 이상인 플레이어(생사 무관)와 5막의 파티원.
 - **라다먼트 북(261004, `A2Q1.cpp`, `ItemMode.cpp`):** 킬 때 bit1·bit5(책 보상 대기) 설정. 북 사용 시 bit5 해제 + 스킬 포인트 1, bit5가 없으면 북을 쓸 수 없다. 북은 킬한 게임에서 "bit5 있고 북 없는 플레이어" 수만큼 떨어진다(퀘스트가 켜진 게임만). 게임 시작 처리에서 bit0(아트마 보상 대화)·bit5·북 없음이면 9번을 초기화하지만 그 게임은 퀘스트가 꺼진 채다. AutoSmurf는 원래 아트마와 대화하지 않는다.
 - **`me.revive()`(261004):** D2BS 내장(kolton 원본 `d2bs/HISTORY.txt:9`, 살아 있을 때 쓰면 밴 위험). kolton `Follower.js`, blizzhackers `Rushee.js`·`Wakka.js`가 mode 17(죽음)일 때만 부른다.
