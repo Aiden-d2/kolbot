@@ -1,11 +1,11 @@
 # TC 슈퍼유니크 지역: 1.14d exe 대조 (임시노트)
 
-`docs/info/tc.md` 3절의 슈퍼유니크 지역을 1.14d `Game.exe`로 대조하는 작업 기록 (261105).
+`gamedata/tc.md`(d2reference 브랜치) 3절의 슈퍼유니크 지역을 1.14d `Game.exe`로 대조하는 작업 기록 (261105).
 
 ## 현재 상태
 
 - 지역은 두 단계로 정했다.
-  1. 슈퍼유니크가 들어 있는 지도 파일(DS1): 1.14d DS1(mpqdata `tiles/`)의 프리셋 몬스터를 `monpreset.txt`로 읽음. 근거: **데이터**
+  1. 슈퍼유니크가 들어 있는 지도 파일(DS1): 1.14d DS1(d2reference 브랜치 `mpqdata/tiles/`)의 프리셋 몬스터를 `monpreset.txt`로 읽음. 근거: **데이터**
   2. 그 DS1이 쓰이는 지역: `lvlprest.txt` 번호 → D2MOO 지도 생성 코드. 근거: **D2MOO(1.10f 재구성), 1.14d 미확인**
 - 이 노트의 할 일은 2단계를 1.14d exe로 확인하는 것이다.
 

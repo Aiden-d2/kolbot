@@ -1,11 +1,11 @@
-# docs/info 다음 작업 목록
+# gamedata 다음 작업 목록
 
-`docs/info` 검토(261105)에서 사용자가 "다음 작업"으로 정한 것과, 다음 대화가 이어 가는 데 필요한 맥락 전부. 근거 표시: 데이터 / 코드 / 웹 미검증 / 사용자 결정 / Claude 제안 미결정.
+`docs/info`(지금 d2reference 브랜치 `gamedata/`) 검토(261105)에서 사용자가 "다음 작업"으로 정한 것과, 다음 대화가 이어 가는 데 필요한 맥락 전부. 근거 표시: 데이터 / 코드 / 웹 미검증 / 사용자 결정 / Claude 제안 미결정.
 
 - 지난 작업: PR #163(검토 반영), #164(links.md 사이트 내용 표) 병합 완료.
 - 남은 작업: **1. 경험치 직접 계산**, 링크 2곳 추출(`links.md` "가져올 예정", 261105).
 
-## 1. 경험치 직접 계산 (`docs/info/experience.md`)
+## 1. 경험치 직접 계산 (`gamedata/experience.md`)
 
 ### 목표 (사용자 결정 261105)
 
@@ -24,9 +24,9 @@
 
 - 원본 두 표의 전제: 플레이어와 파티원 평균 레벨 95, 디아런은 "Y자형 구조에서 12마리 모두 소환됐을 경우"(10시 봉인).
 
-### 데이터 (mpqdata 브랜치)
+### 데이터 (d2reference 브랜치 `mpqdata/`)
 
-- 읽는 법: `git fetch origin mpqdata` 후 `git show origin/mpqdata:excel/<파일>`. 탭 구분, 인코딩은 latin-1로 읽으면 된다.
+- 읽는 법: `git fetch origin d2reference` 후 `git show origin/d2reference:mpqdata/excel/<파일>`. 탭 구분, 인코딩은 latin-1로 읽으면 된다.
 - `experience.txt`: 1열 레벨, 2~8열 직업별 누적 경험치, 끝 열 `ExpRatio`. **줄 N의 값 = N+1레벨에 도달하는 누적 경험치**(한 칸 밀려 있다. 예: 줄 89 = 1,618,470,619 = 90레벨 도달값, 줄 98 = 3,520,485,254 = 99레벨). 그래서 L레벨 → L+1레벨 필요 경험치 = 줄 L − 줄 L−1. `ExpRatio`는 70레벨 이상 경험치 감소 비율(/1024, 예: 90 = 61, 95 = 15, 99 = 5). 앞쪽에 `MaxLvl` 줄과 0레벨 줄이 있다.
 - `monlvl.txt`: 몬스터 레벨별 기본 수치. 경험치 열 `XP`·`XP(N)`·`XP(H)`와 `L-XP`·`L-XP(N)`·`L-XP(H)`. `L-` 열이 확장팩용으로 보인다(추정, 확인 필요).
 - `monstats.txt`: 열 번호(1부터) `Id`=1, `hcIdx`=2, `MinGrp`=26, `MaxGrp`=27, `Level`=32, `Level(N)`=33, `Level(H)`=34, `boss`=88, `noRatio`=150, `Exp`=159, `Exp(N)`=172, `Exp(H)`=185. 몬스터별 경험치 %와 무리 크기.

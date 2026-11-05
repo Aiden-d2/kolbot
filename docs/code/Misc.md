@@ -3,7 +3,7 @@
 ## Skill.getRange
 
 ### 260930~261008: 스킬 사거리
-- 사거리 값과 근거는 `info/skill_range.md`(정보 파일)에 모두 둔다.
+- 사거리 값과 근거는 `gamedata/skill_range.md`(d2reference 브랜치 정보 파일)에 모두 둔다.
 
 ## Skill.cast
 
