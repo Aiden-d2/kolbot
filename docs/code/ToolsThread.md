@@ -31,3 +31,7 @@
 ### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
 - 죽음 줄에 잃은 경험치: 새 변수 `aliveExp`(살아 있는 동안 매 순회 `me.getStat(13)`). 살아 있다가 죽은 순간 `(aliveExp - 지금 경험치) × 100 / Experience.nextExp[레벨]`(경험치 줄 %와 같은 기준, 99레벨이면 0)을 소수 둘째 자리로 `aliveExp`에 넣어 콘솔 `[Died] lost=N.NN% (지역 x,y)`·print `[Died] lost=N.NN%`. 다시 살아나면 `aliveExp`는 경험치로 돌아간다. 게임이 죽는 순간 경험치를 깎는지는 확인하지 않음(0만 나오면 부활 때 깎이는 것).
 - `[Quit] Max game time N min` 콘솔 색 6.
+
+### 261105 Claude: 끝 줄 정리 — Script ended 리더 콘솔·팔로워 waitParty, Max game time 콘솔 리더만, 게임 이름 print 삭제 (사용자 승인 261105, handoff 3-68)
+- 최대 게임 시간 콘솔 `[Quit] Max game time N min (지역 x,y)`에 `me.profile === Team.Leader` 조건. print는 모든 프로필 그대로.
+- 이유(사용자 261105): 모든 프로필이 콘솔에 찍어 지저분해진 사례. 퇴장은 엔진이 하므로 이 조건은 로그만 바꾼다. 팔로워가 리더보다 먼저 시간이 끝나 리더가 콘솔 없이 따라 나가는 경우는 리더가 먼저 들어가므로 드물다(추정).

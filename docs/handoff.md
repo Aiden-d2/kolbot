@@ -62,6 +62,12 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
+### 3-68. 끝 줄 정리: Script ended 리더 콘솔·팔로워 waitParty, Max game time 콘솔 리더만, 게임 이름 print 삭제 (`AutoSmurf` main 끝, `ToolsThread` main, `default.dbj` main, 사용자 261105)
+- **문제**(사용자 261105): 정상 종료가 콘솔에 없어, 경험치 줄 앞에 종료 사유가 없는 게임을 구별할 수 없었다. 리더만 `Script ended`를 찍으면 팔로워가 먼저 끝난 게임에서 리더는 `PartyThread`로 따라 나가 줄이 빠진다. `[Quit] Max game time`은 모든 프로필이 콘솔에 찍어 지저분했다. 게임 이름 print는 `[Starter] Create game`·`Join game`과 중복.
+- **바꾼 것**(261105, 이 커밋): 팔로워·Boer는 끝에서 `this.waitParty()` 뒤 print `[AutoSmurf] Script ended`, 리더는 print + 콘솔 `[AutoSmurf] Script ended (지역 x,y)`(기본색). `Max game time` 콘솔은 리더만(print는 모두). `default.dbj`의 주석 처리된 게임 이름 print 삭제. 내용은 코드 노트의 같은 헤더.
+- **검증 방법**: `Console.txt` — 리더 경험치 줄 앞에 `[AutoSmurf] Script ended`·`[Quit]`·`[Stop]`·`[Chicken]`·`[Died]`·`[Error]` 중 하나가 있는지. 아무것도 없는 게임은 따로 원인을 본다. `[Quit] Max game time`은 게임마다 리더 1줄(팔로워 0). `[AutoSmurf] Script ended`는 `<Flow>`. d2bs 로그 — 팔로워 끝 `[waitParty] Waiting` 뒤 `[AutoSmurf] Script ended` 또는 `Party has left`. `Party desynced in`의 `missing`이 리더면 리더가 끝에 못 온 것. 게임 이름 단독 줄 0.
+- **결과**: (로그 대기)
+
 ### 3-67. 팀 대기 이름 정리: okCount·teamCount → waitParty (`AutoSmurf.waitParty`, 사용자 261105)
 - **문제**(사용자 261105): 개수를 세지 않는데 이름이 `okCount`·`teamCount`라 뜻이 맞지 않았다.
 - **바꾼 것**(261105, 이 커밋): 두 함수를 `this.waitParty` 하나로 합치고(두 단계 유지), 메시지·변수를 `waitPartyIn`·`waitPartyAll`·`waitPartyOut`·`waitPartyNames`로, 로그를 `[waitParty] Waiting`·`Party desynced in/out`으로 바꿈. 퇴장 상세의 ` teamOk X` 삭제. 동작(순서·타임아웃·버리기 조건)은 그대로. 내용은 코드 노트의 같은 헤더.
@@ -71,7 +77,7 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 ### 3-66. 로그 모양 정리: 위치 없는 정보 줄, 구간 시작·끝, [Quit] 색, [Died] lost=, 콘솔 줄을 print에도 (3-64 후속, 사용자 261104)
 - **문제**(사용자 261104): print에 위치가 쓸모없는 정보 줄이 많고, 게임·구간·시작 줄 모양이 매니저 창에서 구분이 어렵고, 콘솔에만 있는 줄이 있었다. `[Quit]`이 기본색이라 다른 기본색 줄을 쓸 수 없었다.
 - **바꾼 것**(261104, 이 커밋): 입장 직후 정보 줄 위치 삭제(`[Pickit]`·`[Loader]`·`[Role]`·`[Config]`·`[toggle] key: T3 / H2 / D1`·`[Attack] Failed: bad attack config`, `[Equip] 자리=N`·`[Grant] 자리=N`은 착용 때도), 게임 경계 `[게임]`(리더 콘솔 기본색), 구간 시작 print `[X] Go`·구간 끝 콘솔·print `=== [X] ===`(리더), `=== [START]/[FARMING]/[LEVELING] ===`·`=== [BOOK]/[POTION]/[SCROLL] ===` 콘솔·print, `[Total]`(콘솔), `[Quit]` 색 6·`Console.txt` 분류(6 Quit, 게임 안 0 Flow), `[Died] lost=N.NN%`(ToolsThread `aliveExp`), print 추가(`[Died] Last game`·`[Socket]`·`[Stop] Failed to get corpse`), Alkor → `Misc.quitGame`. 함수별 내용은 코드 노트의 같은 헤더.
-- **검증 방법**: d2bs 로그 — 입장 직후 정보 줄과 `[Equip]`·`[Grant]`에 `(지역 x,y)` 0, 게임마다 `[게임]` 1줄, 리더 `[X] Go` 수 ≥ `=== [X] ===` 수, `Completed`·`!!! `·`=== [게임] ===` 0. `Console.txt` — `<Quit>` 줄은 모두 `[Quit]`, `[게임]` 줄은 `<Flow>`, `[Total]`은 `<OOG>`. `[Died]`가 나오면 `lost=` 값(0.00%만 나오면 게임이 죽는 순간이 아니라 부활 때 경험치를 깎는 것 → 부활 시점 비교로 옮길지 정함), 같은 프로필 다음 게임 `[Died] Last game`과 짝. Alkor 퇴장이 나오면 print `[Quit] Alkor not found`와 경험치 줄. 매니저 화면에서 `[Quit]` 색(어두운 황금색)이 보이는지(사용자).
+- **검증 방법**: d2bs 로그 — 입장 직후 정보 줄과 `[Equip]`·`[Grant]`에 `(지역 x,y)` 0, 게임마다 `[게임]` 1줄(사용자가 261105 main에서 꺼 둔 뒤 로그는 해당 없음, 3-68에서 삭제), 리더 `[X] Go` 수 ≥ `=== [X] ===` 수, `Completed`·`!!! `·`=== [게임] ===` 0. `Console.txt` — `<Quit>` 줄은 모두 `[Quit]`, `[게임]` 줄은 `<Flow>`, `[Total]`은 `<OOG>`. `[Died]`가 나오면 `lost=` 값(0.00%만 나오면 게임이 죽는 순간이 아니라 부활 때 경험치를 깎는 것 → 부활 시점 비교로 옮길지 정함), 같은 프로필 다음 게임 `[Died] Last game`과 짝. Alkor 퇴장이 나오면 print `[Quit] Alkor not found`와 경험치 줄. 매니저 화면에서 `[Quit]` 색(어두운 황금색)이 보이는지(사용자).
 - **결과**: (로그 대기)
 
 ### 3-65. 경로 보정 10회 실패 뒤 오류 줄 없음 → `Attack` 조용한 catch 3곳에 `Misc.caughtError` (`Pather.moveTo`, `Attack.clear`·`setPosition`, 옛 1-17, 사용자 261026·261103)

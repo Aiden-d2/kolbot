@@ -595,7 +595,9 @@ function main() {
 
 				if (!maxTimeLogged && me.maxgametime > 0 && getTickCount() - me.gamestarttime >= me.maxgametime - 1000) {	//261103 1s before the engine leaves
 					maxTimeLogged = true;	//261103
-					D2Bot.printToConsole("[Quit] Max game time " + Math.round(me.maxgametime / 60000) + " min (" + Misc.where() + ")", 6);	//261103	//261104 log: [Quit] dark goldenrod (6)
+					if (me.profile === Team.Leader) {	//261105 console: leader only (the followers follow it out), the print stays for every profile
+						D2Bot.printToConsole("[Quit] Max game time " + Math.round(me.maxgametime / 60000) + " min (" + Misc.where() + ")", 6);	//261103	//261104 log: [Quit] dark goldenrod (6)
+					}	//261105
 					Misc.print("[Quit] Max game time " + Math.round(me.maxgametime / 60000) + " min");	//261103
 				}
 			}

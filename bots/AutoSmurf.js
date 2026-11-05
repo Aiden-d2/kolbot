@@ -8128,7 +8128,15 @@ function AutoSmurf() {
 		}
 	};
 	
+	if (!Leader) {	//261105 followers wait for the leader at the end: the leader leaves first and they follow (PartyThread), a stuck leader -> Party desynced in after 120s
+		this.waitParty();	//261105
+	}
+
 	Misc.print("[AutoSmurf] Script ended");	//261103 log policy: the trace copy (only without an early quit) removed
+
+	if (Leader) {	//261105 normal end in the console (leader)
+		D2Bot.printToConsole("[AutoSmurf] Script ended (" + Misc.where() + ")");	//261105 default colour (Console.txt Flow)
+	}
 
 	return true;
 };

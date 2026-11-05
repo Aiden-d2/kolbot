@@ -339,3 +339,11 @@
 
 ### 261029 Claude: 3막 `figurineEye`·`figurineTome` (`dcd7c78`, PR #115, 옛 handoff 3-51)
 - 3막 루프 순서 travincal → `figurineEye`(`eye(true)`) → `figurineTome`(`tome(true)`) → `figurine` → mephisto …. 팔로워도 두 함수 맨 앞의 `doChores`를 탄다. 검증 통과(사용자 261030).
+
+## main 끝 (Script ended)
+
+### 261105 Claude: 끝 줄 정리 — Script ended 리더 콘솔·팔로워 waitParty, Max game time 콘솔 리더만, 게임 이름 print 삭제 (사용자 승인 261105, handoff 3-68)
+- 리더가 아니면(팔로워·Boer) 끝에서 `this.waitParty()`를 부른 뒤 print `[AutoSmurf] Script ended`. 리더는 기다리지 않고 print 뒤 콘솔 `[AutoSmurf] Script ended (지역 x,y)`(기본색, `Console.txt` 분류 `Flow`). 새 변수 없음.
+- 이유(사용자 261105): 서로 먼저 끝난 쪽이 나가고 나머지는 `PartyThread`(`Party has left`)로 따라 나간다. 리더만 찍으면 팔로워가 먼저 끝난 게임에서 리더는 끝에 못 가고 따라 나가 콘솔 줄이 없었다. 팔로워가 기다리면 리더가 먼저 끝에 와서 찍고 나가고, 팔로워는 따라 나간다.
+- 리더가 갇히면 팔로워는 120초 뒤 `[Quit] Party desynced in`(상세 `missing(waitPartyIn): <리더 프로필>`)으로 나간다. 리더 자신은 엔진의 최대 게임 시간으로 나간다. 이때 팔로워마다 `[Quit]` 콘솔 1줄(리더가 갇힌 경우만).
+- 마지막에 올 수 있는 구간 함수(diablo, farmingNihlathak·Countess·Pit·Andy·Abaddon·POA·Infernal·Cows는 포탈 또는 `Town.goToTown`, farmingSummoner는 1막 웨이, farmingMephisto는 빨간 포탈)는 끝이 마을이다(함수 끝부분 읽음, 함수 중간의 일찍 `return`은 안 봄).
