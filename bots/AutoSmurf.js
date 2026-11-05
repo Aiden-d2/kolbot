@@ -41,9 +41,9 @@ function AutoSmurf() {
 		keyH = false,	//260809
 		keyD = false,	//260809
 		
-		teamNames = {},	//261021 team sync: message name -> {profile (lower case): true} (was okCount/teamCount counters)
-		teamOk = false,
-		leaderTravel = false,	//261026 the leader is collecting waypoints (travel message): the next okCount waits 10 min instead of 2 (handoff 2-25)
+		waitPartyNames = {},	//261021 team sync: message name -> {profile (lower case): true} (was counters)	//261105 was teamNames
+		waitPartyAll = false,	//261105 was teamOk
+		leaderTravel = false,	//261026 the leader is collecting waypoints (travel message): the next waitParty waits 10 min instead of 2 (handoff 2-25)	//261105 was okCount
 		guardChicken = null,	//261004 bossGuard: LifeChicken saved while the boss guard is on (null = guard off)
 		guardSeen = null,	//261006 bossGuard: boss units seen while the guard is on (gid -> name, last HP and ms), traced at bossEnd	//261020 last scan only
 		guardStart = 0,	//261020 bossGuard: when the first boss was found (0 = not yet); the chicken off / last times count from it
@@ -164,7 +164,7 @@ function AutoSmurf() {
 
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		
-		this.okCount();	//261025 was readyCount/teamReady
+		this.waitParty();	//261025 was readyCount/teamReady
 		
 		this.toggle();	//260828
 		
@@ -386,7 +386,7 @@ function AutoSmurf() {
 		return lowestAct;
 	};
 
-	this.okCount = function (range) {
+	this.waitParty = function (range) {	//261105 okCount + teamCount -> waitParty (one function, two phases)
 		var tick = getTickCount(),
 			orgx = me.x,
 			orgy = me.y;
@@ -395,11 +395,11 @@ function AutoSmurf() {
 			range = 20;
 		}
 		
-		Misc.print("[okCount] Waiting");	//261103 log policy: a profile without this line did not come in
-		Messaging.sendToList(Team.Profiles, "okCount");
+		Misc.print("[waitParty] Waiting");	//261103 log policy: a profile without this line did not come in	//261105 [okCount] -> [waitParty]
+		Messaging.sendToList(Team.Profiles, "waitPartyIn");	//261105 was okCount
 
-		while (!teamOk) {
-			me.overhead("Waiting: " + this.missing("okCount").join(", "));	//261103 log policy: who has not come yet (every tick)
+		while (!waitPartyAll) {	//261105 was teamOk
+			me.overhead("Waiting: " + this.missing("waitPartyIn").join(", "));	//261103 log policy: who has not come yet (every tick)	//261105 was okCount
 
 			if (!me.inTown) {
 				Attack.clear(range);	//260727 //260926
@@ -409,38 +409,26 @@ function AutoSmurf() {
 
 			delay(200);	//260930 was 500	//261021 1000 -> 200
 			
-			if (!this.missing("okCount").length) {	//261021 all names in
-				teamOk = true;
-				Messaging.sendToList(Team.Profiles, "teamOk");
+			if (!this.missing("waitPartyIn").length) {	//261021 all names in	//261105 was okCount
+				waitPartyAll = true;	//261105 was teamOk
+				Messaging.sendToList(Team.Profiles, "waitPartyAll");	//261105 was teamOk
 			}
 			
 			if (getTickCount() - tick > (leaderTravel ? 600 : 120) * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)	//261026 600s while the leader travels
-				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 1", "missing(okCount): " + this.missing("okCount").join(", ") + " teamOk " + teamOk);	//261029 travel removed (handoff 3-47 judged)	//260930	//261021 who did not come
+				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced in", "missing(waitPartyIn): " + this.missing("waitPartyIn").join(", "));	//261029 travel removed (handoff 3-47 judged)	//260930	//261021 who did not come	//261105 Party desynced 1 -> in, okCount -> waitPartyIn, teamOk value removed
 			}
 		}
 
-		leaderTravel = false;	//261026 one okCount only
-		delete teamNames.okCount;	//261021 clear at the phase end, before sending teamCount: a fast one's next okCount comes only after my teamCount, so it is never cleared
+		leaderTravel = false;	//261026 one waitParty only	//261105
+		delete waitPartyNames.waitPartyIn;	//261021 clear at the phase end, before sending waitPartyOut: a fast one's next waitPartyIn comes only after my waitPartyOut, so it is never cleared	//261105 names
 
-		this.teamCount(range);
-	};
+		tick = getTickCount();	//261105 second phase (was teamCount): its own 120s and spot, as teamCount took them on entry
+		orgx = me.x;	//261105
+		orgy = me.y;	//261105
 
-	this.missing = function (name) {	//261021 team profiles whose <name> message has not come yet (me excluded)
-		var got = teamNames[name] || {};
-
-		return Team.Profiles.filter(function (profile) {
-			return profile.toLowerCase() !== me.profile.toLowerCase() && !got[profile.toLowerCase()];
-		});
-	};
-
-	this.teamCount = function (range) {
-		var tick = getTickCount(),
-			orgx = me.x,
-			orgy = me.y;
-
-		Messaging.sendToList(Team.Profiles, "teamCount");
+		Messaging.sendToList(Team.Profiles, "waitPartyOut");	//261105 was teamCount
 		
-		while (this.missing("teamCount").length) {	//261021 names
+		while (this.missing("waitPartyOut").length) {	//261021 names	//261105 was teamCount
 			if (!me.inTown) {
 				Attack.clear(range);	//260727 //260926
 			}
@@ -450,12 +438,20 @@ function AutoSmurf() {
 			delay(200);	//260930 was 500	//261021 1000 -> 200
 			
 			if (getTickCount() - tick > 120 * 1000) { // Quit after 120s of waiting.	//261004 the dead wait 120s too (was && !me.dead)
-				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced 2", "missing(teamCount): " + this.missing("teamCount").join(", ") + " teamOk " + teamOk);	//260930	//261021 who did not come
+				Misc.quitGame(me.dead ? "Dead wait timeout" : "Party desynced out", "missing(waitPartyOut): " + this.missing("waitPartyOut").join(", "));	//260930	//261021 who did not come	//261105 Party desynced 2 -> out, teamCount -> waitPartyOut, teamOk value removed
 			}
 		}
 		
-		delete teamNames.teamCount;	//261021
-		teamOk = false;	//261021 cleared here, not at the okCount phase end: a teamOk sent before its sender's teamCount has always come by now
+		delete waitPartyNames.waitPartyOut;	//261021	//261105 was teamCount
+		waitPartyAll = false;	//261021 cleared here, not at the first phase end: a waitPartyAll sent before its sender's waitPartyOut has always come by now	//261105 was teamOk
+	};
+
+	this.missing = function (name) {	//261021 team profiles whose <name> message has not come yet (me excluded)
+		var got = waitPartyNames[name] || {};	//261105 was teamNames
+
+		return Team.Profiles.filter(function (profile) {
+			return profile.toLowerCase() !== me.profile.toLowerCase() && !got[profile.toLowerCase()];
+		});
 	};
 
 	this.buffCount = function(act) { // Goes to Town, buys three Antidote potions from Akara, drinks them, and returns to Catacombs Level 4.
@@ -554,7 +550,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.okCount();	//261025 was buffCount/teamBuff (no timeout)
+		this.waitParty();	//261025 was buffCount/teamBuff (no timeout)
 		
 		if (act === 1) {
 			potions = me.findItems(514, -1, 3);
@@ -616,7 +612,7 @@ function AutoSmurf() {
 			Messaging.sendToList(Team.Profiles, "BOing");
 		}
 		
-		this.okCount();	//261025 was BOCount/BOReady: the leader's BOing comes before its teamCount, so it is in by now
+		this.waitParty();	//261025 was BOCount/BOReady: the leader's BOing comes before its waitPartyOut, so it is in by now
 		
 		if (!BOing) {	//261025
 			return false;
@@ -707,7 +703,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.okCount();	//261025 was a 10-try wait: a syncWP sent before its sender's okCount is in by now
+		this.waitParty();	//261025 was a 10-try wait: a syncWP sent before its sender's waitPartyIn is in by now
 		
 		if (syncWP) {
 			this.syncWP(destination, home, true);
@@ -734,9 +730,9 @@ function AutoSmurf() {
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
 		}
 		
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
-		this.okCount();
+		this.waitParty();
 
 		if (destination === 2) {
 			this.exitTo(home);	//261022 was an endless while
@@ -780,14 +776,14 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.okCount();
+		this.waitParty();
 		
 		Pather.getWP();	//261021 was clickWP
 		
 		if (!oneway) {
 			Pather.useWaypoint(home);
 			delay(me.ping * 2 + 1000);
-			this.okCount();
+			this.waitParty();
 		}
 		
 		delay(me.ping * 2 + 200);
@@ -987,7 +983,7 @@ function AutoSmurf() {
 		Attack.bossScan = null;
 		this.traceGuardSeen();	//261006
 
-		this.okCount(range);
+		this.waitParty(range);
 
 		if (me.dead) {
 			area = me.area; // where I died = where the corpse is
@@ -1072,7 +1068,7 @@ function AutoSmurf() {
 
 		guardChicken = null;
 
-		this.okCount(range); // the team waits here, clearing around, for the one getting the corpse
+		this.waitParty(range); // the team waits here, clearing around, for the one getting the corpse
 
 		return true;
 	};
@@ -1205,7 +1201,7 @@ function AutoSmurf() {
 		Misc.print("[travel] Course " + target.course);	//261103 log policy: overhead -> print
 
 		if (nextAreaIndex < areaIDs.length) { // If next area index is invalid, return true.
-			Messaging.sendToList(Team.Profiles, "travel");	//261026 actually traveling: the team's next okCount waits for me up to 10 min (handoff 2-25)
+			Messaging.sendToList(Team.Profiles, "travel");	//261026 actually traveling: the team's next waitParty waits for me up to 10 min (handoff 2-25)	//261105
 
 			if (me.inTown && wpAreas.indexOf(target.course[0]) > -1 && Pather.wpAreas.indexOf(target.course[0]) > -1 && getWaypoint(Pather.wpAreas.indexOf(target.course[0]))) {
 				Pather.useWaypoint(target.course[0]);
@@ -1921,17 +1917,17 @@ function AutoSmurf() {
 				if (!getWaypoint(1)) {
 					this.exitTo(2);	//261022 was an endless while
 					
-					this.okCount();	//260922
+					this.waitParty();	//260922
 					
 					if (me.area === 2 && Pather.moveToExit(3, true, true) !== true) {	//261021 was clearToExit(2, 3) (endless retry): one try, then quit
 						Misc.quitGame("moveToExit failed: " + Pather.getAreaName(2) + " -> " + Pather.getAreaName(3));
 					}
-					this.okCount();	//260922
+					this.waitParty();	//260922
 
 					Pather.goWP(me.area, true);
 					Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 					
-					this.okCount();
+					this.waitParty();
 					
 					Pather.getWP();	//261021 was clickWP
 					
@@ -1940,12 +1936,12 @@ function AutoSmurf() {
 				
 				this.exitTo(2);	//261022 was an endless while
 				
-				this.okCount();	//260922
+				this.waitParty();	//260922
 				
 				if (me.area === 2 && Pather.moveToExit(8, true, true) !== true) {	//261021 was clearToExit(2, 8) (endless retry): one try, then quit
 					Misc.quitGame("moveToExit failed: " + Pather.getAreaName(2) + " -> " + Pather.getAreaName(8));
 				}
-				this.okCount();	//260922
+				this.waitParty();	//260922
 				
 				for (i = 0; i < 2; i += 1) {
 					Misc.print("[DEN] Retry " + i + ": clearing");	//261103 log policy: overhead -> print
@@ -1991,7 +1987,7 @@ function AutoSmurf() {
 					}
 				}
 				
-				this.okCount();	//260922
+				this.waitParty();	//260922
 				Precast.doPrecast(true);
 				
 				Pather.teleport = false; // not teleporting in Den
@@ -2066,14 +2062,14 @@ function AutoSmurf() {
 			
 			Pather.useWaypoint(3);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 			
 			if (me.area === 3 && Pather.moveToExit(17, true, true) !== true) {	//261021 was clearToExit(3, 17) (endless retry): one try, then quit
 				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(3) + " -> " + Pather.getAreaName(17));
 			}
 			
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 			
 			burial = getPresetUnit(17, 1, 805);
@@ -2089,7 +2085,7 @@ function AutoSmurf() {
 			if (me.area === 17 && Pather.moveToExit(3, true, true) !== true) {	//261021 was clearToExit(17, 3) (endless retry): one try, then quit
 				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(17) + " -> " + Pather.getAreaName(3));
 			}
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 		}
 		
@@ -2099,25 +2095,25 @@ function AutoSmurf() {
 			if (me.inTown) {
 				Pather.useWaypoint(3);
 				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-				this.okCount();	//260922
+				this.waitParty();	//260922
 				Precast.doPrecast(true);
 			}
 
 			if (me.area === 3 && Pather.moveToExit(4, true, true) !== true) {	//261021 was clearToExit(3, 4) (endless retry): one try, then quit
 				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(3) + " -> " + Pather.getAreaName(4));
 			}
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 
 			Pather.goWP(me.area, true);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-			this.okCount();
+			this.waitParty();
 			
 			Pather.getWP();	//261021 was clickWP
 			
 			Pather.useWaypoint(1);
-			this.okCount();	//260922
+			this.waitParty();	//260922
 		}
 		
 		if (!me.getQuest(2, 0)) {	//261006
@@ -2163,13 +2159,13 @@ function AutoSmurf() {
 				
 				Pather.useWaypoint(4);
 				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-				this.okCount();	//260922
+				this.waitParty();	//260922
 				Precast.doPrecast(true);
 
 				if (me.area === 4 && Pather.moveToExit(10, true, true) !== true) {	//261021 was clearToExit(4, 10) (endless retry): one try, then quit
 					Misc.quitGame("moveToExit failed: " + Pather.getAreaName(4) + " -> " + Pather.getAreaName(10));
 				}
-				this.okCount();	//260922
+				this.waitParty();	//260922
 				Precast.doPrecast(true);
 
 				if (me.area === 10) {	//261021 was clearToExit(10, 5) (endless retry): one try, no quit: the check below takes a failure or a wrong level to town and the 5 portal
@@ -2200,18 +2196,18 @@ function AutoSmurf() {
 					}
 				}
 
-				this.okCount();	//260922
+				this.waitParty();	//260922
 				Precast.doPrecast(true);
 	
 				Pather.goWP(me.area, true);
 				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-				this.okCount();
+				this.waitParty();
 				
 				Pather.getWP();	//261021 was clickWP
 				
 				Pather.useWaypoint(1);
-				this.okCount();	//260922
+				this.waitParty();	//260922
 				Town.doChores();
 			}
 			
@@ -2231,7 +2227,7 @@ function AutoSmurf() {
 					Pather.useWaypoint(5); //dark wood
 					Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 					
-					this.okCount();	//260922
+					this.waitParty();	//260922
 					Precast.doPrecast(true);
 					
 					Pather.moveToPreset(me.area, 1, 738, 5, 5, true, true, true); //move to tree	//261029 random
@@ -2301,7 +2297,7 @@ function AutoSmurf() {
 				}
 			}
 			
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 			
 			Pather.teleport = false;
@@ -2356,7 +2352,7 @@ function AutoSmurf() {
 				Misc.quitGame("Redportal not found");	//260923	//260930
 			}
 			
-			this.okCount();
+			this.waitParty();
 			
 			if (Leader) {
 				Pather.makePortal();
@@ -2433,7 +2429,7 @@ function AutoSmurf() {
 		
 		Pather.useWaypoint(4);
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261007
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 		
 		Pather.teleport = false;
@@ -2454,7 +2450,7 @@ function AutoSmurf() {
 			delay(1000);
 		}
 
-		this.okCount();
+		this.waitParty();
 		
 		Precast.doPrecast(true);
 		
@@ -2509,25 +2505,25 @@ function AutoSmurf() {
 		if (!getWaypoint(4)) { // black marsh
 			Pather.useWaypoint(5);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 			
 			if (me.area === 5 && Pather.moveToExit(6, true, true) !== true) {	//261021 was clearToExit(5, 6) (endless retry): one try, then quit
 				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(5) + " -> " + Pather.getAreaName(6));
 			}
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 		
 			Pather.goWP(me.area, true);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-			this.okCount();
+			this.waitParty();
 			
 			Pather.getWP();	//261021 was clickWP
 		} else {
 			Pather.useWaypoint(6);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-			this.okCount();	//260922
+			this.waitParty();	//260922
 		}
 		
 		Precast.doPrecast(true);
@@ -2535,7 +2531,7 @@ function AutoSmurf() {
 		if (me.area === 6 && Pather.moveToExit(7, true, true) !== true) {	//261021 was clearToExit(6, 7) (endless retry): one try, then quit
 			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(6) + " -> " + Pather.getAreaName(7));
 		}
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 		
 		if (me.area === 7 && Pather.moveToExit(26, true, true) !== true) {	//261021 was clearToExit(7, 26) (endless retry): one try, then quit
@@ -2545,13 +2541,13 @@ function AutoSmurf() {
 			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(26) + " -> " + Pather.getAreaName(27));
 		}
 		delay(250);
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 	
 		Pather.goWP(me.area, true);
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-		this.okCount();
+		this.waitParty();
 		
 		Pather.getWP();	//261021 was clickWP
 		
@@ -2579,7 +2575,7 @@ function AutoSmurf() {
 			
 			Pather.useWaypoint(27);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-			this.okCount();	//260922
+			this.waitParty();	//260922
 		}
 		
 		Precast.doPrecast(true);
@@ -2614,7 +2610,7 @@ function AutoSmurf() {
 		
 		Pather.moveTo(smith.roomx * 5 + smith.x, smith.roomy * 5 + smith.y, 3, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 		
-		this.okCount();
+		this.waitParty();
 		
 		if (Leader) {
 			D2Bot.printToConsole("=== [SMITH] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
@@ -2680,7 +2676,7 @@ function AutoSmurf() {
 			Town.goToTown(1);
 		}
 		
-		this.okCount();
+		this.waitParty();
 		
 		if (me.findItem(89)) {
 			Town.move("charsi");
@@ -2730,7 +2726,7 @@ function AutoSmurf() {
 			if (me.area === 27) {
 				Pather.goWP(me.area, true);
 				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-				this.okCount();
+				this.waitParty();
 			} else {
 				Town.goToTown();
 				
@@ -2740,7 +2736,7 @@ function AutoSmurf() {
 				
 				Pather.useWaypoint(27);
 				Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-				this.okCount();	//260922
+				this.waitParty();	//260922
 			}
 			
 			Precast.doPrecast(true);
@@ -2748,20 +2744,20 @@ function AutoSmurf() {
 			if (me.area === 27 && Pather.moveToExit(28, true, true) !== true) {	//261021 was clearToExit(27, 28) (endless retry): one try, then quit
 				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(27) + " -> " + Pather.getAreaName(28));
 			}
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 		}
 		
 		if (me.area === 28 && Pather.moveToExit(29, true, true) !== true) {	//261021 was clearToExit(28, 29) (endless retry): one try, then quit
 			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(28) + " -> " + Pather.getAreaName(29));
 		}
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 
 		Pather.goWP(me.area, true);
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-		this.okCount();
+		this.waitParty();
 		
 		Pather.getWP();	//261021 was clickWP
 	
@@ -2788,7 +2784,7 @@ function AutoSmurf() {
 			
 			Pather.useWaypoint(29);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-			this.okCount();	//260922
+			this.waitParty();	//260922
 		}
 		
 		Precast.doPrecast(true);
@@ -2825,7 +2821,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 		
 		if (me.area === 30) {	//261021 was clearToExit(30, 31) (endless retry): one try, no quit: the check below takes a failure or a wrong level to town and the 31 portal
@@ -2860,7 +2856,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 		
 		if (me.area === 31) {	//261021 was clearToExit(31, 32) (endless retry): one try, no quit: the check below takes a failure or a wrong level to town and the 32 portal
@@ -2895,12 +2891,12 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.okCount();	//260922
+		this.waitParty();	//260922
 
 		Pather.goWP(me.area, true);
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-		this.okCount();
+		this.waitParty();
 		
 		Pather.getWP();	//261021 was clickWP
 		
@@ -2927,7 +2923,7 @@ function AutoSmurf() {
 			
 			Pather.useWaypoint(32);
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
-			this.okCount();	//260922
+			this.waitParty();	//260922
 		}
 		
 		Pather.teleport = false;
@@ -2943,19 +2939,19 @@ function AutoSmurf() {
 		if (me.area === 33 && Pather.moveToExit(34, true, true) !== true) {	//261021 was clearToExit(33, 34) (endless retry): one try, then quit
 			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(33) + " -> " + Pather.getAreaName(34));
 		}
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 		
 		if (me.area === 34 && Pather.moveToExit(35, true, true) !== true) {	//261021 was clearToExit(34, 35) (endless retry): one try, then quit
 			Misc.quitGame("moveToExit failed: " + Pather.getAreaName(34) + " -> " + Pather.getAreaName(35));
 		}
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 		
 		Pather.goWP(me.area, true);
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-		this.okCount();
+		this.waitParty();
 		
 		Pather.getWP();	//261021 was clickWP
 		
@@ -2998,7 +2994,7 @@ function AutoSmurf() {
 					if (me.area === 35 && Pather.moveToExit(36, true, true) !== true) {	//261021 was clearToExit(35, 36) (endless retry): one try, then quit
 						Misc.quitGame("moveToExit failed: " + Pather.getAreaName(35) + " -> " + Pather.getAreaName(36));
 					}
-					this.okCount();	//260922
+					this.waitParty();	//260922
 					Precast.doPrecast(true);
 					
 					if (me.area === 36 && Pather.moveToExit(37, true, true) !== true) {	//261021 was clearToExit(36, 37) (endless retry): one try, then quit
@@ -3020,7 +3016,7 @@ function AutoSmurf() {
 					Pather.teleport = false;
 				}
 				
-				this.okCount();	//260922
+				this.waitParty();	//260922
 				Precast.doPrecast(true);
 
 				Pather.moveTo(22594, 9641, 10, true, false, true);	//261029 random
@@ -3078,7 +3074,7 @@ function AutoSmurf() {
 				Pather.moveTo(22549, 9520, 3, false, false, true);
 			}
 			
-			this.okCount();	//260929
+			this.waitParty();	//260929
 
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
@@ -3151,7 +3147,7 @@ function AutoSmurf() {
 			delay(250);
 		}
 
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 		
 		Pather.teleport = false;
@@ -3210,7 +3206,7 @@ function AutoSmurf() {
 		
 		delay(me.ping * 2 + 200);
 		
-		this.okCount();
+		this.waitParty();
 		
 		if (Leader) {
 			D2Bot.printToConsole("=== [CUBE] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
@@ -3255,13 +3251,13 @@ function AutoSmurf() {
 			
 			Pather.teleport = false;
 
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 
 			if (me.area === 58 && Pather.moveToExit(61, true, true) !== true) {	//261021 was clearToExit(58, 61) (endless retry): one try, then quit // Go to Claw Viper Temple Level 2
 				Misc.quitGame("moveToExit failed: " + Pather.getAreaName(58) + " -> " + Pather.getAreaName(61));
 			}
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 			
 			Pather.teleport = true;
@@ -3291,7 +3287,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.okCount();	//261027
+		this.waitParty();	//261027
 
 		Town.move("cain");	//260728
 		cain = getUnit(1, NPC.Cain);
@@ -3375,7 +3371,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		try {
-			Attack.clear(0, 250);	//Summoner //260929	//261003 10 -> 0: the mages near me are danger targets anyway; the box clear and okCount(10) follow
+			Attack.clear(0, 250);	//Summoner //260929	//261003 10 -> 0: the mages near me are danger targets anyway; the box clear and waitParty(10) follow	//261105
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.summoner", e);	//260930
 		}
@@ -3388,7 +3384,7 @@ function AutoSmurf() {
 		
 		//Pather.moveToPreset(74, 2, 357, 3, 3);
 
-		this.okCount(10);	//260921
+		this.waitParty(10);	//260921
 		
 		journal = getUnit(2, 357);
 		
@@ -3416,7 +3412,7 @@ function AutoSmurf() {
 		Pather.goWP(me.area);	//260611
 		
 
-		this.okCount();
+		this.waitParty();
 		
 		Pather.getWP();	//261021 was clickWP
 		
@@ -3424,7 +3420,7 @@ function AutoSmurf() {
 		
 		if (me.diff === 0) {	//261027
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//261027
-			this.okCount();
+			this.waitParty();
 		} else {
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
@@ -3490,7 +3486,7 @@ function AutoSmurf() {
 			
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 			
-			this.okCount();	//260922
+			this.waitParty();	//260922
 			Precast.doPrecast(true);
 		}
 		
@@ -3513,12 +3509,12 @@ function AutoSmurf() {
 				Town.doChores();
 				Town.move("waypoint");
 				Pather.useWaypoint(46);
-				this.okCount();
+				this.waitParty();
 			}
 			
 			this.exitTo(i, true); // Go in the tomb.	//261022 was an endless while
 
-			this.okCount();
+			this.waitParty();
 			Precast.doPrecast(true);
 			
 			chest = getPresetUnit(me.area, 2, 397);
@@ -3602,7 +3598,7 @@ function AutoSmurf() {
 		
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 		
-		this.okCount();
+		this.waitParty();
 		
 		doneChores = false;
 		
@@ -3686,7 +3682,7 @@ function AutoSmurf() {
 			if (Leader) {
                 if (getWaypoint(10)) {
 					Town.move("waypoint");
-					this.okCount();
+					this.waitParty();
                     Pather.useWaypoint(48);
                 } else {
                     if (me.area === 40) {	//261022 was an endless while over 40 / 47 (any other area spun forever)
@@ -3696,7 +3692,7 @@ function AutoSmurf() {
                             delay(me.ping * 2 + 200);
 						}
 						
-						this.okCount();
+						this.waitParty();
                     }
 
                     this.exitTo([47, 48]);	//261022 Lut Gholein -> Sewers 1 -> Sewers 2, result checked
@@ -3738,7 +3734,7 @@ function AutoSmurf() {
 				Messaging.sendToList(Team.Profiles, "tpReady");
 			} else {
 				Town.move("portalspot");
-				this.okCount();
+				this.waitParty();
 				
 				while (me.inTown) {
 					if (tpReady) {
@@ -3779,7 +3775,7 @@ function AutoSmurf() {
 				}
 			}
 
-			this.okCount();	//261004 everyone saw a book
+			this.waitParty();	//261004 everyone saw a book
 
 			this.getQuestItem(552);
 			
@@ -3804,7 +3800,7 @@ function AutoSmurf() {
 			book = me.findItem(552);
 			
 			if (book) {
-				this.okCount();
+				this.waitParty();
 				clickItem(1, book);
 				print("[Quest] Book");	//261002	//261103 log policy	//261104 log: "!!! [X] !!!" -> "=== [X] ==="
 				D2Bot.printToConsole("[Quest] Book", 8);	//261104 log: "!!! X !!!" -> "=== [X] ==="
@@ -3815,8 +3811,6 @@ function AutoSmurf() {
 			sendPacket(1, 0x40);	//261004 fresh quest state for the trace	//261030 read trace removed (handoff 3-10 judged)
 			delay(me.ping * 2 + 500);
 		}
-		
-		//this.okCount();
 
 		if (Leader) {
 			D2Bot.printToConsole("=== [RADAMENT] ===", 7);	//261103 log policy: section end	//261104 log: "[X] Completed" -> "=== [X] ===" (the start is "[X] Go")
@@ -3854,7 +3848,7 @@ function AutoSmurf() {
 		if (!me.getQuest(14, 1) && !me.getQuest(14, 3) && !me.getQuest(14, 4)) {
 			if (Leader) {
 				Town.move("waypoint");
-				this.okCount();
+				this.waitParty();
 				
 				Pather.useWaypoint(46);
 				Precast.doPrecast(true);
@@ -3892,7 +3886,7 @@ function AutoSmurf() {
 				Messaging.sendToList(Team.Profiles, "tpReady");
 			} else {
 				Town.move("portalspot");
-				this.okCount();
+				this.waitParty();
 				
 				Misc.print("[DURIEL] Waiting for Orifice TP");	//261103 log policy: overhead -> print
 				
@@ -3943,7 +3937,7 @@ function AutoSmurf() {
 			Precast.doPrecast(true);
 			
 			if (Leader) {	//261018
-				this.okCount();
+				this.waitParty();
 				
 				try {	//261022 result checked: a failed entry opened the portal outside and the followers waited for 73 forever
 					if (!Pather.useUnit(2, 100, 73)) {
@@ -3968,7 +3962,7 @@ function AutoSmurf() {
 				
 				Town.move("portalspot");
 				
-				this.okCount();
+				this.waitParty();
 				
 				Misc.print("[DURIEL] Waiting for Duriel TP");	//261103 log policy: overhead -> print
 				
@@ -4063,7 +4057,7 @@ function AutoSmurf() {
 			Town.goToTown(3);
 		}
 		
-		this.okCount();	//261103 all start together: in tome the leader talks to Alkor after the end okCount (handoff 2-29)
+		this.waitParty();	//261103 all start together: in tome the leader talks to Alkor after the end waitParty (handoff 2-29)
 		
 		//Town.move("cain");
 		//Pather.moveTo(me.x, me.y, 3, false, false, true);	//261029
@@ -4131,7 +4125,7 @@ function AutoSmurf() {
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 		}
 
-		this.okCount();
+		this.waitParty();
 
 		figurine = false;
 		teamFigurine = false;
@@ -4224,7 +4218,7 @@ function AutoSmurf() {
 
 		if (fig) {	//261029
 			this.portalReset();
-			this.okCount();
+			this.waitParty();
 		}
 
 		if (!fig || Leader) {	//261029 the team waits for the leader's portal
@@ -4305,7 +4299,7 @@ function AutoSmurf() {
 		
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//261030
 
-		this.okCount();	//261030
+		this.waitParty();	//261030
 
 		doneChores = false;
 		
@@ -4323,7 +4317,7 @@ function AutoSmurf() {
 			}
 
 			this.portalReset();
-			this.okCount();
+			this.waitParty();
 
 			if (Leader) {
 				if (!Pather.useWaypoint(80)) {
@@ -4402,7 +4396,7 @@ function AutoSmurf() {
 			
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//261030
 
-			this.okCount();	//261030
+			this.waitParty();	//261030
 
 			if (!Leader || me.getQuest(17, 0)) { // Alkor once
 				doneChores = false;
@@ -4496,7 +4490,7 @@ function AutoSmurf() {
 			Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 		}
 		
-		this.okCount();
+		this.waitParty();
 		
 		if (Leader) { // I am the Teleporting Sorc, open a portal to Travincal next to the High Council.
 			this.offEquip();
@@ -4538,7 +4532,7 @@ function AutoSmurf() {
 
 		Pather.moveTo(presetUnit.roomx * 5 + presetUnit.x + 109, presetUnit.roomy * 5 + presetUnit.y - 95, 3, false, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 		
-		this.okCount();
+		this.waitParty();
 
 		Pather.teleport = true;
 		
@@ -4595,7 +4589,7 @@ function AutoSmurf() {
 		//Town.move("cain");
 		Pather.moveTo(me.x, me.y, 3, false, false, true);	//260822	//261028 random signature (was me.x + myX)
 
-		this.okCount();	//261030
+		this.waitParty();	//261030
 		
 		doneChores = false;
 		
@@ -4677,7 +4671,7 @@ function AutoSmurf() {
 
 			if (!takeRedPortal) {	//260919
 				Pather.moveTo(17566, 8069, 3, false, false, true);	// reportal bridge	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
-				this.okCount();
+				this.waitParty();
 				
 				Pather.teleport = true;
 			}
@@ -4805,7 +4799,7 @@ function AutoSmurf() {
 			Pather.teleport = true;
 		}
 		
-		this.okCount();
+		this.waitParty();
 
 		Town.move("tyrael");
 
@@ -4909,7 +4903,7 @@ function AutoSmurf() {
 			
 			Precast.doPrecast(true);
 
-			this.okCount();
+			this.waitParty();
 			
 			if (this.seisLayout === 1) {
 				Pather.moveTo(7815, 5160, 5, true, false, true);	//260623	//261029 random
@@ -4955,7 +4949,7 @@ function AutoSmurf() {
 			
 			Precast.doPrecast(true);
 
-			this.okCount();
+			this.waitParty();
 			
 			if (Leader) {
 				Pather.teleport = true;
@@ -4993,7 +4987,7 @@ function AutoSmurf() {
 			
 			Precast.doPrecast(true);
 
-			this.okCount();
+			this.waitParty();
 			
 			if (Leader) {
 				Pather.teleport = true;
@@ -5161,7 +5155,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Town.move("waypoint");
-			this.okCount();
+			this.waitParty();
 			
 			Pather.useWaypoint(107);
 			Precast.doPrecast(true);
@@ -5176,7 +5170,7 @@ function AutoSmurf() {
 			}
 			
 			Town.move("portalspot");
-			this.okCount();
+			this.waitParty();
 			
 			while (me.inTown) {
 				if (tpReady) {
@@ -5199,13 +5193,13 @@ function AutoSmurf() {
 		
 		Pather.moveTo(7793, 5293, 10, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 
-		this.okCount();
+		this.waitParty();
 		
 		this.infectorSeal();
 		
 		Pather.moveTo(7793, 5293, 10, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 
-		this.okCount();
+		this.waitParty();
 		
 		this.vizierSeal();
 
@@ -5306,7 +5300,7 @@ function AutoSmurf() {
 		this.syncBO();
 		
 		if (Leader) {
-			this.okCount();	//261008
+			this.waitParty();	//261008
 			
 			if (!Pather.useWaypoint(111)) {
 				throw new Error();
@@ -5324,7 +5318,7 @@ function AutoSmurf() {
 			
 			Town.move("portalspot");
 			
-			this.okCount();	//261008
+			this.waitParty();	//261008
 			
 			while (me.inTown) {
 				if (tpReady) {
@@ -5606,7 +5600,7 @@ function AutoSmurf() {
 				}
 			}
 
-			this.okCount();
+			this.waitParty();
 			
 			if (me.findItem(644)) {
 				for (i = 0; i < 3; i += 1) {
@@ -5765,7 +5759,7 @@ function AutoSmurf() {
 	
 		Precast.doPrecast(true);
 		
-		this.okCount();
+		this.waitParty();
 		
 		this.bossGuard(10);	//261008 chicken off when the second Ancient is at 10%
 
@@ -5802,7 +5796,7 @@ function AutoSmurf() {
 			
 			Precast.doPrecast(true);
 			
-			this.okCount();
+			this.waitParty();
 			
 			me.cancel();
 			sendPacket(1, 0x40);	//261004 fresh quest state for the loop check: the dead sent theirs before the kill
@@ -6129,7 +6123,7 @@ function AutoSmurf() {
 		if (!this.partyLevel(baalLvl) || (me.diff === 1 && (!this.partyLevel(baalLvlnm) || hireMerc))) { // If the team hasn't met the level requirement in Normal or Nightmare, don't kill baal.
 			Precast.doPrecast(true);
 			
-			this.okCount();
+			this.waitParty();
 			
 			if (Leader) {
 				if (!Pather.getPortal(null, null)) {
@@ -6181,7 +6175,7 @@ function AutoSmurf() {
 			throw new Error("Baal: Couldn't find portal.");
 		}
 		
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 		
 		Pather.moveTo(15134, 5923, 3, false, false, true);	//261029 random
@@ -6209,7 +6203,7 @@ function AutoSmurf() {
 			print("=== [BAAL] ===");	//261104 log: section end in the print too
 		}
 		
-		this.okCount();
+		this.waitParty();
 
 		Precast.doPrecast(true);
 		
@@ -6249,7 +6243,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Town.move("waypoint");
-			this.okCount();
+			this.waitParty();
 			
 			Pather.useWaypoint(6);
 			this.exitTo([20, 21, 22, 23, 24, 25]);	//261022 result checked
@@ -6272,7 +6266,7 @@ function AutoSmurf() {
 			}
 			
 			Town.move("portalspot");
-			this.okCount();
+			this.waitParty();
 			
 			while (!Pather.usePortal(25, null)) {
 				delay(250);
@@ -6288,7 +6282,7 @@ function AutoSmurf() {
 		
 		Config.Dodge.Enabled = true;	//261026
 		
-		this.okCount(15);
+		this.waitParty(15);
 
 		Precast.doPrecast(true);
 		
@@ -6341,7 +6335,7 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 	
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		Precast.doPrecast(true);
 
 		Pather.moveTo(7548, 14429, 5, true, false, true);	//260628	//261029 random
@@ -6351,7 +6345,7 @@ function AutoSmurf() {
 		Pather.moveTo(7607, 14420, 5, true, false, true);	//261029 random
 		Pather.moveTo(7600, 14431, 5, true, false, true);	//261029 random
 		
-		this.okCount();
+		this.waitParty();
 		
 		Precast.doPrecast(true);
 		
@@ -6386,7 +6380,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Town.move("waypoint");
-			this.okCount();
+			this.waitParty();
 			
 			Pather.useWaypoint(35);
 			this.exitTo([36, 37]);	//261022 result checked
@@ -6399,7 +6393,7 @@ function AutoSmurf() {
 			}
 			
 			Town.move("portalspot");
-			this.okCount();
+			this.waitParty();
 			
 			while (!Pather.usePortal(37, null)) {
 				delay(250);
@@ -6418,7 +6412,7 @@ function AutoSmurf() {
 		
 		Pather.moveTo(22549, 9520, 3, false, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 		
-		this.okCount();
+		this.waitParty();
 		
 		Precast.doPrecast(true);
 		
@@ -6645,7 +6639,7 @@ function AutoSmurf() {
 		//main
 		print("[COWS] Go");	//260930	//261103 log policy	//261104 log: section start "[X] Go" ("=== [X] ===" is the end now)
 		
-		this.okCount();	//260824
+		this.waitParty();	//260824
 		
 		if (Leader) {
 			if (me.getQuest(4, 10)) {
@@ -6872,7 +6866,7 @@ function AutoSmurf() {
 			tpReady = false;
 		}
 		
-		this.okCount();
+		this.waitParty();
 			
 		if (Leader) {
 			Pather.usePortal(39);
@@ -6923,7 +6917,7 @@ function AutoSmurf() {
 					delay(me.ping * 2 + 200);
 				}
 				
-				this.okCount();
+				this.waitParty();
 				
 				Pather.teleport = true;
 				earlyReturn = false;
@@ -6931,7 +6925,7 @@ function AutoSmurf() {
 				return true;
 			}
 
-			Messaging.sendToList(Team.Profiles, "msgLeader");	//261025 sent once (was repeated until msgFollower, 30s); the okCount below waits for the team
+			Messaging.sendToList(Team.Profiles, "msgLeader");	//261025 sent once (was repeated until msgFollower, 30s); the waitParty below waits for the team	//261105
 		} else {
 			if (!followDriver()) {
 				Messaging.sendToList(Team.Profiles, "earlyReturn");
@@ -6942,7 +6936,7 @@ function AutoSmurf() {
 					delay(me.ping * 2 + 200);
 				}
 				
-				this.okCount();
+				this.waitParty();
 				
 				Pather.teleport = true;
 				msgNode = false;	//260903
@@ -6952,7 +6946,7 @@ function AutoSmurf() {
 			}
 		}
 		
-		this.okCount();
+		this.waitParty();
 		
 		Precast.doPrecast(true);
 		
@@ -6999,7 +6993,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Town.move("waypoint");
-			this.okCount();
+			this.waitParty();
 			
 			Pather.useWaypoint(74);
 			
@@ -7035,7 +7029,7 @@ function AutoSmurf() {
 			}
 			
 			Town.move("portalspot");
-			this.okCount();
+			this.waitParty();
 			
 			while (me.inTown) {
 				if (earlyReturn) {
@@ -7058,7 +7052,7 @@ function AutoSmurf() {
 		Pather.teleport = false;
 		
 		try {
-			Attack.clear(0, 250);	//Summoner //260926	//261003 10 -> 0: the mages near me are danger targets anyway; the box clear and okCount(10) follow
+			Attack.clear(0, 250);	//Summoner //260926	//261003 10 -> 0: the mages near me are danger targets anyway; the box clear and waitParty(10) follow	//261105
 		} catch (e) {
 			Misc.caughtError("AutoSmurf.farmingSummoner", e);	//260930
 		}
@@ -7069,7 +7063,7 @@ function AutoSmurf() {
 		
 		Pather.moveToPreset(74, 2, 357, 3, 3);
 
-		this.okCount(10);
+		this.waitParty(10);
 		
 		journal = getUnit(2, 357);
 		
@@ -7098,7 +7092,7 @@ function AutoSmurf() {
 		
 		Pather.teleport = true;
 		
-		this.okCount();
+		this.waitParty();
 		
 		return true;
 	};
@@ -7114,7 +7108,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Town.move("waypoint");
-			this.okCount();
+			this.waitParty();
 			
 			Pather.useWaypoint(101);
 			this.exitTo(102);	//261022 result checked
@@ -7126,7 +7120,7 @@ function AutoSmurf() {
 			}
 			
 			Town.move("portalspot");
-			this.okCount();
+			this.waitParty();
 
 			while (!Pather.usePortal(102, null)) {
 				delay(250);
@@ -7146,7 +7140,7 @@ function AutoSmurf() {
 		
 		Pather.moveTo(17566, 8069, 3, false, false, true); // reportal bridge	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 		
-		this.okCount();
+		this.waitParty();
 
 		Precast.doPrecast(true);
 
@@ -7164,7 +7158,7 @@ function AutoSmurf() {
 	
 		Pather.teleport = true;
 		
-		this.okCount();
+		this.waitParty();
 	
 		return true;
 	};
@@ -7184,7 +7178,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Town.move("waypoint");
-			this.okCount();
+			this.waitParty();
 			
 			Pather.useWaypoint(111);
 			
@@ -7195,7 +7189,7 @@ function AutoSmurf() {
 			Pather.makePortal();
 		} else {
 			Town.move("portalspot");
-			this.okCount();
+			this.waitParty();
 			
 			while (!Pather.usePortal(125, null)) {
 				delay(250);
@@ -7204,11 +7198,11 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		
 		Precast.doPrecast(true);
 		
-		this.okCount();
+		this.waitParty();
 		
 		presetUnit = getPresetUnit(me.area, 2, 397);
 		
@@ -7267,7 +7261,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Town.move("waypoint");
-			this.okCount();
+			this.waitParty();
 			
 			Pather.useWaypoint(112);
 			
@@ -7278,7 +7272,7 @@ function AutoSmurf() {
 			Pather.makePortal();
 		} else {
 			Town.move("portalspot");
-			this.okCount();
+			this.waitParty();
 			
 			while (!Pather.usePortal(126, null)) {
 				delay(250);
@@ -7287,11 +7281,11 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		
 		Precast.doPrecast(true);
 		
-		this.okCount();
+		this.waitParty();
 		
 		presetUnit = getPresetUnit(me.area, 2, 397);
 		
@@ -7350,7 +7344,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Town.move("waypoint");
-			this.okCount();
+			this.waitParty();
 			
 			Pather.useWaypoint(117);
 			
@@ -7361,7 +7355,7 @@ function AutoSmurf() {
 			Pather.makePortal();
 		} else {
 			Town.move("portalspot");
-			this.okCount();
+			this.waitParty();
 			
 			while (!Pather.usePortal(127, null)) {
 				delay(250);
@@ -7370,11 +7364,11 @@ function AutoSmurf() {
 		
 		Pather.teleport = false;
 		
-		this.okCount();	//260922
+		this.waitParty();	//260922
 		
 		Precast.doPrecast(true);
 		
-		this.okCount();
+		this.waitParty();
 		
 		presetUnit = getPresetUnit(me.area, 2, 397);
 		
@@ -7432,7 +7426,7 @@ function AutoSmurf() {
 		
 		if (Leader) {
 			Town.move("anya");
-			this.okCount();
+			this.waitParty();
 			
 			Pather.usePortal(121);
 			this.exitTo([122, 123, 124]);	//261022 result checked
@@ -7456,7 +7450,7 @@ function AutoSmurf() {
 			Messaging.sendToList(Team.Profiles, "tpReady");
 		} else {
 			Town.move("portalspot");
-			this.okCount();
+			this.waitParty();
 		
 			while (me.inTown) {
 				if (earlyReturn) {
@@ -7490,7 +7484,7 @@ function AutoSmurf() {
 		
 		Pather.moveToPreset(me.area, 2, 462, 0, 0, true, false, true);	//260822	//261002 no offset, spread on arrival	//261028 random offset here (spread line removed)
 
-		this.okCount();
+		this.waitParty();
 	
 		Precast.doPrecast(true);
 
@@ -7589,23 +7583,23 @@ function AutoSmurf() {
 				}
 				break;
 
-			case "okCount":	//260510
-				if (teamOk && !(teamNames.teamCount && teamNames.teamCount[nick.toLowerCase()])) {	//261021 in the teamCount phase, an okCount sent before its sender's teamCount is a late one of the round I left by teamOk: drop it (from the same sender okCount comes before teamCount)
+			case "waitPartyIn":	//260510	//261105 was okCount
+				if (waitPartyAll && !(waitPartyNames.waitPartyOut && waitPartyNames.waitPartyOut[nick.toLowerCase()])) {	//261021 in the second phase, a waitPartyIn sent before its sender's waitPartyOut is a late one of the round I left by waitPartyAll: drop it (from the same sender waitPartyIn comes before waitPartyOut)	//261105 names
 					break;
 				}
 
-				(teamNames.okCount = teamNames.okCount || {})[nick.toLowerCase()] = true;	//261021 names (was okCount += 1)
+				(waitPartyNames.waitPartyIn = waitPartyNames.waitPartyIn || {})[nick.toLowerCase()] = true;	//261021 names (was a counter)	//261105 names
 				break;
 			case "travel":	//261026 handoff 2-25
 				leaderTravel = true;
 				break;
-			case "teamOk":
-				if (!teamOk) {
-					teamOk = true;
+			case "waitPartyAll":	//261105 was teamOk
+				if (!waitPartyAll) {	//261105
+					waitPartyAll = true;	//261105
 				}
 				break;
-			case "teamCount":
-				(teamNames.teamCount = teamNames.teamCount || {})[nick.toLowerCase()] = true;	//261021 names (was teamCount += 1)
+			case "waitPartyOut":	//261105 was teamCount
+				(waitPartyNames.waitPartyOut = waitPartyNames.waitPartyOut || {})[nick.toLowerCase()] = true;	//261021 names (was a counter)	//261105 names
 				break;
 			
 			case "syncBO":
@@ -7696,7 +7690,7 @@ function AutoSmurf() {
 	
 	Pickit.pickItems();	//261016
 	
-	this.okCount();
+	this.waitParty();
 	
 	this.start();
 	
@@ -8017,7 +8011,7 @@ function AutoSmurf() {
 			}
 		}
 
-		this.okCount();
+		this.waitParty();
 
 		me.automap = true;	//260904
 		

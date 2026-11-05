@@ -60,7 +60,7 @@
 | `visitTown start by:… tick:` / `visitTown back tick:` | print `[visitTown] Start by=… tick=…` / `[visitTown] Back tick=…` |
 | `[useUnit] timeout iter:…`, `[WP] wp.area:…`, `[getWP] …`, `[goWP] Failed …` | print `[useUnit] Retry N: timeout \| …`, `[useWaypoint] Retry N: wp.area=…`, `[getWP] Failed:/Retry N: …`, `[goWP] Failed: 10 attempts` |
 | `revive start`, `corpse picked`, `bossGuard …` | print `[bossEnd] Revive start`·`Corpse picked`, `[bossGuard] …` |
-| (없음) | print `[okCount] Waiting`(okCount 진입, 프로필마다) |
+| (없음) | print `[okCount] Waiting`(okCount 진입, 프로필마다). 261105~ `[waitParty] Waiting` |
 | `Script ended`(trace는 조기 종료 없을 때만) | print `[AutoSmurf] Script ended`(언제나) |
 
 - 게임 경계: `=== [게임이름] ===`(261011 이후, 261103부터 print), 261104부터 `[게임이름]`, 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다.
@@ -77,7 +77,7 @@
   2. `bossGuard found: 이름 HP%` — 아무 보스나 처음 본 스캔. 이 시각이 0초
   3. `bossGuard chicken off: 이름 HP%@초` — HP ≤ pct가 된 스캔. found부터 초
   4. `bossGuard last: 이름 HP%@초` — bossEnd 시작에서 찍음. 마지막 보스의 마지막 발견, found부터 초. 보스가드 off를 겸함
-  5. `bossGuard chicken on: N%` — 치킨 복구(산 사람 첫 okCount 뒤 / 죽은 사람 부활 직후)
+  5. `bossGuard chicken on: N%` — 치킨 복구(산 사람 첫 waitParty 뒤 / 죽은 사람 부활 직후)
   - 시체 회수(죽어 있던 프로필): `revive start`(줄 끝 위치 = 죽은 지역·좌표) → 5번 → `corpse picked`. 실패는 `[Quit] Revive failed: Ns / Corpse portal not found: area N / Failed to get corpse: not seen·far N·died·timeout`
 - 일어나지 않은 사건은 찍히지 않는다: 치킨 off가 없으면 3·5번 없음, 보스를 못 보면 2~4번 없음.
 - **치킨이 꺼져 있던 시간 = 4번 @ − 3번 @.** 보스별·난이도별·직업별로 분포를 낸다.
@@ -110,10 +110,10 @@
 목적: 누가 어느 단계에서 늦었나. 보스가드가 못 켜진 원인(`log_results.md` 261006 못 켜진 13건의 2·3·4·13번: 코드상 설명 안 됨 / River of Flame 1분 기록 없음 / 원인 불명).
 - (261020 삭제, 사용자 결정) `syncBO start/end`, `syncWP start/end`, `tpReady received`, `usePortal ok` — Claude가 261006에 합류 분석용으로 넣은 줄. 261020 전 로그에만 있다. syncBO는 노멀 조기 반환(`me.diff === 0`)에 end가 찍히지 않아 start만 있어도 멈춘 것이 아니었다.
 - `usePortal failed target: owner: unit: pre: tick: tries:<시도:gid sent/click/none/dead@ms> portals:<gid/classid/주인/지역/좌표/mode/거리>` — 내 포털일 때만.
-- `[Quit] Party desynced 1·2: missing(okCount|teamCount): 프로필, ... teamOk X`(261021~, 이름 수집) — 안 온 프로필. 그 프로필의 같은 시각 trace로 무엇을 하던 중인지 본다. 261021 전은 `okCount N teamCount N teamOk X`(개수). `d87cfcb`~261029 `Party desynced 1` 상세 끝에 `travel true/false`(리더가 웨이를 모으는 중이라 그 okCount만 600초였는가, handoff 3-36). **261029 삭제**(3-47 검증 통과).
+- `[Quit] Party desynced in·out: missing(waitPartyIn|waitPartyOut): 프로필, ...`(261105~) — 안 온 프로필. 261021~261104는 `Party desynced 1·2: missing(okCount|teamCount): 프로필, ... teamOk X`(이름 수집, 1 = in, 2 = out, `teamOk` 값은 261105 삭제). 그 프로필의 같은 시각 trace로 무엇을 하던 중인지 본다. 261021 전은 `okCount N teamCount N teamOk X`(개수). `d87cfcb`~261029 `Party desynced 1` 상세 끝에 `travel true/false`(리더가 웨이를 모으는 중이라 그 okCount만 600초였는가, handoff 3-36). **261029 삭제**(3-47 검증 통과).
 - `relay N msgs`(261021, Claude 추가) — default.dbj가 멈춘 동안 받은 메시지를 ToolsThread가 넘김. 판정: `Town chicken` 뒤에 찍히고 그 게임에 desync가 없으면 동작. 제거 조건: 동작 확인. **261023 `0f6da09` 삭제**(검증 통과, 261023 이후 코드 로그에는 없음).
 - `party has left: 이름 town: mode: ui:` + 위치 — 퇴장할 때까지 100ms마다 반복될 수 있다(의도). 첫 줄만 센다. 261024 `33bd183` 전에는 이름만, 위치 없음. 붙은 상태(Claude 추가 261024, handoff 3-31)는 그 순간의 마을 여부·동작 모드·열린 창(08 NPC 메뉴, 0C 거래창, 14 웨이 메뉴, 01 인벤토리, 없으면 `-`) — desync 낙오 프로필이 다른 프로필들이 이미 끝낸 단계에 아직 있었나(멈춤)를 본다. 제거 조건(상태 부분): 판별. (`be4f0e2`~`33bd183` 사이 코드는 같은 상태를 바로 뒤 `party left state:` 줄로 찍음.) `d87cfcb`부터 줄 끝에 `step:단계` — default.dbj가 보낸 마지막 정리·마을 단계(`chores:pre/heal/id/inv/tome/buy/repair/rest/stash/gems/end`, `town:go/portalspot/portal/back`, 없으면 `-`). 정리가 끝나지 않은 낙오의 멈춘 단계를 본다(handoff 3-37, 제거 조건: 멈춘 단계 확인).
-- 판정: 늦은 프로필의 바로 앞 줄(무엇을 하던 중인가: 마을·`Town chicken`·포털 실패). 누가 okCount를 안 보냈는지는 지금 로그로 알 수 없다(사용자 수정 계획 0-11 okCount 대기 방식과 함께 다룸).
+- 판정: 늦은 프로필의 바로 앞 줄(무엇을 하던 중인가: 마을·`Town chicken`·포털 실패). 1단계에 안 온 프로필은 그 대기의 `[waitParty] Waiting`(261103~261104 `[okCount] Waiting`)이 없는 프로필이다(261104 desync 6/6 확인).
 
 ### 4-4. 이동·경로 (Pather)
 목적: **아케인 등 getPath 오류(사용자가 따로 보기로 한 핵심)**, 텔레포트·유닛·웨이 실패.
