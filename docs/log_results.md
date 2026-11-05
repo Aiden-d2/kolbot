@@ -628,3 +628,34 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 크래시 4(a5 21:49 Harrogath, a1 22:22 Travincal, a6 04:11 Harrogath, a2 06:43 Harrogath), 분석 안 함. a1 크래시 뒤 스타터 `oog.js:313 too much recursion`으로 리더 26분 멈춤(`crash_analysis.md` 7절).
 - `waypoint unit not found` 1(Pz-41 a1), `[goWP] Failed: 10 attempts` 1(Pz-11 a8), getWP `menu not opened` 99, `Town chicken` 59, `[townCheck]` 522(Direct 261, mana 213, healing 48), `[BAAL] Failed: souls found` 16게임, `boss not found` 128(Grand Vizier 64, Lord De Seis 24, Sszark 23).
 - `[MoveToSlot]` FAILED 11(모두 회복 물약 `mode 5`), `skip` 1(`got: Jade Plated Belt loc 1 mode 1`, 착용 장비를 건드리지 않음).
+
+## 261105 묶음 (11/04 13:31 ~ 11/05 11:59, 8프로필 Pz-1~94, 아시아 서버)
+데이터: Console.txt·d2bs·trace·ItemLog. 리더 계정 `aozo-ra`(a1). 새 캐릭터로 노말(Pz-1~36, Pz-21부터 노말 파밍) → 나이트메어(Pz-37~52, Pz-39부터 파밍) → 헬(Pz-53~, Pz-62부터 헬 파밍). 코드는 3-66 병합(`73943c4`) 뒤·3-67 병합(`5dcb875`) 전, 실행 중 사용자가 줄 모양만 바꿈(`afa0969`·`03e4d6d`·`fb1d19d`, 다음 게임부터 적용). 17:39·09:33 재시작과 Pz-84(30분 정지, a5 재로드)는 사용자 수동 조작이라 분석에서 뺌(사용자 261105). 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 결과
+- 3-67: 이번 실행 뒤 병합. `[okCount]` 있음, `waitParty` 0. → 이번 로그에 적용되지 않음.
+- 3-66: 정보 줄 위치 0(`[Config] farmingON received`·`hireMerc received`는 수정 목록 밖), `[Pz-N]` 프로필마다 94줄(a5 96은 재로드), 리더 Go ≥ 끝, `Completed`·`=== [Pz-` 0, Console `<Quit>` 30 모두 `[Quit]`·`[Pz-N]` 21 `<Flow>`·플레이 시간 91 `<OOG>`. `[Died]` 0·Alkor 0. → 확정(사용자 261105).
+- 3-65: `no adjusted path` 0, `no original path` 4(모두 `adjusted path`), `[Error] Attack.` 0. → 케이스 미발견.
+- 3-60: `[useUnit] nearest` 0, Jail 3 → Inner 3게임 10회·Underground Passage 1 → Dark Wood 3게임 10회·Spider Cavern 2회 통과, `Area reversed` 0, useUnit timeout 59. → 케이스 미발견.
+
+### 치킨
+- Life Chicken 25, 11건이 같은 프로필 `Town chicken` 0~3초 뒤. 프로필 × 난이도:
+
+| 프로필 | 노말 | 나이트메어 | 헬 | 합 |
+|---|---|---|---|---|
+| a1 | Arcane Sanctuary(1)<br>Flayer Jungle(1) | - | Ancient's Way(2)<br>Worldstone Keep Level 2(1)<br>Chaos Sanctuary(1) | 6 |
+| a2 | Tamoe Highland(1)<br>Jail Level 1(1)<br>Jail Level 3(1)<br>Catacombs Level 4(1) | - | - | 4 |
+| a3 | Jail Level 3(1)<br>Tal Rashas Tomb #5(1) | - | - | 2 |
+| a4 | Tal Rashas Tomb #2(1) | - | Chaos Sanctuary(3) | 4 |
+| a5 | Chaos Sanctuary(1) | - | Chaos Sanctuary(2)<br>Arreat Summit(1) | 4 |
+| a6 | Underground Passage Level 1(1) | - | Chaos Sanctuary(1) | 2 |
+| a7 | Den Of Evil(1) | - | - | 1 |
+| a8 | Stony Field(1) | - | Arreat Summit(1) | 2 |
+| 합 | 13 | 0 | 12 | 25 |
+
+### 그 밖
+- 조기 종료: Life Chicken 25, desync 16줄(12게임, 빠진 프로필 = `[okCount] Waiting`이 모자란 프로필), Not ready to start Duriel 3, Not ready for act2 1, Max game time 2게임(Pz-38·53 리더, 리더 경험치 줄 없음, Pz-84 제외). 사망 0.
+- desync 모양: Ancient's Way 게임 시작 a7 3게임(Pz-48·59·71, 다른 프로필은 Ancient's Way `[okCount] Waiting` 2줄, a7은 1줄 — `syncBO`의 `okCount` → `Precast.doPrecast(true)` → `okCount` 사이), Chaos 별 중앙 대기 미도착 4게임(Pz-62·74·78 a3, Pz-81 리더 a1, Seis 대기 통과 뒤 별 서쪽 x 7750~7775에서 2분, 그 사이 코드는 `Pather.moveTo(7793, 5293, …)` 하나), Pz-44 리더 a1 Harrogath `[initNPC] identify` 뒤 2분 줄 없음(같은 시각 a4도 identify 120초), Pz-54 리더 a1 River of Flame 웨이 가는 중 9분(마나 마을행 5번, 팔로워 600초 대기 퇴장), Pz-91 a7 메피 다리 17526,8079(portal ~ 대기 사이), 노말 Pz-3 a8 Dark Wood·Pz-5 a5 Tristram.
+- `[Error]` 3: Pz-19 a1 `equipFlail: Lost Khalim's Will`, Pz-37 a1 Catacombs Level 2 `waypoint unit not found` → `useWaypoint` 실패(261104 Pz-41과 같은 곳), Pz-40 a8 `visitTown: Failed to go back from town`. 크래시 1(a3 01:36 Harrogath), 분석 안 함.
+- `Town chicken` 43, `[townCheck]` 540(Direct 270, mana 219, healing 50), getWP `menu not opened` 113, `[BAAL] Failed: souls found` 19게임, `boss not found` Grand Vizier 75·Lord De Seis 21·Infector 5.
+- `[MoveToSlot]` FAILED 49(회복 물약 47, 마을 포털 책 1, a8 호라드릭 큐브 1 — 15:37:30 다시 주움, ItemLog).

@@ -56,6 +56,7 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
   - 261027 로그: a1 Pz-47 Durance of Hate Level 2 도착 직후 `waypoint unit not found` → `wp.area:null` 12회 → `[Error] useWaypoint`. 261028 로그: a1 Pz-49 10/28 03:31 Catacombs Level 2(22648,6513) `waypoint unit not found` → `wp.area:null` 12회 → `[Error] useWaypoint`로 게임 종료(261022 사례와 게임 번호·지역이 같음).
   - 261103 로그: Pz-9 11/02 18:42:57 Jail Level 1에서 8명 모두 같은 초 `[getWP] waypoint unit not found. area:29`(17701~17706, 5275~5280). `wp.area:null`·`[Error]`·`goWP Failed` 없이 같은 초 INNER로 넘어감(`useWaypoint` throw가 아니라 `getWP`가 웨이를 못 얻은 채 지나간 모양). 다음 게임 Pz-10에서 JAIL을 한 번 더 돎(JAIL은 `if (!getWaypoint(6))`일 때만, 코드 읽음), Pz-10은 `going to nearest WP` 뒤 정상. 8명이 함께 못 찾은 모양은 261026 Pz-22와 같다.
   - 261104 로그: Pz-41 a1 11/03 22:04:47 Catacombs Level 2 `[goWP] Going to nearest WP` → 22:04:50 `[getWP] Failed: waypoint unit not found`(22514,6524) → `[useWaypoint] Retry 0~11: wp.area=null target=1` → `[Error] AutoSmurf: useWaypoint: Failed to use waypoint` → 게임 종료. 그 자리는 Pz-44에서 팔로워들이 이 웨이를 쓴 자리(22514~22521, 6521~6526)와 같다. Catacombs Level 2 a1 사례는 261022 Pz-49·50, 261028 Pz-49에 이어 4번째. Pz-11 a8 16:22:50 같은 Catacombs Level 2 `Going to nearest WP` 뒤 22555,6588(웨이 자리에서 약 81칸)에 3분 그대로 있다가 16:25:57 `[goWP] Failed: 10 attempts`(`Pather.goWP` caughtError 0, 그동안 줄은 물약 2번뿐) → 나머지 7명이 16:22:49에 웨이로 간 뒤 a8 missing으로 `Party desynced 1`. `[goWP] Failed`는 261022 기록에서 0이었다(그 뒤 묶음은 대조 안 함). 10번 모두 못 닿은 이유는 로그로 모름.
+  - 261105 로그: Pz-37 a1 11/04 20:50 나이트메어 첫 게임 웨이 모으기(`[travel] Next Catacombs Level 2`) 중 20:50:10 Catacombs Level 2 `[goWP] Going to nearest WP` → 20:50:13 `[getWP] Failed: waypoint unit not found`(22579,6514) → `[useWaypoint] Retry 0~11: wp.area=null target=1` → `[Error] AutoSmurf: useWaypoint: Failed to use waypoint`(area=35) → 게임 종료. 261104 Pz-41(나이트메어 첫 게임 무렵, 같은 지역)과 같은 모양.
 - **가설**: 없음(검토에서 정한다).
 - **구현안**: 검토에서 정한다.
 - **검증 방법**: 검토에서 정한다.
@@ -74,12 +75,6 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **검증 방법**: d2bs 로그 — `[okCount]`·`Party desynced 1`·`Party desynced 2`·`teamOk` 0줄, 게임마다 프로필별 `[waitParty] Waiting` 수가 같고 구간 진행이 끝까지 감(대기가 풀림). desync가 나오면 `Party desynced in|out`과 `missing(waitPartyIn|waitPartyOut): 프로필`이 찍히고, in의 이름이 `[waitParty] Waiting`이 모자란 프로필과 같은지. `ReferenceError`·`[Error]`에 `waitParty`·`okCount`·`teamCount` 0.
 - **결과**: (로그 대기)
 
-### 3-66. 로그 모양 정리: 위치 없는 정보 줄, 구간 시작·끝, [Quit] 색, [Died] lost=, 콘솔 줄을 print에도 (3-64 후속, 사용자 261104)
-- **문제**(사용자 261104): print에 위치가 쓸모없는 정보 줄이 많고, 게임·구간·시작 줄 모양이 매니저 창에서 구분이 어렵고, 콘솔에만 있는 줄이 있었다. `[Quit]`이 기본색이라 다른 기본색 줄을 쓸 수 없었다.
-- **바꾼 것**(261104, 이 커밋): 입장 직후 정보 줄 위치 삭제(`[Pickit]`·`[Loader]`·`[Role]`·`[Config]`·`[toggle] key: T3 / H2 / D1`·`[Attack] Failed: bad attack config`, `[Equip] 자리=N`·`[Grant] 자리=N`은 착용 때도), 게임 경계 `[게임]`(리더 콘솔 기본색), 구간 시작 print `[X] Go`·구간 끝 콘솔·print `=== [X] ===`(리더), `=== [START]/[FARMING]/[LEVELING] ===`·`=== [BOOK]/[POTION]/[SCROLL] ===` 콘솔·print, `[Total]`(콘솔), `[Quit]` 색 6·`Console.txt` 분류(6 Quit, 게임 안 0 Flow), `[Died] lost=N.NN%`(ToolsThread `aliveExp`), print 추가(`[Died] Last game`·`[Socket]`·`[Stop] Failed to get corpse`), Alkor → `Misc.quitGame`. 함수별 내용은 코드 노트의 같은 헤더.
-- **검증 방법**: d2bs 로그 — 입장 직후 정보 줄과 `[Equip]`·`[Grant]`에 `(지역 x,y)` 0, 게임마다 `[게임]` 1줄(사용자가 261105 main에서 꺼 둔 뒤 로그는 해당 없음, 3-68에서 삭제), 리더 `[X] Go` 수 ≥ `=== [X] ===` 수, `Completed`·`!!! `·`=== [게임] ===` 0. `Console.txt` — `<Quit>` 줄은 모두 `[Quit]`, `[게임]` 줄은 `<Flow>`, `[Total]`은 `<OOG>`. `[Died]`가 나오면 `lost=` 값(0.00%만 나오면 게임이 죽는 순간이 아니라 부활 때 경험치를 깎는 것 → 부활 시점 비교로 옮길지 정함), 같은 프로필 다음 게임 `[Died] Last game`과 짝. Alkor 퇴장이 나오면 print `[Quit] Alkor not found`와 경험치 줄. 매니저 화면에서 `[Quit]` 색(어두운 황금색)이 보이는지(사용자).
-- **결과**: (로그 대기)
-
 ### 3-65. 경로 보정 10회 실패 뒤 오류 줄 없음 → `Attack` 조용한 catch 3곳에 `Misc.caughtError` (`Pather.moveTo`, `Attack.clear`·`setPosition`, 옛 1-17, 사용자 261026·261103)
 - **문제**: `Pather.moveTo`는 `no adjusted path` 10번째에도 경로가 없으면 throw(`moveTo: Failed to generate path`)하는데, 261026 로그 2건은 오류 줄 없이 다음 구간으로 넘어갔다.
 - **확인된 것**
@@ -93,6 +88,7 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **바꾼 것**(261103, `4aae2ef` 로그 정책과 같은 커밋): `Attack.clear` 잃은 목표 이동 catch에 `Misc.caughtError("Attack.clear lostPos", e1)`, `Attack.setPosition` 자리 이동 catch에 `"Attack.setPosition move"`, 우회 후보 이동 catch에 `"Attack.setPosition detour"`.
 - **검증 방법**: `no adjusted path` 10회 뒤(trace) 같은 시각 print에 `[Error] Attack.clear lostPos|Attack.setPosition move|Attack.setPosition detour: moveTo: Failed to generate path …`가 있고, 콘솔에 같은 자리 첫 1회 `[Error] …`. 오류 줄 없이 다음 구간으로 넘어간 10회 사례가 0이면 통과. 메시지가 `Failed to generate path`가 아닌 `[Error]`(다른 실행 중 오류)는 따로 본다.
 - **결과**: 261104 **케이스 미발견** — `no adjusted path`는 1회뿐(a8 Pz-30 20:24:05 Infernal Pit, 1회째 직후 리더가 나가 게임 끝), 10회 0, `[Error] Attack.` 0. 한 사이클 더 본다(사용자 261104).
+- **결과 2**: 261105 **케이스 미발견** — `no adjusted path` 0, `no original path` 4(모두 바로 `adjusted path`), `[Error] Attack.` 0. 한 사이클 더 본다(사용자 261105).
 
 ### 3-60. 같은 id 계단 중 출구 좌표에 가까운 것 (`Pather.moveToExit`·`useUnit`, 사용자 261102)
 - **문제(사례)**: 261102 Pz-6 15:01~15:03 — Jail Level 3에서 Inner Cloister로 갈 때 8명 모두 도착한 계단(17580,8271)을 다시 클릭해 Jail Level 2로 돌아감 → Level 2에서 Level 3 좌표로 경로를 찾다 `[Error] AutoSmurf.moveToExit 32: moveTo: Failed to generate path` 8줄 → 아무도 32에 없어 a4 `Area reversed`로 퇴장. 같은 경로 Pz-7은 정상. 사용자: Stony Field → Underground Passage → Dark Wood에서도 같은 일이 있어 두 곳에 폴백(포털 열고 합류)이 있다.
@@ -106,4 +102,5 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **바꾼 것 2**(261103): `useUnit`의 `exit` 분기에서 처음 돌려받은 계단(`getUnit(type, id)`, 옛 코드가 쓰던 것)의 좌표가 고른 계단(`spot`)과 다를 때만 trace `[useUnit] nearest id:N first:x,y chosen:x,y exit:x,y target:지역`(새 변수 없음).
 - **검증 방법 2**: 줄이 찍히고 그 프로필이 `target` 지역에 도착하면(`Area reversed` 없음, 다음 구간 진행) 옛 코드라면 되돌아갔을 사례를 막은 것 → 확정. 줄이 찍혔는데 되돌아가면 고르는 방식이 틀림 → 2절. 줄이 0이면 첫 계단이 늘 맞았음 → 케이스 미발견. 제거 조건: 확정 사례 1건.
 - **결과 2**: 261104 **케이스 미발견** — `[useUnit] nearest` 0줄. 해당 구간 통과는 Jail Level 3 → Inner Cloister 4게임 17회, Underground Passage Level 1 → Dark Wood 3게임 10회(지역이 바뀐 print 줄로 셈, 줄이 없는 통과는 빠짐), Spider Cavern·Ruined Temple 진입 있음. `Area reversed` 0, useUnit timeout 76줄(261103 45, 261102 79) 모두 Retry 0~1, 8회 모두 실패 0. 한 사이클 더 본다(사용자 261104).
+- **결과 3**: 261105 **케이스 미발견** — `[useUnit] nearest` 0줄. Jail Level 3 → Inner Cloister 3게임 10회, Underground Passage Level 1 → Dark Wood 3게임 10회, Spider Forest → Spider Cavern 2회 통과(지역이 바뀐 print 줄로 셈). `Area reversed` 0, useUnit timeout 59줄(Retry 0 48·1 6·2 4·3 1). 한 사이클 더 본다(사용자 261105).
 

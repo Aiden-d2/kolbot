@@ -39,6 +39,7 @@
 ### 3-1. 261103 로그 정책 이후 (CLAUDE.md 4절, `docs/log_types.md`)
 - 상세 기록은 d2bs 로그(print). 줄 모양 `[주체] 문장 (지역 x,y)`(위치는 `Misc.print`가 붙임, 엔진이 앞에 `[MM/DD/YY HH:MM:SS] D2BS <번호>:`). 고정 모양(`=== [게임] ===`, `=== [구간] ===`, `!!! … !!!`)·게임 밖 줄은 위치 없음, 게임 밖 상세는 `… | 상세 (loc N)`.
 - **261104부터**(handoff 3-66): 게임 경계 `[게임]`(콘솔·print), 구간 시작 print `[X] Go`, **구간 끝** 콘솔·print `=== [X] ===`(리더, 그 전 print의 `=== [X] ===`는 시작이었다), `=== [START]/[FARMING]/[LEVELING] ===`·`=== [BOOK]/[POTION]/[SCROLL] ===`(콘솔·print), 리더 플레이 시간 `[Total] …`(콘솔만), `[Died] lost=N.NN%`(죽은 순간), `[Died] Last game`·`[Socket]`·`[Stop] Failed to get corpse`도 print에, `[Quit] Alkor not found`는 `quitGame`(print 있음). 입장 직후 정보 줄(`[Pickit]`·`[Loader]`·`[Role]`·`[Config]`·`[toggle]`·`[Equip] 자리=N`·`[Grant] 자리=N`)은 위치 없음.
+- **사용자 수정**(261104 실행 중 업로드 `03e4d6d`·`fb1d19d`, 261105 `1e53c1b`·`f10e021`, 코드 노트 같은 헤더): 리더 콘솔 게임 경계 줄 꺼 둠(261104 17:36부터 콘솔에 게임 경계 없음, 그 전 `[게임]`). 퀘스트 아이템 `=== [BOOK]/[POTION]/[SCROLL] ===` → `!!! [X] !!!`(261104 17:36~) → `[Quest] Book/Potion/Scroll`(261104 22:57~). 플레이 시간 `[Total] 시간 / Nr (Avg. Nm)` → `시간 (Nm * Nr)`(콘솔 `<OOG>`). 경험치 줄 `[mm:ss] 진행% (Level N)`, `[mm:ss] No exp`. `[Pickit] Loaded`·`[Loader] Loaded` → `Loaded ÿc9[...]`. 게임 경계 print `[게임]`은 261105 `f10e021`부터 꺼 둠(3-68에서 삭제) → 그 뒤 로그는 Starter의 `[Starter] Create game: pz-N`(리더)·`[Starter] Join game: pz-N`(팔로워)으로 게임을 자른다. 줄 모양은 실행 중 바뀌어도 다음 게임부터 적용된다(261105 묶음에서 확인).
 - trace는 임시 검증 줄만. 아래 줄 이름은 261103 이후 로그에서 이렇게 찾는다(그 전 로그는 이 문서의 옛 이름).
 
 | 옛 줄(찾던 곳) | 261103~ 줄(찾을 곳) |
@@ -63,7 +64,7 @@
 | (없음) | print `[okCount] Waiting`(okCount 진입, 프로필마다). 261105~ `[waitParty] Waiting` |
 | `Script ended`(trace는 조기 종료 없을 때만) | print `[AutoSmurf] Script ended`(언제나) |
 
-- 게임 경계: `=== [게임이름] ===`(261011 이후, 261103부터 print), 261104부터 `[게임이름]`, 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다.
+- 게임 경계: `=== [게임이름] ===`(261011 이후, 261103부터 print), 261104부터 `[게임이름]`, 예전 `=== game 이름 ===`. 이 줄로 게임 단위를 자른다. 261105 `f10e021`부터 print 게임 경계가 없다(3-68에서 삭제) → `[Starter] Create game: pz-N`·`Join game: pz-N`(엔진 재시작·재로드는 같은 게임 번호가 다시 나올 수 있음)으로 자른다.
 - 구간 헤더: `=== [ANDY] ===` 등(261104부터 시작은 `[ANDY] Go`, `=== [ANDY] ===`는 리더의 구간 끝). 리더 콘솔에도 `=== ANDY ===`(구간 끝, 갈색, 261103부터 `[ANDY] Completed`, 261104부터 `=== [ANDY] ===`).
 - 줄 시계는 초 단위다. 초 미만 순서는 같은 파일 안의 줄 순서로 본다. 프로필 사이 비교는 PC 시계가 같다는 전제(같은 PC).
 - 위치 `(지역 x,y)`는 그 줄을 찍은 순간의 위치다. 이동을 **시작한** 줄의 좌표를 그 시각의 위치로 읽지 않는다(걷는 중을 멈춤으로 읽은 적이 있다).
