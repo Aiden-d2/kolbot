@@ -5,7 +5,7 @@
 | # | 종류 | 목적 | 보는 곳 | 파일 | 코드 | 설정 |
 |---|---|---|---|---|---|---|
 | 1 | 콘솔 | 흐름과 끝(리더 흐름, 조기 종료·멈춤·치킨·죽음·오류, 아이템 진행, 경험치). 게임 밖 사건 | 매니저 콘솔(색) | `_cache/trace/Console.txt`(전 프로필 한 파일, `[YYYY/MM/DD HH:MM:SS] <프로필> <분류> 내용`) | `D2Bot.printToConsole`(`tools/OOG.js`), 게임 밖은 `OOGLog.print`·`stop` | - |
-| 2 | print | 상세 기록 전부(진행, 실패·재시도, 오류·조기 종료 상세, 게임 경계, 구간 시작·끝, 콘솔 줄(261104부터 `[Total]`·키 입력 디버그 빼고)) | 게임 화면 콘솔 | d2bs 로그 `d2bs/logs/d2bs-<프로필>-<YYYYMMDD>.log`(엔진이 시각을 붙임) | 게임 안 `Misc.print(msg)`(위치 붙임, 색 코드 지움), 고정 모양·게임 밖·입장 직후 정보 줄 `print` | - |
+| 2 | print | 상세 기록 전부(진행, 실패·재시도, 오류·조기 종료 상세, 게임 경계, 구간 시작·끝, 콘솔 줄(261104부터 플레이 시간 줄(옛 `[Total]`)·키 입력 디버그 빼고)) | 게임 화면 콘솔 | d2bs 로그 `d2bs/logs/d2bs-<프로필>-<YYYYMMDD>.log`(엔진이 시각을 붙임) | 게임 안 `Misc.print(msg)`(위치 붙임, 색 코드 지움), 고정 모양·게임 밖·입장 직후 정보 줄 `print` | - |
 | 3 | trace | 임시 검증 줄(handoff 3절, 제거 조건과 함께) | - | `_cache/trace/trace-<프로필>-<YYYYMMDD>.txt` | `Misc.trace` | - |
 | 4 | 머리 위 글자 | 화면 표시(매 틱 반복, 아이템마다, 키 입력) | 게임 화면 캐릭터 위 | 없음 | `me.overhead` | - |
 | 5 | 아이템 로그 | 아이템 처리 기록(Kept, Ingredient, Sold, Dropped, Stashed, Shopped, Gambled, Equipped, Granted, Socketed, Runeworded, Transmuted). 분석은 이 파일 | - | `_cache/trace/ItemLog.txt`(전 프로필 한 파일) | `Misc.itemLogger` | `Config.ItemInfo` |

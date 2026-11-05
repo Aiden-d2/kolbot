@@ -44,6 +44,10 @@
 - 구간 시작 print `=== [X] ===` → `[X] Go`(42곳). 구간 끝 리더 콘솔 `[X] Completed` → `=== [X] ===`(색 7, 31곳, `getQuestItem`의 눈·심장·뇌·스태프 포함)과 같은 블록에 print `=== [X] ===`(리더만). 이 커밋부터 print의 `=== [X] ===`는 구간 끝이다(그 전 로그에서는 시작).
 - 리더 콘솔 `=== START/FARMING/LEVELING ===` → `=== [START] ===`·`=== [FARMING] ===`·`=== [LEVELING] ===`(색 7) + 같은 블록에 print. 퀘스트 아이템 콘솔 `!!! BOOK/POTION/SCROLL !!!` → `=== [BOOK] ===` 등(색 8), print `!!! [X] !!!` → `=== [X] ===`(이미 print가 있던 3곳은 문장만, `preparation`의 POTION·SCROLL 2곳은 print 추가). `preparation`의 꺼 둔 BOOK 줄(`/* */` 안)은 그대로.
 - 입장 직후 정보 줄은 위치 없이 `print`: `checkRole`의 `[Role] Leader|Boer|Follower`·`[Config] SafeTele=`, `start`의 `[Config] hireMerc=`, `preparation`의 `[Config] MiniShopBot=`·`farmingON`·`Tiered=`·`UseMerc=`, `toggle`의 `[toggle] …`. 토글 키 줄 `key: T 3 / H 2 / D 1` → `key: T3 / H2 / D1`.
+- 확인: 261105 로그(11/04 13:31~11/05 11:59, Pz-1~94 × 8프로필) — 입장 직후 정보 줄(`[Equip]`·`[Grant]`·`[Role]`·`[Config]`·`[toggle]`·`[Loader]`)에 위치 0(메시지 수신 줄 `[Config] farmingON received`·`hireMerc received`는 수정 목록 밖이라 위치 있음), 게임마다 프로필별 `[Pz-N]` 1줄(a5 2줄 더는 수동 재로드), 리더 `[X] Go` 수 ≥ `=== [X] ===` 수(모든 구간), `Completed`·`=== [Pz-` 0, `Console.txt` `<Quit>` 30줄 모두 `[Quit]`·`[Pz-N]` 21줄 `<Flow>`·플레이 시간 91줄 `<OOG>`. `!!! [X] !!!`(20:57~21:26)은 실행 중 사용자 업로드 `03e4d6d`의 줄. `[Died] lost=`(사망 0)·Alkor 퇴장(0)·매니저 화면 `[Quit]` 색은 보지 못함. 게임 동작·진행에 영향이 없는 로그 모양이라 검증 통과(사용자 261105, 옛 handoff 3-66).
+
+### 261104 사용자: 퀘스트 아이템 줄 모양 (실행 중 업로드 `afa0969`·`03e4d6d`·`fb1d19d`)
+- 퀘스트 아이템 콘솔(색 8)·print `=== [BOOK]/[POTION]/[SCROLL] ===` → `!!! [X] !!!`(`03e4d6d`) → `[Quest] Book`·`[Quest] Potion`·`[Quest] Scroll`(`fb1d19d`). 자리: `preparation`(Potion·Scroll), `radament`(Book), `figurine`(Potion), `anya`(Scroll). `preparation`의 꺼 둔 BOOK 블록(`/* */`) 삭제(`afa0969`).
 
 ## this.waitParty (옛 this.okCount / this.teamCount)
 

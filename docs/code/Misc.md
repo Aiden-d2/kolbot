@@ -111,6 +111,9 @@
 ### 261103 Claude: 로그 정책 (사용자 승인 261103, handoff 3-64)
 - 경험치 print → `Misc.print`(위치 붙음). `no exp` → `No exp`(콘솔·print).
 
+### 261104 사용자: 경험치 줄 모양 (실행 중 업로드 `03e4d6d`·`fb1d19d`, `getGameTime` 포함)
+- 경험치 줄 `[mm:ss] +획득% / [Level N] 진행%` → `[mm:ss] 진행% (Level N)`(획득 % 빠짐, 옛 줄은 주석으로 둠). `getGameTime` 앞 공백 삭제. `No exp[mm:ss]` → `[mm:ss] No exp`(콘솔 색 4·print).
+
 ## Packet.openMenu
 
 ### 261001 Claude: 대사 중이면 스페이스로 넘김 (유형 B 크래시)

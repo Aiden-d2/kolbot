@@ -14,5 +14,8 @@
 ### 261104 Claude: 로그 모양 정리 (사용자 승인 261104, handoff 3-66)
 - 게임 경계 print `=== [게임 이름] ===` → `[게임 이름]`. 지난 게임 사망 콘솔 `[Died] Last game` 옆에 같은 문장 `print`(위치 없음). 두 `[Died]` 줄(죽은 순간 `lost=`, 다음 게임 `Last game`)은 둘 다 유지(사용자 261104: 죽음이 한쪽에서 안 잡힐 수 있다). `Last game`의 기준은 지난 게임 시작 때 저장한 경험치라 죽어서 잃은 양은 알 수 없다.
 
+### 261105 사용자: 게임 경계 print 끔 (`1e53c1b`·`f10e021`)
+- 게임 경계 print `[게임 이름]` → `게임 이름`(`1e53c1b`) → 주석 처리(`f10e021`). 주석 줄은 아래 3-68에서 삭제.
+
 ### 261105 Claude: 끝 줄 정리 — Script ended 리더 콘솔·팔로워 waitParty, Max game time 콘솔 리더만, 게임 이름 print 삭제 (사용자 승인 261105, handoff 3-68)
 - 게임 이름 print(사용자가 261105 main에서 주석 처리한 `//print(me.gamename)`) 삭제. 이유(사용자 261105): 리더는 `[Starter] Create game: 이름`(`tools/OOG.js` createGame), 팔로워는 `[Starter] Join game: 이름`(`D2BotFollow.dbj`)이 같은 d2bs 로그에 이미 찍힌다. 이 두 줄은 입장 시도 때 찍히고, 실패는 다음 시도의 `Create game failed`·`Join game failed`로 남는다.
