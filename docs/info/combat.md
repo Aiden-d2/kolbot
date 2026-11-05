@@ -1,452 +1,108 @@
 # 전투 (명중률, 방어력 감소, 독 데미지)
 
-명중률 공식과 방어력 감소 수단, 독 데미지 계산(1.10) (261104).
+명중률 공식, 방어력 감소 수단, 독 데미지 계산 (261104, 핵심만 남겨 정리 261105).
 
 - kolbot 사용처: `Attack`(공격 판단), `ClassAttack`(직업 공격)
+- 정리(261105): 원문 전문을 지우고 공식·값만 남겼다. 원문은 git 기록(`6e15969`의 이 파일)에 있다.
 
-## 명중률과 방어력 감소
+## 명중률
 
-- 출처: 사용자 자료 `targetdef&AR.jpg`(어느 포럼 글의 캡처, 주소·날짜 없음). 근거: **출처 불명**.
-- 원문 그대로(영어). 글쓴이가 질문하는 글이라, 공식 뒤의 "bug" 이야기는 질문자의 추측이다.
-- 마지막 줄 일부는 캡처의 위로 가기 버튼에 가려 원문에서 읽을 수 없다(`[가려짐]`).
+- **명중률(%) = 100 × AR / (AR + DR) × 2 × Alvl / (Alvl + Dlvl)**, 5~95%로 제한
+  - AR = 공격 등급, DR = 대상 방어력, Alvl = 공격자 레벨, Dlvl = 대상 레벨
+  - 근거: 식은 사용자 자료 `targetdef&AR.jpg`(출처 불명 포럼 글), 5~95% 제한은 일반 지식(웹 미검증)
 
-> **-x% Target Defense (percentage)**, as found on:
->
-> *item-based* only:
-> Fleshripper (elite dagger) = -50% Target Defense
-> Heaven's Light (elite scepter) = -33% Target Defense
->
-> Eth *rune only* in a weapon:
-> Eth rune = -25% Target Defense in regular monsters, and -12.5% Target Defense against Bosses, Hostile Players
->
-> *Eth runeword* based only:
-> Lawbringer (sword/hammer/scepter runeword) = -50% Target Defense
-> Obedience (polearm runeword) = -25% Target Defense
->
-> *Skill* based only:
-> Conviction Aura (Paladin Skill) = level 20, -90% Target Defense
-> Weaken (Necromancer Skill) = level 20, -33% Target Defense
-> Battle Cry (Barbarian Skill) = level 20, -88% Target Defense
->
-> **-x Enemy Defense (integer)**, as found with:
-> Inner Sight (Amazon Skill) = level 20, Enemy Defense −X = 815
->
-> **- x% Enemy Defense (percentage)**, as found with:
-> Cloak of Shadow (Assassin Skill) = level 20, Enemy Defense -X% = 72%
->
-> **- x to Monster Defense per Hit**, as found on:
-> Soul Drainers (elite gloves) = -50 To Monster Defense Per Hit
->
-> *Items with both -x to Monster Defense mod and -x% Target Defense modifiers:*
-> Stone Crusher (elite mace) = -100 To Monster Defense Per Hit, -25% Target Defense
-> Malice (Ith + El + Eth) = -100 To Monster Defense Per Hit, -25% Target Defense
->
-> Basically, I'm wonder what the "bug" does? Does it take out the DR part of the Chance to Hit % formula? Or only after so many successful hit, does it take out the DR part of the formula?
->
-> Chance to Hit% = 100 x AR / (AR + DR) x 2 x Alvl / (Alvl + Dlvl)
->
-> So the hit to formula, would then be, equal to:
->
-> 100 x AR / (AR + **0**) x 2 x Alvl / (Alvl + Dlvl)
->
-> Then would this enemy's DR be equal to zero, for only that one attacker? So the other 7 characters in the game, would not benefit from this bug (e.g.: DR = zero)?
->
-> ----
->
-> Here's a related question, about the order of operations for figuring out when an enemies' Defense Rating starts & stops, and then an Attacke[가려짐]cial modifiers apply.
+## 방어력 감소 수단
 
-- 기호: AR = 공격 등급(Attack Rating), DR = 대상 방어력(Defense Rating), Alvl = 공격자 레벨, Dlvl = 대상 레벨.
+- 값은 mpqdata(1.14d) `uniqueitems.txt`·`runes.txt`·`gems.txt`·`skills.txt`와 대조해 모두 맞다(261105).
 
-## 독 데미지 계산 (1.10)
-
-- 출처: diablowiki "Guide:Calculating Poison Damage v1.10, by onderduiker" (https://diablo2.diablowiki.net/Guide:Calculating_Poison_Damage_v1.10,_by_onderduiker). 현재 사이트는 봇 차단 페이지를 돌려줘, 인터넷 아카이브의 2011-12-11 사본(https://web.archive.org/web/20111211062507/http://diablo2.diablowiki.net/Guide:Calculating_Poison_Damage_v1.10,_by_onderduiker)에서 가져왔다(261104). 근거: 웹 미검증.
-- 원문 그대로(영어). 표의 `〃`는 원문에서 위 칸과 합쳐진 칸이다.
-
-Some (if not all) of what follows may already be known, but to the best of my knowledge it hasn't all been collected in one place on this site. Bkelly's The Tao of Poison was an excellent source of information about poison damage for v1.09, but there are a number of changes in Diablo II: Lord of Destruction v1.10+ and the Tao hasn't been updated.
-
-I've also posted Poison damage calculator.xls, a Microsoft Excel worksheet, in the Diablo Files forum of the Diablo III Community Forums. Even if you know how to calculate poison damage, this should make it easier.
-
-*Diablo II Strategy Guide Info:*
-
-- **Patch:** v1.10
-- **Gametype:** PvE/PvM and PvP
-- **Guide Topic:** Poison damage
-- **Class:** Amazon, Assassin, Barbarian, Druid, Necromancer, Paladin, Sorceress
-- **Author:** onderduiker
-- **Related Article(s):** Poison damage calculator.xls, The Tao of Poison
-
-### Introduction
-
-While damage is displayed in points and length in seconds, both are calculated and applied using more precise units of measurement. Damage is calculated and applied in bits, and length in frames.
-
-| Damage |  | Length |  |
+| 종류 | 출처 | 값 | 데이터 |
 |---|---|---|---|
-| Points | Bits | Seconds | Frames |
-| 1 | 256 | 1 | 25 |
-
-Poison damage is displayed as the total damage applied over a length of time, but it's calculated by applying a bit rate (bit damage per frame) for a specified number of frames: a **Toxic Small Charm** applies 205 bit rate for 125 frames, which is displayed as 100 Poison Damage Over 5 Seconds (205\*125/256 over 125/25).
-
-Poison damage from multiple attacks doesn't stack. If a target is already poisoned, then the rate and length of that poison will be overwritten by that of any subsequent attack which has an equal or greater rate. Rates are compared after all modifiers have been applied.
-
-When players, hirelings or pets apply poison to a poisoned monster, their poison is applied for one frame instead of the current poison: if their poison has an equal or greater rate, it then overwrites the current poison and it gets applied for its length; if their poison has a lower rate, the current poison then continues for its remaining length. Rates are compared after all modifiers have been applied.
-
-When monsters apply poison to a poisoned player, hireling or pet, their poison is applied for one frame as well as the current poison: if their poison has an equal or greater rate, it then overwrites the current poison and it gets applied for its length; if their poison has a lower rate, the current poison then continues for its remaining length. Rabies and Poison Creeper can also apply additional frames of poison damage when applied to more than one monster.
-
-A monster's damage regeneration is stopped if at least one bit of poison damage is applied per frame: monsters won't turn green if less than one bit of poison damage is applied per frame. Poison damage can kill monsters, hirelings and pets but will only reduce players to 1 hit point (although poison damage from a subsequent attack would kill them if they remained on 1 hit point).  
-
-### Items
-
-If a single item has both a prefix and a suffix applying poison damage, then the rates and lengths of both are simply added.
-
-| Small Charm | Displayed damage | Bit rate |  | Frames |
-|---|---|---|---|---|
-| 〃 | 〃 | Min | Max | 〃 |
-| Toxic Small Charm | 100 Poison Damage Over 5 Seconds | 205 | 205 | 125 |
-| Small Charm of Anthrax | 50 Poison Damage Over 6 Seconds | 86 | 86 | 150 |
-| Toxic Small Charm of Anthrax | 313 Poison Damage Over 11 Seconds | 291 | 291 | 275 |
-
-Displayed damage is rounded to the nearest point, although it should always be rounded down. When multiple items applying poison damage are equipped, then the rates are added and the lengths are averaged.
-
-| Item | Displayed damage | Bit rate |  | Frames |
-|---|---|---|---|---|
-| 〃 | 〃 | Min | Max | 〃 |
-| Toxic Small Charm of Anthrax | 313 Poison Damage Over 11 Seconds | 291 | 291 | 275 |
-| Blackbog's Sharp Cinquedeas | 488 Poison Damage Over 10 Seconds | 500 | 500 | 250 |
-| Perfect Emerald | 100 Poison Damage Over 7 Seconds | 143 | 143 | 179 |
-| Total |  | 934 | 934 | 704 |
-
-| Frames | = [704/3] |
-|---|---|
-| 〃 | = 234 |
-
-Thus 853 poison damage is applied over 9.36 seconds (934\*234/256 over 234/25). Bits and frames are the smallest units of measurement, and so calculations are rounded down to the nearest bit and frame. Gems, jewels and runes all count as separate items, even if they're socketed in a single item.
-
-**ERROR:** Length is calculated differently when multiple items applying poison damage are used with skills that apply a fraction of weapon damage. This applies to the following following skills:
-
-- Multiple Shot
-- Strafe
-- Blade Sentinel
-- Blade Fury
-- Blade Shield
-
-Two items will apply poison damage over the sum of their lengths, while three or more items will just apply poison damage over the longest length of any of those items.
-
-- Poison damage items
-
-### Skills
-
-Poison damage skills add bit rate with every additional skill level. The bit rate added also increases beyond certain skill levels. Some skills also add length with every additional skill level, although the increase is linear. Others are synergised by other skills, which apply a percentage increase to bit rate dependent on the number of skill points invested in the synergy skill(s). Skill level is set at the point the player uses the skill. Adding or removing skill bonuses won't have any effect on rate or length if there's a delay between using the skill and applying the poison.
-
-| Skill | Bit rate |  |  |  |  |  |  | Frames |  | Synergy |  |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 〃 | /Level | 1 | 2-8 | 9-16 | 17-22 | 23-28 | >28 | 1 | 2+ | Skill | +% |
-| Poison Javelin (Pn) | Min Max | 32 48 | +16 +16 | +32 +36 | +48 +52 | +64 +68 | +96 +84 | 200 | +50 | Pe | 12 |
-| Plague Javelin (Pe) | Min Max | 80 128 | +48 +48 | +96 +96 | +160 +160 | +320 +320 | +480 +480 | 75 | +10 | Pn | 10 |
-| Poison Dagger (PD) | Min Max | 36 80 | +20 +20 | +30 +30 | +40 +40 | +46 +46 | +52 +52 | 50 | +10 | PE PN | 20 20 |
-| Poison Explosion (PE) | Min Max | 128 384 | +32 +32 | +64 +64 | +96 +96 | +128 +128 | +160 +160 | 50 | +10 | PD PN | 15 15 |
-| Poison Nova (PN) | Min Max | 256 464 | +64 +64 | +96 +96 | +144 +144 | +224 +224 | +256 +256 | 50 |  | PD PE | 10 10 |
-| Poison Creeper (PC) | Min Max | 12 16 | +7 +7 | +12 +12 | +15 +15 | +17 +17 | +19 +19 | 100 |  |  |  |
-| Rabies | Min Max | 48 112 | +32 +32 | +40 +40 | +56 +56 | +88 +88 | +128 +128 | 100 | +10 | PC | 18 |
-| Venom | Min Max | 1,536 2,048 | +384 +384 | +512 +512 | +640 +640 | +768 +768 | +896 +896 | 10 |  |  |  |
-
-**ERROR:** Level \>36 Poison Javelin displays higher minimum than maximum damage because the minimum bit rate added per level for level \>28 is higher than the maximum bit rate added. When this occurs, the minimum damage becomes the maximum and the maximum damage becomes the minimum.
-
-Level 30 Poison Dagger applies the following:
-
-| Frames | = 50+(10*(30-1)) |
-|---|---|
-| 〃 | = 50+290 |
-| 〃 | = 340 |
-
-| Min bit rate | = 36+(20*7)+(30*8)+(40*6)+(46*6)+(52*2) |
-|---|---|
-| 〃 | = 36+140+240+240+276+104 |
-| 〃 | = 1,036 |
-| Min damage | = 1,036*340/256 |
-| 〃 | = 1,375 |
-
-| Max bit rate | = 80+(20*7)+(30*8)+(40*6)+(46*6)+(52*2) |
-|---|---|
-| 〃 | = 80+140+240+240+276+104 |
-| 〃 | = 1,080 |
-| Max damage | = 1,080*340/256 |
-| 〃 | = 1,434 |
-
-Thus 1,375-1,434 Poison Damage Over 13.6 Seconds is displayed. Fully synergised level 30 Poison Dagger (20 points each in Poison Explosion and Nova) has +800% (20\*(20+20)) applied to its rate:
-
-| Min bit rate | = 1,036*(100+800)/100 |
-|---|---|
-| 〃 | = 1,036*9 |
-| 〃 | = 9,324 |
-| Min damage | = 9,324*340/256 |
-| 〃 | = 12,383 |
-
-| Max bit rate | = 1,080*(100+800)/100 |
-|---|---|
-| 〃 | = 1,080*9 |
-| 〃 | = 9,720 |
-| Max damage | = 9,720*340/256 |
-| 〃 | = 12,909 |
-
-Thus 12,383-12,909 Poison Damage Over 13.6 Seconds is displayed.  
-
-### Skills and items
-
-Most skills are treated as separate sources of poison damage whose rates (and accompanying lengths) compete with those of other skills and items. However, Poison Dagger and the javelins (but **not** the clouds) of Poison and Plague Javelins combine the skill's rate with any item rates. Length is calculated by summing skill and item lengths and dividing by the number of items.
-
-| Source | Displayed damage | Bit rate |  | Frames |
-|---|---|---|---|---|
-| 〃 | 〃 | Min | Max | 〃 |
-| Toxic Small Charm of Anthrax | 313 Poison Damage Over 11 Seconds | 291 | 291 | 275 |
-| Blackbog's Sharp Cinquedeas | 488 Poison Damage Over 10 Seconds | 500 | 500 | 250 |
-| Perfect Emerald | 100 Poison Damage Over 7 Seconds | 143 | 143 | 179 |
-| Level 30 Poison Dagger | 12,383-12,909 Poison Damage Over 13.6 Seconds | 9,324 | 9,720 | 340 |
-| Total |  | 10,258 | 10,654 | 1,044 |
-
-| Frames | = [1,044/3] |
-|---|---|
-| 〃 | = 348 |
-
-| Min damage | = 10,258*348/256 |
-|---|---|
-| 〃 | = 13,944 |
-
-| Max damage | = 10,654*348/256 |
-|---|---|
-| 〃 | = 14,482 |
-
-Thus 13,944-14,482 poison damage is applied over 13.92 (348/25) seconds.
-
-If the only item used were **Blackbog's Sharp Cinquedeas**, 9,824-10,220 bit rate for 590 ((250+340)/1) frames would apply 22,641-23,553 poison damage over 23.6 (590/25) seconds. Although the rate is lower with only one item, the length can be significantly longer and results in far more damage from a single stab.  
-
-### Venom
-
-Venom's rate is applied to any weapon's attack made between its casting and expiration, and adds to any rate applied by items. However, its 10 frame length overrides those of any items.
-
-| Source | Displayed damage | Bit rate |  | Frames |
-|---|---|---|---|---|
-| 〃 | 〃 | Min | Max | 〃 |
-| Toxic Small Charm of Anthrax | 313 Poison Damage Over 11 Seconds | 291 | 291 | 275 |
-| Blackbog's Sharp Cinquedeas | 488 Poison Damage Over 10 Seconds | 500 | 500 | 250 |
-| Perfect Emerald | 100 Poison Damage Over 7 Seconds | 143 | 143 | 179 |
-| Level 15 Venom | 305-325 Poison Damage Over 0.4 Seconds | 7,808 | 8,320 | 10 |
-| Total |  | 8,742 | 9,254 | 10 |
-
-| Min damage | = 8,742*10/256 |
-|---|---|
-| 〃 | = 341 |
-
-| Max damage | = 9,254*10/256 |
-|---|---|
-| 〃 | = 361 |
-
-Thus just 341-361 poison damage is applied over 0.4 (10/25) seconds.
-
-However, Venom's length does **not** override those of the skills Poison Dagger and Poison and Plague Javelins. Casting Venom can thus significantly increase the rate applied by these skills while not reducing length. Since Venom effectively creates a *single* source which sums the rates of Venom and items but which only applies for Venom's length, the length is the sum of the skill length and that of Venom.
-
-| Source | Displayed damage | Bit rate |  | Frames |
-|---|---|---|---|---|
-| 〃 | 〃 | Min | Max | 〃 |
-| Toxic Small Charm of Anthrax | 313 Poison Damage Over 11 Seconds | 291 | 291 | 275 |
-| Blackbog's Sharp Cinquedeas | 488 Poison Damage Over 10 Seconds | 500 | 500 | 250 |
-| Perfect Emerald | 100 Poison Damage Over 7 Seconds | 143 | 143 | 179 |
-| Level 30 Poison Dagger | 12,383-12,909 Poison Damage Over 13.6 Seconds | 9,324 | 9,720 | 340 |
-| Level 15 Venom | 305-325 Poison Damage Over 0.4 Seconds | 7,808 | 8,320 | 10 |
-| Total |  | 18,066 | 18,974 | 350 |
-
-| Min damage | = 18,066*350/256 |
-|---|---|
-| 〃 | = 24,699 |
-
-| Max damage | = 18,974*350/256 |
-|---|---|
-| 〃 | = 25,941 |
-
-Thus 24,699-25,941 poison damage is applied over 14 (350/25) seconds. Classes other than the Assassin can gain the ability to cast Venom by equipping certain items, which allow it to be cast by various methods.
-
-| Item | Source | Duration (seconds) | Bit rate |  | Frames |
-|---|---|---|---|---|---|
-| 〃 | 〃 | 〃 | Min | Max | 〃 |
-| Arachnid Mesh Spiderweb Sash | Level 3 Venom (11 Charges) | 128 | 2,304 | 2,816 | 10 |
-| Andariel's Visage Demonhead | Level 3 Venom (20 Charges) | 128 | 2,304 | 2,816 | 10 |
-| Treachery 'ShaelThulLem' Armor | 25% Chance to Cast Level 15 Venom on Striking | 176 | 7,808 | 8,320 | 10 |
-| Grief 'EthTirLoMalRal' Sword/Axe | 35% Chance to Cast Level 15 Venom on Striking | 176 | 7,808 | 8,320 | 10 |
-| Dragon 'SurLoSol' Armor/Shield | 20% Chance to Cast Level 18 Venom When Struck | 188 | 9,600 | 10,112 | 10 |
-| Rainbow Facet Jewel | 100% Chance to Cast Level 23 Venom When You Level-up | 208 | 12,928 | 13,440 | 10 |
-
-### +% Poison Skill Damage
-
-+% Poison Skill Damage is gained by equipping certain items and applies a percentage increase to the rate which is multiplicative with any synergies. It's also applied to the rate from items when applied with mêlée weapons, but **not** when applied with ranged weapons.
-
-The point at which +% PSD is applied varies for each skill, although it is **not** applied to Poison Creeper. For more details about the mechanics of each skill, see the individual skill descriptions.
-
-| Skill | Point of application |
-|---|---|
-| Poison Javelin | Javelin: throwing Clouds: creation |
-| Plague Javelin | Javelin: throwing Clouds: creation |
-| Poison Dagger | Striking |
-| Poison Explosion | Casting |
-| Poison Nova | Casting |
-| Rabies | Bite: striking Contagion: creation |
-| Venom | Casting |
-
-Equipping **Trang-Oul's Claws Heavy Bracers** applies +25% PSD to level 15 Venom when cast:
-
-| Min bit rate | = 7,808*(100+25)/100 |
-|---|---|
-| 〃 | = 7,808*1.25 |
-| 〃 | = 9,760 |
-
-| Max bit rate | = 8,320*(100+25)/100 |
-|---|---|
-| 〃 | = 8,320*1.25 |
-| 〃 | = 10,400 |
-
-| Source | Displayed damage | Bit rate |  | Frames |
-|---|---|---|---|---|
-| 〃 | 〃 | Min | Max | 〃 |
-| Toxic Small Charm of Anthrax | 313 Poison Damage Over 11 Seconds | 291 | 291 | 275 |
-| Blackbog's Sharp Cinquedeas | 488 Poison Damage Over 10 Seconds | 500 | 500 | 250 |
-| Perfect Emerald | 100 Poison Damage Over 7 Seconds | 143 | 143 | 179 |
-| Level 15 Venom | 305-325 Poison Damage Over 0.4 Seconds | 9,760 | 10,400 | 10 |
-| Total |  | 10,694 | 11,334 | 10 |
-| Level 30 Poison Dagger | 12,383-12,909 Poison Damage Over 13.6 Seconds | 9,324 | 9,720 | 340 |
-
-+25% PSD is now applied:
-
-| Min bit rate | = (10,694*(100+25)/100)+(9,324*(100+25)/100) |
-|---|---|
-| 〃 | = (10,694*1.25)+(9,324*1.25) |
-| 〃 | = 13,367+11,655 |
-| 〃 | = 25,022 |
-| Min damage | = 25,022*(340+10)/256 |
-| 〃 | = 34,209 |
-
-| Max bit rate | = (11,334*(100+25)/100)+(9,720*(100+25)/100) |
-|---|---|
-| 〃 | = (11,334*1.25)+(9,720*1.25) |
-| 〃 | = 14,167+12,150 |
-| 〃 | = 26,317 |
-| Max damage | = 26,317*(340+10)/256 |
-| 〃 | = 35,980 |
-
-Thus 34,209-35,980 poison damage is applied over 14 (350/25) seconds. +% PSD can only be found on the following items:
-
-| Item | +% PSD |
-|---|---|
-| Rainbow Facet Jewel | 3-5 |
-| Trang-Oul's Claws Heavy Bracers | 25 |
-| Bramble 'RalOhmSurEth' armor | 25-50 |
-
-### Lower Resist
-
-A target's Poison Resist (PR) % reduces poison's rate, and PR 100+% makes a monster Immune to Poison (players and hirelings are capped at PR 95%). Lower Resist (LR) applies PR -%, although it's applied at 1/5 effectiveness against Immune to Poison monsters: level 10 LR's PR -55% is reduced to PR -11% (55/5). PR -100% is the absolute minimum to which a target can be reduced, doubling the rate.
-
-25,022-26,317 bit rate for 350 frames results in 34,209-35,980 poison damage being applied over 14 seconds to a target with PR 0%. PR 50% would halve the rate, but casting level 10 LR (PR -55%) results in the following:
-
-| Min bit rate | = 25,022*(100-(50-55))/100 |
-|---|---|
-| 〃 | = 25,022*1.05 |
-| 〃 | = 26,273 |
-| Min damage | = 26,273*350/256 |
-| 〃 | = 35,920 |
-
-| Max bit rate | = 26,317*(100-(50-55))/100 |
-|---|---|
-| 〃 | = 26,317*1.05 |
-| 〃 | = 27,632 |
-| Max damage | = 27,632*350/256 |
-| 〃 | = 37,778 |
-
-Thus 35,920-37,778 poison damage is applied over 14 (350/25) seconds. LR is applied when the target is poisoned, so it can be overwritten by another curse immediately afterwards. Even if LR is required to break immunity, once poison has been applied its rate and length remain unchanged, even if the monster becomes Immune to Poison again.  
-
-### -% Enemy Poison Resistance
-
--% Enemy Poison Resistance (EPR) reduces a target's poison resistance like LR, but only if PR \< 100% i.e. not Immune to Poison. However, unlike LR -% EPR also applies to length, effectively applying Poison Length Reduced (PLR) by -%.
-
-Monsters have no PLR % so -% EPR *increases* poison length by the displayed amount, although -100% is the absolute minimum to which a target can be reduced, doubling the length. The only exceptions are the Ancients, whose equipment can spawn with PLR % suffixes. **Talic** and **Korlic** can spawn with PLR \>99%, which cannot be reduced by -% EPR. However, this doesn't result in effective immunity, since a frame of poison damage is still applied.
-
-Players and hirelings are capped at PLR 75%, although the same difficulty penalties that apply to Resist % apply (-40% in Nightmare and -100% in Hell).
-
--% EPR is applied when the target is poisoned, like LR. Once poison has been applied its rate and length remain unchanged, so -% EPR can be removed afterwards without affecting damage or length.
-
-25,022-26,317 bit rate for 350 frames results in 34,209-35,980 poison damage being applied over 14 seconds to a target with PR 0%. PR 110% makes a monster Immune to Poison, but casting level 10 LR (PR -11%) breaks that immunity and, combined with **Trang-Oul's Wing Cantor Trophy's** -25% EPR partial set bonus when equipping two other items from **Trang-Oul's Avatar**, results in the following:
-
-| Frames | = 350*(100-(0-25))/100 |
-|---|---|
-| 〃 | = 350*1.25 |
-| 〃 | = 437 |
-
-| Min bit rate | = 25,022*(100-(110-11-25))/100 |
-|---|---|
-| 〃 | = 25,022*0.26 |
-| 〃 | = 6,505 |
-| Min damage | = 6,505*437/256 |
-| 〃 | = 11,104 |
-
-| Max bit rate | = 26,317*(100-(110-11-25))/100 |
-|---|---|
-| 〃 | = 26,317*0.26 |
-| 〃 | = 6,842 |
-| Max damage | = 6,842*437/256 |
-| 〃 | = 11,679 |
-
-Thus 11,104-11,679 poison damage is applied over 17.48 (437/25) seconds. -% EPR can only be found on the following items:
-
-| Item | -% EPR |
-|---|---|
-| Rainbow Facet Jewel | 3-5 |
-| Trang-Oul's Wing Cantor Trophy (3 Items) | 25 |
-| Grief 'EthTirLoMalRal' Sword/Axe | 20-25 |
-| Death's Web Unearthed Wand | 40-50 |
-
-### Calculation
-
-This is a summary of all the individual steps in the calculation of poison damage outlined in the preceding sections. To express total damage in points applied over a length in seconds:
-
-**Points = \[Rate\*Frames/256\]**
-
-**Second = Frames/25**
-
-Ideally damage is calculated measuring rate in bits and length in frames. It's also possible to calculate damage measuring rate in poison damage/second and length in seconds, which can be derived directly from displayed damage. However, the result will only be an approximation and rounding down should only be done at the end of the calculation for the maximum accuracy possible.
-
-**Rate = \[(\[\[B\*S\]\*M\]+\[(I+\[V\*M\])\*M\])\*R\]**
-
-| 기호 | 뜻 | 식 |
-|---|---|---|
-| \[\] | Round down |  |
-| B | Skill rate |  |
-| I | Sum of item rates |  |
-| V | Venom rate |  |
-| M | Mastery (+X% Poison Skill Damage) | M = (100+X)/100 |
-| S | Synergy (+X% poison damage) | S = (100+X)/100 |
-| R | Resistance | R = (100-X)/100 |
-
-R의 X:
-
-- If P >= 100 and P-(L/5) < 100 then X = P-(L/5), else R = 0
-- If P < 100 then X = Max(P-(L+E),-100)
-- P = Poison Resist X%, L = Lower Resist (Poison Resist -X%), E = -X% Enemy Poison Resistance
-
-- If a single item has both a prefix and a suffix applying poison damage, then the rates and lengths of both are simply added.
-- Gems, jewels and runes all count as separate items, even if they're socketed in a single item.
-- Item and Venom rate are only added to the skill rates of Poison Dagger and the javelins (but **not** the clouds) of Poison and Plague Javelins.
-- +% PSD isn't applied to item and Venom rate when applied by ranged attacks.
-
-**Frames = \[F\*R\]**
-
-| 기호 | 뜻 | 식 |
-|---|---|---|
-| \[\] | Round down |  |
-| F | Frames: Items | F = sum of item lengths/number of items |
-| 〃 | Frames: Items + Skill | F = (skill length + sum of item lengths)/number of items |
-| 〃 | Frames: Items + Venom | F = Venom length |
-| 〃 | Frames: Skill + Venom | F = skill length + Venom length |
-| R | Resistance | R = (100-X)/100 |
-
-R의 X:
-
-- If P < 100 then X = Max(P-E,-100), else F = 1
-- P = Poison Length Reduced by X%, E = -X% Enemy Poison Resistance
-
-- **ERROR:** Length is calculated differently when multiple items applying poison damage are used with skills that apply a fraction of weapon damage. Two items will apply poison damage over the sum of their lengths, while three or more items will just apply poison damage over the longest length of any of those items.
+| 대상 방어력 −% | Fleshripper | −50% | `reduce-ac` 50 |
+| 〃 | Heaven's Light | −33% | `reduce-ac` 33 |
+| 〃 | Lawbringer | −50% | `reduce-ac` 50 |
+| 〃 | Stone Crusher | −25% | `reduce-ac` 25 |
+| 〃 | Eth 룬(무기 소켓) | −25% | `reduce-ac` 25. Obedience·Malice의 −25%는 이 룬 몫이다 |
+| 타격마다 몬스터 방어력 −N | Stone Crusher | −100 | `dmg-ac` −100 |
+| 〃 | Malice | −100 | `dmg-ac` −100 |
+| 〃 | Souldrain | −50 | `dmg-ac` −50 |
+| 스킬 (대상 방어력 −%) | Conviction 20레벨 | −90% | Param5 40 + (Param6 100 − 40) × ⌊110 × 레벨 / (레벨 + 6)⌋ / 100 |
+| 〃 | Battle Cry 20레벨 | −88% | Param3 −50 + (레벨 − 1) × Param4 −2 |
+| 〃 | Cloak of Shadows 20레벨 | −72% | Param5 15 + (레벨 − 1) × Param6 3, 최대 95 |
+| 스킬 (방어력 −N) | Inner Sight 20레벨 | −815 | EMin 40 + 레벨 구간별 증가(2~8: 25, 9~16: 45, 17~22: 60) |
+
+- 원문 주장(미검증): 대상 방어력 −%는 보스·플레이어에게 절반만 적용된다(예: Eth −12.5%).
+- Weaken은 방어력 감소가 아니다. 데이터는 `damagepercent` −33 = 몬스터 데미지 33% 감소(원문의 "−33% Target Defense"는 틀려 지웠다, 261105).
+
+## 독 데미지
+
+- 출처: diablowiki "Guide:Calculating Poison Damage v1.10, by onderduiker"(인터넷 아카이브 2011-12-11 사본). 근거: 웹 미검증. 아래 스킬 수치 표는 1.14d `skills.txt`와 대조해 모두 맞다(포이즌 크리퍼는 데이터 이름 `Plague Poppy`, 261105).
+
+### 단위와 기본 식
+
+- 데미지는 비트(256비트 = 1점), 길이는 프레임(25프레임 = 1초)으로 계산한다.
+- **점수 = ⌊비율 × 프레임 / 256⌋**, **초 = 프레임 / 25**. 비율 = 프레임당 비트.
+- 예: Toxic 스몰 참 = 비율 205, 125프레임 → 100점 / 5초.
+
+### 겹칠 때
+
+- 독은 쌓이지 않는다. 새 독의 비율이 지금 독보다 같거나 크면 새 독으로 바뀌고, 작으면 지금 독이 남은 길이만큼 이어진다(비율 비교는 모든 보정 뒤).
+- 몬스터는 프레임당 1비트 이상이면 회복이 멈춘다. 플레이어는 독으로 1까지만 내려간다.
+
+### 아이템·스킬 합치기
+
+- 아이템 여러 개: 비율은 더하고, 길이는 평균(길이 합 / 아이템 수). 한 아이템의 접두·접미 독은 비율·길이 모두 더한다. 보석·주얼·룬은 소켓에 있어도 각각 한 아이템이다.
+- 대부분의 독 스킬은 아이템과 따로 경쟁한다(위 "겹칠 때").
+- 예외 1: 포이즌 대거와 포이즌·플레이그 재블린의 창 자체(구름은 아님)는 스킬과 아이템을 합친다. 비율 = 스킬 + 아이템 합, 길이 = (스킬 길이 + 아이템 길이 합) / 아이템 수.
+- 예외 2: 베놈의 비율은 무기 공격의 아이템 비율에 더해지고, 길이는 베놈의 10프레임으로 덮어쓴다. 단 포이즌 대거·재블린과 함께면 길이 = 스킬 길이 + 10.
+- 오류(원문): 멀티샷·스트레이프·블레이드 센티넬·블레이드 퓨리·블레이드 실드는 아이템 2개면 길이를 합하고, 3개 이상이면 가장 긴 길이를 쓴다.
+
+### 스킬 비율 (비트/프레임)
+
+- 비율 = 1레벨 값 + 레벨 구간마다의 증가. 시너지는 시너지 스킬 포인트 × % 만큼 비율에 곱한다. 길이 = 1레벨 프레임 + (레벨 − 1) × 증가.
+- 데이터 대조: `skills.txt` `EMin`·`EMinLev1~5`·`EMax`·`EMaxLev1~5`를 `HitShift`만큼 왼쪽으로 민 값(예: 포이즌 대거 18 × 2 = 36), `ELen`·`ELevLen`, 시너지 %는 `Param8`, 시너지 스킬은 `EDmgSymPerCalc`.
+
+| 스킬 | 최소·최대 | 1레벨 | 2~8 | 9~16 | 17~22 | 23~28 | 29~ | 길이 1레벨 | 길이 +/레벨 | 시너지 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Poison Javelin | 최소 | 32 | +16 | +32 | +48 | +64 | +96 | 200 | +50 | Plague Javelin 12% |
+| 〃 | 최대 | 48 | +16 | +36 | +52 | +68 | +84 | 〃 | 〃 | 〃 |
+| Plague Javelin | 최소 | 80 | +48 | +96 | +160 | +320 | +480 | 75 | +10 | Poison Javelin 10% |
+| 〃 | 최대 | 128 | +48 | +96 | +160 | +320 | +480 | 〃 | 〃 | 〃 |
+| Poison Dagger | 최소 | 36 | +20 | +30 | +40 | +46 | +52 | 50 | +10 | Poison Explosion·Nova 각 20% |
+| 〃 | 최대 | 80 | +20 | +30 | +40 | +46 | +52 | 〃 | 〃 | 〃 |
+| Poison Explosion | 최소 | 128 | +32 | +64 | +96 | +128 | +160 | 50 | +10 | Poison Dagger·Nova 각 15% |
+| 〃 | 최대 | 384 | +32 | +64 | +96 | +128 | +160 | 〃 | 〃 | 〃 |
+| Poison Nova | 최소 | 256 | +64 | +96 | +144 | +224 | +256 | 50 |  | Poison Dagger·Explosion 각 10% |
+| 〃 | 최대 | 464 | +64 | +96 | +144 | +224 | +256 | 〃 |  | 〃 |
+| Poison Creeper | 최소 | 12 | +7 | +12 | +15 | +17 | +19 | 100 |  |  |
+| 〃 | 최대 | 16 | +7 | +12 | +15 | +17 | +19 | 〃 |  |  |
+| Rabies | 최소 | 48 | +32 | +40 | +56 | +88 | +128 | 100 | +10 | Poison Creeper 18% |
+| 〃 | 최대 | 112 | +32 | +40 | +56 | +88 | +128 | 〃 | 〃 | 〃 |
+| Venom | 최소 | 1,536 | +384 | +512 | +640 | +768 | +896 | 10 |  |  |
+| 〃 | 최대 | 2,048 | +384 | +512 | +640 | +768 | +896 | 〃 |  |  |
+
+- 37레벨 이상 포이즌 재블린은 최소 증가(+96)가 최대 증가(+84)보다 커서 최소·최대가 뒤바뀌어 보인다(원문).
+
+### +% 독 스킬 데미지 (PSD)
+
+- 비율에 곱하고, 시너지와 곱연산이다. 근접 무기로 줄 때는 아이템 비율에도 붙고, 원거리 공격일 때는 아이템·베놈 비율에 붙지 않는다. 포이즌 크리퍼에는 붙지 않는다.
+- 붙는 아이템(원문): Rainbow Facet 주얼 3~5%, Trang-Oul's Claws 25%, Bramble 25~50%.
+
+### 저항과 길이
+
+- 독 저항(P)이 비율을 줄인다. 로어 레지스트(L)·적 독 저항 −%(E)가 P를 깎는다.
+  - 면역 아님(P < 100): X = max(P − (L + E), −100)
+  - 면역(P ≥ 100): 로어 레지스트가 1/5만 적용되고 E는 적용되지 않는다. P − L/5 < 100이면 X = P − L/5, 아니면 독이 들어가지 않는다.
+  - 비율 × (100 − X) / 100. 최소 −100%라 최대 2배.
+- E(적 독 저항 −%)는 길이에도 적용된다: 길이 × (100 − (독 길이 감소 − E)) / 100. 몬스터는 독 길이 감소가 0이라 길이가 늘어난다(최대 2배). 고대인은 장비 접미사로 독 길이 감소가 있을 수 있다.
+- 플레이어·용병: 독 길이 감소 최대 75%, 나이트메어 −40%, 헬 −100% 보정.
+- 저항·E는 독이 들어가는 순간에 적용된다. 그 뒤 저주가 바뀌거나 E가 빠져도 이미 들어간 독은 그대로다.
+- E가 붙는 아이템(원문): Rainbow Facet 3~5%, Trang-Oul's Wing(3세트) 25%, Grief 20~25%, Death's Web 40~50%.
+
+### 전체 식
+
+- **비율 = ⌊(⌊⌊B × S⌋ × M⌋ + ⌊(I + ⌊V × M⌋) × M⌋) × R⌋**
+- **프레임 = ⌊F × R'⌋**
+- B = 스킬 비율, S = (100 + 시너지%) / 100, M = (100 + PSD%) / 100, I = 아이템 비율 합, V = 베놈 비율, R = 저항 보정(위), ⌊ ⌋ = 내림
+- F = 아이템만: 길이 합 / 아이템 수, 아이템 + 스킬(포이즌 대거·재블린): (스킬 길이 + 아이템 길이 합) / 아이템 수, 아이템 + 베놈: 10, 스킬 + 베놈: 스킬 길이 + 10
+- R' = 길이 보정(위 "저항과 길이")
+- I·V를 B에 더하는 것은 포이즌 대거·재블린의 창일 때만. 원거리 공격이면 I·V에 M을 곱하지 않는다.
