@@ -1,6 +1,6 @@
 # 엔진 번호 (코드에서 쓰는 번호표)
 
-아이템 플래그·위치·착용 부위, 유닛 동작 상태(mode), NPC 메뉴, 상점 화면, 아이템 기본 스탯 인덱스, UI 플래그 (261104), 몬스터 spectype·슈퍼유니크 프리셋 번호(261105).
+아이템 플래그·위치·착용 부위, 유닛 동작 상태(mode), NPC 메뉴, 상점 화면, 아이템 기본 스탯 인덱스, UI 플래그 (261104), 몬스터 spectype·슈퍼유니크 프리셋 번호(261105), 아이템 mode·게임 밖 화면 번호(261105).
 
 - 번호와 이름은 원본 그대로 영문. 출처는 절마다 적었다.
 
@@ -127,6 +127,21 @@
 | 5 | Special3 | S3 |
 | 6 | Special4 | S4 |
 | 7 | Special5 | S5 |
+
+**아이템** (261105)
+
+- 출처: kolbot 옛 sdk `modes.txt` "Item Mode Flags"(sdk.js `itemmode`와 같음). mpqdata에는 아이템 mode 표가 없다.
+- 쓰는 법: `Pickit.js`에서 `item.mode === 3 || item.mode === 5` = 바닥에 있거나 떨어지는 중인 아이템, `item.mode === 0 && item.location === 3` = 인벤토리 안 아이템.
+
+| 번호 | 원본 설명 |
+|---|---|
+| 0 | Item inven stash cube store |
+| 1 | Item equipped self or merc |
+| 2 | Item in belt |
+| 3 | Item on ground |
+| 4 | Item on cursor |
+| 5 | Item being dropped |
+| 6 | Item socketed in item |
 
 ## NPC 메뉴 번호
 
@@ -384,3 +399,57 @@
 | 800 | dead demonimp |
 | 801 | dead barb |
 | 802 | dead prowlingdead |
+
+## 게임 밖 화면 번호 (`getLocation()`) (261105)
+
+- 출처: kolbot 다른 판(blizzhackers 계열)의 `sdk.js` `locations`(사용자 자료). 이름은 원본 그대로.
+- 대조: 오른쪽 열은 `tools/OOG.js`의 `switch (getLocation())` `case` 주석이다. 주석이 있는 21개는 sdk.js 이름과 뜻이 모두 같다(261105). 주석이 없는 번호는 sdk.js에만 있고 미확인이다.
+- 쓰는 곳: `tools/OOG.js`, `D2Bot*.dbj`의 `switch (getLocation())`. 게임 밖 콘솔 줄 끝 `(loc N)`의 N이 이 번호다.
+
+| 번호 | sdk.js 이름 | `tools/OOG.js` 주석 |
+|---|---|---|
+| 0 | None |  |
+| 1 | Lobby | Lobby |
+| 2 | InLine |  |
+| 3 | LobbyChat | Chat |
+| 4 | CreateGame |  |
+| 5 | JoinGame |  |
+| 6 | Ladder |  |
+| 7 | Channel | Channel |
+| 8 | MainMenu | main menu |
+| 9 | Login | login screen |
+| 10 | LoginError | login error |
+| 11 | UnableToConnect |  |
+| 12 | CharSelect | char screen - break |
+| 13 | RealmDown | realm down |
+| 14 | Disconnected | disconnected? |
+| 15 | NewChar | new character |
+| 16 | CharacterSelectWait | please wait |
+| 17 | LostConnection |  |
+| 18 | Splash | splash |
+| 19 | KeyInUse |  |
+| 20 | Difficulty |  |
+| 21 | MainMenuConnecting | connecting |
+| 22 | InvalidCDKey |  |
+| 23 | Connecting | char screen connecting |
+| 24 | ServerDown |  |
+| 25 | PleaseWait |  |
+| 26 | GameExists |  |
+| 27 | Gateway |  |
+| 28 | GameDoesNotExist |  |
+| 29 | CharacterCreate | Char create |
+| 30 | CharacterCreateAlreadyExists | popup |
+| 31 | AgreeToTerms | ToU |
+| 32 | CreateNewAccount | new account |
+| 33 | PleaseRead | please read |
+| 34 | RegisterEmail | e-mail |
+| 35 | Credits |  |
+| 36 | Cinematics |  |
+| 37 | CharacterChangeRealm |  |
+| 38 | GameIsFull |  |
+| 39 | OtherMultiplayer |  |
+| 40 | TCPIP |  |
+| 41 | EnterIP |  |
+| 42 | CharacterSelectNoChars | empty char screen |
+| 43 | CharacterSelectChangeRealm |  |
+| 44 | CantConnectTCP |  |

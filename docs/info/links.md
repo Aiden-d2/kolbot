@@ -1,11 +1,31 @@
 # 링크
 
-게임 정보 참고 사이트 (261104, 두 곳만 남김 261105).
+게임 정보 참고 사이트, 참고 저장소, 가져올 예정인 글 (261104, "두 곳만 남김"은 사용자가 철회 261105).
 
 | 사이트 | 주소 | 성격 |
 |---|---|---|
 | The Arreat Summit | https://classic.battle.net/diablo2exp/ | 블리자드 공식 공략 사이트. 항목별 설명과 목록 |
 | Amazon Basin 위키 (Diablo II) | https://www.theamazonbasin.com/wiki/index.php/Diablo_II | 커뮤니티 위키. 게임 기제(공식·수치) 위주. 레저렉션(D2R) 내용도 같이 있다 |
+
+## 참고 저장소
+
+- 주소는 `git ls-remote`로 저장소가 있는 것을 확인했다(261105). 파일은 저장하지 않고 주소만 둔다(사용자 결정 261105).
+
+| 저장소 | 주소 | 성격 |
+|---|---|---|
+| kolton/d2bot-with-kolbot | https://github.com/kolton/d2bot-with-kolbot | D2Bot 매니저 + kolbot 원본(kolton) |
+| blizzhackers/kolbot | https://github.com/blizzhackers/kolbot | d2bs core + d2bot + kolbot 묶음(2020년 1월 복제본) |
+| NICKCHEESE/KolbotFullAutosmurf | https://github.com/NICKCHEESE/KolbotFullAutosmurf | 8봇 AutoSmurf(TCP/IP) |
+| ThePhrozenKeep/D2MOO | https://github.com/ThePhrozenKeep/D2MOO | 게임 소스를 1.10f 기준으로 재구성한 공개 프로젝트. 노트의 "D2MOO" 출처 |
+
+## 가져올 예정 (사용자 결정 261105)
+
+- 할 일: 지금 자료(mpqdata, 노트)로 대신할 수 없는 정보인지 먼저 확인한다. 대신할 수 없으면 1.14d와 맞는지 확인한 뒤 해당 노트에 뽑아 넣는다.
+
+| 글 | 주소 | 메모 |
+|---|---|---|
+| How Is Damage Calculated (D2Runewizard) | https://d2runewizard.com/articles/mechanics/damage-calculation | 아직 열어 보지 않음 |
+| Item Affixes (Project Diablo 2 위키) | https://wiki.projectdiablo2.com/wiki/Item_Affixes | 아직 열어 보지 않음. Project Diablo 2는 모드라 1.14d와 값이 다를 수 있다 |
 
 ## 사이트별 내용
 
