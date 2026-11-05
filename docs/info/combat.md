@@ -1,8 +1,8 @@
-# 전투 (명중률, 방어력 감소, 독 데미지, getUnit 범위)
+# 전투 (명중률, 방어력 감소, 독 데미지)
 
-명중률 공식과 방어력 감소 수단, 독 데미지 계산(1.10), getUnit이 잡히는 범위 측정 (261104).
+명중률 공식과 방어력 감소 수단, 독 데미지 계산(1.10) (261104).
 
-- kolbot 사용처: `Attack`(공격 판단), `ClassAttack`(직업 공격), `Attack.getMonsterCount`·`getUnit` 탐색 범위
+- kolbot 사용처: `Attack`(공격 판단), `ClassAttack`(직업 공격)
 
 ## 명중률과 방어력 감소
 
@@ -450,39 +450,3 @@ R의 X:
 - P = Poison Length Reduced by X%, E = -X% Enemy Poison Resistance
 
 - **ERROR:** Length is calculated differently when multiple items applying poison damage are used with skills that apply a fraction of weapon damage. Two items will apply poison damage over the sum of their lengths, while three or more items will just apply poison damage over the longest length of any of those items.
-
-## getUnit 범위 (사용자 측정)
-
-- 출처: 사용자 자료 `260413 getUnit range.txt`. 근거: 사용자 측정(260413).
-- 원문 그대로. 같은 파일의 화면 해상도·야드 환산 부분은 같은 폴더 `skill_range.md` 0절(야드)로 옮겼다.
-
-```
-- = 마이너스 좌표에 있는 겟유닛
-+ = 플러스 좌표에 있는 겟유닛
-
-Y +45	//	49	//60	//62
-Y -70	//	69	//56	//50
-
-X +70	//	75	//53	//52
-X -45	//	40	//66	//65
-
-내좌표 기준 겟유닛
-우측 84
-좌측 75
-상측 74
-하측 84
-
-중심좌표 기준 한화면
-
-우상 = 30
-좌상 = 30
-우하 = 30
-좌하 = 30
-
-상 = 28
-하 = 30
-좌 = 18
-우 = 18
-
-가장큰 맹점은 x/y 값이 모두변하는 곳에서는 디스턴스가 크게 계산됨
-```

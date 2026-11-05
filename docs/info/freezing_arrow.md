@@ -41,7 +41,7 @@
 **측정 조건 (코드)**
 - 맵 진입점이면 `default.dbj`가 `threads/MapThread.js`만 띄운다(+ MapThread가 `MapHelper.js`를 띄움). `ToolsThread`(자동 물약·치킨·Pause)와 `default.dbj` 본 흐름(파티 대기)은 돌지 않는다.
 - `MapThread` 메인 루프: 20ms. 정해진 창(`hideFlags`)이 하나라도 열려 있으면 닫힐 때까지 루프 전체가 멈춘다(`hideFlags`, `while (getUIFlag(…)) { Hooks.flush(); delay(100); }`). 측정 호출도 같이 멈춰서, 그 사이 풀린 몹은 값이 길게 나온다.
-  - 멈추는 창 번호(`hideFlags`)와 UI 번호 전체는 `docs/info/ui_flags.md`.
+  - 멈추는 창 번호(`hideFlags`)와 UI 번호 전체는 `docs/info/ids.md` "UI 플래그" 절.
   - `MapHelper`는 ESC 메뉴(0x09)가 열리면 MapThread 스크립트를 `pause()`, 닫히면 `resume()`한다.
   - 자동맵(0x0A)은 멈춤 조건이 아님(열리면 그리기, 닫히면 지우기).
   - 측정 중 피할 것: Alt, 인벤토리(I)·스탯(C)·퀘스트(Q), ESC 메뉴, 메시지 기록, 도움말. 자동맵(Tab)·벨트 물약은 괜찮음.

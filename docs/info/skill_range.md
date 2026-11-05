@@ -34,7 +34,7 @@
 
 ### 화면 크기와 서브타일 (사용자 자료 `260413 getUnit range.txt`)
 
-- 출처: 사용자 자료(260413). 근거: 사용자 자료(앞부분 측정값은 `docs/info/combat.md` getUnit 범위 절). 원문 그대로.
+- 출처: 사용자 자료(260413). 근거: 사용자 자료(앞부분 측정값은 `docs/info/getUnit_range.md`). 원문 그대로.
 
 ```
 Resolution	|	Width	|	Height

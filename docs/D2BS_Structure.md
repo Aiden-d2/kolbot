@@ -379,7 +379,7 @@ loadScripts()
 
 **MapThread / MapHelper** — MapThread가 `Attack` `Pather`를 include하고 `MapHelper.js`를 로드한 뒤 몬스터·아이템·경로 오버레이를 그린다. MapHelper는 `scriptmsg`로 받은 `{type: "area"|"unit"|"wp", dest}`를 `Pather.moveToExit` / `moveToUnit` / `getWP`로 실행하고, ESC 메뉴(0x09)가 열리면 MapThread를 pause, 닫히면 resume한다. MapThread 메인 루프(20ms)는 `hideFlags`(0x09·0x0C·0x0D·0x01·0x02·0x0F·0x18·0x19·0x1A·0x21) 중 하나라도 열려 있으면 닫힐 때까지 `Hooks.flush(); delay(100)`으로 기다린다(0x0D는 Alt 키를 누르고 있는 동안). 자동맵(0x0A)은 열리면 그리고(`Hooks.update`) 닫히면 지울(`Hooks.flush`) 뿐 멈추지 않는다.
 
-UI 번호(`getUIFlag(번호)`)는 `docs/info/ui_flags.md`.
+UI 번호(`getUIFlag(번호)`)는 `docs/info/ids.md` "UI 플래그" 절.
 
 ### 4-3. 통신 경로
 

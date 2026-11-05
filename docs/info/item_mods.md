@@ -1,18 +1,60 @@
-# 아이템 옵션 (auto mod, staff mod, 소켓, 에테리얼)
+# 아이템 생성 규칙 (auto mod, staff mod, 소켓, 에테리얼, 겜블, 참 접사)
 
-아이템 종류에 따라 자동으로 붙는 옵션(auto mod)과 직업 스킬 옵션(staff mod), 아이템 레벨별 소켓 수, 에테리얼 규칙과 방어력 (261104).
+아이템 종류에 따라 자동으로 붙는 옵션(auto mod)과 직업 스킬 옵션(staff mod), 아이템 레벨별 소켓 수, 에테리얼 규칙과 방어력 계산식, 겜블 아이템 레벨, 참 접사 공식 (261104).
 
-- 이름 주의: 여기서 mod는 아이템 옵션(modifier)이다. 코드의 `unit.mode`(유닛 동작 상태, `game_ids.md`)와 다른 말이다.
+- 이름 주의: 여기서 mod는 아이템 옵션(modifier)이다. 코드의 `unit.mode`(유닛 동작 상태, `ids.md`)와 다른 말이다.
 - kolbot 사용처: nip 규칙의 스킬·저항·소켓 조건(`nips/*.nip`), `Pickit`, `Cubing`(소켓 뚫기), `Runewords`
 
 ## auto mod
 
-- 표는 mpqdata `automagic.txt`를 본다(이름·`level`·`levelreq`·`frequency`·`mod1code`~`mod3code`·`rare`). 그룹(`group`)과 아이템: 300 아마존 활, 302 아마존 창·재블린, 303 소서리스 오브(라이프·마나), 304 팔라딘 방패(모든 저항 / 공격 등급+증뎀), 305 네크로맨서 머리(독 데미지). `weapons.txt`·`armor.txt`의 `auto prefix` 열이 그 아이템의 그룹이다.
+- 출처: mpqdata `automagic.txt`(1.14d). 대상 아이템은 `weapons.txt`·`armor.txt`의 `auto prefix` 열(= `group`). 효과는 게임 표시로 바꿔 적었다(독: 내부 값 × 길이 / 256, 반올림, 길이 / 25 = 초). 그룹(`group`)과 아이템: 300 아마존 활, 302 아마존 창·재블린, 303 소서리스 오브(라이프·마나), 304 팔라딘 방패(모든 저항 / 공격 등급+증뎀), 305 네크로맨서 머리(독 데미지). `weapons.txt`·`armor.txt`의 `auto prefix` 열이 그 아이템의 그룹이다.
 - 대조(261104):
   - Fandom "Auto Mod" 표(https://diablo.fandom.com/wiki/Auto_Mod, 위키 API로 가져옴)는 `automagic.txt` 36줄과 이름·레벨·빈도·수치가 모두 같다.
   - 그룹 301(아마존 패시브·매직 스킬)은 `automagic.txt`에 있지만 `auto prefix`가 301인 아이템이 0개라 실제로 붙지 않는다. Fandom 표에도 없다.
   - `rare` 열이 빈 줄(레어에 안 붙음): Archer's, Lancer's, of the Colossus, Great Wyrm's, Chromatic, of Anthrax. Fandom의 "cannot spawn on rare"와 같다.
   - 팔라딘 방패 Sharp~Knight's는 `rare`=1이다. Knight's(공격 등급 101~121, 증뎀 51~65%)는 레어에도 붙는다. 아래 인벤 글의 "51~65증댐/101~121어레는 레어에 안 붙는다"는 `automagic.txt`와 다르다.
+
+| group | 대상 | Auto Mod | level | levelreq | frequency | rare | 효과 (게임 표시) |
+|---|---|---|---|---|---|---|---|
+| 300 | Amazon bows | Fletcher's | 1 | 15 | 3 | O | +1 to Bow and Crossbow Skills |
+| 300 | Amazon bows | Bowyer's | 40 | 30 | 2 | O | +2 to Bow and Crossbow Skills |
+| 300 | Amazon bows | Archer's | 60 | 45 | 1 | X | +3 to Bow and Crossbow Skills |
+| 302 | Amazon javelins / spears | Harpoonist's | 1 | 15 | 3 | O | +1 to Javelin and Spear Skills |
+| 302 | Amazon javelins / spears | Spearmaiden's | 40 | 30 | 2 | O | +2 to Javelin and Spear Skills |
+| 302 | Amazon javelins / spears | Lancer's | 60 | 45 | 1 | X | +3 to Javelin and Spear Skills |
+| 303 | Sorceress orbs | of the Jackal | 1 | 3 | 6 | O | +1-5 to Life |
+| 303 | Sorceress orbs | of the Fox | 11 | 8 | 5 | O | +6-10 to Life |
+| 303 | Sorceress orbs | of the Wolf | 27 | 20 | 4 | O | +11-20 to Life |
+| 303 | Sorceress orbs | of the Tiger | 43 | 35 | 3 | O | +21-30 to Life |
+| 303 | Sorceress orbs | of the Mammoth | 59 | 51 | 2 | O | +31-40 to Life |
+| 303 | Sorceress orbs | of the Colossus | 75 | 67 | 1 | X | +41-60 to Life |
+| 303 | Sorceress orbs | Lizard's | 3 | 2 | 4 | O | +1-5 to Mana |
+| 303 | Sorceress orbs | Snake's | 12 | 9 | 3 | O | +5-10 to Mana |
+| 303 | Sorceress orbs | Serpent's | 23 | 16 | 2 | O | +11-20 to Mana |
+| 303 | Sorceress orbs | Drake's | 34 | 26 | 2 | O | +21-30 to Mana |
+| 303 | Sorceress orbs | Dragon's | 45 | 37 | 1 | O | +31-40 to Mana |
+| 303 | Sorceress orbs | Wyrm's | 56 | 48 | 1 | O | +41-60 to Mana |
+| 303 | Sorceress orbs | Great Wyrm's | 67 | 59 | 1 | X | +61-80 to Mana |
+| 304 | Paladin shields | Shimmering | 1 | 3 | 8 | O | All Resistances +5-10 |
+| 304 | Paladin shields | Rainbow | 18 | 13 | 7 | O | All Resistances +8-15 |
+| 304 | Paladin shields | Scintillating | 28 | 21 | 6 | O | All Resistances +16-30 |
+| 304 | Paladin shields | Prismatic | 39 | 31 | 5 | O | All Resistances +25-35 |
+| 304 | Paladin shields | Chromatic | 50 | 42 | 4 | X | All Resistances +35-45 |
+| 304 | Paladin shields | Sharp | 10 | 5 | 3 | O | +15-30 to Attack Rating, +10-20% Enhanced Damage |
+| 304 | Paladin shields | Fine | 18 | 13 | 3 | O | +31-60 to Attack Rating, +21-30% Enhanced Damage |
+| 304 | Paladin shields | Warrior's | 30 | 23 | 2 | O | +61-80 to Attack Rating, +31-40% Enhanced Damage |
+| 304 | Paladin shields | Soldier's | 42 | 34 | 2 | O | +81-100 to Attack Rating, +41-50% Enhanced Damage |
+| 304 | Paladin shields | Knight's | 50 | 42 | 2 | O | +101-121 to Attack Rating, +51-65% Enhanced Damage |
+| 305 | Necromancer heads | of Blight | 1 | 3 | 3 | O | Adds 2-7 poison damage over 3 seconds |
+| 305 | Necromancer heads | of Venom | 15 | 11 | 2 | O | Adds 5-14 poison damage over 3 seconds |
+| 305 | Necromancer heads | of Pestilence | 25 | 18 | 2 | O | Adds 13-28 poison damage over 4 seconds |
+| 305 | Necromancer heads | of Anthrax | 33 | 25 | 2 | X | Adds 25-50 poison damage over 4 seconds |
+
+- 300 Amazon bows: Stag Bow, Reflex Bow, Ashwood Bow, Ceremonial Bow, Matriarchal Bow, Grand Matron Bow
+- 302 Amazon javelins / spears: Maiden Spear, Maiden Pike, Maiden Javelin, Ceremonial Spear, Ceremonial Pike, Ceremonial Javelin, Matriarchal Spear, Matriarchal Pike, MatriarchalJavelin
+- 303 Sorceress orbs: Eagle Orb, Sacred Globe, Smoked Sphere, Clasped Orb, Dragon Stone, Glowing Orb, Crystalline Globe, Cloudy Sphere, Sparkling Ball, Swirling Crystal, Heavenly Stone, Eldritch Orb, Demon Heart, Vortex Orb, Dimensional Shard
+- 304 Paladin shields: Targe, Rondache, Heraldic Shield, Aerin Shield, Crown Shield, Akaran Targe, Akaran Rondache, Protector Shield, Guilded Shield, Royal Shield, Sacred Targe, Sacred Rondache, Ancient Shield, Zakarum Shield, Vortex Shield
+- 305 Necromancer heads: Preserved Head, Zombie Head, Unraveller Head, Gargoyle Head, Demon Head, Mummified Trophy, Fetish Trophy, Sexton Trophy, Cantor Trophy, Heirophant Trophy, Minion Skull, Hellspawn Skull, Overseer Skull, Succubae Skull, Bloodlord Skull
 
 ## staff mod
 
@@ -22,15 +64,15 @@
 
 | 아이템 종류 | 코드 | 직업 |
 |---|---|---|
-| Scepter | `scep` | 팔라딘 |
-| Wand | `wand` | 네크로맨서 |
-| Staff | `staf` | 소서리스 |
-| Orb | `orb` | 소서리스 |
-| Voodoo Heads | `head` | 네크로맨서 |
-| Primal Helm | `phlm` | 바바리안 |
-| Pelt | `pelt` | 드루이드 |
-| Cloak | `cloa` | 어쌔신 |
-| Hand to Hand 2 | `h2h2` | 어쌔신 |
+| Scepter | `scep` | Paladin |
+| Wand | `wand` | Necromancer |
+| Staff | `staf` | Sorceress |
+| Orb | `orb` | Sorceress |
+| Voodoo Heads | `head` | Necromancer |
+| Primal Helm | `phlm` | Barbarian |
+| Pelt | `pelt` | Druid |
+| Cloak | `cloa` | Assassin |
+| Hand to Hand 2 | `h2h2` | Assassin |
 
 - 인벤 글의 목록에는 망토(Cloak)가 없다.
 
@@ -122,501 +164,445 @@
 ## 아이템 레벨별 소켓 수
 
 - 계산(D2MOO `ITEMS_GetMaxSockets`): 아이템 레벨 1~25 → `itemtypes.txt` `MaxSock1`, 26~40 → `MaxSock25`, 41 이상 → `MaxSock40`. 그 값과 `weapons.txt`·`armor.txt` `gemsockets` 중 작은 값. 큐브 소켓 뚫기와 라주크 퀘스트가 이 값을 쓴다.
-- 표 출처: 카오스큐브 "라주크가 뚫어주는 아이템 소켓 정보"(글쓴이 올웨이즈, https://www.chaoscube.co.kr/board/d2-commu-lab-lab/941739) 그림 "라주크가 뚫어주는 소켓 개수 v2.0". 영문·한글 이름 원본 그대로.
+- 표 출처: 카오스큐브 "라주크가 뚫어주는 아이템 소켓 정보"(글쓴이 올웨이즈, https://www.chaoscube.co.kr/board/d2-commu-lab-lab/941739) 그림 "라주크가 뚫어주는 소켓 개수 v2.0". 이름은 영문(원본 표기 그대로).
 - 대조(261104): 422줄 1266칸을 위 계산값과 대조해 모두 같다. 원본 머리말의 구간 "A = ilvl 1-24, B = 25-39, C = 40+"는 D2MOO 코드(1~25 / 26~40 / 41+)와 다르다. 아래 표 머리는 D2MOO 구간으로 적었다. 같은 정보인 사용자 그림 `socket.png`(카오스큐브, 제작 무한의공갈, 구간 1~25 / 26~40 / 41+)는 칸 대조를 하지 않았다.
 - `socket.png` 머리말(원문): "매직, 레어, 유니크, 세트, 크래프트등의 아이템은 적용되지 않습니다. / 투척하는 무기는 소켓이 뚫리지 않습니다. / 드랍되는 아이템의 소켓은 숨렙을 따라가나 노멀은 3개, 나이트는 4개의 제한이 있습니다."
 - 라주크 퀘스트(카오스큐브 총정리 본문 원문): "노말(흰색) : 그 아이템의 최대 소켓 매직 : 1~2솟(랜덤) 레어, 유니크 : 1솟"
 
-| 영문 | 한글 | 1~25 | 26~40 | 41+ |
-|---|---|---|---|---|
-| Aegis | 에이지스 | 3 | 3 | 4 |
-| Aerin Shield | 에어린 쉴드 | 3 | 4 | 4 |
-| Akaran Rondache | 아카란 론다쉬 | 3 | 4 | 4 |
-| Akaran Targe | 아카란 타아지 | 3 | 4 | 4 |
-| Alpha Helm | 알파헬름 | 2 | 3 | 3 |
-| Ancient Armor | 에인션트 아머 | 3 | 4 | 4 |
-| Ancient Axe | 에인션트 액스 | 4 | 5 | 6 |
-| Ancient Shield | 에인션트 쉴드 | 3 | 3 | 3 |
-| Ancient Sword | 에인션트 스워드 | 3 | 3 | 3 |
-| Antlers | 앤틀러스 | 2 | 3 | 3 |
-| Arbalest | 아발리스트 | 3 | 3 | 3 |
-| Archon Plate | 아칸 플레이트 | 3 | 4 | 4 |
-| Archon Staff | 아칸 스태프 | 5 | 6 | 6 |
-| Armet | 아메트 | 2 | 2 | 2 |
-| Ashwood Bow | 애쉬우드 보우 | 3 | 4 | 5 |
-| Assault Helmet | 어설트 헬멧 | 2 | 3 | 3 |
-| Ataghan | 아타그한 | 2 | 2 | 2 |
-| Avenger Guard | 어벤져가드 | 2 | 3 | 3 |
-| Axe | 액스 | 4 | 4 | 4 |
-| Balista | 벌리스터 | 3 | 4 | 6 |
-| Balrog Blade | 발록 블레이드 | 3 | 4 | 4 |
-| Balrog Skin | 발록 스킨 | 3 | 4 | 4 |
-| Barbed Club | 바브드 클럽 | 3 | 3 | 3 |
-| Barbed Shield | 바브드 쉴드 | 2 | 2 | 2 |
-| Bardiche | 바디쉬 | 3 | 3 | 3 |
-| Basinet | 배서넷 | 2 | 2 | 2 |
-| Bastard Sword | 바스타드 소드 | 3 | 4 | 4 |
-| Battle Axe | 배틀액스 | 4 | 5 | 5 |
-| Battle Cestus | 배틀 세스터스 | 2 | 2 | 2 |
-| Battle Hammer | 배틀 해머 | 3 | 4 | 4 |
-| Battle Scythe | 배틀 사이드 | 3 | 4 | 5 |
-| Battle Staff | 배틀스태프 | 4 | 4 | 4 |
-| Battle Sword | 배틀 소드 | 3 | 4 | 4 |
-| Bearded Axe | 비어드 액스 | 4 | 5 | 5 |
-| Bec-de-Corbin | 벡트코방 | 3 | 4 | 6 |
-| Berserker Axe | 버서커 액스 | 4 | 5 | 6 |
-| Bill | 빌 | 3 | 4 | 4 |
-| Blade | 블레이드 | 2 | 2 | 2 |
-| Blade Barrier | 블레이드 배리어 | 3 | 3 | 3 |
-| Blade Bow | 블레이드 보우 | 3 | 4 | 4 |
-| Blade Talons | 블레이드탈론 | 2 | 3 | 3 |
-| Blood Spirt | 블러드스피릿 | 2 | 3 | 3 |
-| Bloodlord Skull | 블러드로드 스컬 | 2 | 2 | 2 |
-| Bone Helm | 본헬름 | 2 | 2 | 2 |
-| Bone Knife | 본 나이프 | 1 | 1 | 1 |
-| Bone Shield | 본쉴드 | 2 | 2 | 2 |
-| Bone Visage | 본비시즈 | 2 | 2 | 3 |
-| Bone Wand | 본 완드 | 2 | 2 | 2 |
-| Boneweave | 본위브 | 3 | 4 | 4 |
-| Brandistock | 브랜디스탁 | 3 | 4 | 5 |
-| Breast Plate | 브레스트 플레이트 | 3 | 3 | 3 |
-| Broad Axe | 브로드액스 | 4 | 5 | 5 |
-| Broad Sword | 브로드 소드 | 3 | 4 | 4 |
-| Buckler | 버클러 | 1 | 1 | 1 |
-| Burnt Wand | 번트 완드 | 1 | 1 | 1 |
-| Caduceus | 캐듀시어스 | 3 | 5 | 5 |
-| Cantor Trophy | 캔터 트로피 | 2 | 2 | 2 |
-| Cap/hat | 캡 | 2 | 2 | 2 |
-| Carnage Helm | 카니지 헬름 | 2 | 3 | 3 |
-| Casque | 캐스크 | 2 | 2 | 2 |
-| Cedar Bow | 시더보우 | 3 | 4 | 5 |
-| Cedar Staff | 시더스태프 | 4 | 4 | 4 |
-| Ceremonial Bow | 세레모니얼 보우 | 3 | 4 | 5 |
-| Ceremonial Pike | 세레모니얼 파이크 | 3 | 4 | 6 |
-| Ceremonial Spear | 세레모니얼 스피어 | 3 | 4 | 6 |
-| Cestus | 세스터스 | 2 | 2 | 2 |
-| Chain Mail | 체인메일 | 2 | 2 | 2 |
-| Champion Axe | 챔피온 액스 | 4 | 5 | 6 |
-| Champion Sword | 챔피온 소드 | 3 | 4 | 4 |
-| Chaos Armor | 카오스 아머 | 3 | 4 | 4 |
-| Chu-Ko-Nu | 초코누 | 3 | 4 | 5 |
-| Cinquedeas | 싱쿠더스 | 2 | 3 | 3 |
-| Circlet | 서클릿 | 1 | 2 | 2 |
-| Clasped Orb | 클래습드 오브 | 2 | 3 | 3 |
-| Claws | 클러 | 2 | 3 | 3 |
-| Claymore | 클레이모어 | 3 | 4 | 4 |
-| Cleaver | 클레버 | 4 | 4 | 4 |
-| Cloudy Sphere | 클라우디 스피어 | 2 | 3 | 3 |
-| Club | 클럽 | 2 | 2 | 2 |
-| Colossal Sword | 콜로서스 소드 | 3 | 4 | 5 |
-| Colossus Blade | 콜로서스 블레이드 | 3 | 4 | 6 |
-| Colossus Crossbow | 콜로서스 크로스보우 | 3 | 4 | 6 |
-| Colossus Voulge | 콜로서스 볼즈 | 3 | 4 | 4 |
-| Composite Bow | 콤포지트 보우 | 3 | 4 | 4 |
-| Conquerer Crown | 컨커러 크라운 | 2 | 3 | 3 |
-| Conquest Sword | 콘퀘스트 소드 | 3 | 4 | 4 |
-| Corona | 코로나 | 2 | 2 | 3 |
-| Coronet | 코로넷 | 1 | 2 | 2 |
-| Crossbow | 크로스보우 | 3 | 4 | 4 |
-| Crowbill | 크로우빌 | 4 | 5 | 6 |
-| Crown | 크라운 | 2 | 2 | 3 |
-| Crown Shield | 크라운 쉴드 | 3 | 4 | 4 |
-| Crusader Bow | 크루세이더 보우 | 3 | 4 | 6 |
-| Cryptic Axe | 크립틱 액스 | 3 | 4 | 5 |
-| Cryptic Sword | 크립틱 소드 | 3 | 4 | 4 |
-| Crystal Sword | 크리스탈 소드 | 3 | 4 | 6 |
-| Crystalline Globe | 크리스탈라인 글러브 | 2 | 3 | 3 |
-| Cudgel | 커절 | 2 | 2 | 2 |
-| Cuirass | 퀴래스 | 3 | 3 | 3 |
-| Cutlass | 커틀라스 | 2 | 2 | 2 |
-| Dacian Falx | 데시안 플렉스 | 3 | 4 | 4 |
-| Dagger | 대거 | 1 | 1 | 1 |
-| Death Mask | 데스마스크 | 2 | 2 | 3 |
-| Decapitator | 디케퍼테이터 | 4 | 5 | 5 |
-| Defender | 디펜더 | 1 | 1 | 1 |
-| Demon Crossbow | 데몬 크로스보우 | 3 | 4 | 5 |
-| Demon Head | 데몬헤드 | 2 | 2 | 2 |
-| Demon Heart | 데몬 하트 | 2 | 3 | 3 |
-| Demonhead | 데몬헤드 | 2 | 2 | 3 |
-| Demonhide Armor | 데몬하이드 아머 | 2 | 2 | 2 |
-| Destroyer Helm | 디스트로이어 헬름 | 2 | 3 | 3 |
-| Devil Star | 데빌 스타 | 3 | 3 | 3 |
-| Diadem | 다이어뎀 | 1 | 2 | 3 |
-| Diamond Bow | 다이아몬드 보우 | 3 | 4 | 5 |
-| Diamond Mail | 다이아몬드 메일 | 3 | 4 | 4 |
-| Dimensional Blade | 디멘셔널 블레이드 | 3 | 4 | 6 |
-| Dimensional Shard | 디멘셔널 샤드 | 2 | 3 | 3 |
-| Dirk | 더크 | 1 | 1 | 1 |
-| Divine Scepter | 디바인셉터 | 3 | 5 | 5 |
-| Double Axe | 더블 액스 | 4 | 5 | 5 |
-| Double Bow | 더블 보우 | 3 | 4 | 4 |
-| Dragon Shield | 드래곤 쉴드 | 3 | 3 | 3 |
-| Dragon Stone | 드래곤 스톤 | 2 | 3 | 3 |
-| Dream Spirit | 드림 스피릿 | 2 | 3 | 3 |
-| Dusk Shroud | 더스크 슈라우드 | 3 | 4 | 4 |
-| Eagle Orb | 이글 오브 | 2 | 3 | 3 |
-| Earth Spirit | 어스 스피릿 | 2 | 3 | 3 |
-| Edge Bow | 엣지 보우 | 3 | 3 | 3 |
-| Elder Staff | 엘더스태프 | 4 | 4 | 4 |
-| Eldritch Orb | 엘드리치 오브 | 2 | 3 | 3 |
-| Elegant Blade | 엘레강트 블레이드 | 2 | 2 | 2 |
-| Embossed Plate | 엠바스트 플레이트 | 3 | 4 | 4 |
-| Espandon | 에스판돈 | 3 | 3 | 3 |
-| Ettin Axe | 에틴 액스 | 4 | 5 | 5 |
-| Executioner Sword | 엑시큐셔너 소드 | 3 | 4 | 6 |
-| Falcata | 팔카타 | 2 | 2 | 2 |
-| Falchion | 펄션 | 2 | 2 | 2 |
-| Falcon Mask | 팔콘 마스크 | 2 | 3 | 3 |
-| Fanged Helm | 팽드 헬름 | 2 | 3 | 3 |
-| Fanged Knife | 팽드 나이프 | 2 | 3 | 3 |
-| Fascia | 패시아 | 2 | 2 | 2 |
-| Feral Axe | 피어럴액스 | 4 | 4 | 4 |
-| Feral Claws | 피어럴 클러 | 2 | 3 | 3 |
-| Fetish Trophy | 페티쉬 트로피 | 2 | 2 | 2 |
-| Field Plate | 필드 플레이트 | 2 | 2 | 2 |
-| Flail | 프레일 | 3 | 4 | 5 |
-| Flamberge | 플람베르지 | 3 | 4 | 5 |
-| Flanged Mace | 플렌지드 메이스 | 2 | 2 | 2 |
-| Full Helm | 풀 헬름 | 2 | 2 | 2 |
-| Full Plate Mail | 풀 플레이트 메일 | 3 | 4 | 4 |
-| Fury Visor | 퓨리 바이저 | 2 | 3 | 3 |
-| Fuscina | 푸스키나 | 3 | 4 | 4 |
-| Gargoyle Head | 가고일 헤드 | 2 | 2 | 2 |
-| Ghost Armor | 고스트 아머 | 2 | 2 | 2 |
-| Ghost Spear | 고스트 스피어 | 3 | 4 | 6 |
-| Ghost Wand | 고스트 완드 | 2 | 2 | 2 |
-| Giant Axe | 자이언트 액스 | 4 | 5 | 6 |
-| Giant Conch | 자이언트 콘치 | 2 | 2 | 2 |
-| Giant Sword | 자이언트 소드 | 3 | 4 | 4 |
-| Giant Thresher | 자이언트 쓰레셔 | 3 | 4 | 6 |
-| Gladius | 글래디우스 | 2 | 2 | 2 |
-| Glorious Axe | 글로리어스 액스 | 4 | 5 | 6 |
-| Glowing Orb | 글로잉 오브 | 2 | 3 | 3 |
-| Gnarled Staff | 날드 스태프 | 4 | 4 | 4 |
-| Gorgon Crossbow | 고르곤 크로스보우 | 3 | 4 | 4 |
-| Gothic Axe | 고딕 액스 | 4 | 5 | 6 |
-| Gothic Bow | 고딕 보우 | 3 | 4 | 6 |
-| Gothic Plate | 고딕 플레이트 | 3 | 4 | 4 |
-| Gothic Shield | 고딕 쉴드 | 3 | 3 | 3 |
-| Gothic Staff | 고딕스태프 | 4 | 4 | 4 |
-| Gothic Sword | 고딕 소드 | 3 | 4 | 4 |
-| Grand Crown | 그랜드크라운 | 2 | 2 | 3 |
-| Grand Matron Bow | 그랜드 메이트런 보우 | 3 | 4 | 5 |
-| Grand Scepter | 그랜드 셉터 | 3 | 3 | 3 |
-| Grave Wand | 그레이브 완드 | 2 | 2 | 2 |
-| Great Axe | 그레이트 액스 | 4 | 5 | 6 |
-| Great Bow | 그레이트보우 | 3 | 4 | 4 |
-| Great Hauberk | 그레이트 허버크 | 3 | 4 | 4 |
-| Great Helm | 그레이트 헬름 | 2 | 2 | 3 |
-| Great Maul | 그레이트 마울 | 3 | 4 | 6 |
-| Great Poleaxe | 그레이트 폴액스 | 3 | 4 | 6 |
-| Great Sword | 그레이트 소드 | 3 | 4 | 6 |
-| Greater Claws | 그레이터 클러 | 2 | 3 | 3 |
-| Greater Talons | 그레이터 탤런 | 2 | 3 | 3 |
-| Griffon Headress | 그리폰 헤드리스 | 2 | 3 | 3 |
-| Grim Helm | 그림 헬름 | 2 | 2 | 2 |
-| Grim Scythe | 그림 사이드 | 3 | 4 | 6 |
-| Grim Shield | 그림 쉴드 | 2 | 2 | 2 |
-| Grim Wand | 그림 완드 | 2 | 2 | 2 |
-| Guardian Crown | 가디언 크라운 | 2 | 3 | 3 |
-| Guilded Shield | 길디드 쉴드 | 3 | 4 | 4 |
-| Halberd | 할브레드 | 3 | 4 | 6 |
-| Hand Axe | 핸드액스 | 2 | 2 | 2 |
-| Hand Scythe | 핸드 사이드 | 2 | 2 | 2 |
-| Hard Leather Armor | 하드 레더 아머 | 2 | 2 | 2 |
-| Hatchet | 해치 | 2 | 2 | 2 |
-| Hatchet Hands | 해치 핸드 | 2 | 2 | 2 |
-| Hawk Helm | 호크 헬름 | 2 | 3 | 3 |
-| Heater | 히터 | 2 | 2 | 2 |
-| Heavenly Stone | 헤븐리 스톤 | 2 | 3 | 3 |
-| Heavy Crossbow | 헤비 크로스보우 | 3 | 4 | 6 |
-| Heirophant Trophy | 헤어로펀트 트로피 | 2 | 2 | 2 |
-| Hellforge Hammer | 헬포지 해머 | 3 | 4 | 5 |
-| Hellforged Plate | 헬포지 플레이트 | 3 | 4 | 4 |
-| Hellspawn Skull | 헬스폰 스컬 | 2 | 2 | 2 |
-| Helm | 헬름 | 2 | 2 | 2 |
-| Heraldic Shield | 헤럴딕 쉴드 | 3 | 4 | 4 |
-| Highland Blade | 하이랜드 블레이드 | 3 | 4 | 4 |
-| Holy Water Sprinkler | 홀리 워터 스프링클러 | 3 | 3 | 3 |
-| Horned Helm | 혼드 헬름 | 2 | 3 | 3 |
-| Hunter's Bow | 헌터 보우 | 3 | 4 | 4 |
-| Hunter's Guise | 헌터 가이즈 | 2 | 3 | 3 |
-| Hydra Bow | 하이드라 보우 | 3 | 4 | 6 |
-| Hydra Edge | 하이드라 엣지 | 2 | 2 | 2 |
-| Hydraskull | 하이드라 스컬 | 2 | 2 | 2 |
-| Hyperion | 하이퍼리온 | 3 | 3 | 3 |
-| Hyperion Spear | 하이퍼리온 스피어 | 3 | 3 | 3 |
-| Jagged Star | 재기드 스타 | 3 | 3 | 3 |
-| Jawbone Cap | 조우본 캡 | 2 | 3 | 3 |
-| Jawbone Visor | 조우본 바이저 | 2 | 3 | 3 |
-| Jo Staff | 죠 스태프 | 2 | 2 | 2 |
-| Katar | 카타르 | 2 | 2 | 2 |
-| KhalimFlail | 칼림프레일 | 3 | 3 | 3 |
-| Kite Shield | 카이트 쉴드 | 3 | 3 | 3 |
-| Knout | 나우트 | 3 | 4 | 5 |
-| Kraken Shell | 크라켄 쉘 | 3 | 4 | 4 |
-| Kriss | 크리스 | 2 | 3 | 3 |
-| Kurast Shield | 쿠라스트 쉴드 | 3 | 4 | 4 |
-| Lacquered Plate | 래커드 플레이트 | 3 | 4 | 4 |
-| Lance | 랜스 | 3 | 4 | 6 |
-| Large Axe | 라지액스 | 4 | 4 | 4 |
-| Large Shield | 라지 쉴드 | 3 | 3 | 3 |
-| Leather Armor | 레더아머 | 2 | 2 | 2 |
-| Legend Spike | 레전드스파이크 | 2 | 2 | 2 |
-| Legend Sword | 레전드 소드 | 3 | 3 | 3 |
-| Legendary Mallet | 레전드리 멜릿 | 3 | 4 | 4 |
-| Lich Wand | 리치완드 | 2 | 2 | 2 |
-| Light Crossbow | 라이트 크로스보우 | 3 | 3 | 3 |
-| Light Plate | 라이트 플레이트 | 3 | 3 | 3 |
-| Linked Mail | 링키드 메일 | 3 | 3 | 3 |
-| Lion Helm | 라이온 헬름 | 2 | 3 | 3 |
-| Lochaber Axe | 로카버 액스 | 3 | 3 | 3 |
-| Long Battle Bow | 롱 배틀 보우 | 3 | 4 | 6 |
-| Long Bow | 롱 보우 | 3 | 4 | 5 |
-| Long Siege Bow | 롱 시즈 보우 | 3 | 4 | 6 |
-| Long Staff | 롱 스태프 | 3 | 3 | 3 |
-| Long Sword | 롱 소드 | 3 | 4 | 4 |
-| Long War Bow | 롱 워 보우 | 3 | 4 | 6 |
-| Loricated Mail | 로리케이티드 메일 | 3 | 4 | 4 |
-| Luna | 루나 | 2 | 2 | 2 |
-| Mace | 메이스 | 2 | 2 | 2 |
-| Mage Plate | 메이지 플레이트 | 3 | 3 | 3 |
-| Maiden Pike | 메이든 파이크 | 3 | 4 | 6 |
-| Maiden Spear | 메이든 스피어 | 3 | 4 | 6 |
-| Mancatcher | 맨캐처 | 3 | 4 | 5 |
-| Martel de Fer | 마텔 드 페르 | 3 | 4 | 6 |
-| Mask | 마스크 | 2 | 2 | 3 |
-| Matriarchal Bow | 메이트리얼 보우 | 3 | 4 | 5 |
-| Matriarchal Pike | 메이트리얼 파이크 | 3 | 4 | 6 |
-| Matriarchal Spear | 메이트리얼 스피어 | 3 | 4 | 6 |
-| Maul | 마울 | 3 | 4 | 6 |
-| Mesh Armor | 메쉬 아머 | 3 | 3 | 3 |
-| Mighty Scepter | 마이티셉터 | 2 | 2 | 2 |
-| Military Axe | 밀리터리액스 | 4 | 4 | 4 |
-| Military Pick | 밀리터리 픽 | 4 | 5 | 6 |
-| Minion Skull | 미니언스컬 | 2 | 2 | 2 |
-| Mithril Point | 미스릴 포인트 | 1 | 1 | 1 |
-| Monarch | 모너크 | 3 | 3 | 4 |
-| Morning Star | 모닝 스타 | 3 | 3 | 3 |
-| Mummified Trophy | 머미파이드 트로피 | 2 | 2 | 2 |
-| Mythical Sword | 미시컬 소드 | 3 | 3 | 3 |
-| Naga | 네가 | 4 | 5 | 6 |
-| Ogre Axe | 오우거 액스 | 3 | 3 | 3 |
-| Ogre Maul | 오우거 마울 | 3 | 4 | 6 |
-| Ornate Armor | 오네이트 플레이트 | 3 | 4 | 4 |
-| Overseer Skull | 오버시어 스컬 | 2 | 2 | 2 |
-| Partizan | 파르티잔 | 3 | 4 | 5 |
-| Pavise | 퍼비스 | 3 | 3 | 3 |
-| Pellet Bow | 펠릿 보우 | 3 | 3 | 3 |
-| Petrified Wand | 페트리파이드 완드 | 2 | 2 | 2 |
-| Phase Blade | 페이즈 블레이드 | 3 | 4 | 6 |
-| Pike | 파이크 | 3 | 4 | 6 |
-| Plate Mail | 플레이트메일 | 2 | 2 | 2 |
-| Poignard | 포이그나드 | 1 | 1 | 1 |
-| Poleaxe | 폴액스 | 3 | 4 | 5 |
-| Polished Wand | 폴리쉬드 완드 | 2 | 2 | 2 |
-| Preserved Head | 프리저브드 헤드 | 2 | 2 | 2 |
-| Protector Shield | 프로텍터 쉴드 | 3 | 4 | 4 |
-| Quarterstaff | 쿼터스태프 | 3 | 3 | 3 |
-| Quhab | 쿠하브 | 2 | 3 | 3 |
-| Quilted Armor | 퀼티드아머 | 2 | 2 | 2 |
-| Rage Mask | 레이지 마스크 | 2 | 3 | 3 |
-| Razor Bow | 레이저 보우 | 3 | 4 | 4 |
-| Reflex Bow | 리플렉스 보우 | 3 | 4 | 5 |
-| Reinforced Mace | 리인포스 메이스 | 2 | 2 | 2 |
-| Repeating Crossbow | 리피팅 크로스보우 | 3 | 4 | 5 |
-| Ring Mail | 링 메일 | 3 | 3 | 3 |
-| Rondache | 론다쉬 | 3 | 4 | 4 |
-| Rondel | 론델 | 1 | 1 | 1 |
-| Round Shield | 라운드 쉴드 | 2 | 2 | 2 |
-| Royal Shield | 로얄 쉴드 | 3 | 4 | 4 |
-| Rune Bow | 룬 보우 | 3 | 4 | 5 |
-| Rune Scepter | 룬 셉터 | 2 | 2 | 2 |
-| Rune Staff | 룬 스태프 | 5 | 6 | 6 |
-| Rune Sword | 룬 소드 | 3 | 4 | 4 |
-| Runic Talons | 루닉 탤런 | 2 | 3 | 3 |
-| Russet Armor | 러셋 아머 | 3 | 3 | 3 |
-| Saber | 세이버 | 2 | 2 | 2 |
-| Sacred Armor | 세이크리드 아머 | 3 | 4 | 4 |
-| Sacred Feathers | 세이크리드 페더 | 2 | 3 | 3 |
-| Sacred Globe | 세이크리드 글러브 | 2 | 3 | 3 |
-| Sacred Rondache | 세이크리드 론다쉬 | 3 | 4 | 4 |
-| Sacred Targe | 세이크리드 타아지 | 3 | 4 | 4 |
-| Sallet | 샐릿 | 2 | 2 | 2 |
-| Savage Helmet | 세비지 헬멧 | 2 | 3 | 3 |
-| Scale Mail | 스케일 메일 | 2 | 2 | 2 |
-| Scarab Husk | 스캐럽 허스크 | 3 | 4 | 4 |
-| Scepter | 셉터 | 2 | 2 | 2 |
-| Scimitar | 시미터 | 2 | 2 | 2 |
-| Scissors Katar | 시저스 카타르 | 2 | 3 | 3 |
-| Scissors Quhab | 시저스 쿠하브 | 2 | 3 | 3 |
-| Scissors Suwayyah | 시저스 스와이야 | 2 | 3 | 3 |
-| Scourge | 스컬지 | 3 | 4 | 5 |
-| Scutum | 스커텀 | 3 | 3 | 3 |
-| Scythe | 싸이드 | 3 | 4 | 5 |
-| Seraph Rod | 세라프 로드 | 3 | 3 | 3 |
-| Serpentskin Armor | 서펀트스킨 아머 | 2 | 2 | 2 |
-| Sexton Trophy | 섹스톤 트로피 | 2 | 2 | 2 |
-| Shadow Bow | 쉐도우 보우 | 3 | 4 | 5 |
-| Shadow Plate | 쉐도우 플레이트 | 3 | 4 | 4 |
-| Shako | 샤코 | 2 | 2 | 2 |
-| Shamshir | 샴쉬르 | 2 | 2 | 2 |
-| Sharktooth Armor | 샤크투스 아머 | 3 | 3 | 3 |
-| Shillelah | 셜레일리 | 4 | 4 | 4 |
-| Short Battle Bow | 숏 배틀 보우 | 3 | 4 | 5 |
-| Short Bow | 숏 보우 | 3 | 3 | 3 |
-| Short Siege Bow | 숏 시즈 보우 | 3 | 4 | 5 |
-| Short Staff | 숏 스태프 | 2 | 2 | 2 |
-| Short Sword | 숏 소워드 | 2 | 2 | 2 |
-| Short War Bow | 숏 워 보우 | 3 | 4 | 5 |
-| Siege Crossbow | 시즈 크로스보우 | 3 | 4 | 4 |
-| Silver Edged Axe | 실버 엣지드 액스 | 4 | 5 | 5 |
-| Skull Cap | 스컬캡 | 2 | 2 | 2 |
-| Sky Spirit | 스카이 스피릿 | 2 | 3 | 3 |
-| Slayer Guard | 슬레이어 가드 | 2 | 3 | 3 |
-| Small Crescent | 스몰크레센트 | 4 | 4 | 4 |
-| Small Shield | 스몰 쉴드 | 2 | 2 | 2 |
-| Smoked Sphere | 스모크드 스피어 | 2 | 3 | 3 |
-| Sparkling Ball | 스파클링 볼 | 2 | 3 | 3 |
-| Spear | 스피어 | 3 | 3 | 3 |
-| Spetum | 스페텀 | 3 | 4 | 6 |
-| Spider Bow | 스파이더 보우 | 3 | 3 | 3 |
-| Spiked Club | 스파이크 클럽 | 2 | 2 | 2 |
-| Spiked Shield | 스파이크 쉴드 | 2 | 2 | 2 |
-| Spired Helm | 스파이어드헬름 | 2 | 2 | 3 |
-| Spirit Mask | 스피릿 마스크 | 2 | 3 | 3 |
-| Splint Mail | 스플린트 메일 | 2 | 2 | 2 |
-| Stag Bow | 스태그 보우 | 3 | 4 | 5 |
-| Stalagmite | 스탤러그마이트 | 3 | 3 | 3 |
-| Stilleto | 스틸레또 | 2 | 2 | 2 |
-| Studded Leather | 스터디드레더 | 2 | 2 | 2 |
-| Stygian Pike | 스티지언 파이크 | 3 | 4 | 4 |
-| Succubae Skull | 서큐버스 스컬 | 2 | 2 | 2 |
-| Sun Spirit | 선 스피릿 | 2 | 3 | 3 |
-| SuperKhalimFlail | 수퍼칼림프레일 | 3 | 3 | 3 |
-| Suwayyah | 스와이야 | 2 | 3 | 3 |
-| Swirling Crystal | 스윌링 크리스탈 | 2 | 3 | 3 |
-| Tabar | 타바 | 4 | 5 | 5 |
-| Targe | 타아지 | 3 | 4 | 4 |
-| Templar Coat | 템플러 코트 | 3 | 3 | 3 |
-| Thresher | 쓰레셔 | 3 | 4 | 5 |
-| Thunder Maul | 썬더 마울 | 3 | 4 | 6 |
-| Tiara | 티아라 | 1 | 2 | 3 |
-| Tigulated Mail | 티귤레이티드 메일 | 3 | 3 | 3 |
-| Tomahawk | 토마호크 | 2 | 2 | 2 |
-| Tomb Wand | 툼 완드 | 2 | 2 | 2 |
-| Totemic Mask | 토테믹 마스크 | 2 | 3 | 3 |
-| Tower Shield | 타워 쉴드 | 3 | 3 | 3 |
-| Trellised Armor | 트렐리스트 아머 | 2 | 2 | 2 |
-| Trident | 트라이던트 | 3 | 4 | 4 |
-| Troll Nest | 트롤 네스트 | 3 | 3 | 3 |
-| Truncheon | 트렁천 | 2 | 2 | 2 |
-| Tulwar | 털워 | 2 | 2 | 2 |
-| Tusk Sword | 터스크 소드 | 3 | 4 | 4 |
-| Twin Axe | 트윈 액스 | 4 | 5 | 5 |
-| Two-Handed Sword | 투-핸드 소드 | 3 | 3 | 3 |
-| Tyrant Club | 타이런트 클럽 | 3 | 3 | 3 |
-| Unearthed Wand | 언어스트 완드 | 2 | 2 | 2 |
-| Unraveller Head | 언레이블러 헤드 | 2 | 2 | 2 |
-| Vortex Orb | 보어텍스 오브 | 2 | 3 | 3 |
-| Vortex Shield | 보어텍스 쉴드 | 3 | 4 | 4 |
-| Voulge | 볼즈 | 3 | 4 | 4 |
-| Walking Stick | 워킹스틱 | 2 | 2 | 2 |
-| Wand | 완드 | 1 | 1 | 1 |
-| War Axe | 워 액스 | 4 | 5 | 6 |
-| War Club | 워 클럽 | 3 | 4 | 6 |
-| War Fist | 워피스트 | 2 | 2 | 2 |
-| War Fork | 워 포크 | 3 | 4 | 5 |
-| War Hammer | 워 해머 | 3 | 4 | 4 |
-| War Hat | 워햇 | 2 | 2 | 2 |
-| War Pike | 워 파이크 | 3 | 4 | 6 |
-| War Scepter | 워셉터 | 3 | 5 | 5 |
-| War Scythe | 워 싸이드 | 3 | 4 | 6 |
-| War Spear | 워 스피어 | 3 | 3 | 3 |
-| War Spike | 워 스파이크 | 4 | 5 | 6 |
-| War Staff | 워스태프 | 5 | 6 | 6 |
-| War Sword | 워 소드 | 3 | 3 | 3 |
-| Ward | 워드 | 3 | 3 | 4 |
-| Ward Bow | 워드 보우 | 3 | 4 | 5 |
-| Winged Helm | 윙드헬름 | 2 | 2 | 3 |
-| Wire Fleece | 와이어 플리스 | 3 | 4 | 4 |
-| Wirt's Leg | 위트의 의족 | 3 | 3 | 3 |
-| Wolf Head | 울프 헤드 | 2 | 3 | 3 |
-| Wrist Blade | 리스트 블레이드 | 2 | 2 | 2 |
-| Wrist Spike | 리스트스파이크 | 2 | 2 | 2 |
-| Wrist Sword | 리스트 소드 | 2 | 3 | 3 |
-| Wyrmhide | 와이엄하이드 | 3 | 4 | 4 |
-| Yari | 야리 | 3 | 4 | 6 |
-| Yew Wand | 예완드 | 1 | 1 | 1 |
-| Zakarum Shield | 자카럼 쉴드 | 3 | 4 | 4 |
-| Zombie Head | 좀비헤드 | 2 | 2 | 2 |
-| Zweihander | 쯔바이핸더 | 3 | 4 | 5 |
+| 이름 | 1~25 | 26~40 | 41+ |
+|---|---|---|---|
+| Aegis | 3 | 3 | 4 |
+| Aerin Shield | 3 | 4 | 4 |
+| Akaran Rondache | 3 | 4 | 4 |
+| Akaran Targe | 3 | 4 | 4 |
+| Alpha Helm | 2 | 3 | 3 |
+| Ancient Armor | 3 | 4 | 4 |
+| Ancient Axe | 4 | 5 | 6 |
+| Ancient Shield | 3 | 3 | 3 |
+| Ancient Sword | 3 | 3 | 3 |
+| Antlers | 2 | 3 | 3 |
+| Arbalest | 3 | 3 | 3 |
+| Archon Plate | 3 | 4 | 4 |
+| Archon Staff | 5 | 6 | 6 |
+| Armet | 2 | 2 | 2 |
+| Ashwood Bow | 3 | 4 | 5 |
+| Assault Helmet | 2 | 3 | 3 |
+| Ataghan | 2 | 2 | 2 |
+| Avenger Guard | 2 | 3 | 3 |
+| Axe | 4 | 4 | 4 |
+| Balista | 3 | 4 | 6 |
+| Balrog Blade | 3 | 4 | 4 |
+| Balrog Skin | 3 | 4 | 4 |
+| Barbed Club | 3 | 3 | 3 |
+| Barbed Shield | 2 | 2 | 2 |
+| Bardiche | 3 | 3 | 3 |
+| Basinet | 2 | 2 | 2 |
+| Bastard Sword | 3 | 4 | 4 |
+| Battle Axe | 4 | 5 | 5 |
+| Battle Cestus | 2 | 2 | 2 |
+| Battle Hammer | 3 | 4 | 4 |
+| Battle Scythe | 3 | 4 | 5 |
+| Battle Staff | 4 | 4 | 4 |
+| Battle Sword | 3 | 4 | 4 |
+| Bearded Axe | 4 | 5 | 5 |
+| Bec-de-Corbin | 3 | 4 | 6 |
+| Berserker Axe | 4 | 5 | 6 |
+| Bill | 3 | 4 | 4 |
+| Blade | 2 | 2 | 2 |
+| Blade Barrier | 3 | 3 | 3 |
+| Blade Bow | 3 | 4 | 4 |
+| Blade Talons | 2 | 3 | 3 |
+| Blood Spirt | 2 | 3 | 3 |
+| Bloodlord Skull | 2 | 2 | 2 |
+| Bone Helm | 2 | 2 | 2 |
+| Bone Knife | 1 | 1 | 1 |
+| Bone Shield | 2 | 2 | 2 |
+| Bone Visage | 2 | 2 | 3 |
+| Bone Wand | 2 | 2 | 2 |
+| Boneweave | 3 | 4 | 4 |
+| Brandistock | 3 | 4 | 5 |
+| Breast Plate | 3 | 3 | 3 |
+| Broad Axe | 4 | 5 | 5 |
+| Broad Sword | 3 | 4 | 4 |
+| Buckler | 1 | 1 | 1 |
+| Burnt Wand | 1 | 1 | 1 |
+| Caduceus | 3 | 5 | 5 |
+| Cantor Trophy | 2 | 2 | 2 |
+| Cap/hat | 2 | 2 | 2 |
+| Carnage Helm | 2 | 3 | 3 |
+| Casque | 2 | 2 | 2 |
+| Cedar Bow | 3 | 4 | 5 |
+| Cedar Staff | 4 | 4 | 4 |
+| Ceremonial Bow | 3 | 4 | 5 |
+| Ceremonial Pike | 3 | 4 | 6 |
+| Ceremonial Spear | 3 | 4 | 6 |
+| Cestus | 2 | 2 | 2 |
+| Chain Mail | 2 | 2 | 2 |
+| Champion Axe | 4 | 5 | 6 |
+| Champion Sword | 3 | 4 | 4 |
+| Chaos Armor | 3 | 4 | 4 |
+| Chu-Ko-Nu | 3 | 4 | 5 |
+| Cinquedeas | 2 | 3 | 3 |
+| Circlet | 1 | 2 | 2 |
+| Clasped Orb | 2 | 3 | 3 |
+| Claws | 2 | 3 | 3 |
+| Claymore | 3 | 4 | 4 |
+| Cleaver | 4 | 4 | 4 |
+| Cloudy Sphere | 2 | 3 | 3 |
+| Club | 2 | 2 | 2 |
+| Colossal Sword | 3 | 4 | 5 |
+| Colossus Blade | 3 | 4 | 6 |
+| Colossus Crossbow | 3 | 4 | 6 |
+| Colossus Voulge | 3 | 4 | 4 |
+| Composite Bow | 3 | 4 | 4 |
+| Conquerer Crown | 2 | 3 | 3 |
+| Conquest Sword | 3 | 4 | 4 |
+| Corona | 2 | 2 | 3 |
+| Coronet | 1 | 2 | 2 |
+| Crossbow | 3 | 4 | 4 |
+| Crowbill | 4 | 5 | 6 |
+| Crown | 2 | 2 | 3 |
+| Crown Shield | 3 | 4 | 4 |
+| Crusader Bow | 3 | 4 | 6 |
+| Cryptic Axe | 3 | 4 | 5 |
+| Cryptic Sword | 3 | 4 | 4 |
+| Crystal Sword | 3 | 4 | 6 |
+| Crystalline Globe | 2 | 3 | 3 |
+| Cudgel | 2 | 2 | 2 |
+| Cuirass | 3 | 3 | 3 |
+| Cutlass | 2 | 2 | 2 |
+| Dacian Falx | 3 | 4 | 4 |
+| Dagger | 1 | 1 | 1 |
+| Death Mask | 2 | 2 | 3 |
+| Decapitator | 4 | 5 | 5 |
+| Defender | 1 | 1 | 1 |
+| Demon Crossbow | 3 | 4 | 5 |
+| Demon Head | 2 | 2 | 2 |
+| Demon Heart | 2 | 3 | 3 |
+| Demonhead | 2 | 2 | 3 |
+| Demonhide Armor | 2 | 2 | 2 |
+| Destroyer Helm | 2 | 3 | 3 |
+| Devil Star | 3 | 3 | 3 |
+| Diadem | 1 | 2 | 3 |
+| Diamond Bow | 3 | 4 | 5 |
+| Diamond Mail | 3 | 4 | 4 |
+| Dimensional Blade | 3 | 4 | 6 |
+| Dimensional Shard | 2 | 3 | 3 |
+| Dirk | 1 | 1 | 1 |
+| Divine Scepter | 3 | 5 | 5 |
+| Double Axe | 4 | 5 | 5 |
+| Double Bow | 3 | 4 | 4 |
+| Dragon Shield | 3 | 3 | 3 |
+| Dragon Stone | 2 | 3 | 3 |
+| Dream Spirit | 2 | 3 | 3 |
+| Dusk Shroud | 3 | 4 | 4 |
+| Eagle Orb | 2 | 3 | 3 |
+| Earth Spirit | 2 | 3 | 3 |
+| Edge Bow | 3 | 3 | 3 |
+| Elder Staff | 4 | 4 | 4 |
+| Eldritch Orb | 2 | 3 | 3 |
+| Elegant Blade | 2 | 2 | 2 |
+| Embossed Plate | 3 | 4 | 4 |
+| Espandon | 3 | 3 | 3 |
+| Ettin Axe | 4 | 5 | 5 |
+| Executioner Sword | 3 | 4 | 6 |
+| Falcata | 2 | 2 | 2 |
+| Falchion | 2 | 2 | 2 |
+| Falcon Mask | 2 | 3 | 3 |
+| Fanged Helm | 2 | 3 | 3 |
+| Fanged Knife | 2 | 3 | 3 |
+| Fascia | 2 | 2 | 2 |
+| Feral Axe | 4 | 4 | 4 |
+| Feral Claws | 2 | 3 | 3 |
+| Fetish Trophy | 2 | 2 | 2 |
+| Field Plate | 2 | 2 | 2 |
+| Flail | 3 | 4 | 5 |
+| Flamberge | 3 | 4 | 5 |
+| Flanged Mace | 2 | 2 | 2 |
+| Full Helm | 2 | 2 | 2 |
+| Full Plate Mail | 3 | 4 | 4 |
+| Fury Visor | 2 | 3 | 3 |
+| Fuscina | 3 | 4 | 4 |
+| Gargoyle Head | 2 | 2 | 2 |
+| Ghost Armor | 2 | 2 | 2 |
+| Ghost Spear | 3 | 4 | 6 |
+| Ghost Wand | 2 | 2 | 2 |
+| Giant Axe | 4 | 5 | 6 |
+| Giant Conch | 2 | 2 | 2 |
+| Giant Sword | 3 | 4 | 4 |
+| Giant Thresher | 3 | 4 | 6 |
+| Gladius | 2 | 2 | 2 |
+| Glorious Axe | 4 | 5 | 6 |
+| Glowing Orb | 2 | 3 | 3 |
+| Gnarled Staff | 4 | 4 | 4 |
+| Gorgon Crossbow | 3 | 4 | 4 |
+| Gothic Axe | 4 | 5 | 6 |
+| Gothic Bow | 3 | 4 | 6 |
+| Gothic Plate | 3 | 4 | 4 |
+| Gothic Shield | 3 | 3 | 3 |
+| Gothic Staff | 4 | 4 | 4 |
+| Gothic Sword | 3 | 4 | 4 |
+| Grand Crown | 2 | 2 | 3 |
+| Grand Matron Bow | 3 | 4 | 5 |
+| Grand Scepter | 3 | 3 | 3 |
+| Grave Wand | 2 | 2 | 2 |
+| Great Axe | 4 | 5 | 6 |
+| Great Bow | 3 | 4 | 4 |
+| Great Hauberk | 3 | 4 | 4 |
+| Great Helm | 2 | 2 | 3 |
+| Great Maul | 3 | 4 | 6 |
+| Great Poleaxe | 3 | 4 | 6 |
+| Great Sword | 3 | 4 | 6 |
+| Greater Claws | 2 | 3 | 3 |
+| Greater Talons | 2 | 3 | 3 |
+| Griffon Headress | 2 | 3 | 3 |
+| Grim Helm | 2 | 2 | 2 |
+| Grim Scythe | 3 | 4 | 6 |
+| Grim Shield | 2 | 2 | 2 |
+| Grim Wand | 2 | 2 | 2 |
+| Guardian Crown | 2 | 3 | 3 |
+| Guilded Shield | 3 | 4 | 4 |
+| Halberd | 3 | 4 | 6 |
+| Hand Axe | 2 | 2 | 2 |
+| Hand Scythe | 2 | 2 | 2 |
+| Hard Leather Armor | 2 | 2 | 2 |
+| Hatchet | 2 | 2 | 2 |
+| Hatchet Hands | 2 | 2 | 2 |
+| Hawk Helm | 2 | 3 | 3 |
+| Heater | 2 | 2 | 2 |
+| Heavenly Stone | 2 | 3 | 3 |
+| Heavy Crossbow | 3 | 4 | 6 |
+| Heirophant Trophy | 2 | 2 | 2 |
+| Hellforge Hammer | 3 | 4 | 5 |
+| Hellforged Plate | 3 | 4 | 4 |
+| Hellspawn Skull | 2 | 2 | 2 |
+| Helm | 2 | 2 | 2 |
+| Heraldic Shield | 3 | 4 | 4 |
+| Highland Blade | 3 | 4 | 4 |
+| Holy Water Sprinkler | 3 | 3 | 3 |
+| Horned Helm | 2 | 3 | 3 |
+| Hunter's Bow | 3 | 4 | 4 |
+| Hunter's Guise | 2 | 3 | 3 |
+| Hydra Bow | 3 | 4 | 6 |
+| Hydra Edge | 2 | 2 | 2 |
+| Hydraskull | 2 | 2 | 2 |
+| Hyperion | 3 | 3 | 3 |
+| Hyperion Spear | 3 | 3 | 3 |
+| Jagged Star | 3 | 3 | 3 |
+| Jawbone Cap | 2 | 3 | 3 |
+| Jawbone Visor | 2 | 3 | 3 |
+| Jo Staff | 2 | 2 | 2 |
+| Katar | 2 | 2 | 2 |
+| KhalimFlail | 3 | 3 | 3 |
+| Kite Shield | 3 | 3 | 3 |
+| Knout | 3 | 4 | 5 |
+| Kraken Shell | 3 | 4 | 4 |
+| Kriss | 2 | 3 | 3 |
+| Kurast Shield | 3 | 4 | 4 |
+| Lacquered Plate | 3 | 4 | 4 |
+| Lance | 3 | 4 | 6 |
+| Large Axe | 4 | 4 | 4 |
+| Large Shield | 3 | 3 | 3 |
+| Leather Armor | 2 | 2 | 2 |
+| Legend Spike | 2 | 2 | 2 |
+| Legend Sword | 3 | 3 | 3 |
+| Legendary Mallet | 3 | 4 | 4 |
+| Lich Wand | 2 | 2 | 2 |
+| Light Crossbow | 3 | 3 | 3 |
+| Light Plate | 3 | 3 | 3 |
+| Linked Mail | 3 | 3 | 3 |
+| Lion Helm | 2 | 3 | 3 |
+| Lochaber Axe | 3 | 3 | 3 |
+| Long Battle Bow | 3 | 4 | 6 |
+| Long Bow | 3 | 4 | 5 |
+| Long Siege Bow | 3 | 4 | 6 |
+| Long Staff | 3 | 3 | 3 |
+| Long Sword | 3 | 4 | 4 |
+| Long War Bow | 3 | 4 | 6 |
+| Loricated Mail | 3 | 4 | 4 |
+| Luna | 2 | 2 | 2 |
+| Mace | 2 | 2 | 2 |
+| Mage Plate | 3 | 3 | 3 |
+| Maiden Pike | 3 | 4 | 6 |
+| Maiden Spear | 3 | 4 | 6 |
+| Mancatcher | 3 | 4 | 5 |
+| Martel de Fer | 3 | 4 | 6 |
+| Mask | 2 | 2 | 3 |
+| Matriarchal Bow | 3 | 4 | 5 |
+| Matriarchal Pike | 3 | 4 | 6 |
+| Matriarchal Spear | 3 | 4 | 6 |
+| Maul | 3 | 4 | 6 |
+| Mesh Armor | 3 | 3 | 3 |
+| Mighty Scepter | 2 | 2 | 2 |
+| Military Axe | 4 | 4 | 4 |
+| Military Pick | 4 | 5 | 6 |
+| Minion Skull | 2 | 2 | 2 |
+| Mithril Point | 1 | 1 | 1 |
+| Monarch | 3 | 3 | 4 |
+| Morning Star | 3 | 3 | 3 |
+| Mummified Trophy | 2 | 2 | 2 |
+| Mythical Sword | 3 | 3 | 3 |
+| Naga | 4 | 5 | 6 |
+| Ogre Axe | 3 | 3 | 3 |
+| Ogre Maul | 3 | 4 | 6 |
+| Ornate Armor | 3 | 4 | 4 |
+| Overseer Skull | 2 | 2 | 2 |
+| Partizan | 3 | 4 | 5 |
+| Pavise | 3 | 3 | 3 |
+| Pellet Bow | 3 | 3 | 3 |
+| Petrified Wand | 2 | 2 | 2 |
+| Phase Blade | 3 | 4 | 6 |
+| Pike | 3 | 4 | 6 |
+| Plate Mail | 2 | 2 | 2 |
+| Poignard | 1 | 1 | 1 |
+| Poleaxe | 3 | 4 | 5 |
+| Polished Wand | 2 | 2 | 2 |
+| Preserved Head | 2 | 2 | 2 |
+| Protector Shield | 3 | 4 | 4 |
+| Quarterstaff | 3 | 3 | 3 |
+| Quhab | 2 | 3 | 3 |
+| Quilted Armor | 2 | 2 | 2 |
+| Rage Mask | 2 | 3 | 3 |
+| Razor Bow | 3 | 4 | 4 |
+| Reflex Bow | 3 | 4 | 5 |
+| Reinforced Mace | 2 | 2 | 2 |
+| Repeating Crossbow | 3 | 4 | 5 |
+| Ring Mail | 3 | 3 | 3 |
+| Rondache | 3 | 4 | 4 |
+| Rondel | 1 | 1 | 1 |
+| Round Shield | 2 | 2 | 2 |
+| Royal Shield | 3 | 4 | 4 |
+| Rune Bow | 3 | 4 | 5 |
+| Rune Scepter | 2 | 2 | 2 |
+| Rune Staff | 5 | 6 | 6 |
+| Rune Sword | 3 | 4 | 4 |
+| Runic Talons | 2 | 3 | 3 |
+| Russet Armor | 3 | 3 | 3 |
+| Saber | 2 | 2 | 2 |
+| Sacred Armor | 3 | 4 | 4 |
+| Sacred Feathers | 2 | 3 | 3 |
+| Sacred Globe | 2 | 3 | 3 |
+| Sacred Rondache | 3 | 4 | 4 |
+| Sacred Targe | 3 | 4 | 4 |
+| Sallet | 2 | 2 | 2 |
+| Savage Helmet | 2 | 3 | 3 |
+| Scale Mail | 2 | 2 | 2 |
+| Scarab Husk | 3 | 4 | 4 |
+| Scepter | 2 | 2 | 2 |
+| Scimitar | 2 | 2 | 2 |
+| Scissors Katar | 2 | 3 | 3 |
+| Scissors Quhab | 2 | 3 | 3 |
+| Scissors Suwayyah | 2 | 3 | 3 |
+| Scourge | 3 | 4 | 5 |
+| Scutum | 3 | 3 | 3 |
+| Scythe | 3 | 4 | 5 |
+| Seraph Rod | 3 | 3 | 3 |
+| Serpentskin Armor | 2 | 2 | 2 |
+| Sexton Trophy | 2 | 2 | 2 |
+| Shadow Bow | 3 | 4 | 5 |
+| Shadow Plate | 3 | 4 | 4 |
+| Shako | 2 | 2 | 2 |
+| Shamshir | 2 | 2 | 2 |
+| Sharktooth Armor | 3 | 3 | 3 |
+| Shillelah | 4 | 4 | 4 |
+| Short Battle Bow | 3 | 4 | 5 |
+| Short Bow | 3 | 3 | 3 |
+| Short Siege Bow | 3 | 4 | 5 |
+| Short Staff | 2 | 2 | 2 |
+| Short Sword | 2 | 2 | 2 |
+| Short War Bow | 3 | 4 | 5 |
+| Siege Crossbow | 3 | 4 | 4 |
+| Silver Edged Axe | 4 | 5 | 5 |
+| Skull Cap | 2 | 2 | 2 |
+| Sky Spirit | 2 | 3 | 3 |
+| Slayer Guard | 2 | 3 | 3 |
+| Small Crescent | 4 | 4 | 4 |
+| Small Shield | 2 | 2 | 2 |
+| Smoked Sphere | 2 | 3 | 3 |
+| Sparkling Ball | 2 | 3 | 3 |
+| Spear | 3 | 3 | 3 |
+| Spetum | 3 | 4 | 6 |
+| Spider Bow | 3 | 3 | 3 |
+| Spiked Club | 2 | 2 | 2 |
+| Spiked Shield | 2 | 2 | 2 |
+| Spired Helm | 2 | 2 | 3 |
+| Spirit Mask | 2 | 3 | 3 |
+| Splint Mail | 2 | 2 | 2 |
+| Stag Bow | 3 | 4 | 5 |
+| Stalagmite | 3 | 3 | 3 |
+| Stilleto | 2 | 2 | 2 |
+| Studded Leather | 2 | 2 | 2 |
+| Stygian Pike | 3 | 4 | 4 |
+| Succubae Skull | 2 | 2 | 2 |
+| Sun Spirit | 2 | 3 | 3 |
+| SuperKhalimFlail | 3 | 3 | 3 |
+| Suwayyah | 2 | 3 | 3 |
+| Swirling Crystal | 2 | 3 | 3 |
+| Tabar | 4 | 5 | 5 |
+| Targe | 3 | 4 | 4 |
+| Templar Coat | 3 | 3 | 3 |
+| Thresher | 3 | 4 | 5 |
+| Thunder Maul | 3 | 4 | 6 |
+| Tiara | 1 | 2 | 3 |
+| Tigulated Mail | 3 | 3 | 3 |
+| Tomahawk | 2 | 2 | 2 |
+| Tomb Wand | 2 | 2 | 2 |
+| Totemic Mask | 2 | 3 | 3 |
+| Tower Shield | 3 | 3 | 3 |
+| Trellised Armor | 2 | 2 | 2 |
+| Trident | 3 | 4 | 4 |
+| Troll Nest | 3 | 3 | 3 |
+| Truncheon | 2 | 2 | 2 |
+| Tulwar | 2 | 2 | 2 |
+| Tusk Sword | 3 | 4 | 4 |
+| Twin Axe | 4 | 5 | 5 |
+| Two-Handed Sword | 3 | 3 | 3 |
+| Tyrant Club | 3 | 3 | 3 |
+| Unearthed Wand | 2 | 2 | 2 |
+| Unraveller Head | 2 | 2 | 2 |
+| Vortex Orb | 2 | 3 | 3 |
+| Vortex Shield | 3 | 4 | 4 |
+| Voulge | 3 | 4 | 4 |
+| Walking Stick | 2 | 2 | 2 |
+| Wand | 1 | 1 | 1 |
+| War Axe | 4 | 5 | 6 |
+| War Club | 3 | 4 | 6 |
+| War Fist | 2 | 2 | 2 |
+| War Fork | 3 | 4 | 5 |
+| War Hammer | 3 | 4 | 4 |
+| War Hat | 2 | 2 | 2 |
+| War Pike | 3 | 4 | 6 |
+| War Scepter | 3 | 5 | 5 |
+| War Scythe | 3 | 4 | 6 |
+| War Spear | 3 | 3 | 3 |
+| War Spike | 4 | 5 | 6 |
+| War Staff | 5 | 6 | 6 |
+| War Sword | 3 | 3 | 3 |
+| Ward | 3 | 3 | 4 |
+| Ward Bow | 3 | 4 | 5 |
+| Winged Helm | 2 | 2 | 3 |
+| Wire Fleece | 3 | 4 | 4 |
+| Wirt's Leg | 3 | 3 | 3 |
+| Wolf Head | 2 | 3 | 3 |
+| Wrist Blade | 2 | 2 | 2 |
+| Wrist Spike | 2 | 2 | 2 |
+| Wrist Sword | 2 | 3 | 3 |
+| Wyrmhide | 3 | 4 | 4 |
+| Yari | 3 | 4 | 6 |
+| Yew Wand | 1 | 1 | 1 |
+| Zakarum Shield | 3 | 4 | 4 |
+| Zombie Head | 2 | 2 | 2 |
+| Zweihander | 3 | 4 | 5 |
 
 ## 에테리얼
 
-### 익셉셔널·엘리트 갑옷 방어력
+### 방어력 계산식
 
-- 출처: 카오스큐브 "익셉, 엘리트 갑옷 방어도 도표"(글쓴이 늘비, https://www.chaoscube.co.kr/board/d2-commu-lab-lab/947564) 그림. 근거: 웹 미검증.
-- 대조(261104): 30줄의 기본 방어도·요구 레벨·힘(기본)·내구·소켓은 mpqdata `armor.txt`(`minac`-`maxac`, `levelreq`, `reqstr`, `durability`, `gemsockets`)와 모두 같다. 무형 = 기본 × 1.5 내림, 고급 = (최고 방어도+1) × 105~115% 내림으로 계산하면 모두 같다. 고급 무형은 원본 아래 식으로 계산하면 30줄 중 9줄이 1 차이 난다(서펀트스킨, 데몬하이드, 스캐럽 허스크, 링크드 메일, 티귤레이티드 메일, 퀴래스, 템플러 코트, 카오스 아머, 오네이트 플레이트). 원본 값 그대로 둔다.
-- 원본 식: Superior NOT Ethereal: Defense = [(최고방어도 + 1) * (100 + 방상%)/100], Superior AND Ethereal: Defense = [[(최고방어도 + 1) * 3/2] * (100 + 방상%)/100]
-- 힘 "기본 / 무형" = 에테리얼은 요구 힘 −10.
-
-| 영문 | 한글 | 기본 | 고급 | 무형 | 고급 무형 | 요구 레벨 | 요구 힘 (기본 / 무형) | 내구 | 소켓 | 무게 |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Ghost Armor | 고스트 아머 | 102-117 | 123-135 | 153-175 | 185-203 | 22 | 38 / 28 | 20 | 2 | 가벼움 |
-| Dusk Shroud | 더스크 슈라우드 | 361-467 | 491-538 | 541-700 | 737-807 | 49 | 77 / 67 | 20 | 4 | Light |
-| Serpentskin Armor | 서펀트스킨 아머 | 111-126 | 133-146 | 166-189 | 200-219 | 24 | 43 / 33 | 24 | 2 | 가벼움 |
-| Wyrmhide | 웜하이드 | 364-470 | 494-541 | 546-705 | 741-811 | 50 | 84 / 74 | 24 | 4 | Light |
-| Demonhide Armor | 데몬하이드 아머 | 122-136 | 143-157 | 183-204 | 215-236 | 25 | 50 / 40 | 28 | 2 | 가벼움 |
-| Scarab Husk | 스캐럽 허스크 | 369-474 | 498-546 | 553-711 | 748-818 | 51 | 95 / 85 | 28 | 4 | Light |
-| Trellised Armor | 트렐리스드 아머 | 138-153 | 161-177 | 207-229 | 242-265 | 25 | 61 / 51 | 32 | 2 | 가벼움 |
-| Wire Fleece | 와이어 플리스 | 375-481 | 506-554 | 562-721 | 759-831 | 53 | 111 / 101 | 32 | 4 | Light |
-| Linked Mail | 링크드 메일 | 158-172 | 181-198 | 237-258 | 272-298 | 25 | 74 / 64 | 26 | 3 | 보통 |
-| Diamond Mail | 다이아몬드 메일 | 383-489 | 514-563 | 574-733 | 771-845 | 54 | 131 / 121 | 26 | 4 | Medium |
-| Tigulated Mail | 티귤레이티드 메일 | 176-190 | 200-219 | 264-285 | 300-329 | 25 | 86 / 76 | 36 | 3 | 무거움 |
-| Loricated Mail | 로러케이티드 메일 | 390-496 | 521-571 | 585-744 | 782-856 | 55 | 149 / 139 | 36 | 4 | Heavy |
-| Cuirass | 퀴래스 | 188-202 | 213-233 | 282-303 | 319-350 | 25 | 65 / 55 | 50 | 3 | 가벼움 |
-| Great Hauberk | 그레이트 허버크 | 395-501 | 527-577 | 592-751 | 790-865 | 56 | 118 / 108 | 50 | 4 | Light |
-| Mesh Armor | 메쉬 아머 | 198-213 | 224-246 | 297-319 | 337-369 | 25 | 92 / 82 | 45 | 3 | 보통 |
-| Boneweave | 본위브 | 399-505 | 531-581 | 598-757 | 796-872 | 47 | 158 / 148 | 45 | 4 | Medium |
-| Russet Armor | 러셋 아머 | 225-243 | 256-280 | 337-364 | 384-420 | 25 | 97 / 87 | 30 | 3 | 보통 |
-| Balrog Skin | 발록 스킨 | 410-517 | 543-595 | 615-775 | 815-893 | 57 | 165 / 155 | 30 | 4 | Medium |
-| Mage Plate | 메이지 플레이트 | 225-261 | 275-301 | 337-391 | 412-451 | 25 | 55 / 45 | 60 | 3 | 가벼움 |
-| Archon Plate | 아콘 플레이트 | 410-524 | 551-603 | 615-786 | 826-905 | 63 | 103 / 93 | 60 | 4 | Light |
-| Sharktooth Armor | 샤크투스 아머 | 242-258 | 271-297 | 363-387 | 407-446 | 25 | 103 / 93 | 48 | 3 | 보통 |
-| Kraken Shell | 크라켄 쉘 | 417-523 | 550-602 | 625-784 | 825-903 | 61 | 174 / 164 | 48 | 4 | Medium |
-| Templar Coat | 템플러 코트 | 252-274 | 288-316 | 378-411 | 433-473 | 25 | 118 / 108 | 60 | 3 | 무거움 |
-| Hellforge Plate | 헬포지 플레이트 | 421-530 | 557-610 | 631-795 | 836-915 | 59 | 196 / 186 | 60 | 4 | Heavy |
-| Embossed Plate | 임바스트 플레이트 | 282-303 | 319-349 | 423-454 | 478-524 | 25 | 125 / 115 | 55 | 4 | 보통 |
-| Lacquered Plate | 래커드 플레이트 | 433-541 | 569-623 | 649-811 | 853-934 | 62 | 208 / 198 | 55 | 4 | Medium |
-| Chaos Armor | 카오스 아머 | 315-342 | 360-394 | 472-513 | 540-591 | 25 | 140 / 130 | 70 | 4 | 무거움 |
-| Shadow Plate | 쉐도우 플레이트 | 446-557 | 585-641 | 669-835 | 878-962 | 64 | 230 / 220 | 70 | 4 | Heavy |
-| Ornate Plate | 오네이트 플레이트 | 417-450 | 473-518 | 625-675 | 710-777 | 25 | 170 / 160 | 60 | 4 | 보통 |
-| Sacred Armor | 세이크리드 아머 | 487-600 | 631-691 | 730-900 | 946-1036 | 66 | 232 / 222 | 60 | 4 | Medium |
-
-### 엘리트 갑옷 방어력 (노말·에테·벅큐·인내)
-
-- 출처: 사용자 자료 `갑옷 별 디펜.png`(출처 표시 없음). 근거: **출처 불명**. 원본 그대로 옮겼다(15종 × 4줄 × 최소·최대).
-- 원본에 줄 이름의 설명은 없다. "벅큐"는 위 "에테리얼에 관한 고찰" [10]의 큐빙 소켓 버그(에테리얼 갑옷·방패에 50%가 한 번 더 붙음)로 보인다.
-- 대조(261104): 이름 옆 괄호 = 요구 힘 / 에테리얼 요구 힘. 노말·요구 힘은 mpqdata `armor.txt`와 같다. 에테 = 노말 × 1.5 내림, 벅큐 = 에테 × 1.5 내림, 인내 = 벅큐 × 3 + 15로 계산하면 135칸 모두 같다(인내 식은 원본에 없고 값에서 맞춘 것이다).
-
-| 영문 | 한글 | 요구 힘 (기본/에테) | 노말 | 에테 | 벅큐 | 인내 |
-|---|---|---|---|---|---|---|
-| Dusk Shroud | 더스크 슈라우드 | 77/67 | 361~467 | 541~700 | 811~1050 | 2448~3165 |
-| Loricated Mail | 로리케이티드 메일 | 149/139 | 390~496 | 585~744 | 877~1116 | 2646~3363 |
-| Kraken Shell | 크라컨 쉘 | 174/164 | 417~523 | 625~784 | 937~1176 | 2826~3543 |
-| Wyrmhide | 와이엄 하이드 | 84/74 | 364~470 | 546~705 | 819~1057 | 2472~3186 |
-| Great Hauberk | 그레이트 허버크 | 118/108 | 395~501 | 592~751 | 888~1126 | 2679~3393 |
-| Hellforged Plate | 헬포지 플레이트 | 196/186 | 421~530 | 631~795 | 946~1192 | 2853~3591 |
-| Scarab Husk | 스캐럽 허스크 | 95/85 | 369~474 | 553~711 | 829~1066 | 2502~3213 |
-| Boneweave | 본위브 | 158/148 | 399~505 | 598~757 | 897~1135 | 2706~3420 |
-| Lacquered Plate | 래커드 플레이트 | 208/198 | 433~541 | 649~811 | 973~1216 | 2934~3663 |
-| Wire Fleece | 와이어 플리스 | 111/101 | 375~481 | 562~721 | 843~1081 | 2544~3258 |
-| Balrog Skin | 발록스킨 | 165/155 | 410~517 | 615~775 | 922~1162 | 2781~3501 |
-| Shadow Plate | 쉐도우 플레이트 | 230/220 | 446~557 | 669~835 | 1003~1252 | 3024~3771 |
-| Diamond Mail | 다이아몬드 메일 | 131/121 | 383~489 | 574~733 | 861~1099 | 2598~3312 |
-| Archon Plate | 아칸 플레이트 | 103/93 | 410~524 | 615~786 | 922~1179 | 2781~3552 |
-| Sacred Armor | 세이크리드 아머 | 232/222 | 487~600 | 730~900 | 1095~1350 | 3300~4065 |
+- 기본 방어력·요구 레벨·요구 힘·내구·소켓은 mpqdata `armor.txt`(`minac`·`maxac`·`levelreq`·`reqstr`·`durability`·`gemsockets`).
+- 에테리얼: 방어력 = 기본 × 1.5(내림), 요구 힘·민첩 −10. 1.10부터 이 50%는 방어력 증가(%)보다 먼저 붙는다(아래 고찰 [2]).
+- 슈페리어(원본 식, 카오스큐브 늘비 도표): Defense = [(최고 방어도 + 1) × (100 + 방상%) / 100]. 슈페리어 에테리얼: Defense = [[(최고 방어도 + 1) × 3/2] × (100 + 방상%) / 100]. `[ ]`는 내림.
+- 큐빙 소켓 버그(1.11·1.11b 이후, 아래 고찰 [10]): 에테리얼 갑옷·방패를 큐브로 소켓 뚫으면 50%가 한 번 더 붙는다(= 에테리얼 값 × 1.5, 내림).
+- 사용자 자료 `갑옷 별 디펜.png`의 "인내" 줄 값은 모두 (큐빙 소켓 버그 값) × 3 + 15와 같았다(값에서 맞춘 식, 원본에 설명 없음, 261104 대조).
 
 ### 에테리얼에 관한 고찰
 
@@ -759,3 +745,91 @@ http://www.chaoscube.co.kr/community/board/contents.asp?seq=-233&page=1&t_name=c
 잘못된 부분이나 수정할 부분이 있다면 말씀해주세요.
 
 읽어주셔서 감사합니다. ^^ 카큐님들 모두 새해복 많이 받으세요 !!
+
+## 겜블 아이템 레벨
+
+### 코드 (D2MOO)
+
+- 출처: D2MOO(1.10f 소스 재구성) `source/D2Game/src/UNIT/SUnitNpc.cpp`의 겜블 목록 만드는 함수. 근거: D2MOO 코드(261104).
+- 겜블 아이템 레벨 = 캐릭터 레벨 + 난수(0~9) − 5 → **캐릭터 레벨 −5 ~ +4**. 5보다 작으면 5, 99보다 크면 99.
+- 품질: 난수(0~99999) < `difficultylevels.txt` `GambleUniq`+`GambleSet`+`GambleRare` 이면 그 안에서 유니크/세트/레어, 그 밖은 매직.
+- 확장팩: 익셉셔널 확률 = `GambleUber` × (아이템 레벨 − 익셉셔널 기본 아이템 레벨) + 1 (/10000), 실패하면 엘리트 `GambleUltra`로 같은 식.
+
+### 겜블·크래프트에 관한 케릭렙과 숨은렙의 진실 (제타_마크)
+
+- 출처: 카오스큐브 "겜블/크레프트에 관한 케릭렙과 숨은렙의 진실"(글쓴이 제타_마크, https://www.chaoscube.co.kr/board/d2-commu-lab-lab/942119). 근거: 웹 미검증. 본문은 그림 2장(실험 글)과 덧붙임 글이다.
+- 그림 내용(옮겨 적음): 91레벨 소서리스로 아뮬렛 98개를 겜블(기드 11% + 모서리 15% 할인), 레어 11개·유니크 1개. 아이템 레벨이 86~95로 나왔다. 86 8개, 87 15개(원본은 "총 23번", "전체98개의 아뮬중 4.2%의 확률"이라고 적었다). 글쓴이 결론: "블리자드 명시 캐릭레벨 +6 levels/-3 levels가 맞지 않다", "겜블에 필요한 레벨은 캐릭레벨 +4/-5", "접두 최고치 90을 요구하려면 최소 95렙".
+- 글쓴이의 +4/−5는 위 D2MOO 코드와 같다.
+
+덧붙임 글(원문):
+
+추가.
+글제주가 없어 참 두서가 없었는데 \[여차여차™\]님의 댓글이 너무
+맘에 드는군요^^
+\[여차여차™\] 님의 말씀대로 숨은렙이 90을 넘어가기 위해서 케릭렙이
+95가 필요한것 입니다.
+꼭 95렙이 넘으면 2스킬이 나온다는것이 아니고 86렙이상이면,(+4/-5)
+2스킬 아뮬을 겜블(확률상)할 수 있다는것을 다시 한번 말씀드립니다 .
+
+아이템의 숨은렙을(접두90)을 뽑기 위해 또한 2스킬을 뽑을 확률을
+높히기 위해.. 95렙 케릭으로 하면 확률상 더높다는것이다 라는것이고.
+
+또한 크렙시 숨은렙(90)이상을 뽑는것은 케릭95렙이상이면 어떠한 겜블을해도 가능하다는것입니다.
+
+글의 의도는 이렇습니다
+모든분들이 숨은렙을 알아볼수 있는 프로그램을 사용하는것은 아니기때문에
+좀더 확률적으로 높이며.디아머니를 줄이자 라는 의도라는것을 알려드립니다.
+
+## 참 접사 공식
+
+- 출처: 카오스큐브 "참 (부적) 아이템의 접미사 접두사 최대 수치 정보"(글쓴이 윈드포수, https://www.chaoscube.co.kr/board/d2-commu-lab-lab/945293) 글. 근거: 웹 미검증.
+- 표 보는 법(원본): "41~45/91 = 그랜드 차암의 피가 41~45 사이로 붙고 접미사 레벨이 91이라는 뜻. 몬스터 드랍시 접사 결정 공식 qlvl(alvl) ≤ ilvl+2에 따라 ilvl89 이상 그랜드 차암에서만 피 41~45 옵션이 나오게 됩니다. 77≤ilvl≤88인 경우엔 피 36~45 옵션이 나오게 됩니다. ※ qlvl(alvl) = 접사 레벨, ilvl = 숨은 아이템 레벨 ※ 주의! 큐빙은 접사 결정 공식이 드랍 할 때와 다릅니다."
+- 참 접사별 수치·접사 레벨은 mpqdata `magicprefix.txt`·`magicsuffix.txt`(`itype`이 `scha`·`mcha`·`lcha`, `spawnable`=1)의 `level`·`mod1min`·`mod1max`.
+
+원문:
+
+참알못이라서 주울 때마다 살펴보는 게 힘들어서 정리해봤어요.
+
+위쪽 표는 거래용 득 참인지 확인 할 때 쓰라고 최고 접두사 접미사만 추린 것 입니다.
+
+아래쪽 표는 캐릭터를 키우는 도중에 얻은 참이 내 레벨대에 나올 수 있는 가장 높은 수준의 접두사 접미사를 가진 것인지 아닌지를 판단하기 위한 것입니다.
+그랜드 차암의 피 옵션은 45가 최고인데 플레이어의 레벨이 낮을 땐 약한(레벨이 낮은) 몬스터만 잡을 것이고 드랍되는 아이템의 숨은 렙 역시 당연히 낮을 것 입니다.
+그래서 접미사 레벨 91에 해당하는 45피 옵션은 절대로 나올 수 없기 때문에 조금 더 낮은 등급의 접미사 레벨을 아래쪽 표에 정리해두었습니다.
+
+극단적인 예는 민뎀, 맥뎀, 어레/맥뎀 관련 옵션에서 볼 수 있습니다.
+스몰 차암 민뎀1, 맥뎀1은 접두사 레벨이 90, 81이라 헬 다가서나 볼 수 있는데 비해서
+스몰 차암 어레10~20, 맥뎀1~3 옵션에서는 맥뎀3이 접두사 레벨 28에 나오게 됩니다.
+맨땅 할 때 스몰 차암 어레/맥뎀 옵션이 나오면 무조건 키핑하는게 좋을 것 같네요.
+
+추가로 접사 레벨이 높은 경우는 다음의 것이 있습니다.
+스몰 175 독 - 접두사 레벨 88
+스몰 10~19,20~29 파민/맥뎀 - 접두사 레벨 89
+스몰 1,44~71 라민/맥뎀 - 접두사 레벨 90
+스몰 8~10,15~20 콜민/맥뎀 - 접두사 레벨 91
+
+큐빙 차암의 접사 구하는 공식(출처 http://d2nt.net/diablo/diablo2_tips/280905)
+If (ilvl\>99) then ilvl=99}
+if (qlvl\>ilvl) then ilvl=qlvl}
+if (magic_lvl\>0) then alvl=ilvl+magic_lvl}
+else
+
+if (ilvl\<(99-qlvl/2))
+then alvl=ilvl-qlvl/2
+else alvl=2\*ilvl-99
+
+if는 '만약', then은 '그러면', else는 '아니면' 입니다.
+ilvl=아이템의 숨은 레벨, qlvl=퀄리티 레벨(아이템 고유 레벨), alvl=접사 레벨
+스몰, 라지, 그랜드 차암의 qlvl은 24, 12, 1
+
+스몰 차암의 175 독 or 10~19,20~29 파민/맥뎀 옵션이 나오려면 ilvl 94이상. 디아블로(94)
+스몰 차암의 1,44~71 라민/맥뎀 옵션이 나오려면 ilvl 95이상. 니라트하크(95), 바알(99)
+그랜드 차암의 피 100 옵션이 나오려면 ilvl 95이상.
+
+※ malic님의 TC글을 참고하였습니다.
+http://www.chaoscube.co.kr/community/board/contents.asp?seq=-4727&page=1&t_name=cmt_info&keyfield=nickname&keyvalue=malic&searchand=&calcu_page=1&bestchk=
+
+자락서스 - 스몰 라지 그랜드 차암 득 정리
+http://www.chaoscube.co.kr/community/board/contents.asp?seq=-5055&page=1&t_name=cmt_info&keyfield=subject&keyvalue=%C2%F7%BE%CF&searchand=&calcu_page=1&bestchk=
+
+단비『꼬마♡』- 아뮬렛 / 반지 / 차암의 모양별 호칭 입니다.
+http://www.chaoscube.co.kr/community/board/contents.asp?seq=-2723&page=1&t_name=cmt_info&keyfield=subject&keyvalue=%C2%F7%BE%CF&searchand=&calcu_page=1&bestchk=
