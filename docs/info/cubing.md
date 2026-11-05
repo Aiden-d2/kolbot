@@ -7,6 +7,9 @@
 - **래더 전용:** `cubemain.txt` `ladder`=1. Battle.net 래더 캐릭터만 쓸 수 있다.
 - 원문 메모(카오스큐브, 자멜라 "룬 업그레이드 정보" 그림 주석): "노멀아이템 조합시.. 같은 종류의 소켓아이템으로 변하고, 생성되는 소켓의 수는 무작위 그리고 슈페리어 옵션이 붙은 노멀 아이템은 조합 불가능!!"
 - 생성되는 소켓 수 규칙은 `item_mods.md` "아이템 레벨별 소켓 수".
+- 이 노트에 없는 `enabled`=1 조합(261105): 보석·스컬 등급 올리기(28), 퀘스트(호라드릭 스태프, 칼림의 의지, 카우방 포탈), 우버(판데모니움 열쇠·장기 포탈). 그 밖의 `enabled`=1 조합은 모두 있다(146개 중 113개).
+- kolbot(`libs/Cubing.js`)이 하는 조합: 크래프트 4종, 유니크·레어 업그레이드, 노멀 소켓 생성(`Punch`), 룬 업그레이드, 저품질 → 노멀, 리롤 3종(퍼펙트 보석 3 + 매직, 퍼펙트 스컬 6 + 레어, 퍼펙트 스컬 + 조던 + 레어), 토큰, 소켓 보석용 보석 올리기. 아래 "매직 무기 소켓"·"룬 수리·충전"·"물약"·"그 밖"과 레어 소켓 추가는 없다(261105).
+- 아래 추가 절의 코드: `gem0`~`gem4` = 칩·플로드·일반·플로리스·퍼펙트 보석(종류 무관), `gemz` = 스컬, `gemr` = 루비, `gemd` = 다이아몬드(`itemtypes.txt`). `pre=`·`suf=` = 붙는 접두·접미 번호, `rep` = 수리, `rch` = 충전, `noe` = 에테리얼 아님(근거: cubemain 표기, 뜻은 일반 지식). `tes`·`ceh`·`bet`·`fed` = 고통·증오·공포·파괴의 정수, `toa` = Token of Absolution(`misc.txt`).
 
 ## 룬 업그레이드 (32)
 
@@ -120,3 +123,63 @@
 | 설명 (cubemain `description`) | 재료 | 결과 | 래더 전용 |
 |---|---|---|---|
 | r15 + tsc + any socketed item -> unsocket (destroy gems) | any (sock) + Hel Rune + Town Portal Scroll | useitem (uns) |  |
+
+## 리롤·소켓 추가 (4)
+
+| 설명 (cubemain `description`) | 재료 | 결과 | 래더 전용 |
+|---|---|---|---|
+| 3 perfect gems + 1 magic item -> magic item | any (mag) + gem4 (qty=3) | usetype (mag) |  |
+| 6 perfect skulls + 1 rare item -> 1 low level rare item | any (rar) + Perfect Skull (qty=6) | usetype (rar) |  |
+| 1 perfect skull + 1 rare item + soj -> 1 high level rare item | any (rar) + Perfect Skull + The Stone of Jordan | usetype (rar) |  |
+| 3 perfect skull + 1 rare item + stone of jordan-> add 1 socket to rare | any (rar,nos) + Perfect Skull (qty=3) + The Stone of Jordan | useitem (sock=1) |  |
+
+## 매직 무기 소켓 (3)
+
+| 설명 (cubemain `description`) | 재료 | 결과 | 래더 전용 |
+|---|---|---|---|
+| 3 standard gems + 1 socketed weapon ->  magic, socketable weapon | weap (sock) + gem2 (qty=3) | usetype (mag) |  |
+| 3 flawless gems + 1 magic weapon -> socketed, magic weapon | weap (mag) + gem3 (qty=3) | usetype (mag) |  |
+| 3 chipped gems + 1 magic weapon -> socketed, magic weapon | weap (mag) + gem0 (qty=3) | usetype (mag) |  |
+
+## 룬 수리·충전 (4)
+
+| 설명 (cubemain `description`) | 재료 | 결과 | 래더 전용 |
+|---|---|---|---|
+| r09 + weapon -> repair | weap (noe) + Ort Rune | useitem (rep) (qty=255) |  |
+| r08 + armor -> repair | armo (noe) + Ral Rune | useitem (rep) (qty=255) |  |
+| r09 + weapon + chipped gem -> repair + recharge | weap (noe) + Ort Rune + gem0 | useitem (rep,rch) (qty=255) |  |
+| r08 + armor + flawed gem -> repair + recharge | armo (noe) + Ral Rune + gem1 | useitem (rep,rch) (qty=255) |  |
+
+## 물약 (4)
+
+| 설명 (cubemain `description`) | 재료 | 결과 | 래더 전용 |
+|---|---|---|---|
+| 3 health potions + 3 mana potions + 1 standard gem -> full rejuvenate potion | hpot (qty=3) + mpot (qty=3) + gem2 | rvl |  |
+| 3 health potions +  3 mana potions + 1 chipped gem -> rejuvenate potion | hpot (qty=3) + mpot (qty=3) + gem0 | rvs |  |
+| 3 small rejuvs -> one large | rvs (qty=3) | rvl |  |
+| 1 strangling gas potion + 1 health potion -> antidote potion | gpl + hpot | yps |  |
+
+## 그 밖 (14)
+
+| 설명 (cubemain `description`) | 재료 | 결과 | 래더 전용 |
+|---|---|---|---|
+| 1 perfect gem of each type + 1 amulet -> prismatic amulet | amu (mag) + Perfect Amethyst + Perfect Topaz + Perfect Saphire + Perfect Emerald + Perfect Ruby + Perfect Diamond | amu (mag,pre=331) |  |
+| 1 ring + 1 perfect ruby + 1 exploding potions -> garnet ring | rin (mag) + Perfect Ruby + opm | rin (mag,pre=372) |  |
+| 1 ring + 1 perfect sapphire + 1 thawing potions-> cobalt ring | rin (mag) + Perfect Saphire + wms | rin (mag,pre=353) |  |
+| 1 ring + 1 perfect topaz + 1 rejuvenation -> coral ring | rin (mag) + Perfect Topaz + rvs | rin (mag,pre=392) |  |
+| 1 ring + 1 emerald + 1 antidote potions -> jade ring | rin (mag) + Perfect Emerald + yps | rin (mag,pre=412) |  |
+| 1 axe + 1 dagger -> throwing axe | axe + knif | tax (nor) |  |
+| 1 spear + 1 arrow quiver -> javelins | spea + aqv | jav (nor) |  |
+| 3 rings -> amulet | rin (mag) (qty=3) | amu (mag) |  |
+| 3 amulets -> ring | amu (mag) (qty=3) | rin (mag) |  |
+| 1 magic small shield + 1 spiked club + 2 skulls -> shield of spikes | shld (mag) + gemz (qty=2) + spc | usetype (mag,suf=162) |  |
+| 4 health potion + 1 ruby + 1 magic sword -> sword of the leech | swor (mag) + gemr + hpot (qty=4) | usetype (mag,suf=352) |  |
+| 1 diamond + 1 kriss + 1 staff + 1 belt -> savage polearm | kri + gemd + staf + belt | pole (mag,pre=191) |  |
+| 2 arrows -> bolts | aqv (qty=2) | cqv |  |
+| 2 bolts -> arrows | cqv (qty=2) | aqv |  |
+
+## 토큰 (1)
+
+| 설명 (cubemain `description`) | 재료 | 결과 | 래더 전용 |
+|---|---|---|---|
+| Token of Absolution | tes + ceh + bet + fed | toa |  |

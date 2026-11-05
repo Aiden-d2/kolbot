@@ -1,12 +1,13 @@
 # 엔진 번호 (코드에서 쓰는 번호표)
 
-아이템 플래그·위치·착용 부위, 유닛 동작 상태(mode), NPC 메뉴, 상점 화면, 아이템 기본 스탯 인덱스, UI 플래그 (261104).
+아이템 플래그·위치·착용 부위, 유닛 동작 상태(mode), NPC 메뉴, 상점 화면, 아이템 기본 스탯 인덱스, UI 플래그 (261104), 몬스터 spectype·슈퍼유니크 프리셋 번호(261105).
 
 - 번호와 이름은 원본 그대로 영문. 출처는 절마다 적었다.
 
 ## 아이템 플래그 (`item.getFlag(값)`)
 
 - 출처: kolbot 옛 sdk `itemflags.txt`(원본 끝 "thanks to bluemind for testing"). 설명은 원본 영어 그대로.
+- 쓰는 법: `item.getFlag(값)`이 0이 아니면 그 플래그가 켜져 있다. 예: `if (item.getFlag(0x10)) { ... }` = 감정된 아이템(`Town.js`), `item.getFlag(0x400000)` = 에테리얼(261105).
 
 | 값 | 이름 | 원본 설명 |
 |---|---|---|
@@ -31,6 +32,7 @@
 ## 아이템 위치 (`item.location`)
 
 - 출처: 사용자 자료 `아이템로케이션.txt`. 4번은 원본에 없다.
+- 쓰는 법: `item.location === 7` = 창고에 있는 아이템(`Misc.js`)(261105).
 
 | 번호 | 위치 |
 |---|---|
@@ -44,6 +46,7 @@
 ## 착용 부위 (`item.bodylocation`)
 
 - 0~10: mpqdata `bodylocs.txt` 줄 순서(머리줄 다음 첫 줄이 0). 11·12: kolbot 옛 sdk `bodylocations.txt`(mpqdata에 없음, 무기 스왑 칸).
+- 쓰는 법: `item.bodylocation === 4` = 오른손 무기(`Precast.js`)(261105).
 
 | 번호 | 이름 | Code |
 |---|---|---|
@@ -64,6 +67,7 @@
 ## 유닛 동작 상태 (`unit.mode`)
 
 - 출처: mpqdata `plrmode.txt`·`monmode.txt`·`ObjMode.txt` 줄 순서(머리줄 다음 첫 줄이 0). 옛 sdk `modes.txt`의 플레이어 0~19·몬스터 0~15와 개수·앞부분 이름이 같다(261104).
+- 쓰는 법: `unit.mode === 0 || unit.mode === 12` = 죽은 몬스터(`Attack.js`), `me.mode === 10` = 내가 시전 중(플레이어 표)(261105).
 
 **플레이어**
 
@@ -127,6 +131,7 @@
 ## NPC 메뉴 번호
 
 - 출처: kolbot 옛 sdk `npcmenuid.txt`. 원본 표기 그대로(`Ressurect Merc` 철자 포함).
+- 쓰는 법: NPC와 대화창을 연 뒤 `Misc.useMenu(0x0D44)`(`Misc.js` `useMenu`가 안에서 `npc.useMenu(번호)`를 부른다). 예: `Town.js` 감정 `Misc.useMenu(0x0FB4)`(261105).
 
 | 번호 | 메뉴 |
 |---|---|
@@ -149,6 +154,7 @@
 ## 상점 화면 상태
 
 - 출처: kolbot 옛 sdk `miscscreenmodes.txt`. 원본 표기 그대로.
+- 쓰는 법: 미확인. kolbot 코드에 쓰는 곳이 없고, 이 값을 돌려주는 D2BS 함수는 엔진 소스가 이 저장소에 없어 찾지 못했다(261105).
 
 | 번호 | 상태 |
 |---|---|
@@ -164,6 +170,7 @@
 ## 아이템 기본 스탯 인덱스
 
 - 출처: kolbot 옛 sdk `basestats.txt`(원본 끝: "Initial compilation done by njaguar"). 빈 번호는 원본에 이름이 없는 칸. 괄호 안은 원본 메모.
+- 쓰는 법: kolbot은 `getBaseStat("items", classid, "levelreq")`처럼 **열 이름**으로 읽는다(`Pickit.js`·`Town.js`). 아래 번호를 셋째 인자로 넣어 같은 값이 나오는지는 미확인(번호가 `weapons.txt`·`armor.txt` 열 순서와 다르다, 261105).
 
 | 인덱스 | 이름 |
 |---|---|
@@ -215,6 +222,7 @@
 게임 UI 창이 열려 있는지 확인하는 번호(`getUIFlag(번호)`, 261104).
 
 - 출처: D2MOO(1.10f) `source/D2CommonDefinitions/include/D2Constants.h`의 `UI_` 목록. d2bsng PR #60 설명에 1.14d `getUIFlag` 값이 이것과 같다고 컴파일 때 검사한다고 되어 있다.
+- 쓰는 법: 함수로 부른다. `getUIFlag(0x0C)` = 상점 창이 열려 있으면 참(`Town.js`). `getUIFlag == 0x0C` 형태가 아니다(261105).
 - kolbot 사용처와 맞음: 0x08 `npc.openMenu`, 0x0C `startTrade`, 0x14 `Pather.js` 웨이포인트 화면, 0x19 창고, 0x1A 큐브.
 
 | 번호 | D2MOO 이름 | D2MOO 설명 | MapThread 멈춤 |
@@ -262,3 +270,117 @@
 - `threads/MapThread.js` 메인 루프(20ms)는 `hideFlags`(위 표 ○ 10개) 중 하나라도 열려 있으면 닫힐 때까지 `Hooks.flush(); delay(100)`으로 기다린다. 0x0D는 Alt 키를 누르고 있는 동안이다.
 - 자동맵(0x0A)은 멈춤 조건이 아니다. 열리면 그리고(`Hooks.update`), 닫히면 지운다(`Hooks.flush`).
 - `threads/MapHelper.js`는 ESC 메뉴(0x09)가 열리면 MapThread를 `pause()`, 닫히면 `resume()`한다.
+
+## spectype (`unit.spectype`)
+
+- 쓰는 법: 비트를 `&`로 본다. `unit.spectype & 0x7` = 보스·챔피언·유니크 중 하나(`Attack.js`), `unit.spectype & 0x1` = "Normal" Boss(아래 표). monsters.md에서 옮김(261105).
+- 출처: 사용자 자료 `spectype.png`(원본 표, 출처 표시 없음). 근거: **출처 불명**. 원본 그대로 옮겼다(16줄).
+- 원본 열 이름 "monster types to kill" 그대로. 비트: 0x1 "Normal" Boss, 0x2 Champion, 0x4 Boss, 0x8 Minion.
+
+| spectype | monster types to kill |
+|---|---|
+| 0x0 | all |
+| 0x1 | "Normal" Boss |
+| 0x2 | Champion |
+| 0x3 | "Normal" Boss + Champion |
+| 0x4 | Boss |
+| 0x5 | "Normal" Boss + Boss |
+| 0x6 | Champion + Boss |
+| 0x7 | "Normal" Boss + Champion + Boss |
+| 0x8 | Minion |
+| 0x9 | "Normal" Boss + Minion |
+| 0xA | Champion + Minion |
+| 0xB | "Normal" Boss + Champion + Minion |
+| 0xC | Boss + Minion |
+| 0xD | "Normal" Boss + Boss + Minion |
+| 0xE | Champion + Boss + Minion |
+| 0xF | "Normal" Boss + Champion + Boss + Minion |
+
+## 슈퍼유니크 프리셋 유닛 번호 (`getPresetUnit`)
+
+- 쓰는 법: `getPresetUnit(지역, 1, 번호)`(1 = 몬스터). 예: `getPresetUnit(me.area, 1, 773)`(`AutoSmurf.js`). monsters.md에서 옮김(261105).
+- 출처: kolbot 옛 sdk `superunique_presetunitids.txt`(원본 머리말: "this list is correct to the best of my knowledge"). 근거: 웹 미검증. mpqdata에 없는 번호다.
+
+| Id | Name |
+|---|---|
+| 250 | The Summoner |
+| 704 | Bishibosh |
+| 705 | Bonebreak |
+| 706 | Coldcrow |
+| 707 | Rakanishu |
+| 708 | Treehead WoodFist |
+| 709 | Griswold |
+| 710 | The Countess |
+| 711 | Pitspawn Fouldog |
+| 712 | Flamespike the Crawler |
+| 713 | Boneash |
+| 714 | Radament |
+| 715 | Bloodwitch the Wild |
+| 716 | Fangskin |
+| 717 | Beetleburst |
+| 718 | Leatherarm |
+| 719 | Coldworm the Burrower |
+| 720 | Fire Eye |
+| 721 | Dark Elder |
+| 723 | Ancient Kaa the Soulless |
+| 724 | The Smith |
+| 725 | Web Mage the Burning |
+| 726 | Witch Doctor Endugu |
+| 727 | Stormtree |
+| 728 | Sarina the Battlemaid |
+| 729 | Icehawk Riftwing |
+| 730 | Ismail Vilehand |
+| 731 | Geleb Flamefinger |
+| 732 | Bremm Sparkfist |
+| 733 | Toorc Icefist |
+| 734 | Wyand Voidfinger |
+| 735 | Maffer Dragonhand |
+| 736 | Winged Death |
+| 737 | The Tormentor |
+| 738 | Taintbreeder |
+| 739 | Riftwraith the Cannibal |
+| 740 | Infector of Souls |
+| 741 | Lord De Seis |
+| 742 | Grand Vizier of Chaos |
+| 743 | The Cow King |
+| 744 | Corpsefire |
+| 745 | Hephasto (The Feature Creep) |
+| 746 | Siege Boss |
+| 747 | Ancient Barbarian 1 |
+| 748 | Ancient Barbarian 2 |
+| 749 | Ancient Barbarian 3 |
+| 750 | Axe Dweller |
+| 751 | Bonesaw Breaker |
+| 752 | Dac Farren |
+| 753 | Eldritch (Megaflow Rectifier) |
+| 754 | Eyeback Unleashed |
+| 755 | Threash Socket |
+| 756 | Pindleskin |
+| 757 | Snapchip Shatter |
+| 758 | Anodized Elite |
+| 759 | Vinvear Molech |
+| 760 | Sharp Tooth Sayer |
+| 761 | Magma Torquer |
+| 762 | Blaze Ripper |
+| 763 | Frozenstein |
+| 764 | Nihlathak Boss |
+| 765 | Baal Subject 1 |
+| 766 | Baal Subject 2 |
+| 767 | Baal Subject 3 |
+| 768 | Baal Subject 4 |
+| 769 | Baal Subject 5 |
+| 772 | random boss pack? |
+| 773 | random champ pack? |
+| 774 | Flavie |
+| 775 | Blood Raven |
+| 778 | maggot queen (broken?) |
+| 787 | flayers |
+| 788 | flayer+shaman |
+| 792 | ratmen |
+| 793 | ratmen+shaman |
+| 794 | demonimp pack |
+| 796 | enslaved pack |
+| 799 | dead enslaved |
+| 800 | dead demonimp |
+| 801 | dead barb |
+| 802 | dead prowlingdead |
