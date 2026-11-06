@@ -60,25 +60,59 @@ def parts_exp(parts, P):
     return cnt, tot
 nihl = [('nihlathakboss', num(MS['nihlathakboss']['Level(H)']) + 3, True, 1), ('minion6', num(LV[124]['MonLvl3Ex']), False, 20)]
 NIHL_ROOM = 25 * 25 / 25  # hunted room: about 25 x 25 game coordinates = 5 x 5 tiles (user, 261105)
+def route_parts(P):
+    """kolbot hunting route: Chaos arms, seal bosses, Diablo, waves 1-5, Baal, Nihlathak (body only)"""
+    v = [region(108, 3 * CELL, CH_B * 3 / 6, P)[2]]
+    v.append(sum(parts_exp(p, P)[1] for _, p in dia[:3]))
+    v.append(parts_exp(dia[3][1], P)[1])
+    v.append(sum(parts_exp(p, P)[1] for _, p in baal[:5]))
+    v.append(parts_exp(baal[5][1], P)[1])
+    v.append(parts_exp([nihl[0]], P)[1])  # Nihlathak body; 20 summoned minions and room monsters excluded (user 261106)
+    return v
+COLS = ['디아 날개', '디아 봉인', '디아', '쓰론 웨이브 1~5', '바알', '니라탁']
+def runs(need, t):
+    return -(-need // int(t))
 if __name__ == '__main__':
-    cols = ['1 카오스 날개 일반', '1b 스타 칸 일반(참고)', '2a 봉인 보스 3 + 부하', '2b 디아블로', '3 웨이브 1~5', '4 바알', '5a 니라탁 + 부하 20', '5b 니라탁 방 일반']
-    print('| 레벨 | 필요 경험치 | ' + ' | '.join(cols) + ' | 합계(1b 제외) | 필요 런 수 |')
-    print('|---' * (len(cols) + 4) + '|')
+    # prints the tables of gamedata/experience.md 3절 (G = game players, N = receivers; same level P for all)
+    def set_gn(g, n):
+        globals()['G'] = g; globals()['N'] = n
+    out = []
+    out.append('#### 요약: 합계(필요 런 수), 게임 인원 = 파티원 수\n')
+    out.append('| 레벨 | 필요 경험치 | ' + ' | '.join('%d명' % n for n in range(1, 9)) + ' |')
+    out.append('|---' * 10 + '|')
+    for P in range(PF, PT + 1):
+        need = EX[P][0] - EX[P - 1][0]; v = []
+        for n in range(1, 9):
+            set_gn(n, n); v.append(sum(route_parts(P)))
+        b = max(v)
+        out.append('| %d | {:,} | '.format(need) % P + ' | '.join(('**{:,.0f} ({:,}런)**' if x == b else '{:,.0f} ({:,}런)').format(x, runs(need, x)) for x in v) + ' |')
+    for P in range(PF, PT + 1):
+        need = EX[P][0] - EX[P - 1][0]
+        out.append('\n#### %d레벨 (다음 레벨까지 {:,})\n'.format(need) % P)
+        out.append('| 파티원 | ' + ' | '.join(COLS) + ' | 합계 | 필요 런 수 |')
+        out.append('|---' * (len(COLS) + 3) + '|')
+        rows = []
+        for n in range(1, 9):
+            set_gn(n, n); v = route_parts(P); rows.append((n, v, sum(v)))
+        bt = max(r[2] for r in rows)
+        for n, v, t in rows:
+            m = '**' if t == bt else ''
+            out.append('| %d명 | ' % n + ' | '.join('{:,.0f}'.format(x) for x in v) + ' | %s{:,.0f}%s | %s{:,}%s |'.format(t, runs(need, t)) % (m, m, m, m))
+    out.append('\n### (나) 8명 게임, 받는 사람 N: 1인당 합계(필요 런 수)\n')
+    out.append('| 레벨 | 필요 경험치 | ' + ' | '.join('N = %d' % n for n in range(1, 9)) + ' |')
+    out.append('|---' * 10 + '|')
+    for P in range(PF, PT + 1):
+        need = EX[P][0] - EX[P - 1][0]; v = []
+        for n in range(1, 9):
+            set_gn(8, n); v.append(sum(route_parts(P)))
+        out.append('| %d | {:,} | '.format(need) % P + ' | '.join('{:,.0f} ({:,}런)'.format(x, runs(need, x)) for x in v) + ' |')
+    out.append('\n### (가)의 팀 합계(파티원 수 × 1인당)\n')
+    out.append('| 레벨 | ' + ' | '.join('%d명' % n for n in range(1, 9)) + ' |')
+    out.append('|---' * 9 + '|')
     for P in range(PF, PT + 1):
         v = []
-        g, c, e = region(108, 3 * CELL, CH_B * 3 / 6, P); v.append((e, c))
-        g, c, e = region(108, CELL, CH_B / 6, P); v.append((e, c))
-        c2, e2 = 0, 0
-        for _, p in dia[:3]:
-            c, e = parts_exp(p, P); c2 += c; e2 += e
-        v.append((e2, c2)); c, e = parts_exp(dia[3][1], P); v.append((e, c))
-        c3, e3 = 0, 0
-        for _, p in baal[:5]:
-            c, e = parts_exp(p, P); c3 += c; e3 += e
-        v.append((e3, c3)); c, e = parts_exp(baal[5][1], P); v.append((e, c))
-        c, e = parts_exp(nihl, P); v.append((e, c))
-        g, c, e = region(124, NIHL_ROOM, 0, P); v.append((e, c))
-        tot = sum(e for k, (e, c) in enumerate(v) if k != 1)  # route = 1, 2a, 2b, 3, 4, 5a, 5b (star cell 1b is reference)
-        need = EX[P][0] - EX[P - 1][0]
-        print('| %d | {:,} | '.format(need) % P + ' | '.join('{:,.0f} ({:.1f}마리)'.format(e, c) if c < 10 else '{:,.0f} ({:.0f}마리)'.format(e, c) for e, c in v)
-              + ' | {:,.0f} | {:,} |'.format(tot, -(-need // int(tot))))
+        for n in range(1, 9):
+            set_gn(n, n); v.append(n * sum(route_parts(P)))
+        b = max(v)
+        out.append('| %d | ' % P + ' | '.join(('**{:,.0f}**' if x == b else '{:,.0f}').format(x) for x in v) + ' |')
+    print('\n'.join(out))
