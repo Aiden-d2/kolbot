@@ -10,7 +10,7 @@
 // [tohit]=19 // [itemtohitpercent]=119 // [itemtohitperlevel]=224(*0.5) // [itemtohitpercentperlevel]=225(*0.5)
 // [itemignoretargetac]=115(1) // [itemfractionaltargetac]=116(+)
 // [itemopenwounds]=135 // [itemcrushingblow]=136 // [itemdeadlystrike]=141 // [itemdeadlystrikeperlevel]=250(*0.125)
-// [lifeleech]=60 // [manaleech]=62
+// [lifeleech]=60 // [manaleech]=62 // [coldlength]=56
 // [ias]=93	// [frw]=96 // [fhr]=99
 // [itemskillonattack]=195(skillid) // [itemskillonhit]=198(skillid)
 // [itemhowl]=112 // [itemstupidity]=113 // [itempreventheal]=117(1) // [itemfreeze]=134 // [itemslow]=150(+)
@@ -23,9 +23,6 @@
 [name] == smallcharm && [quality] == magic # [coldlength] == 50 # [qty] == 2
 
 [type] == amulet # [coldlength] > 3 # [qty] == 1
-
-([name] == longbattlebow || [name] == longwarbow) # [sockets] == 6 # [qty] == 1
-[name] == grimhelm && [quality] == unique # # [qty] == 1
 
 // [itemhowl]=112
 # [112] > 0 && [112] < 16 # [qty] == 1
