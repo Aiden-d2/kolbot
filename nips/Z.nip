@@ -39,12 +39,14 @@
 //[name] == flail && [flag] == runeword # [FCR] >= 40	// HeartoftheOak
 //[type] == sword && [flag] == runeword # [FHR] == 55	// Spirit Sword
 
-//[type] == polearm && [flag] == runeword # [FHR] == 40	// Obedience
-//([type] == polearm || [type] == staff) && [flag] == runeword # [meditationaura] >= 1	// Insight
+[type] == polearm && [flag] == runeword # [FHR] == 40	// Obedience
+[type] == polearm && [flag] == runeword # [meditationaura] >= 1	// Insight
+//[type] == staff && [flag] == runeword # [meditationaura] >= 1	// Insight staff
 
 //[name] == roundshield # [fireresist] >= 45	// Moser's
-//[name] == monarch && [flag] == runeword # [FCR] == 35 && [FHR] == 55	// Spirit Shield
-//[type] == auricshields && [flag] == runeword # [FHR] == 55	// Spirit Auricshields
+//[name] == monarch && [flag] == runeword # [FCR] == 35 && [FHR] == 55	// Spirit shield
+//[type] == auricshields && [flag] == runeword # [FHR] == 55	// Spirit auricshields
+[name] == sacredtarge && [flag] == runeword # [FHR] == 55	// Spirit sacredtarge
 // ([type] == shield || [type] == auricshields) && [flag] == runeword # [itemdamagetomana] == 10	// AncientsPledge
 //[type] == shield && [flag] == runeword # [itemgoldbonus] == 50	// Rhyme
 
