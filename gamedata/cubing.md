@@ -141,6 +141,31 @@
 | 3 flawless gems + 1 magic weapon -> socketed, magic weapon | weap (mag) + gem3 (qty=3) | usetype (mag) |  |
 | 3 chipped gems + 1 magic weapon -> socketed, magic weapon | weap (mag) + gem0 (qty=3) | usetype (mag) |  |
 
+### 동작 (261106)
+
+- 출처: D2MOO(1.10f 소스 재구성, 커밋 `4a60fca`) 코드와 mpqdata(1.14d) 데이터. 1.14d에서 같게 동작하는지는 확인하지 않았다.
+- **결과 아이템 레벨** (D2MOO `D2Game/src/PLAYER/PlrTrade.cpp` `PLRTRADE_CreateCubeOutputs`, 코드. 모든 큐브 조합식에 같은 규칙)
+  - `lvl`이 있으면 결과 레벨 = `lvl`이다. 이때 `plvl`·`ilvl`은 쓰지 않는다.
+  - `lvl`이 없으면 결과 레벨 = 캐릭터 레벨 × `plvl`% + 원래 아이템 레벨 × `ilvl`%이다. 1보다 작으면 1, 최대 레벨보다 크면 최대 레벨로 맞춘다.
+  - 칸 연결은 `D2Common/src/DataTbls/HoradricCube.cpp`에서 확인했다.
+  - 이 절의 조합식(`cubemain.txt` 값):
+    - 스탠다드·플로리스 조합식은 `lvl`=30, `ilvl`=60이라 결과 레벨이 **30**이다.
+    - 칩 조합식은 `lvl`=25, `ilvl`=50이라 결과 레벨이 **25**이다.
+    - 넣은 무기의 아이템 레벨은 결과에 영향이 없다.
+  - 위 절의 퍼펙트 보석 리롤은 `lvl`이 없고 `ilvl`=100이라, 결과 레벨이 원래 레벨 그대로다.
+- **결과는 새 아이템**(`usetype`, 코드): 넣은 무기와 같은 베이스로 매직 아이템을 새로 만든다. 접두·접미는 새로 뽑히고 원래 옵션은 남지 않는다.
+- **소켓**(코드): `mod 1=sock`(최소 1, 최대 2)은 `properties.txt`의 `sock`(→ `item_numsockets`) 속성을 `ITEMMODS_AddCraftPropertyList`로 직접 더한다.
+  - 접두를 뽑는 과정이 아니어서 이름이 바뀌지 않고 접두 자리도 쓰지 않는다.
+  - Mechanist's·Artificer's·Jeweler's(`magicprefix.txt`, 속성 `sock`)는 접두이고, 접두를 새로 뽑을 때 따로 뽑힐 수 있다.
+  - 소켓 1~2의 분포, 최대 소켓 수 제한(`item_mods.md` "아이템 레벨별 소켓 수")이 적용되는지는 확인하지 않았다.
+- **넣는 조건**(`cubemain.txt` 표기, 엔진의 입력 검사 코드는 확인하지 않았다)
+  - 스탠다드 조합식은 `weap (sock)`이다. 품질 조건이 없어 노멀 전용이 아니다.
+  - 플로리스·칩 조합식은 `weap (mag)`로 매직 무기만 받는다.
+  - 세 조합식 모두 `nos`(소켓 없음) 조건이 없어, 소켓이 있는 매직 무기도 다시 넣을 수 있다.
+- **붙을 수 있는 접사**: 결과 레벨이 30(칩은 25)으로 고정이라, 접사 레벨은 베이스 기본 레벨(`weapons.txt` `level`)만으로 정해진다. 식은 `item_mods.md` "매직 접사 레벨".
+  - 기본 레벨 66 이상이면 접사 레벨 = 2 × 기본 레벨 − 99이고, 66 미만이면 33 이하다.
+  - 접사 레벨 50 이상은 기본 레벨 75 이상인 베이스에서만 나온다.
+
 ## 룬 수리·충전 (4)
 
 | 설명 (cubemain `description`) | 재료 | 결과 | 래더 전용 |

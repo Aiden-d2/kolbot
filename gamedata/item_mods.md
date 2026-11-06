@@ -1,6 +1,6 @@
-# 아이템 생성 규칙 (auto mod, staff mod, 소켓, 에테리얼, 겜블, 참 접사, 매직 찬스, 우버·횃불)
+# 아이템 생성 규칙 (auto mod, staff mod, 소켓, 에테리얼, 겜블, 매직 접사 레벨, 참 접사, 매직 찬스, 우버·횃불)
 
-아이템 종류에 따라 자동으로 붙는 옵션(auto mod)과 직업 스킬 옵션(staff mod), 아이템 레벨별 소켓 수, 에테리얼 규칙과 방어력 계산식, 겜블 아이템 레벨, 참 접사 공식 (261104), 매직 찬스, 우버 디아블로·헬파이어 토치 (261105).
+아이템 종류에 따라 자동으로 붙는 옵션(auto mod)과 직업 스킬 옵션(staff mod), 아이템 레벨별 소켓 수, 에테리얼 규칙과 방어력 계산식, 겜블 아이템 레벨, 매직 접사 레벨 (261106), 참 접사 공식 (261104), 매직 찬스, 우버 디아블로·헬파이어 토치 (261105).
 
 - 이름 주의: 여기서 mod는 아이템 옵션(modifier)이다. 코드의 `unit.mode`(유닛 동작 상태, `ids.md`)와 다른 말이다.
 - kolbot 사용처: nip 규칙의 스킬·저항·소켓 조건(`nips/*.nip`), `Pickit`, `Cubing`(소켓 뚫기), `Runewords`
@@ -587,16 +587,34 @@
 - 실험: 91레벨 소서리스로 아뮬렛 98개를 겜블 → 아이템 레벨 86~95. 위 코드의 캐릭터 레벨 −5 ~ +4와 같다(블리자드가 밝힌 −3 ~ +6은 맞지 않는다).
 - 결론: 아이템 레벨 90 이상(접두 90 등)은 캐릭터 레벨 86부터 나올 수 있고, 95 이상이면 겜블한 모든 아이템이 90 이상이다.
 
+## 매직 접사 레벨
+
+- 출처: D2MOO(1.10f 소스 재구성, 커밋 `4a60fca`) `D2Game/src/ITEMS/ItemsMagic.cpp`. 근거: D2MOO 코드(261106). 1.14d에서 같게 동작하는지는 확인하지 않았다.
+- **접사 레벨**(`ITEMS_ComputeCraftedMagicAffixLevel`). ilvl = 아이템 레벨, qlvl = 베이스 기본 레벨(`weapons.txt`·`armor.txt`·`misc.txt` `level`).
+  - 먼저 ilvl = max(ilvl, qlvl)로 맞춘다.
+  - `magic lvl`이 있으면 접사 레벨 = ilvl + `magic lvl`이다.
+  - 아니면 ilvl < 99 − qlvl/2 일 때 접사 레벨 = ilvl − qlvl/2, 그 밖에는 2 × ilvl − 99이다.
+  - 결과를 1~99로 맞춘다.
+- **접사 후보 조건**(`ITEMS_RollMagicAffixesNew`)
+  - 확장팩 아이템이 아니면 `version` 100 접사는 빠진다.
+  - 접사 `level` ≤ 접사 레벨이어야 하고, `maxlevel`이 있으면 접사 레벨 ≤ `maxlevel`이어야 한다.
+  - 레어·크래프트 아이템에는 `rare`가 빈 접사(매직 전용)가 붙지 않는다.
+  - 직업 전용 접사(`classspecific`)는 다른 직업의 직업 전용 아이템에는 붙지 않는다. 직업 전용이 아닌 아이템에는 `itype`이 맞으면 붙을 수 있다(`ITEMMODS_AffixPlayerClassisCompatible`).
+  - 같은 `group`의 접사가 이미 있으면 그 그룹은 빠진다.
+- 매직 무기 소켓 큐브 조합식의 결과 레벨은 `cubing.md` "매직 무기 소켓".
+
+### Fool's
+
+- 데이터: `magicprefix.txt` `Name`=`Trump`(문자열 번호 20734, `LocaleStringID.js`). 영문 표시 이름 Fool's는 일반 지식이다(261106).
+- 접두. 옵션 `dmg/lvl`(param 4) + `att/lvl`(param 33). `level` 50, `levelreq` 37, `frequency` 7, `group` 111, `version` 100(확장팩), `spawnable`·`rare` 1. `itype` `weap`, `etype` `staf`·`wand`·`orb`(지팡이·완드·오브 제외).
+- 같은 계열인 Knave's·Jack's·Jester's·Joker's는 `spawnable`이 비어 있어 생성되지 않는다.
+
 ## 참 접사 공식
 
 - 참 접사별 수치·접사 레벨: mpqdata `magicprefix.txt`·`magicsuffix.txt`(`itype`이 `scha`·`mcha`·`lcha` = 스몰·라지·그랜드, `spawnable`=1)의 `level`·`mod1min`·`mod1max`.
 - 참의 기본 아이템 레벨(qlvl): 스몰 28, 라지 14, 그랜드 1(`misc.txt` `level` = `cm1`·`cm2`·`cm3`, 261105). 원문의 24·12·1은 틀려 지웠다.
-- 접사 레벨(alvl) 식. 출처: 카오스큐브 "참 (부적) 아이템의 접미사 접두사 최대 수치 정보"(글쓴이 윈드포수, https://www.chaoscube.co.kr/board/d2-commu-lab-lab/945293)가 인용한 d2nt 글. 근거: 웹 미검증. ilvl = 아이템 레벨.
-  - ilvl > 99면 99, qlvl > ilvl이면 ilvl = qlvl
-  - magic lvl > 0이면 alvl = ilvl + magic lvl (참은 magic lvl 없음)
-  - 아니면 ilvl < 99 − qlvl/2 이면 alvl = ilvl − qlvl/2, 아니면 alvl = 2 × ilvl − 99
-  - 접사 레벨 ≤ alvl인 접사만 붙는다.
-- 높은 접사와 필요한 아이템 레벨(접사 레벨은 데이터, 필요 레벨은 위 식으로 계산, 261105):
+- 접사 레벨 식은 위 "매직 접사 레벨"(D2MOO 코드, 261106). 참은 `magic lvl`이 없다.
+- 높은 접사와 필요한 아이템 레벨(접사 레벨은 데이터, 필요 레벨은 "매직 접사 레벨" 식으로 계산, 261105):
 
 | 참 | 접사 | 접사 레벨 | 필요 아이템 레벨 |
 |---|---|---|---|
@@ -607,7 +625,7 @@
 | 스몰 | Hibernal: 냉기 8~10 / 15~20 | 91 | 95 |
 | 그랜드 | of Vita: 라이프 41~45 | 91 | 91 |
 
-- 원문은 그랜드 라이프 41~45가 아이템 레벨 89부터 나온다고 적었으나 위 식으로는 91이다(어느 쪽이 맞는지 미확인).
+- 원문은 그랜드 라이프 41~45가 아이템 레벨 89부터 나온다고 적었으나 "매직 접사 레벨" 식으로는 91이다(어느 쪽이 맞는지 미확인).
 - 큐빙으로 만든 참은 접사 결정 방식이 드랍과 다르다(원문).
 
 ## 매직 찬스
