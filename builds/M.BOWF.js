@@ -78,7 +78,7 @@ var AutoBuildTemplate = {
 					Config.SocketRecipe.Head = [585];
 					Config.SocketRecipe.Body = [585];
 					Config.SocketRecipe.Shield = [585];
-					Config.SocketRecipe.Weapon = [560];
+					Config.SocketRecipe.Weapon = [571];
 				}					
 				
 				if (me.diff > 0) {
