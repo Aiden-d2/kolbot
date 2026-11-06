@@ -2674,7 +2674,7 @@ var Experience = {
 			timeToLevel = this.timeToLevel();
 
 		//string = getGameTime + " +" + gainPercent + "% / [Level " + me.getStat(12) + "] " + progress + "%";
-		string = getGameTime + " " + progress + "% / Level " + me.getStat(12);	//261106
+		string = getGameTime + (gain ? " +" + gainPercent + "% = " + progress + "% / Level " : " Level ") + me.getStat(12);	//261106
 		//string = "[Level " + me.getStat(12) + "] " + progress + "% " + getGameTime;	//261104	//261105 log: "[mm:ss] N% (Level N)" -> "[Level N] N% [mm:ss]"
 
 		//if (gain) {	//261105 log: every game prints the line (No exp removed), kept for a revert
