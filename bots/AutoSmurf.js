@@ -8132,10 +8132,11 @@ function AutoSmurf() {
 		this.waitParty();	//261105
 	}
 
-	Misc.print("[AutoSmurf] Script ended");	//261103 log policy: the trace copy (only without an early quit) removed
+	//Misc.print("[Quit] Script ended");	//261103 log policy: the trace copy (only without an early quit) removed	//261106
 
 	if (Leader) {	//261105 normal end in the console (leader)
-		D2Bot.printToConsole("[AutoSmurf] Script ended (" + Misc.where() + ")");	//261105 default colour (Console.txt Flow)
+		//D2Bot.printToConsole("[AutoSmurf] Script ended (" + Misc.where() + ")");	//261105 default colour (Console.txt Flow)
+		Misc.quitGame("Script ended");	//261106
 	}
 
 	return true;
