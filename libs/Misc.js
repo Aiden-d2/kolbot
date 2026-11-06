@@ -2674,7 +2674,8 @@ var Experience = {
 			timeToLevel = this.timeToLevel();
 
 		//string = getGameTime + " +" + gainPercent + "% / [Level " + me.getStat(12) + "] " + progress + "%";
-		string = "[Level " + me.getStat(12) + "] " + progress + "% " + getGameTime;	//261104	//261105 log: "[mm:ss] N% (Level N)" -> "[Level N] N% [mm:ss]"
+		string = getGameTime + " Level " + me.getStat(12) + " / " + progress + "%";	//261106
+		//string = "[Level " + me.getStat(12) + "] " + progress + "% " + getGameTime;	//261104	//261105 log: "[mm:ss] N% (Level N)" -> "[Level N] N% [mm:ss]"
 
 		//if (gain) {	//261105 log: every game prints the line (No exp removed), kept for a revert
 			D2Bot.printToConsole(string, 4);
