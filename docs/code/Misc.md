@@ -116,6 +116,10 @@
 
 ### 261105 Claude: 경험치 줄 `[Level N] 진행% [mm:ss]`, No exp 끔 (사용자 요청 261105, handoff 3-68)
 - `Experience.log`: 줄 모양 `[mm:ss] 진행% (Level N)` → `[Level N] 진행% [mm:ss]`. `if (gain)`과 `else`(`No exp` 콘솔·print), 빈 레벨업 블록을 주석 처리(되돌릴 때를 위해 남김, 사용자 261105). 경험치를 못 얻은 게임도 같은 줄을 찍는다(콘솔 색 4·print). 쓰지 않는 변수(`gain` 등)는 그대로.
+- 확인: 261106 로그 — 콘솔·print 경험치 줄 모두 `[Level N] 진행% [mm:ss]`, `No exp` 0, 게임마다 프로필별 최대 1줄. 검증 통과(사용자 261106, 옛 handoff 3-68).
+
+### 261106 사용자: 경험치 줄 `[mm:ss] Level N / 진행%` (업로드 `f7ca045`, 261106 로그 뒤)
+- `Experience.log` 줄 모양 `[Level N] 진행% [mm:ss]` → `[mm:ss] Level N / 진행%`(옛 줄은 주석으로 둠).
 
 ## Packet.openMenu
 

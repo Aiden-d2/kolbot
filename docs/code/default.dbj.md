@@ -19,3 +19,4 @@
 
 ### 261105 Claude: 끝 줄 정리 — Script ended 리더 콘솔·팔로워 waitParty, Max game time 콘솔 리더만, 게임 이름 print 삭제 (사용자 승인 261105, handoff 3-68)
 - 게임 이름 print(사용자가 261105 main에서 주석 처리한 `//print(me.gamename)`) 삭제. 이유(사용자 261105): 리더는 `[Starter] Create game: 이름`(`tools/OOG.js` createGame), 팔로워는 `[Starter] Join game: 이름`(`D2BotFollow.dbj`)이 같은 d2bs 로그에 이미 찍힌다. 이 두 줄은 입장 시도 때 찍히고, 실패는 다음 시도의 `Create game failed`·`Join game failed`로 남는다.
+- 확인: 261106 로그 — 게임 이름 단독 print 0줄, 게임은 `[Starter] Create game`·`Join game`으로 잘림(프로필마다 100게임). 검증 통과(사용자 261106, 옛 handoff 3-68).

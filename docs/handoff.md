@@ -8,7 +8,7 @@
 
 trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/trace/`에, print는 d2bs 로그(`d2bs/logs/d2bs-<프로필>-<날짜>.log`)에 있다. 사용자가 올려 주면 분석한다(방법은 `log_guide.md`, 결과는 `log_results.md`).
 
-**마지막으로 분석한 로그**: 261104 묶음(11/03 14:40 ~ 11/04 09:40, 8프로필 각 89게임, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261104. 코드는 현재 main(사용자 261104: 버전은 따로 확인하지 않는다). 3-64 로그 정책·3-63 피겨린 확정(261104). **다음 사이클**: 3-60·3-65 케이스 미발견으로 계속 본다.
+**마지막으로 분석한 로그**: 261106 묶음(11/05 15:14 ~ 11/06 12:34, 8프로필 Pz-1~100, 노말 → 헬 파밍, 아시아 서버), `log_results.md` 261106. 코드는 그때의 main(실행 뒤 사용자 업로드 `f7ca045`·`7a49731`은 이 로그에 없음). 3-68·3-67 확정(261106). **다음 사이클**: 3-60(확정 사례 1건, 한 건 더 볼 때까지, 사용자 261106)·3-65 케이스 미발견으로 계속 본다.
 
 ## 1. 진행 여부 대기 (진행할지 말지 검토)
 
@@ -19,6 +19,7 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
   - `[exit]`는 26 안에서 26 → 27 출구를 고를 때만 찍었다. 벽 쪽 진입을 정하는 7 → 26 출구 점은 찍히지 않았다. 옛 가설 "출구 점이 게이트 옆 벽인가"는 시험되지 않았다(틀렸다고 판정된 것 아님). `[exit]`는 261022 삭제.
 - **판단에 필요한 것**: 진행할지, 한다면 7 → 26 출구 점·동선을 볼 검증 방법. 사용자 아이디어(결정 아님): "Outer Cloister까지 경로를 만들면 게이트를 반드시 지난다."
 - **261103 사례**(3-61 리뷰): a2 Pz-7 11/02 18:24:49 Monastery Gate → Outer Cloister — `Pather.moveToExit`의 지나가는 출구 이동(`moveTo` retry 3)이 게이트 자리(15139,5009)에서 목표(15140,4980) 29칸 앞에 멈춤 → `AutoSmurf.outer`가 한 번만 시도하고 `[Quit] moveToExit failed: Monastery Gate -> Outer Cloister`(261021 설계: 옛 `clearToExit` 무한 재시도 대신 1회 시도 뒤 퇴장). 나머지 7명은 Outer Cloister에 있었음. 사용자 아이디어(결정 아님, 261103): 1회 시도 뒤 퇴장보다 재시도를 늘리는 편이 나을 수 있다.
+- **261106 사례**: a8 Pz-4 11/05 16:02:57 노말 `[Quit] moveToExit failed: Tamoe Highland -> Monastery Gate`(a8 15150,5107). 같은 초 리더 a1은 Monastery Gate 15154,5089(약 18칸). 15:59:35 Tamoe Highland 대기 뒤 16:02:17까지 15189,5137 부근, 그 사이 줄은 물약뿐. 7 → 26 방향 실패라 위 사례(26 → 27)와 방향이 다르다.
 
 ### 1-16. 벨트에 아무 등급 물약이나 들어감 (`Town.clearBelt` 벨트 넣기, 사용자 261025)
 - **문제**(사용자): 인벤토리 물약을 벨트에 넣을 때 등급을 보지 않아 낮은 등급도 들어간다. 원래 동작이라 당장 고칠 것은 아니고, 나중에 맞지 않는 등급은 버리기로 넓히면 된다(사용자 261025).
@@ -41,6 +42,7 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **261101 사례**(63게임, desync 5게임): Pz-33 a6 Pit of Acheron에 남음(2분 안 Town chicken 2·Town check 1, 마지막 복귀 45초 뒤 퇴장, 리더는 Harrogath). Pz-38 a3 Ancient's Way 7~15칸(게임 시작 2분 반, 앞 trace 없음). Pz-43 a6 퇴장 12초 전 Catacombs 4층에서 `Town check (direct)` → Rogue Encampment에서 퇴장. Pz-52 a3 Harrogath 1칸(10:03:23 Pit of Acheron `visitTown start`, `back` 없음).
 - **261103 사례**(90게임, desync 10게임): 3-61 `[moveTo] retry … over` trace로 빠진 프로필이 마을에서 같은 목표로 `moveTo`(retry 3)를 약 13초마다 되풀이하며 위치가 그대로(이동하지 못함)인 것이 보임, 3게임 — Pz-84 a2 Rogue Encampment(목표 4390,5630, 4452,5604에서 거리 67, 08:16:01~08:17:37 8회, 퇴장한 리더와 1칸), Pz-85 a4 Rogue Encampment(4860,4575, 4921,4553에서 65, 08:23:50~08:25:10 7회), Pz-49 a1(리더) Harrogath(5129,5061, 5071,5022에서 70, 01:24:20~01:24:57 4회). 세 건 모두 구간(ANDY·MEPHISTO·ABADDON) 시작 27~30초 뒤부터, a4는 직전 08:23:37 `equipped: [Head] 16`. 호출 자리(`Town.doChores` 안 이동으로 추정)와 못 움직인 원인은 모름(줄에 호출부 없음). 비슷한 상태 진단(퇴장 줄 상태·`Town.move` 실패 trace)은 `rejected.md` 261028 기각. 그 밖: 피겨린 Pz-46(2-29), Ancient's Way 게임 시작 2분 반 Pz-28 a6·Pz-56 a7·Pz-89 a3(앞 trace 없음), Chaos Pz-69·Pz-72 a3, Pz-76 a1·a5·a8(a5·a8은 퇴장 2~24초 전 마을 다녀옴), Pz-62 a8 Den of Evil(퇴장 2분 전 마을 다녀옴).
 - **261104 사례**(89게임, desync 6게임, 빠진 프로필은 `[okCount] Waiting`이 하나 모자란 프로필로 확인 6/6): Pz-35 a4 Harrogath(POA 시작 뒤 21:14:17 `[initNPC] identify`를 끝으로 2분 동안 줄 없음), Pz-45 a3 Ancient's Way(게임 시작 2분 42초, 마지막 줄 23:21:10 `[okCount] Waiting`, 8명 모두 퇴장), Pz-58 a3 Rogue Encampment(ANDY 시작 02:16:18 `[okCount] Waiting` 뒤 4분 줄 없음), Pz-71 a6 Rogue Encampment(ANDY 시작 05:25:02 `[okCount] Waiting` 뒤 2분 40초 줄 없음), Pz-62 a4 Chaos Sanctuary(`[visitTown] Back` 37초 뒤 퇴장). Pz-11 a8은 2-23(`goWP` 10회 실패).
+- **261106 사례**(100게임, desync 15게임 23줄, 빠진 프로필 = `[waitParty] Waiting`이 하나 모자란 프로필 15/15): 마을 정리 중 2분 넘게 줄 없음 5 — Pz-42 a1 Harrogath(23:50:41 `[initNPC] identify` 뒤), Pz-63 a1 Rogue Encampment(04:25:18 identify, 04:25:30 `[Equip] RingA` 뒤), Pz-77 a6 Rogue Encampment(07:38:10 identify 뒤), Pz-52 a2 Harrogath(02:02:59 `buyPotions` 뒤), Pz-36 a7 Lut Gholein(`clearInventory` 22:51:04·22:51:57 두 번 뒤). 게임 시작 Ancient's Way(`syncBO` 뒤 대기) 3 — Pz-59 a7, Pz-83 a6, Pz-94 a3. Chaos Sanctuary 5 — Pz-81·98 a3(Seis 뒤 별 중앙 대기 미도착), Pz-64 a3(`[visitTown] Back` 6초 뒤 퇴장), Pz-20 a8(Town chicken 다녀온 23초 뒤). Pz-55 a5 Stony Field(`visitTown` 다녀온 뒤 71초), Pz-53 a1 Moo Moo Farm(마을 다녀온 뒤 55초). **Pz-62 a4**: 03:54:48 Rogue Encampment `[waitParty] Waiting`(COUNTESS) 뒤 25분 줄 없음. 나머지 7명은 Tower Cellar Level 5에서 03:57:33~34에 퇴장(desync·따라 나감), a4는 `Party has left`로 따라 나가지 않고 04:19:26 `[Quit] Max game time`까지 남음. 그동안 리더 a1은 게임 밖에서 03:57:41 `Team wait: a4 - wait` → 04:19:36 `Create game: pz-63`(22분 대기). 그 전 사례는 빠진 프로필도 2~4분 안에 함께 끝났다.
 
 ### 1-20. 게임 밖 리더 스타터 `oog.js:313 too much recursion`으로 멈춤 (`D2Bot.joinMe`, 사용자 261105)
 - **문제(사례)**: 리더(a1) 스타터가 게임 밖에서 `[Error] Code(26) File(kolbot\tools\oog.js:313) InternalError: too much recursion`을 내고 다음 게임을 만들지 못한 채 멈춤. 두 번째 발견.
@@ -73,18 +75,6 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
 
-### 3-68. 끝 줄 정리: Script ended 리더 콘솔·팔로워 waitParty, Max game time 콘솔 리더만, 게임 이름 print 삭제 (`AutoSmurf` main 끝, `ToolsThread` main, `default.dbj` main, 사용자 261105)
-- **문제**(사용자 261105): 정상 종료가 콘솔에 없어, 경험치 줄 앞에 종료 사유가 없는 게임을 구별할 수 없었다. 리더만 `Script ended`를 찍으면 팔로워가 먼저 끝난 게임에서 리더는 `PartyThread`로 따라 나가 줄이 빠진다. `[Quit] Max game time`은 모든 프로필이 콘솔에 찍어 지저분했다. 게임 이름 print는 `[Starter] Create game`·`Join game`과 중복.
-- **바꾼 것**(261105, 이 커밋): 팔로워·Boer는 끝에서 `this.waitParty()` 뒤 print `[AutoSmurf] Script ended`, 리더는 print + 콘솔 `[AutoSmurf] Script ended (지역 x,y)`(기본색). `Max game time` 콘솔은 리더만(print는 모두). `default.dbj`의 주석 처리된 게임 이름 print 삭제. 내용은 코드 노트의 같은 헤더. 추가(261105, 이 커밋): 경험치 줄 `[Level N] 진행% [mm:ss]`, `No exp` 끔(못 얻은 게임도 같은 줄), `D2BotLead.dbj`의 꺼 둔 게임 경계 콘솔 줄 삭제.
-- **검증 방법**: `Console.txt` — 리더 경험치 줄 앞에 `[AutoSmurf] Script ended`·`[Quit]`·`[Stop]`·`[Chicken]`·`[Died]`·`[Error]` 중 하나가 있는지. 아무것도 없는 게임은 따로 원인을 본다. `[Quit] Max game time`은 게임마다 리더 1줄(팔로워 0). `[AutoSmurf] Script ended`는 `<Flow>`. d2bs 로그 — 팔로워 끝 `[waitParty] Waiting` 뒤 `[AutoSmurf] Script ended` 또는 `Party has left`. `Party desynced in`의 `missing`이 리더면 리더가 끝에 못 온 것. 게임 이름 단독 줄 0. 경험치 줄은 콘솔·print 모두 `[Level N] 진행% [mm:ss]` 모양으로 게임마다 1줄(프로필별), `No exp` 0.
-- **결과**: (로그 대기)
-
-### 3-67. 팀 대기 이름 정리: okCount·teamCount → waitParty (`AutoSmurf.waitParty`, 사용자 261105)
-- **문제**(사용자 261105): 개수를 세지 않는데 이름이 `okCount`·`teamCount`라 뜻이 맞지 않았다.
-- **바꾼 것**(261105, 이 커밋): 두 함수를 `this.waitParty` 하나로 합치고(두 단계 유지), 메시지·변수를 `waitPartyIn`·`waitPartyAll`·`waitPartyOut`·`waitPartyNames`로, 로그를 `[waitParty] Waiting`·`Party desynced in/out`으로 바꿈. 퇴장 상세의 ` teamOk X` 삭제. 동작(순서·타임아웃·버리기 조건)은 그대로. 내용은 코드 노트의 같은 헤더.
-- **검증 방법**: d2bs 로그 — `[okCount]`·`Party desynced 1`·`Party desynced 2`·`teamOk` 0줄, 게임마다 프로필별 `[waitParty] Waiting` 수가 같고 구간 진행이 끝까지 감(대기가 풀림). desync가 나오면 `Party desynced in|out`과 `missing(waitPartyIn|waitPartyOut): 프로필`이 찍히고, in의 이름이 `[waitParty] Waiting`이 모자란 프로필과 같은지. `ReferenceError`·`[Error]`에 `waitParty`·`okCount`·`teamCount` 0.
-- **결과**: (로그 대기)
-
 ### 3-65. 경로 보정 10회 실패 뒤 오류 줄 없음 → `Attack` 조용한 catch 3곳에 `Misc.caughtError` (`Pather.moveTo`, `Attack.clear`·`setPosition`, 옛 1-17, 사용자 261026·261103)
 - **문제**: `Pather.moveTo`는 `no adjusted path` 10번째에도 경로가 없으면 throw(`moveTo: Failed to generate path`)하는데, 261026 로그 2건은 오류 줄 없이 다음 구간으로 넘어갔다.
 - **확인된 것**
@@ -99,6 +89,7 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **검증 방법**: `no adjusted path` 10회 뒤(trace) 같은 시각 print에 `[Error] Attack.clear lostPos|Attack.setPosition move|Attack.setPosition detour: moveTo: Failed to generate path …`가 있고, 콘솔에 같은 자리 첫 1회 `[Error] …`. 오류 줄 없이 다음 구간으로 넘어간 10회 사례가 0이면 통과. 메시지가 `Failed to generate path`가 아닌 `[Error]`(다른 실행 중 오류)는 따로 본다.
 - **결과**: 261104 **케이스 미발견** — `no adjusted path`는 1회뿐(a8 Pz-30 20:24:05 Infernal Pit, 1회째 직후 리더가 나가 게임 끝), 10회 0, `[Error] Attack.` 0. 한 사이클 더 본다(사용자 261104).
 - **결과 2**: 261105 **케이스 미발견** — `no adjusted path` 0, `no original path` 4(모두 바로 `adjusted path`), `[Error] Attack.` 0. 한 사이클 더 본다(사용자 261105).
+- **결과 3**: 261106 **케이스 미발견** — `no adjusted path` 10회 3건 모두 같은 시각 `[Error] AutoSmurf: moveTo: Failed to generate path`가 찍혔으나 호출 경로가 catch 3곳이 아님: a4 Pz-25 20:43:54 Abaddon(목표 5098,5019, 스택 `Town.visitTown → Pather.usePortal → Town.move → moveToSpot`), a6·a8 Pz-45 00:36:52~00:37:03 Abaddon(목표 12699,6052, 스택 `Attack.clear → Pickit.pickItems → pickItem`). 같은 Pz-45 a1(7회)·a7(8회)은 10회 전에 게임 끝. `[Error] Attack.` 0. 계속 본다(3절 유지).
 
 ### 3-60. 같은 id 계단 중 출구 좌표에 가까운 것 (`Pather.moveToExit`·`useUnit`, 사용자 261102)
 - **문제(사례)**: 261102 Pz-6 15:01~15:03 — Jail Level 3에서 Inner Cloister로 갈 때 8명 모두 도착한 계단(17580,8271)을 다시 클릭해 Jail Level 2로 돌아감 → Level 2에서 Level 3 좌표로 경로를 찾다 `[Error] AutoSmurf.moveToExit 32: moveTo: Failed to generate path` 8줄 → 아무도 32에 없어 a4 `Area reversed`로 퇴장. 같은 경로 Pz-7은 정상. 사용자: Stony Field → Underground Passage → Dark Wood에서도 같은 일이 있어 두 곳에 폴백(포털 열고 합류)이 있다.
@@ -113,4 +104,5 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **검증 방법 2**: 줄이 찍히고 그 프로필이 `target` 지역에 도착하면(`Area reversed` 없음, 다음 구간 진행) 옛 코드라면 되돌아갔을 사례를 막은 것 → 확정. 줄이 찍혔는데 되돌아가면 고르는 방식이 틀림 → 2절. 줄이 0이면 첫 계단이 늘 맞았음 → 케이스 미발견. 제거 조건: 확정 사례 1건.
 - **결과 2**: 261104 **케이스 미발견** — `[useUnit] nearest` 0줄. 해당 구간 통과는 Jail Level 3 → Inner Cloister 4게임 17회, Underground Passage Level 1 → Dark Wood 3게임 10회(지역이 바뀐 print 줄로 셈, 줄이 없는 통과는 빠짐), Spider Cavern·Ruined Temple 진입 있음. `Area reversed` 0, useUnit timeout 76줄(261103 45, 261102 79) 모두 Retry 0~1, 8회 모두 실패 0. 한 사이클 더 본다(사용자 261104).
 - **결과 3**: 261105 **케이스 미발견** — `[useUnit] nearest` 0줄. Jail Level 3 → Inner Cloister 3게임 10회, Underground Passage Level 1 → Dark Wood 3게임 10회, Spider Forest → Spider Cavern 2회 통과(지역이 바뀐 print 줄로 셈). `Area reversed` 0, useUnit timeout 59줄(Retry 0 48·1 6·2 4·3 1). 한 사이클 더 본다(사용자 261105).
+- **결과 4**: 261106 **확정 사례 1건** — 11/05 16:43:19~23 Pz-9(노말) Jail Level 3에서 8명 모두 `[useUnit] nearest id:13 first:17830,8311 chosen:17770,8386 exit:17770,8386 target:Inner Cloister`. first는 8명이 직전에 대기하던 자리(17828,8316 부근) = 들어온 계단(Jail Level 2 쪽, 261102 Pz-6과 같은 상황), chosen = 출구 좌표. 8명 모두 1~4초 안에 Inner Cloister 도착, 16:43:36 `=== [INNER] ===`·CATHEDRAL 진행(a8은 chosen 계단 `Retry 0` 1회 뒤 도착). 같은 게임·같은 계단이라 사례는 1건. 다른 지역(Underground Passage, Spider Forest, 쿠라스트 사원)은 줄 없음. `Area reversed` 0, useUnit timeout 78(Retry 0 68·1 8·2 1·3 1). 한 건 더 나올 때까지 본다(사용자 261106), trace는 그대로.
 
