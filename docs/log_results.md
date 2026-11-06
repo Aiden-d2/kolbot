@@ -691,3 +691,34 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - 크래시 5(분석 안 함): a4 18:03 Lut Gholein·21:11 Harrogath, a8 23:02·23:04 Kurast Docktown(연속 두 게임, 모두 FIGURINE 중), a2 03:24 Harrogath.
 - `Town chicken` 50, `[townCheck]` 548(Direct 274), getWP `menu not opened` 105, 리더 `[BAAL] Failed: souls found` 26게임, `boss not found` Grand Vizier 91·Lord De Seis 24·Sszark 13·Blood Raven 6·Infector 3, `[COWS] Failed: followDriver` 14, `[POA] Failed: moveTo` 2.
 - `[MoveToSlot]` 0(261105 49). useUnit timeout 78(Retry 0 68·1 8·2 1·3 1), `Area reversed` 0.
+
+## 261107 묶음 (11/06 13:52 ~ 11/07 04:25, 8프로필 Pz-1~76, 아시아 서버)
+데이터: Console.txt·d2bs·trace·ItemLog. 계정 aozo-ta Level 80. 새 캐릭터(aozo-ta~th)로 노말(Pz-1~38, Pz-22부터 파밍) → 나이트메어(Pz-39~57, Pz-41부터 파밍) → 헬(Pz-58~76, Pz-67부터 파밍). 코드는 실행 시작 때 main(`7a49731`·nip·빌드 업로드 포함). 실행 중 `Misc.js` 경험치 줄 업로드 `ef0cf2f`(16:39)·`fc0b8b5`(16:46): Pz-18까지 `[mm:ss] Level N / 진행%`, Pz-19부터 `[mm:ss] +획득% = 진행% / Level N`(획득 없으면 `[mm:ss] Level N`), `ef0cf2f` 모양은 로그에 없음. 끝: 04:25:03 Pz-76 정상 종료 뒤 04:25:26 8명 클라이언트 동시 재시작(a4는 엔진 재시작 줄 없음), 7명 `Crash: no entry The Pandemonium Fortress`, 8명 `login time out` → 04:25:56~04:26:08 `Invalid password: aozo-tX - stop`. 원인은 로그로 모름. a8은 08:00:54 엔진 시작 → 08:02:12 종료. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`를 따른다.
+
+### handoff 3절 결과
+- 3-65: `no adjusted path` 10회 1건(a3 Pz-64 Kurast Docktown, 목표 15057,5064)은 `[Error] AutoSmurf: moveTo`(호출 경로 `Pather.usePortal → moveToUnit`, catch 3곳 아님), `[Error] Attack.` 0. → 케이스 미발견.
+- 3-60: `[useUnit] nearest` 0줄(Jail Level 3 → Inner Cloister 3게임 10회, Underground Passage Level 1 → Dark Wood 3게임 10회, Spider Forest → Spider Cavern 3회). `Area reversed` 0. → 케이스 미발견.
+
+### 치킨
+- Life Chicken 30, 19건이 같은 프로필 `Town chicken` 0~3초 뒤(`Town chicken` 36). 프로필 × 난이도:
+
+| 프로필 | 노말 | 나이트메어 | 헬 | 합 |
+|---|---|---|---|---|
+| a1 | Tamoe Highland(1)<br>Barracks(1)<br>Flayer Dungeon Level 3(1)<br>Flayer Jungle(1) | Flayer Dungeon Level 3(1) | Sewers Level 2(1)<br>Flayer Dungeon Level 3(1)<br>Travincal(1)<br>Spider Cavern(1)<br>Frozen River(1)<br>Tower Cellar Level 5(1)<br>Chaos Sanctuary(1) | 12 |
+| a2 | Barracks(1) | - | Spider Cavern(1)<br>Chaos Sanctuary(1) | 3 |
+| a3 | Jail Level 1(1)<br>Catacombs Level 3(1)<br>Cathedral(2)<br>Catacombs Level 4(1) | - | - | 5 |
+| a4 | Catacombs Level 2(1) | Infernal Pit(1) | Ruined Temple(1) | 3 |
+| a5 | Stony Field(1)<br>Tal Rashas Tomb #2(1)<br>Tal Rashas Tomb #6(1)<br>Tal Rashas Tomb #7(1) | - | - | 4 |
+| a6 | Throne Of Destruction(1) | - | - | 1 |
+| a7 | - | - | Ruined Temple(1) | 1 |
+| a8 | Stony Field(1) | - | - | 1 |
+| 합 | 17 | 2 | 11 | 30 |
+
+### 그 밖
+- 리더 76게임: `[Quit] Script ended` 26, 리더 조기 종료 19(Life Chicken 12, Not ready to start Duriel 2, Not ready for act2 1, Figurine incompleted 1, desync 1, Max game time 1, `[Error]` 1), 리더 끝 줄 없음 31(팔로워 Chicken·Quit·Error 28, 팔로워 크래시 3).
+- Figurine incompleted: Pz-21 노말, Spider Cavern `boss not found Sszark` → TOME 뒤 피겨린 없음. Pz-22 a4가 Spider Cavern에서 주움.
+- 사망 2: a2 Pz-5 Barracks `[Died] lost=0.00%`(같은 초 `[Chicken] Life 0/64`). a1 Pz-59 Flayer Dungeon Level 3 `[Chicken] Life 360/1419` 뒤 Pz-60 시작 `[Died] Last game`(죽은 순간 줄 없음, 진행 43.70% → 약 33.69%).
+- desync 15줄(11게임, handoff 1-19 261107 사례). Max game time 1(a1 Pz-41 Infernal Pit, 경험치 줄 없음).
+- `[Error]` 2: a1 Pz-40 Durance Of Hate Level 2 `useWaypoint`(handoff 2-23), a3 Pz-64(3-65). 1-20 `oog.js` 0, `moveToExit failed` 0, `[Stop]` 0.
+- 크래시 3(분석 안 함): a3 14:31 Rogue Encampment, a2 15:25 Catacombs Level 2, a4 22:07 Harrogath. 04:25 8명 동시 재시작은 위 데이터 줄.
+- `[townCheck]` 324(Direct 162), getWP `menu not opened` 100, 리더 `[BAAL] Failed: souls found` 8게임, 리더 `boss not found` Lord De Seis 5·Sszark 3, `[COWS] Failed` 1게임(Pz-38), useUnit timeout 51, `[MoveToSlot] FAILED` 10(trace).
