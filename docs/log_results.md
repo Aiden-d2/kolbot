@@ -659,3 +659,35 @@ a4·a5는 해머딘(`[SP] detour` 0건, 해머는 setPosition을 안 거침), a7
 - `[Error]` 3: Pz-19 a1 `equipFlail: Lost Khalim's Will`, Pz-37 a1 Catacombs Level 2 `waypoint unit not found` → `useWaypoint` 실패(261104 Pz-41과 같은 곳), Pz-40 a8 `visitTown: Failed to go back from town`. 크래시 1(a3 01:36 Harrogath), 분석 안 함.
 - `Town chicken` 43, `[townCheck]` 540(Direct 270, mana 219, healing 50), getWP `menu not opened` 113, `[BAAL] Failed: souls found` 19게임, `boss not found` Grand Vizier 75·Lord De Seis 21·Infector 5.
 - `[MoveToSlot]` FAILED 49(회복 물약 47, 마을 포털 책 1, a8 호라드릭 큐브 1 — 15:37:30 다시 주움, ItemLog).
+
+## 261106 묶음 (11/05 15:14 ~ 11/06 12:34, 8프로필 Pz-1~100, 아시아 서버)
+데이터: Console.txt·d2bs·trace·ItemLog. 리더 계정 `aozo-sa`(a1). 새 캐릭터로 노말(Pz-1~35, Pz-21부터 파밍) → 나이트메어(Pz-36~53, Pz-41부터 파밍) → 헬(Pz-54~, Pz-60부터 파밍). 코드는 실행 시작 때 main `1c5ac4f`(3-67·3-68 들어 있음, 그 뒤 실행 중 코드 변경은 주석뿐). 실행 뒤 사용자 업로드 `f7ca045`·`7a49731`은 이 로그에 없음. 끝무렵 trace `[expBoss]`·`[expWave]`(사용자가 경험치 확인을 위해 넣은 줄, main 코드에는 없음, 한 사이클 더 보고 지움)와 12:34 경험치 줄은 분석에서 뺌(사용자 261106), Pz-100은 수동 종료. 이 절은 근거만 두고, 판정에 따른 이동은 `handoff.md`와 코드 노트를 따른다.
+
+### handoff 3절 결과
+- 3-68: 리더 경험치 줄 96개 중 리더 끝 줄 있음 63, 없음 33(팔로워 `[Chicken]`·`[Quit]`·`[Error]` 28, 팔로워 크래시 5). `Script ended` 리더 48 `<Flow>`·팔로워 0(끝 `Waiting` 뒤 `Party has left`), Max game time 콘솔 리더 2·팔로워 0, 게임 이름 줄 0, 경험치 줄 새 모양·`No exp` 0. → 확정(사용자 261106).
+- 3-67: 옛 이름·`teamOk`·`ReferenceError` 0, desync in 23줄/15게임 이름 15/15, out 0. → 확정(사용자 261106).
+- 3-65: `no adjusted path` 10회 3건 모두 `[Error] AutoSmurf: moveTo`(호출 경로 `Town.move`·`Pickit.pickItem`, catch 3곳 아님), `[Error] Attack.` 0. → 케이스 미발견.
+- 3-60: Pz-9 Jail Level 3 8명 `[useUnit] nearest`(first = 들어온 계단, chosen = 출구) 뒤 모두 Inner Cloister 도착. → 확정 사례 1건, 한 건 더 볼 때까지 3절(사용자 261106).
+
+### 치킨
+- Life Chicken 21, 9건이 같은 프로필 `Town chicken` 0~3초 뒤. 사망 0, `[Stop]` 0. 프로필 × 난이도:
+
+| 프로필 | 노말 | 나이트메어 | 헬 | 합 |
+|---|---|---|---|---|
+| a1 | Tristram(1)<br>Barracks(1)<br>Cathedral(1)<br>Flayer Dungeon Level 3(1) | - | Cold Plains(1)<br>Spider Forest(1)<br>Chaos Sanctuary(1)<br>Tower Cellar Level 5(1)<br>Worldstone Keep Level 2(1) | 9 |
+| a2 | Den Of Evil(1) | - | - | 1 |
+| a3 | Catacombs Level 4(1)<br>Catacombs Level 2(1) | - | - | 2 |
+| a4 | Tristram(1)<br>Barracks(2) | Chaos Sanctuary(2) | Chaos Sanctuary(2) | 7 |
+| a5 | Barracks(1) | - | - | 1 |
+| a6 | Catacombs Level 4(1) | - | - | 1 |
+| a7 | - | - | - | 0 |
+| a8 | - | - | - | 0 |
+| 합 | 12 | 2 | 7 | 21 |
+
+### 그 밖
+- 조기 종료: Life Chicken 21, desync 23줄(15게임, handoff 1-19 261106 사례), Not ready to start Duriel 3, Not ready for act2 1, Max game time 3(a1 Pz-14·21, a4 Pz-62, 세 게임 모두 경험치 줄 없음), `moveToExit failed: Tamoe Highland -> Monastery Gate` 1(a8 Pz-4, handoff 1-2).
+- `[Error]` 4: a1 22:04:45 `oog.js:313 too much recursion`(handoff 1-20 2번째 사례와 같은 로그), a4 Pz-25 20:44:32 Abaddon `moveTo: Failed to generate path: 5098,5019 in Abaddon`(ping 532, 스택 `Town.visitTown → Pather.usePortal → Town.move → moveToSpot`, Harrogath 좌표를 Abaddon에서 찾음), a6·a8 Pz-45 00:37:03 Abaddon `moveTo: Failed to generate path: 12699,6052`(스택 `Attack.clear → Pickit.pickItems → pickItem`, a1·a7도 같은 목표로 7·8회). 1절에 올리지 않음(사용자 261106).
+- a1 Pz-89 10:10:15: Rogue Encampment `buyPotions` 2초 뒤 사유 줄·경험치 줄 없이 끝남(2분 13초). 스레드 종료 줄(`toolsthread` 포함)이 Max game time 게임과 같은 모양. 원인 못 찾음. 1절에 올리지 않음(사용자 261106).
+- 크래시 5(분석 안 함): a4 18:03 Lut Gholein·21:11 Harrogath, a8 23:02·23:04 Kurast Docktown(연속 두 게임, 모두 FIGURINE 중), a2 03:24 Harrogath.
+- `Town chicken` 50, `[townCheck]` 548(Direct 274), getWP `menu not opened` 105, 리더 `[BAAL] Failed: souls found` 26게임, `boss not found` Grand Vizier 91·Lord De Seis 24·Sszark 13·Blood Raven 6·Infector 3, `[COWS] Failed: followDriver` 14, `[POA] Failed: moveTo` 2.
+- `[MoveToSlot]` 0(261105 49). useUnit timeout 78(Retry 0 68·1 8·2 1·3 1), `Area reversed` 0.

@@ -84,6 +84,7 @@
 - 이름 대응(변수·메시지·저장 키를 같은 이름으로): 메시지 `okCount` → `waitPartyIn`(1단계: 들어왔다), `teamOk`(메시지·변수) → `waitPartyAll`(모두 들어왔다, 1단계 끝 신호), `teamCount` → `waitPartyOut`(1단계를 나왔다, 다 모이면 최종 통과), `teamNames` → `waitPartyNames`. 호출 145곳 이름만 바꿈(호출 줄에는 날짜 표기 없음, 사용자 261105).
 - 로그: `[okCount] Waiting` → `[waitParty] Waiting`. 퇴장 `Party desynced 1` → `Party desynced in`(상세 `missing(waitPartyIn): …`), `Party desynced 2` → `Party desynced out`(`missing(waitPartyOut): …`). 상세 끝 ` teamOk X` 삭제(사용자 261105): 1단계는 거의 늘 false이고 true는 마지막 틱에 다 모인 경우뿐, 2단계는 늘 true라 정보가 없다. 머리 위 `Waiting: …`·`missing`은 그대로.
 - 주석 처리된 `//this.okCount();`(`radament` 끝) 삭제. 줄 끝 메모 안의 옛 이름을 새 이름으로.
+- 확인: 261106 로그(100게임) — `[okCount]`·`Party desynced 1/2`·`teamOk`·`ReferenceError` 0. desync 15게임 23줄 모두 `Party desynced in | missing(waitPartyIn): 프로필`이고 이름은 15/15 `[waitParty] Waiting`이 하나 모자란 프로필. 1·2단계 대기는 모든 게임에서 풀렸다(프로필당 `Waiting` 약 2,100줄). 2단계 실패(`Party desynced out`)는 0건. 정상 게임에서 프로필별 `Waiting` 수가 하나씩 다른 것은 3-68의 팔로워 끝 대기 때문. 검증 통과(사용자 261106, 옛 handoff 3-67).
 
 ## this.buffCount
 
@@ -351,3 +352,7 @@
 - 이유(사용자 261105): 서로 먼저 끝난 쪽이 나가고 나머지는 `PartyThread`(`Party has left`)로 따라 나간다. 리더만 찍으면 팔로워가 먼저 끝난 게임에서 리더는 끝에 못 가고 따라 나가 콘솔 줄이 없었다. 팔로워가 기다리면 리더가 먼저 끝에 와서 찍고 나가고, 팔로워는 따라 나간다.
 - 리더가 갇히면 팔로워는 120초 뒤 `[Quit] Party desynced in`(상세 `missing(waitPartyIn): <리더 프로필>`)으로 나간다. 리더 자신은 엔진의 최대 게임 시간으로 나간다. 이때 팔로워마다 `[Quit]` 콘솔 1줄(리더가 갇힌 경우만).
 - 마지막에 올 수 있는 구간 함수(diablo, farmingNihlathak·Countess·Pit·Andy·Abaddon·POA·Infernal·Cows는 포탈 또는 `Town.goToTown`, farmingSummoner는 1막 웨이, farmingMephisto는 빨간 포탈)는 끝이 마을이다(함수 끝부분 읽음, 함수 중간의 일찍 `return`은 안 봄).
+- 확인: 261106 로그(11/05 15:14~11/06 12:34, Pz-1~100 × 8프로필) — `Console.txt` 리더 경험치 줄 96개 중 63개는 앞에 리더의 끝 줄(`[AutoSmurf] Script ended` 47, `[Chicken]` 9, `[Quit]` 6, Max game time 게임 다음 게임의 `Script ended` 1), 리더 줄이 없는 33개는 팔로워의 `[Chicken]`·`[Quit]`·`[Error]`(28)나 팔로워 크래시(5)로 끝난 게임. `[AutoSmurf] Script ended` 리더 48줄 모두 `<Flow>`, 팔로워 0줄(리더가 바로 나가 팔로워는 끝의 `[waitParty] Waiting` 뒤 `Party has left`). `[Quit] Max game time` 콘솔 리더 2·팔로워 0(print는 a4 1줄 더). 게임 이름 단독 줄 0, 경험치 줄 모두 `[Level N] 진행% [mm:ss]`, `No exp` 0. 경험치 줄이 없는 게임은 엔진이 내보낸 Max game time 3(a1 Pz-14·21, a4 Pz-62)·크래시 5·a1 Pz-89(2분 13초에 사유 줄 없이 끝남, 원인 못 찾음)·Pz-100(수동 종료). 검증 통과(사용자 261106, 옛 handoff 3-68).
+
+### 261106 사용자: 리더 끝 줄을 `Misc.quitGame("Script ended")`로 (업로드 `7a49731`, 261106 로그 뒤)
+- print `[AutoSmurf] Script ended`(모든 프로필)와 리더 콘솔 `[AutoSmurf] Script ended (지역 x,y)`(기본색)를 주석 처리하고, 리더만 `Misc.quitGame("Script ended")` → 콘솔 `[Quit] Script ended (지역 x,y)`(색 6, `Console.txt` 분류 `Quit`)·print `[Quit] Script ended`. 팔로워·Boer는 끝의 `this.waitParty()`만 남고 끝 줄이 없다.

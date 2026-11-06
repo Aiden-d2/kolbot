@@ -35,3 +35,4 @@
 ### 261105 Claude: 끝 줄 정리 — Script ended 리더 콘솔·팔로워 waitParty, Max game time 콘솔 리더만, 게임 이름 print 삭제 (사용자 승인 261105, handoff 3-68)
 - 최대 게임 시간 콘솔 `[Quit] Max game time N min (지역 x,y)`에 `me.profile === Team.Leader` 조건. print는 모든 프로필 그대로.
 - 이유(사용자 261105): 모든 프로필이 콘솔에 찍어 지저분해진 사례. 퇴장은 엔진이 하므로 이 조건은 로그만 바꾼다. 팔로워가 리더보다 먼저 시간이 끝나 리더가 콘솔 없이 따라 나가는 경우는 리더가 먼저 들어가므로 드물다(추정).
+- 확인: 261106 로그 — 콘솔 `[Quit] Max game time 30 min` 리더 2줄(11/05 17:39:48 Lut Gholein, 19:47:49 Infernal Pit)·팔로워 0, print는 리더 2 + a4 1(Pz-62, 혼자 남은 게임). 검증 통과(사용자 261106, 옛 handoff 3-68).
