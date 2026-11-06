@@ -29,6 +29,8 @@ bash <(git show origin/d2reference:tools/setup.sh) <작업 폴더> <Game.exe 경
 | `prest_su.py` | `su_ds1.json` + `lvlprest.txt` → 슈퍼유니크가 있는 지도 번호 (결과: `data/superunique_lvlprest.txt`) | `<작업 폴더>` |
 | `ds1find.py` | 프리셋 몬스터·오브젝트가 들어 있는 DS1 찾기 | `<작업 폴더> <액트 0~4> <1=몬스터 2=오브젝트> <프리셋 번호>...` |
 | `tccalc.py` | `tc.md` 1절 규칙으로 지역·슈퍼유니크·보스 표를 다시 계산해 `tc.md`와 칸마다 비교(다른 칸만 출력, 끝에 줄 수·다른 칸 수) | `<작업 폴더> <tc.md 경로>` |
+| `expcalc.py` | 헬 바알런·디아런 경험치(조건 A~C, `experience.md` 2절) | `<작업 폴더> [시작 레벨] [끝 레벨]` |
+| `huntexp.py` | kolbot 사냥 경로(카오스 날개·봉인·디아블로·바알 웨이브·바알·니라탁) 경험치(`experience.md` 3절) | `<작업 폴더> [시작 레벨] [끝 레벨] [게임 인원] [받는 사람 수]` |
 | `tcpath.py` | TC 하나의 하위 TC 나무와 각 단계의 (장비 최댓값, 룬 번호) | `<작업 폴더> "<TC 이름>"` |
 
 - DS1의 오브젝트 프리셋 번호 → `objects.txt` 번호는 exe 표 `0x748AD8`(액트당 150칸, `int`)로 바꾼다(`exe_1.14d.md`).

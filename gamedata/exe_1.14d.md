@@ -46,7 +46,11 @@
 |---|---|---|
 | 프리셋·소환 몬스터 만들기 | `0x54E600` | `D2GAME_SpawnPresetMonster_6FC66560` |
 | 슈퍼유니크 만들기(게임당 한 번, 부하 수) | `0x5A49B0`(부르는 곳 `0x54E67E` 하나), 부하 수 `0x5A4B6C`, hcIdx 분기 `0x5A4BE4` | `D2GAME_SpawnSuperUnique_6FC6F690` |
-| 부하 소환 | `0x5A2120` | `MONSTERUNIQUE_SpawnMinions` |
+| 부하 소환 | `0x5A2120`(부하 만들기 `0x5A0C00`, 부하 종류 `0x5A0BB0`, umod 1~4 표 `0x6E2168`을 보스·부하에 적용, umod 함수 표 `0x73C008`) | `MONSTERUNIQUE_SpawnMinions` |
+| 부하 목록에 함수 실행 | `0x58F380` | `AIGENERAL_ExecuteCallbackOnMinions` |
+| umod 적용 | `0x5A2100` | `MONSTERUNIQUE_InitializeUMod` |
+| 유니크 무리 만들기 | `0x5A43E0` | `MONSTERUNIQUE_SpawnUniqueGroup` |
+| 비율 계산 a × b ÷ c | `0x483360` | `MONSTERUNIQUE_CalculatePercentage` |
 | 퀘스트 소환 | `0x545C30` | `QUESTS_SpawnMonster` |
 | 디아블로 봉인 보스 | `0x5B5750` | `ACT4Q2_SpawnSealBoss` |
 | 고대인 석상 | `0x58C114` | `A5Q5.cpp` 석상 함수 |
@@ -54,6 +58,8 @@
 | 바알 왕좌 AI, 부하 표 | `0x5EF320`, 표 `0x6E3528`(hcIdx 61~65) | `AITHINK_Fn134_BaalThrone` |
 | 바알 부하 소환 미사일 | `0x5ACAF0`(`0x5ACB43`) | `MissMode.cpp` |
 | 지역 몬스터 목록 | `0x5475F0` | `MonsterRegion.cpp` 지역 초기화 |
+| 방 채우기(밀집도) | `0x54EC90`(상한 `0x54ECE2`, ÷100,000 `0x54EDC6`) | `D2GAME_PopulateRoom_6FC67190` |
+| 유니크·챔피언 판정 | `0x5BE020`(최소 `+0x2BC`, 최대 `+0x2BD`, 지금 수 `+0x2C8`) | `MONSTERCHOOSE_GetBossSpawnType` |
 | 노말 `umon` 고르기 | `0x5BDE80` | `MONSTERCHOOSE_GetPresetMonsterId` |
 | 몬스터 레벨·스탯 | `0x573E18`(`monstats` 레벨), `0x61DCA0`(지역 레벨), `0x6538A0`(monlvl × monstats) | `Monster.cpp` 몬스터 스탯 초기화, 지역 레벨 읽기, `DATATBLS_CalculateMonsterStatsByLevel` |
 | 인원 보너스 | `0x573910`(표 `0x6E15B4`), `0x573930` | `MONSTER_GetExperienceBonus`, `MONSTER_GetPlayerCountBonus` |
@@ -79,7 +85,7 @@
 | 경험치 분배 | `0x57E990` | `SUNITDMG_DistributeExperience` |
 | 경험치 계산 | `0x57E480`(레벨 차이 `0x57E2F0`, `ExpRatio` `0x57E390`, 용병 상한 `0x57E3F0`) | `SUNITDMG_ComputeExperienceGain` |
 | 레벨 차이 표 | `0x6E1668`(내 레벨 ≥ 몬스터), `0x6E1694`(몬스터 > 나) | `experienceFactors` |
-| 파티 분배 | `0x57E6C0`, 파티원 조건 `0x57E5A0` | `SUNITDMG_PartyCallback_ComputePartyExperience` 등 |
+| 파티 분배 | `0x57E6C0`(32비트 곱 `0x57E739`), 파티원 조건 `0x57E5A0` | `SUNITDMG_PartyCallback_ComputePartyExperience` 등 |
 | 플레이어 경험치 더하기 | `0x57E510` | `SUNITDMG_AddExperienceForPlayer` |
 | `ExpRatio` 읽기 | `0x613E60` | `DATATBLS_GetExpRatio` |
 | 최대 레벨 | `0x611830` | `DATATBLS_GetMaxLevel` |

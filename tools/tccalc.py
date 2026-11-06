@@ -73,6 +73,18 @@ def chest(aid, d):
     k = 'A' if lvl < f + t else ('C' if lvl >= f + 2*t else 'B')
     nm = 'Act %d%s Chest %s' % (a+1, (' ' + SUF[d]) if d else '', k)
     return (k, nm)
+def minion_of(c):
+    m = MSI.get(c); return (m.get('minion1') or c) if m else None
+def area_minion(aid, d):
+    r = LVI[aid]
+    src = [r.get(('umon%d' if d == 0 else 'nmon%d') % k, '') for k in range(1, 11)]
+    return fmt(best([mon_tc(minion_of(x), aid, d, 1, 3 if d else 0) for x in src if x and minion_of(x)]))
+def su_minion(s, d, area):
+    if s['MinGrp'] in ('', '0') or s['MaxGrp'] in ('', '0'): return '-'
+    mn = minion_of(s['Class'])
+    if not mn: return '-'
+    if d == 0: return fmt(mtc(MSI[mn], 1, 0)) if mtc(MSI[mn], 1, 0) else '-'
+    return fmt(mon_tc(mn, int(area.split()[0]), d, 1, 3)) if area else '-'
 # parse tc.md tables
 md = open(TCMD, encoding='utf-8').read().split('\n')
 sec = None; diffs = 0; checked = 0
@@ -99,11 +111,12 @@ for line in md:
         got.append(fmt(best([mon_tc(x, aid, d, 1, 0) for x in nl])))
         got.append(fmt(best([mon_tc(x, aid, d, 2, 2 if d else 0) for x in ul])))
         got.append(fmt(best([mon_tc(x, aid, d, 3, 3 if d else 0) for x in ul])))
+        got.append(area_minion(aid, d))
         ch = chest(aid, d)
         got.append('%s: %s' % (ch[0], fmt(ch[1])) if ch and ch[1] in TCI else '-')
-        exp = c[2:7]
+        exp = c[2:8]
         checked += 1
-        for name, a, b in zip(['레벨','일반','챔피언','유니크','상자'], exp, got):
+        for name, a, b in zip(['레벨','일반','챔피언','유니크','유니크 부하','상자'], exp, got):
             if a != b:
                 diffs += 1; print('AREA d%d %d %s: md=%r calc=%r' % (d, aid, name, a, b))
     elif sec[0] == 'su':
@@ -116,9 +129,12 @@ for line in md:
         if d == 0:
             got = fmt(base) if base else '- / -'
             if c[4] != got: diffs += 1; print('SU d0 %d %s: md=%r calc=%r' % (h, s['Superunique'], c[4], got))
+            mg = su_minion(s, 0, None)
+            if c[5] != mg: diffs += 1; print('SU d0 %d %s 부하: md=%r calc=%r' % (h, s['Superunique'], c[5], mg))
             continue
         area = c[3]
         if not area:
+            if c[8] != '-': diffs += 1; print('SU d%d %d 부하: md=%r calc=-' % (d, h, c[8]))
             continue
         aid = int(area.split()[0])
         bossy = flag(m, 'boss') or flag(m, 'noRatio')
@@ -126,9 +142,9 @@ for line in md:
         lvl += 3
         if s['Class']=='summoner': lvl -= 3
         up = base if (bossy or not base) else upgrade(base, lvl)
-        got = [str(lvl), base or '-', (up if up != base else ''), fmt(up) if up else '- / -']
-        exp = [c[4], c[5], c[6], c[7]]
-        for name, a, b in zip(['레벨','기본','올린','값'], exp, got):
+        got = [str(lvl), base or '-', (up if up != base else ''), fmt(up) if up else '- / -', su_minion(s, d, area)]
+        exp = [c[4], c[5], c[6], c[7], c[8]]
+        for name, a, b in zip(['레벨','기본','올린','값','부하'], exp, got):
             if a != b: diffs += 1; print('SU d%d %d %s %s: md=%r calc=%r' % (d, h, s['Superunique'], name, a, b))
     elif sec[0] == 'boss':
         if len(c) < 7 or c[1] not in ('노말','나이트메어','헬'): continue

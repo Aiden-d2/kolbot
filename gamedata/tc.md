@@ -11,7 +11,7 @@
 |---|---|---|
 | 몬스터 종류별 TC | 일반 `TreasureClass1`, 챔피언 `TreasureClass2`, 유니크 `TreasureClass3`, 퀘스트 첫 처치 `TreasureClass4`(노말은 접미사 없는 열, 나이트메어·헬은 `(N)`·`(H)` 열). 슈퍼유니크는 `superuniques.txt` `TC`·`TC(N)`·`TC(H)` | `0x5A6600`(슈퍼유니크면 `superuniques.txt` TC, 기록이 없으면 TC3; 아니면 챔피언 TC2·유니크 TC3·일반 TC1). D2MOO `MonsterMode.cpp`와 같음 |
 | 몬스터 레벨 | 확장팩 나이트메어·헬: 지역 레벨(`levels.txt` `MonLvl2Ex`·`MonLvl3Ex`). `monstats.txt` `boss`·`noRatio` 클래스는 `Level(N)`·`Level(H)`. 노말은 `monstats.txt` `Level`(지역 레벨 아님) | `0x573E18`(`monstats` 레벨), `0x61dca0`(지역 레벨 읽기) |
-| 레벨 가산 | 유니크·슈퍼유니크 +3(umod 4 `leveladd`). 챔피언 +2(+3 후 champion umod의 −1). 챔피언 중 berserk는 +3(−1 없음) | `0x5a2120`(umod 1~4를 먼저 적용, `0x6e2168`), `0x5a0e40`(+3), `0x5a0e80`(−1), 적용 함수 표 `0x73c008` |
+| 레벨 가산 | 유니크·슈퍼유니크 +3(umod 4 `leveladd`). 그 부하도 +3(부하 소환 뒤 umod 1~4를 부하에게도 적용, `0x5A2155` → `0x58F380`, 261105). 챔피언 +2(+3 후 champion umod의 −1). 챔피언 중 berserk는 +3(−1 없음) | `0x5a2120`(umod 1~4를 먼저 적용, `0x6e2168`), `0x5a0e40`(+3), `0x5a0e80`(−1), 적용 함수 표 `0x73c008` |
 | TC 올림 | 확장팩·나이트메어 이상·`boss`/`noRatio`가 아닌 몬스터만. 몬스터 TC에서 시작해, 다음 기록이 같은 `group`이고 그 `level` ≤ 몬스터 레벨이면 다음으로 옮긴다. 내리지 않는다 | `0x55afa0`(조건), `0x654e00`(루프) |
 | TC 기록 순서 | `treasureclassex.txt` 줄 순서 그대로. 그래서 같은 group이면 난이도를 넘거나(나이트메어 → 헬 TC) 줄 순서상 다음인 "x" TC로 옮겨 갈 수 있다 | `0x654c3d~`(불러오기), `0x653f90`(기록 추가) |
 | 상자 | 액트는 지역의 `Act`. F = 그 액트 첫 지역 레벨, L = 끝 지역 레벨(첫·끝 지역 2–37, 41–73, 76–102, 104–108, 109–136), T = (\|L − F\| + 1) ÷ 3(버림). 지역 레벨 < F + T면 A, ≥ F + 2T면 C, 그 사이 B → `Act N (난이도) Chest A/B/C`. 올림 없음. 레벨 없는 지역(마을)은 0 | `0x585b90`(식 `0x585C55`~`0x585C87`), 지역 표 `0x6e1988` |
@@ -19,6 +19,7 @@
 | 몬스터 목록 | 지역마다 게임이 목록에서 일반 몬스터를 무작위로 최대 `NumMon`(13 이하)종 고른다. 노말은 `mon1~10`, 나이트메어·헬은 `nmon1~10`. 노말 챔피언·유니크만 `umon1~10`에서 고르고, 나이트메어·헬 챔피언·유니크는 고른 일반 몬스터에서 나온다 | `0x5475F0`(목록), `0x5BDE80`(노말 `umon`) |
 | 아이템 레벨 | 몬스터가 떨군 것 = 몬스터 레벨(챔피언 +2·유니크 +3 포함). 상자 등 몬스터가 아닌 것 = 지역 레벨(몬스터 레벨 규칙과 같은 열). 1보다 작으면 1 | `0x558200` |
 
+- 유니크·슈퍼유니크의 부하는 일반 몬스터라 TC1(일반 TC)을 쓰지만 레벨이 +3이라 TC 올림이 더 높을 수 있다. 그래서 지역 표에 "유니크 부하" 칸, 슈퍼유니크 표에 "부하" 칸을 따로 둔다(261105). 부하 종류 = 유니크·슈퍼유니크 클래스의 `monstats.txt` `minion1`, 없으면 같은 클래스(`0x5A0BB0`). 지역 표의 유니크는 노말이면 `umon`, 나이트메어·헬이면 지역 목록에서 나온다(1절 "몬스터 목록"). 슈퍼유니크 부하의 레벨은 지역 레벨 + 3(나이트메어·헬, 보스가 `boss` 클래스여도 부하는 지역 레벨). 부하가 없는 슈퍼유니크는 `-`.
 - 지역 값 = 그 지역 목록(위 "몬스터 목록") 몬스터 중 최댓값이다. 장비와 룬은 따로 최댓값을 잡는다(장비 최댓값과 룬 최댓값이 다른 몬스터일 수 있다). 목록이 빈 지역은 `-`. 한 게임에는 목록 중 최대 `NumMon`종만 나오므로, 최댓값을 주는 몬스터가 그 게임에 뽑히지 않으면 그 게임 값은 이보다 낮다.
 - 지역 이름은 kolbot `Pather.getAreaName` 이름(게임 화면 이름)이다. `levels.txt` `LevelName`(내부 이름)과 28곳이 다르다(예: 125~127 `Hell1~3` = Abaddon·Pit Of Acheron·Infernal Pit, 133~135 `Pandemonium Run 1~3` = Matron's Den·Fogotten Sands·Furnace of Pain, `Fogotten`은 kolbot 철자 그대로)(261105).
 
@@ -65,405 +66,405 @@
 
 - 노말은 TC 올림이 없다(`0x55afa0` 조건: 난이도 > 0). 값 = 그 지역 몬스터의 기본 TC 중 최댓값. 일반은 `mon1~10`, 챔피언·유니크는 `umon1~10`(노말만 이 목록에서 고름, 1절 "몬스터 목록"). 레벨 = `MonLvl1Ex`(상자 판정에 쓰임, `0x61dca0`).
 
-| ID | 지역 | 레벨 | 일반 | 챔피언 | 유니크 | 상자 |
-|---|---|---|---|---|---|---|
-| 2 | Blood Moor | 1 | 3 / - | 3 / - | 3 / - | A: 3 / - |
-| 3 | Cold Plains | 2 | 3 / - | 3 / - | 3 / - | A: 3 / - |
-| 4 | Stony Field | 4 | 3 / - | 3 / - | 3 / - | A: 3 / - |
-| 5 | Dark Wood | 5 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 6 | Black Marsh | 6 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 7 | Tamoe Highland | 8 | 12 / - | 12 / - | 12 / - | B: 6 / - |
-| 8 | Den Of Evil | 1 | 3 / - | 3 / - | 3 / - | A: 3 / - |
-| 9 | Cave Level 1 | 2 | 3 / - | 3 / - | 3 / - | A: 3 / - |
-| 10 | Underground Passage Level 1 | 4 | 6 / - | 6 / - | 6 / - | A: 3 / - |
-| 11 | Hole Level 1 | 5 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 12 | Pit Level 1 | 7 | 12 / - | 12 / - | 12 / - | B: 6 / - |
-| 13 | Cave Level 2 | 2 | 3 / - | 3 / - | 3 / - | A: 3 / - |
-| 14 | Underground Passage Level 2 | 4 | 6 / - | 6 / - | 6 / - | A: 3 / - |
-| 15 | Hole Level 2 | 5 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 16 | Pit Level 2 | 7 | 12 / - | 12 / - | 12 / - | B: 6 / - |
-| 17 | Burial Grounds | 3 | 3 / - | 3 / - | 3 / - | A: 3 / - |
-| 18 | Crypt | 3 | 3 / - | 3 / - | 3 / - | A: 3 / - |
-| 19 | Mausoleum | 3 | 3 / - | 3 / - | 3 / - | A: 3 / - |
-| 21 | Tower Cellar Level 1 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 22 | Tower Cellar Level 2 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 23 | Tower Cellar Level 3 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 24 | Tower Cellar Level 4 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 25 | Tower Cellar Level 5 | 7 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 26 | Monastery Gate | 8 | 12 / - | 12 / - | 12 / - | B: 6 / - |
-| 27 | Outer Cloister | 9 | 12 / - | 12 / - | 12 / - | C: 12 / - |
-| 28 | Barracks | 9 | 12 / - | 12 / - | 12 / - | C: 12 / - |
-| 29 | Jail Level 1 | 10 | 12 / - | 12 / - | 12 / - | C: 12 / - |
-| 30 | Jail Level 2 | 10 | 12 / - | 12 / - | 12 / - | C: 12 / - |
-| 31 | Jail Level 3 | 10 | 12 / - | 12 / - | 12 / - | C: 12 / - |
-| 32 | Inner Cloister | 10 | 12 / - | 12 / - | 12 / - | C: 12 / - |
-| 33 | Cathedral | 11 | 12 / - | 12 / - | 12 / - | C: 12 / - |
-| 34 | Catacombs Level 1 | 11 | 12 / - | 12 / - | 12 / - | C: 12 / - |
-| 35 | Catacombs Level 2 | 11 | 12 / - | 12 / - | 12 / - | C: 12 / - |
-| 36 | Catacombs Level 3 | 12 | 21 / Ral | 21 / Ral | 21 / Ral | C: 12 / - |
-| 37 | Catacombs Level 4 | 12 | 21 / Ral | 21 / Ral | 21 / Ral | C: 12 / - |
-| 38 | Tristram | 6 | 6 / - | 6 / - | 6 / - | B: 6 / - |
-| 39 | Moo Moo Farm | 28 | 36 / Dol | 36 / Sol | 36 / Sol | C: 12 / - |
-| 41 | Rocky Waste | 14 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
-| 42 | Dry Hills | 15 | 15 / Nef | 15 / Nef | 15 / Nef | B: 18 / Nef |
-| 43 | Far Oasis | 16 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
-| 44 | Lost City | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
-| 45 | Valley Of Snakes | 18 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
-| 46 | Canyon Of The Magi | 16 | 21 / Ral | 21 / Ral | 21 / Ral | C: 21 / Nef |
-| 47 | Sewers Level 1 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
-| 48 | Sewers Level 2 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
-| 49 | Sewers Level 3 | 14 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
-| 51 | Harem Level 2 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
-| 52 | Palace Cellar Level 1 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
-| 53 | Palace Cellar Level 2 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
-| 54 | Palace Cellar Level 3 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
-| 55 | Stony Tomb Level 1 | 12 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
-| 56 | Halls Of The Dead Level 1 | 12 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
-| 57 | Halls Of The Dead Level 2 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
-| 58 | Claw Viper Temple Level 1 | 14 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
-| 59 | Stony Tomb Level 2 | 12 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
-| 60 | Halls Of The Dead Level 3 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
-| 61 | Claw Viper Temple Level 2 | 14 | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
-| 62 | Maggot Lair Level 1 | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
-| 63 | Maggot Lair Level 2 | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
-| 64 | Maggot Lair Level 3 | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
-| 65 | Ancient Tunnels | 17 | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
-| 66 | Tal Rashas Tomb #1 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
-| 67 | Tal Rashas Tomb #2 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
-| 68 | Tal Rashas Tomb #3 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
-| 69 | Tal Rashas Tomb #4 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
-| 70 | Tal Rashas Tomb #5 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
-| 71 | Tal Rashas Tomb #6 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
-| 72 | Tal Rashas Tomb #7 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
-| 73 | Duriels Lair | 17 | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
-| 74 | Arcane Sanctuary | 14 | 21 / Ral | 21 / Ral | 21 / Ral | A: 15 / Nef |
-| 76 | Spider Forest | 21 | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
-| 77 | Great Marsh | 21 | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
-| 78 | Flayer Jungle | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
-| 79 | Lower Kurast | 22 | 24 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
-| 80 | Kurast Bazaar | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
-| 81 | Upper Kurast | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 82 | Kurast Causeway | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 83 | Travincal | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 84 | Spider Cave | 21 | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
-| 85 | Spider Cavern | 21 | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
-| 86 | Swampy Pit Level 1 | 21 | 27 / Ral | 27 / Ral | 27 / Ral | A: 24 / Ral |
-| 87 | Swampy Pit Level 2 | 21 | 27 / Ral | 27 / Ral | 27 / Ral | A: 24 / Ral |
-| 88 | Flayer Dungeon Level 1 | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
-| 89 | Flayer Dungeon Level 2 | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
-| 90 | Swampy Pit Level 3 | 21 | 27 / Ral | 27 / Ral | 27 / Ral | A: 24 / Ral |
-| 91 | Flayer Dungeon Level 3 | 22 | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
-| 92 | Sewers Level 1 | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 93 | Sewers Level 2 | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 94 | Ruined Temple | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 95 | Disused Fane | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 96 | Forgotten Reliquary | 23 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 97 | Forgotten Temple | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 98 | Ruined Fane | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 99 | Disused Reliquary | 24 | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
-| 100 | Durance Of Hate Level 1 | 25 | 30 / Ral | 30 / Ral | 30 / Ral | C: 30 / Ral |
-| 101 | Durance Of Hate Level 2 | 25 | 30 / Ral | 30 / Ral | 30 / Ral | C: 30 / Ral |
-| 102 | Durance Of Hate Level 3 | 25 | 30 / Ral | 30 / Ral | 30 / Ral | C: 30 / Ral |
-| 104 | Outer Steppes | 26 | 36 / Sol | 33 / Sol | 33 / Sol | A: 33 / Sol |
-| 105 | Plains Of Despair | 26 | 36 / Sol | 36 / Sol | 36 / Sol | A: 33 / Sol |
-| 106 | City Of The Damned | 27 | 36 / Sol | 36 / Sol | 36 / Sol | B: 36 / Sol |
-| 107 | River Of Flame | 27 | 36 / Sol | 36 / Sol | 36 / Sol | B: 36 / Sol |
-| 108 | Chaos Sanctuary | 28 | 36 / Sol | 36 / Sol | 36 / Sol | C: 36 / Sol |
-| 110 | Bloody Foothills | 24 | 36 / Dol | - / - | - / - | B: 39 / Dol |
-| 111 | Frigid Highlands | 25 | 39 / Dol | 36 / Dol | 36 / Dol | B: 39 / Dol |
-| 112 | Arreat Plateau | 26 | 36 / Dol | 36 / Dol | 36 / Dol | B: 39 / Dol |
-| 113 | Crystalline Passage | 29 | 39 / Dol | 36 / Dol | 36 / Dol | B: 39 / Dol |
-| 114 | Frozen River | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
-| 115 | Glacial Trail | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
-| 116 | Drifter Cavern | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
-| 117 | Frozen Tundra | 27 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
-| 118 | Ancient's Way | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
-| 119 | Icy Cellar | 29 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
-| 120 | Arreat Summit | 37 | - / - | - / - | - / - | C: 39 / Dol |
-| 121 | Nihlathak's Temple | 32 | - / - | - / - | - / - | B: 39 / Dol |
-| 122 | Halls Of Anguish | 33 | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
-| 123 | Halls Of Pain | 34 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 124 | Halls Of Vaught | 36 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 125 | Abaddon | 39 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 126 | Pit Of Acheron | 39 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 127 | Infernal Pit | 39 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 128 | Worldstone Keep Level 1 | 39 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 129 | Worldstone Keep Level 2 | 40 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 130 | Worldstone Keep Level 3 | 42 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 131 | Throne Of Destruction | 43 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 132 | The Worldstone Chamber | 43 | - / - | - / - | - / - | C: 39 / Dol |
-| 133 | Matron's Den | 50 | 36 / Dol | 36 / Dol | 36 / Dol | C: 39 / Dol |
-| 134 | Fogotten Sands | 50 | 33 / Sol | 33 / Sol | 33 / Sol | C: 39 / Dol |
-| 135 | Furnace of Pain | 50 | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
-| 136 | Tristram | 50 | - / - | - / - | - / - | C: 39 / Dol |
+| ID | 지역 | 레벨 | 일반 | 챔피언 | 유니크 | 유니크 부하 | 상자 |
+|---|---|---|---|---|---|---|---|
+| 2 | Blood Moor | 1 | 3 / - | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 3 | Cold Plains | 2 | 3 / - | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 4 | Stony Field | 4 | 3 / - | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 5 | Dark Wood | 5 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 6 | Black Marsh | 6 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 7 | Tamoe Highland | 8 | 12 / - | 12 / - | 12 / - | 12 / - | B: 6 / - |
+| 8 | Den Of Evil | 1 | 3 / - | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 9 | Cave Level 1 | 2 | 3 / - | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 10 | Underground Passage Level 1 | 4 | 6 / - | 6 / - | 6 / - | 6 / - | A: 3 / - |
+| 11 | Hole Level 1 | 5 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 12 | Pit Level 1 | 7 | 12 / - | 12 / - | 12 / - | 12 / - | B: 6 / - |
+| 13 | Cave Level 2 | 2 | 3 / - | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 14 | Underground Passage Level 2 | 4 | 6 / - | 6 / - | 6 / - | 6 / - | A: 3 / - |
+| 15 | Hole Level 2 | 5 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 16 | Pit Level 2 | 7 | 12 / - | 12 / - | 12 / - | 12 / - | B: 6 / - |
+| 17 | Burial Grounds | 3 | 3 / - | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 18 | Crypt | 3 | 3 / - | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 19 | Mausoleum | 3 | 3 / - | 3 / - | 3 / - | 3 / - | A: 3 / - |
+| 21 | Tower Cellar Level 1 | 7 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 22 | Tower Cellar Level 2 | 7 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 23 | Tower Cellar Level 3 | 7 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 24 | Tower Cellar Level 4 | 7 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 25 | Tower Cellar Level 5 | 7 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 26 | Monastery Gate | 8 | 12 / - | 12 / - | 12 / - | 12 / - | B: 6 / - |
+| 27 | Outer Cloister | 9 | 12 / - | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 28 | Barracks | 9 | 12 / - | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 29 | Jail Level 1 | 10 | 12 / - | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 30 | Jail Level 2 | 10 | 12 / - | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 31 | Jail Level 3 | 10 | 12 / - | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 32 | Inner Cloister | 10 | 12 / - | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 33 | Cathedral | 11 | 12 / - | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 34 | Catacombs Level 1 | 11 | 12 / - | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 35 | Catacombs Level 2 | 11 | 12 / - | 12 / - | 12 / - | 12 / - | C: 12 / - |
+| 36 | Catacombs Level 3 | 12 | 21 / Ral | 21 / Ral | 21 / Ral | 21 / Ral | C: 12 / - |
+| 37 | Catacombs Level 4 | 12 | 21 / Ral | 21 / Ral | 21 / Ral | 21 / Ral | C: 12 / - |
+| 38 | Tristram | 6 | 6 / - | 6 / - | 6 / - | 6 / - | B: 6 / - |
+| 39 | Moo Moo Farm | 28 | 36 / Dol | 36 / Sol | 36 / Sol | 36 / Dol | C: 12 / - |
+| 41 | Rocky Waste | 14 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 42 | Dry Hills | 15 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | B: 18 / Nef |
+| 43 | Far Oasis | 16 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 44 | Lost City | 17 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 45 | Valley Of Snakes | 18 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 46 | Canyon Of The Magi | 16 | 21 / Ral | 21 / Ral | 21 / Ral | 21 / Ral | C: 21 / Nef |
+| 47 | Sewers Level 1 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 48 | Sewers Level 2 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 49 | Sewers Level 3 | 14 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 51 | Harem Level 2 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 52 | Palace Cellar Level 1 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 53 | Palace Cellar Level 2 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 54 | Palace Cellar Level 3 | 13 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 55 | Stony Tomb Level 1 | 12 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 56 | Halls Of The Dead Level 1 | 12 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 57 | Halls Of The Dead Level 2 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 58 | Claw Viper Temple Level 1 | 14 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 59 | Stony Tomb Level 2 | 12 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 60 | Halls Of The Dead Level 3 | 13 | 15 / Nef | 15 / Nef | 15 / Nef | 15 / Nef | A: 15 / Nef |
+| 61 | Claw Viper Temple Level 2 | 14 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | A: 15 / Nef |
+| 62 | Maggot Lair Level 1 | 17 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 63 | Maggot Lair Level 2 | 17 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 64 | Maggot Lair Level 3 | 17 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 65 | Ancient Tunnels | 17 | 18 / Nef | 18 / Nef | 18 / Nef | 18 / Nef | C: 21 / Nef |
+| 66 | Tal Rashas Tomb #1 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 67 | Tal Rashas Tomb #2 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 68 | Tal Rashas Tomb #3 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 69 | Tal Rashas Tomb #4 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 70 | Tal Rashas Tomb #5 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 71 | Tal Rashas Tomb #6 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 72 | Tal Rashas Tomb #7 | 17 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 73 | Duriels Lair | 17 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 21 / Nef |
+| 74 | Arcane Sanctuary | 14 | 21 / Ral | 21 / Ral | 21 / Ral | 21 / Ral | A: 15 / Nef |
+| 76 | Spider Forest | 21 | 24 / Ral | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
+| 77 | Great Marsh | 21 | 24 / Ral | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
+| 78 | Flayer Jungle | 22 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 79 | Lower Kurast | 22 | 24 / Ral | 27 / Ral | 27 / Ral | 24 / Ral | B: 27 / Ral |
+| 80 | Kurast Bazaar | 22 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 81 | Upper Kurast | 23 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 82 | Kurast Causeway | 24 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 83 | Travincal | 24 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 84 | Spider Cave | 21 | 24 / Ral | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
+| 85 | Spider Cavern | 21 | 24 / Ral | 24 / Ral | 24 / Ral | 24 / Ral | A: 24 / Ral |
+| 86 | Swampy Pit Level 1 | 21 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | A: 24 / Ral |
+| 87 | Swampy Pit Level 2 | 21 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | A: 24 / Ral |
+| 88 | Flayer Dungeon Level 1 | 22 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 89 | Flayer Dungeon Level 2 | 22 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 90 | Swampy Pit Level 3 | 21 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | A: 24 / Ral |
+| 91 | Flayer Dungeon Level 3 | 22 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | B: 27 / Ral |
+| 92 | Sewers Level 1 | 23 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 93 | Sewers Level 2 | 24 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 94 | Ruined Temple | 23 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 95 | Disused Fane | 23 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 96 | Forgotten Reliquary | 23 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 97 | Forgotten Temple | 24 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 98 | Ruined Fane | 24 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 99 | Disused Reliquary | 24 | 27 / Ral | 27 / Ral | 27 / Ral | 27 / Ral | C: 30 / Ral |
+| 100 | Durance Of Hate Level 1 | 25 | 30 / Ral | 30 / Ral | 30 / Ral | 30 / Ral | C: 30 / Ral |
+| 101 | Durance Of Hate Level 2 | 25 | 30 / Ral | 30 / Ral | 30 / Ral | 30 / Ral | C: 30 / Ral |
+| 102 | Durance Of Hate Level 3 | 25 | 30 / Ral | 30 / Ral | 30 / Ral | 30 / Ral | C: 30 / Ral |
+| 104 | Outer Steppes | 26 | 36 / Sol | 33 / Sol | 33 / Sol | 33 / Sol | A: 33 / Sol |
+| 105 | Plains Of Despair | 26 | 36 / Sol | 36 / Sol | 36 / Sol | 36 / Sol | A: 33 / Sol |
+| 106 | City Of The Damned | 27 | 36 / Sol | 36 / Sol | 36 / Sol | 36 / Sol | B: 36 / Sol |
+| 107 | River Of Flame | 27 | 36 / Sol | 36 / Sol | 36 / Sol | 36 / Sol | B: 36 / Sol |
+| 108 | Chaos Sanctuary | 28 | 36 / Sol | 36 / Sol | 36 / Sol | 36 / Sol | C: 36 / Sol |
+| 110 | Bloody Foothills | 24 | 36 / Dol | - / - | - / - | - / - | B: 39 / Dol |
+| 111 | Frigid Highlands | 25 | 39 / Dol | 36 / Dol | 36 / Dol | 36 / Dol | B: 39 / Dol |
+| 112 | Arreat Plateau | 26 | 36 / Dol | 36 / Dol | 36 / Dol | 36 / Dol | B: 39 / Dol |
+| 113 | Crystalline Passage | 29 | 39 / Dol | 36 / Dol | 36 / Dol | 36 / Dol | B: 39 / Dol |
+| 114 | Frozen River | 29 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 115 | Glacial Trail | 29 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 116 | Drifter Cavern | 29 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 117 | Frozen Tundra | 27 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 118 | Ancient's Way | 29 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 119 | Icy Cellar | 29 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 120 | Arreat Summit | 37 | - / - | - / - | - / - | - / - | C: 39 / Dol |
+| 121 | Nihlathak's Temple | 32 | - / - | - / - | - / - | - / - | B: 39 / Dol |
+| 122 | Halls Of Anguish | 33 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | B: 39 / Dol |
+| 123 | Halls Of Pain | 34 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 124 | Halls Of Vaught | 36 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 125 | Abaddon | 39 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 126 | Pit Of Acheron | 39 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 127 | Infernal Pit | 39 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 128 | Worldstone Keep Level 1 | 39 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 129 | Worldstone Keep Level 2 | 40 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 130 | Worldstone Keep Level 3 | 42 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 131 | Throne Of Destruction | 43 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 132 | The Worldstone Chamber | 43 | - / - | - / - | - / - | - / - | C: 39 / Dol |
+| 133 | Matron's Den | 50 | 36 / Dol | 36 / Dol | 36 / Dol | 36 / Dol | C: 39 / Dol |
+| 134 | Fogotten Sands | 50 | 33 / Sol | 33 / Sol | 33 / Sol | 33 / Sol | C: 39 / Dol |
+| 135 | Furnace of Pain | 50 | 39 / Dol | 39 / Dol | 39 / Dol | 39 / Dol | C: 39 / Dol |
+| 136 | Tristram | 50 | - / - | - / - | - / - | - / - | C: 39 / Dol |
 
 ## 2. 지역 (나이트메어)
 
-| ID | 지역 | 레벨 | 일반 | 챔피언 (+2) | 유니크 (+3) | 상자 |
-|---|---|---|---|---|---|---|
-| 2 | Blood Moor | 36 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 3 | Cold Plains | 36 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 4 | Stony Field | 37 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 5 | Dark Wood | 38 | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
-| 6 | Black Marsh | 38 | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
-| 7 | Tamoe Highland | 39 | 42 / Io | 42 / Io | 45 / Ko | B: 42 / Io |
-| 8 | Den Of Evil | 36 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 9 | Cave Level 1 | 36 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 10 | Underground Passage Level 1 | 37 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 11 | Hole Level 1 | 38 | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
-| 12 | Pit Level 1 | 39 | 42 / Io | 42 / Io | 45 / Ko | B: 42 / Io |
-| 13 | Cave Level 2 | 37 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 14 | Underground Passage Level 2 | 38 | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
-| 15 | Hole Level 2 | 39 | 42 / Io | 42 / Io | 45 / Ko | B: 42 / Io |
-| 16 | Pit Level 2 | 40 | 42 / Io | 45 / Ko | 45 / Ko | C: 42 / Io |
-| 17 | Burial Grounds | 36 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 18 | Crypt | 37 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 19 | Mausoleum | 37 | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
-| 21 | Tower Cellar Level 1 | 38 | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
-| 22 | Tower Cellar Level 2 | 39 | 42 / Io | 42 / Io | 45 / Ko | B: 42 / Io |
-| 23 | Tower Cellar Level 3 | 40 | 42 / Io | 45 / Ko | 45 / Ko | C: 42 / Io |
-| 24 | Tower Cellar Level 4 | 41 | 42 / Io | 45 / Ko | 48 / Ko | C: 42 / Io |
-| 25 | Tower Cellar Level 5 | 42 | 45 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
-| 26 | Monastery Gate | 40 | 42 / Io | 45 / Ko | 45 / Ko | C: 42 / Io |
-| 27 | Outer Cloister | 40 | 42 / Io | 45 / Ko | 45 / Ko | C: 42 / Io |
-| 28 | Barracks | 40 | 42 / Io | 45 / Ko | 45 / Ko | C: 42 / Io |
-| 29 | Jail Level 1 | 41 | 42 / Io | 45 / Ko | 48 / Ko | C: 42 / Io |
-| 30 | Jail Level 2 | 41 | 42 / Io | 45 / Ko | 48 / Ko | C: 42 / Io |
-| 31 | Jail Level 3 | 41 | 42 / Io | 45 / Ko | 48 / Ko | C: 42 / Io |
-| 32 | Inner Cloister | 41 | 42 / Io | 45 / Ko | 48 / Ko | C: 42 / Io |
-| 33 | Cathedral | 42 | 45 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
-| 34 | Catacombs Level 1 | 42 | 45 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
-| 35 | Catacombs Level 2 | 42 | 45 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
-| 36 | Catacombs Level 3 | 43 | 48 / Ko | 48 / Ko | 51 / Lem | C: 42 / Io |
-| 37 | Catacombs Level 4 | 43 | 48 / Ko | 48 / Ko | 51 / Lem | C: 42 / Io |
-| 38 | Tristram | 39 | 42 / Io | 42 / Io | 45 / Ko | B: 42 / Io |
-| 39 | Moo Moo Farm | 64 | 60 / Ist | 66 / Vex | 66 / Vex | C: 42 / Io |
-| 41 | Rocky Waste | 43 | 45 / Ko | 48 / Ko | 51 / Lem | A: 45 / Ko |
-| 42 | Dry Hills | 44 | 48 / Ko | 51 / Lem | 51 / Lem | A: 45 / Ko |
-| 43 | Far Oasis | 45 | 48 / Ko | 51 / Lem | 51 / Lem | B: 48 / Ko |
-| 44 | Lost City | 46 | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
-| 45 | Valley Of Snakes | 46 | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
-| 46 | Canyon Of The Magi | 48 | 51 / Lem | 51 / Lem | 54 / Um | C: 48 / Ko |
-| 47 | Sewers Level 1 | 43 | 45 / Ko | 48 / Ko | 51 / Lem | A: 45 / Ko |
-| 48 | Sewers Level 2 | 43 | 45 / Ko | 48 / Ko | 51 / Lem | A: 45 / Ko |
-| 49 | Sewers Level 3 | 44 | 48 / Ko | 51 / Lem | 51 / Lem | A: 45 / Ko |
-| 51 | Harem Level 2 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
-| 52 | Palace Cellar Level 1 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
-| 53 | Palace Cellar Level 2 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
-| 54 | Palace Cellar Level 3 | 48 | 51 / Lem | 51 / Lem | 54 / Um | C: 48 / Ko |
-| 55 | Stony Tomb Level 1 | 44 | 48 / Ko | 51 / Lem | 51 / Lem | A: 45 / Ko |
-| 56 | Halls Of The Dead Level 1 | 44 | 48 / Ko | 51 / Lem | 51 / Lem | A: 45 / Ko |
-| 57 | Halls Of The Dead Level 2 | 45 | 48 / Ko | 51 / Lem | 51 / Lem | B: 48 / Ko |
-| 58 | Claw Viper Temple Level 1 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
-| 59 | Stony Tomb Level 2 | 44 | 48 / Ko | 51 / Lem | 51 / Lem | A: 45 / Ko |
-| 60 | Halls Of The Dead Level 3 | 45 | 48 / Ko | 51 / Lem | 51 / Lem | B: 48 / Ko |
-| 61 | Claw Viper Temple Level 2 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
-| 62 | Maggot Lair Level 1 | 45 | 48 / Ko | 51 / Lem | 51 / Lem | B: 48 / Ko |
-| 63 | Maggot Lair Level 2 | 45 | 48 / Ko | 51 / Lem | 51 / Lem | B: 48 / Ko |
-| 64 | Maggot Lair Level 3 | 46 | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
-| 65 | Ancient Tunnels | 46 | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
-| 66 | Tal Rashas Tomb #1 | 49 | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
-| 67 | Tal Rashas Tomb #2 | 49 | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
-| 68 | Tal Rashas Tomb #3 | 49 | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
-| 69 | Tal Rashas Tomb #4 | 49 | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
-| 70 | Tal Rashas Tomb #5 | 49 | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
-| 71 | Tal Rashas Tomb #6 | 49 | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
-| 72 | Tal Rashas Tomb #7 | 49 | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
-| 73 | Duriels Lair | 49 | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
-| 74 | Arcane Sanctuary | 48 | 51 / Lem | 51 / Lem | 54 / Um | C: 48 / Ko |
-| 76 | Spider Forest | 49 | 51 / Lem | 54 / Um | 54 / Um | A: 51 / Lem |
-| 77 | Great Marsh | 50 | 51 / Lem | 54 / Um | 54 / Um | A: 51 / Lem |
-| 78 | Flayer Jungle | 50 | 51 / Lem | 54 / Um | 54 / Um | A: 51 / Lem |
-| 79 | Lower Kurast | 52 | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
-| 80 | Kurast Bazaar | 52 | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
-| 81 | Upper Kurast | 52 | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
-| 82 | Kurast Causeway | 53 | 54 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
-| 83 | Travincal | 54 | 57 / Um | 57 / Um | 60 / Ist | C: 51 / Lem |
-| 84 | Spider Cave | 50 | 51 / Lem | 54 / Um | 54 / Um | A: 51 / Lem |
-| 85 | Spider Cavern | 50 | 51 / Lem | 54 / Um | 54 / Um | A: 51 / Lem |
-| 86 | Swampy Pit Level 1 | 51 | 54 / Um | 54 / Um | 57 / Um | B: 51 / Lem |
-| 87 | Swampy Pit Level 2 | 51 | 54 / Um | 54 / Um | 57 / Um | B: 51 / Lem |
-| 88 | Flayer Dungeon Level 1 | 51 | 54 / Um | 54 / Um | 57 / Um | B: 51 / Lem |
-| 89 | Flayer Dungeon Level 2 | 51 | 54 / Um | 54 / Um | 57 / Um | B: 51 / Lem |
-| 90 | Swampy Pit Level 3 | 51 | 54 / Um | 54 / Um | 57 / Um | B: 51 / Lem |
-| 91 | Flayer Dungeon Level 3 | 51 | 54 / Um | 54 / Um | 57 / Um | B: 51 / Lem |
-| 92 | Sewers Level 1 | 52 | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
-| 93 | Sewers Level 2 | 53 | 54 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
-| 94 | Ruined Temple | 53 | 54 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
-| 95 | Disused Fane | 53 | 54 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
-| 96 | Forgotten Reliquary | 53 | 54 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
-| 97 | Forgotten Temple | 54 | 57 / Um | 57 / Um | 60 / Ist | C: 51 / Lem |
-| 98 | Ruined Fane | 54 | 57 / Um | 57 / Um | 60 / Ist | C: 51 / Lem |
-| 99 | Disused Reliquary | 54 | 57 / Um | 57 / Um | 60 / Ist | C: 51 / Lem |
-| 100 | Durance Of Hate Level 1 | 55 | 57 / Um | 60 / Ist | 60 / Ist | C: 51 / Lem |
-| 101 | Durance Of Hate Level 2 | 55 | 57 / Um | 60 / Ist | 60 / Ist | C: 51 / Lem |
-| 102 | Durance Of Hate Level 3 | 55 | 57 / Um | 60 / Ist | 60 / Ist | C: 51 / Lem |
-| 104 | Outer Steppes | 56 | 57 / Um | 60 / Ist | 60 / Ist | A: 54 / Um |
-| 105 | Plains Of Despair | 56 | 57 / Um | 60 / Ist | 60 / Ist | A: 54 / Um |
-| 106 | City Of The Damned | 57 | 60 / Ist | 60 / Ist | 60 / Ist | B: 57 / Um |
-| 107 | River Of Flame | 57 | 60 / Ist | 60 / Ist | 60 / Ist | B: 57 / Um |
-| 108 | Chaos Sanctuary | 58 | 60 / Ist | 60 / Ist | 60 / Ist | C: 57 / Um |
-| 110 | Bloody Foothills | 58 | 60 / Ist | 60 / Ist | 60 / Ist | C: 60 / Ist |
-| 111 | Frigid Highlands | 59 | 63 / Ist | 63 / Ist | 63 / Ist | C: 60 / Ist |
-| 112 | Arreat Plateau | 60 | 63 / Ist | 63 / Ist | 63 / Vex | C: 60 / Ist |
-| 113 | Crystalline Passage | 61 | 63 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
-| 114 | Frozen River | 61 | 60 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
-| 115 | Glacial Trail | 61 | 63 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
-| 116 | Drifter Cavern | 61 | 63 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
-| 117 | Frozen Tundra | 60 | 63 / Ist | 63 / Ist | 63 / Vex | C: 60 / Ist |
-| 118 | Ancient's Way | 62 | 63 / Vex | 63 / Vex | 63 / Vex | C: 60 / Ist |
-| 119 | Icy Cellar | 62 | 63 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
-| 120 | Arreat Summit | 68 | - / - | - / - | - / - | C: 60 / Ist |
-| 121 | Nihlathak's Temple | 63 | - / - | - / - | - / - | C: 60 / Ist |
-| 122 | Halls Of Anguish | 63 | 63 / Vex | 63 / Vex | 66 / Vex | C: 60 / Ist |
-| 123 | Halls Of Pain | 64 | 63 / Vex | 66 / Vex | 66 / Vex | C: 60 / Ist |
-| 124 | Halls Of Vaught | 64 | 63 / Vex | 66 / Vex | 66 / Vex | C: 60 / Ist |
-| 125 | Abaddon | 60 | 63 / Ist | 63 / Ist | 63 / Vex | C: 60 / Ist |
-| 126 | Pit Of Acheron | 61 | 63 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
-| 127 | Infernal Pit | 62 | 63 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
-| 128 | Worldstone Keep Level 1 | 65 | 63 / Vex | 66 / Vex | 66 / Vex | C: 60 / Ist |
-| 129 | Worldstone Keep Level 2 | 65 | 63 / Vex | 66 / Vex | 66 / Vex | C: 60 / Ist |
-| 130 | Worldstone Keep Level 3 | 66 | 66 / Vex | 66 / Vex | 69 / Lo | C: 60 / Ist |
-| 131 | Throne Of Destruction | 66 | 66 / Vex | 66 / Vex | 69 / Lo | C: 60 / Ist |
-| 132 | The Worldstone Chamber | 66 | - / - | - / - | - / - | C: 60 / Ist |
-| 133 | Matron's Den | 75 | 75 / Ber | 75 / Ber | 78 / Cham | C: 60 / Ist |
-| 134 | Fogotten Sands | 75 | 72 / Ber | 75 / Ber | 78 / Cham | C: 60 / Ist |
-| 135 | Furnace of Pain | 75 | 75 / Ber | 75 / Ber | 78 / Cham | C: 60 / Ist |
-| 136 | Tristram | 75 | - / - | - / - | - / - | C: 60 / Ist |
+| ID | 지역 | 레벨 | 일반 | 챔피언 (+2) | 유니크 (+3) | 유니크 부하 (+3) | 상자 |
+|---|---|---|---|---|---|---|---|
+| 2 | Blood Moor | 36 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 3 | Cold Plains | 36 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 4 | Stony Field | 37 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 5 | Dark Wood | 38 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
+| 6 | Black Marsh | 38 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
+| 7 | Tamoe Highland | 39 | 42 / Io | 42 / Io | 45 / Ko | 45 / Ko | B: 42 / Io |
+| 8 | Den Of Evil | 36 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 9 | Cave Level 1 | 36 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 10 | Underground Passage Level 1 | 37 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 11 | Hole Level 1 | 38 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
+| 12 | Pit Level 1 | 39 | 42 / Io | 42 / Io | 45 / Ko | 45 / Ko | B: 42 / Io |
+| 13 | Cave Level 2 | 37 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 14 | Underground Passage Level 2 | 38 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
+| 15 | Hole Level 2 | 39 | 42 / Io | 42 / Io | 45 / Ko | 45 / Ko | B: 42 / Io |
+| 16 | Pit Level 2 | 40 | 42 / Io | 45 / Ko | 45 / Ko | 45 / Ko | C: 42 / Io |
+| 17 | Burial Grounds | 36 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 18 | Crypt | 37 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 19 | Mausoleum | 37 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | A: 42 / Io |
+| 21 | Tower Cellar Level 1 | 38 | 42 / Io | 42 / Io | 42 / Io | 42 / Io | B: 42 / Io |
+| 22 | Tower Cellar Level 2 | 39 | 42 / Io | 42 / Io | 45 / Ko | 45 / Ko | B: 42 / Io |
+| 23 | Tower Cellar Level 3 | 40 | 42 / Io | 45 / Ko | 45 / Ko | 45 / Ko | C: 42 / Io |
+| 24 | Tower Cellar Level 4 | 41 | 42 / Io | 45 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
+| 25 | Tower Cellar Level 5 | 42 | 45 / Ko | 48 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
+| 26 | Monastery Gate | 40 | 42 / Io | 45 / Ko | 45 / Ko | 45 / Ko | C: 42 / Io |
+| 27 | Outer Cloister | 40 | 42 / Io | 45 / Ko | 45 / Ko | 45 / Ko | C: 42 / Io |
+| 28 | Barracks | 40 | 42 / Io | 45 / Ko | 45 / Ko | 45 / Ko | C: 42 / Io |
+| 29 | Jail Level 1 | 41 | 42 / Io | 45 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
+| 30 | Jail Level 2 | 41 | 42 / Io | 45 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
+| 31 | Jail Level 3 | 41 | 42 / Io | 45 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
+| 32 | Inner Cloister | 41 | 42 / Io | 45 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
+| 33 | Cathedral | 42 | 45 / Ko | 48 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
+| 34 | Catacombs Level 1 | 42 | 45 / Ko | 48 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
+| 35 | Catacombs Level 2 | 42 | 45 / Ko | 48 / Ko | 48 / Ko | 48 / Ko | C: 42 / Io |
+| 36 | Catacombs Level 3 | 43 | 48 / Ko | 48 / Ko | 51 / Lem | 51 / Lem | C: 42 / Io |
+| 37 | Catacombs Level 4 | 43 | 48 / Ko | 48 / Ko | 51 / Lem | 51 / Lem | C: 42 / Io |
+| 38 | Tristram | 39 | 42 / Io | 42 / Io | 45 / Ko | 45 / Ko | B: 42 / Io |
+| 39 | Moo Moo Farm | 64 | 60 / Ist | 66 / Vex | 66 / Vex | 60 / Ist | C: 42 / Io |
+| 41 | Rocky Waste | 43 | 45 / Ko | 48 / Ko | 51 / Lem | 51 / Lem | A: 45 / Ko |
+| 42 | Dry Hills | 44 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | A: 45 / Ko |
+| 43 | Far Oasis | 45 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
+| 44 | Lost City | 46 | 51 / Lem | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
+| 45 | Valley Of Snakes | 46 | 51 / Lem | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
+| 46 | Canyon Of The Magi | 48 | 51 / Lem | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
+| 47 | Sewers Level 1 | 43 | 45 / Ko | 48 / Ko | 51 / Lem | 51 / Lem | A: 45 / Ko |
+| 48 | Sewers Level 2 | 43 | 45 / Ko | 48 / Ko | 51 / Lem | 51 / Lem | A: 45 / Ko |
+| 49 | Sewers Level 3 | 44 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | A: 45 / Ko |
+| 51 | Harem Level 2 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
+| 52 | Palace Cellar Level 1 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
+| 53 | Palace Cellar Level 2 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
+| 54 | Palace Cellar Level 3 | 48 | 51 / Lem | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
+| 55 | Stony Tomb Level 1 | 44 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | A: 45 / Ko |
+| 56 | Halls Of The Dead Level 1 | 44 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | A: 45 / Ko |
+| 57 | Halls Of The Dead Level 2 | 45 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
+| 58 | Claw Viper Temple Level 1 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
+| 59 | Stony Tomb Level 2 | 44 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | A: 45 / Ko |
+| 60 | Halls Of The Dead Level 3 | 45 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
+| 61 | Claw Viper Temple Level 2 | 47 | 51 / Lem | 51 / Lem | 51 / Lem | 51 / Lem | C: 48 / Ko |
+| 62 | Maggot Lair Level 1 | 45 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
+| 63 | Maggot Lair Level 2 | 45 | 48 / Ko | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
+| 64 | Maggot Lair Level 3 | 46 | 51 / Lem | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
+| 65 | Ancient Tunnels | 46 | 51 / Lem | 51 / Lem | 51 / Lem | 51 / Lem | B: 48 / Ko |
+| 66 | Tal Rashas Tomb #1 | 49 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | C: 48 / Ko |
+| 67 | Tal Rashas Tomb #2 | 49 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | C: 48 / Ko |
+| 68 | Tal Rashas Tomb #3 | 49 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | C: 48 / Ko |
+| 69 | Tal Rashas Tomb #4 | 49 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | C: 48 / Ko |
+| 70 | Tal Rashas Tomb #5 | 49 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | C: 48 / Ko |
+| 71 | Tal Rashas Tomb #6 | 49 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | C: 48 / Ko |
+| 72 | Tal Rashas Tomb #7 | 49 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | C: 48 / Ko |
+| 73 | Duriels Lair | 49 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | C: 48 / Ko |
+| 74 | Arcane Sanctuary | 48 | 51 / Lem | 51 / Lem | 54 / Um | 54 / Um | C: 48 / Ko |
+| 76 | Spider Forest | 49 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | A: 51 / Lem |
+| 77 | Great Marsh | 50 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | A: 51 / Lem |
+| 78 | Flayer Jungle | 50 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | A: 51 / Lem |
+| 79 | Lower Kurast | 52 | 54 / Um | 57 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 80 | Kurast Bazaar | 52 | 54 / Um | 57 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 81 | Upper Kurast | 52 | 54 / Um | 57 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 82 | Kurast Causeway | 53 | 54 / Um | 57 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
+| 83 | Travincal | 54 | 57 / Um | 57 / Um | 60 / Ist | 60 / Ist | C: 51 / Lem |
+| 84 | Spider Cave | 50 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | A: 51 / Lem |
+| 85 | Spider Cavern | 50 | 51 / Lem | 54 / Um | 54 / Um | 54 / Um | A: 51 / Lem |
+| 86 | Swampy Pit Level 1 | 51 | 54 / Um | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 87 | Swampy Pit Level 2 | 51 | 54 / Um | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 88 | Flayer Dungeon Level 1 | 51 | 54 / Um | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 89 | Flayer Dungeon Level 2 | 51 | 54 / Um | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 90 | Swampy Pit Level 3 | 51 | 54 / Um | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 91 | Flayer Dungeon Level 3 | 51 | 54 / Um | 54 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 92 | Sewers Level 1 | 52 | 54 / Um | 57 / Um | 57 / Um | 57 / Um | B: 51 / Lem |
+| 93 | Sewers Level 2 | 53 | 54 / Um | 57 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
+| 94 | Ruined Temple | 53 | 54 / Um | 57 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
+| 95 | Disused Fane | 53 | 54 / Um | 57 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
+| 96 | Forgotten Reliquary | 53 | 54 / Um | 57 / Um | 57 / Um | 57 / Um | C: 51 / Lem |
+| 97 | Forgotten Temple | 54 | 57 / Um | 57 / Um | 60 / Ist | 60 / Ist | C: 51 / Lem |
+| 98 | Ruined Fane | 54 | 57 / Um | 57 / Um | 60 / Ist | 60 / Ist | C: 51 / Lem |
+| 99 | Disused Reliquary | 54 | 57 / Um | 57 / Um | 60 / Ist | 60 / Ist | C: 51 / Lem |
+| 100 | Durance Of Hate Level 1 | 55 | 57 / Um | 60 / Ist | 60 / Ist | 60 / Ist | C: 51 / Lem |
+| 101 | Durance Of Hate Level 2 | 55 | 57 / Um | 60 / Ist | 60 / Ist | 60 / Ist | C: 51 / Lem |
+| 102 | Durance Of Hate Level 3 | 55 | 57 / Um | 60 / Ist | 60 / Ist | 60 / Ist | C: 51 / Lem |
+| 104 | Outer Steppes | 56 | 57 / Um | 60 / Ist | 60 / Ist | 60 / Ist | A: 54 / Um |
+| 105 | Plains Of Despair | 56 | 57 / Um | 60 / Ist | 60 / Ist | 60 / Ist | A: 54 / Um |
+| 106 | City Of The Damned | 57 | 60 / Ist | 60 / Ist | 60 / Ist | 60 / Ist | B: 57 / Um |
+| 107 | River Of Flame | 57 | 60 / Ist | 60 / Ist | 60 / Ist | 60 / Ist | B: 57 / Um |
+| 108 | Chaos Sanctuary | 58 | 60 / Ist | 60 / Ist | 60 / Ist | 60 / Ist | C: 57 / Um |
+| 110 | Bloody Foothills | 58 | 60 / Ist | 60 / Ist | 60 / Ist | 60 / Ist | C: 60 / Ist |
+| 111 | Frigid Highlands | 59 | 63 / Ist | 63 / Ist | 63 / Ist | 63 / Ist | C: 60 / Ist |
+| 112 | Arreat Plateau | 60 | 63 / Ist | 63 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 113 | Crystalline Passage | 61 | 63 / Ist | 63 / Vex | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 114 | Frozen River | 61 | 60 / Ist | 63 / Vex | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 115 | Glacial Trail | 61 | 63 / Ist | 63 / Vex | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 116 | Drifter Cavern | 61 | 63 / Ist | 63 / Vex | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 117 | Frozen Tundra | 60 | 63 / Ist | 63 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 118 | Ancient's Way | 62 | 63 / Vex | 63 / Vex | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 119 | Icy Cellar | 62 | 63 / Ist | 63 / Vex | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 120 | Arreat Summit | 68 | - / - | - / - | - / - | - / - | C: 60 / Ist |
+| 121 | Nihlathak's Temple | 63 | - / - | - / - | - / - | - / - | C: 60 / Ist |
+| 122 | Halls Of Anguish | 63 | 63 / Vex | 63 / Vex | 66 / Vex | 66 / Vex | C: 60 / Ist |
+| 123 | Halls Of Pain | 64 | 63 / Vex | 66 / Vex | 66 / Vex | 66 / Vex | C: 60 / Ist |
+| 124 | Halls Of Vaught | 64 | 63 / Vex | 66 / Vex | 66 / Vex | 66 / Vex | C: 60 / Ist |
+| 125 | Abaddon | 60 | 63 / Ist | 63 / Ist | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 126 | Pit Of Acheron | 61 | 63 / Ist | 63 / Vex | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 127 | Infernal Pit | 62 | 63 / Ist | 63 / Vex | 63 / Vex | 63 / Vex | C: 60 / Ist |
+| 128 | Worldstone Keep Level 1 | 65 | 63 / Vex | 66 / Vex | 66 / Vex | 66 / Vex | C: 60 / Ist |
+| 129 | Worldstone Keep Level 2 | 65 | 63 / Vex | 66 / Vex | 66 / Vex | 66 / Vex | C: 60 / Ist |
+| 130 | Worldstone Keep Level 3 | 66 | 66 / Vex | 66 / Vex | 69 / Lo | 69 / Lo | C: 60 / Ist |
+| 131 | Throne Of Destruction | 66 | 66 / Vex | 66 / Vex | 69 / Lo | 69 / Lo | C: 60 / Ist |
+| 132 | The Worldstone Chamber | 66 | - / - | - / - | - / - | - / - | C: 60 / Ist |
+| 133 | Matron's Den | 75 | 75 / Ber | 75 / Ber | 78 / Cham | 78 / Cham | C: 60 / Ist |
+| 134 | Fogotten Sands | 75 | 72 / Ber | 75 / Ber | 78 / Cham | 75 / Ber | C: 60 / Ist |
+| 135 | Furnace of Pain | 75 | 75 / Ber | 75 / Ber | 78 / Cham | 78 / Cham | C: 60 / Ist |
+| 136 | Tristram | 75 | - / - | - / - | - / - | - / - | C: 60 / Ist |
 
 ## 2. 지역 (헬)
 
-| ID | 지역 | 레벨 | 일반 | 챔피언 (+2) | 유니크 (+3) | 상자 |
-|---|---|---|---|---|---|---|
-| 2 | Blood Moor | 67 | 66 / Vex | 69 / Lo | 69 / Lo | A: 63 / Vex |
-| 3 | Cold Plains | 68 | 66 / Vex | 69 / Lo | 69 / Lo | A: 63 / Vex |
-| 4 | Stony Field | 68 | 69 / Vex | 69 / Lo | 69 / Lo | A: 63 / Vex |
-| 5 | Dark Wood | 68 | 69 / Vex | 69 / Lo | 69 / Lo | A: 63 / Vex |
-| 6 | Black Marsh | 69 | 72 / Lo | 69 / Lo | 69 / Lo | B: 66 / Vex |
-| 7 | Tamoe Highland | 69 | 72 / Lo | 69 / Lo | 69 / Lo | B: 66 / Vex |
-| 8 | Den Of Evil | 79 | 78 / Cham | 84 / Zod | 84 / Zod | C: 66 / Vex |
-| 9 | Cave Level 1 | 77 | 81 / Ber | 78 / Cham | 78 / Cham | C: 66 / Vex |
-| 10 | Underground Passage Level 1 | 69 | 72 / Lo | 69 / Lo | 69 / Lo | B: 66 / Vex |
-| 11 | Hole Level 1 | 80 | 84 / Cham | 84 / Zod | 87 / Zod | C: 66 / Vex |
-| 12 | Pit Level 1 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
-| 13 | Cave Level 2 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | C: 66 / Vex |
-| 14 | Underground Passage Level 2 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
-| 15 | Hole Level 2 | 81 | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
-| 16 | Pit Level 2 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
-| 17 | Burial Grounds | 80 | 78 / Cham | 84 / Zod | 87 / Zod | C: 66 / Vex |
-| 18 | Crypt | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
-| 19 | Mausoleum | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
-| 21 | Tower Cellar Level 1 | 75 | 81 / Ber | 75 / Ber | 78 / Cham | C: 66 / Vex |
-| 22 | Tower Cellar Level 2 | 76 | 81 / Ber | 78 / Cham | 78 / Cham | C: 66 / Vex |
-| 23 | Tower Cellar Level 3 | 77 | 81 / Ber | 78 / Cham | 78 / Cham | C: 66 / Vex |
-| 24 | Tower Cellar Level 4 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | C: 66 / Vex |
-| 25 | Tower Cellar Level 5 | 79 | 84 / Cham | 84 / Zod | 84 / Zod | C: 66 / Vex |
-| 26 | Monastery Gate | 70 | 72 / Lo | 69 / Lo | 69 / Lo | B: 66 / Vex |
-| 27 | Outer Cloister | 70 | 69 / Lo | 69 / Lo | 69 / Lo | B: 66 / Vex |
-| 28 | Barracks | 70 | 72 / Lo | 69 / Lo | 69 / Lo | B: 66 / Vex |
-| 29 | Jail Level 1 | 71 | 75 / Lo | 69 / Lo | 72 / Ber | C: 66 / Vex |
-| 30 | Jail Level 2 | 71 | 75 / Lo | 69 / Lo | 72 / Ber | C: 66 / Vex |
-| 31 | Jail Level 3 | 71 | 75 / Lo | 69 / Lo | 72 / Ber | C: 66 / Vex |
-| 32 | Inner Cloister | 72 | 75 / Lo | 72 / Ber | 75 / Ber | C: 66 / Vex |
-| 33 | Cathedral | 72 | 69 / Lo | 72 / Ber | 75 / Ber | C: 66 / Vex |
-| 34 | Catacombs Level 1 | 72 | 69 / Lo | 72 / Ber | 75 / Ber | C: 66 / Vex |
-| 35 | Catacombs Level 2 | 73 | 69 / Lo | 75 / Ber | 75 / Ber | C: 66 / Vex |
-| 36 | Catacombs Level 3 | 73 | 69 / Lo | 75 / Ber | 75 / Ber | C: 66 / Vex |
-| 37 | Catacombs Level 4 | 73 | 69 / Lo | 75 / Ber | 75 / Ber | C: 66 / Vex |
-| 38 | Tristram | 76 | 81 / Ber | 78 / Cham | 78 / Cham | C: 66 / Vex |
-| 39 | Moo Moo Farm | 81 | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
-| 41 | Rocky Waste | 75 | 81 / Ber | 75 / Ber | 78 / Cham | A: 69 / Lo |
-| 42 | Dry Hills | 76 | 81 / Ber | 78 / Cham | 78 / Cham | A: 69 / Lo |
-| 43 | Far Oasis | 76 | 75 / Ber | 78 / Cham | 78 / Cham | A: 69 / Lo |
-| 44 | Lost City | 77 | 81 / Ber | 78 / Cham | 78 / Cham | B: 69 / Lo |
-| 45 | Valley Of Snakes | 77 | 75 / Ber | 78 / Cham | 78 / Cham | B: 69 / Lo |
-| 46 | Canyon Of The Magi | 79 | 84 / Cham | 84 / Zod | 84 / Zod | C: 69 / Lo |
-| 47 | Sewers Level 1 | 74 | 78 / Ber | 75 / Ber | 75 / Ber | A: 69 / Lo |
-| 48 | Sewers Level 2 | 74 | 78 / Ber | 75 / Ber | 75 / Ber | A: 69 / Lo |
-| 49 | Sewers Level 3 | 75 | 75 / Ber | 75 / Ber | 78 / Cham | A: 69 / Lo |
-| 51 | Harem Level 2 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | B: 69 / Lo |
-| 52 | Palace Cellar Level 1 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | B: 69 / Lo |
-| 53 | Palace Cellar Level 2 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | B: 69 / Lo |
-| 54 | Palace Cellar Level 3 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | B: 69 / Lo |
-| 55 | Stony Tomb Level 1 | 78 | 78 / Cham | 78 / Cham | 84 / Zod | B: 69 / Lo |
-| 56 | Halls Of The Dead Level 1 | 79 | 84 / Cham | 84 / Zod | 84 / Zod | C: 69 / Lo |
-| 57 | Halls Of The Dead Level 2 | 81 | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
-| 58 | Claw Viper Temple Level 1 | 82 | 84 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
-| 59 | Stony Tomb Level 2 | 79 | 78 / Cham | 84 / Zod | 84 / Zod | C: 69 / Lo |
-| 60 | Halls Of The Dead Level 3 | 82 | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
-| 61 | Claw Viper Temple Level 2 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
-| 62 | Maggot Lair Level 1 | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
-| 63 | Maggot Lair Level 2 | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
-| 64 | Maggot Lair Level 3 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
-| 65 | Ancient Tunnels | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
-| 66 | Tal Rashas Tomb #1 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | C: 69 / Lo |
-| 67 | Tal Rashas Tomb #2 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | C: 69 / Lo |
-| 68 | Tal Rashas Tomb #3 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | C: 69 / Lo |
-| 69 | Tal Rashas Tomb #4 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | C: 69 / Lo |
-| 70 | Tal Rashas Tomb #5 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | C: 69 / Lo |
-| 71 | Tal Rashas Tomb #6 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | C: 69 / Lo |
-| 72 | Tal Rashas Tomb #7 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | C: 69 / Lo |
-| 73 | Duriels Lair | 80 | 78 / Cham | 84 / Zod | 87 / Zod | C: 69 / Lo |
-| 74 | Arcane Sanctuary | 79 | 78 / Cham | 84 / Zod | 84 / Zod | C: 69 / Lo |
-| 76 | Spider Forest | 79 | 78 / Cham | 84 / Zod | 84 / Zod | A: 72 / Ber |
-| 77 | Great Marsh | 80 | 78 / Cham | 84 / Zod | 87 / Zod | B: 75 / Ber |
-| 78 | Flayer Jungle | 80 | 78 / Cham | 84 / Zod | 87 / Zod | B: 75 / Ber |
-| 79 | Lower Kurast | 80 | 78 / Cham | 84 / Zod | 87 / Zod | B: 75 / Ber |
-| 80 | Kurast Bazaar | 81 | 84 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 81 | Upper Kurast | 81 | 84 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 82 | Kurast Causeway | 81 | 84 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 83 | Travincal | 82 | 84 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 84 | Spider Cave | 79 | 78 / Cham | 84 / Zod | 84 / Zod | A: 72 / Ber |
-| 85 | Spider Cavern | 79 | 78 / Cham | 84 / Zod | 84 / Zod | A: 72 / Ber |
-| 86 | Swampy Pit Level 1 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | B: 75 / Ber |
-| 87 | Swampy Pit Level 2 | 81 | 78 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 88 | Flayer Dungeon Level 1 | 81 | 84 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 89 | Flayer Dungeon Level 2 | 82 | 84 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 90 | Swampy Pit Level 3 | 82 | 84 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 91 | Flayer Dungeon Level 3 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 92 | Sewers Level 1 | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 93 | Sewers Level 2 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 94 | Ruined Temple | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 95 | Disused Fane | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 96 | Forgotten Reliquary | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 97 | Forgotten Temple | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 98 | Ruined Fane | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 99 | Disused Reliquary | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 100 | Durance Of Hate Level 1 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 101 | Durance Of Hate Level 2 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 102 | Durance Of Hate Level 3 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
-| 104 | Outer Steppes | 82 | 84 / Zod | 87 / Zod | 87 / Zod | A: 78 / Cham |
-| 105 | Plains Of Despair | 83 | 87 / Zod | 87 / Zod | 87 / Zod | B: 78 / Cham |
-| 106 | City Of The Damned | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 78 / Cham |
-| 107 | River Of Flame | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 78 / Cham |
-| 108 | Chaos Sanctuary | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 78 / Cham |
-| 110 | Bloody Foothills | 80 | 84 / Zod | 84 / Zod | 87 / Zod | C: 87 / Zod |
-| 111 | Frigid Highlands | 81 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 112 | Arreat Plateau | 81 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 113 | Crystalline Passage | 82 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 114 | Frozen River | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 115 | Glacial Trail | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 116 | Drifter Cavern | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 117 | Frozen Tundra | 81 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 118 | Ancient's Way | 82 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 119 | Icy Cellar | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 120 | Arreat Summit | 87 | - / - | - / - | - / - | C: 87 / Zod |
-| 121 | Nihlathak's Temple | 83 | - / - | - / - | - / - | C: 87 / Zod |
-| 122 | Halls Of Anguish | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 123 | Halls Of Pain | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 124 | Halls Of Vaught | 84 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 125 | Abaddon | 81 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 126 | Pit Of Acheron | 82 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 127 | Infernal Pit | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 128 | Worldstone Keep Level 1 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 129 | Worldstone Keep Level 2 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 130 | Worldstone Keep Level 3 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 131 | Throne Of Destruction | 85 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 132 | The Worldstone Chamber | 85 | - / - | - / - | - / - | C: 87 / Zod |
-| 133 | Matron's Den | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 134 | Fogotten Sands | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 135 | Furnace of Pain | 83 | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
-| 136 | Tristram | 83 | - / - | - / - | - / - | C: 87 / Zod |
+| ID | 지역 | 레벨 | 일반 | 챔피언 (+2) | 유니크 (+3) | 유니크 부하 (+3) | 상자 |
+|---|---|---|---|---|---|---|---|
+| 2 | Blood Moor | 67 | 66 / Vex | 69 / Lo | 69 / Lo | 69 / Lo | A: 63 / Vex |
+| 3 | Cold Plains | 68 | 66 / Vex | 69 / Lo | 69 / Lo | 69 / Lo | A: 63 / Vex |
+| 4 | Stony Field | 68 | 69 / Vex | 69 / Lo | 69 / Lo | 75 / Lo | A: 63 / Vex |
+| 5 | Dark Wood | 68 | 69 / Vex | 69 / Lo | 69 / Lo | 75 / Lo | A: 63 / Vex |
+| 6 | Black Marsh | 69 | 72 / Lo | 69 / Lo | 69 / Lo | 75 / Lo | B: 66 / Vex |
+| 7 | Tamoe Highland | 69 | 72 / Lo | 69 / Lo | 69 / Lo | 75 / Lo | B: 66 / Vex |
+| 8 | Den Of Evil | 79 | 78 / Cham | 84 / Zod | 84 / Zod | 84 / Zod | C: 66 / Vex |
+| 9 | Cave Level 1 | 77 | 81 / Ber | 78 / Cham | 78 / Cham | 84 / Cham | C: 66 / Vex |
+| 10 | Underground Passage Level 1 | 69 | 72 / Lo | 69 / Lo | 69 / Lo | 75 / Lo | B: 66 / Vex |
+| 11 | Hole Level 1 | 80 | 84 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
+| 12 | Pit Level 1 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
+| 13 | Cave Level 2 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | 87 / Zod | C: 66 / Vex |
+| 14 | Underground Passage Level 2 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
+| 15 | Hole Level 2 | 81 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
+| 16 | Pit Level 2 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
+| 17 | Burial Grounds | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
+| 18 | Crypt | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
+| 19 | Mausoleum | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
+| 21 | Tower Cellar Level 1 | 75 | 81 / Ber | 75 / Ber | 78 / Cham | 84 / Cham | C: 66 / Vex |
+| 22 | Tower Cellar Level 2 | 76 | 81 / Ber | 78 / Cham | 78 / Cham | 84 / Cham | C: 66 / Vex |
+| 23 | Tower Cellar Level 3 | 77 | 81 / Ber | 78 / Cham | 78 / Cham | 84 / Cham | C: 66 / Vex |
+| 24 | Tower Cellar Level 4 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | 87 / Zod | C: 66 / Vex |
+| 25 | Tower Cellar Level 5 | 79 | 84 / Cham | 84 / Zod | 84 / Zod | 87 / Zod | C: 66 / Vex |
+| 26 | Monastery Gate | 70 | 72 / Lo | 69 / Lo | 69 / Lo | 75 / Lo | B: 66 / Vex |
+| 27 | Outer Cloister | 70 | 69 / Lo | 69 / Lo | 69 / Lo | 69 / Lo | B: 66 / Vex |
+| 28 | Barracks | 70 | 72 / Lo | 69 / Lo | 69 / Lo | 75 / Lo | B: 66 / Vex |
+| 29 | Jail Level 1 | 71 | 75 / Lo | 69 / Lo | 72 / Ber | 78 / Ber | C: 66 / Vex |
+| 30 | Jail Level 2 | 71 | 75 / Lo | 69 / Lo | 72 / Ber | 78 / Ber | C: 66 / Vex |
+| 31 | Jail Level 3 | 71 | 75 / Lo | 69 / Lo | 72 / Ber | 78 / Ber | C: 66 / Vex |
+| 32 | Inner Cloister | 72 | 75 / Lo | 72 / Ber | 75 / Ber | 81 / Ber | C: 66 / Vex |
+| 33 | Cathedral | 72 | 69 / Lo | 72 / Ber | 75 / Ber | 75 / Ber | C: 66 / Vex |
+| 34 | Catacombs Level 1 | 72 | 69 / Lo | 72 / Ber | 75 / Ber | 75 / Ber | C: 66 / Vex |
+| 35 | Catacombs Level 2 | 73 | 69 / Lo | 75 / Ber | 75 / Ber | 75 / Ber | C: 66 / Vex |
+| 36 | Catacombs Level 3 | 73 | 69 / Lo | 75 / Ber | 75 / Ber | 75 / Ber | C: 66 / Vex |
+| 37 | Catacombs Level 4 | 73 | 69 / Lo | 75 / Ber | 75 / Ber | 75 / Ber | C: 66 / Vex |
+| 38 | Tristram | 76 | 81 / Ber | 78 / Cham | 78 / Cham | 84 / Cham | C: 66 / Vex |
+| 39 | Moo Moo Farm | 81 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 66 / Vex |
+| 41 | Rocky Waste | 75 | 81 / Ber | 75 / Ber | 78 / Cham | 84 / Cham | A: 69 / Lo |
+| 42 | Dry Hills | 76 | 81 / Ber | 78 / Cham | 78 / Cham | 84 / Cham | A: 69 / Lo |
+| 43 | Far Oasis | 76 | 75 / Ber | 78 / Cham | 78 / Cham | 78 / Cham | A: 69 / Lo |
+| 44 | Lost City | 77 | 81 / Ber | 78 / Cham | 78 / Cham | 84 / Cham | B: 69 / Lo |
+| 45 | Valley Of Snakes | 77 | 75 / Ber | 78 / Cham | 78 / Cham | 78 / Cham | B: 69 / Lo |
+| 46 | Canyon Of The Magi | 79 | 84 / Cham | 84 / Zod | 84 / Zod | 87 / Zod | C: 69 / Lo |
+| 47 | Sewers Level 1 | 74 | 78 / Ber | 75 / Ber | 75 / Ber | 81 / Ber | A: 69 / Lo |
+| 48 | Sewers Level 2 | 74 | 78 / Ber | 75 / Ber | 75 / Ber | 81 / Ber | A: 69 / Lo |
+| 49 | Sewers Level 3 | 75 | 75 / Ber | 75 / Ber | 78 / Cham | 78 / Cham | A: 69 / Lo |
+| 51 | Harem Level 2 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | 87 / Zod | B: 69 / Lo |
+| 52 | Palace Cellar Level 1 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | 87 / Zod | B: 69 / Lo |
+| 53 | Palace Cellar Level 2 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | 87 / Zod | B: 69 / Lo |
+| 54 | Palace Cellar Level 3 | 78 | 84 / Cham | 78 / Cham | 84 / Zod | 87 / Zod | B: 69 / Lo |
+| 55 | Stony Tomb Level 1 | 78 | 78 / Cham | 78 / Cham | 84 / Zod | 84 / Zod | B: 69 / Lo |
+| 56 | Halls Of The Dead Level 1 | 79 | 84 / Cham | 84 / Zod | 84 / Zod | 87 / Zod | C: 69 / Lo |
+| 57 | Halls Of The Dead Level 2 | 81 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 58 | Claw Viper Temple Level 1 | 82 | 84 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 59 | Stony Tomb Level 2 | 79 | 78 / Cham | 84 / Zod | 84 / Zod | 84 / Zod | C: 69 / Lo |
+| 60 | Halls Of The Dead Level 3 | 82 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 61 | Claw Viper Temple Level 2 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 62 | Maggot Lair Level 1 | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 63 | Maggot Lair Level 2 | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 64 | Maggot Lair Level 3 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 65 | Ancient Tunnels | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 66 | Tal Rashas Tomb #1 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 67 | Tal Rashas Tomb #2 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 68 | Tal Rashas Tomb #3 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 69 | Tal Rashas Tomb #4 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 70 | Tal Rashas Tomb #5 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 71 | Tal Rashas Tomb #6 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 72 | Tal Rashas Tomb #7 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 73 | Duriels Lair | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | C: 69 / Lo |
+| 74 | Arcane Sanctuary | 79 | 78 / Cham | 84 / Zod | 84 / Zod | 84 / Zod | C: 69 / Lo |
+| 76 | Spider Forest | 79 | 78 / Cham | 84 / Zod | 84 / Zod | 84 / Zod | A: 72 / Ber |
+| 77 | Great Marsh | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | B: 75 / Ber |
+| 78 | Flayer Jungle | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | B: 75 / Ber |
+| 79 | Lower Kurast | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | B: 75 / Ber |
+| 80 | Kurast Bazaar | 81 | 84 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 81 | Upper Kurast | 81 | 84 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 82 | Kurast Causeway | 81 | 84 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 83 | Travincal | 82 | 84 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 84 | Spider Cave | 79 | 78 / Cham | 84 / Zod | 84 / Zod | 84 / Zod | A: 72 / Ber |
+| 85 | Spider Cavern | 79 | 78 / Cham | 84 / Zod | 84 / Zod | 84 / Zod | A: 72 / Ber |
+| 86 | Swampy Pit Level 1 | 80 | 78 / Cham | 84 / Zod | 87 / Zod | 87 / Zod | B: 75 / Ber |
+| 87 | Swampy Pit Level 2 | 81 | 78 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 88 | Flayer Dungeon Level 1 | 81 | 84 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 89 | Flayer Dungeon Level 2 | 82 | 84 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 90 | Swampy Pit Level 3 | 82 | 84 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 91 | Flayer Dungeon Level 3 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 92 | Sewers Level 1 | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 93 | Sewers Level 2 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 94 | Ruined Temple | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 95 | Disused Fane | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 96 | Forgotten Reliquary | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 97 | Forgotten Temple | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 98 | Ruined Fane | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 99 | Disused Reliquary | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 100 | Durance Of Hate Level 1 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 101 | Durance Of Hate Level 2 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 102 | Durance Of Hate Level 3 | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 75 / Ber |
+| 104 | Outer Steppes | 82 | 84 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | A: 78 / Cham |
+| 105 | Plains Of Despair | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | B: 78 / Cham |
+| 106 | City Of The Damned | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 78 / Cham |
+| 107 | River Of Flame | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 78 / Cham |
+| 108 | Chaos Sanctuary | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 78 / Cham |
+| 110 | Bloody Foothills | 80 | 84 / Zod | 84 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 111 | Frigid Highlands | 81 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 112 | Arreat Plateau | 81 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 113 | Crystalline Passage | 82 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 114 | Frozen River | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 115 | Glacial Trail | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 116 | Drifter Cavern | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 117 | Frozen Tundra | 81 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 118 | Ancient's Way | 82 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 119 | Icy Cellar | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 120 | Arreat Summit | 87 | - / - | - / - | - / - | - / - | C: 87 / Zod |
+| 121 | Nihlathak's Temple | 83 | - / - | - / - | - / - | - / - | C: 87 / Zod |
+| 122 | Halls Of Anguish | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 123 | Halls Of Pain | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 124 | Halls Of Vaught | 84 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 125 | Abaddon | 81 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 126 | Pit Of Acheron | 82 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 127 | Infernal Pit | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 128 | Worldstone Keep Level 1 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 129 | Worldstone Keep Level 2 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 130 | Worldstone Keep Level 3 | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 131 | Throne Of Destruction | 85 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 132 | The Worldstone Chamber | 85 | - / - | - / - | - / - | - / - | C: 87 / Zod |
+| 133 | Matron's Den | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 134 | Fogotten Sands | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 135 | Furnace of Pain | 83 | 87 / Zod | 87 / Zod | 87 / Zod | 87 / Zod | C: 87 / Zod |
+| 136 | Tristram | 83 | - / - | - / - | - / - | - / - | C: 87 / Zod |
 
 ## 3. 슈퍼유니크
 
@@ -508,216 +509,216 @@
 
 - 노말은 TC 올림이 없어 레벨이 TC에 영향을 주지 않으므로 레벨을 적지 않는다. 지역은 나이트메어 표와 같다.
 
-| hcIdx | Superunique | 클래스 | TC | 장비 TC / 룬 |
-|---|---|---|---|---|
-| 0 | Bishibosh | fallenshaman1 | Act 1 Super A | 3 / - |
-| 1 | Bonebreak | skeleton1 | Act 1 Super A | 3 / - |
-| 2 | Coldcrow | cr_archer1 | Act 1 Super A | 3 / - |
-| 3 | Rakanishu | fallen2 | Act 1 Super B | 6 / - |
-| 4 | Treehead WoodFist | brute2 | Act 1 Super B | 6 / - |
-| 5 | Griswold | griswold (B) | Griswold | 12 / - |
-| 6 | The Countess | corruptrogue3 | Countess | 12 / Ral |
-| 7 | Pitspawn Fouldog | bighead2 | Act 1 Super B | 6 / - |
-| 8 | Flamespike the Crawler | quillrat4 | Act 1 Unique C | 12 / - |
-| 9 | Boneash | skmage_pois3 | Act 1 Super C | 12 / - |
-| 10 | Radament | radament (B) | Radament | 27 / Ral |
-| 11 | Bloodwitch the Wild | pantherwoman1 | Act 2 Super A | 15 / Nef |
-| 12 | Fangskin | clawviper3 | Act 2 Super B | 18 / Nef |
-| 13 | Beetleburst | scarab2 | Act 2 Super B | 18 / Nef |
-| 14 | Leatherarm | mummy2 | Act 2 Super A | 15 / Nef |
-| 15 | Coldworm the Burrower | maggotqueen1 | Act 2 Super B | 18 / Nef |
-| 16 | Fire Eye | sandraider3 | Act 2 Super B | 18 / Nef |
-| 17 | Dark Elder | zombie5 | Act 2 Super B | 18 / Nef |
-| 18 | The Summoner | summoner (B) | Summoner | 21 / Nef |
-| 19 | Ancient Kaa the Soulless | unraveler3 | Act 2 Super C | 21 / Ral |
-| 20 | The Smith | smith | Smith | 12 / - |
-| 21 | Web Mage the Burning | arach4 | Act 3 Super A | 24 / Ral |
-| 22 | Witch Doctor Endugu | fetishshaman4 | Act 3 Super B | 27 / Ral |
-| 23 | Stormtree | thornhulk3 | Act 3 Super B | 27 / Ral |
-| 24 | Sarina the Battlemaid | corruptrogue5 | Act 3 Super B | 27 / Ral |
-| 25 | Icehawk Riftwing | batdemon3 | Act 3 Super A | 24 / Ral |
-| 26 | Ismail Vilehand | councilmember1 | Council | 33 / Sol |
-| 27 | Geleb Flamefinger | councilmember2 | Council | 33 / Sol |
-| 28 | Bremm Sparkfist | councilmember3 | Council | 33 / Sol |
-| 29 | Toorc Icefist | councilmember1 | Council | 33 / Sol |
-| 30 | Wyand Voidfinger | councilmember2 | Council | 33 / Sol |
-| 31 | Maffer Dragonhand | councilmember3 | Council | 33 / Sol |
-| 32 | Winged Death | megademon3 | Act 4 Super A | 33 / Sol |
-| 33 | The Tormentor | willowisp3 | Act 4 Super A | 33 / Sol |
-| 34 | Taintbreeder | vilemother2 | Act 4 Super A | 33 / Sol |
-| 35 | Riftwraith the Cannibal | regurgitator2 | Act 4 Super A | 33 / Sol |
-| 36 | Infector of Souls | megademon3 | Act 4 Super B | 36 / Sol |
-| 37 | Lord De Seis | doomknight3 | Act 4 Super C | 36 / Sol |
-| 38 | Grand Vizier of Chaos | fingermage3 | Act 4 Super B | 36 / Sol |
-| 39 | The Cow King | hellbovine | Cow King | 12 / - |
-| 40 | Corpsefire | zombie1 | Act 1 Super A | 3 / - |
-| 41 | The Feature Creep | hephasto | Haphesto | 36 / Dol |
-| 42 | Siege Boss | overseer1 | Act 5 Super A | 36 / Dol |
-| 43 | Ancient Barbarian 1 | ancientbarb1 | - | - / - |
-| 44 | Ancient Barbarian 2 | ancientbarb2 | - | - / - |
-| 45 | Ancient Barbarian 3 | ancientbarb3 | - | - / - |
-| 46 | Axe Dweller | bloodlord3 | Act 5 Super C | 39 / Dol |
-| 47 | Bonesaw Breaker | reanimatedhorde2 | Act 5 Super A | 36 / Dol |
-| 48 | Dac Farren | imp3 | Act 5 Super B | 39 / Dol |
-| 49 | Megaflow Rectifier | minion1 | Act 5 Super A | 36 / Dol |
-| 50 | Eyeback Unleashed | deathmauler1 | Act 5 Super A | 36 / Dol |
-| 51 | Threash Socket | siegebeast3 | Act 5 Super Cx | 39 / Dol |
-| 52 | Pindleskin | reanimatedhorde5 | Act 5 Super Cx | 39 / Dol |
-| 53 | Snapchip Shatter | frozenhorror1 | Act 5 Super C | 39 / Dol |
-| 54 | Anodized Elite | succubus4 | Act 5 Super C | 39 / Dol |
-| 55 | Vinvear Molech | succubuswitch2 | Act 5 Super A | 36 / Dol |
-| 56 | Sharp Tooth Sayer | overseer3 | Act 5 Super B | 39 / Dol |
-| 57 | Magma Torquer | imp5 | Act 5 Super C | 39 / Dol |
-| 58 | Blaze Ripper | deathmauler5 | Act 5 Super C | 39 / Dol |
-| 59 | Frozenstein | snowyeti4 | Act 5 Super C | 39 / Dol |
-| 60 | Nihlathak Boss | nihlathakboss (B) | Nihlathak | 39 / Dol |
-| 61 | Baal Subject 1 | fallenshaman5 | Act 5 Champ C | 39 / Dol |
-| 62 | Baal Subject 2 | unraveler5 | Act 5 Champ C | 39 / Dol |
-| 63 | Baal Subject 3 | baalhighpriest | Act 5 Champ C | 39 / Dol |
-| 64 | Baal Subject 4 | venomlord | Act 5 Champ C | 39 / Dol |
-| 65 | Baal Subject 5 | baalminion1 | Act 5 Champ C | 39 / Dol |
+| hcIdx | Superunique | 클래스 | TC | 장비 TC / 룬 | 부하 장비 TC / 룬 |
+|---|---|---|---|---|---|
+| 0 | Bishibosh | fallenshaman1 | Act 1 Super A | 3 / - | 3 / - |
+| 1 | Bonebreak | skeleton1 | Act 1 Super A | 3 / - | 3 / - |
+| 2 | Coldcrow | cr_archer1 | Act 1 Super A | 3 / - | 3 / - |
+| 3 | Rakanishu | fallen2 | Act 1 Super B | 6 / - | 6 / - |
+| 4 | Treehead WoodFist | brute2 | Act 1 Super B | 6 / - | 6 / - |
+| 5 | Griswold | griswold (B) | Griswold | 12 / - | - |
+| 6 | The Countess | corruptrogue3 | Countess | 12 / Ral | 12 / - |
+| 7 | Pitspawn Fouldog | bighead2 | Act 1 Super B | 6 / - | 12 / - |
+| 8 | Flamespike the Crawler | quillrat4 | Act 1 Unique C | 12 / - | - / - |
+| 9 | Boneash | skmage_pois3 | Act 1 Super C | 12 / - | - |
+| 10 | Radament | radament (B) | Radament | 27 / Ral | 15 / Nef |
+| 11 | Bloodwitch the Wild | pantherwoman1 | Act 2 Super A | 15 / Nef | 15 / Nef |
+| 12 | Fangskin | clawviper3 | Act 2 Super B | 18 / Nef | 18 / Nef |
+| 13 | Beetleburst | scarab2 | Act 2 Super B | 18 / Nef | 18 / Nef |
+| 14 | Leatherarm | mummy2 | Act 2 Super A | 15 / Nef | 15 / Nef |
+| 15 | Coldworm the Burrower | maggotqueen1 | Act 2 Super B | 18 / Nef | - |
+| 16 | Fire Eye | sandraider3 | Act 2 Super B | 18 / Nef | 18 / Nef |
+| 17 | Dark Elder | zombie5 | Act 2 Super B | 18 / Nef | 18 / Nef |
+| 18 | The Summoner | summoner (B) | Summoner | 21 / Nef | - |
+| 19 | Ancient Kaa the Soulless | unraveler3 | Act 2 Super C | 21 / Ral | 15 / Nef |
+| 20 | The Smith | smith | Smith | 12 / - | - |
+| 21 | Web Mage the Burning | arach4 | Act 3 Super A | 24 / Ral | 24 / Ral |
+| 22 | Witch Doctor Endugu | fetishshaman4 | Act 3 Super B | 27 / Ral | 27 / Ral |
+| 23 | Stormtree | thornhulk3 | Act 3 Super B | 27 / Ral | 27 / Ral |
+| 24 | Sarina the Battlemaid | corruptrogue5 | Act 3 Super B | 27 / Ral | 27 / Ral |
+| 25 | Icehawk Riftwing | batdemon3 | Act 3 Super A | 24 / Ral | 24 / Ral |
+| 26 | Ismail Vilehand | councilmember1 | Council | 33 / Sol | 33 / Sol |
+| 27 | Geleb Flamefinger | councilmember2 | Council | 33 / Sol | 33 / Sol |
+| 28 | Bremm Sparkfist | councilmember3 | Council | 33 / Sol | 33 / Sol |
+| 29 | Toorc Icefist | councilmember1 | Council | 33 / Sol | - |
+| 30 | Wyand Voidfinger | councilmember2 | Council | 33 / Sol | - |
+| 31 | Maffer Dragonhand | councilmember3 | Council | 33 / Sol | - |
+| 32 | Winged Death | megademon3 | Act 4 Super A | 33 / Sol | 36 / Sol |
+| 33 | The Tormentor | willowisp3 | Act 4 Super A | 33 / Sol | - / Sol |
+| 34 | Taintbreeder | vilemother2 | Act 4 Super A | 33 / Sol | 33 / Sol |
+| 35 | Riftwraith the Cannibal | regurgitator2 | Act 4 Super A | 33 / Sol | 33 / Sol |
+| 36 | Infector of Souls | megademon3 | Act 4 Super B | 36 / Sol | 36 / Sol |
+| 37 | Lord De Seis | doomknight3 | Act 4 Super C | 36 / Sol | 33 / Sol |
+| 38 | Grand Vizier of Chaos | fingermage3 | Act 4 Super B | 36 / Sol | - / Sol |
+| 39 | The Cow King | hellbovine | Cow King | 12 / - | 36 / Dol |
+| 40 | Corpsefire | zombie1 | Act 1 Super A | 3 / - | 3 / - |
+| 41 | The Feature Creep | hephasto | Haphesto | 36 / Dol | - |
+| 42 | Siege Boss | overseer1 | Act 5 Super A | 36 / Dol | - |
+| 43 | Ancient Barbarian 1 | ancientbarb1 | - | - / - | - |
+| 44 | Ancient Barbarian 2 | ancientbarb2 | - | - / - | - |
+| 45 | Ancient Barbarian 3 | ancientbarb3 | - | - / - | - |
+| 46 | Axe Dweller | bloodlord3 | Act 5 Super C | 39 / Dol | 39 / Dol |
+| 47 | Bonesaw Breaker | reanimatedhorde2 | Act 5 Super A | 36 / Dol | 39 / Dol |
+| 48 | Dac Farren | imp3 | Act 5 Super B | 39 / Dol | 39 / Dol |
+| 49 | Megaflow Rectifier | minion1 | Act 5 Super A | 36 / Dol | 36 / Dol |
+| 50 | Eyeback Unleashed | deathmauler1 | Act 5 Super A | 36 / Dol | 36 / Dol |
+| 51 | Threash Socket | siegebeast3 | Act 5 Super Cx | 39 / Dol | - |
+| 52 | Pindleskin | reanimatedhorde5 | Act 5 Super Cx | 39 / Dol | 39 / Dol |
+| 53 | Snapchip Shatter | frozenhorror1 | Act 5 Super C | 39 / Dol | 36 / Dol |
+| 54 | Anodized Elite | succubus4 | Act 5 Super C | 39 / Dol | 39 / Dol |
+| 55 | Vinvear Molech | succubuswitch2 | Act 5 Super A | 36 / Dol | - |
+| 56 | Sharp Tooth Sayer | overseer3 | Act 5 Super B | 39 / Dol | 39 / Dol |
+| 57 | Magma Torquer | imp5 | Act 5 Super C | 39 / Dol | 39 / Dol |
+| 58 | Blaze Ripper | deathmauler5 | Act 5 Super C | 39 / Dol | 39 / Dol |
+| 59 | Frozenstein | snowyeti4 | Act 5 Super C | 39 / Dol | 39 / Dol |
+| 60 | Nihlathak Boss | nihlathakboss (B) | Nihlathak | 39 / Dol | - |
+| 61 | Baal Subject 1 | fallenshaman5 | Act 5 Champ C | 39 / Dol | 39 / Dol |
+| 62 | Baal Subject 2 | unraveler5 | Act 5 Champ C | 39 / Dol | 39 / Dol |
+| 63 | Baal Subject 3 | baalhighpriest | Act 5 Champ C | 39 / Dol | 39 / Dol |
+| 64 | Baal Subject 4 | venomlord | Act 5 Champ C | 39 / Dol | 39 / Dol |
+| 65 | Baal Subject 5 | baalminion1 | Act 5 Champ C | 39 / Dol | 39 / Dol |
 
 ### 나이트메어
 
-| hcIdx | Superunique | 클래스 | 지역 | 레벨 | 기본 TC | 올린 TC | 장비 TC / 룬 |
-|---|---|---|---|---|---|---|---|
-| 0 | Bishibosh | fallenshaman1 | 3 Cold Plains | 39 | Act 1 (N) Super A |  | 42 / Io |
-| 1 | Bonebreak | skeleton1 | 18 Crypt | 40 | Act 1 (N) Super A |  | 42 / Io |
-| 2 | Coldcrow | cr_archer1 | 9 Cave Level 1 | 39 | Act 1 (N) Super A |  | 42 / Io |
-| 3 | Rakanishu | fallen2 | 4 Stony Field | 40 | Act 1 (N) Super B |  | 42 / Io |
-| 4 | Treehead WoodFist | brute2 | 5 Dark Wood | 41 | Act 1 (N) Super B |  | 42 / Io |
-| 5 | Griswold | griswold (B) | 38 Tristram | 42 | Griswold (N) |  | 66 / Vex |
-| 6 | The Countess | corruptrogue3 | 25 Tower Cellar Level 5 | 45 | Countess (N) |  | 45 / Ko |
-| 7 | Pitspawn Fouldog | bighead2 | 30 Jail Level 2 | 44 | Act 1 (N) Super B | Act 2 (N) Super A | 45 / Ko |
-| 8 | Flamespike the Crawler | quillrat4 | 32 Inner Cloister | 44 | Act 1 (N) Unique C | Act 2 (N) Unique B | 48 / Ko |
-| 9 | Boneash | skmage_pois3 | 33 Cathedral | 45 | Act 1 (N) Super C | Act 2 (N) Super B | 48 / Ko |
-| 10 | Radament | radament (B) | 49 Sewers Level 3 | 52 | Radament (N) |  | 51 / Lem |
-| 11 | Bloodwitch the Wild | pantherwoman1 | 60 Halls Of The Dead Level 3 | 48 | Act 2 (N) Super A | Act 3 (N) Super A | 51 / Lem |
-| 12 | Fangskin | clawviper3 | 61 Claw Viper Temple Level 2 | 50 | Act 2 (N) Super B | Act 3 (N) Super B | 51 / Lem |
-| 13 | Beetleburst | scarab2 | 43 Far Oasis | 48 | Act 2 (N) Super B | Act 3 (N) Super A | 51 / Lem |
-| 14 | Leatherarm | mummy2 | 59 Stony Tomb Level 2 | 47 | Act 2 (N) Super A | Act 2 (N) Super C | 48 / Ko |
-| 15 | Coldworm the Burrower | maggotqueen1 | 64 Maggot Lair Level 3 | 49 | Act 2 (N) Super B | Act 3 (N) Super A | 51 / Lem |
-| 16 | Fire Eye | sandraider3 | 54 Palace Cellar Level 3 | 51 | Act 2 (N) Super B | Act 3 (N) Super C | 51 / Lem |
-| 17 | Dark Elder | zombie5 | 44 Lost City | 49 | Act 2 (N) Super B | Act 3 (N) Super A | 51 / Lem |
-| 18 | The Summoner | summoner (B) | 74 Arcane Sanctuary | 55 | Summoner (N) |  | 48 / Ko |
-| 19 | Ancient Kaa the Soulless | unraveler3 | 66 Tal Rashas Tomb #1 | 52 | Act 2 (N) Super C | Act 3 (N) Super C | 51 / Lem |
-| 20 | The Smith | smith | 28 Barracks | 43 | Smith (N) |  | 66 / Vex |
-| 21 | Web Mage the Burning | arach4 | 85 Spider Cavern | 53 | Act 3 (N) Super A | Act 3 (N) Super C | 51 / Lem |
-| 22 | Witch Doctor Endugu | fetishshaman4 | 91 Flayer Dungeon Level 3 | 54 | Act 3 (N) Super B | Act 4 (N) Super A | 54 / Um |
-| 23 | Stormtree | thornhulk3 | 78 Flayer Jungle | 53 | Act 3 (N) Super B | Act 3 (N) Super C | 51 / Lem |
-| 24 | Sarina the Battlemaid | corruptrogue5 | 94 Ruined Temple | 56 | Act 3 (N) Super B | Act 4 (N) Super A | 54 / Um |
-| 25 | Icehawk Riftwing | batdemon3 | 92 Sewers Level 1 | 55 | Act 3 (N) Super A | Act 4 (N) Super A | 54 / Um |
-| 26 | Ismail Vilehand | councilmember1 | 83 Travincal | 57 | Council (N) |  | 54 / Um |
-| 27 | Geleb Flamefinger | councilmember2 | 83 Travincal | 57 | Council (N) |  | 54 / Um |
-| 28 | Bremm Sparkfist | councilmember3 | 102 Durance Of Hate Level 3 | 58 | Council (N) |  | 54 / Um |
-| 29 | Toorc Icefist | councilmember1 | 83 Travincal | 57 | Council (N) |  | 54 / Um |
-| 30 | Wyand Voidfinger | councilmember2 | 102 Durance Of Hate Level 3 | 58 | Council (N) |  | 54 / Um |
-| 31 | Maffer Dragonhand | councilmember3 | 102 Durance Of Hate Level 3 | 58 | Council (N) |  | 54 / Um |
-| 32 | Winged Death | megademon3 |  |  | Act 4 (N) Super A |  | 54 / Um |
-| 33 | The Tormentor | willowisp3 |  |  | Act 4 (N) Super A |  | 54 / Um |
-| 34 | Taintbreeder | vilemother2 |  |  | Act 4 (N) Super A |  | 54 / Um |
-| 35 | Riftwraith the Cannibal | regurgitator2 |  |  | Act 4 (N) Super A |  | 54 / Um |
-| 36 | Infector of Souls | megademon3 | 108 Chaos Sanctuary | 61 | Act 4 (N) Super B | Act 4 (N) Super C | 57 / Um |
-| 37 | Lord De Seis | doomknight3 | 108 Chaos Sanctuary | 61 | Act 4 (N) Super C |  | 57 / Um |
-| 38 | Grand Vizier of Chaos | fingermage3 | 108 Chaos Sanctuary | 61 | Act 4 (N) Super B | Act 4 (N) Super C | 57 / Um |
-| 39 | The Cow King | hellbovine | 39 Moo Moo Farm | 67 | Cow King (N) |  | 66 / Vex |
-| 40 | Corpsefire | zombie1 | 8 Den Of Evil | 39 | Act 1 (N) Super A |  | 42 / Io |
-| 41 | The Feature Creep | hephasto | 107 River Of Flame | 60 | Haphesto (N) |  | 60 / Ist |
-| 42 | Siege Boss | overseer1 | 110 Bloody Foothills | 61 | Act 5 (N) Super A |  | 60 / Ist |
-| 43 | Ancient Barbarian 1 | ancientbarb1 | 120 Arreat Summit | 71 | - |  | - / - |
-| 44 | Ancient Barbarian 2 | ancientbarb2 | 120 Arreat Summit | 71 | - |  | - / - |
-| 45 | Ancient Barbarian 3 | ancientbarb3 | 120 Arreat Summit | 71 | - |  | - / - |
-| 46 | Axe Dweller | bloodlord3 |  |  | Act 5 (N) Super C |  | 63 / Ist |
-| 47 | Bonesaw Breaker | reanimatedhorde2 | 115 Glacial Trail | 64 | Act 5 (N) Super A | Act 5 (N) Super B | 60 / Ist |
-| 48 | Dac Farren | imp3 | 110 Bloody Foothills | 61 | Act 5 (N) Super B |  | 60 / Ist |
-| 49 | Megaflow Rectifier | minion1 | 111 Frigid Highlands | 62 | Act 5 (N) Super A |  | 60 / Ist |
-| 50 | Eyeback Unleashed | deathmauler1 | 111 Frigid Highlands | 62 | Act 5 (N) Super A |  | 60 / Ist |
-| 51 | Threash Socket | siegebeast3 | 112 Arreat Plateau | 63 | Act 5 (N) Super Cx |  | 63 / Ist |
-| 52 | Pindleskin | reanimatedhorde5 | 121 Nihlathak's Temple | 66 | Act 5 (N) Super Cx |  | 63 / Ist |
-| 53 | Snapchip Shatter | frozenhorror1 | 119 Icy Cellar | 65 | Act 5 (N) Super C |  | 63 / Ist |
-| 54 | Anodized Elite | succubus4 |  |  | Act 5 (N) Super C |  | 63 / Ist |
-| 55 | Vinvear Molech | succubuswitch2 |  |  | Act 5 (N) Super A |  | 60 / Ist |
-| 56 | Sharp Tooth Sayer | overseer3 | 111 Frigid Highlands | 62 | Act 5 (N) Super B |  | 60 / Ist |
-| 57 | Magma Torquer | imp5 |  |  | Act 5 (N) Super C |  | 63 / Ist |
-| 58 | Blaze Ripper | deathmauler5 |  |  | Act 5 (N) Super C |  | 63 / Ist |
-| 59 | Frozenstein | snowyeti4 | 114 Frozen River | 64 | Act 5 (N) Super C |  | 63 / Ist |
-| 60 | Nihlathak Boss | nihlathakboss (B) | 124 Halls Of Vaught | 73 | Nihlathak (N) |  | 60 / Ist |
-| 61 | Baal Subject 1 | fallenshaman5 | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo |
-| 62 | Baal Subject 2 | unraveler5 | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo |
-| 63 | Baal Subject 3 | baalhighpriest | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo |
-| 64 | Baal Subject 4 | venomlord | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo |
-| 65 | Baal Subject 5 | baalminion1 | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo |
+| hcIdx | Superunique | 클래스 | 지역 | 레벨 | 기본 TC | 올린 TC | 장비 TC / 룬 | 부하 (+3) 장비 TC / 룬 |
+|---|---|---|---|---|---|---|---|---|
+| 0 | Bishibosh | fallenshaman1 | 3 Cold Plains | 39 | Act 1 (N) Super A |  | 42 / Io | 42 / Io |
+| 1 | Bonebreak | skeleton1 | 18 Crypt | 40 | Act 1 (N) Super A |  | 42 / Io | 42 / Io |
+| 2 | Coldcrow | cr_archer1 | 9 Cave Level 1 | 39 | Act 1 (N) Super A |  | 42 / Io | 42 / Io |
+| 3 | Rakanishu | fallen2 | 4 Stony Field | 40 | Act 1 (N) Super B |  | 42 / Io | 42 / Io |
+| 4 | Treehead WoodFist | brute2 | 5 Dark Wood | 41 | Act 1 (N) Super B |  | 42 / Io | 42 / Io |
+| 5 | Griswold | griswold (B) | 38 Tristram | 42 | Griswold (N) |  | 66 / Vex | - |
+| 6 | The Countess | corruptrogue3 | 25 Tower Cellar Level 5 | 45 | Countess (N) |  | 45 / Ko | 48 / Ko |
+| 7 | Pitspawn Fouldog | bighead2 | 30 Jail Level 2 | 44 | Act 1 (N) Super B | Act 2 (N) Super A | 45 / Ko | 48 / Ko |
+| 8 | Flamespike the Crawler | quillrat4 | 32 Inner Cloister | 44 | Act 1 (N) Unique C | Act 2 (N) Unique B | 48 / Ko | - / Io |
+| 9 | Boneash | skmage_pois3 | 33 Cathedral | 45 | Act 1 (N) Super C | Act 2 (N) Super B | 48 / Ko | - |
+| 10 | Radament | radament (B) | 49 Sewers Level 3 | 52 | Radament (N) |  | 51 / Lem | 51 / Lem |
+| 11 | Bloodwitch the Wild | pantherwoman1 | 60 Halls Of The Dead Level 3 | 48 | Act 2 (N) Super A | Act 3 (N) Super A | 51 / Lem | 51 / Lem |
+| 12 | Fangskin | clawviper3 | 61 Claw Viper Temple Level 2 | 50 | Act 2 (N) Super B | Act 3 (N) Super B | 51 / Lem | 51 / Lem |
+| 13 | Beetleburst | scarab2 | 43 Far Oasis | 48 | Act 2 (N) Super B | Act 3 (N) Super A | 51 / Lem | 51 / Lem |
+| 14 | Leatherarm | mummy2 | 59 Stony Tomb Level 2 | 47 | Act 2 (N) Super A | Act 2 (N) Super C | 48 / Ko | 51 / Lem |
+| 15 | Coldworm the Burrower | maggotqueen1 | 64 Maggot Lair Level 3 | 49 | Act 2 (N) Super B | Act 3 (N) Super A | 51 / Lem | - |
+| 16 | Fire Eye | sandraider3 | 54 Palace Cellar Level 3 | 51 | Act 2 (N) Super B | Act 3 (N) Super C | 51 / Lem | 54 / Um |
+| 17 | Dark Elder | zombie5 | 44 Lost City | 49 | Act 2 (N) Super B | Act 3 (N) Super A | 51 / Lem | 51 / Lem |
+| 18 | The Summoner | summoner (B) | 74 Arcane Sanctuary | 55 | Summoner (N) |  | 48 / Ko | - |
+| 19 | Ancient Kaa the Soulless | unraveler3 | 66 Tal Rashas Tomb #1 | 52 | Act 2 (N) Super C | Act 3 (N) Super C | 51 / Lem | 54 / Um |
+| 20 | The Smith | smith | 28 Barracks | 43 | Smith (N) |  | 66 / Vex | - |
+| 21 | Web Mage the Burning | arach4 | 85 Spider Cavern | 53 | Act 3 (N) Super A | Act 3 (N) Super C | 51 / Lem | 54 / Um |
+| 22 | Witch Doctor Endugu | fetishshaman4 | 91 Flayer Dungeon Level 3 | 54 | Act 3 (N) Super B | Act 4 (N) Super A | 54 / Um | 57 / Um |
+| 23 | Stormtree | thornhulk3 | 78 Flayer Jungle | 53 | Act 3 (N) Super B | Act 3 (N) Super C | 51 / Lem | 54 / Um |
+| 24 | Sarina the Battlemaid | corruptrogue5 | 94 Ruined Temple | 56 | Act 3 (N) Super B | Act 4 (N) Super A | 54 / Um | 57 / Um |
+| 25 | Icehawk Riftwing | batdemon3 | 92 Sewers Level 1 | 55 | Act 3 (N) Super A | Act 4 (N) Super A | 54 / Um | 57 / Um |
+| 26 | Ismail Vilehand | councilmember1 | 83 Travincal | 57 | Council (N) |  | 54 / Um | 54 / Um |
+| 27 | Geleb Flamefinger | councilmember2 | 83 Travincal | 57 | Council (N) |  | 54 / Um | 54 / Um |
+| 28 | Bremm Sparkfist | councilmember3 | 102 Durance Of Hate Level 3 | 58 | Council (N) |  | 54 / Um | 54 / Um |
+| 29 | Toorc Icefist | councilmember1 | 83 Travincal | 57 | Council (N) |  | 54 / Um | - |
+| 30 | Wyand Voidfinger | councilmember2 | 102 Durance Of Hate Level 3 | 58 | Council (N) |  | 54 / Um | - |
+| 31 | Maffer Dragonhand | councilmember3 | 102 Durance Of Hate Level 3 | 58 | Council (N) |  | 54 / Um | - |
+| 32 | Winged Death | megademon3 |  |  | Act 4 (N) Super A |  | 54 / Um | - |
+| 33 | The Tormentor | willowisp3 |  |  | Act 4 (N) Super A |  | 54 / Um | - |
+| 34 | Taintbreeder | vilemother2 |  |  | Act 4 (N) Super A |  | 54 / Um | - |
+| 35 | Riftwraith the Cannibal | regurgitator2 |  |  | Act 4 (N) Super A |  | 54 / Um | - |
+| 36 | Infector of Souls | megademon3 | 108 Chaos Sanctuary | 61 | Act 4 (N) Super B | Act 4 (N) Super C | 57 / Um | 60 / Ist |
+| 37 | Lord De Seis | doomknight3 | 108 Chaos Sanctuary | 61 | Act 4 (N) Super C |  | 57 / Um | 60 / Ist |
+| 38 | Grand Vizier of Chaos | fingermage3 | 108 Chaos Sanctuary | 61 | Act 4 (N) Super B | Act 4 (N) Super C | 57 / Um | - / Ist |
+| 39 | The Cow King | hellbovine | 39 Moo Moo Farm | 67 | Cow King (N) |  | 66 / Vex | 60 / Ist |
+| 40 | Corpsefire | zombie1 | 8 Den Of Evil | 39 | Act 1 (N) Super A |  | 42 / Io | 42 / Io |
+| 41 | The Feature Creep | hephasto | 107 River Of Flame | 60 | Haphesto (N) |  | 60 / Ist | - |
+| 42 | Siege Boss | overseer1 | 110 Bloody Foothills | 61 | Act 5 (N) Super A |  | 60 / Ist | - |
+| 43 | Ancient Barbarian 1 | ancientbarb1 | 120 Arreat Summit | 71 | - |  | - / - | - |
+| 44 | Ancient Barbarian 2 | ancientbarb2 | 120 Arreat Summit | 71 | - |  | - / - | - |
+| 45 | Ancient Barbarian 3 | ancientbarb3 | 120 Arreat Summit | 71 | - |  | - / - | - |
+| 46 | Axe Dweller | bloodlord3 |  |  | Act 5 (N) Super C |  | 63 / Ist | - |
+| 47 | Bonesaw Breaker | reanimatedhorde2 | 115 Glacial Trail | 64 | Act 5 (N) Super A | Act 5 (N) Super B | 60 / Ist | 63 / Vex |
+| 48 | Dac Farren | imp3 | 110 Bloody Foothills | 61 | Act 5 (N) Super B |  | 60 / Ist | 60 / Ist |
+| 49 | Megaflow Rectifier | minion1 | 111 Frigid Highlands | 62 | Act 5 (N) Super A |  | 60 / Ist | 63 / Ist |
+| 50 | Eyeback Unleashed | deathmauler1 | 111 Frigid Highlands | 62 | Act 5 (N) Super A |  | 60 / Ist | 63 / Ist |
+| 51 | Threash Socket | siegebeast3 | 112 Arreat Plateau | 63 | Act 5 (N) Super Cx |  | 63 / Ist | - |
+| 52 | Pindleskin | reanimatedhorde5 | 121 Nihlathak's Temple | 66 | Act 5 (N) Super Cx |  | 63 / Ist | 66 / Vex |
+| 53 | Snapchip Shatter | frozenhorror1 | 119 Icy Cellar | 65 | Act 5 (N) Super C |  | 63 / Ist | 63 / Vex |
+| 54 | Anodized Elite | succubus4 |  |  | Act 5 (N) Super C |  | 63 / Ist | - |
+| 55 | Vinvear Molech | succubuswitch2 |  |  | Act 5 (N) Super A |  | 60 / Ist | - |
+| 56 | Sharp Tooth Sayer | overseer3 | 111 Frigid Highlands | 62 | Act 5 (N) Super B |  | 60 / Ist | 63 / Ist |
+| 57 | Magma Torquer | imp5 |  |  | Act 5 (N) Super C |  | 63 / Ist | - |
+| 58 | Blaze Ripper | deathmauler5 |  |  | Act 5 (N) Super C |  | 63 / Ist | - |
+| 59 | Frozenstein | snowyeti4 | 114 Frozen River | 64 | Act 5 (N) Super C |  | 63 / Ist | 63 / Vex |
+| 60 | Nihlathak Boss | nihlathakboss (B) | 124 Halls Of Vaught | 73 | Nihlathak (N) |  | 60 / Ist | - |
+| 61 | Baal Subject 1 | fallenshaman5 | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo | 69 / Lo |
+| 62 | Baal Subject 2 | unraveler5 | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo | 69 / Lo |
+| 63 | Baal Subject 3 | baalhighpriest | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo | 69 / Lo |
+| 64 | Baal Subject 4 | venomlord | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo | 69 / Lo |
+| 65 | Baal Subject 5 | baalminion1 | 131 Throne Of Destruction | 69 | Act 5 (N) Champ C | Act 2 (H) Champ A | 69 / Lo | 69 / Lo |
 
 ### 헬
 
-| hcIdx | Superunique | 클래스 | 지역 | 레벨 | 기본 TC | 올린 TC | 장비 TC / 룬 |
-|---|---|---|---|---|---|---|---|
-| 0 | Bishibosh | fallenshaman1 | 3 Cold Plains | 71 | Act 1 (H) Super A | Act 2 (H) Super B | 69 / Lo |
-| 1 | Bonebreak | skeleton1 | 18 Crypt | 86 | Act 1 (H) Super A | Act 4 (H) Super B | 78 / Cham |
-| 2 | Coldcrow | cr_archer1 | 9 Cave Level 1 | 80 | Act 1 (H) Super A | Act 3 (H) Super C | 75 / Ber |
-| 3 | Rakanishu | fallen2 | 4 Stony Field | 71 | Act 1 (H) Super B | Act 2 (H) Super B | 69 / Lo |
-| 4 | Treehead WoodFist | brute2 | 5 Dark Wood | 71 | Act 1 (H) Super B | Act 2 (H) Super B | 69 / Lo |
-| 5 | Griswold | griswold (B) | 38 Tristram | 87 | Griswold (H) |  | 66 / Vex |
-| 6 | The Countess | corruptrogue3 | 25 Tower Cellar Level 5 | 82 | Countess (H) |  | 66 / Lo |
-| 7 | Pitspawn Fouldog | bighead2 | 30 Jail Level 2 | 74 | Act 1 (H) Super B | Act 3 (H) Super A | 72 / Ber |
-| 8 | Flamespike the Crawler | quillrat4 | 32 Inner Cloister | 75 | Act 1 (H) Unique C | Act 3 (H) Unique B | 75 / Ber |
-| 9 | Boneash | skmage_pois3 | 33 Cathedral | 75 | Act 1 (H) Super C | Act 3 (H) Super B | 75 / Ber |
-| 10 | Radament | radament (B) | 49 Sewers Level 3 | 86 | Radament (H) |  | 75 / Ber |
-| 11 | Bloodwitch the Wild | pantherwoman1 | 60 Halls Of The Dead Level 3 | 85 | Act 2 (H) Super A | Act 4 (H) Super B | 78 / Cham |
-| 12 | Fangskin | clawviper3 | 61 Claw Viper Temple Level 2 | 86 | Act 2 (H) Super B | Act 4 (H) Super B | 78 / Cham |
-| 13 | Beetleburst | scarab2 | 43 Far Oasis | 79 | Act 2 (H) Super B | Act 3 (H) Super C | 75 / Ber |
-| 14 | Leatherarm | mummy2 | 59 Stony Tomb Level 2 | 82 | Act 2 (H) Super A | Act 4 (H) Super A | 78 / Cham |
-| 15 | Coldworm the Burrower | maggotqueen1 | 64 Maggot Lair Level 3 | 88 | Act 2 (H) Super B | Act 4 (H) Super C | 78 / Cham |
-| 16 | Fire Eye | sandraider3 | 54 Palace Cellar Level 3 | 81 | Act 2 (H) Super B | Act 4 (H) Super A | 78 / Cham |
-| 17 | Dark Elder | zombie5 | 44 Lost City | 80 | Act 2 (H) Super B | Act 3 (H) Super C | 75 / Ber |
-| 18 | The Summoner | summoner (B) | 74 Arcane Sanctuary | 80 | Summoner (H) |  | 72 / Lo |
-| 19 | Ancient Kaa the Soulless | unraveler3 | 66 Tal Rashas Tomb #1 | 83 | Act 2 (H) Super C | Act 4 (H) Super A | 78 / Cham |
-| 20 | The Smith | smith | 28 Barracks | 73 | Smith (H) |  | 66 / Vex |
-| 21 | Web Mage the Burning | arach4 | 85 Spider Cavern | 82 | Act 3 (H) Super A | Act 4 (H) Super A | 78 / Cham |
-| 22 | Witch Doctor Endugu | fetishshaman4 | 91 Flayer Dungeon Level 3 | 86 | Act 3 (H) Super B | Act 4 (H) Super B | 78 / Cham |
-| 23 | Stormtree | thornhulk3 | 78 Flayer Jungle | 83 | Act 3 (H) Super B | Act 4 (H) Super A | 78 / Cham |
-| 24 | Sarina the Battlemaid | corruptrogue5 | 94 Ruined Temple | 87 | Act 3 (H) Super B | Act 4 (H) Super C | 78 / Cham |
-| 25 | Icehawk Riftwing | batdemon3 | 92 Sewers Level 1 | 87 | Act 3 (H) Super A | Act 4 (H) Super C | 78 / Cham |
-| 26 | Ismail Vilehand | councilmember1 | 83 Travincal | 85 | Council (H) |  | 78 / Cham |
-| 27 | Geleb Flamefinger | councilmember2 | 83 Travincal | 85 | Council (H) |  | 78 / Cham |
-| 28 | Bremm Sparkfist | councilmember3 | 102 Durance Of Hate Level 3 | 86 | Council (H) |  | 78 / Cham |
-| 29 | Toorc Icefist | councilmember1 | 83 Travincal | 85 | Council (H) |  | 78 / Cham |
-| 30 | Wyand Voidfinger | councilmember2 | 102 Durance Of Hate Level 3 | 86 | Council (H) |  | 78 / Cham |
-| 31 | Maffer Dragonhand | councilmember3 | 102 Durance Of Hate Level 3 | 86 | Council (H) |  | 78 / Cham |
-| 32 | Winged Death | megademon3 |  |  | Act 4 (H) Super A |  | 78 / Cham |
-| 33 | The Tormentor | willowisp3 |  |  | Act 4 (H) Super A |  | 78 / Cham |
-| 34 | Taintbreeder | vilemother2 |  |  | Act 4 (H) Super A |  | 78 / Cham |
-| 35 | Riftwraith the Cannibal | regurgitator2 |  |  | Act 4 (H) Super A |  | 78 / Cham |
-| 36 | Infector of Souls | megademon3 | 108 Chaos Sanctuary | 88 | Act 4 (H) Super B | Act 4 (H) Super C | 78 / Cham |
-| 37 | Lord De Seis | doomknight3 | 108 Chaos Sanctuary | 88 | Act 4 (H) Super C |  | 78 / Cham |
-| 38 | Grand Vizier of Chaos | fingermage3 | 108 Chaos Sanctuary | 88 | Act 4 (H) Super B | Act 4 (H) Super C | 78 / Cham |
-| 39 | The Cow King | hellbovine | 39 Moo Moo Farm | 84 | Cow King (H) |  | 66 / Vex |
-| 40 | Corpsefire | zombie1 | 8 Den Of Evil | 82 | Act 1 (H) Super A | Act 4 (H) Super A | 78 / Cham |
-| 41 | The Feature Creep | hephasto | 107 River Of Flame | 88 | Haphesto (H) |  | 84 / Zod |
-| 42 | Siege Boss | overseer1 | 110 Bloody Foothills | 83 | Act 5 (H) Super A |  | 84 / Zod |
-| 43 | Ancient Barbarian 1 | ancientbarb1 | 120 Arreat Summit | 90 | - |  | - / - |
-| 44 | Ancient Barbarian 2 | ancientbarb2 | 120 Arreat Summit | 90 | - |  | - / - |
-| 45 | Ancient Barbarian 3 | ancientbarb3 | 120 Arreat Summit | 90 | - |  | - / - |
-| 46 | Axe Dweller | bloodlord3 |  |  | Act 5 (H) Super C |  | 87 / Zod |
-| 47 | Bonesaw Breaker | reanimatedhorde2 | 115 Glacial Trail | 86 | Act 5 (H) Super A |  | 84 / Zod |
-| 48 | Dac Farren | imp3 | 110 Bloody Foothills | 83 | Act 5 (H) Super B |  | 87 / Zod |
-| 49 | Megaflow Rectifier | minion1 | 111 Frigid Highlands | 84 | Act 5 (H) Super A |  | 84 / Zod |
-| 50 | Eyeback Unleashed | deathmauler1 | 111 Frigid Highlands | 84 | Act 5 (H) Super A |  | 84 / Zod |
-| 51 | Threash Socket | siegebeast3 | 112 Arreat Plateau | 84 | Act 5 (H) Super Cx |  | 87 / Zod |
-| 52 | Pindleskin | reanimatedhorde5 | 121 Nihlathak's Temple | 86 | Act 5 (H) Super Cx |  | 87 / Zod |
-| 53 | Snapchip Shatter | frozenhorror1 | 119 Icy Cellar | 86 | Act 5 (H) Super C | Act 4 (H) Super Bx | 78 / Cham |
-| 54 | Anodized Elite | succubus4 |  |  | Act 5 (H) Super C |  | 87 / Zod |
-| 55 | Vinvear Molech | succubuswitch2 |  |  | Act 5 (H) Super A |  | 84 / Zod |
-| 56 | Sharp Tooth Sayer | overseer3 | 111 Frigid Highlands | 84 | Act 5 (H) Super B |  | 87 / Zod |
-| 57 | Magma Torquer | imp5 |  |  | Act 5 (H) Super C |  | 87 / Zod |
-| 58 | Blaze Ripper | deathmauler5 |  |  | Act 5 (H) Super C |  | 87 / Zod |
-| 59 | Frozenstein | snowyeti4 | 114 Frozen River | 86 | Act 5 (H) Super C | Act 4 (H) Super Bx | 78 / Cham |
-| 60 | Nihlathak Boss | nihlathakboss (B) | 124 Halls Of Vaught | 95 | Nihlathak (H) |  | 87 / Zod |
-| 61 | Baal Subject 1 | fallenshaman5 | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod |
-| 62 | Baal Subject 2 | unraveler5 | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod |
-| 63 | Baal Subject 3 | baalhighpriest | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod |
-| 64 | Baal Subject 4 | venomlord | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod |
-| 65 | Baal Subject 5 | baalminion1 | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod |
+| hcIdx | Superunique | 클래스 | 지역 | 레벨 | 기본 TC | 올린 TC | 장비 TC / 룬 | 부하 (+3) 장비 TC / 룬 |
+|---|---|---|---|---|---|---|---|---|
+| 0 | Bishibosh | fallenshaman1 | 3 Cold Plains | 71 | Act 1 (H) Super A | Act 2 (H) Super B | 69 / Lo | 69 / Lo |
+| 1 | Bonebreak | skeleton1 | 18 Crypt | 86 | Act 1 (H) Super A | Act 4 (H) Super B | 78 / Cham | 87 / Zod |
+| 2 | Coldcrow | cr_archer1 | 9 Cave Level 1 | 80 | Act 1 (H) Super A | Act 3 (H) Super C | 75 / Ber | 84 / Cham |
+| 3 | Rakanishu | fallen2 | 4 Stony Field | 71 | Act 1 (H) Super B | Act 2 (H) Super B | 69 / Lo | 69 / Lo |
+| 4 | Treehead WoodFist | brute2 | 5 Dark Wood | 71 | Act 1 (H) Super B | Act 2 (H) Super B | 69 / Lo | 69 / Lo |
+| 5 | Griswold | griswold (B) | 38 Tristram | 87 | Griswold (H) |  | 66 / Vex | - |
+| 6 | The Countess | corruptrogue3 | 25 Tower Cellar Level 5 | 82 | Countess (H) |  | 66 / Lo | 84 / Zod |
+| 7 | Pitspawn Fouldog | bighead2 | 30 Jail Level 2 | 74 | Act 1 (H) Super B | Act 3 (H) Super A | 72 / Ber | 72 / Ber |
+| 8 | Flamespike the Crawler | quillrat4 | 32 Inner Cloister | 75 | Act 1 (H) Unique C | Act 3 (H) Unique B | 75 / Ber | - / Vex |
+| 9 | Boneash | skmage_pois3 | 33 Cathedral | 75 | Act 1 (H) Super C | Act 3 (H) Super B | 75 / Ber | - |
+| 10 | Radament | radament (B) | 49 Sewers Level 3 | 86 | Radament (H) |  | 75 / Ber | 75 / Ber |
+| 11 | Bloodwitch the Wild | pantherwoman1 | 60 Halls Of The Dead Level 3 | 85 | Act 2 (H) Super A | Act 4 (H) Super B | 78 / Cham | 87 / Zod |
+| 12 | Fangskin | clawviper3 | 61 Claw Viper Temple Level 2 | 86 | Act 2 (H) Super B | Act 4 (H) Super B | 78 / Cham | 87 / Zod |
+| 13 | Beetleburst | scarab2 | 43 Far Oasis | 79 | Act 2 (H) Super B | Act 3 (H) Super C | 75 / Ber | 78 / Cham |
+| 14 | Leatherarm | mummy2 | 59 Stony Tomb Level 2 | 82 | Act 2 (H) Super A | Act 4 (H) Super A | 78 / Cham | 84 / Zod |
+| 15 | Coldworm the Burrower | maggotqueen1 | 64 Maggot Lair Level 3 | 88 | Act 2 (H) Super B | Act 4 (H) Super C | 78 / Cham | - |
+| 16 | Fire Eye | sandraider3 | 54 Palace Cellar Level 3 | 81 | Act 2 (H) Super B | Act 4 (H) Super A | 78 / Cham | 78 / Cham |
+| 17 | Dark Elder | zombie5 | 44 Lost City | 80 | Act 2 (H) Super B | Act 3 (H) Super C | 75 / Ber | 78 / Cham |
+| 18 | The Summoner | summoner (B) | 74 Arcane Sanctuary | 80 | Summoner (H) |  | 72 / Lo | - |
+| 19 | Ancient Kaa the Soulless | unraveler3 | 66 Tal Rashas Tomb #1 | 83 | Act 2 (H) Super C | Act 4 (H) Super A | 78 / Cham | 87 / Zod |
+| 20 | The Smith | smith | 28 Barracks | 73 | Smith (H) |  | 66 / Vex | - |
+| 21 | Web Mage the Burning | arach4 | 85 Spider Cavern | 82 | Act 3 (H) Super A | Act 4 (H) Super A | 78 / Cham | 84 / Zod |
+| 22 | Witch Doctor Endugu | fetishshaman4 | 91 Flayer Dungeon Level 3 | 86 | Act 3 (H) Super B | Act 4 (H) Super B | 78 / Cham | 87 / Zod |
+| 23 | Stormtree | thornhulk3 | 78 Flayer Jungle | 83 | Act 3 (H) Super B | Act 4 (H) Super A | 78 / Cham | 87 / Zod |
+| 24 | Sarina the Battlemaid | corruptrogue5 | 94 Ruined Temple | 87 | Act 3 (H) Super B | Act 4 (H) Super C | 78 / Cham | 87 / Zod |
+| 25 | Icehawk Riftwing | batdemon3 | 92 Sewers Level 1 | 87 | Act 3 (H) Super A | Act 4 (H) Super C | 78 / Cham | 87 / Zod |
+| 26 | Ismail Vilehand | councilmember1 | 83 Travincal | 85 | Council (H) |  | 78 / Cham | 78 / Cham |
+| 27 | Geleb Flamefinger | councilmember2 | 83 Travincal | 85 | Council (H) |  | 78 / Cham | 78 / Cham |
+| 28 | Bremm Sparkfist | councilmember3 | 102 Durance Of Hate Level 3 | 86 | Council (H) |  | 78 / Cham | 78 / Cham |
+| 29 | Toorc Icefist | councilmember1 | 83 Travincal | 85 | Council (H) |  | 78 / Cham | - |
+| 30 | Wyand Voidfinger | councilmember2 | 102 Durance Of Hate Level 3 | 86 | Council (H) |  | 78 / Cham | - |
+| 31 | Maffer Dragonhand | councilmember3 | 102 Durance Of Hate Level 3 | 86 | Council (H) |  | 78 / Cham | - |
+| 32 | Winged Death | megademon3 |  |  | Act 4 (H) Super A |  | 78 / Cham | - |
+| 33 | The Tormentor | willowisp3 |  |  | Act 4 (H) Super A |  | 78 / Cham | - |
+| 34 | Taintbreeder | vilemother2 |  |  | Act 4 (H) Super A |  | 78 / Cham | - |
+| 35 | Riftwraith the Cannibal | regurgitator2 |  |  | Act 4 (H) Super A |  | 78 / Cham | - |
+| 36 | Infector of Souls | megademon3 | 108 Chaos Sanctuary | 88 | Act 4 (H) Super B | Act 4 (H) Super C | 78 / Cham | 87 / Zod |
+| 37 | Lord De Seis | doomknight3 | 108 Chaos Sanctuary | 88 | Act 4 (H) Super C |  | 78 / Cham | 87 / Zod |
+| 38 | Grand Vizier of Chaos | fingermage3 | 108 Chaos Sanctuary | 88 | Act 4 (H) Super B | Act 4 (H) Super C | 78 / Cham | - / Zod |
+| 39 | The Cow King | hellbovine | 39 Moo Moo Farm | 84 | Cow King (H) |  | 66 / Vex | 87 / Zod |
+| 40 | Corpsefire | zombie1 | 8 Den Of Evil | 82 | Act 1 (H) Super A | Act 4 (H) Super A | 78 / Cham | 84 / Zod |
+| 41 | The Feature Creep | hephasto | 107 River Of Flame | 88 | Haphesto (H) |  | 84 / Zod | - |
+| 42 | Siege Boss | overseer1 | 110 Bloody Foothills | 83 | Act 5 (H) Super A |  | 84 / Zod | - |
+| 43 | Ancient Barbarian 1 | ancientbarb1 | 120 Arreat Summit | 90 | - |  | - / - | - |
+| 44 | Ancient Barbarian 2 | ancientbarb2 | 120 Arreat Summit | 90 | - |  | - / - | - |
+| 45 | Ancient Barbarian 3 | ancientbarb3 | 120 Arreat Summit | 90 | - |  | - / - | - |
+| 46 | Axe Dweller | bloodlord3 |  |  | Act 5 (H) Super C |  | 87 / Zod | - |
+| 47 | Bonesaw Breaker | reanimatedhorde2 | 115 Glacial Trail | 86 | Act 5 (H) Super A |  | 84 / Zod | 87 / Zod |
+| 48 | Dac Farren | imp3 | 110 Bloody Foothills | 83 | Act 5 (H) Super B |  | 87 / Zod | 87 / Zod |
+| 49 | Megaflow Rectifier | minion1 | 111 Frigid Highlands | 84 | Act 5 (H) Super A |  | 84 / Zod | 87 / Zod |
+| 50 | Eyeback Unleashed | deathmauler1 | 111 Frigid Highlands | 84 | Act 5 (H) Super A |  | 84 / Zod | 87 / Zod |
+| 51 | Threash Socket | siegebeast3 | 112 Arreat Plateau | 84 | Act 5 (H) Super Cx |  | 87 / Zod | - |
+| 52 | Pindleskin | reanimatedhorde5 | 121 Nihlathak's Temple | 86 | Act 5 (H) Super Cx |  | 87 / Zod | 87 / Zod |
+| 53 | Snapchip Shatter | frozenhorror1 | 119 Icy Cellar | 86 | Act 5 (H) Super C | Act 4 (H) Super Bx | 78 / Cham | 87 / Zod |
+| 54 | Anodized Elite | succubus4 |  |  | Act 5 (H) Super C |  | 87 / Zod | - |
+| 55 | Vinvear Molech | succubuswitch2 |  |  | Act 5 (H) Super A |  | 84 / Zod | - |
+| 56 | Sharp Tooth Sayer | overseer3 | 111 Frigid Highlands | 84 | Act 5 (H) Super B |  | 87 / Zod | 87 / Zod |
+| 57 | Magma Torquer | imp5 |  |  | Act 5 (H) Super C |  | 87 / Zod | - |
+| 58 | Blaze Ripper | deathmauler5 |  |  | Act 5 (H) Super C |  | 87 / Zod | - |
+| 59 | Frozenstein | snowyeti4 | 114 Frozen River | 86 | Act 5 (H) Super C | Act 4 (H) Super Bx | 78 / Cham | 87 / Zod |
+| 60 | Nihlathak Boss | nihlathakboss (B) | 124 Halls Of Vaught | 95 | Nihlathak (H) |  | 87 / Zod | - |
+| 61 | Baal Subject 1 | fallenshaman5 | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod | 87 / Zod |
+| 62 | Baal Subject 2 | unraveler5 | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod | 87 / Zod |
+| 63 | Baal Subject 3 | baalhighpriest | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod | 87 / Zod |
+| 64 | Baal Subject 4 | venomlord | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod | 87 / Zod |
+| 65 | Baal Subject 5 | baalminion1 | 131 Throne Of Destruction | 88 | Act 5 (H) Champ C |  | 87 / Zod | 87 / Zod |
 
 ## 4. 액트 보스 (`monstats.txt` `boss` 클래스)
 
