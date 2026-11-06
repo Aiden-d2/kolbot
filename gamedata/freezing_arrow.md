@@ -147,6 +147,38 @@
 - CL 550 Fallen 4063은 예상보다 183ms 길지만 기준(0.5초) 안이라 넣었다. 같은 시각 3줄 묶음의 둘째 줄. 넣든 빼든 중앙값은 ±1프레임 안.
 - 결과: 정상 줄은 모두 예상값 ±1프레임 안. 3절 식이 CL 775까지 맞고, 218프레임(8.7초)까지 상한 없음. 그 이상은 측정하지 않았고 상한이 없는 것으로 본다(사용자 판단).
 
+**261106 묶음에서 주운 냉기 길이 아이템 (기록 사용자 요청 261106)**
+- 출처: 아이템 로그 `261106_ItemLog.txt`(11/05 15:20 ~ 11/06 12:33, `docs/log_results.md` 261106 묶음과 같은 실행). 줄 번호는 이 파일 기준.
+- 계정: 프로필 a1~a8 = `aozo-sa`~`aozo-sh`(a1 `aozo-sa`, a2 `aozo-sb`, a3 `aozo-sc`, a4 `aozo-sd`, a5 `aozo-se`, a6 `aozo-sf`, a7 `aozo-sg`, a8 `aozo-sh`. 사용자). 캐릭터 이름은 기록 없음.
+- 위치: 모두 그 계정의 창고(`<Stashed>` 줄이 있음). 로그가 끝난 뒤의 창고 상태는 확인하지 않음.
+
+| 아이템 | 냉기 길이 | 계정 (프로필) | 주운 곳·시각 | 줄 (주움 → 창고) |
+|---|---|---|---|---|
+| Superior Long Battle Bow, 6소켓 (요구 힘 40·민첩 50) | Thul 6개면 450 | `aozo-se` (a5) | Chaos Sanctuary 11/06 09:00 | 4232 → 4235 |
+| Long Battle Bow (일반), 6소켓 (요구 힘 40·민첩 50) | Thul 6개면 450 | `aozo-sf` (a6) | Chaos Sanctuary 11/06 10:32 | 4660 → 4679 |
+| Superior Long War Bow, 6소켓 (요구 힘 50·민첩 65) | Thul 6개면 450 | `aozo-sc` (a3) | Throne Of Destruction 11/06 11:44 | 5001 → 5008 |
+| Small Charm of the Icicle | 25 (접미사, 1-5절) | `aozo-sh` (a8) | Infernal Pit 11/05 20:33 | 1460 → 1464 |
+| Lizard's Small Charm of Frost | 25 (접미사, 1-5절) | `aozo-sb` (a2) | Abaddon 11/05 21:38 | 1662 → 1663 |
+
+- 참의 냉기 길이는 접미사로 정한 값이다. 아이템 로그에는 냉기 길이가 나오지 않는다.
+
+Thul 룬 (룬마다 75)
+| 계정 (프로필) | 창고 줄 | 룬워드에 씀 | 남은 수 (로그 기준) |
+|---|---|---|---|
+| `aozo-sa` (a1) | 4329 | 0 | 1 |
+| `aozo-sb` (a2) | 2593 | 0 | 1 |
+| `aozo-sc` (a3) | 4935 | 0 | 1 |
+| `aozo-sd` (a4) | 3009, 4055, 4733 | 2 (Spirit 3038·4904, 룬 Tal Thul Ort Amn) | 1 또는 0 |
+| `aozo-se` (a5) | 1543 | 0 | 1 |
+| `aozo-sf` (a6) | 1359, 3302 | 0 | 2 |
+| `aozo-sg` (a7) | 4340 | 0 | 1 |
+| `aozo-sh` (a8) | 1865 | 0 | 1 |
+| 합계 | 11 | 2 | 9 (a4가 0이면 8) |
+
+- a4가 1 또는 0인 이유: 4733 앞에 주운 줄이 없어, 새로 주운 룬인지 이미 창고에 넣었던 룬(4055)이 다시 창고로 간 것인지 로그로 가릴 수 없다. a2의 2593도 주운 줄이 없지만 a2에는 다른 Thul 줄이 없다.
+- Thul이 팔리거나, 버려지거나, 큐브에 들어간 줄은 없다. 로그 시작 전부터 갖고 있던 룬은 확인하지 않음.
+- 주운 것 없음: Raven Frost, Eye of Etlich, Vampire Gaze, Um 룬, Duress, 접두사(Snowflake·Shivering·Boreal·Hibernal) 참, 5소켓 활.
+
 ## 7. 출처
 - 데이터: mpqdata `skills.txt`, `missiles.txt`, `difficultylevels.txt`, `states.txt`, `itemstatcost.txt`, `properties.txt`, `magicprefix.txt`, `magicsuffix.txt`, `uniqueitems.txt`, `monstats.txt`, `levels.txt`
 - 웹: [Basin Freeze length](https://www.theamazonbasin.com/wiki/index.php/Freeze_length), [Basin Freezing Arrow](https://www.theamazonbasin.com/wiki/index.php/Freezing_Arrow), [Basin Cold Damage](https://www.theamazonbasin.com/wiki/index.php/Cold_Damage), [Basin Cold Resist](https://theamazonbasin.com/wiki/index.php/Cold_Resist), [maxroll Crowd Control](https://maxroll.gg/d2/resources/crowd-control), [fandom Freeze](https://diablo.fandom.com/wiki/Freeze), [GameFAQs](https://gamefaqs.gamespot.com/boards/370600-diablo-ii-lord-of-destruction/49885099).
