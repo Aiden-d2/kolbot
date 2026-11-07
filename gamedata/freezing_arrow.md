@@ -10,12 +10,11 @@
 - 아이템 냉기 길이는 출처(반지, 목걸이, 갑옷 룬워드, 참, 무기 소켓 룬·주얼·사파이어)와 상관없이 스탯 56으로 합산되어 더해진다.
 - 상한 없음: CL 1125(306프레임, 12.2초)까지 측정.
 - 얼어 있는 동안 다시 맞으면 그 시점부터 새 길이로 갱신되고, 누적되지 않는다.
-- 대상은 헬만이다. 노멀·나이트메어는 보정이 작고 몹이 한두 발에 죽어 다루지 않는다.
 
 ## 2. 얼지 않는 대상
 - 냉기 면역(저항 100 이상).
 - 냉기 효과 0인 몹(냉기 면역이 아니어도).
-- 챔피언·유니크. 챔피언·유니크를 따라다니는 무리(`spectype` 8)는 일반 몹과 똑같이 언다.
+- 챔피언·유니크.
 
 ## 3. 테스트 필요
 - Vampire Gaze(그림 헬름 유니크, `xh9`): `uniqueitems.txt` `Vampiregaze` `dmg-cold` 파라미터 100.
@@ -28,11 +27,10 @@
 - **번호**: 상태 `freeze` 1, `cold` 11, `holywindcold` 44(`states.txt`). 스탯 `coldresist` 43, `coldlength` 56, `item_halffreezeduration` 118, `item_freeze` 134, `item_pierce_cold` 305(`itemstatcost.txt`). nip 키 `[coldlength]` = 56(`NTItemAlias.dbl`).
 - **냉기 길이 속성** (`properties.txt`): `cold-len` = 스탯 56. `dmg-cold` = 냉기 최소·최대 피해와 스탯 56(파라미터가 냉기 길이).
 - **참 냉기 길이** (`magicprefix.txt`·`magicsuffix.txt`): 접두사 Snowflake·Shivering·Boreal·Hibernal(`mod1`), 접미사 of Frost·of the Icicle·of the Glacier·of Winter(`mod3`) 모두 `cold-len` 25 고정. 크기(스몰·라지·그랜드) 무관. 마법 참은 **0 / 25 / 50**뿐. 유니크 참에는 없음.
-- **주얼 냉기 길이** (`magicsuffix.txt`): 접미사 `of Frigidity`(`jewl`) `cold-len` 50 고정(냉기 피해 1~3 / 5 함께).
-- **사파이어 냉기 길이** (`gems.txt`): 무기 소켓에만 `cold-len` Chipped 25, Flawed 35, 일반 50, Flawless 60, Perfect 75. 헬멧·방패에는 냉기 길이가 없다.
+- **주얼 냉기 길이** (`magicsuffix.txt`, `jewl`): 접미사 3종 of Frigidity·of the Icicle·of the Glacier 모두 `cold-len` 50 고정.
+- **사파이어 냉기 길이** (`gems.txt`): 무기 소켓에만 `cold-len` Chipped 25, Flawed 35, 일반 50, Flawless 60, Perfect 75.
 - **Holy Freeze**(114): 속도 감소 오라, 프리즈(상태 1) 아님.
 - **`M.BOWF`**: Freezing Arrow 20 → Cold Arrow 20 → Ice Arrow 20. 완성 시 시너지 +100%.
-- **Hell Bovine** (`monstats.txt`, `levels.txt` 39): classid 391, 헬 냉기 저항 50. 카우 레벨에는 이 몹만 나옴.
 
 **냉기 길이 아이템** (값은 데이터, 측정에서 `coldlen` 합계로 확인)
 | 아이템 | 부위 | 냉기 길이 | 데이터 |
