@@ -43,7 +43,43 @@
 | of Frigidity 주얼 | 무기 소켓 | 50 | 위 주얼 접미사 |
 | Perfect Sapphire | 무기 소켓 | 75 | 위 사파이어 |
 
-## 5. 측정 방법
+## 5. 콜드렝스 아이템
+무기 제외. 단위 프레임(25프레임 = 1초).
+
+**유니크**
+| 아이템 | 부위 | 냉기 길이 |
+|---|---|---|
+| Tiamat's Rebuke | 방패 (Dragon Shield) | 150 (6초) |
+| Raven Frost | 반지 | 100 (4초, 측정함) |
+| Vampire Gaze | 투구 (Grim Helm) | 100 (4초) |
+| Snowclash | 벨트 (Battle Belt) | 75 (3초) |
+| Frostburn | 장갑 (Gauntlets) | 50 (2초) |
+| The Eye of Etlich | 목걸이 | 50~250 (2~10초, 측정한 것은 75) |
+| Rainbow Facet (냉기) | 주얼 | 3 (0.12초) |
+
+**세트**
+| 아이템 | 부위 | 냉기 길이 |
+|---|---|---|
+| M'avina's Icy Clutch | 장갑 (Battle Gauntlets) | 150 (6초), 세트 부분 보너스 +100 (4초) |
+| Arctic Gear 풀세트 보너스 | — | 100 (4초, 세트에 활 Arctic Horn 포함) |
+| Vidala's Rig 풀세트 보너스 | — | 50 (2초, 세트에 활 Vidala's Barb 포함) |
+
+**룬워드**
+| 아이템 | 부위 | 냉기 길이 |
+|---|---|---|
+| Duress | 갑옷 | 50 (2초, 측정함) |
+
+**기타**
+| 부위 | 아이템·옵션 | 냉기 길이 |
+|---|---|---|
+| 참 (스몰·라지·그랜드) | 접두사 Snowflake·Shivering·Boreal·Hibernal, 접미사 of Frost·of the Icicle·of the Glacier·of Winter | 각 25 (1초, 접미사 참 측정함) |
+| 주얼 | 접미사 of Frigidity·of the Icicle·of the Glacier | 50 (2초, of Frigidity 측정함) |
+| 목걸이·벨트 | 접미사 of Frost | 50 (2초, 레어 목걸이 측정함) |
+| 서클릿 | 접두사 Snowflake | 25 (1초) |
+| 무기 소켓 | Thul 룬 | 75 (3초, 측정함) |
+| 무기 소켓 | 사파이어 Chipped·Flawed·일반·Flawless·Perfect | 25·35·50·60·75 (1·1.4·2·2.4·3초, Perfect 측정함) |
+
+## 6. 측정 방법
 - 헬, 혼자, **맵 진입점**(`D2BotMap.dbj`)으로 들어가 손으로 플레이. 블러드 무어·콜드 플레인·이블 동굴·카우 레벨.
 - 측정 캐릭터: `aozo-qe`(아마존). 아이스 애로우 직접 포인트 20.
 - 운용: 한 발 쏘고, 얼은 몹이 다 풀린 뒤 다음 발을 쏜다. 예상보다 0.5초 이상 긴 줄(얼어 있는 동안 다시 맞은 줄)과 0.5초 이상 짧은 줄(측정을 켠 직후나 이미 얼어 있던 몹이 거리 30 안으로 들어와 늦게 잡힌 줄)은 뺐다. 몹이 많은 묶음은 중앙값으로 본다.
@@ -54,7 +90,7 @@
 - 정해진 창(`hideFlags`, `gamedata/ids.md` "UI 플래그" 절)이 열려 있으면 MapThread 루프 전체가 멈춰 그 사이 풀린 몹은 값이 길게 나온다. 측정 중 피할 것: Alt, 인벤토리(I)·스탯(C)·퀘스트(Q), ESC 메뉴, 메시지 기록, 도움말. 자동맵(Tab)·벨트 물약은 괜찮음.
 - MapThread 숫자패드: 0 다음 지역, 1 이전 지역, 2 웨이포인트, 3 주요 지점(POI), 4 옆 지역, 5 프리즈 측정 켜기·끄기, 7 몬스터 표시, 8 경로 선, `*` 좌표, `−` 플레이어 거리.
 
-## 6. 측정 결과
+## 7. 측정 결과
 조건: 헬, IA 20. 예상 = 1절 식.
 
 | CL | 착용 | 몹 (저항) | 예상 | 측정 (ms) | 대표값 |
@@ -86,6 +122,6 @@
 
 - 참은 모두 접두사나 접미사 하나만 붙은 25짜리.
 
-## 7. 출처
+## 8. 출처
 - 데이터: mpqdata `skills.txt`, `missiles.txt`, `difficultylevels.txt`, `states.txt`, `itemstatcost.txt`, `properties.txt`, `magicprefix.txt`, `magicsuffix.txt`, `uniqueitems.txt`, `runes.txt`, `gems.txt`, `monstats.txt`, `levels.txt`
 - 웹: [Basin Freeze length](https://www.theamazonbasin.com/wiki/index.php/Freeze_length), [Basin Freezing Arrow](https://www.theamazonbasin.com/wiki/index.php/Freezing_Arrow), [Basin Cold Damage](https://www.theamazonbasin.com/wiki/index.php/Cold_Damage), [Basin Cold Resist](https://theamazonbasin.com/wiki/index.php/Cold_Resist), [maxroll Crowd Control](https://maxroll.gg/d2/resources/crowd-control), [fandom Freeze](https://diablo.fandom.com/wiki/Freeze), [GameFAQs](https://gamefaqs.gamespot.com/boards/370600-diablo-ii-lord-of-destruction/49885099).
