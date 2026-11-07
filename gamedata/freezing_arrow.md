@@ -1,6 +1,6 @@
 # 프리징 애로우 프리즈 길이 (Freezing Arrow, skill 31)
 
-근거: **데이터** = mpqdata(1.14d) / **측정** = 인게임 측정(6절) / **사용자** = 사용자 확인. 1프레임 = 40ms(측정값과 맞음).
+근거: **데이터** = mpqdata(1.14d) / **측정** = 인게임 측정(4절) / **사용자** = 사용자 확인. 1프레임 = 40ms(측정값과 맞음).
 
 ## 1. 결론
 - **프리즈 프레임 = 내림[(50 × (1 + IA × 0.05) + CL) ÷ D × (100 − R) ÷ 100]**
@@ -10,36 +10,16 @@
 - 아이템 냉기 길이는 출처(반지, 목걸이, 갑옷 룬워드, 참, 무기 소켓 룬·주얼·사파이어)와 상관없이 스탯 56으로 합산되어 더해진다.
 - 상한 없음: CL 1125(306프레임, 12.2초)까지 측정.
 - 얼어 있는 동안 다시 맞으면 그 시점부터 새 길이로 갱신되고, 누적되지 않는다.
+- 스킬 레벨·+스킬로는 길이가 늘지 않는다. 콜드 애로우는 데미지 시너지만 준다.
+- 얼리는 것은 화살이 아니라 폭발이다(`freezingarrowexp3`, 반경 5).
+- `cold-len`과 `dmg-cold` 파라미터는 둘 다 스탯 56(냉기 길이)이 된다.
+- 마법 참의 냉기 길이는 0 / 25 / 50뿐이고, 유니크 참에는 없다.
+- Holy Freeze는 속도만 줄이는 오라이고, 프리즈가 아니다.
+- 번호: 상태 `freeze` 1·`cold` 11·`holywindcold` 44, 스탯 `item_halffreezeduration` 118·`item_freeze` 134·`item_pierce_cold` 305, nip 키 `[coldlength]` = 56.
+- `M.BOWF` 스킬 순서: Freezing Arrow 20 → Cold Arrow 20 → Ice Arrow 20.
+- 얼지 않는 대상: 냉기 면역(저항 100 이상), 냉기 효과 0인 몹(냉기 면역이 아니어도), 챔피언·유니크.
 
-## 2. 얼지 않는 대상
-- 냉기 면역(저항 100 이상).
-- 냉기 효과 0인 몹(냉기 면역이 아니어도).
-- 챔피언·유니크.
-
-## 3. 확인된 값 (데이터)
-- **Freezing Arrow** (`skills.txt`): `ELen = 50`(2초), `ELevLen` 없음 → 스킬 레벨·+스킬로 길이 안 늘어남. `ELenSymPerCalc = Ice Arrow blvl × 5`% → 아이스 애로우 **직접 포인트**만 시너지. 콜드 애로우는 데미지 시너지만.
-- **얼리는 것은 폭발** (`missiles.txt`): `freezingarrow`(87) → `freezingarrowexp3`(657) 반경 5, `EType = frze`. `AlwaysExplode = 1`.
-- **난이도** (`difficultylevels.txt` `MonsterFreezeDivisor`): 노멀 1, 나이트메어 2, 헬 4.
-- **번호**: 상태 `freeze` 1, `cold` 11, `holywindcold` 44(`states.txt`). 스탯 `coldresist` 43, `coldlength` 56, `item_halffreezeduration` 118, `item_freeze` 134, `item_pierce_cold` 305(`itemstatcost.txt`). nip 키 `[coldlength]` = 56(`NTItemAlias.dbl`).
-- **냉기 길이 속성** (`properties.txt`): `cold-len` = 스탯 56. `dmg-cold` = 냉기 최소·최대 피해와 스탯 56(파라미터가 냉기 길이).
-- **참 냉기 길이** (`magicprefix.txt`·`magicsuffix.txt`): 접두사 Snowflake·Shivering·Boreal·Hibernal(`mod1`), 접미사 of Frost·of the Icicle·of the Glacier·of Winter(`mod3`) 모두 `cold-len` 25 고정. 크기(스몰·라지·그랜드) 무관. 마법 참은 **0 / 25 / 50**뿐. 유니크 참에는 없음.
-- **주얼 냉기 길이** (`magicsuffix.txt`, `jewl`): 접미사 3종 of Frigidity·of the Icicle·of the Glacier 모두 `cold-len` 50 고정.
-- **사파이어 냉기 길이** (`gems.txt`): 무기 소켓에만 `cold-len` Chipped 25, Flawed 35, 일반 50, Flawless 60, Perfect 75.
-- **Holy Freeze**(114): 속도 감소 오라, 프리즈(상태 1) 아님.
-- **`M.BOWF`**: Freezing Arrow 20 → Cold Arrow 20 → Ice Arrow 20. 완성 시 시너지 +100%.
-
-**냉기 길이 아이템** (값은 데이터, 측정에서 `coldlen` 합계로 확인)
-| 아이템 | 부위 | 냉기 길이 | 데이터 |
-|---|---|---|---|
-| Raven Frost | 반지 | 100 | `uniqueitems.txt` `dmg-cold` 파라미터 100 |
-| The Eye of Etlich | 목걸이 | 50~250(측정에 쓴 것 75) | `uniqueitems.txt` `cold-len` |
-| Duress | 갑옷 룬워드 | 50 | `runes.txt` Duress(Shael Um Thul) `dmg-cold` 파라미터 50 |
-| 냉기 길이 참 | 인벤토리 | 25 | 위 참 접두사·접미사 |
-| Thul 룬 | 무기 소켓 | 룬마다 75 | `gems.txt` Thul 무기 `dmg-cold` 파라미터 75 |
-| of Frigidity 주얼 | 무기 소켓 | 50 | 위 주얼 접미사 |
-| Perfect Sapphire | 무기 소켓 | 75 | 위 사파이어 |
-
-## 4. 콜드렝스 아이템
+## 2. 콜드렝스 아이템
 무기 제외. 단위 프레임(25프레임 = 1초).
 
 **유니크**
@@ -75,7 +55,7 @@
 | 무기 소켓 | Thul 룬 | 75 (3초, 측정함) |
 | 무기 소켓 | 사파이어 Chipped·Flawed·일반·Flawless·Perfect | 25·35·50·60·75 (1·1.4·2·2.4·3초, Perfect 측정함) |
 
-## 5. 측정 방법
+## 3. 측정 방법
 - 헬, 혼자, **맵 진입점**(`D2BotMap.dbj`)으로 들어가 손으로 플레이. 블러드 무어·콜드 플레인·이블 동굴·카우 레벨.
 - 측정 캐릭터: `aozo-qe`(아마존). 아이스 애로우 직접 포인트 20.
 - 운용: 한 발 쏘고, 얼은 몹이 다 풀린 뒤 다음 발을 쏜다. 예상보다 0.5초 이상 긴 줄(얼어 있는 동안 다시 맞은 줄)과 0.5초 이상 짧은 줄(측정을 켠 직후나 이미 얼어 있던 몹이 거리 30 안으로 들어와 늦게 잡힌 줄)은 뺐다. 몹이 많은 묶음은 중앙값으로 본다.
@@ -86,7 +66,7 @@
 - 정해진 창(`hideFlags`, `gamedata/ids.md` "UI 플래그" 절)이 열려 있으면 MapThread 루프 전체가 멈춰 그 사이 풀린 몹은 값이 길게 나온다. 측정 중 피할 것: Alt, 인벤토리(I)·스탯(C)·퀘스트(Q), ESC 메뉴, 메시지 기록, 도움말. 자동맵(Tab)·벨트 물약은 괜찮음.
 - MapThread 숫자패드: 0 다음 지역, 1 이전 지역, 2 웨이포인트, 3 주요 지점(POI), 4 옆 지역, 5 프리즈 측정 켜기·끄기, 7 몬스터 표시, 8 경로 선, `*` 좌표, `−` 플레이어 거리.
 
-## 6. 측정 결과
+## 4. 측정 결과
 조건: 헬, IA 20. 예상 = 1절 식.
 
 | CL | 착용 | 몹 (저항) | 예상 | 측정 (ms) | 대표값 |
