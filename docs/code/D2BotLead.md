@@ -1,5 +1,11 @@
 # D2BotLead.dbj
 
+## ReceiveCopyData
+
+### 261107 Claude: 게임 요청 답에 재진입 가드 (사용자 요청 261107, handoff 3-69)
+- case 3(팔로워 게임 요청): 새 변수 `replying`. 답하는 중에 온 요청은 `joinWait` 기록만 하고 답(`joinMe`)을 건너뛴다(팔로워가 다시 요청). 답은 try/catch/finally — 오류는 `OOGLog.print("Join reply error: <프로필> - skip", e.message)`, finally에서 `replying` 끔. 건너뛸 때 임시 trace `[ReceiveCopyData] Reply skipped: <프로필>`.
+- 이유: 리더 스타터가 `oog.js:313`(`joinMe`) too much recursion으로 두 번 멈춤(261103·261105). 이 경로에 스스로 부르는 함수가 없어, 답하는 중 리스너가 겹쳐 실행돼 스택이 넘친 것으로 좁힘.
+
 ## locationAction / badKey / locationTimeout
 
 ### 261001 Claude: 게임 밖 흐름 (D2BotFollow.dbj 공통)

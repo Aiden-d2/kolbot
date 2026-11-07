@@ -45,16 +45,6 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **261106 사례**(100게임, desync 15게임 23줄, 빠진 프로필 = `[waitParty] Waiting`이 하나 모자란 프로필 15/15): 마을 정리 중 2분 넘게 줄 없음 5 — Pz-42 a1 Harrogath(23:50:41 `[initNPC] identify` 뒤), Pz-63 a1 Rogue Encampment(04:25:18 identify, 04:25:30 `[Equip] RingA` 뒤), Pz-77 a6 Rogue Encampment(07:38:10 identify 뒤), Pz-52 a2 Harrogath(02:02:59 `buyPotions` 뒤), Pz-36 a7 Lut Gholein(`clearInventory` 22:51:04·22:51:57 두 번 뒤). 게임 시작 Ancient's Way(`syncBO` 뒤 대기) 3 — Pz-59 a7, Pz-83 a6, Pz-94 a3. Chaos Sanctuary 5 — Pz-81·98 a3(Seis 뒤 별 중앙 대기 미도착), Pz-64 a3(`[visitTown] Back` 6초 뒤 퇴장), Pz-20 a8(Town chicken 다녀온 23초 뒤). Pz-55 a5 Stony Field(`visitTown` 다녀온 뒤 71초), Pz-53 a1 Moo Moo Farm(마을 다녀온 뒤 55초). **Pz-62 a4**: 03:54:48 Rogue Encampment `[waitParty] Waiting`(COUNTESS) 뒤 25분 줄 없음. 나머지 7명은 Tower Cellar Level 5에서 03:57:33~34에 퇴장(desync·따라 나감), a4는 `Party has left`로 따라 나가지 않고 04:19:26 `[Quit] Max game time`까지 남음. 그동안 리더 a1은 게임 밖에서 03:57:41 `Team wait: a4 - wait` → 04:19:36 `Create game: pz-63`(22분 대기). 그 전 사례는 빠진 프로필도 2~4분 안에 함께 끝났다.
 - **261107 사례**(76게임, desync 11게임 15줄, 빠진 프로필 = `[waitParty] Waiting`이 하나 모자란 프로필 11/11): 마을 정리 중 2분 넘게 줄 없음 4 — Pz-24 a6 Harrogath(18:20:23 `[initNPC] identify` 뒤), Pz-31 a8 Harrogath(19:39:26 `[Equip] RingB` 뒤), Pz-42 a3 Harrogath(22:05:16 `buyPotions` 뒤), Pz-67 a6 Rogue Encampment(02:21:07 identify 뒤). 게임 시작 Ancient's Way(`syncBO` 뒤 도착 `Waiting` 다음 대기 줄 없음) 4 — Pz-29·45·46 a7, Pz-48 a3(Pz-45·46·48은 나이트메어 연달아). `[visitTown] Back` 19~34초 뒤 퇴장 3 — Pz-23 a1(리더) Chaos Sanctuary, Pz-53 a4 Abaddon, Pz-75 a3 Chaos Sanctuary.
 
-### 1-20. 게임 밖 리더 스타터 `oog.js:313 too much recursion`으로 멈춤 (`D2Bot.joinMe`, 사용자 261105)
-- **문제(사례)**: 리더(a1) 스타터가 게임 밖에서 `[Error] Code(26) File(kolbot\tools\oog.js:313) InternalError: too much recursion`을 내고 다음 게임을 만들지 못한 채 멈춤. 두 번째 발견.
-  - 1번째(261104 묶음): 11/03 22:22:53 Travincal 크래시 → 엔진 재시작 → 22:23:22 오류 → 22:49:58 `D2BS Shutdown complete`, 26분 멈춤. 매니저가 창을 닫지 못해 사용자가 수동으로 끄고 켬. 상세는 `crash_analysis.md` 7절.
-  - 2번째(d2bs 로그 `d2bs-a1-20261105.log`): Pz-33 정상 종료(22:04:33 `[AutoSmurf] Script ended`, 경험치 줄, 스레드 종료) → 12초 뒤 22:04:45 오류(`Line: (null)`) → 22:16:43 `D2BS Shutdown complete` → 22:16:45 엔진 재시작, 22:17:00 `Create game: pz-34`로 정상 진행. 약 12분 멈춤. 이 로그 15:14 ~ 22:16, 게임 34개 중 이 오류 1줄(같은 내용 2줄 출력).
-- **확인된 것**
-  - 코드(읽음): `oog.js` 313줄은 `D2Bot.joinMe`의 `sendCopyData`(팔로워의 게임 요청에 답함). 리더는 `ReceiveCopyData` `case 3`마다 `joinMe`를 부르고, 팔로워는 참가 화면에서 0.1초 간격으로 요청한다(`crash_analysis.md` 7절, 261104 읽음).
-  - 2번째는 앞에 크래시가 없다(이 로그에 크래시·엔진 재시작 줄 없음, 정상 종료 직후). 그래서 1번째의 "크래시 뒤 재시작" 조건은 필요 조건이 아니다.
-  - 사용자 확인(261105): 두 건 모두 리더 클라이언트가 멈췄는데 매니저가 이를 알아채지 못하고 강제 종료도 하지 않아 무한 대기였고, 두 건 다 사용자가 수동으로 재시작했다(위 `D2BS Shutdown complete`는 수동 종료). 같은 시각 팔로워 로그·`Console.txt`는 보지 않음(받지 않음).
-- **판단에 필요한 것**: 진행할지. 한다면 오류 자체(무엇이 겹쳐 스택을 넘는지, 같은 시각 팔로워 로그·`Console.txt`로 확인할지)와 멈춤 처리(매니저가 멈춘 클라이언트를 알아채고 재시작하지 못하는 것) 중 무엇을 다룰지.
-
 ## 2. 구현 검토·수정 대기 (진행은 확정, 로직과 구현 방식 검토)
 
 ### 2-23. 웨이 유닛 못 찾음 (`Pather.getWP`·`useWaypoint`, 옛 1-14·2-9·1-11·3-7 실패 2건)
@@ -76,6 +66,26 @@ trace·콘솔(`Console.txt`)·아이템 로그는 게임 PC의 `kolbot/_cache/tr
 - **검증 방법**: 검토에서 정한다.
 
 ## 3. 인게임 검증 대기 (구현이 끝난 것을 실제 게임에서 검증)
+
+### 3-69. 게임 밖 리더 스타터 `oog.js:313 too much recursion`으로 멈춤 → 게임 요청 답에 재진입 가드 (`D2BotLead.dbj` `ReceiveCopyData`, 옛 1-20, 사용자 261105·261107)
+- **문제(사례)**: 리더(a1) 스타터가 게임 밖에서 `[Error] Code(26) File(kolbot\tools\oog.js:313) InternalError: too much recursion`을 내고 다음 게임을 만들지 못한 채 멈춤. 두 번째 발견.
+  - 1번째(261104 묶음): 11/03 22:22:53 Travincal 크래시 → 엔진 재시작 → 22:23:22 오류 → 22:49:58 `D2BS Shutdown complete`, 26분 멈춤. 매니저가 창을 닫지 못해 사용자가 수동으로 끄고 켬. 상세는 `crash_analysis.md` 7절.
+  - 2번째(d2bs 로그 `d2bs-a1-20261105.log`): Pz-33 정상 종료(22:04:33 `[AutoSmurf] Script ended`, 경험치 줄, 스레드 종료) → 12초 뒤 22:04:45 오류(`Line: (null)`) → 22:16:43 `D2BS Shutdown complete` → 22:16:45 엔진 재시작, 22:17:00 `Create game: pz-34`로 정상 진행. 약 12분 멈춤. 이 로그 15:14 ~ 22:16, 게임 34개 중 이 오류 1줄(같은 내용 2줄 출력).
+- **확인된 것**
+  - 코드(읽음): `oog.js` 313줄은 `D2Bot.joinMe`의 `sendCopyData`(팔로워의 게임 요청에 답함). 리더는 `ReceiveCopyData` `case 3`마다 `joinMe`를 부르고, 팔로워는 참가 화면에서 0.1초 간격으로 요청한다(`crash_analysis.md` 7절, 261104 읽음).
+  - 2번째는 앞에 크래시가 없다(이 로그에 크래시·엔진 재시작 줄 없음, 정상 종료 직후). 그래서 1번째의 "크래시 뒤 재시작" 조건은 필요 조건이 아니다.
+  - 사용자 확인(261105): 두 건 모두 리더 클라이언트가 멈췄는데 매니저가 이를 알아채지 못하고 강제 종료도 하지 않아 무한 대기였고, 두 건 다 사용자가 수동으로 재시작했다(위 `D2BS Shutdown complete`는 수동 종료). 같은 시각 팔로워 로그·`Console.txt`는 보지 않음(받지 않음).
+- **원인(코드로 좁힌 것, 사용자 261107 확정)**: 리더 스타터에서 `joinMe`를 부르는 곳은 `ReceiveCopyData` case 3뿐이고 그 경로에 스스로 부르는 함수가 없다. 스택이 넘쳤다면 답하는 중에 들어온 요청이 리스너를 겹쳐 실행한 것밖에 없다(`D2BS_Structure.md` D2BS 이벤트). 스택 깊이 자체는 로그로 볼 수 없다.
+- **바꾼 것**(261107): `D2BotLead.dbj` 새 변수 `replying`. `ReceiveCopyData` case 3에서 답하는 중(`replying`)에 온 요청은 `joinWait` 기록만 하고 답을 건너뛴다(팔로워가 0.1~1.5초 뒤 다시 요청). 답은 try/catch/finally로 감싸, 오류는 `Join reply error: <프로필> - skip (loc N)`(회색 콘솔 + print, 상세 `e.message`)으로 남기고 finally에서 가드를 끈다. 건너뛸 때 trace `[ReceiveCopyData] Reply skipped: <프로필> (OOG loc N)`(임시). 팔로워·`OOG.js`·`HeartBeat.js`는 그대로.
+- **검증 방법**(리더 trace 파일, `[Error]`·`Join reply error` 줄):
+  - 건너뜀 줄 있음 + 오류 재발 없음 → 통과(겹침이 실제로 있었고 가드가 막음).
+  - 건너뜀 줄 있음 + 오류 재발 → 가드로 부족, 2절로.
+  - 건너뜀 줄 없음 + 오류 재발 → 겹침이 원인 아님, 2절로.
+  - 건너뜀 줄 없음 + 오류 없음 → 판정 못 함, 3절 유지.
+  - 그 밖: 팀 대기(`Team wait`)·팔로워 참가가 전처럼 되는지.
+- **trace 제거 조건**: 로그 묶음 2개 이상에서 건너뜀 줄이 있고 같은 기간 이 오류 0건.
+- **남는 것**: `sendCopyData`가 돌아오지 않으면 리더는 멈추고, 하트비트 스레드가 스타터와 따로 돌아 매니저가 알아채지 못한다(가드와 무관, 이번에 다루지 않음).
+- **결과**: (로그 묶음별로 적음)
 
 ### 3-65. 경로 보정 10회 실패 뒤 오류 줄 없음 → `Attack` 조용한 catch 3곳에 `Misc.caughtError` (`Pather.moveTo`, `Attack.clear`·`setPosition`, 옛 1-17, 사용자 261026·261103)
 - **문제**: `Pather.moveTo`는 `no adjusted path` 10번째에도 경로가 없으면 throw(`moveTo: Failed to generate path`)하는데, 261026 로그 2건은 오류 줄 없이 다음 구간으로 넘어갔다.

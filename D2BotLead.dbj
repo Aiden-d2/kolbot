@@ -90,6 +90,7 @@ var gameInfo, gameStart, ingame, chatActionsDone, pingQuit,
 	lastGameStatus = "ready",
 	isUp = "no",
 	joinWait = {},	//261003 follower profile -> tick of its last game request (sent while on the join screen)
+	replying = false,	//261107 true while answering a game request (joinMe), nested requests are skipped (handoff 3-69)
 	chanInfo = {
 		joinChannel: "",
 		firstMsg: "",
@@ -118,11 +119,21 @@ function ReceiveCopyData(mode, msg) {
 		obj = JSON.parse(msg);	//261003 parsed before the gameInfo check
 		joinWait[obj.profile] = getTickCount();	//261003 a follower on the join screen sends this about every 1s
 
-		if (gameInfo) {
-			if (me.gameReady) {
-				D2Bot.joinMe(obj.profile, me.gamename.toLowerCase(), "", me.gamepassword.toLowerCase(), isUp);
-			} else {
-				D2Bot.joinMe(obj.profile, gameInfo.gameName.toLowerCase(), gameCount, gameInfo.gamePass.toLowerCase(), isUp);
+		if (gameInfo && replying) {	//261107 a request arriving while answering another: skip, the follower asks again (handoff 3-69)
+			Misc.trace("[ReceiveCopyData] Reply skipped: " + obj.profile);	//261107 temp, handoff 3-69: remove after 2+ log sets with skip lines and no oog.js too much recursion
+		} else if (gameInfo) {	//261107 reentry guard
+			replying = true;	//261107 reentry guard
+
+			try {	//261107 an error here no longer stops the starter
+				if (me.gameReady) {
+					D2Bot.joinMe(obj.profile, me.gamename.toLowerCase(), "", me.gamepassword.toLowerCase(), isUp);
+				} else {
+					D2Bot.joinMe(obj.profile, gameInfo.gameName.toLowerCase(), gameCount, gameInfo.gamePass.toLowerCase(), isUp);
+				}
+			} catch (e) {	//261107
+				OOGLog.print("Join reply error: " + obj.profile + " - skip", e.message);	//261107 grey console + print
+			} finally {	//261107
+				replying = false;	//261107 reentry guard off
 			}
 		}
 
