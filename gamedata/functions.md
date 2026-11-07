@@ -1,13 +1,97 @@
-# getNearestWalkable 탐색 범위와 비용
+# 함수 (D2BS 엔진 함수, kolbot 스크립트 함수)
 
-`Pather.getNearestWalkable(x, y, range, step, coll, size)`이 실제로 어디까지, 몇 칸을 검사하는지 정리한 것 (261105).
+코드에서 쓰는 함수의 인자·반환값·동작 범위.
 
-- 출처: 사용자 자료 `260826_getNearestWalkable_coverage.txt`(260826 분석).
-- 1~7절: 지금 코드(`libs/Pather.js`의 `getNearestWalkable`·`checkSpot`, `libs/CollMap.js`)와 다시 맞춰 봤고 같다(261105). 근거: 코드.
-- 8~9절: 260826 당시의 호출부와 변경 이력이다. 지금 호출부는 8절 맨 앞의 표를 본다.
-- 10절: 미확인.
+- **D2BS 엔진 함수**: D2BS(엔진)가 제공하는 함수. 소스가 이 저장소에 없어 동작은 측정·사용자 자료로 확인한다.
+- **kolbot 스크립트 함수**: kolbot `libs/*.js`에 있는 함수. 코드로 확인한다.
+- 엔진 번호표(`getUIFlag`·`getLocation`·`getPresetUnit` 번호 등)는 `ids.md`.
 
-## 1. 함수 구조
+## D2BS 엔진 함수
+
+### `me.getSkill`
+
+- kolbot 사용처: `libs/Misc.js`, `libs/Precast.js`, `libs/Pickit.js`, `libs/Attacks/*.js`
+- 스킬 번호·이름은 mpqdata `skills.txt`(`skill`·`Id` 열)를 본다.
+
+```
+me.getSkill(0) = Right(mana) slot skill name
+me.getSkill(1) = Left(life) slot skill name
+me.getSkill(2) = Right(mana) slot skill id
+me.getSkill(3) = Left(life) slot skill id
+
+me.getSkill(4) = all skills [id, hard point, total point]	*item charged skills count as hard points
+
+me.getSkill(id, 0) = hard point
+me.getSkill(id, 1) = total point (+item bonus)
+
+[ex]
+attack	0,1,1,
+throw	2,1,1,
+kick	1,1,1,
+Scroll of Identify	217,1,1,
+Book of Identify	218,1,1,
+Scroll of Townportal	219,1,1,
+Book of Townportal	220,1,1,
+Unsummon	3,1,1,
+Warmth	37,7,7,
+Ice Bolt	39,1,1,
+Frozen Armor	40,1,1,
+Inferno	41,1,1,
+Static Field	42,5,5,
+Telekinesis	43,1,1,
+Ice Blast	45,1,1,
+Blaze	46,1,1,
+Shiver Armor	50,1,1,
+Fire Wall	51,12,12,
+Teleport	54,1,1,
+Enchant	52,0,1,	(+item bonus)
+Chain Lightning	53,0,2, (+item bonus)
+Frost Nova	44,1,1	(+item charged)
+```
+
+### `getUnit` 범위
+
+- `getUnit`으로 유닛이 잡히는 거리와 한 화면 범위(사용자 측정). 화면 해상도·야드 환산은 `skill_range.md` 0절.
+- kolbot 사용처: `getUnit` 탐색, `Attack.getMonsterCount`, 몬스터 수 세기
+
+```
+- = 마이너스 좌표에 있는 겟유닛
++ = 플러스 좌표에 있는 겟유닛
+
+Y +45	//	49	//60	//62
+Y -70	//	69	//56	//50
+
+X +70	//	75	//53	//52
+X -45	//	40	//66	//65
+
+내좌표 기준 겟유닛
+우측 84
+좌측 75
+상측 74
+하측 84
+
+중심좌표 기준 한화면
+
+우상 = 30
+좌상 = 30
+우하 = 30
+좌하 = 30
+
+상 = 28
+하 = 30
+좌 = 18
+우 = 18
+
+가장큰 맹점은 x/y 값이 모두변하는 곳에서는 디스턴스가 크게 계산됨
+```
+
+## kolbot 스크립트 함수
+
+### `Pather.getNearestWalkable`
+
+`Pather.getNearestWalkable(x, y, range, step, coll, size)`이 실제로 어디까지, 몇 칸을 검사하는지(`libs/Pather.js`의 `getNearestWalkable`·`checkSpot`, `libs/CollMap.js`).
+
+#### 1. 함수 구조
 
 - 탐색 단위는 **정사각 테두리**(가로·세로 중 큰 쪽 거리 = d인 칸들)다. 원이 아니다.
   - 테두리 판정: `Math.abs(i) >= Math.abs(distance) || Math.abs(j) >= Math.abs(distance)`
@@ -16,7 +100,7 @@
 - 테두리 순서: `d = 1, 1+step, 1+2×step, ...`, 조건 `d < range`
 - 처음 통과한 칸에서 바로 돌려준다. 끝나면 `CollMap.reset()`을 부른다.
 
-### 계산식
+##### 계산식
 
 | 기호 | 뜻 | 식 |
 |---|---|---|
@@ -25,13 +109,13 @@
 | K | 최악일 때 `checkSpot` 호출 수(시작점 포함) | `1 + 8 × (n + step × n × (n − 1) / 2)` |
 | cov | 검사 비율 | `K / (2R + 1)²` |
 
-### range는 반경이 아니다
+##### range는 반경이 아니다
 
 - `while (distance < range)`라서 미만이다.
 - 같은 R이 나오는 range는 `R+1 ~ R+step`의 step개이고, 모두 같게 동작한다. 대표값은 `range = R + 1`이다.
 - 예: `19,3`과 `18,3`은 둘 다 R=16이다. 테두리 19까지 보려면 range가 20 이상이어야 한다. `21,5`는 `17,5`(R=16)와 같다.
 
-## 2. 검사 비율(cov)의 뜻
+#### 2. 검사 비율(cov)의 뜻
 
 - cov = 반경 R 정사각형 안의 칸 중 실제로 읽은 칸의 비율. 뜻은 "안 읽은 칸이 몇 %인가" 하나뿐이다.
 - 성공률이 아니라 **성공률의 하한**이다.
@@ -53,7 +137,7 @@
 | 비용 K | 늘어남(약 R²) | 줄어듦(약 1/step) |
 | cov | 그대로 | 줄어듦(약 1/step) |
 
-## 3. cov 약 50%(45~55%) 대역의 최소 비용
+#### 3. cov 약 50%(45~55%) 대역의 최소 비용
 
 - 이 대역은 step 2뿐이다. 예외는 R=4의 `(5,3)` 하나.
 - step 2는 테두리 1, 3, 5, …(홀수)만 밟으므로 **짝수 R은 이 대역에 들어올 수 없다.** 예: R=10은 `(11,3)` 40.1% 또는 `(11,1)` 100%.
@@ -73,7 +157,7 @@
 | 27 | (28,2) | 14 | 1569 | 51.9% |
 | 29 | (30,2) | 15 | 1801 | 51.7% |
 
-## 4. cov 약 35%(30~40%) 대역의 최소 비용
+#### 4. cov 약 35%(30~40%) 대역의 최소 비용
 
 | R | 인자 | n | K | cov | 테두리 |
 |---|---|---|---|---|---|
@@ -100,7 +184,7 @@
 | 23, 27 | step 2(52%)만 있음 |
 | 12, 14, 18, 20, 24, 30 | step 1(100%) 또는 아주 낮은 cov만 있음 |
 
-## 5. 두 대역 비교 (같은 R)
+#### 5. 두 대역 비교 (같은 R)
 
 | R | 50% 대역 | K | 35% 대역 | K | 비용 차이 |
 |---|---|---|---|---|---|
@@ -111,7 +195,7 @@
 
 - 50% → 35%로 내리면 비용이 약 30~43% 준다. 그만큼 놓쳐도 되는지는 6절 조건에 달렸다.
 
-## 6. step이 실제로 문제가 되는 조건
+#### 6. step이 실제로 문제가 되는 조건
 
 - 테두리를 건너뛴 결과는 둘 중 하나다.
   1. **멀어짐**: 테두리 d를 건너뛰고 d+k에서 찾음 → 성공이지만 좌표가 멀다.
@@ -119,11 +203,11 @@
 - step 2가 step 1보다 못하려면, 홀수 테두리(1, 3, 5, …)가 모두 막혀 있고 짝수 테두리에만 통과 칸이 있어야 한다. 즉 막힌 칸이 한 칸 간격의 동심 사각형을 이루는 모양이다.
 - 장애물이 2×2 이상이면 이웃한 두 테두리를 같이 덮으므로 이 모양은 생기지 않는다. 그 전제라면 step 2와 step 1의 실제 성공률은 같고, step 1은 비용만 약 1.8배다.
 - step 3부터는 두 테두리를 연달아 건너뛰므로 실제로 빈 곳이 생긴다.
-- 장애물 최소 크기 2×2는 미확인이다(10절).
+- 장애물 최소 크기 2×2는 미확인이다(`next_steps.md`).
 
-## 7. 돌려주는 좌표의 정확도
+#### 7. 돌려주는 좌표의 정확도
 
-### 건너뛰어서 멀어지는 정도
+##### 건너뛰어서 멀어지는 정도
 
 - step s이면 가로·세로 거리 오차는 최대 `s − 1`이다.
 - f = 실제로 처음 통과 칸이 있는 테두리, 표의 값 = 돌려주는 테두리:
@@ -147,7 +231,7 @@
 
 - step 3이 가장 멀다(테두리 4 다음이 7). 거리 상한이 중요하면 step 3만 피하면 된다.
 
-### 검사 순서 때문에 생기는 치우침 (step보다 큼)
+##### 검사 순서 때문에 생기는 치우침 (step보다 큼)
 
 - 순서는 `for (i = -distance; ...) for (j = -distance; ...)`다. `i = -d`이면 테두리 조건이 항상 참이라 **왼쪽 변을 `j = -d`(모서리)부터 먼저** 보고, 처음 통과한 칸에서 멈춘다.
 - 그래서 돌려주는 점은 테두리에서 가장 가까운 점이 아니라 `(x−d, y−d)` 모서리 쪽일 수 있다. **이름과 달리 가장 가까운 점이 아니다.**
@@ -155,20 +239,18 @@
   - 모서리: 거리 `d × √2 ≈ 1.41d`
 - step 1이어도 이 치우침은 남는다. 정확도 때문에 step을 낮출 이유는 없다.
 
-### size는 검사 범위를 늘리지 않는다
+##### size는 검사 범위를 늘리지 않는다
 
 - `checkSpot`은 `size` 범위 안 이웃 칸 중 대각선(|dx| = |dy|)을 뺀 칸을 `CollMap.getColl`로 읽고, **하나라도 막히면 `false`**다. 가운데 칸(0,0) 자체는 읽지 않는다(대각선 조건에 걸림).
 - 안 읽은 테두리를 대신 읽어 주지 않고, 판정만 엄격해진다.
 - `getColl` 호출 수 = `(2 × size + 1)² − 4 × size − 1`. size 1(기본) 4회, 2는 16회, 3은 36회.
 
-### 방 크기
+##### 방 크기
 
 - `CollMap.js`: `x >= room.x * 5 && x < room.x * 5 + room.xsize` → `xsize`는 칸 단위 폭이다. 방 중심에서 끝까지 `xsize / 2` 칸.
 - 방 폭이 40칸이면 R=19는 방 하나를 거의 그대로 덮는다.
 
-## 8. 호출부
-
-### 지금 호출부 (261105, 코드)
+#### 8. 호출부
 
 | 파일·함수 | 입력 좌표 | 인자 (range, step, coll) | R | K | cov |
 |---|---|---|---|---|---|
@@ -183,39 +265,4 @@
 - `Pather.moveTo`에 주석 처리된 호출이 하나 더 있다(6, 2).
 - R·K·cov는 1절 식으로 계산한 값이다.
 
-### 260826 당시 호출부 (사용자 자료)
-
-| 자리 | 입력 좌표 | 당시 인자 | R | K | cov | 실패하면 |
-|---|---|---|---|---|---|---|
-| `Pather.moveToExit` | 출구 | 10,2 | 9 | 201 | 55.7% | `return false`, 이동 전체 실패 |
-| `Pather.getNearestRoom` | 방 중심 | 21,5 | 16 | 273 | 25.1% | `getNearestRoom`이 false |
-| `Pather.moveTo` | 경로 노드 | 10,2 | 9 | 201 | 55.7% | 노드 원래 좌표 유지(문제없음) |
-| `Attack.js` | 방 중심 | 15,3 | 13 | 281 | 38.5% | 이전 방으로 돌아감 |
-| `AutoSmurf.js` (2곳) | 방 중심 | 15,3 | 13 | 281 | 38.5% | `Attack.clear(25)` / 이동 건너뜀 |
-
-- 당시 `moveToExit`: 출구 이동마다 위 호출을 거쳤다. 걸어서 넘어가는 경우만 `getNearestRoom`을 거쳤고, 계단(`openExit`·`useUnit`)은 거치지 않았다.
-- 당시 호출 빈도: `moveToExit`·`getNearestRoom`은 지역 전환당 1번이라 K가 사실상 문제 되지 않았다. 방을 도는 `while (rooms.length > 0)` 안의 호출(`Attack.js`, `AutoSmurf.js`)만 방 개수만큼 곱해졌다.
-- 당시 돌려받은 좌표를 쓰는 곳의 허용 거리: `moveTo(dest, 30, …)` 30, `moveTo(result, 3, …)` 뒤 `clear(40)` 40, `getDistance(me, node) > 20` 20. 정밀 좌표로 쓰는 곳이 없어 최대 9.90 멀어져도 모두 통과했다.
-
-## 9. 260826 당시 변경 이력과 결론 (사용자 자료)
-
-| 자리 | 원래 | 바꾼 값 | R | 결과 |
-|---|---|---|---|---|
-| `getNearestRoom` | 20,4 (R=17) | 15,3 | 17 → 13 | **실패**(계단이 아닌 일반 지역 이동, 경계선) |
-| `getNearestRoom` | - | 21,5 | 16 | R 하한 17보다 작고, cov도 원래보다 낮음 |
-| `moveToExit` | 5,1 (R=4) | 10,2 | 4 → 9 | 나아짐(계단 버벅임 감소, 체감이라 미확정) |
-| `Attack.js` | 18,3 (R=16) | 15,3 | 16 → 13 | 비용 줄이기 실험 |
-
-- 세 경우 모두 결과를 정한 것은 R이었다. cov로는 어느 결과도 설명되지 않는다.
-  - `getNearestRoom`은 R을 17 → 13으로 줄여서 실패했다. `15,3`의 cov(38.5%)가 `20,4`(29.5%)보다 높았는데도 실패했다.
-  - `moveToExit`는 R을 4 → 9로 늘려서 나아졌다.
-- 결론: 먼저 R을 정하고, step은 R을 확보한 뒤 비용을 줄이는 데 쓴다.
-- 당시 확인된 R 하한: `getNearestRoom`은 R=13 실패, R=17(`20,4`) 정상, R=14~16은 미검증. `Attack.js`는 R=16(`18,3`) 정상.
-- 지금 `getNearestRoom`과 `AutoSmurf.js` 방 중심 호출은 `20,3`(R=19)이다(8절 표).
-
-## 10. 미확인
-
-- 장애물 최소 크기 2×2, 계단 모양 1×3·3×1: 게임 데이터라 코드로 확인할 수 없다.
-- 실제 `room.xsize` 값의 분포: 게임 안에서만 알 수 있다.
-- `moveToExit` `10,2`의 계단 버벅임 감소: 체감이고 로그로 확인하지 않았다.
-- 260826 자료는 `moveToExit`에 `off:`(돌려받은 점과 출구의 거리)·`FAIL` 로그가 있어 R 하한과 테두리 치우침을 잴 수 있다고 적었다. 지금 `Pather.js`에는 그 로그가 없다(261105 검색 0건).
+- 결정 순서: 먼저 R을 정하고, step은 R을 확보한 뒤 비용을 줄이는 데 쓴다. `getNearestRoom`은 R=13에서 실패, R=17에서 정상이었다(R=14~16 미검증, `next_steps.md`).

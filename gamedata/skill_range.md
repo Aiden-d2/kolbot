@@ -1,23 +1,20 @@
-# 스킬 사거리 (측정·데이터·결정) (261002)
+# 스킬 사거리 (측정·데이터·결정)
 
-> **261020:** 이 노트는 261006 이전 기준이다. 사용자 수정(261006~261020)으로 바뀐 값·흐름은 지금 코드를 따른다(261021 handoff 정리로 0절 기록 삭제)(Nova·Frozen Orb 사거리 10).
-
-스킬 사거리에 관한 것은 모두 이 문서에 모은다. 260930 측정 결과는 원래 `attack_design.md` 12-1 한 줄에만 있어 찾기 어려웠다(261002 사용자 요청으로 분리).
-코드의 사거리 값은 `libs/Misc.js` `Skill.getRange`(10줄부터). 이 값은 `Attack.setPosition`의 접근 거리이자 회피 반경 R = min(사거리, `Dodge.Range` 10)의 재료다.
+스킬 사거리에 관한 것은 모두 이 문서에 모은다.
+코드의 사거리 값은 `libs/Misc.js` `Skill.getRange`. 이 값은 `Attack.setPosition`의 접근 거리이자 회피 반경 R = min(사거리, `Dodge.Range` 10)의 재료다.
 
 ---
 
-## 0. 야드와 좌표 거리 (전제) (261104)
+## 0. 야드와 좌표 거리 (전제)
 
 - **좌표 거리**: kolbot이 쓰는 거리(`getDistance`, 유닛 x·y). 1 = 서브타일 1칸.
 - **야드**: 게임 화면·스킬 설명에 나오는 거리. **야드 = 좌표 거리 × 2/3** (좌표 = 야드 × 3/2).
-  - 근거: mpqdata `skills.txt`의 `aurarangecalc` 값(좌표)과 위키 야드를 Might·Resist Fire·Holy Shock으로 대조(261029, Static Field 행에서 옮김). 아래 야드 그림 6개 원과도 맞는다.
+  - 근거: mpqdata `skills.txt`의 `aurarangecalc` 값(좌표)과 위키 야드를 Might·Resist Fire·Holy Shock으로 대조했다. 아래 야드 그림 6개 원과도 맞는다.
 - 오라·저주 반경 계산: `aurarangecalc = ln12` → Param1 + (레벨−1) × Param2, `ln56` → Param5 + (레벨−1) × Param6 (좌표 거리).
 
-### 야드 그림 (사용자 자료 `야드.png`)
+### 야드 그림 대조
 
-- 출처: 사용자 자료(출처 표시 없음). 근거: **출처 불명**. 게임 화면 위에 2~16 야드 눈금과 스킬 범위 원을 그린 그림.
-- 그림의 원과 mpqdata 계산값(261104):
+- 게임 화면 위에 2~16 야드 눈금과 스킬 범위 원을 그린 그림(사용자 자료 `야드.png`)과 mpqdata 계산값:
 
 | 스킬 (ID) | `aurarangecalc` | Param | 좌표 반경 (레벨 1) | 야드 (×2/3) | 그림의 원 위치 |
 |---|---|---|---|---|---|
@@ -32,9 +29,9 @@
 - Param2·Param6이 0이라 이 스킬들의 반경은 레벨과 관계없다.
 - 그림의 원 위치는 눈으로 읽은 것이다(눈금 사이 값은 정확히 재지 않았다).
 
-### 화면 크기와 서브타일 (사용자 자료 `260413 getUnit range.txt`)
+### 화면 크기와 서브타일
 
-- 출처: 사용자 자료(260413). 근거: 사용자 자료(앞부분 측정값은 `gamedata/getUnit_range.md`). 원문 그대로.
+- 사용자 측정(앞부분 측정값은 `functions.md` "getUnit 범위"). **미검증**(`next_steps.md`).
 
 ```
 Resolution	|	Width	|	Height
@@ -52,7 +49,7 @@ Resolution	|	Width	|	Height
 
 - **좌표 거리 = 속도 × 프레임 × 3/64.** 감속(`Accel`)이 있으면 프레임마다 속도에 `Accel/1000`을 더한다(Accel은 음수).
 - 입력은 Missiles.txt 칸: **속도 = `Vel`**(최대 `MaxVel`), **프레임 = `Range`**(미사일 수명). 1프레임 = 40ms(25fps). 레벨에 따라 수명이 늘어나는 미사일(`LevRange` 등)은 따로 확인해야 한다. Howl처럼 측정값이 계산보다 큰 경우가 그렇다(추정).
-- 데이터 출처: blizzhackers/d2data `json/missiles.json`, `json/monstats2.json`(레거시 D2 데이터를 JSON으로 옮긴 것). 게임 버전과의 차이는 확인하지 않음.
+- 데이터: blizzhackers/d2data `json/missiles.json`, `json/monstats2.json`(레거시 D2 데이터의 JSON). 1.14d mpqdata와는 대조하지 않았다(`next_steps.md`).
 - 검산:
   - Frozen Orb 구슬(`frozenorb` 260): Vel 10 × Range 30 × 3/64 = **14.06** (260930 노트의 14.1)
   - Shock Wave(`shockwave` 511): Vel 20 × Range 14 × 3/64 = **13.1**. 측정 12.0~12.7(측정기가 주기적으로 좌표를 봐서 마지막 구간을 놓쳐 조금 작게 나옴, 추정)
@@ -83,7 +80,7 @@ Resolution	|	Width	|	Height
 
 ## 2. 측정 기록
 
-### 2-1. 260930 측정 (Numpad 5 측정기, 커밋 `4fabff3` → `e572133` → `4ea1938`)
+### 2-1. 260930 측정 (Numpad 5 측정기)
 | 스킬 | 측정 | 비고 |
 |---|---|---|
 | Nova | 11.3 | |
@@ -99,8 +96,7 @@ Resolution	|	Width	|	Height
 - 맞는 범위(추정): 미사일 중심 약 5.8 + 미사일 Size 1 + 몹 크기(2×2면 반 칸 남짓) → 몹 중심 약 6.5칸 안. 충돌 판정식은 게임 실행 파일 안에 있어 이 환경에서는 확인할 수 없다(데이터 표에는 Size·CollideType까지만 있음). 게임에서 몹을 6~7칸에 두고 기절이 걸리는 최대 거리를 보면 확인할 수 있다.
 - 이웃 간격: 반지름 6에서 2·6·sin(2.8°) ≈ 0.6칸 → 빈틈 없음. 커서 위치와 무관하게 내 주변 약 5.5~6칸을 모두 맞힌다.
 - 감속 공식 확인: Vel 12, Accel −600(프레임마다 −0.6), Range 16 → 약 5.6. 측정과 맞는다.
-- 사거리 5(`Misc.js`)는 최소 도달 5.4 안쪽이라 5칸 안 몹은 확실히 맞는다. 261002 게이트(사거리 밖일 때만 접근, 회피 없음)와 맞는다.
-- 측정 당시 측정기는 부채꼴 요약만 있어 `fan 351° (-179 ~ 172) width at end 12.5 along avg -0.0`과 미사일별 angle/side/along이 임의 방향 기준으로 찍혔다(무의미). 원형 출력은 3-1에 추가.
+- 사거리 5(`Misc.js`)는 최소 도달 5.4 안쪽이라 5칸 안 몹은 확실히 맞는다.
 
 ### 2-2. 261002 쇼크웨이브 퍼짐 측정 (Numpad 6 자동 측정)
 - 한 번 시전에 미사일 **5개**(classid 511, owner 나), 모두 내 자리에서 출발(spawn 0.0).
@@ -532,42 +528,30 @@ Resolution	|	Width	|	Height
 
 ---
 
-## 4. 현재 사거리 값과 근거 (`Skill.getRange`, 261002)
+## 4. 현재 사거리 값과 근거 (`Skill.getRange`)
 
-| 스킬 | 값 | 근거·이력 |
+| 스킬 | 값 | 근거 |
 |---|---|---|
-| 근접 계열(Bash, Zeal, Smite, Blessed Hammer, Maul, Fury 등) | 3 | 기존 |
-| Battle Cry | 4 | 기존 |
-| War Cry (154) | 5 | 기존. 측정 반지름 약 5.8(표시 5.4~6.3, 미사일 64개 원형), 계산 약 5.6. 261002부터 사거리 밖이거나 막혔을 때만 접근(회피 없음, `Barbarian.js`). 261003 가드 제거, 사거리 9 미만이라 회피 없음 |
-| Twister, Tornado | 5 | 기존. Tornado는 몹 방향 2~3칸 앞·좌우 ±1에 시전(`Druid.js` 104-112) |
-| Charged Bolt, Frost Nova | 6 | 기존 |
-| Whirlwind, Molten Boulder | 7 | 기존. Molten Boulder 데이터(261003): `moltenboulder` Vel 8 × Range 50 × 3/64 = **18.75**, Size 2, CollideKill 1. 볼더가 느려 9칸에서는 빗나갈 우려로 7 유지(사용자 261003). 261003부터 회피 없음(사거리 9 미만), 치킨이 늘면 9 또는 회피 대상 포함 재논의 |
-| Shock Wave (243) | 7 | 260930 7→10→7(Armageddon과 같은 값, D.FGOM 진동 방지). 261002 그대로 7, 게이트(회피 없음), 5칸보다 가까우면 5칸 커서(`Wereform.js`). 261003 가드 제거, 사거리 9 미만이라 회피 없음 |
-| Nova (48), Frozen Orb (64), Poison Nova | 9 (**261008 사용자 수정: Nova·Frozen Orb 10**, Poison Nova 9) | 260917 9, 260930 하루 10 뒤 9로(FONV 진동 방지로 FO·Nova 같은 값). 측정 Nova 11.3, FO 구슬 14.1. FO 파편 계산(261003, 구슬 위치에서): `frozenorbbolt` 18 × 25 × 3/64 ≈ 21.1, `frozenorbnova` 24 × 25 × 3/64 ≈ 28.1(맞는 범위는 미측정) |
-| Poison/Plague Javelin, Charge, Firestorm | 10 | 기존 |
-| Inner Sight, Slow Missiles | 13 | 기존 |
-| Howl (130) | 15 | 260901, 260930 20→15(측정 15.0, 스킬 레벨 20). B.WCRY `LowManaSkill = [130]` 삭제(War Cry 5 ↔ Howl 진동 방지) |
-| Lightning Fury, Teeth, Holy Bolt, Fissure, Volcano, Fire Blast, Shock Web, Blade Sentinel/Fury | 15 | 기존 |
-| 활 스킬, Fire Wall, Fist of the Heavens, Double Throw, Psychic Hammer, Dragon Flight | 20 | 기존 (Fire Wall 260917) |
-| Armageddon (249) | 20 | 261002 7→20. 사용자: 맞든 안 맞든 20 안에 몹이 보이면 바로 시전. 게이트(회피 없음, `Wereform.js`). 효과가 시전 좌표와 무관하게 내 주변에 난다는 건 추정(미확인) |
-| Summoner(500) | 25 | 260723 |
-| Static Field (42) | 스킬 레벨 + 4 | 260915. 261029 mpq `skills.txt` `aurarangecalc = ln12`, Param1 5·Param2 1 → 5 + (레벨−1) = 레벨 + 4(좌표 거리). 야드 환산은 0절. 261029 스태틱 로직(`Sorceress.js` `doAttack`)은 레벨 + 2에 서고 도착 오차 2(텔레 포함) → 실제 거리 ≤ 레벨 + 4. 옛 선시전 루프의 floor((레벨+4)×2/3)은 야드 값이었다(261029 삭제). S.SFFW 스태틱 레벨 모의: 46→8, 48→14, 50→16, 52→17(261003 스킬 분배 모의) |
-| Leap / Arctic Blast | 표 × 3/2 − 1 | 260513 |
+| 근접 계열(Bash, Zeal, Smite, Blessed Hammer, Maul, Fury 등) | 3 | |
+| Battle Cry | 4 | |
+| War Cry (154) | 5 | 측정 반지름 약 5.8(표시 5.4~6.3, 미사일 64개 원형), 계산 약 5.6(2-3절). 5는 최소 도달 5.4 안쪽 |
+| Twister, Tornado | 5 | Tornado는 몹 방향 2~3칸 앞·좌우 ±1에 시전(`Druid.js`) |
+| Charged Bolt, Frost Nova | 6 | |
+| Whirlwind, Molten Boulder | 7 | Molten Boulder 데이터: `moltenboulder` Vel 8 × Range 50 × 3/64 = **18.75**, Size 2, CollideKill 1. 볼더가 느려 9칸에서는 빗나갈 우려로 7(사용자 결정) |
+| Shock Wave (243) | 7 | 측정 도달 12~13(2-2절). 몹이 5칸보다 가까우면 몹 방향 5칸 지점에 시전(`Wereform.js`) |
+| Poison Nova | 9 | |
+| Nova (48), Frozen Orb (64) | 10 | 측정 Nova 11.3, FO 구슬 계산 14.1. FO 파편 계산(구슬 위치에서): `frozenorbbolt` 18 × 25 × 3/64 ≈ 21.1, `frozenorbnova` 24 × 25 × 3/64 ≈ 28.1(맞는 범위는 미측정) |
+| Poison/Plague Javelin, Charge, Firestorm | 10 | |
+| Inner Sight, Slow Missiles | 13 | |
+| Howl (130) | 15 | 측정 15.0(스킬 레벨 20) |
+| Lightning Fury, Teeth, Holy Bolt, Fissure, Volcano, Fire Blast, Shock Web, Blade Sentinel/Fury | 15 | |
+| 활 스킬, Fire Wall, Fist of the Heavens, Double Throw, Psychic Hammer, Dragon Flight | 20 | |
+| Armageddon (249) | 20 | 맞든 안 맞든 20 안에 몹이 보이면 바로 시전(사용자 결정) |
+| Summoner(500) | 25 | |
+| Static Field (42) | 스킬 레벨 + 4 | mpq `skills.txt` `aurarangecalc = ln12`, Param1 5·Param2 1 → 5 + (레벨−1) = 레벨 + 4(좌표 거리, 야드 환산은 0절). `Sorceress.js` `doAttack`은 레벨 + 2에 서고 도착 오차 2(텔레 포함) → 실제 거리 ≤ 레벨 + 4 |
+| Leap / Arctic Blast | 표 × 3/2 − 1 | |
 | Bone Spear/Spirit | 15 | PvP 40 |
 | Fire Ball, Lightning, Chain Lightning, Glacial Spike, Meteor, Blizzard, Mind Blast | 20 | PvP 40 |
 | 그 밖 | (함수 끝 기본값) | |
 
-### 사거리와 회피의 관계
-- `setPosition(unit, 사거리, coll)`: 사거리 밖이거나 막혔으면 접근, 사거리 안이고 `Dodge.Enabled`이고 사거리 ≥ `Dodge.MinSkillRange`(261003 9, 261008 10)면 회피 판정(R = min(사거리, 10), 261003부터 R − 2 이하 몹 1마리 이상이면 물러남. 걷기는 R, 텔레는 사거리 링으로).
-- 회피를 원하지 않는 스킬은 직업 파일에서 "사거리 밖이거나 막혔을 때만 `setPosition`"을 부르는 게이트로 막는다(스태틱 선시전(261029 삭제), Howl 선공격, 261002 War Cry·Shock Wave·Armageddon. 261003 War Cry·Shock Wave는 사거리 9 미만이라 가드 제거). `Dodge.Enabled = false`와 해당 스킬 동작은 같지만 범위가 다르다(다른 스킬 전부, 탈라샤 무덤 토글이 `true`로 되돌림).
-- `MinSkillRange`를 `>`로 바꾸는 안은 기각: 정확히 5인 스킬(War Cry, Twister, Tornado, Static Field 레벨 1, Leap 레벨 1) 전부 회피가 꺼진다. (261003 문턱 9로 바뀌어 사거리 9 미만은 모두 회피 없음, 사용자 결정)
-- 빌드의 회피 켜기: 261002부터 모든 빌드 25레벨(전에는 18레벨).
-- 기준 거리(261003): 소서·어쌔신·아마존·드루이드·웨어폼·네크로는 그 몹에게 고른 timed·untimed 중 짧은 사거리로 두 스킬 모두 자리를 잡는다. 그래서 진동을 막으려고 두 스킬의 사거리 값을 서로 맞출 필요가 없다(위 표의 "진동 방지" 값들은 그때 사정). 값은 실제 도달 거리에 가깝기만 하면 된다.
-
----
-
-## 5. 열린 질문
-- ~~War Cry 실제 도달 거리와 미사일 수~~ → 261002 측정 완료(2-3). 대화 중 "투사체가 없을 것"이라 한 건 틀렸다(미사일 64개 원형).
-- Howl의 레벨별 수명·속도: 측정 15.0이 계산 3.7보다 훨씬 큼. 레벨 스케일링 칸 확인 필요.
-- 미사일·몹 충돌의 실제 판정식(빈틈 기준 3칸은 크기 어림). Game.exe 없이는 확인 불가, 게임에서 기절 거리로 확인.
-- Armageddon 효과 범위(시전 좌표 무관 여부).
+- 회피 흐름(사거리와 회피 반경의 관계)은 kolbot `docs/attack_flow.md`.

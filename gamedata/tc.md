@@ -1,8 +1,8 @@
 # TC (트레저 클래스: 몬스터·상자 드랍 최대치)
 
-지역별 일반·챔피언·유니크 몬스터와 상자, 슈퍼유니크·액트 보스가 떨어뜨릴 수 있는 최대 장비 TC와 최고 룬 (261104).
+지역별 일반·챔피언·유니크 몬스터와 상자, 슈퍼유니크·액트 보스가 떨어뜨릴 수 있는 최대 장비 TC와 최고 룬.
 
-- 데이터: mpqdata(1.14d에서 추출) `levels.txt`·`monstats.txt`·`superuniques.txt`·`treasureclassex.txt`. 규칙: 1.14d `Game.exe`(FileVersion 1.14.3.71) 역어셈블로 확인(아래 주소). 값은 모두 이 규칙으로 계산한 것이다(261104). 노말 표 추가, 슈퍼유니크 지역 1.14d 확인, 남은 D2MOO·일반 지식 근거를 모두 1.14d로 확인하고 표 606줄을 규칙대로 다시 계산해 대조(261105).
+- 데이터: mpqdata(1.14d에서 추출) `levels.txt`·`monstats.txt`·`superuniques.txt`·`treasureclassex.txt`. 규칙: 1.14d `Game.exe`(FileVersion 1.14.3.71) 역어셈블로 확인(아래 주소). 값은 모두 이 규칙으로 계산한 것이다.
 - kolbot 사용처: 사냥 구간 선택(`bots/*`), 아이템 레벨이 필요한 판단
 
 ## 1. 규칙
@@ -11,21 +11,21 @@
 |---|---|---|
 | 몬스터 종류별 TC | 일반 `TreasureClass1`, 챔피언 `TreasureClass2`, 유니크 `TreasureClass3`, 퀘스트 첫 처치 `TreasureClass4`(노말은 접미사 없는 열, 나이트메어·헬은 `(N)`·`(H)` 열). 슈퍼유니크는 `superuniques.txt` `TC`·`TC(N)`·`TC(H)` | `0x5A6600`(슈퍼유니크면 `superuniques.txt` TC, 기록이 없으면 TC3; 아니면 챔피언 TC2·유니크 TC3·일반 TC1). D2MOO `MonsterMode.cpp`와 같음 |
 | 몬스터 레벨 | 확장팩 나이트메어·헬: 지역 레벨(`levels.txt` `MonLvl2Ex`·`MonLvl3Ex`). `monstats.txt` `boss`·`noRatio` 클래스는 `Level(N)`·`Level(H)`. 노말은 `monstats.txt` `Level`(지역 레벨 아님) | `0x573E18`(`monstats` 레벨), `0x61dca0`(지역 레벨 읽기) |
-| 레벨 가산 | 유니크·슈퍼유니크 +3(umod 4 `leveladd`). 그 부하도 +3(부하 소환 뒤 umod 1~4를 부하에게도 적용, `0x5A2155` → `0x58F380`, 261105). 챔피언 +2(+3 후 champion umod의 −1). 챔피언 중 berserk는 +3(−1 없음) | `0x5a2120`(umod 1~4를 먼저 적용, `0x6e2168`), `0x5a0e40`(+3), `0x5a0e80`(−1), 적용 함수 표 `0x73c008` |
+| 레벨 가산 | 유니크·슈퍼유니크 +3(umod 4 `leveladd`). 그 부하도 +3(부하 소환 뒤 umod 1~4를 부하에게도 적용, `0x5A2155` → `0x58F380`). 챔피언 +2(+3 후 champion umod의 −1). 챔피언 중 berserk는 +3(−1 없음) | `0x5a2120`(umod 1~4를 먼저 적용, `0x6e2168`), `0x5a0e40`(+3), `0x5a0e80`(−1), 적용 함수 표 `0x73c008` |
 | TC 올림 | 확장팩·나이트메어 이상·`boss`/`noRatio`가 아닌 몬스터만. 몬스터 TC에서 시작해, 다음 기록이 같은 `group`이고 그 `level` ≤ 몬스터 레벨이면 다음으로 옮긴다. 내리지 않는다 | `0x55afa0`(조건), `0x654e00`(루프) |
 | TC 기록 순서 | `treasureclassex.txt` 줄 순서 그대로. 그래서 같은 group이면 난이도를 넘거나(나이트메어 → 헬 TC) 줄 순서상 다음인 "x" TC로 옮겨 갈 수 있다 | `0x654c3d~`(불러오기), `0x653f90`(기록 추가) |
 | 상자 | 액트는 지역의 `Act`. F = 그 액트 첫 지역 레벨, L = 끝 지역 레벨(첫·끝 지역 2–37, 41–73, 76–102, 104–108, 109–136), T = (\|L − F\| + 1) ÷ 3(버림). 지역 레벨 < F + T면 A, ≥ F + 2T면 C, 그 사이 B → `Act N (난이도) Chest A/B/C`. 올림 없음. 레벨 없는 지역(마을)은 0 | `0x585b90`(식 `0x585C55`~`0x585C87`), 지역 표 `0x6e1988` |
-| 기본 아이템 TC | `weapNN`(무기)·`armoNN`(방어구)·`bowNN`(활·석궁)·`meleNN`(근접 무기) = 아이템 레벨을 3 단위로 올린 값(`weapons.txt`·`armor.txt` `level`) | mpqdata 대조(261104, `bow`·`mele` 261105) |
+| 기본 아이템 TC | `weapNN`(무기)·`armoNN`(방어구)·`bowNN`(활·석궁)·`meleNN`(근접 무기) = 아이템 레벨을 3 단위로 올린 값(`weapons.txt`·`armor.txt` `level`) | mpqdata 대조 |
 | 몬스터 목록 | 지역마다 게임이 목록에서 일반 몬스터를 무작위로 최대 `NumMon`(13 이하)종 고른다. 노말은 `mon1~10`, 나이트메어·헬은 `nmon1~10`. 노말 챔피언·유니크만 `umon1~10`에서 고르고, 나이트메어·헬 챔피언·유니크는 고른 일반 몬스터에서 나온다 | `0x5475F0`(목록), `0x5BDE80`(노말 `umon`) |
 | 아이템 레벨 | 몬스터가 떨군 것 = 몬스터 레벨(챔피언 +2·유니크 +3 포함). 상자 등 몬스터가 아닌 것 = 지역 레벨(몬스터 레벨 규칙과 같은 열). 1보다 작으면 1 | `0x558200` |
 
-- 유니크·슈퍼유니크의 부하는 일반 몬스터라 TC1(일반 TC)을 쓰지만 레벨이 +3이라 TC 올림이 더 높을 수 있다. 그래서 지역 표에 "유니크 부하" 칸, 슈퍼유니크 표에 "부하" 칸을 따로 둔다(261105). 부하 종류 = 유니크·슈퍼유니크 클래스의 `monstats.txt` `minion1`, 없으면 같은 클래스(`0x5A0BB0`). 지역 표의 유니크는 노말이면 `umon`, 나이트메어·헬이면 지역 목록에서 나온다(1절 "몬스터 목록"). 슈퍼유니크 부하의 레벨은 지역 레벨 + 3(나이트메어·헬, 보스가 `boss` 클래스여도 부하는 지역 레벨). 부하가 없는 슈퍼유니크는 `-`.
+- 유니크·슈퍼유니크의 부하는 일반 몬스터라 TC1(일반 TC)을 쓰지만 레벨이 +3이라 TC 올림이 더 높을 수 있다. 그래서 지역 표에 "유니크 부하" 칸, 슈퍼유니크 표에 "부하" 칸을 따로 둔다. 부하 종류 = 유니크·슈퍼유니크 클래스의 `monstats.txt` `minion1`, 없으면 같은 클래스(`0x5A0BB0`). 지역 표의 유니크는 노말이면 `umon`, 나이트메어·헬이면 지역 목록에서 나온다(1절 "몬스터 목록"). 슈퍼유니크 부하의 레벨은 지역 레벨 + 3(나이트메어·헬, 보스가 `boss` 클래스여도 부하는 지역 레벨). 부하가 없는 슈퍼유니크는 `-`.
 - 지역 값 = 그 지역 목록(위 "몬스터 목록") 몬스터 중 최댓값이다. 장비와 룬은 따로 최댓값을 잡는다(장비 최댓값과 룬 최댓값이 다른 몬스터일 수 있다). 목록이 빈 지역은 `-`. 한 게임에는 목록 중 최대 `NumMon`종만 나오므로, 최댓값을 주는 몬스터가 그 게임에 뽑히지 않으면 그 게임 값은 이보다 낮다.
-- 지역 이름은 kolbot `Pather.getAreaName` 이름(게임 화면 이름)이다. `levels.txt` `LevelName`(내부 이름)과 28곳이 다르다(예: 125~127 `Hell1~3` = Abaddon·Pit Of Acheron·Infernal Pit, 133~135 `Pandemonium Run 1~3` = Matron's Den·Fogotten Sands·Furnace of Pain, `Fogotten`은 kolbot 철자 그대로)(261105).
+- 지역 이름은 kolbot `Pather.getAreaName` 이름(게임 화면 이름)이다. `levels.txt` `LevelName`(내부 이름)과 28곳이 다르다(예: 125~127 `Hell1~3` = Abaddon·Pit Of Acheron·Infernal Pit, 133~135 `Pandemonium Run 1~3` = Matron's Den·Fogotten Sands·Furnace of Pain, `Fogotten`은 kolbot 철자 그대로).
 
 ## 1-1. 표 읽는 법 (범례)
 
-**TC 이름** = `Act N (난이도) 종류 단계`(`treasureclassex.txt` 이름 그대로, 261105)
+**TC 이름** = `Act N (난이도) 종류 단계`(`treasureclassex.txt` 이름 그대로)
 
 | 부분 | 뜻 |
 |---|---|
@@ -37,10 +37,10 @@
 | `Chest` | 상자 TC |
 | `Equip`·`Good`·`Junk`·`Citem`·`Uitem`·`Cpot`·`Magic` | 위 TC가 고르는 하위 TC. `Equip` = 장비(`weapNN`·`armoNN`), `Good` = 쥬얼리·보석·룬, `Junk` = 물약·화살 등, `Citem`·`Uitem` = 챔피언·유니크용 아이템 묶음, `Cpot` = 챔피언·유니크용 물약 |
 | `A`·`B`·`C` | 같은 액트 안의 레벨 단계(낮음·중간·높음). TC 기록의 `level`이 A < B < C |
-| 끝의 `x` | 같은 이름 TC의 변형. 고르는 항목은 같고 품질 계수만 낮다(예: `Act 5 (H) Super C` 유니크 800·세트 800, `Super Cx` 512·654). Pindleskin·Threash Socket의 TC. `x` TC 45개 모두 항목·`Picks`·`NoDrop`이 원래 TC와 같고 품질 계수만 같거나 낮다(데이터 전수, 261105) |
+| 끝의 `x` | 같은 이름 TC의 변형. 고르는 항목은 같고 품질 계수만 낮다(예: `Act 5 (H) Super C` 유니크 800·세트 800, `Super Cx` 512·654). Pindleskin·Threash Socket의 TC. `x` TC 45개 모두 항목·`Picks`·`NoDrop`이 원래 TC와 같고 품질 계수만 같거나 낮다(데이터 전수) |
 | 보스 이름(`Andariel` 등) | 그 보스 전용 TC. 끝에 `q`(`Andarielq`)는 퀘스트 TC |
 
-**TC 기록의 칸**(`treasureclassex.txt`, 261105)
+**TC 기록의 칸**(`treasureclassex.txt`)
 
 | 칸 | 뜻 |
 |---|---|
@@ -51,13 +51,13 @@
 | `weapNN`·`armoNN` 숫자 | 기본 아이템 레벨을 3 단위로 올린 묶음(`weapons.txt`·`armor.txt` `level`). 예: `weap87` = 기본 아이템 레벨 85~87인 무기들. 표의 숫자는 도달할 수 있는 가장 높은 묶음 |
 
 **표의 값**
-- "장비 TC / 룬" = 그 TC에서 끝까지 내려가 도달할 수 있는 가장 높은 `weap`·`armo`·`bow`·`mele` 번호와 가장 높은 룬(261105 전에는 `weap`·`armo`만 세어 헬 지역 일반 몬스터 34칸이 3~6 낮았다. 활·근접 몬스터의 `Bow`·`Melee` 하위 TC가 더 높은 `bow`·`mele` 묶음을 가진다). 확률은 반영하지 않는다(최댓값이지 기댓값이 아니다).
-- `-`(룬 칸) = 그 TC 아래 어디에도 룬이 없다 = **룬이 나오지 않는다.** 예: 노말 액트1의 `Act 1 Good`은 쥬얼리·칩 보석뿐이라 노말 액트1 몬스터·상자는 엘 룬도 떨구지 않는다(노말 `Act 1`로 시작하는 TC 전부 확인, 261105). 노말 카운테스만 자기 룬 TC(`Countess Rune` → `Runes 4`, 랄까지)로 룬을 떨군다. 룬은 노말 `Act 2 Good`(`Runes 1`·`Runes 2`)부터 들어간다.
+- "장비 TC / 룬" = 그 TC에서 끝까지 내려가 도달할 수 있는 가장 높은 `weap`·`armo`·`bow`·`mele` 번호와 가장 높은 룬(활·근접 몬스터는 `Bow`·`Melee` 하위 TC가 더 높은 `bow`·`mele` 묶음을 가진다). 확률은 반영하지 않는다(최댓값이지 기댓값이 아니다).
+- `-`(룬 칸) = 그 TC 아래 어디에도 룬이 없다 = **룬이 나오지 않는다.** 예: 노말 액트1의 `Act 1 Good`은 쥬얼리·칩 보석뿐이라 노말 액트1 몬스터·상자는 엘 룬도 떨구지 않는다(노말 `Act 1`로 시작하는 TC 전부 확인). 노말 카운테스만 자기 룬 TC(`Countess Rune` → `Runes 4`, 랄까지)로 룬을 떨군다. 룬은 노말 `Act 2 Good`(`Runes 1`·`Runes 2`)부터 들어간다.
 - `- / -`(장비·룬 모두) = 그 칸에 해당하는 몬스터가 없다(아래 "빈 지역").
 - 슈퍼유니크·지역 표의 "장비 TC / 룬"은 **올린 TC 기준**이다(예: Bishibosh 헬 = 기본 `Act 1 (H) Super A` 63 / Gul → 올린 `Act 2 (H) Super B` 69 / Lo, 표 69 / Lo). 지역 표의 일반·챔피언·유니크도 각 레벨(+2·+3 포함)로 올린 값이다.
-- 올림이 기본보다 낮아지는 경우: 헬 Snapchip Shatter·Frozenstein은 기본 `Act 5 (H) Super C`(87 / Zod)가 줄 순서상 다음인 `x` TC들을 거쳐 `Act 4 (H) Super Bx`(78 / Cham)에서 멈춘다(1절 "TC 올림"·"TC 기록 순서" 규칙대로 계산한 값. 261105 표 전체 재계산에서도 같음).
+- 올림이 기본보다 낮아지는 경우: 헬 Snapchip Shatter·Frozenstein은 기본 `Act 5 (H) Super C`(87 / Zod)가 줄 순서상 다음인 `x` TC들을 거쳐 `Act 4 (H) Super Bx`(78 / Cham)에서 멈춘다(1절 "TC 올림"·"TC 기록 순서" 규칙대로 계산한 값).
 
-**빈 지역** (`levels.txt` 몬스터 목록, 261105)
+**빈 지역** (`levels.txt` 몬스터 목록)
 - 목록(`mon`·`nmon`·`umon`)이 비어 있는 지역은 무작위 몬스터가 없고, 몬스터가 지도 프리셋이나 퀘스트 코드로만 놓이는 곳이다: 121 Nihlathak's Temple(Pindleskin 무리), 132 The Worldstone Chamber(바알), 136 Tristram(횃불 우버). 이 몬스터들은 3절(슈퍼유니크)·4절(액트 보스) 표에 있다.
 - 120 Arreat Summit은 목록에 고대인 3명뿐이고 고대인은 `monstats.txt` TC가 비어 있어 `- / -`다.
 - 노말 110 Bloody Foothills는 `umon`(노말 챔피언·유니크 목록)이 비어 있어 챔피언·유니크가 `-`다.
@@ -469,9 +469,9 @@
 ## 3. 슈퍼유니크
 
 - 레벨(나이트메어·헬) = 기본 레벨 + 3. 기본 레벨은 지역 레벨, `boss`·`noRatio` 클래스(표의 B)는 `monstats` 레벨(올림 없음).
-- 지역 = 슈퍼유니크가 놓이는 지도(DS1)의 지역. 근거: 1.14d `d2data.mpq`·`d2exp.mpq`의 DS1 2,384개(사용자 추출)에서 프리셋 몬스터(`monpreset.txt`)를 읽고, 그 DS1을 `lvlprest.txt` → D2MOO 지도 생성 코드(`DrlgMaze.cpp`·`DrlgOutWild.cpp`·`DrlgOutDesr.cpp`·`DrlgOutJung.cpp`·`DrlgOutPlace.cpp`·`DrlgOutSiege.cpp`, 1.10f 재구성)로 지역에 맞췄다. DS1에 없는 것은 D2MOO 소환 코드(디아블로 봉인 `A4Q2.cpp`, 고대인 `A5Q5.cpp`, 니라탁 `A5Q3.cpp`, 바알 부하 `AiThink.cpp`)(261105).
-- 지도 → 지역 단계는 1.14d `Game.exe`(FileVersion 1.14.3.71)로 확인했다. 아래 표의 모든 조건이 D2MOO와 같다(261105). 지도 배열(DS1 번호 4개씩 묶은 표) 50개는 D2MOO 값 전체가 exe 안에 그대로 있다(`0x6EF8A8`~`0x6F05D8`).
-- 소환 보스도 1.14d로 확인했다(261105). 슈퍼유니크는 지도 프리셋이든 소환이든 모두 한 함수(`0x54E600` → `0x5A49B0`)로 생긴다(`0x5A49B0`을 부르는 곳은 `0x54E67E` 한 곳).
+- 지역 = 슈퍼유니크가 놓이는 지도(DS1)의 지역. 근거: 1.14d `d2data.mpq`·`d2exp.mpq`의 DS1 2,384개(사용자 추출)에서 프리셋 몬스터(`monpreset.txt`)를 읽고, 그 DS1을 `lvlprest.txt` → D2MOO 지도 생성 코드(`DrlgMaze.cpp`·`DrlgOutWild.cpp`·`DrlgOutDesr.cpp`·`DrlgOutJung.cpp`·`DrlgOutPlace.cpp`·`DrlgOutSiege.cpp`, 1.10f 재구성)로 지역에 맞췄다. DS1에 없는 것은 D2MOO 소환 코드(디아블로 봉인 `A4Q2.cpp`, 고대인 `A5Q5.cpp`, 니라탁 `A5Q3.cpp`, 바알 부하 `AiThink.cpp`).
+- 지도 → 지역 단계는 1.14d `Game.exe`(FileVersion 1.14.3.71)로 확인했다. 아래 표의 모든 조건이 D2MOO와 같다. 지도 배열(DS1 번호 4개씩 묶은 표) 50개는 D2MOO 값 전체가 exe 안에 그대로 있다(`0x6EF8A8`~`0x6F05D8`).
+- 소환 보스도 1.14d로 확인했다. 슈퍼유니크는 지도 프리셋이든 소환이든 모두 한 함수(`0x54E600` → `0x5A49B0`)로 생긴다(`0x5A49B0`을 부르는 곳은 `0x54E67E` 한 곳).
   - 디아블로 봉인: 봉인 오브젝트를 열면 hcIdx 36·37·38(Infector of Souls·Lord De Seis·Grand Vizier of Chaos)을 그 자리에 소환(`0x5B5750`). 봉인 오브젝트(액트4 프리셋 47·49·51)는 디아블로 날개 지도(`lvlprest.txt` 858~861)에만 있고, 이 지도는 108 Chaos Sanctuary에서만 놓인다(`0x67E8BF` → `0x67E840`).
   - 고대인: 석상(`monpreset` 액트5 24~26)은 `MtnTop.ds1`(`lvlprest.txt` 1089, 120 Arreat Summit)에만 있다. 석상 오브젝트 474~476이 hcIdx 44·43·45를 소환(`0x58C114`~`0x58C198`, 소환 함수 `0x545C30` → `0x54E600`).
   - 니라탁: 오브젝트 462(`Nihlathak Start Outside Town`, 액트5 프리셋 56, 프리셋 표 `0x748AD8`)가 hcIdx 60을 소환(`0x58A70D`). 이 오브젝트는 `lvlprest.txt` 864(124 Halls of Vaught)의 지도 4개에만 있다(그 밖에 `temple01.ds1`에도 있으나 어느 `lvlprest`도 쓰지 않음).
@@ -723,7 +723,7 @@
 ## 4. 액트 보스 (`monstats.txt` `boss` 클래스)
 
 - 레벨은 `monstats` 레벨, 올림 없음. 퀘스트 TC는 죽인 캐릭터(소환수·용병이면 그 주인)의 그 퀘스트 기록에서 완료(bit 15)·보상 대기(bit 1)·`monstats.txt` `TCQuestCP` bit가 모두 꺼져 있을 때 쓴다(`0x5A6705`~`0x5A67E9`). 퀘스트 번호·CP: 안다리엘 6·1, 듀리엘 14·5, 메피스토 22·0, 디아블로 26·0, 바알 40·0(`TCQuestId`·`TCQuestCP`).
-- 퀘스트 TC와 일반 TC의 차이(`treasureclassex.txt`, 5개 보스 3난이도 모두 같은 모양, 261105): `Picks`·`NoDrop`과 장비·좋은 아이템 하위 TC는 같아서 최고 장비 TC·룬은 같다. 다른 점은 둘이다.
+- 퀘스트 TC와 일반 TC의 차이(`treasureclassex.txt`, 5개 보스 3난이도 모두 같은 모양): `Picks`·`NoDrop`과 장비·좋은 아이템 하위 TC는 같아서 최고 장비 TC·룬은 같다. 다른 점은 둘이다.
   - 항목: 퀘스트 TC에는 골드(`gld`)와 `Junk`가 없다. 그래서 한 번 뽑을 때 장비·`Good`이 나올 비율이 오른다(예: 안다리엘 일반 = 골드 11·장비 19·잡템 15·좋은 3, 퀘스트 = 장비 19·좋은 3).
   - 품질 계수: 유니크·세트 983 → 995(안다리엘) 또는 993(그 밖), 레어 983 → 1024(레어 이상 보장). 듀리엘은 하위 `Duriel - Base`·`Durielq - Base`에서 같은 차이.
 
@@ -759,41 +759,6 @@
   - r = NoDrop / (나머지 확률 합 + NoDrop)
   - 새 NoDrop = 나머지 확률 합 / (1 − rⁿ) × rⁿ
 - **아이템 레벨(숨렙):** TC와 아이템 레벨은 하는 일이 다르다. TC 숫자(`weapNN`)는 **어떤 기본 아이템이 나올 수 있는지**(기본 아이템 레벨 상한)를 정하고, 아이템 레벨은 떨어진 그 아이템의 **접사·소켓 수**를 정한다(`item_mods.md`). 몬스터 드랍의 아이템 레벨은 몬스터 레벨(표의 레벨 칸, 챔피언 +2·유니크 +3 포함), 상자는 지역 레벨이라 랜덤이 아니다(1절 "아이템 레벨", 1.14d `0x558200`). TC 올림이 "TC `level` ≤ 몬스터 레벨"이라 보통 아이템 레벨이 TC 숫자보다 높거나 같지만, TC 숫자가 아이템 레벨의 하한이라는 뜻은 아니다.
-- **퀘스트 보상 룬:** 헬포지·Rescue on Mount Arreat 보상은 `treasureclassex.txt`에 없다(검색 0건). 1.14d 코드로 확인했다(261105, 아래 6절 원문과 같음).
+- **퀘스트 보상 룬:** 헬포지·Rescue on Mount Arreat 보상은 `treasureclassex.txt`에 없다(검색 0건). 1.14d 코드로 확인했다.
   - 헬포지(확장판): 노말 El~Amn(r01~r11), 나이트메어 Sol~Um(r12~r22), 헬 Hel~Gul(r15~r25) 중 11개에서 균등하게 하나(`0x5B68AA`, 표 `0x73E114`·`0x73E514`·`0x73E540`). 클래식 경로는 보지 않았다.
   - Rescue on Mount Arreat: Qual-Kehk 대화에서 Tal·Ral·Ort(r07~r09)를 차례로 준다. 이미 일부를 받은 기록(퀘스트 bit)이 있으면 2개(Tal·Ral)나 1개(Tal)(`0x587C32`~`0x587C96`, 표 `0x732FEC`).
-
-## 6. 원문 메모 (PureDiablo "Rune Farming")
-
-- 출처: https://www.purediablo.com/diablo-2/diablo-2-rune-farming (가져온 날 261104). 근거: 웹. 헬포지·Rescue on Mount Arreat 룬은 5절에서 1.14d로 확인(같음). 상자 문단은 대조 대상 아님(원문 설명). 원문 영어 그대로, 위 계산과 겹치는 절(몬스터·카운테스·상자 최고 룬 목록·레벨 85 상자 TC·플레이어 수)은 뺐다.
-- 원문 문장(Monsters 절): "Rune hunting is somewhat simplified by the fact that Magic Find is of no benefit."
-
-### The Hellforge
-
-When a character shatters Mephisto’s Soulstone on the Hellforge in Act Four, four gems and one rune drop as part of the quest reward. The runes that may be found from this quest vary by difficulty level. Which one drops is selected randomly from the following possibilities:
-
-- Normal:El (r01) – Amn (r11).
-- Nightmare: Sol (r12) – Um (r22).
-- Hell: Hel (r15) – Gul (r25).
-
-Unlike the runes from the Countess, or any other monster drops in the game, the lower-level runes are **not** more common. The odds for Hel or Gul  are identical on Hell difficulty, 1/11 for each.
-
-Note: Do not finish this quest with other players in your party if they have not completed the quest already. There are four gems drop for every character completing the quest but only one rune will drop no matter how many are in the party.
-
-### Rescue on Mount Arreat
-
-This second quest in Act Five (Rescue on Mount Arreat) can be easily completed, and players will receive a Tal (r07), a Ral (r08), and an Ort (r09) rune as a reward.
-
-### Chests
-
-Chests are all objects that can contain an item. These include barrels, chests, crates, lootable corpses, hidden stashes etc. These items have different drop rates and quality of item drops.
-
-Doing chest runs in some areas with a lot of chests is a very good way to find multiple high quality items, especially runes. While all chests are potentially useful, the super chests are the ones to hit; you’ll find one or two of those near the campfires in Lower Kurast on Act 3, for example.
-
-### Sparkly Chests
-
-There are a lot of “super chests” in the game, ones that can drop multiple items at once. Most super chests are sparkly chests but it’s not a hard and fast rule. Not all super chests sparkle, and not all sparkling chests are super chests.
-
-For example, some sparkly chests are quest chests that contain quest items. These include the Maggot Lair chest, The Spider Cavern Chest, the Kurast Lvl 2 chest, the Ruined Temple chest (Lam Esen’s Tome). These are not real “sparkly chests”.
-
-There are 24 Sparkly Chests within each difficulty level –or a total of 72 on the path to Hell difficulty Baal. There are five chests with identical characteristics in the False Tal Rasha’s Tombs. The Great Marsh has two Sparkly Chests with identical characteristics. The other 17 chests are each individualistic in their drop odds as they are encountered on Normal, Nightmare (NM) and Hell (H) difficulty levels

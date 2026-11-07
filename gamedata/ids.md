@@ -1,15 +1,17 @@
 # 엔진 번호 (코드에서 쓰는 번호표)
 
-아이템 플래그·위치·착용 부위, 유닛 동작 상태(mode), NPC 메뉴, 상점 화면, 아이템 기본 스탯 인덱스, UI 플래그 (261104), 몬스터 spectype·슈퍼유니크 프리셋 번호(261105), 아이템 mode·게임 밖 화면 번호(261105).
+아이템 플래그·위치·착용 부위, 유닛 동작 상태(mode), NPC 메뉴, 상점 화면, 아이템 기본 스탯 인덱스, UI 플래그, 몬스터 spectype, 슈퍼유니크 프리셋 번호, 게임 밖 화면 번호.
 
-- 번호와 이름은 원본 그대로 영문. 출처는 절마다 적었다.
+- 번호와 이름은 영문 그대로.
+- 절마다 "쓰는 법"(함수·속성을 쓰는 모양)과 "반환값"(돌려주는 값과 판정 방법)을 적었다. 반환값은 kolbot 코드가 그 값을 쓰는 모양으로 확인한 것이다(D2BS 엔진 소스는 이 저장소에 없다).
 
 ## 아이템 플래그 (`item.getFlag(값)`)
 
-- 출처: kolbot 옛 sdk `itemflags.txt`(원본 끝 "thanks to bluemind for testing"). 설명은 원본 영어 그대로.
-- 쓰는 법: `item.getFlag(값)`이 0이 아니면 그 플래그가 켜져 있다. 예: `if (item.getFlag(0x10)) { ... }` = 감정된 아이템(`Town.js`), `item.getFlag(0x400000)` = 에테리얼(261105).
+- **미검증**: kolbot이 쓰는 0x10(감정)·0x400000(에테리얼) 말고는 확인하지 않았다(`next_steps.md`). 설명 열은 옛 sdk 원문 영어.
+- 쓰는 법: `item.getFlag(값)`. 예: `if (item.getFlag(0x10)) { ... }` = 감정된 아이템(`Town.js`), `if (!item.getFlag(0x400000))` = 에테리얼이 아님(`Town.js`).
+- 반환값: 켜져 있으면 참, 꺼져 있으면 거짓. kolbot은 `if (…)`·`!`로 참·거짓만 보고 `===`로 비교하지 않는다(코드 38곳). 참일 때의 정확한 값(true인지 숫자인지)은 미확인.
 
-| 값 | 이름 | 원본 설명 |
+| 값 | 이름 | 설명 |
 |---|---|---|
 | 0x4000000 | isRuneword | set if it is a runeword (note that 'ith' qualifies ;) |
 | 0x1000000 | isNamed | has a custom name "Player's item" |
@@ -31,8 +33,9 @@
 
 ## 아이템 위치 (`item.location`)
 
-- 출처: 사용자 자료 `아이템로케이션.txt`. 4번은 원본에 없다.
-- 쓰는 법: `item.location === 7` = 창고에 있는 아이템(`Misc.js`)(261105).
+- 쓰는 법: 속성 `item.location`.
+- 반환값: 아래 번호(숫자). `===`로 비교한다. 예: `item.location === 7` = 창고에 있는 아이템(`Misc.js`).
+- 4번은 뜻을 모른다(`next_steps.md`).
 
 | 번호 | 위치 |
 |---|---|
@@ -45,8 +48,9 @@
 
 ## 착용 부위 (`item.bodylocation`)
 
-- 0~10: mpqdata `bodylocs.txt` 줄 순서(머리줄 다음 첫 줄이 0). 11·12: kolbot 옛 sdk `bodylocations.txt`(mpqdata에 없음, 무기 스왑 칸).
-- 쓰는 법: `item.bodylocation === 4` = 오른손 무기(`Precast.js`)(261105).
+- 0~10은 mpqdata `bodylocs.txt` 줄 순서(머리줄 다음 첫 줄이 0). 11·12는 무기 스왑 칸(mpqdata에 없음, kolbot `Precast.js`가 `item.bodylocation === 11 || item.bodylocation === 12`로 쓴다).
+- 쓰는 법: 속성 `item.bodylocation`(착용하지 않은 아이템은 0).
+- 반환값: 아래 번호(숫자). `===`나 `switch`로 비교한다. 예: `item.bodylocation === 4` = 오른손 무기(`Precast.js`).
 
 | 번호 | 이름 | Code |
 |---|---|---|
@@ -66,8 +70,9 @@
 
 ## 유닛 동작 상태 (`unit.mode`)
 
-- 출처: mpqdata `plrmode.txt`·`monmode.txt`·`ObjMode.txt` 줄 순서(머리줄 다음 첫 줄이 0). 옛 sdk `modes.txt`의 플레이어 0~19·몬스터 0~15와 개수·앞부분 이름이 같다(261104).
-- 쓰는 법: `unit.mode === 0 || unit.mode === 12` = 죽은 몬스터(`Attack.js`), `me.mode === 10` = 내가 시전 중(플레이어 표)(261105).
+- 번호 = mpqdata `plrmode.txt`·`monmode.txt`·`ObjMode.txt` 줄 순서(머리줄 다음 첫 줄이 0).
+- 쓰는 법: 속성 `unit.mode`(`me.mode`도 같다). 유닛 종류(플레이어·몬스터·오브젝트·아이템)마다 아래 표가 다르다.
+- 반환값: 아래 번호(숫자). `===`로 비교한다. 예: `unit.mode === 0 || unit.mode === 12` = 죽은 몬스터(`Attack.js`), `me.mode === 10` = 내가 시전 중.
 
 **플레이어**
 
@@ -128,12 +133,11 @@
 | 6 | Special4 | S4 |
 | 7 | Special5 | S5 |
 
-**아이템** (261105)
+**아이템**
 
-- 출처: kolbot 옛 sdk `modes.txt` "Item Mode Flags"(sdk.js `itemmode`와 같음). mpqdata에는 아이템 mode 표가 없다.
-- 쓰는 법: `Pickit.js`에서 `item.mode === 3 || item.mode === 5` = 바닥에 있거나 떨어지는 중인 아이템, `item.mode === 0 && item.location === 3` = 인벤토리 안 아이템.
+- mpqdata에 아이템 mode 표가 없어 kolbot 옛 sdk 번호를 쓴다. kolbot이 쓰는 0·3·5는 아래 뜻과 맞게 쓰인다: `item.mode === 3 || item.mode === 5` = 바닥에 있거나 떨어지는 중인 아이템, `item.mode === 0 && item.location === 3` = 인벤토리 안 아이템(`Pickit.js`).
 
-| 번호 | 원본 설명 |
+| 번호 | 설명 |
 |---|---|
 | 0 | Item inven stash cube store |
 | 1 | Item equipped self or merc |
@@ -145,8 +149,10 @@
 
 ## NPC 메뉴 번호
 
-- 출처: kolbot 옛 sdk `npcmenuid.txt`. 원본 표기 그대로(`Ressurect Merc` 철자 포함).
-- 쓰는 법: NPC와 대화창을 연 뒤 `Misc.useMenu(0x0D44)`(`Misc.js` `useMenu`가 안에서 `npc.useMenu(번호)`를 부른다). 예: `Town.js` 감정 `Misc.useMenu(0x0FB4)`(261105).
+- 쓰는 법: NPC와 대화창을 연 뒤 `Misc.useMenu(번호)`. 예: `Town.js` 감정 `Misc.useMenu(0x0FB4)`.
+  - `Misc.useMenu`는 대화창 줄(`getDialogLines()`) 중 글자가 `getLocaleString(번호)`를 포함하는 줄을 골라 누른다. 그래서 번호는 메뉴 글자의 문자열 번호다. 0x1507·0x0D44만 줄을 찾지 않고 `npc.useMenu(번호)`를 바로 부른다.
+- 반환값(`Misc.useMenu`): 메뉴를 눌렀으면 `true`, 대화창 줄이 없거나 그 메뉴가 없으면 `false`. kolbot은 대부분 반환값을 보지 않는다.
+- `Ressurect Merc`은 옛 sdk 철자 그대로.
 
 | 번호 | 메뉴 |
 |---|---|
@@ -168,8 +174,7 @@
 
 ## 상점 화면 상태
 
-- 출처: kolbot 옛 sdk `miscscreenmodes.txt`. 원본 표기 그대로.
-- 쓰는 법: 미확인. kolbot 코드에 쓰는 곳이 없고, 이 값을 돌려주는 D2BS 함수는 엔진 소스가 이 저장소에 없어 찾지 못했다(261105).
+- **미검증**: 이 값을 돌려주는 D2BS 함수를 모른다. kolbot 코드에 쓰는 곳이 없다(`next_steps.md`).
 
 | 번호 | 상태 |
 |---|---|
@@ -184,8 +189,9 @@
 
 ## 아이템 기본 스탯 인덱스
 
-- 출처: kolbot 옛 sdk `basestats.txt`(원본 끝: "Initial compilation done by njaguar"). 빈 번호는 원본에 이름이 없는 칸. 괄호 안은 원본 메모.
-- 쓰는 법: kolbot은 `getBaseStat("items", classid, "levelreq")`처럼 **열 이름**으로 읽는다(`Pickit.js`·`Town.js`). 아래 번호를 셋째 인자로 넣어 같은 값이 나오는지는 미확인(번호가 `weapons.txt`·`armor.txt` 열 순서와 다르다, 261105).
+- **미검증**: 아래 번호를 셋째 인자로 넣어 같은 값이 나오는지 확인하지 않았다(번호가 `weapons.txt`·`armor.txt` 열 순서와 다르다, `next_steps.md`). 빈 번호는 이름이 없는 칸, 괄호 안은 옛 sdk 메모.
+- 쓰는 법: kolbot은 `getBaseStat("items", classid, "levelreq")`처럼 셋째 인자를 **열 이름**으로 준다(`Pickit.js`·`Town.js`). 첫 인자는 표 이름(`"items"`) 또는 번호(`0`)를 쓴다.
+- 반환값: 그 칸의 값. 숫자 칸은 숫자(`<=`·`*` 등 계산에 바로 쓴다), `namestr`은 문자열 번호(`getLocaleString`에 넣어 이름을 얻는다).
 
 | 인덱스 | 이름 |
 |---|---|
@@ -229,15 +235,14 @@
 | 76 | MagicLvl |
 | 77 | Transform |
 | 78 | InvTrans |
-| 167 | Last few of these are probably the NPC sell values (all seem to be 255, which is what it is in the mpq) |
-- 원본 79~167: "Last few of these are probably the NPC sell values (all seem to be 255, which is what it is in the mpq)"
+| 79~167 | Last few of these are probably the NPC sell values (all seem to be 255, which is what it is in the mpq) |
 
 ## UI 플래그 (`getUIFlag`)
 
-게임 UI 창이 열려 있는지 확인하는 번호(`getUIFlag(번호)`, 261104).
+게임 UI 창이 열려 있는지 확인하는 번호.
 
-- 출처: D2MOO(1.10f) `source/D2CommonDefinitions/include/D2Constants.h`의 `UI_` 목록. d2bsng PR #60 설명에 1.14d `getUIFlag` 값이 이것과 같다고 컴파일 때 검사한다고 되어 있다.
-- 쓰는 법: 함수로 부른다. `getUIFlag(0x0C)` = 상점 창이 열려 있으면 참(`Town.js`). `getUIFlag == 0x0C` 형태가 아니다(261105).
+- 쓰는 법: 함수로 부른다. `getUIFlag(0x0C)` = 상점 창이 열려 있으면 참(`Town.js`). `getUIFlag == 0x0C` 형태가 아니다.
+- 반환값: 열려 있으면 참, 아니면 거짓. kolbot은 `if (getUIFlag(…))`·`!getUIFlag(…)`·`return getUIFlag(0x14)`처럼 참·거짓으로만 쓴다(코드 52곳).
 - kolbot 사용처와 맞음: 0x08 `npc.openMenu`, 0x0C `startTrade`, 0x14 `Pather.js` 웨이포인트 화면, 0x19 창고, 0x1A 큐브.
 
 | 번호 | D2MOO 이름 | D2MOO 설명 | MapThread 멈춤 |
@@ -288,9 +293,9 @@
 
 ## spectype (`unit.spectype`)
 
-- 쓰는 법: 비트를 `&`로 본다. `unit.spectype & 0x7` = 보스·챔피언·유니크 중 하나(`Attack.js`), `unit.spectype & 0x1` = "Normal" Boss(아래 표). monsters.md에서 옮김(261105).
-- 출처: 사용자 자료 `spectype.png`(원본 표, 출처 표시 없음). 근거: **출처 불명**. 원본 그대로 옮겼다(16줄).
-- 원본 열 이름 "monster types to kill" 그대로. 비트: 0x1 "Normal" Boss, 0x2 Champion, 0x4 Boss, 0x8 Minion.
+- **미검증**: 비트마다의 뜻(`next_steps.md`). 비트: 0x1 "Normal" Boss, 0x2 Champion, 0x4 Boss, 0x8 Minion. 표는 비트 조합(열 이름 "monster types to kill"은 원래 표 그대로).
+- 쓰는 법: 속성 `unit.spectype`.
+- 반환값: 비트를 합친 숫자. 비트는 `&`로 본다: `unit.spectype & 0x7` = 보스·챔피언·유니크 중 하나(`Attack.js`). 일반 몬스터는 0이라 `unit.spectype === 0`으로 본다(`Attacks/Barbarian.js`).
 
 | spectype | monster types to kill |
 |---|---|
@@ -313,8 +318,9 @@
 
 ## 슈퍼유니크 프리셋 유닛 번호 (`getPresetUnit`)
 
-- 쓰는 법: `getPresetUnit(지역, 1, 번호)`(1 = 몬스터). 예: `getPresetUnit(me.area, 1, 773)`(`AutoSmurf.js`). monsters.md에서 옮김(261105).
-- 출처: kolbot 옛 sdk `superunique_presetunitids.txt`(원본 머리말: "this list is correct to the best of my knowledge"). 근거: 웹 미검증. mpqdata에 없는 번호다.
+- **미검증**: mpqdata에 없는 번호다(`next_steps.md`).
+- 쓰는 법: `getPresetUnit(지역, 1, 번호)`(1 = 몬스터, 2 = 오브젝트). 예: `getPresetUnit(me.area, 1, 773)`(`AutoSmurf.js`).
+- 반환값: 프리셋 유닛 객체, 없으면 거짓값. kolbot은 `if (!presetUnit)`으로 없음을 보고, 좌표는 `presetUnit.roomx * 5 + presetUnit.x`, `presetUnit.roomy * 5 + presetUnit.y`로 계산한다(`Pather.moveToPreset`).
 
 | Id | Name |
 |---|---|
@@ -400,11 +406,11 @@
 | 801 | dead barb |
 | 802 | dead prowlingdead |
 
-## 게임 밖 화면 번호 (`getLocation()`) (261105)
+## 게임 밖 화면 번호 (`getLocation()`)
 
-- 출처: kolbot 다른 판(blizzhackers 계열)의 `sdk.js` `locations`(사용자 자료). 이름은 원본 그대로.
-- 대조: 오른쪽 열은 `tools/OOG.js`의 `switch (getLocation())` `case` 주석이다. 주석이 있는 21개는 sdk.js 이름과 뜻이 모두 같다(261105). 주석이 없는 번호는 sdk.js에만 있고 미확인이다.
-- 쓰는 곳: `tools/OOG.js`, `D2Bot*.dbj`의 `switch (getLocation())`. 게임 밖 콘솔 줄 끝 `(loc N)`의 N이 이 번호다.
+- 이름 = kolbot 다른 판(blizzhackers 계열) `sdk.js` `locations`. 오른쪽 열은 `tools/OOG.js`의 `switch (getLocation())` `case` 주석이고, 주석이 있는 21개는 이름과 뜻이 같다. 주석이 없는 번호는 **미검증**(`next_steps.md`).
+- 쓰는 법: 함수 `getLocation()`(인자 없음). 쓰는 곳: `tools/OOG.js`, `D2Bot*.dbj`.
+- 반환값: 지금 게임 밖 화면 번호(숫자). `switch (getLocation())`나 `getLocation() === 42`로 비교한다. 게임 밖 콘솔 줄 끝 `(loc N)`의 N이 이 번호다.
 
 | 번호 | sdk.js 이름 | `tools/OOG.js` 주석 |
 |---|---|---|
