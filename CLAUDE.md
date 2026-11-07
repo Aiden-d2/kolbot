@@ -61,7 +61,7 @@
 
 ## 5. 노트
 - 노트(`docs/**/*.md`, d2reference 브랜치 `gamedata/*.md`)는 확정된 사항만 쓴다. 확정되지 않은 것(논의 중, Claude 제안)은 쓰지 않는다. 모호하면 물어본다.
-  - 예외: 임시노트(`docs/temp/*.md`)는 스터디 기록이라 확정되지 않은 것(웹 자료, 계산식, 가설, 논의 중인 계획, Claude 제안)도 쓴다. 내용마다 근거 종류(데이터 / 코드 / 웹 미검증 / 사용자 결정 / Claude 제안 미결정)를 표시한다.
+  - 예외: d2reference 브랜치 `gamedata/next_steps.md`는 미검증·미결 목록이라 확정되지 않은 것(웹 자료, 계산식, 가설, 논의 중인 계획)도 쓴다. 항목마다 내용, 출처, 확인에 필요한 것을 적고, 확인이 끝나면 해당 정보 파일에 반영하고 지운다.
 - 노트 커밋 시점은 1절을 따른다. 대화가 길어 앞부분이 요약됐으면, 기록 전에 그 사실을 알린다.
 
 ### handoff (`docs/handoff.md`)
@@ -89,7 +89,6 @@
 | 파일 | 내용 |
 |---|---|
 | `docs/handoff.md` | 진행 여부 대기 / 구현 검토·수정 대기 / 인게임 검증 대기. 발견된 문제·오류에서 출발하는 유지보수이고, 진행하면 코드 수정과 로그 검증을 거친다 |
-| `docs/temp/*.md` | 임시노트: 신규·신설에 대한 구상·설계·스터디. 측정이나 테스트가 들어갈 수 있지만, 코드가 맞게 도는지가 아니라 지식이나 가설을 확인하는 검증이다 |
 | `docs/code/*.md` | 코드 파일별 노트 (확정된 것만) |
 | `docs/rejected.md` | 기각 노트 |
 | `docs/log_results.md` | 로그 분석 결과 (묶음마다 쌓음) |
@@ -101,5 +100,6 @@
 | d2reference 브랜치 `gamedata/quest_flags.md` | 퀘스트 플래그 표 (1.14d) |
 | `docs/crash_analysis.md` | 크래시 분석 절차와 유형별 결과 |
 | d2reference 브랜치 `gamedata/freezing_arrow.md` | 프리징 애로우 프리즈 길이: 계산식·측정 결과, 상한 측정 준비 |
+| d2reference 브랜치 `gamedata/next_steps.md` | gamedata의 미검증·미결 목록과 노트 작성 방식 |
 | d2reference 브랜치 `gamedata/` | 참고용 게임 인포(정보 파일)가 들어 있다. 읽는 법: `git fetch origin d2reference` 후 `git show origin/d2reference:gamedata/<파일>` |
 | d2reference 브랜치 `mpqdata/` | 게임 정보(아이템·드랍·몬스터·지역·스킬 등)는 기억으로 답하지 않고 이 폴더에서 찾는다. txt 파일은 `mpqdata/excel/` 폴더에 있다(`git fetch origin d2reference` 후 `git show origin/d2reference:mpqdata/excel/<파일>`) |
